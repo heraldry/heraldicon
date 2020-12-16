@@ -216,6 +216,60 @@
    [:path {:d "m 0,0 l 1000,1000 h -2000 z"
            :fill (get tinctures bottom)}]])
 
+(defn paly [[base strip] line-style]
+  [:<>
+   [base-area (get tinctures base)]
+   [:path {:d "m -37.5,-1000 h 12.5 v 2000 h -12.5 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m -12.5,-1000 h 12.5 v 2000 h -12.5 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m 12.5,-1000 h 12.5 v 2000 h -12.5 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m 37.5,-1000 h 12.5 v 2000 h -12.5 z"
+           :fill (get tinctures strip)}]])
+
+(defn barry [[base strip] line-style]
+  [:<>
+   [base-area (get tinctures base)]
+   [:path {:d "m -1000,-37.5 v 12.5 h 2000 v -12.5 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m -1000,-12.5 v 12.5 h 2000 v -12.5 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m -1000,12.5 v 12.5 h 2000 v -12.5 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m -1000,37.5 v 12.5 h 2000 v -12.5 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m -1000,62.5 v 12.5 h 2000 v -12.5 z"
+           :fill (get tinctures strip)}]])
+
+(defn bendy [[base strip] line-style]
+  [:<>
+   [base-area (get tinctures base)]
+   [:path {:d "m -1000,-1000 v 25 l 2000,2000 v -25 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m -1000,-1050 v 25 l 2000,2000 v -25 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m -1000,-1100 v 25 l 2000,2000 v -25 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m -1000,-950 v 25 l 2000,2000 v -25 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m -1000,-900 v 25 l 2000,2000 v -25 z"
+           :fill (get tinctures strip)}]])
+
+(defn bendy-sinister [[base strip] line-style]
+  [:<>
+   [base-area (get tinctures base)]
+   [:path {:d "m 1000,-1025 v 25 l -2000,2000 v -25 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m 1000,-1075 v 25 l -2000,2000 v -25 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m 1000,-1125 v 25 l -2000,2000 v -25 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m 1000,-975 v 25 l -2000,2000 v -25 z"
+           :fill (get tinctures strip)}]
+   [:path {:d "m 1000,-925 v 25 l -2000,2000 v -25 z"
+           :fill (get tinctures strip)}]])
+
 (defn render-division [{:keys [type line-style parts]}]
   (case type
     :per-pale [per-pale parts line-style]
@@ -229,6 +283,10 @@
     :tierced-in-pale [tierced-in-pale parts line-style]
     :tierced-in-fesse [tierced-in-fesse parts line-style]
     :tierced-in-pairle [tierced-in-pairle parts line-style]
+    :paly [paly parts line-style]
+    :barry [barry parts line-style]
+    :bendy [bendy parts line-style]
+    :bendy-sinister [bendy-sinister parts line-style]
     [:<>]))
 
 (defn render-ordinary [ordinary]
