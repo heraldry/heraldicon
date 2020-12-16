@@ -16,7 +16,11 @@
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:coat-of-arms {}} db)))
+   (merge {:coat-of-arms {:division   {:type       :per-pale
+                                       :line-style :normal
+                                       :parts      [:sable :azure]}
+                          :ordinaries [{:type    :chief
+                                        :content :or}]}} db)))
 
 (defn save-state [db]
   (assoc! local-storage :coat-of-arms (:coat-of-arms db)))
@@ -25,6 +29,12 @@
  :set
  (fn [db [_ key value]]
    (assoc db key value)))
+
+(rf/reg-event-db
+ :set-in
+ (fn [db [_ path value]]
+   (println path value)
+   (assoc-in db path value)))
                                         ; views
 
 (def filter-shadow
@@ -36,9 +46,9 @@
                :in     "SourceAlpha"
                :dx     "1"
                :dy     "1"}]
-   [:feGaussianBlur {:result       "blurOut"
-                     :in           "offsetOut"
-                     :stdDeviation "5"}]
+   [:feGaussianBlur {:result        "blurOut"
+                     :in            "offsetOut"
+                     :std-deviation "5"}]
    [:feBlend {:in   "SourceGraphic"
               :in2  "blurOut"
               :mode "normal"}]])
@@ -48,13 +58,13 @@
                   :y      0
                   :width  "150%"
                   :height "150%"}
-   [:feGaussianBlur {:stddeviation 4
-                     :in           "SourceAlpha"
-                     :result       "blur1"}]
-   [:feSpecularLighting {:specularexponent 20
-                         :lighting-color   "#696969"
-                         :in               "blur1"
-                         :result           "specOut"}
+   [:feGaussianBlur {:std-deviation 4
+                     :in            "SourceAlpha"
+                     :result        "blur1"}]
+   [:feSpecularLighting {:specular-exponent 20
+                         :lighting-color    "#696969"
+                         :in                "blur1"
+                         :result            "specOut"}
     [:fePointLight {:x 300
                     :y 300
                     :z 500}]]
@@ -74,9 +84,9 @@
                     :type   "matrix"
                     :in     "offOut"
                     :result "matrixOut"}]
-   [:feGaussianBlur {:stddeviation 10
-                     :in           "matrixOut"
-                     :result       "blurOut"}]
+   [:feGaussianBlur {:std-deviation 10
+                     :in            "matrixOut"
+                     :result        "blurOut"}]
    [:feBlend {:mode "normal"
               :in   "highlight"
               :in2  "blurOut"}]])
@@ -93,8 +103,83 @@
     filter-shiny
     mask-shield1]))
 
-(defn render-coat-of-arms [coat-of-arms]
-  [:g])
+(def tinctures
+  {:or              "#f1b952"
+   :azure           "#1b6690"
+   :vert            "#429042"
+   :gules           "#b93535"
+   :argent          "#f5f5f5"
+   :sable           "#373737"
+   :purpure         "#8f3f6a"
+   :murrey          "#8f3f6a"
+   :sanguine        "#b93535"
+   :carnation       "#e9bea1"
+   :brunatre        "#725a44"
+   :cendree         "#cbcaca"
+   :rose            "#e9bea1"
+   :celestial-azure "#50bbf0"
+   :tenne           "#725a44"
+   :orange          "#e56411"
+   :iron            "#cbcaca"
+   :bronze          "#f1b952"
+   :copper          "#f1b952"
+   :lead            "#cbcaca"
+   :steel           "#cbcaca"
+   :white           "#f5f5f5"})
+
+(defn per-pale [[left right] line-style]
+  [:<>
+   [:rect {:x      -1000
+           :y      -1000
+           :width  1000
+           :height 2000
+           :fill   (get tinctures left)}]
+   [:rect {:x      0
+           :y      -1000
+           :width  2000
+           :height 2000
+           :fill   (get tinctures right)}]])
+
+(defn per-fess [[top bottom] line-style]
+  [:<>
+   [:rect {:x      -1000
+           :y      -1000
+           :width  2000
+           :height 1000
+           :fill   (get tinctures top)}]
+   [:rect {:x      -1000
+           :y      0
+           :width  2000
+           :height 1000
+           :fill   (get tinctures bottom)}]])
+
+(defn per-bend [[top bottom] line-style]
+  [:<>
+   [:path {:d    "m"
+           :fill (get tinctures top)}]
+   [:rect {:x      -1000
+           :y      0
+           :width  2000
+           :height 1000
+           :fill   (get tinctures bottom)}]])
+
+(defn render-division [{:keys [type line-style parts]}]
+  (case type
+    :per-pale [per-pale parts line-style]
+    :per-fess [per-fess parts line-style]
+    :per-bend [per-bend parts line-style]
+    [:<>]))
+
+(defn render-ordinary [ordinary]
+  [:<>])
+
+(defn render-coat-of-arms [data]
+  (let [division   (:division data)
+        ordinaries (:ordinaries data)]
+    [:<>
+     [render-division division]
+     (for [[idx ordinary] (map-indexed vector ordinaries)]
+       ^{:key idx} [render-ordinary ordinary])]))
 
 (defn render-shield [coat-of-arms]
   [:g {:filter "url(#shadow)"}
@@ -110,20 +195,31 @@
 
 (defn app []
   (fn []
-    (let [coat-of-arms (rf/subscribe [:get :coat-of-arms])]
+    (let [coat-of-arms @(rf/subscribe [:get :coat-of-arms])]
       [:<>
        [:div {:style {:width    "100%"
                       :height   "100vh"
                       :position "relative"}}
         [:svg {:id                  "svg"
-               :style               {:width    "100%"
+               :style               {:width    "60%"
                                      :position "absolute"
                                      :left     0
                                      :top      0}
-               :viewBox             "0 0 1000 1000"
+               :viewBox             "0 0 600 1000"
                :preserveAspectRatio "xMidYMin slice"}
          defs
-         [render-shield coat-of-arms]]]])))
+         [render-shield coat-of-arms]]
+        [:div {:style {:width    "40%"
+                       :position "absolute"
+                       :left     "60%"
+                       :top      0}}
+         [:label {:for "division"} "Division"]
+         [:select {:name      "division"
+                   :id        "division"
+                   :value     (name (get-in coat-of-arms [:division :type]))
+                   :on-change #(rf/dispatch [:set-in [:coat-of-arms :division :type] (keyword (-> % .-target .-value))])}
+          [:option {:value "per-pale"} "Per pale"]
+          [:option {:value "per-fess"} "Per fess"]]]]])))
 
 (defn stop []
   (println "Stopping..."))
