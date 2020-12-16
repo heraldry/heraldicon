@@ -137,13 +137,13 @@
 (defn per-pale [[left right] line-style]
   [:<>
    [base-area (get tinctures left)]
-   [:path {:d "m 1000,1000 h -1000 v -2000 h 1000 z"
+   [:path {:d "m 0,-1000 h 2000 v 2000 h -2000 z"
            :fill (get tinctures right)}]])
 
 (defn per-fess [[top bottom] line-style]
   [:<>
    [base-area (get tinctures top)]
-   [:path {:d "m 1000,1000 h -2000 v -1000 h 2000 z"
+   [:path {:d "m -1000,0 h 2000 v 2000 h -2000 z"
            :fill (get tinctures bottom)}]])
 
 (defn per-bend [[top bottom] line-style]
