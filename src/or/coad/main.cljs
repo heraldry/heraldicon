@@ -18,7 +18,7 @@
  (fn [db [_]]
    (merge {:coat-of-arms {:division {:type :per-pale
                                      :line-style :normal
-                                     :parts [:sable :azure]}
+                                     :parts [:azure :sable]}
                           :ordinaries [{:type :chief
                                         :content :or}]}} db)))
 
@@ -127,37 +127,70 @@
    :steel "#cbcaca"
    :white "#f5f5f5"})
 
+(defn base-area [fill]
+  [:rect {:x -1000
+          :y -1000
+          :width 2000
+          :height 2000
+          :fill fill}])
+
 (defn per-pale [[left right] line-style]
   [:<>
-   [:path {:transform "translate(1,0)"
-           :d "m -1000,-1000 h 1000 v 2000 h -1000 z"
-           :fill (get tinctures left)}]
+   [base-area (get tinctures left)]
    [:path {:d "m 1000,1000 h -1000 v -2000 h 1000 z"
            :fill (get tinctures right)}]])
 
 (defn per-fess [[top bottom] line-style]
   [:<>
-   [:path {:transform "translate(0,1)"
-           :d "m -1000,-1000 h 2000 v 1000 h -2000 z"
-           :fill (get tinctures top)}]
+   [base-area (get tinctures top)]
    [:path {:d "m 1000,1000 h -2000 v -1000 h 2000 z"
            :fill (get tinctures bottom)}]])
 
 (defn per-bend [[top bottom] line-style]
   [:<>
-   [:path {:transform "translate(0,1)"
-           :d "m -1000,-1000 h 2000 v 2000 z"
-           :fill (get tinctures top)}]
+   [base-area (get tinctures top)]
    [:path {:d "m -1000,-1000 v 2000 h 2000 z"
            :fill (get tinctures bottom)}]])
 
 (defn per-bend-sinister [[top bottom] line-style]
   [:<>
-   [:path {:transform "translate(0,1)"
-           :d "m 1000,-1000 h -2000 v 2000 z"
-           :fill (get tinctures top)}]
+   [base-area (get tinctures top)]
    [:path {:d "m 1000,-1000 v 2000 h -2000 z"
            :fill (get tinctures bottom)}]])
+
+(defn per-chevron [[top bottom] line-style]
+  [:<>
+   [base-area (get tinctures top)]
+   [:path {:d "m 0,0 l 1000,1000 h -2000 z"
+           :fill (get tinctures bottom)}]])
+
+(defn per-saltire [[vertical horizontal] line-style]
+  [:<>
+   [base-area (get tinctures vertical)]
+   [:path {:d "m 0,0 l -1000,-1000 v 2000 z"
+           :fill (get tinctures horizontal)}]
+   [:path {:d "m 0,0 l 1000,-1000 v 2000 z"
+           :fill (get tinctures horizontal)}]])
+
+(defn quarterly [[left right] line-style]
+  [:<>
+   [base-area (get tinctures left)]
+   [:path {:d "m 0,0 h 1000 v -1000 h -1000 z"
+           :fill (get tinctures right)}]
+   [:path {:d "m 0,0 h -1000 v 1000 h 1000 z"
+           :fill (get tinctures right)}]])
+
+(defn gyronny [[left right] line-style]
+  [:<>
+   [base-area (get tinctures left)]
+   [:path {:d "m 0,0 v -1000 h 1000 z"
+           :fill (get tinctures right)}]
+   [:path {:d "m 0,0 h 1000 v 1000 z"
+           :fill (get tinctures right)}]
+   [:path {:d "m 0,0 v 1000 h -1000 z"
+           :fill (get tinctures right)}]
+   [:path {:d "m 0,0 h -1000 v -1000 z"
+           :fill (get tinctures right)}]])
 
 (defn render-division [{:keys [type line-style parts]}]
   (case type
@@ -166,6 +199,9 @@
     :per-bend [per-bend parts line-style]
     :per-bend-sinister [per-bend-sinister parts line-style]
     :per-chevron [per-chevron parts line-style]
+    :per-saltire [per-saltire parts line-style]
+    :quarterly [quarterly parts line-style]
+    :gyronny [gyronny parts line-style]
     [:<>]))
 
 (defn render-ordinary [ordinary]
