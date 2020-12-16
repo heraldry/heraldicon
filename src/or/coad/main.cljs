@@ -351,7 +351,7 @@
           [:option {:value "barry"} "Barry"]
           [:option {:value "bendy"} "Bendy"]
           [:option {:value "bendy-sinister"} "Bendy sinister"]
-          [:option {:value "chevronny"} "Chevronny"]]]]])))
+          #_[:option {:value "chevronny"} "Chevronny"]]]]])))
 
 (defn stop []
   (println "Stopping..."))
