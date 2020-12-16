@@ -129,38 +129,34 @@
 
 (defn per-pale [[left right] line-style]
   [:<>
-   [:rect {:x -1000
-           :y -1000
-           :width 1000
-           :height 2000
+   [:path {:transform "translate(1,0)"
+           :d "m -1000,-1000 h 1000 v 2000 h -1000 z"
            :fill (get tinctures left)}]
-   [:rect {:x 0
-           :y -1000
-           :width 2000
-           :height 2000
+   [:path {:d "m 1000,1000 h -1000 v -2000 h 1000 z"
            :fill (get tinctures right)}]])
 
 (defn per-fess [[top bottom] line-style]
   [:<>
-   [:rect {:x -1000
-           :y -1000
-           :width 2000
-           :height 1000
+   [:path {:transform "translate(0,1)"
+           :d "m -1000,-1000 h 2000 v 1000 h -2000 z"
            :fill (get tinctures top)}]
-   [:rect {:x -1000
-           :y 0
-           :width 2000
-           :height 1000
+   [:path {:d "m 1000,1000 h -2000 v -1000 h 2000 z"
            :fill (get tinctures bottom)}]])
 
 (defn per-bend [[top bottom] line-style]
   [:<>
-   [:path {:d "m"
+   [:path {:transform "translate(0,1)"
+           :d "m -1000,-1000 h 2000 v 2000 z"
            :fill (get tinctures top)}]
-   [:rect {:x -1000
-           :y 0
-           :width 2000
-           :height 1000
+   [:path {:d "m -1000,-1000 v 2000 h 2000 z"
+           :fill (get tinctures bottom)}]])
+
+(defn per-bend-sinister [[top bottom] line-style]
+  [:<>
+   [:path {:transform "translate(0,1)"
+           :d "m 1000,-1000 h -2000 v 2000 z"
+           :fill (get tinctures top)}]
+   [:path {:d "m 1000,-1000 v 2000 h -2000 z"
            :fill (get tinctures bottom)}]])
 
 (defn render-division [{:keys [type line-style parts]}]
@@ -168,6 +164,8 @@
     :per-pale [per-pale parts line-style]
     :per-fess [per-fess parts line-style]
     :per-bend [per-bend parts line-style]
+    :per-bend-sinister [per-bend-sinister parts line-style]
+    :per-chevron [per-chevron parts line-style]
     [:<>]))
 
 (defn render-ordinary [ordinary]
@@ -219,7 +217,21 @@
                    :value (name (get-in coat-of-arms [:division :type]))
                    :on-change #(rf/dispatch [:set-in [:coat-of-arms :division :type] (keyword (-> % .-target .-value))])}
           [:option {:value "per-pale"} "Per pale"]
-          [:option {:value "per-fess"} "Per fess"]]]]])))
+          [:option {:value "per-fess"} "Per fess"]
+          [:option {:value "per-bend"} "Per bend"]
+          [:option {:value "per-bend-sinister"} "Per bend sinister"]
+          [:option {:value "per-chevron"} "Per chevron"]
+          [:option {:value "per-saltire"} "Per saltire"]
+          [:option {:value "quarterly"} "Quarterly"]
+          [:option {:value "gyronny"} "Gyronny"]
+          [:option {:value "tierced-in-pale"} "Tierced in pale"]
+          [:option {:value "tierced-in-fesse"} "Tierced in fesse"]
+          [:option {:value "tierced-in-pairle"} "Tierced in pairle"]
+          [:option {:value "paly"} "Paly"]
+          [:option {:value "barry"} "Barry"]
+          [:option {:value "bendy"} "Bendy"]
+          [:option {:value "bendy-sinister"} "Bendy sinister"]
+          [:option {:value "chevronny"} "Chevronny"]]]]])))
 
 (defn stop []
   (println "Stopping..."))
