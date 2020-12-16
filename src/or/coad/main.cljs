@@ -16,9 +16,8 @@
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:coat-of-arms {:division   {:type       :per-pale
-                                       :line-style :normal
-                                       :parts      [:azure :sable :or]}
+   (merge {:coat-of-arms {:division   {:type  :per-pale
+                                       :parts [:azure :sable :or]}
                           :ordinaries [{:type    :chief
                                         :content :or}]}} db)))
 
@@ -134,37 +133,37 @@
           :height 2000
           :fill   fill}])
 
-(defn per-pale [[left right] line-style]
+(defn per-pale [[left right]]
   [:<>
    [base-area (get tinctures left)]
    [:path {:d    "m 0,-1000 h 2000 v 2000 h -2000 z"
            :fill (get tinctures right)}]])
 
-(defn per-fess [[top bottom] line-style]
+(defn per-fess [[top bottom]]
   [:<>
    [base-area (get tinctures top)]
    [:path {:d    "m -1000,0 h 2000 v 2000 h -2000 z"
            :fill (get tinctures bottom)}]])
 
-(defn per-bend [[top bottom] line-style]
+(defn per-bend [[top bottom]]
   [:<>
    [base-area (get tinctures top)]
    [:path {:d    "m -1000,-1000 v 2000 h 2000 z"
            :fill (get tinctures bottom)}]])
 
-(defn per-bend-sinister [[top bottom] line-style]
+(defn per-bend-sinister [[top bottom]]
   [:<>
    [base-area (get tinctures top)]
    [:path {:d    "m 1000,-1000 v 2000 h -2000 z"
            :fill (get tinctures bottom)}]])
 
-(defn per-chevron [[top bottom] line-style]
+(defn per-chevron [[top bottom]]
   [:<>
    [base-area (get tinctures top)]
    [:path {:d    "m 0,0 l 1000,1000 h -2000 z"
            :fill (get tinctures bottom)}]])
 
-(defn per-saltire [[vertical horizontal] line-style]
+(defn per-saltire [[vertical horizontal]]
   [:<>
    [base-area (get tinctures vertical)]
    [:path {:d    "m 0,0 l -1000,-1000 v 2000 z"
@@ -172,7 +171,7 @@
    [:path {:d    "m 0,0 l 1000,-1000 v 2000 z"
            :fill (get tinctures horizontal)}]])
 
-(defn quarterly [[left right] line-style]
+(defn quarterly [[left right]]
   [:<>
    [base-area (get tinctures left)]
    [:path {:d    "m 0,0 h 1000 v -1000 h -1000 z"
@@ -180,7 +179,7 @@
    [:path {:d    "m 0,0 h -1000 v 1000 h 1000 z"
            :fill (get tinctures right)}]])
 
-(defn gyronny [[left right] line-style]
+(defn gyronny [[left right]]
   [:<>
    [base-area (get tinctures left)]
    [:path {:d    "m 0,0 v -1000 h 1000 z"
@@ -192,7 +191,7 @@
    [:path {:d    "m 0,0 h -1000 v -1000 z"
            :fill (get tinctures right)}]])
 
-(defn tierced-in-pale [[left middle right] line-style]
+(defn tierced-in-pale [[left middle right]]
   [:<>
    [base-area (get tinctures left)]
    [:path {:d    "m -16.666666,-1000 h 2000 v 2000 h -2000 z"
@@ -200,7 +199,7 @@
    [:path {:d    "m 16.666666,-1000 h 2000 v 2000 h -2000 z"
            :fill (get tinctures right)}]])
 
-(defn tierced-in-fesse [[top middle bottom] line-style]
+(defn tierced-in-fesse [[top middle bottom]]
   [:<>
    [base-area (get tinctures top)]
    [:path {:d    "m -1000,-16.666666 h 2000 v 2000 h -2000 z"
@@ -208,7 +207,7 @@
    [:path {:d    "m -1000,16.666666 h 2000 v 2000 h -2000 z"
            :fill (get tinctures bottom)}]])
 
-(defn tierced-in-pairle [[left right bottom] line-style]
+(defn tierced-in-pairle [[left right bottom]]
   [:<>
    [base-area (get tinctures left)]
    [:path {:d    "m 0,-1000 h 2000 v 2000 h -2000 z"
@@ -216,7 +215,7 @@
    [:path {:d    "m 0,0 l 1000,1000 h -2000 z"
            :fill (get tinctures bottom)}]])
 
-(defn paly [[base strip] line-style]
+(defn paly [[base strip]]
   [:<>
    [base-area (get tinctures base)]
    [:path {:d    "m -37.5,-1000 h 12.5 v 2000 h -12.5 z"
@@ -228,7 +227,7 @@
    [:path {:d    "m 37.5,-1000 h 12.5 v 2000 h -12.5 z"
            :fill (get tinctures strip)}]])
 
-(defn barry [[base strip] line-style]
+(defn barry [[base strip]]
   [:<>
    [base-area (get tinctures base)]
    [:path {:d    "m -1000,-37.5 v 12.5 h 2000 v -12.5 z"
@@ -242,7 +241,7 @@
    [:path {:d    "m -1000,62.5 v 12.5 h 2000 v -12.5 z"
            :fill (get tinctures strip)}]])
 
-(defn bendy [[base strip] line-style]
+(defn bendy [[base strip]]
   [:<>
    [base-area (get tinctures base)]
    [:path {:d    "m -1000,-1000 v 25 l 2000,2000 v -25 z"
@@ -256,7 +255,7 @@
    [:path {:d    "m -1000,-900 v 25 l 2000,2000 v -25 z"
            :fill (get tinctures strip)}]])
 
-(defn bendy-sinister [[base strip] line-style]
+(defn bendy-sinister [[base strip]]
   [:<>
    [base-area (get tinctures base)]
    [:path {:d    "m 1000,-1025 v 25 l -2000,2000 v -25 z"
@@ -270,23 +269,23 @@
    [:path {:d    "m 1000,-925 v 25 l -2000,2000 v -25 z"
            :fill (get tinctures strip)}]])
 
-(defn render-division [{:keys [type line-style parts]}]
+(defn render-division [{:keys [type        parts]}]
   (case type
-    :per-pale          [per-pale parts line-style]
-    :per-fess          [per-fess parts line-style]
-    :per-bend          [per-bend parts line-style]
-    :per-bend-sinister [per-bend-sinister parts line-style]
-    :per-chevron       [per-chevron parts line-style]
-    :per-saltire       [per-saltire parts line-style]
-    :quarterly         [quarterly parts line-style]
-    :gyronny           [gyronny parts line-style]
-    :tierced-in-pale   [tierced-in-pale parts line-style]
-    :tierced-in-fesse  [tierced-in-fesse parts line-style]
-    :tierced-in-pairle [tierced-in-pairle parts line-style]
-    :paly              [paly parts line-style]
-    :barry             [barry parts line-style]
-    :bendy             [bendy parts line-style]
-    :bendy-sinister    [bendy-sinister parts line-style]
+    :per-pale          [per-pale parts]
+    :per-fess          [per-fess parts]
+    :per-bend          [per-bend parts]
+    :per-bend-sinister [per-bend-sinister parts]
+    :per-chevron       [per-chevron parts]
+    :per-saltire       [per-saltire parts]
+    :quarterly         [quarterly parts]
+    :gyronny           [gyronny parts]
+    :tierced-in-pale   [tierced-in-pale parts]
+    :tierced-in-fesse  [tierced-in-fesse parts]
+    :tierced-in-pairle [tierced-in-pairle parts]
+    :paly              [paly parts]
+    :barry             [barry parts]
+    :bendy             [bendy parts]
+    :bendy-sinister    [bendy-sinister parts]
     [:<>]))
 
 (defn render-ordinary [ordinary]
