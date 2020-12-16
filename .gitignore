@@ -1,0 +1,11 @@
+node_modules/
+.shadow-cljs
+.DS_Store
+
+release
+/**/generated/**/*
+
+hicv
+assets/optimized-svgs
+
+deploy.tar
