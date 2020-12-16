@@ -18,7 +18,7 @@
  (fn [db [_]]
    (merge {:coat-of-arms {:division   {:type       :per-pale
                                        :line-style :normal
-                                       :parts      [:azure :sable]}
+                                       :parts      [:azure :sable :or]}
                           :ordinaries [{:type    :chief
                                         :content :or}]}} db)))
 
@@ -192,6 +192,30 @@
    [:path {:d    "m 0,0 h -1000 v -1000 z"
            :fill (get tinctures right)}]])
 
+(defn tierced-in-pale [[left middle right] line-style]
+  [:<>
+   [base-area (get tinctures left)]
+   [:path {:d    "m -16.666666,-1000 h 2000 v 2000 h -2000 z"
+           :fill (get tinctures middle)}]
+   [:path {:d    "m 16.666666,-1000 h 2000 v 2000 h -2000 z"
+           :fill (get tinctures right)}]])
+
+(defn tierced-in-fesse [[top middle bottom] line-style]
+  [:<>
+   [base-area (get tinctures top)]
+   [:path {:d    "m -1000,-16.666666 h 2000 v 2000 h -2000 z"
+           :fill (get tinctures middle)}]
+   [:path {:d    "m -1000,16.666666 h 2000 v 2000 h -2000 z"
+           :fill (get tinctures bottom)}]])
+
+(defn tierced-in-pairle [[left right bottom] line-style]
+  [:<>
+   [base-area (get tinctures left)]
+   [:path {:d    "m 0,-1000 h 2000 v 2000 h -2000 z"
+           :fill (get tinctures right)}]
+   [:path {:d    "m 0,0 l 1000,1000 h -2000 z"
+           :fill (get tinctures bottom)}]])
+
 (defn render-division [{:keys [type line-style parts]}]
   (case type
     :per-pale          [per-pale parts line-style]
@@ -202,6 +226,9 @@
     :per-saltire       [per-saltire parts line-style]
     :quarterly         [quarterly parts line-style]
     :gyronny           [gyronny parts line-style]
+    :tierced-in-pale   [tierced-in-pale parts line-style]
+    :tierced-in-fesse  [tierced-in-fesse parts line-style]
+    :tierced-in-pairle [tierced-in-pairle parts line-style]
     [:<>]))
 
 (defn render-ordinary [ordinary]
