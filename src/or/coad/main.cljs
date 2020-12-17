@@ -313,6 +313,30 @@
      [:g {:transform "translate(50,50)"}
       [render-coat-of-arms coat-of-arms]]]]])
 
+(defn controls [coat-of-arms]
+  [:div.controls {}
+   [:label {:for "division"} "Division"]
+   [:select {:name      "division"
+             :id        "division"
+             :value     (name (get-in coat-of-arms [:division :type]))
+             :on-change #(rf/dispatch [:set-in [:coat-of-arms :division :type] (keyword (-> % .-target .-value))])}
+    [:option {:value "per-pale"} "Per pale"]
+    [:option {:value "per-fess"} "Per fess"]
+    [:option {:value "per-bend"} "Per bend"]
+    [:option {:value "per-bend-sinister"} "Per bend sinister"]
+    [:option {:value "per-chevron"} "Per chevron"]
+    [:option {:value "per-saltire"} "Per saltire"]
+    [:option {:value "quarterly"} "Quarterly"]
+    [:option {:value "gyronny"} "Gyronny"]
+    [:option {:value "tierced-in-pale"} "Tierced in pale"]
+    [:option {:value "tierced-in-fesse"} "Tierced in fesse"]
+    [:option {:value "tierced-in-pairle"} "Tierced in pairle"]
+    [:option {:value "paly"} "Paly"]
+    [:option {:value "barry"} "Barry"]
+    [:option {:value "bendy"} "Bendy"]
+    [:option {:value "bendy-sinister"} "Bendy sinister"]
+    #_[:option {:value "chevronny"} "Chevronny"]]])
+
 (defn app []
   (fn []
     (let [coat-of-arms @(rf/subscribe [:get :coat-of-arms])]
@@ -333,27 +357,7 @@
                        :position "absolute"
                        :left     "60%"
                        :top      0}}
-         [:label {:for "division"} "Division"]
-         [:select {:name      "division"
-                   :id        "division"
-                   :value     (name (get-in coat-of-arms [:division :type]))
-                   :on-change #(rf/dispatch [:set-in [:coat-of-arms :division :type] (keyword (-> % .-target .-value))])}
-          [:option {:value "per-pale"} "Per pale"]
-          [:option {:value "per-fess"} "Per fess"]
-          [:option {:value "per-bend"} "Per bend"]
-          [:option {:value "per-bend-sinister"} "Per bend sinister"]
-          [:option {:value "per-chevron"} "Per chevron"]
-          [:option {:value "per-saltire"} "Per saltire"]
-          [:option {:value "quarterly"} "Quarterly"]
-          [:option {:value "gyronny"} "Gyronny"]
-          [:option {:value "tierced-in-pale"} "Tierced in pale"]
-          [:option {:value "tierced-in-fesse"} "Tierced in fesse"]
-          [:option {:value "tierced-in-pairle"} "Tierced in pairle"]
-          [:option {:value "paly"} "Paly"]
-          [:option {:value "barry"} "Barry"]
-          [:option {:value "bendy"} "Bendy"]
-          [:option {:value "bendy-sinister"} "Bendy sinister"]
-          #_[:option {:value "chevronny"} "Chevronny"]]]]])))
+         [controls coat-of-arms]]]])))
 
 (defn stop []
   (println "Stopping..."))

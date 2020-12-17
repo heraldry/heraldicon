@@ -1,7 +1,7 @@
 body {
   background-color: #fff;
   overflow: hidden;
-  padding: 0;
+  padding: 10px;
   margin: 0;
 }
 
@@ -18,4 +18,8 @@ a:focus,
 a:active {
   text-decoration: none;
   color: inherit;
+}
+
+.controls {
+  padding: 10px;
 }
