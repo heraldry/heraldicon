@@ -1,0 +1,25 @@
+(ns or.coad.tinctures)
+
+(def tinctures
+  {:or              "#f1b952"
+   :azure           "#1b6690"
+   :vert            "#429042"
+   :gules           "#b93535"
+   :argent          "#f5f5f5"
+   :sable           "#373737"
+   :purpure         "#8f3f6a"
+   :murrey          "#8f3f6a"
+   :sanguine        "#b93535"
+   :carnation       "#e9bea1"
+   :brunatre        "#725a44"
+   :cendree         "#cbcaca"
+   :rose            "#e9bea1"
+   :celestial-azure "#50bbf0"
+   :tenne           "#725a44"
+   :orange          "#e56411"
+   :iron            "#cbcaca"
+   :bronze          "#f1b952"
+   :copper          "#f1b952"
+   :lead            "#cbcaca"
+   :steel           "#cbcaca"
+   :white           "#f5f5f5"})
