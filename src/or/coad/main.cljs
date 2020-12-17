@@ -2,6 +2,7 @@
   (:require [goog.string.format]  ;; required for release build
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
+            [or.coad.field :as field]
             [or.coad.filter :as filter]
             [or.coad.ordinary :as ordinary]
             [re-frame.core :as rf]
@@ -20,10 +21,14 @@
  :initialize-db
  (fn [db [_]]
    (merge {:coat-of-arms {:escutcheon :heater
-                          :division   {:type  :per-pale
-                                       :parts [:azure :sable :gules]}
-                          :ordinaries [{:type    :pale
-                                        :content :or}]}} db)))
+                          :field      {:division   {:type  :per-pale
+                                                    :extra {}
+                                                    :parts [:azure
+                                                            :sable
+                                                            :gules]}
+                                       :ordinaries [{:type    :pale
+                                                     :content :or}]
+                                       :tincture   nil}}} db)))
 
 (rf/reg-event-db
  :set
@@ -52,22 +57,23 @@
        ^{:key idx} [ordinary/render ordinary])]))
 
 (defn render-shield [coat-of-arms]
-  [:g {:filter "url(#shadow)"}
-   [:g {:transform "translate(10,10) scale(5,5)"}
-    [:defs
-     [:mask#mask-heater
-      (let [shield (escutcheon/data (:escutcheon coat-of-arms))]
+  (let [shield (escutcheon/data (:escutcheon coat-of-arms))
+        field  (:field coat-of-arms)]
+    [:g {:filter "url(#shadow)"}
+     [:g {:transform "translate(10,10) scale(5,5)"}
+      [:defs
+       [:mask#mask-shield
         [:path {:d         (:shape shield)
                 :transform (:transform shield)
-                :fill      "#FFFFFF"}])]]
-    [:g {:mask "url(#mask-heater)"}
-     [:rect {:x      0
-             :y      0
-             :width  110
-             :height 130
-             :fill   "#f0f0f0"}]
-     [:g {:transform "translate(50,50)"}
-      [render-coat-of-arms coat-of-arms]]]]])
+                :fill      "#FFFFFF"}]]]
+      [:g {:mask "url(#mask-shield)"}
+       [:rect {:x      0
+               :y      0
+               :width  110
+               :height 130
+               :fill   "#f0f0f0"}]
+       [:g {:transform "translate(50,50)"}
+        [field/render field shield]]]]]))
 
 (defn controls [coat-of-arms]
   [:div.controls {}
@@ -84,8 +90,8 @@
     [:label {:for "division"} "Division"]
     [:select {:name      "division"
               :id        "division"
-              :value     (name (get-in coat-of-arms [:division :type]))
-              :on-change #(rf/dispatch [:set-in [:coat-of-arms :division :type] (keyword (-> % .-target .-value))])}
+              :value     (name (get-in coat-of-arms [:field :division :type]))
+              :on-change #(rf/dispatch [:set-in [:coat-of-arms :field :division :type] (keyword (-> % .-target .-value))])}
      (for [[key display-name] division/options]
        ^{:key key}
        [:option {:value (name key)} display-name])]]
@@ -93,8 +99,8 @@
     [:label {:for "ordinary"} "Ordinary"]
     [:select {:name      "ordinary"
               :id        "ordinary"
-              :value     (name (get-in coat-of-arms [:ordinaries 0 :type]))
-              :on-change #(rf/dispatch [:set-in [:coat-of-arms :ordinaries 0 :type] (keyword (-> % .-target .-value))])}
+              :value     (name (get-in coat-of-arms [:field :ordinaries 0 :type]))
+              :on-change #(rf/dispatch [:set-in [:coat-of-arms :field :ordinaries 0 :type] (keyword (-> % .-target .-value))])}
      (for [[key display-name] ordinary/options]
        ^{:key key}
        [:option {:value (name key)} display-name])]]])
