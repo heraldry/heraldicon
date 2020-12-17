@@ -2,6 +2,7 @@
   (:require [goog.string.format]  ;; required for release build
             [hodgepodge.core :refer [local-storage clear!]]
             [or.coad.division :as division]
+            [or.coad.escutcheon :as escutcheon]
             [or.coad.ordinary :as ordinary]
             [re-frame.core :as rf]
             [reagent.core :as r]))
@@ -92,17 +93,12 @@
               :in   "highlight"
               :in2  "blurOut"}]])
 
-(def mask-shield1
-  [:mask#mask-shield1
-   [:path {:d    "m 0.0686411,0 v 80 c -0.250464,4.311115 0.123329,8.433503 2.147464,12.513639 2.024135,4.080137 5.344042,7.998631 9.7971239,11.563581 4.453081,3.56494 10.03788,6.77517 16.480874,9.47345 6.442994,2.69828 13.742073,4.88374 21.539758,6.44933 7.797685,-1.56559 15.096765,-3.75105 21.539759,-6.44933 6.442994,-2.69828 12.027792,-5.90851 16.480874,-9.47345 4.453082,-3.56495 7.772988,-7.483444 9.797123,-11.563581 C 99.875753,88.433503 100.01361,84.193063 99.999081,80 V 0 Z"
-           :fill "#FFFFFF"}]])
-
 (def defs
   (into
    [:defs
     filter-shadow
     filter-shiny
-    mask-shield1]))
+    filter-shiny]))
 
 (defn render-coat-of-arms [data]
   (let [division   (:division data)
@@ -115,7 +111,13 @@
 (defn render-shield [coat-of-arms]
   [:g {:filter "url(#shadow)"}
    [:g {:transform "translate(10,10) scale(5,5)"}
-    [:g {:mask "url(#mask-shield1)"}
+    [:defs
+     [:mask#mask-heater
+      (let [shield escutcheon/heater]
+        [:path {:d         (:shape shield)
+                :transform (:transform shield)
+                :fill      "#FFFFFF"}])]]
+    [:g {:mask "url(#mask-heater)"}
      [:rect {:x      0
              :y      0
              :width  110
