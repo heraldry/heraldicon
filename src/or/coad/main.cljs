@@ -1,7 +1,8 @@
 (ns or.coad.main
   (:require [goog.string.format]  ;; required for release build
             [hodgepodge.core :refer [local-storage clear!]]
-            [or.coa.division :as division]
+            [or.coad.division :as division]
+            [or.coad.ordinary :as ordinary]
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
@@ -18,8 +19,8 @@
  :initialize-db
  (fn [db [_]]
    (merge {:coat-of-arms {:division {:type :per-pale
-                                     :parts [:azure :sable :or]}
-                          :ordinaries [{:type :chief
+                                     :parts [:azure :sable :gules]}
+                          :ordinaries [{:type :pale
                                         :content :or}]}} db)))
 
 (defn save-state [db]
@@ -103,16 +104,13 @@
     filter-shiny
     mask-shield1]))
 
-(defn render-ordinary [ordinary]
-  [:<>])
-
 (defn render-coat-of-arms [data]
   (let [division (:division data)
         ordinaries (:ordinaries data)]
     [:<>
      [division/render division]
      (for [[idx ordinary] (map-indexed vector ordinaries)]
-       ^{:key idx} [render-ordinary ordinary])]))
+       ^{:key idx} [ordinary/render ordinary])]))
 
 (defn render-shield [coat-of-arms]
   [:g {:filter "url(#shadow)"}
@@ -135,6 +133,15 @@
               :value (name (get-in coat-of-arms [:division :type]))
               :on-change #(rf/dispatch [:set-in [:coat-of-arms :division :type] (keyword (-> % .-target .-value))])}
      (for [[key display-name] division/options]
+       ^{:key key}
+       [:option {:value (name key)} display-name])]]
+   [:fieldset
+    [:label {:for "ordinary"} "Ordinary"]
+    [:select {:name "ordinary"
+              :id "ordinary"
+              :value (name (get-in coat-of-arms [:ordinaries 0 :type]))
+              :on-change #(rf/dispatch [:set-in [:coat-of-arms :ordinaries 0 :type] (keyword (-> % .-target .-value))])}
+     (for [[key display-name] ordinary/options]
        ^{:key key}
        [:option {:value (name key)} display-name])]]])
 
