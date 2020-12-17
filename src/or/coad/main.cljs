@@ -133,6 +133,7 @@
           :height 2000
           :fill   fill}])
 
+;; TODO: masks for each field with a defined center and a scale
 (defn per-pale [[left right]]
   [:<>
    [base-area (get tinctures left)]
@@ -215,59 +216,60 @@
    [:path {:d    "m 0,0 l 1000,1000 h -2000 z"
            :fill (get tinctures bottom)}]])
 
-(defn paly [[base strip]]
+;; TODO: offset and/or number of stripes to fit, which dictates their width
+(defn paly [[base stripe]]
   [:<>
    [base-area (get tinctures base)]
    [:path {:d    "m -37.5,-1000 h 12.5 v 2000 h -12.5 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m -12.5,-1000 h 12.5 v 2000 h -12.5 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m 12.5,-1000 h 12.5 v 2000 h -12.5 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m 37.5,-1000 h 12.5 v 2000 h -12.5 z"
-           :fill (get tinctures strip)}]])
+           :fill (get tinctures stripe)}]])
 
-(defn barry [[base strip]]
+(defn barry [[base stripe]]
   [:<>
    [base-area (get tinctures base)]
    [:path {:d    "m -1000,-37.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m -1000,-12.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m -1000,12.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m -1000,37.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m -1000,62.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures strip)}]])
+           :fill (get tinctures stripe)}]])
 
-(defn bendy [[base strip]]
+(defn bendy [[base stripe]]
   [:<>
    [base-area (get tinctures base)]
    [:path {:d    "m -1000,-1000 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m -1000,-1050 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m -1000,-1100 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m -1000,-950 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m -1000,-900 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures strip)}]])
+           :fill (get tinctures stripe)}]])
 
-(defn bendy-sinister [[base strip]]
+(defn bendy-sinister [[base stripe]]
   [:<>
    [base-area (get tinctures base)]
    [:path {:d    "m 1000,-1025 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m 1000,-1075 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m 1000,-1125 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m 1000,-975 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures strip)}]
+           :fill (get tinctures stripe)}]
    [:path {:d    "m 1000,-925 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures strip)}]])
+           :fill (get tinctures stripe)}]])
 
 (defn render-division [{:keys [type        parts]}]
   (case type
