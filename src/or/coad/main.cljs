@@ -1,6 +1,7 @@
 (ns or.coad.main
   (:require [goog.string.format]  ;; required for release build
             [hodgepodge.core :refer [local-storage clear!]]
+            [or.coa.division :as division]
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
@@ -102,194 +103,6 @@
     filter-shiny
     mask-shield1]))
 
-(def tinctures
-  {:or "#f1b952"
-   :azure "#1b6690"
-   :vert "#429042"
-   :gules "#b93535"
-   :argent "#f5f5f5"
-   :sable "#373737"
-   :purpure "#8f3f6a"
-   :murrey "#8f3f6a"
-   :sanguine "#b93535"
-   :carnation "#e9bea1"
-   :brunatre "#725a44"
-   :cendree "#cbcaca"
-   :rose "#e9bea1"
-   :celestial-azure "#50bbf0"
-   :tenne "#725a44"
-   :orange "#e56411"
-   :iron "#cbcaca"
-   :bronze "#f1b952"
-   :copper "#f1b952"
-   :lead "#cbcaca"
-   :steel "#cbcaca"
-   :white "#f5f5f5"})
-
-(defn base-area [fill]
-  [:rect {:x -1000
-          :y -1000
-          :width 2000
-          :height 2000
-          :fill fill}])
-
-;; TODO: masks for each field with a defined center and a scale
-(defn per-pale [[left right]]
-  [:<>
-   [base-area (get tinctures left)]
-   [:path {:d "m 0,-1000 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures right)}]])
-
-(defn per-fess [[top bottom]]
-  [:<>
-   [base-area (get tinctures top)]
-   [:path {:d "m -1000,0 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures bottom)}]])
-
-(defn per-bend [[top bottom]]
-  [:<>
-   [base-area (get tinctures top)]
-   [:path {:d "m -1000,-1000 v 2000 h 2000 z"
-           :fill (get tinctures bottom)}]])
-
-(defn per-bend-sinister [[top bottom]]
-  [:<>
-   [base-area (get tinctures top)]
-   [:path {:d "m 1000,-1000 v 2000 h -2000 z"
-           :fill (get tinctures bottom)}]])
-
-(defn per-chevron [[top bottom]]
-  [:<>
-   [base-area (get tinctures top)]
-   [:path {:d "m 0,0 l 1000,1000 h -2000 z"
-           :fill (get tinctures bottom)}]])
-
-(defn per-saltire [[vertical horizontal]]
-  [:<>
-   [base-area (get tinctures vertical)]
-   [:path {:d "m 0,0 l -1000,-1000 v 2000 z"
-           :fill (get tinctures horizontal)}]
-   [:path {:d "m 0,0 l 1000,-1000 v 2000 z"
-           :fill (get tinctures horizontal)}]])
-
-(defn quarterly [[left right]]
-  [:<>
-   [base-area (get tinctures left)]
-   [:path {:d "m 0,0 h 1000 v -1000 h -1000 z"
-           :fill (get tinctures right)}]
-   [:path {:d "m 0,0 h -1000 v 1000 h 1000 z"
-           :fill (get tinctures right)}]])
-
-(defn gyronny [[left right]]
-  [:<>
-   [base-area (get tinctures left)]
-   [:path {:d "m 0,0 v -1000 h 1000 z"
-           :fill (get tinctures right)}]
-   [:path {:d "m 0,0 h 1000 v 1000 z"
-           :fill (get tinctures right)}]
-   [:path {:d "m 0,0 v 1000 h -1000 z"
-           :fill (get tinctures right)}]
-   [:path {:d "m 0,0 h -1000 v -1000 z"
-           :fill (get tinctures right)}]])
-
-(defn tierced-in-pale [[left middle right]]
-  [:<>
-   [base-area (get tinctures left)]
-   [:path {:d "m -16.666666,-1000 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures middle)}]
-   [:path {:d "m 16.666666,-1000 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures right)}]])
-
-(defn tierced-in-fesse [[top middle bottom]]
-  [:<>
-   [base-area (get tinctures top)]
-   [:path {:d "m -1000,-16.666666 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures middle)}]
-   [:path {:d "m -1000,16.666666 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures bottom)}]])
-
-(defn tierced-in-pairle [[left right bottom]]
-  [:<>
-   [base-area (get tinctures left)]
-   [:path {:d "m 0,-1000 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures right)}]
-   [:path {:d "m 0,0 l 1000,1000 h -2000 z"
-           :fill (get tinctures bottom)}]])
-
-;; TODO: offset and/or number of stripes to fit, which dictates their width
-(defn paly [[base stripe]]
-  [:<>
-   [base-area (get tinctures base)]
-   [:path {:d "m -37.5,-1000 h 12.5 v 2000 h -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -12.5,-1000 h 12.5 v 2000 h -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m 12.5,-1000 h 12.5 v 2000 h -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m 37.5,-1000 h 12.5 v 2000 h -12.5 z"
-           :fill (get tinctures stripe)}]])
-
-(defn barry [[base stripe]]
-  [:<>
-   [base-area (get tinctures base)]
-   [:path {:d "m -1000,-37.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,-12.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,12.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,37.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,62.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures stripe)}]])
-
-(defn bendy [[base stripe]]
-  [:<>
-   [base-area (get tinctures base)]
-   [:path {:d "m -1000,-1000 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,-1050 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,-1100 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,-950 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,-900 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]])
-
-(defn bendy-sinister [[base stripe]]
-  [:<>
-   [base-area (get tinctures base)]
-   [:path {:d "m 1000,-1025 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m 1000,-1075 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m 1000,-1125 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m 1000,-975 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m 1000,-925 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]])
-
-(defn render-division [{:keys [type parts]}]
-  (case type
-    :per-pale [per-pale parts]
-    :per-fess [per-fess parts]
-    :per-bend [per-bend parts]
-    :per-bend-sinister [per-bend-sinister parts]
-    :per-chevron [per-chevron parts]
-    :per-saltire [per-saltire parts]
-    :quarterly [quarterly parts]
-    :gyronny [gyronny parts]
-    :tierced-in-pale [tierced-in-pale parts]
-    :tierced-in-fesse [tierced-in-fesse parts]
-    :tierced-in-pairle [tierced-in-pairle parts]
-    :paly [paly parts]
-    :barry [barry parts]
-    :bendy [bendy parts]
-    :bendy-sinister [bendy-sinister parts]
-    [:<>]))
-
 (defn render-ordinary [ordinary]
   [:<>])
 
@@ -297,7 +110,7 @@
   (let [division (:division data)
         ordinaries (:ordinaries data)]
     [:<>
-     [render-division division]
+     [division/render division]
      (for [[idx ordinary] (map-indexed vector ordinaries)]
        ^{:key idx} [render-ordinary ordinary])]))
 
@@ -315,27 +128,15 @@
 
 (defn controls [coat-of-arms]
   [:div.controls {}
-   [:label {:for "division"} "Division"]
-   [:select {:name "division"
-             :id "division"
-             :value (name (get-in coat-of-arms [:division :type]))
-             :on-change #(rf/dispatch [:set-in [:coat-of-arms :division :type] (keyword (-> % .-target .-value))])}
-    [:option {:value "per-pale"} "Per pale"]
-    [:option {:value "per-fess"} "Per fess"]
-    [:option {:value "per-bend"} "Per bend"]
-    [:option {:value "per-bend-sinister"} "Per bend sinister"]
-    [:option {:value "per-chevron"} "Per chevron"]
-    [:option {:value "per-saltire"} "Per saltire"]
-    [:option {:value "quarterly"} "Quarterly"]
-    [:option {:value "gyronny"} "Gyronny"]
-    [:option {:value "tierced-in-pale"} "Tierced in pale"]
-    [:option {:value "tierced-in-fesse"} "Tierced in fesse"]
-    [:option {:value "tierced-in-pairle"} "Tierced in pairle"]
-    [:option {:value "paly"} "Paly"]
-    [:option {:value "barry"} "Barry"]
-    [:option {:value "bendy"} "Bendy"]
-    [:option {:value "bendy-sinister"} "Bendy sinister"]
-    #_[:option {:value "chevronny"} "Chevronny"]]])
+   [:fieldset
+    [:label {:for "division"} "Division"]
+    [:select {:name "division"
+              :id "division"
+              :value (name (get-in coat-of-arms [:division :type]))
+              :on-change #(rf/dispatch [:set-in [:coat-of-arms :division :type] (keyword (-> % .-target .-value))])}
+     (for [[key display-name] division/options]
+       ^{:key key}
+       [:option {:value (name key)} display-name])]]])
 
 (defn app []
   (fn []
