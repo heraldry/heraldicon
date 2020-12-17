@@ -1,6 +1,5 @@
 (ns or.coad.main
   (:require [goog.string.format]  ;; required for release build
-            [hodgepodge.core :refer [local-storage clear!]]
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
             [or.coad.filter :as filter]
@@ -25,9 +24,6 @@
                                        :parts [:azure :sable :gules]}
                           :ordinaries [{:type    :pale
                                         :content :or}]}} db)))
-
-(defn save-state [db]
-  (assoc! local-storage :coat-of-arms (:coat-of-arms db)))
 
 (rf/reg-event-db
  :set
@@ -130,12 +126,8 @@
 
 (defn start []
   (rf/dispatch-sync [:initialize-db])
-  (if (= js/window.location.search "?reset")
-    (do
-      (clear! local-storage)
-      (set! js/window.location js/window.location.pathname))
-    (r/render [app]
-              (.getElementById js/document "app"))))
+  (r/render [app]
+            (.getElementById js/document "app")))
 
 (defn ^:export init []
   (start))
