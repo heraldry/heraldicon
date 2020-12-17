@@ -69,3 +69,21 @@
              :base           [0 12]
              :middle-base    [0 11]
              :fess           [0 5]}}))
+
+(def kinds
+  [["Heater" :heater heater]
+   ["Square Iberian" :square-iberian square-iberian]])
+
+(def kinds-map
+  (->> kinds
+       (map (fn [[_ key data]]
+              [key data]))
+       (into {})))
+
+(def options
+  (->> kinds
+       (map (fn [[name key _]]
+              [key name]))))
+
+(defn data [type]
+  (get kinds-map type))
