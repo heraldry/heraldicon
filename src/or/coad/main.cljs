@@ -20,7 +20,8 @@
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:coat-of-arms {:division {:type :per-pale
+   (merge {:coat-of-arms {:escutcheon :heater
+                          :division {:type :per-pale
                                      :parts [:azure :sable :gules]}
                           :ordinaries [{:type :pale
                                         :content :or}]}} db)))
@@ -59,7 +60,7 @@
    [:g {:transform "translate(10,10) scale(5,5)"}
     [:defs
      [:mask#mask-heater
-      (let [shield escutcheon/heater]
+      (let [shield (escutcheon/data (:escutcheon coat-of-arms))]
         [:path {:d (:shape shield)
                 :transform (:transform shield)
                 :fill "#FFFFFF"}])]]
@@ -74,6 +75,15 @@
 
 (defn controls [coat-of-arms]
   [:div.controls {}
+   [:fieldset
+    [:label {:for "escutcheon"} "Escutcheon"]
+    [:select {:name "escutcheon"
+              :id "escutcheon"
+              :value (name (get-in coat-of-arms [:escutcheon]))
+              :on-change #(rf/dispatch [:set-in [:coat-of-arms :escutcheon] (keyword (-> % .-target .-value))])}
+     (for [[key display-name] escutcheon/options]
+       ^{:key key}
+       [:option {:value (name key)} display-name])]]
    [:fieldset
     [:label {:for "division"} "Division"]
     [:select {:name "division"
