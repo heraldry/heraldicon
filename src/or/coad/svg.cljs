@@ -1,4 +1,5 @@
-(ns or.coad.svg)
+(ns or.coad.svg
+  (:require [clojure.string :as s]))
 
 (defn new-path [d]
   (let [p (js/document.createElementNS "http://www.w3.org/2000/svg" "path")]
@@ -25,3 +26,18 @@
         points (points path 1000)
         box (min-max-x-y points)]
     box))
+
+(defn s [[x y]]
+  (str x "," y))
+
+(defn make-path [coll]
+  (s/join " " (map (fn [v]
+                     (if (string? v)
+                       v
+                       (s/join "," (map str v)))) coll)))
+
+(def -current-id
+  (atom 0))
+
+(defn id [prefix]
+  (str prefix (swap! -current-id inc)))

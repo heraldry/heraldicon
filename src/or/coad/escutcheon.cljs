@@ -9,7 +9,8 @@
                          "a 6 6 0 0 1 -3,5.196152422706632"
                          "a 6 6 0 0 1 -3,-5.196152422706632"
                          "v -2"
-                         "z")))
+                         "z")
+                    {:context [:root]}))
 
 (def square-iberian
   (field/make-field (str "m 0,0"
@@ -17,7 +18,8 @@
                          "v 7"
                          "a 5 5 0 0 1 -10,0"
                          "v -7"
-                         "z")))
+                         "z")
+                    {:context [:root]}))
 
 (def kinds
   [["Heater" :heater heater]
