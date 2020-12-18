@@ -12,6 +12,14 @@
                          "z")
                     {:context [:root]}))
 
+(def square-french
+  (field/make-field (str "m 0,0"
+                         "v 15.7"
+                         "c 0,6 6,12 12,13"
+                         "c 6,-1 12,-7 12,-13"
+                         "V 0"
+                         "z")
+                    {:context [:root]}))
 (def square-iberian
   (field/make-field (str "m 0,0"
                          "h 5"
@@ -23,6 +31,7 @@
 
 (def kinds
   [["Heater" :heater heater]
+   ["Square French" :square-french square-french]
    ["Square Iberian" :square-iberian square-iberian]])
 
 (def kinds-map
