@@ -500,31 +500,233 @@
      [:g {:mask (str "url(#" mask-id-8 ")")}
       [top-level-render (second parts) field-8]]]))
 
-(defn tierced-in-pale [[left middle right]]
-  [:<>
-   [base-area (get tinctures left)]
-   [:path {:d    "m -16.666666,-1000 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures middle)}]
-   [:path {:d    "m 16.666666,-1000 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures right)}]])
+(defn tierced-in-pale [parts field top-level-render]
+  (let [mask-id-1    (svg/id "division-tierced-pale-1_")
+        mask-id-2    (svg/id "division-tierced-pale-2_")
+        mask-id-3    (svg/id "division-tierced-pale-3_")
+        top-left     (get-in field [:points :top-left])
+        top-right    (get-in field [:points :top-right])
+        bottom-left  (get-in field [:points :bottom-left])
+        bottom-right (get-in field [:points :bottom-right])
+        chief        (get-in field [:points :chief])
+        base         (get-in field [:points :base])
+        fess         (get-in field [:points :fess])
+        width        (:width field)
+        col1         (- (first fess) (/ width 6))
+        col2         (+ (first fess) (/ width 6))
+        parent-meta  (:meta field)
+        field-1      (field/make-field (svg/make-path ["M" top-left
+                                                       "L" (svg/translate [col1 (second chief)] [overlap 0])
+                                                       "L" (svg/translate [col1 (second base)] [overlap 0])
+                                                       "L" bottom-left
+                                                       "z"])
+                                       {:parent  field
+                                        :context (conj (:context parent-meta) :per-tierced-pale :left)})
+        field-2      (field/make-field (svg/make-path ["M" [col1 (second chief)]
+                                                       "L" (svg/translate [col2 (second chief)] [overlap 0])
+                                                       "L" (svg/translate [col2 (second base)] [overlap 0])
+                                                       "L" [col1 (second base)]
+                                                       "z"])
+                                       {:parent field
+                                        :meta   {:context (conj (:context parent-meta) :per-tierced-pale :middle)}})
+        field-3      (field/make-field (svg/make-path ["M" [col2 (second chief)]
+                                                       "L" top-right
+                                                       "L" bottom-right
+                                                       "L" [col2 (second base)]
+                                                       "z"])
+                                       {:parent field
+                                        :meta   {:context (conj (:context parent-meta) :per-tierced-pale :right)}})]
+    [:<>
+     [:defs
+      [:mask {:id mask-id-1}
+       [:path {:d    (:shape field-1)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-2}
+       [:path {:d    (:shape field-2)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-3}
+       [:path {:d    (:shape field-3)
+               :fill "#fff"}]]]
+     [:g {:mask (str "url(#" mask-id-1 ")")}
+      [top-level-render (first parts) field-1]]
+     [:g {:mask (str "url(#" mask-id-2 ")")}
+      [top-level-render (second parts) field-2]]
+     [:g {:mask (str "url(#" mask-id-3 ")")}
+      [top-level-render (nth parts 2) field-3]]]))
 
-(defn tierced-in-fesse [[top middle bottom]]
-  [:<>
-   [base-area (get tinctures top)]
-   [:path {:d    "m -1000,-16.666666 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures middle)}]
-   [:path {:d    "m -1000,16.666666 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures bottom)}]])
+(defn tierced-in-fesse [parts field top-level-render]
+  (let [mask-id-1    (svg/id "division-tierced-pale-1_")
+        mask-id-2    (svg/id "division-tierced-pale-2_")
+        mask-id-3    (svg/id "division-tierced-pale-3_")
+        top-left     (get-in field [:points :top-left])
+        top-right    (get-in field [:points :top-right])
+        bottom-left  (get-in field [:points :bottom-left])
+        bottom-right (get-in field [:points :bottom-right])
+        dexter       (get-in field [:points :dexter])
+        sinister     (get-in field [:points :sinister])
+        fess         (get-in field [:points :fess])
+        height       (:height field)
+        row1         (- (second fess) (/ height 6))
+        row2         (+ (second fess) (/ height 6))
+        parent-meta  (:meta field)
+        field-1      (field/make-field (svg/make-path ["M" top-left
+                                                       "L" top-right
+                                                       "L" (svg/translate [(first sinister) row1] [0 overlap])
+                                                       "L" (svg/translate [(first dexter) row1] [0 overlap])
+                                                       "z"])
+                                       {:parent  field
+                                        :context (conj (:context parent-meta) :per-tierced-fesse :top)})
+        field-2      (field/make-field (svg/make-path ["M" [(first dexter) row1]
+                                                       "L" [(first sinister) row1]
+                                                       "L" (svg/translate [(first sinister) row2] [0 overlap])
+                                                       "L" (svg/translate [(first dexter) row2] [0 overlap])
+                                                       "z"])
+                                       {:parent field
+                                        :meta   {:context (conj (:context parent-meta) :per-tierced-fesse :middle)}})
+        field-3      (field/make-field (svg/make-path ["M" [(first dexter) row2]
+                                                       "L" [(first sinister) row2]
+                                                       "L" bottom-right
+                                                       "L" bottom-left
+                                                       "z"])
+                                       {:parent field
+                                        :meta   {:context (conj (:context parent-meta) :per-tierced-fesse :bottom)}})]
+    [:<>
+     [:defs
+      [:mask {:id mask-id-1}
+       [:path {:d    (:shape field-1)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-2}
+       [:path {:d    (:shape field-2)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-3}
+       [:path {:d    (:shape field-3)
+               :fill "#fff"}]]]
+     [:g {:mask (str "url(#" mask-id-1 ")")}
+      [top-level-render (first parts) field-1]]
+     [:g {:mask (str "url(#" mask-id-2 ")")}
+      [top-level-render (second parts) field-2]]
+     [:g {:mask (str "url(#" mask-id-3 ")")}
+      [top-level-render (nth parts 2) field-3]]]))
 
-(defn tierced-in-pairle [[left right bottom]]
-  [:<>
-   [base-area (get tinctures left)]
-   [:path {:d    "m 0,-1000 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures right)}]
-   [:path {:d    "m 0,0 l 1000,1000 h -2000 z"
-           :fill (get tinctures bottom)}]])
+(defn tierced-in-pairle [parts field top-level-render]
+  (let [mask-id-1    (svg/id "division-tierced-pairle-1_")
+        mask-id-2    (svg/id "division-tierced-pairle-2_")
+        mask-id-3    (svg/id "division-tierced-pairle-3_")
+        top-left     (get-in field [:points :top-left])
+        top-right    (get-in field [:points :top-right])
+        bottom-left  (get-in field [:points :bottom-left])
+        bottom-right (get-in field [:points :bottom-right])
+        base         (get-in field [:points :base])
+        fess         (get-in field [:points :fess])
+        parent-meta  (:meta field)
+        field-1      (field/make-field (svg/make-path ["M" top-left
+                                                       "L" top-right
+                                                       "L" (svg/translate top-right [0 overlap])
+                                                       "L" (svg/translate fess [0 overlap])
+                                                       "L" (svg/translate top-left [0 overlap])
+                                                       "z"])
+                                       {:parent  field
+                                        :context (conj (:context parent-meta) :per-tierced-pairle :top)})
+        field-2      (field/make-field (svg/make-path ["M" fess
+                                                       "L" top-right
+                                                       "L" bottom-right
+                                                       "L" (svg/translate base [(- overlap) 0])
+                                                       "L" (svg/translate fess [(- overlap) 0])
+                                                       "z"])
+                                       {:parent field
+                                        :meta   {:context (conj (:context parent-meta) :per-tierced-pairle :right)}})
+        field-3      (field/make-field (svg/make-path ["M" fess
+                                                       "L" base
+                                                       "L" bottom-left
+                                                       "L" top-left
+                                                       "z"])
+                                       {:parent field
+                                        :meta   {:context (conj (:context parent-meta) :per-tierced-pall :left)}})]
+    [:<>
+     [:defs
+      [:mask {:id mask-id-1}
+       [:path {:d    (:shape field-1)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-2}
+       [:path {:d    (:shape field-2)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-3}
+       [:path {:d    (:shape field-3)
+               :fill "#fff"}]]]
+     [:g {:mask (str "url(#" mask-id-1 ")")}
+      [top-level-render (first parts) field-1]]
+     [:g {:mask (str "url(#" mask-id-2 ")")}
+      [top-level-render (second parts) field-2]]
+     [:g {:mask (str "url(#" mask-id-3 ")")}
+      [top-level-render (nth parts 2) field-3]]]))
+
+(defn tierced-in-pairle-reversed [parts field top-level-render]
+  (let [mask-id-1                  (svg/id "division-tierced-pairle-reversed-1_")
+        mask-id-2                  (svg/id "division-tierced-pairle-reversed-2_")
+        mask-id-3                  (svg/id "division-tierced-pairle-reversed-3_")
+        top-left                   (get-in field [:points :top-left])
+        top-right                  (get-in field [:points :top-right])
+        bottom-left                (get-in field [:points :bottom-left])
+        bottom-right               (get-in field [:points :bottom-right])
+        chief                      (get-in field [:points :chief])
+        fess                       (get-in field [:points :fess])
+        width                      (:width field)
+        fess-x-rel-dexter          (- (first fess) (first top-left))
+        fess-y-rel-dexter          (- (second fess) (second top-left))
+        fess-dir-dexter            [1 (/ fess-y-rel-dexter fess-x-rel-dexter)]
+        bend-intersection-sinister [(* (first fess-dir-dexter) width)
+                                    (* (second fess-dir-dexter) width)]
+        fess-x-rel-sinister        (- (first fess) (first top-right))
+        fess-y-rel-sinister        (- (second fess) (second top-right))
+        fess-dir-sinister          [1 (/ fess-y-rel-sinister fess-x-rel-sinister)]
+        bend-intersection-dexter   (svg/translate
+                                    top-right
+                                    [(* (first fess-dir-sinister) (- width))
+                                     (* (second fess-dir-sinister) (- width))])
+        parent-meta                (:meta field)
+        field-1                    (field/make-field (svg/make-path ["M" top-left
+                                                                     "L" (svg/translate chief [overlap 0])
+                                                                     "L" (svg/translate fess [overlap 0])
+                                                                     "L" (svg/translate bend-intersection-dexter [0 overlap])
+                                                                     "z"])
+                                                     {:parent  field
+                                                      :context (conj (:context parent-meta) :per-tierced-pairle-reversed :left)})
+        field-2                    (field/make-field (svg/make-path ["M" chief
+                                                                     "L" top-right
+                                                                     "L" (svg/translate bend-intersection-sinister [0 overlap])
+                                                                     "L" (svg/translate fess [0 overlap])
+                                                                     "z"])
+                                                     {:parent field
+                                                      :meta   {:context (conj (:context parent-meta) :per-tierced-pairle-reversed :right)}})
+        field-3                    (field/make-field (svg/make-path ["M" fess
+                                                                     "L" bend-intersection-sinister
+                                                                     "L" bottom-right
+                                                                     "L" bottom-left
+                                                                     "L" bend-intersection-dexter
+                                                                     "z"])
+                                                     {:parent field
+                                                      :meta   {:context (conj (:context parent-meta) :per-tierced-pall-reversed :bottom)}})]
+    [:<>
+     [:defs
+      [:mask {:id mask-id-1}
+       [:path {:d    (:shape field-1)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-2}
+       [:path {:d    (:shape field-2)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-3}
+       [:path {:d    (:shape field-3)
+               :fill "#fff"}]]]
+     [:g {:mask (str "url(#" mask-id-1 ")")}
+      [top-level-render (first parts) field-1]]
+     [:g {:mask (str "url(#" mask-id-2 ")")}
+      [top-level-render (second parts) field-2]]
+     [:g {:mask (str "url(#" mask-id-3 ")")}
+      [top-level-render (nth parts 2) field-3]]]))
 
 ;; TODO: offset and/or number of stripes to fit, which dictates their width
+
+
 (defn paly [[base stripe]]
   [:<>
    [base-area (get tinctures base)]
@@ -591,6 +793,7 @@
    ["Tierced in Pale" :tierced-in-pale tierced-in-pale]
    ["Tierced in Fesse" :tierced-in-fesse tierced-in-fesse]
    ["Tierced in Pairle" :tierced-in-pairle tierced-in-pairle]
+   ["Tierced in Pairle Reversed" :tierced-in-pairle-reversed tierced-in-pairle-reversed]
    ["Paly" :paly paly]
    ["Barry" :barry barry]
    ["Bendy" :bendy bendy]
