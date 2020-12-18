@@ -1,7 +1,7 @@
 (ns or.coad.division
   (:require [or.coad.field :as field]
             [or.coad.svg :as svg]
-            [or.coad.tinctures :refer [tinctures]]))
+            [or.coad.tincture :refer [tinctures]]))
 
 (defn base-area [fill]
   [:rect {:x -1000
@@ -35,7 +35,7 @@
                                                   "L" base
                                                   "z"])
                                   {:parent field
-                                   :context (conj (:context parent-meta) :per-pale :left)})]
+                                   :meta {:context (conj (:context parent-meta) :per-pale :left)}})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -45,11 +45,9 @@
        [:path {:d (:shape field-2)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [:path {:d (:shape field)
-              :fill (get tinctures (first parts))}]]
+      [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [:path {:d (:shape field-2)
-              :fill (get tinctures (second parts))}]]]))
+      [top-level-render (second parts) field-2]]]))
 
 (defn per-fess [[top bottom]]
   [:<>
