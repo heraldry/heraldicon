@@ -724,63 +724,6 @@
      [:g {:mask (str "url(#" mask-id-3 ")")}
       [top-level-render (nth parts 2) field-3]]]))
 
-;; TODO: offset and/or number of stripes to fit, which dictates their width
-
-
-(defn paly [[base stripe]]
-  [:<>
-   [base-area (get tinctures base)]
-   [:path {:d "m -37.5,-1000 h 12.5 v 2000 h -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -12.5,-1000 h 12.5 v 2000 h -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m 12.5,-1000 h 12.5 v 2000 h -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m 37.5,-1000 h 12.5 v 2000 h -12.5 z"
-           :fill (get tinctures stripe)}]])
-
-(defn barry [[base stripe]]
-  [:<>
-   [base-area (get tinctures base)]
-   [:path {:d "m -1000,-37.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,-12.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,12.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,37.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,62.5 v 12.5 h 2000 v -12.5 z"
-           :fill (get tinctures stripe)}]])
-
-(defn bendy [[base stripe]]
-  [:<>
-   [base-area (get tinctures base)]
-   [:path {:d "m -1000,-1000 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,-1050 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,-1100 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,-950 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m -1000,-900 v 25 l 2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]])
-
-(defn bendy-sinister [[base stripe]]
-  [:<>
-   [base-area (get tinctures base)]
-   [:path {:d "m 1000,-1025 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m 1000,-1075 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m 1000,-1125 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m 1000,-975 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]
-   [:path {:d "m 1000,-925 v 25 l -2000,2000 v -25 z"
-           :fill (get tinctures stripe)}]])
-
 (def kinds
   [["Per Pale" :per-pale per-pale]
    ["Per Fess" :per-fess per-fess]
@@ -793,11 +736,7 @@
    ["Tierced in Pale" :tierced-in-pale tierced-in-pale]
    ["Tierced in Fesse" :tierced-in-fesse tierced-in-fesse]
    ["Tierced in Pairle" :tierced-in-pairle tierced-in-pairle]
-   ["Tierced in Pairle Reversed" :tierced-in-pairle-reversed tierced-in-pairle-reversed]
-   ["Paly" :paly paly]
-   ["Barry" :barry barry]
-   ["Bendy" :bendy bendy]
-   ["Bendy Sinister" :bendy-sinister bendy-sinister]])
+   ["Tierced in Pairle Reversed" :tierced-in-pairle-reversed tierced-in-pairle-reversed]])
 
 (def kinds-function-map
   (->> kinds
