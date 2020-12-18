@@ -39,14 +39,6 @@
         (assoc-in [:points :nombril] nombril)
         (assoc-in [:meta] meta))))
 
-(defn translate [[x y] [dx dy]]
-  [(+ x dx)
-   (+ y dy)])
-
-(defn scale [[x y] f]
-  [(* x f)
-   (* y f)])
-
 (defn transform-to-width [field target-width]
   (let [width (:width field)
         [min-x min-y] (get-in field [:points :top-left])
@@ -65,5 +57,5 @@
         (update-in [:points] merge (into {}
                                          (map (fn [[key value]]
                                                 [key (-> value
-                                                         (translate [dx dy])
-                                                         (scale scale-factor))]) (:points field)))))))
+                                                         (svg/translate [dx dy])
+                                                         (svg/scale scale-factor))]) (:points field)))))))
