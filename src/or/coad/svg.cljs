@@ -1,27 +1,27 @@
 (ns or.coad.svg)
 
-(def svg
-  (js/document.createElementNS "http://www.w3.org/2000/svg" "svg"))
-
-(defn path [d]
+(defn new-path [d]
   (let [p (js/document.createElementNS "http://www.w3.org/2000/svg" "path")]
     (.setAttribute p "d" d)
-    (.appendChild svg p)
     p))
 
-(defn origin [node]
-  (let [point                     (.createSVGPoint svg)
-        ^js/SVGSVGElement  parent (.-parentElement node)
-        ctm                       (.getScreenCTM parent)
-        transformed               (.matrixTransform point ctm)]
-    [(.-x transformed) (.-y transformed)]))
+(defn points [^js/SVGPath path n]
+  (let [length (.getTotalLength path)]
+    (mapv (fn [i]
+            (let [p (.getPointAtLength path (-> length (* i) (/ n)))]
+              [(.-x p) (.-y p)])) (range n))))
+
+(defn min-max-x-y [[[x y] & rest]]
+  (reduce (fn [[min-x max-x min-y max-y] [x y]]
+            [(min min-x x)
+             (max max-x x)
+             (min min-y y)
+             (max max-y y)])
+          [x x y y]
+          rest))
 
 (defn bounding-box [d]
-  (let [p                  (path d)
-        [ox oy]            (origin p)
-        box                (.getBoundingClientRect p)
-        [x y width height] [(.-x box)
-                            (.-y box)
-                            (.-width box)
-                            (.-height box)]]
-    (println ox oy [x y width height])))
+  (let [path   (new-path d)
+        points (points path 1000)
+        box    (min-max-x-y points)]
+    box))
