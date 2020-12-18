@@ -1,5 +1,7 @@
 (ns or.coad.division
-  (:require [or.coad.tinctures :refer [tinctures]]))
+  (:require [or.coad.field :as field]
+            [or.coad.svg :as svg]
+            [or.coad.tinctures :refer [tinctures]]))
 
 (defn base-area [fill]
   [:rect {:x      -1000
@@ -8,12 +10,50 @@
           :height 2000
           :fill   fill}])
 
-;; TODO: masks for each field with a defined center and a scale
-(defn per-pale [[left right]]
-  [:<>
-   [base-area (get tinctures left)]
-   [:path {:d    "m 0,-1000 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures right)}]])
+(defn per-pale [parts field top-level-render]
+  (let [mask-id-1    (svg/id "division-pale-1_")
+        mask-id-2    (svg/id "division-pale-2_")
+        top-left     (get-in field [:points :top-left])
+        top-right    (get-in field [:points :top-right])
+        bottom-left  (get-in field [:points :bottom-left])
+        bottom-right (get-in field [:points :bottom-right])
+        chief        (get-in field [:points :chief])
+        base         (get-in field [:points :base])
+        parent-meta  (:meta field)
+        field-1      (field/make-field (svg/make-path ["M" top-left
+                                                       "L" chief
+                                                       "L" base
+                                                       "L" bottom-left
+                                                       "z"])
+                                       {:parent  field
+                                        :context (conj (:context parent-meta) :per-pale :left)})
+        field-2      (field/make-field (svg/make-path ["M" chief
+                                                       "L" top-right
+                                                       "L" bottom-right
+                                                       "L" base
+                                                       "z"])
+                                       {:parent  field
+                                        :context (conj (:context parent-meta) :per-pale :left)})]
+    [:<>
+     [:defs
+      [:mask {:id mask-id-1}
+       [:path {:d            (:shape field-1)
+               :fill         "#fff"
+               ;; HACK: to fix anti-aliasing at the seam,
+               ;; hopefully there'll be a better way sometime,
+               ;; as this will enlarge the field, if the other
+               ;; isn't drawn on top of it
+               :stroke-width 1
+               :stroke       "#fff"}]]
+      [:mask {:id mask-id-2}
+       [:path {:d    (:shape field-2)
+               :fill "#fff"}]]]
+     [:g {:mask (str "url(#" mask-id-1 ")")}
+      [:path {:d    (:shape field)
+              :fill (get tinctures (first parts))}]]
+     [:g {:mask (str "url(#" mask-id-2 ")")}
+      [:path {:d    (:shape field-2)
+              :fill (get tinctures (second parts))}]]]))
 
 (defn per-fess [[top bottom]]
   [:<>
@@ -174,6 +214,6 @@
        (map (fn [[name key _]]
               [key name]))))
 
-(defn render [{:keys [type parts]}]
+(defn render [{:keys [type parts]} field top-level-render]
   (let [function (get kinds-function-map type)]
-    [function parts]))
+    [function parts field top-level-render]))

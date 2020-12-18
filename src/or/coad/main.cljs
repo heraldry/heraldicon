@@ -3,9 +3,9 @@
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
             [or.coad.field :as field]
+            [or.coad.field-content :as field-content]
             [or.coad.filter :as filter]
             [or.coad.ordinary :as ordinary]
-            [or.coad.svg :as svg]
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
@@ -67,16 +67,13 @@
      [:g {:transform "translate(10,10) scale(5,5)"}
       [:defs
        [:mask#mask-shield
-        [:path {:d    (:shape transformed-field)
-                :fill "#FFFFFF"}]]]
+        [:path {:d      (:shape transformed-field)
+                :fill   "#fff"
+                :stroke "none"}]]]
       [:g {:mask "url(#mask-shield)"}
-       [:rect {:x      0
-               :y      0
-               :width  110
-               :height 130
-               :fill   "#f0f0f0"}]
-       [:g {:transform "translate(50,50)"}
-        [field/render content field]]]]]))
+       [:path {:d    (:shape transformed-field)
+               :fill "#f0f0f0"}]
+       [field-content/render content transformed-field]]]]))
 
 (defn controls [coat-of-arms]
   [:div.controls {}
