@@ -41,3 +41,11 @@
 
 (defn id [prefix]
   (str prefix (swap! -current-id inc)))
+
+(defn translate [[x y] [dx dy]]
+  [(+ x dx)
+   (+ y dy)])
+
+(defn scale [[x y] f]
+  [(* x f)
+   (* y f)])
