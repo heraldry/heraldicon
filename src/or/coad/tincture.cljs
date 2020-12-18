@@ -1,4 +1,4 @@
-(ns or.coad.tinctures)
+(ns or.coad.tincture)
 
 (def tinctures
   {:or "#f1b952"
