@@ -49,57 +49,456 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (second parts) field-2]]]))
 
-(defn per-fess [[top bottom]]
-  [:<>
-   [base-area (get tinctures top)]
-   [:path {:d "m -1000,0 h 2000 v 2000 h -2000 z"
-           :fill (get tinctures bottom)}]])
+(defn per-fess [parts field top-level-render]
+  (let [mask-id-1 (svg/id "division-fess-1_")
+        mask-id-2 (svg/id "division-fess-2_")
+        top-left (get-in field [:points :top-left])
+        top-right (get-in field [:points :top-right])
+        bottom-left (get-in field [:points :bottom-left])
+        bottom-right (get-in field [:points :bottom-right])
+        dexter (get-in field [:points :dexter])
+        sinister (get-in field [:points :sinister])
+        parent-meta (:meta field)
+        field-1 (field/make-field (svg/make-path ["M" top-left
+                                                  "L" top-right
+                                                  "L" (svg/translate sinister [0 overlap])
+                                                  "L" (svg/translate dexter [0 overlap])
+                                                  "z"])
+                                  {:parent field
+                                   :context (conj (:context parent-meta) :per-fess :top)})
+        field-2 (field/make-field (svg/make-path ["M" dexter
+                                                  "L" sinister
+                                                  "L" bottom-right
+                                                  "L" bottom-left
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-fess :bottom)}})]
+    [:<>
+     [:defs
+      [:mask {:id mask-id-1}
+       [:path {:d (:shape field-1)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-2}
+       [:path {:d (:shape field-2)
+               :fill "#fff"}]]]
+     [:g {:mask (str "url(#" mask-id-1 ")")}
+      [top-level-render (first parts) field-1]]
+     [:g {:mask (str "url(#" mask-id-2 ")")}
+      [top-level-render (second parts) field-2]]]))
 
-(defn per-bend [[top bottom]]
-  [:<>
-   [base-area (get tinctures top)]
-   [:path {:d "m -1000,-1000 v 2000 h 2000 z"
-           :fill (get tinctures bottom)}]])
+(defn per-bend [parts field top-level-render]
+  (let [mask-id-1 (svg/id "division-bend-1_")
+        mask-id-2 (svg/id "division-bend-2_")
+        top-left (get-in field [:points :top-left])
+        top-right (get-in field [:points :top-right])
+        bottom-left (get-in field [:points :bottom-left])
+        bottom-right (get-in field [:points :bottom-right])
+        fess (get-in field [:points :fess])
+        fess-x-rel (- (first fess) (first top-left))
+        fess-y-rel (- (second fess) (second top-left))
+        width (:width field)
+        fess-dir [1 (/ fess-y-rel fess-x-rel)]
+        bend-intersection [(* (first fess-dir) width)
+                           (* (second fess-dir) width)]
+        parent-meta (:meta field)
+        field-1 (field/make-field (svg/make-path ["M" top-left
+                                                  "L" top-right
+                                                  "L" (svg/translate bend-intersection [0 overlap])
+                                                  "L" (svg/translate top-left [0 overlap])
+                                                  "z"])
+                                  {:parent field
+                                   :context (conj (:context parent-meta) :per-bend :top)})
+        field-2 (field/make-field (svg/make-path ["M" top-left
+                                                  "L" bend-intersection
+                                                  "L" bottom-right
+                                                  "L" bottom-left
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-bend :bottom)}})]
+    [:<>
+     [:defs
+      [:mask {:id mask-id-1}
+       [:path {:d (:shape field-1)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-2}
+       [:path {:d (:shape field-2)
+               :fill "#fff"}]]]
+     [:g {:mask (str "url(#" mask-id-1 ")")}
+      [top-level-render (first parts) field-1]]
+     [:g {:mask (str "url(#" mask-id-2 ")")}
+      [top-level-render (second parts) field-2]]]))
 
-(defn per-bend-sinister [[top bottom]]
-  [:<>
-   [base-area (get tinctures top)]
-   [:path {:d "m 1000,-1000 v 2000 h -2000 z"
-           :fill (get tinctures bottom)}]])
+(defn per-bend-sinister [parts field top-level-render]
+  (let [mask-id-1 (svg/id "division-bend-sinister-1_")
+        mask-id-2 (svg/id "division-bend-sinister-2_")
+        top-left (get-in field [:points :top-left])
+        top-right (get-in field [:points :top-right])
+        bottom-left (get-in field [:points :bottom-left])
+        bottom-right (get-in field [:points :bottom-right])
+        fess (get-in field [:points :fess])
+        fess-x-rel (- (first fess) (first top-right))
+        fess-y-rel (- (second fess) (second top-right))
+        width (:width field)
+        fess-dir [1 (/ fess-y-rel fess-x-rel)]
+        bend-intersection (svg/translate
+                           top-right
+                           [(* (first fess-dir) (- width))
+                            (* (second fess-dir) (- width))])
+        parent-meta (:meta field)
+        field-1 (field/make-field (svg/make-path ["M" top-left
+                                                  "L" top-right
+                                                  "L" (svg/translate top-right [0 overlap])
+                                                  "L" (svg/translate bend-intersection [0 overlap])
+                                                  "z"])
+                                  {:parent field
+                                   :context (conj (:context parent-meta) :per-bend-sinister :top)})
+        field-2 (field/make-field (svg/make-path ["M" top-right
+                                                  "L" bottom-right
+                                                  "L" bottom-left
+                                                  "L" bend-intersection
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-bend-sinister :bottom)}})]
+    [:<>
+     [:defs
+      [:mask {:id mask-id-1}
+       [:path {:d (:shape field-1)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-2}
+       [:path {:d (:shape field-2)
+               :fill "#fff"}]]]
+     [:g {:mask (str "url(#" mask-id-1 ")")}
+      [top-level-render (first parts) field-1]]
+     [:g {:mask (str "url(#" mask-id-2 ")")}
+      [top-level-render (second parts) field-2]]]))
 
-(defn per-chevron [[top bottom]]
-  [:<>
-   [base-area (get tinctures top)]
-   [:path {:d "m 0,0 l 1000,1000 h -2000 z"
-           :fill (get tinctures bottom)}]])
+(defn per-chevron [parts field top-level-render]
+  (let [mask-id-1 (svg/id "division-chevron-1_")
+        mask-id-2 (svg/id "division-chevron-2_")
+        top-left (get-in field [:points :top-left])
+        top-right (get-in field [:points :top-right])
+        bottom-left (get-in field [:points :bottom-left])
+        bottom-right (get-in field [:points :bottom-right])
+        width (:width field)
+        fess (get-in field [:points :fess])
+        fess-x-rel-dexter (- (first fess) (first top-left))
+        fess-y-rel-dexter (- (second fess) (second top-left))
+        fess-dir-dexter [1 (/ fess-y-rel-dexter fess-x-rel-dexter)]
+        bend-intersection-sinister [(* (first fess-dir-dexter) width)
+                                    (* (second fess-dir-dexter) width)]
+        fess-x-rel-sinister (- (first fess) (first top-right))
+        fess-y-rel-sinister (- (second fess) (second top-right))
+        fess-dir-sinister [1 (/ fess-y-rel-sinister fess-x-rel-sinister)]
+        bend-intersection-dexter (svg/translate
+                                  top-right
+                                  [(* (first fess-dir-sinister) (- width))
+                                   (* (second fess-dir-sinister) (- width))])
+        parent-meta (:meta field)
+        field-1 (field/make-field (svg/make-path ["M" top-left
+                                                  "L" top-right
+                                                  "L" (svg/translate bend-intersection-sinister [0 overlap])
+                                                  "L" (svg/translate fess [0 overlap])
+                                                  "L" (svg/translate bend-intersection-dexter [0 overlap])
+                                                  "z"])
+                                  {:parent field
+                                   :context (conj (:context parent-meta) :per-chevron :top)})
+        field-2 (field/make-field (svg/make-path ["M" fess
+                                                  "L" bend-intersection-sinister
+                                                  "L" bottom-right
+                                                  "L" bottom-left
+                                                  "L" bend-intersection-dexter
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-chevron :bottom)}})]
+    [:<>
+     [:defs
+      [:mask {:id mask-id-1}
+       [:path {:d (:shape field-1)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-2}
+       [:path {:d (:shape field-2)
+               :fill "#fff"}]]]
+     [:g {:mask (str "url(#" mask-id-1 ")")}
+      [top-level-render (first parts) field-1]]
+     [:g {:mask (str "url(#" mask-id-2 ")")}
+      [top-level-render (second parts) field-2]]]))
 
-(defn per-saltire [[vertical horizontal]]
-  [:<>
-   [base-area (get tinctures vertical)]
-   [:path {:d "m 0,0 l -1000,-1000 v 2000 z"
-           :fill (get tinctures horizontal)}]
-   [:path {:d "m 0,0 l 1000,-1000 v 2000 z"
-           :fill (get tinctures horizontal)}]])
+(defn per-saltire [parts field top-level-render]
+  (let [mask-id-1 (svg/id "division-saltire-1_")
+        mask-id-2 (svg/id "division-saltire-2_")
+        mask-id-3 (svg/id "division-saltire-3_")
+        mask-id-4 (svg/id "division-saltire-4_")
+        top-left (get-in field [:points :top-left])
+        top-right (get-in field [:points :top-right])
+        bottom-left (get-in field [:points :bottom-left])
+        bottom-right (get-in field [:points :bottom-right])
+        width (:width field)
+        fess (get-in field [:points :fess])
+        fess-x-rel-dexter (- (first fess) (first top-left))
+        fess-y-rel-dexter (- (second fess) (second top-left))
+        fess-dir-dexter [1 (/ fess-y-rel-dexter fess-x-rel-dexter)]
+        bend-intersection-sinister [(* (first fess-dir-dexter) width)
+                                    (* (second fess-dir-dexter) width)]
+        fess-x-rel-sinister (- (first fess) (first top-right))
+        fess-y-rel-sinister (- (second fess) (second top-right))
+        fess-dir-sinister [1 (/ fess-y-rel-sinister fess-x-rel-sinister)]
+        bend-intersection-dexter (svg/translate
+                                  top-right
+                                  [(* (first fess-dir-sinister) (- width))
+                                   (* (second fess-dir-sinister) (- width))])
+        parent-meta (:meta field)
+        field-1 (field/make-field (svg/make-path ["M" top-left
+                                                  "L" top-right
+                                                  "L" (svg/translate top-right [0 overlap])
+                                                  "L" (svg/translate fess [0 overlap])
+                                                  "L" (svg/translate top-left [0 overlap])
+                                                  "z"])
+                                  {:parent field
+                                   :context (conj (:context parent-meta) :per-saltire :top)})
+        field-2 (field/make-field (svg/make-path ["M" top-right
+                                                  "L" (svg/translate bend-intersection-sinister [0 overlap])
+                                                  "L" (svg/translate fess [0 overlap])
+                                                  "L" fess
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-saltire :right)}})
+        field-3 (field/make-field (svg/make-path ["M" fess
+                                                  "L" bend-intersection-sinister
+                                                  "L" bottom-right
+                                                  "L" bottom-left
+                                                  "L" (svg/translate bend-intersection-dexter [0 (- overlap)])
+                                                  "L" (svg/translate fess [(- overlap) 0])
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-saltire :bottom)}})
+        field-4 (field/make-field (svg/make-path ["M" fess
+                                                  "L" bend-intersection-dexter
+                                                  "L" top-left
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-saltire :left)}})]
+    [:<>
+     [:defs
+      [:mask {:id mask-id-1}
+       [:path {:d (:shape field-1)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-2}
+       [:path {:d (:shape field-2)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-3}
+       [:path {:d (:shape field-3)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-4}
+       [:path {:d (:shape field-4)
+               :fill "#fff"}]]]
+     [:g {:mask (str "url(#" mask-id-1 ")")}
+      [top-level-render (first parts) field-1]]
+     [:g {:mask (str "url(#" mask-id-2 ")")}
+      [top-level-render (second parts) field-2]]
+     [:g {:mask (str "url(#" mask-id-3 ")")}
+      [top-level-render (first parts) field-3]]
+     [:g {:mask (str "url(#" mask-id-4 ")")}
+      [top-level-render (second parts) field-4]]]))
 
-(defn quarterly [[left right]]
-  [:<>
-   [base-area (get tinctures left)]
-   [:path {:d "m 0,0 h 1000 v -1000 h -1000 z"
-           :fill (get tinctures right)}]
-   [:path {:d "m 0,0 h -1000 v 1000 h 1000 z"
-           :fill (get tinctures right)}]])
+(defn quarterly [parts field top-level-render]
+  (let [mask-id-1 (svg/id "division-quarterly-1_")
+        mask-id-2 (svg/id "division-quarterly-2_")
+        mask-id-3 (svg/id "division-quarterly-3_")
+        mask-id-4 (svg/id "division-quarterly-4_")
+        top-left (get-in field [:points :top-left])
+        top-right (get-in field [:points :top-right])
+        bottom-left (get-in field [:points :bottom-left])
+        bottom-right (get-in field [:points :bottom-right])
+        chief (get-in field [:points :chief])
+        base (get-in field [:points :base])
+        fess (get-in field [:points :fess])
+        dexter (get-in field [:points :dexter])
+        sinister (get-in field [:points :sinister])
+        parent-meta (:meta field)
+        field-1 (field/make-field (svg/make-path ["M" top-left
+                                                  "L" (svg/translate top-right [overlap 0])
+                                                  "L" (svg/translate fess [overlap overlap])
+                                                  "L" (svg/translate dexter [0 overlap])
+                                                  "z"])
+                                  {:parent field
+                                   :context (conj (:context parent-meta) :per-quarterly :top-left)})
+        field-2 (field/make-field (svg/make-path ["M" chief
+                                                  "L" top-right
+                                                  "L" (svg/translate sinister [0 overlap])
+                                                  "L" (svg/translate fess [overlap overlap])
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-quarterly :top-right)}})
+        field-3 (field/make-field (svg/make-path ["M" (svg/translate fess [(- overlap) 0])
+                                                  "L" sinister
+                                                  "L" bottom-right
+                                                  "L" (svg/translate base [(- overlap) 0])
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-quarterly :bottom-right)}})
+        field-4 (field/make-field (svg/make-path ["M" fess
+                                                  "L" base
+                                                  "L" bottom-left
+                                                  "L" dexter
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-quarterly :bottom-left)}})]
+    [:<>
+     [:defs
+      [:mask {:id mask-id-1}
+       [:path {:d (:shape field-1)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-2}
+       [:path {:d (:shape field-2)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-3}
+       [:path {:d (:shape field-3)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-4}
+       [:path {:d (:shape field-4)
+               :fill "#fff"}]]]
+     [:g {:mask (str "url(#" mask-id-1 ")")}
+      [top-level-render (first parts) field-1]]
+     [:g {:mask (str "url(#" mask-id-2 ")")}
+      [top-level-render (second parts) field-2]]
+     [:g {:mask (str "url(#" mask-id-3 ")")}
+      [top-level-render (first parts) field-3]]
+     [:g {:mask (str "url(#" mask-id-4 ")")}
+      [top-level-render (second parts) field-4]]]))
 
-(defn gyronny [[left right]]
-  [:<>
-   [base-area (get tinctures left)]
-   [:path {:d "m 0,0 v -1000 h 1000 z"
-           :fill (get tinctures right)}]
-   [:path {:d "m 0,0 h 1000 v 1000 z"
-           :fill (get tinctures right)}]
-   [:path {:d "m 0,0 v 1000 h -1000 z"
-           :fill (get tinctures right)}]
-   [:path {:d "m 0,0 h -1000 v -1000 z"
-           :fill (get tinctures right)}]])
+(defn gyronny [parts field top-level-render]
+  (let [mask-id-1 (svg/id "division-gyronny-1_")
+        mask-id-2 (svg/id "division-gyronny-2_")
+        mask-id-3 (svg/id "division-gyronny-3_")
+        mask-id-4 (svg/id "division-gyronny-4_")
+        mask-id-5 (svg/id "division-gyronny-5_")
+        mask-id-6 (svg/id "division-gyronny-6_")
+        mask-id-7 (svg/id "division-gyronny-7_")
+        mask-id-8 (svg/id "division-gyronny-8_")
+        top-left (get-in field [:points :top-left])
+        top-right (get-in field [:points :top-right])
+        bottom-left (get-in field [:points :bottom-left])
+        bottom-right (get-in field [:points :bottom-right])
+        chief (get-in field [:points :chief])
+        base (get-in field [:points :base])
+        fess (get-in field [:points :fess])
+        dexter (get-in field [:points :dexter])
+        sinister (get-in field [:points :sinister])
+        width (:width field)
+        fess-x-rel-dexter (- (first fess) (first top-left))
+        fess-y-rel-dexter (- (second fess) (second top-left))
+        fess-dir-dexter [1 (/ fess-y-rel-dexter fess-x-rel-dexter)]
+        bend-intersection-sinister [(* (first fess-dir-dexter) width)
+                                    (* (second fess-dir-dexter) width)]
+        fess-x-rel-sinister (- (first fess) (first top-right))
+        fess-y-rel-sinister (- (second fess) (second top-right))
+        fess-dir-sinister [1 (/ fess-y-rel-sinister fess-x-rel-sinister)]
+        bend-intersection-dexter (svg/translate
+                                  top-right
+                                  [(* (first fess-dir-sinister) (- width))
+                                   (* (second fess-dir-sinister) (- width))])
+        parent-meta (:meta field)
+        field-1 (field/make-field (svg/make-path ["M" top-left
+                                                  "L" (svg/translate chief [overlap 0])
+                                                  "L" (svg/translate fess [overlap 0])
+                                                  "L" (svg/translate fess [0 overlap])
+                                                  "L" (svg/translate top-left [0 overlap])
+                                                  "z"])
+                                  {:parent field
+                                   :context (conj (:context parent-meta) :per-gyronny :one)})
+        field-2 (field/make-field (svg/make-path ["M" fess
+                                                  "L" chief
+                                                  "L" top-right
+                                                  "L" (svg/translate top-right [0 overlap])
+                                                  "L" (svg/translate fess [0 overlap])
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-gyronny :two)}})
+        field-3 (field/make-field (svg/make-path ["M" fess
+                                                  "L" top-right
+                                                  "L" (svg/translate sinister [0 overlap])
+                                                  "L" (svg/translate fess [0 overlap])
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-gyronny :three)}})
+        field-4 (field/make-field (svg/make-path ["M" fess
+                                                  "L" sinister
+                                                  "L" (svg/translate bend-intersection-sinister [0 overlap])
+                                                  "L" (svg/translate fess [0 overlap])
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-gyronny :four)}})
+        field-5 (field/make-field (svg/make-path ["M" fess
+                                                  "L" bend-intersection-sinister
+                                                  "L" bottom-right
+                                                  "L" (svg/translate base [(- overlap) 0])
+                                                  "L" (svg/translate fess [(- overlap) 0])
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-gyronny :five)}})
+        field-6 (field/make-field (svg/make-path ["M" fess
+                                                  "L" base
+                                                  "L" bottom-left
+                                                  "L" (svg/translate bend-intersection-dexter [0 (- overlap)])
+                                                  "L" (svg/translate fess [(- overlap) 0])
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-gyronny :six)}})
+        field-7 (field/make-field (svg/make-path ["M" fess
+                                                  "L" bend-intersection-dexter
+                                                  "L" (svg/translate dexter [0 (- overlap)])
+                                                  "L" (svg/translate fess [0 (- overlap)])
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-gyronny :seven)}})
+        field-8 (field/make-field (svg/make-path ["M" fess
+                                                  "L" dexter
+                                                  "L" top-left
+                                                  "z"])
+                                  {:parent field
+                                   :meta {:context (conj (:context parent-meta) :per-gyronny :eight)}})]
+    [:<>
+     [:defs
+      [:mask {:id mask-id-1}
+       [:path {:d (:shape field-1)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-2}
+       [:path {:d (:shape field-2)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-3}
+       [:path {:d (:shape field-3)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-4}
+       [:path {:d (:shape field-4)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-5}
+       [:path {:d (:shape field-5)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-6}
+       [:path {:d (:shape field-6)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-7}
+       [:path {:d (:shape field-7)
+               :fill "#fff"}]]
+      [:mask {:id mask-id-8}
+       [:path {:d (:shape field-8)
+               :fill "#fff"}]]]
+     [:g {:mask (str "url(#" mask-id-1 ")")}
+      [top-level-render (first parts) field-1]]
+     [:g {:mask (str "url(#" mask-id-2 ")")}
+      [top-level-render (second parts) field-2]]
+     [:g {:mask (str "url(#" mask-id-3 ")")}
+      [top-level-render (first parts) field-3]]
+     [:g {:mask (str "url(#" mask-id-4 ")")}
+      [top-level-render (second parts) field-4]]
+     [:g {:mask (str "url(#" mask-id-5 ")")}
+      [top-level-render (first parts) field-5]]
+     [:g {:mask (str "url(#" mask-id-6 ")")}
+      [top-level-render (second parts) field-6]]
+     [:g {:mask (str "url(#" mask-id-7 ")")}
+      [top-level-render (first parts) field-7]]
+     [:g {:mask (str "url(#" mask-id-8 ")")}
+      [top-level-render (second parts) field-8]]]))
 
 (defn tierced-in-pale [[left middle right]]
   [:<>
