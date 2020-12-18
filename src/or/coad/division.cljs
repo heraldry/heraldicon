@@ -10,6 +10,8 @@
           :height 2000
           :fill   fill}])
 
+(def overlap 0.1)
+
 (defn per-pale [parts field top-level-render]
   (let [mask-id-1    (svg/id "division-pale-1_")
         mask-id-2    (svg/id "division-pale-2_")
@@ -21,8 +23,8 @@
         base         (get-in field [:points :base])
         parent-meta  (:meta field)
         field-1      (field/make-field (svg/make-path ["M" top-left
-                                                       "L" chief
-                                                       "L" base
+                                                       "L" (svg/translate chief [overlap 0])
+                                                       "L" (svg/translate base [overlap 0])
                                                        "L" bottom-left
                                                        "z"])
                                        {:parent  field
@@ -37,14 +39,8 @@
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d            (:shape field-1)
-               :fill         "#fff"
-               ;; HACK: to fix anti-aliasing at the seam,
-               ;; hopefully there'll be a better way sometime,
-               ;; as this will enlarge the field, if the other
-               ;; isn't drawn on top of it
-               :stroke-width 1
-               :stroke       "#fff"}]]
+       [:path {:d    (:shape field-1)
+               :fill "#fff"}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
                :fill "#fff"}]]]
