@@ -25,12 +25,11 @@
    (merge {:coat-of-arms {:escutcheon :heater
                           :content    {:division   {:type  :per-pale
                                                     :extra {}
-                                                    :parts [:azure
-                                                            :sable
-                                                            :gules]}
+                                                    :parts [{:tincture :azure}
+                                                            {:tincture :sable}
+                                                            {:tincture :gules}]}
                                        :ordinaries [{:type    :pale
-                                                     :content :or}]
-                                       :tincture   nil}}} db)))
+                                                     :content :or}]}}} db)))
 
 (rf/reg-event-db
  :set
@@ -40,7 +39,6 @@
 (rf/reg-event-db
  :set-in
  (fn [db [_ path value]]
-   (println path value)
    (assoc-in db path value)))
                                         ; views
 
@@ -62,7 +60,6 @@
   (let [field             (escutcheon/field (:escutcheon coat-of-arms))
         transformed-field (field/transform-to-width field 100)
         content           (:content coat-of-arms)]
-    (println transformed-field)
     [:g {:filter "url(#shadow)"}
      [:g {:transform "translate(10,10) scale(5,5)"}
       [:defs

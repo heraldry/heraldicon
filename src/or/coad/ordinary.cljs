@@ -1,5 +1,4 @@
-(ns or.coad.ordinary
-  (:require [or.coad.tinctures :refer [tinctures]]))
+(ns or.coad.ordinary)
 
 (defn pale [tincture]
   [:<>])
