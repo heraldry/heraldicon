@@ -23,3 +23,11 @@ a:active {
 .controls {
   padding: 10px;
 }
+
+fieldset {
+  width: 16em;
+}
+
+fieldset select {
+  float: right;
+}
