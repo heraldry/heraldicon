@@ -1,27 +1,24 @@
 (ns or.coad.field
   (:require ["svgpath" :as svgpath]
-            [or.coad.svg :as svg]))
-
-(defn middle [[x1 y1] [x2 y2]]
-  [(/ (+ x1 x2) 2)
-   (/ (+ y1 y2) 2)])
+            [or.coad.svg :as svg]
+            [or.coad.vector :as v]))
 
 (defn make-field [shape meta]
   (let [[min-x max-x min-y max-y] (svg/bounding-box shape)
-        top-left                  [min-x min-y]
-        top-right                 [max-x min-y]
-        bottom-left               [min-x max-y]
-        bottom-right              [max-x max-y]
+        top-left                  (v/v min-x min-y)
+        top-right                 (v/v max-x min-y)
+        bottom-left               (v/v min-x max-y)
+        bottom-right              (v/v max-x max-y)
         width                     (- max-x min-x)
         height                    (- max-y min-y)
-        chief                     (middle top-left top-right)
-        base                      (middle bottom-left bottom-right)
+        chief                     (v/avg top-left top-right)
+        base                      (v/avg bottom-left bottom-right)
         ;; not actually center, but chosen such that bend lines at 45° run together in it
-        fess                      [(first chief) (+ min-y (/ width 2))]
-        dexter                    [min-x (second fess)]
-        sinister                  [max-x (second fess)]
-        honour                    (middle chief fess)
-        nombril                   (middle honour base)]
+        fess                      (v/v (:x chief) (+ min-y (/ width 2)))
+        dexter                    (v/v min-x (:y fess))
+        sinister                  (v/v max-x (:y fess))
+        honour                    (v/avg chief fess)
+        nombril                   (v/avg honour base)]
     (-> {}
         (assoc-in [:shape] shape)
         (assoc-in [:width] width)
@@ -40,14 +37,14 @@
         (assoc-in [:meta] meta))))
 
 (defn transform-to-width [field target-width]
-  (let [width         (:width field)
-        [min-x min-y] (get-in field [:points :top-left])
-        [dx dy]       [(- min-x) (- min-y)]
-        scale-factor  (/ target-width width)]
+  (let [width        (:width field)
+        top-left     (get-in field [:points :top-left])
+        offset       (v/- top-left)
+        scale-factor (/ target-width width)]
     (-> field
         (assoc-in [:shape] (-> (:shape field)
                                (svgpath)
-                               (.translate dx dy)
+                               (.translate (:x offset) (:y offset))
                                (.scale scale-factor)
                                (.toString)))
         (update-in [:width] * scale-factor)
@@ -55,5 +52,5 @@
         (update-in [:points] merge (into {}
                                          (map (fn [[key value]]
                                                 [key (-> value
-                                                         (svg/translate [dx dy])
-                                                         (svg/scale scale-factor))]) (:points field)))))))
+                                                         (v/+ offset)
+                                                         (v/* scale-factor))]) (:points field)))))))
