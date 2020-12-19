@@ -319,6 +319,7 @@
                                                        "L" top-right
                                                        "L" (svg/translate sinister [0 overlap])
                                                        "L" (svg/translate fess [overlap overlap])
+                                                       "L" fess
                                                        "z"])
                                        {:parent field
                                         :meta   {:context [:per-quarterly :top-right]}})
