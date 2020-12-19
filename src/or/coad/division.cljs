@@ -563,41 +563,57 @@
      [:g {:mask (str "url(#" mask-id-8 ")")}
       [top-level-render (second parts) field-8]]]))
 
-(defn tierced-in-pale [parts field top-level-render]
-  (let [mask-id-1    (svg/id "division-tierced-pale-1_")
-        mask-id-2    (svg/id "division-tierced-pale-2_")
-        mask-id-3    (svg/id "division-tierced-pale-3_")
-        top-left     (get-in field [:points :top-left])
-        top-right    (get-in field [:points :top-right])
-        bottom-left  (get-in field [:points :bottom-left])
-        bottom-right (get-in field [:points :bottom-right])
-        chief        (get-in field [:points :chief])
-        base         (get-in field [:points :base])
-        fess         (get-in field [:points :fess])
-        width        (:width field)
-        col1         (- (first fess) (/ width 6))
-        col2         (+ (first fess) (/ width 6))
-        field-1      (field/make-field (svg/make-path ["M" top-left
-                                                       "L" [col1 (second chief)]
-                                                       "L" [col1 (second base)]
-                                                       "L" bottom-left
-                                                       "z"])
-                                       {:parent  field
-                                        :context [:per-tierced-pale :left]})
-        field-2      (field/make-field (svg/make-path ["M" [col1 (second chief)]
-                                                       "L" [col2 (second chief)]
-                                                       "L" [col2 (second base)]
-                                                       "L" [col1 (second base)]
-                                                       "z"])
-                                       {:parent field
-                                        :meta   {:context [:per-tierced-pale :middle]}})
-        field-3      (field/make-field (svg/make-path ["M" [col2 (second chief)]
-                                                       "L" top-right
-                                                       "L" bottom-right
-                                                       "L" [col2 (second base)]
-                                                       "z"])
-                                       {:parent field
-                                        :meta   {:context [:per-tierced-pale :right]}})]
+(defn tierced-in-pale [parts field top-level-render {:keys [line-style]}]
+  (let [mask-id-1                      (svg/id "division-tierced-pale-1_")
+        mask-id-2                      (svg/id "division-tierced-pale-2_")
+        mask-id-3                      (svg/id "division-tierced-pale-3_")
+        top-left                       (get-in field [:points :top-left])
+        top-right                      (get-in field [:points :top-right])
+        bottom-left                    (get-in field [:points :bottom-left])
+        bottom-right                   (get-in field [:points :bottom-right])
+        chief                          (get-in field [:points :chief])
+        base                           (get-in field [:points :base])
+        fess                           (get-in field [:points :fess])
+        width                          (:width field)
+        col1                           (- (:x fess) (/ width 6))
+        col2                           (+ (:x fess) (/ width 6))
+        first-chief                    (v/v col1 (:y chief))
+        second-chief                   (v/v col2 (:y chief))
+        second-base                    (v/v col2 (:y base))
+        {line :line}                   (line/create line-style
+                                                    (:y (v/- base chief))
+                                                    :flipped? true
+                                                    :angle 90)
+        {line-reversed        :line
+         line-reversed-length :length} (line/create line-style
+                                                    (:y (v/- base chief))
+                                                    :angle -90
+                                                    :reversed? true)
+        second-base-adjusted           (v/extend second-chief second-base line-reversed-length)
+        field-1                        (field/make-field
+                                        (svg/make-path ["M" first-chief
+                                                        (line/stitch line)
+                                                        "L" bottom-left
+                                                        "L" top-left
+                                                        "z"])
+                                        {:parent  field
+                                         :context [:per-tierced-pale :left]})
+        field-2                        (field/make-field
+                                        (svg/make-path ["M" first-chief
+                                                        (line/stitch line)
+                                                        "L" second-base-adjusted
+                                                        (line/stitch line-reversed)
+                                                        "z"])
+                                        {:parent field
+                                         :meta   {:context [:per-tierced-pale :middle]}})
+        field-3                        (field/make-field
+                                        (svg/make-path ["M" second-base-adjusted
+                                                        (line/stitch line-reversed)
+                                                        "L" top-right
+                                                        "L" bottom-right
+                                                        "z"])
+                                        {:parent field
+                                         :meta   {:context [:per-tierced-pale :right]}})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -616,41 +632,56 @@
      [:g {:mask (str "url(#" mask-id-3 ")")}
       [top-level-render (nth parts 2) field-3]]]))
 
-(defn tierced-in-fesse [parts field top-level-render]
-  (let [mask-id-1    (svg/id "division-tierced-pale-1_")
-        mask-id-2    (svg/id "division-tierced-pale-2_")
-        mask-id-3    (svg/id "division-tierced-pale-3_")
-        top-left     (get-in field [:points :top-left])
-        top-right    (get-in field [:points :top-right])
-        bottom-left  (get-in field [:points :bottom-left])
-        bottom-right (get-in field [:points :bottom-right])
-        dexter       (get-in field [:points :dexter])
-        sinister     (get-in field [:points :sinister])
-        fess         (get-in field [:points :fess])
-        height       (:height field)
-        row1         (- (second fess) (/ height 6))
-        row2         (+ (second fess) (/ height 6))
-        field-1      (field/make-field (svg/make-path ["M" top-left
-                                                       "L" top-right
-                                                       "L" [(first sinister) row1]
-                                                       "L" [(first dexter) row1]
-                                                       "z"])
-                                       {:parent  field
-                                        :context [:per-tierced-fesse :top]})
-        field-2      (field/make-field (svg/make-path ["M" [(first dexter) row1]
-                                                       "L" [(first sinister) row1]
-                                                       "L" [(first sinister) row2]
-                                                       "L" [(first dexter) row2]
-                                                       "z"])
-                                       {:parent field
-                                        :meta   {:context [:per-tierced-fesse :middle]}})
-        field-3      (field/make-field (svg/make-path ["M" [(first dexter) row2]
-                                                       "L" [(first sinister) row2]
-                                                       "L" bottom-right
-                                                       "L" bottom-left
-                                                       "z"])
-                                       {:parent field
-                                        :meta   {:context [:per-tierced-fesse :bottom]}})]
+(defn tierced-in-fesse [parts field top-level-render {:keys [line-style]}]
+  (let [mask-id-1                      (svg/id "division-tierced-pale-1_")
+        mask-id-2                      (svg/id "division-tierced-pale-2_")
+        mask-id-3                      (svg/id "division-tierced-pale-3_")
+        top-left                       (get-in field [:points :top-left])
+        top-right                      (get-in field [:points :top-right])
+        bottom-left                    (get-in field [:points :bottom-left])
+        bottom-right                   (get-in field [:points :bottom-right])
+        dexter                         (get-in field [:points :dexter])
+        sinister                       (get-in field [:points :sinister])
+        fess                           (get-in field [:points :fess])
+        height                         (:height field)
+        row1                           (- (:y fess) (/ height 6))
+        row2                           (+ (:y fess) (/ height 6))
+        first-dexter                   (v/v (:x dexter) row1)
+        second-dexter                  (v/v (:x dexter) row2)
+        second-sinister                (v/v (:x sinister) row2)
+        {line :line}                   (line/create line-style
+                                                    (:x (v/- sinister dexter)))
+        {line-reversed        :line
+         line-reversed-length :length} (line/create line-style
+                                                    (:x (v/- sinister dexter))
+                                                    :reversed? true
+                                                    :flipped? true
+                                                    :angle 180)
+        second-sinister-adjusted       (v/extend second-dexter second-sinister line-reversed-length)
+        field-1                        (field/make-field
+                                        (svg/make-path ["M" first-dexter
+                                                        (line/stitch line)
+                                                        "L" top-right
+                                                        "L" top-left
+                                                        "z"])
+                                        {:parent  field
+                                         :context [:per-tierced-fesse :top]})
+        field-2                        (field/make-field
+                                        (svg/make-path ["M" first-dexter
+                                                        (line/stitch line)
+                                                        "L" second-sinister-adjusted
+                                                        (line/stitch line-reversed)
+                                                        "z"])
+                                        {:parent field
+                                         :meta   {:context [:per-tierced-fesse :middle]}})
+        field-3                        (field/make-field
+                                        (svg/make-path ["M" second-sinister-adjusted
+                                                        (line/stitch line-reversed)
+                                                        "L" bottom-left
+                                                        "L" bottom-right
+                                                        "z"])
+                                        {:parent field
+                                         :meta   {:context [:per-tierced-fesse :bottom]}})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
