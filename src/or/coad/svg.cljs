@@ -48,9 +48,10 @@
 
 (defn make-path [coll]
   (s/join " " (map (fn [v]
-                     (if (string? v)
-                       v
-                       (s/join "," (map str v)))) coll)))
+                     (cond
+                       (string? v)     v
+                       (sequential? v) (s/join "," (map str v))
+                       :else           (str v))) coll)))
 
 (def -current-id
   (atom 0))
