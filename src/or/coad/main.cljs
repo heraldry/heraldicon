@@ -8,7 +8,7 @@
             [or.coad.line :as line]
             [or.coad.ordinary :as ordinary]
             [re-frame.core :as rf]
-            [reagent.core :as r]))
+            [reagent.dom :as r]))
 
                                         ; subs
 
