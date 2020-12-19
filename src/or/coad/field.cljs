@@ -45,8 +45,6 @@
         [dx dy] [(- min-x) (- min-y)]
         scale-factor (/ target-width width)]
     (-> field
-        #_(assoc-in [:transform] (str "scale(" scale-factor "," scale-factor ") "
-                                      "translate(" dx "," dy ")"))
         (assoc-in [:shape] (-> (:shape field)
                                (svgpath)
                                (.translate dx dy)

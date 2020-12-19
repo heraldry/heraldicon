@@ -3,13 +3,6 @@
             [or.coad.line :as line]
             [or.coad.svg :as svg]))
 
-(defn base-area [fill]
-  [:rect {:x -1000
-          :y -1000
-          :width 2000
-          :height 2000
-          :fill fill}])
-
 (def overlap 0.1)
 
 (defn per-pale [parts field top-level-render {:keys [line-style]}]
