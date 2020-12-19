@@ -4,8 +4,6 @@
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
-(def overlap 0.1)
-
 (defn per-pale [parts field top-level-render {:keys [line-style]}]
   (let [mask-id-1    (svg/id "division-pale-1_")
         mask-id-2    (svg/id "division-pale-2_")
@@ -15,20 +13,22 @@
         bottom-right (get-in field [:points :bottom-right])
         chief        (get-in field [:points :chief])
         base         (get-in field [:points :base])
-        line         (line/create line-style (:y (v/- base chief)) 90)
+        {line :line} (line/create line-style
+                                  (:y (v/- base chief))
+                                  :angle -90)
         field-1      (field/make-field
-                      (svg/make-path ["M" chief
+                      (svg/make-path ["M" base
                                       (line/stitch line)
-                                      "L" bottom-left
                                       "L" top-left
+                                      "L" bottom-left
                                       "z"])
                       {:parent  field
                        :context [:per-pale :left]})
         field-2      (field/make-field
-                      (svg/make-path ["M" chief
+                      (svg/make-path ["M" base
                                       (line/stitch line)
-                                      "L" bottom-right
                                       "L" top-right
+                                      "L" bottom-right
                                       "z"])
                       {:parent field
                        :meta   {:context [:per-pale :left]}})]
@@ -54,7 +54,8 @@
         bottom-right (get-in field [:points :bottom-right])
         dexter       (get-in field [:points :dexter])
         sinister     (get-in field [:points :sinister])
-        line         (line/create line-style (:x (v/- sinister dexter)) 0)
+        {line :line} (line/create line-style
+                                  (:x (v/- sinister dexter)))
         field-1      (field/make-field
                       (svg/make-path ["M" dexter
                                       (line/stitch line)
@@ -93,7 +94,9 @@
         bottom-right      (get-in field [:points :bottom-right])
         fess              (get-in field [:points :fess])
         bend-intersection (v/project top-left fess (:x top-right))
-        line              (line/create line-style (v/abs (v/- bend-intersection top-left)) 45)
+        {line :line}      (line/create line-style
+                                       (v/abs (v/- bend-intersection top-left))
+                                       :angle 45)
         field-1           (field/make-field
                            (svg/make-path ["M" top-left
                                            (line/stitch line)
@@ -131,19 +134,22 @@
         bottom-right      (get-in field [:points :bottom-right])
         fess              (get-in field [:points :fess])
         bend-intersection (v/project top-right fess (:x top-left))
-        line              (line/create line-style (v/abs (v/- bend-intersection top-right)) -45)
+        {line :line}      (line/create line-style
+                                       (v/abs (v/- bend-intersection top-right))
+                                       :angle 135
+                                       :flipped? true)
         field-1           (field/make-field
-                           (svg/make-path ["M" bend-intersection
+                           (svg/make-path ["M" top-right
                                            (line/stitch line)
                                            "L" top-left
                                            "z"])
                            {:parent  field
                             :context [:per-bend-sinister :top]})
         field-2           (field/make-field
-                           (svg/make-path ["M" bend-intersection
+                           (svg/make-path ["M" top-right
                                            (line/stitch line)
-                                           "L" bottom-right
                                            "L" bottom-left
+                                           "L" bottom-right
                                            "z"])
                            {:parent field
                             :meta   {:context [:per-bend-sinister :bottom]}})]
@@ -161,42 +167,44 @@
       [top-level-render (second parts) field-2]]]))
 
 (defn per-chevron [parts field top-level-render {:keys [line-style]}]
-  (let [mask-id-1                  (svg/id "division-chevron-1_")
-        mask-id-2                  (svg/id "division-chevron-2_")
-        top-left                   (get-in field [:points :top-left])
-        top-right                  (get-in field [:points :top-right])
-        bottom-left                (get-in field [:points :bottom-left])
-        bottom-right               (get-in field [:points :bottom-right])
-        width                      (:width field)
-        fess                       (get-in field [:points :fess])
-        fess-x-rel-dexter          (- (first fess) (first top-left))
-        fess-y-rel-dexter          (- (second fess) (second top-left))
-        fess-dir-dexter            [1 (/ fess-y-rel-dexter fess-x-rel-dexter)]
-        bend-intersection-sinister [(* (first fess-dir-dexter) width)
-                                    (* (second fess-dir-dexter) width)]
-        fess-x-rel-sinister        (- (first fess) (first top-right))
-        fess-y-rel-sinister        (- (second fess) (second top-right))
-        fess-dir-sinister          [1 (/ fess-y-rel-sinister fess-x-rel-sinister)]
-        bend-intersection-dexter   (svg/translate
-                                    top-right
-                                    [(* (first fess-dir-sinister) (- width))
-                                     (* (second fess-dir-sinister) (- width))])
-        field-1                    (field/make-field (svg/make-path ["M" top-left
-                                                                     "L" top-right
-                                                                     "L" (svg/translate bend-intersection-sinister [0 overlap])
-                                                                     "L" (svg/translate fess [0 overlap])
-                                                                     "L" (svg/translate bend-intersection-dexter [0 overlap])
-                                                                     "z"])
-                                                     {:parent  field
-                                                      :context [:per-chevron :top]})
-        field-2                    (field/make-field (svg/make-path ["M" fess
-                                                                     "L" bend-intersection-sinister
-                                                                     "L" bottom-right
-                                                                     "L" bottom-left
-                                                                     "L" bend-intersection-dexter
-                                                                     "z"])
-                                                     {:parent field
-                                                      :meta   {:context [:per-chevron :bottom]}})]
+  (let [mask-id-1                         (svg/id "division-chevron-1_")
+        mask-id-2                         (svg/id "division-chevron-2_")
+        top-left                          (get-in field [:points :top-left])
+        top-right                         (get-in field [:points :top-right])
+        bottom-left                       (get-in field [:points :bottom-left])
+        bottom-right                      (get-in field [:points :bottom-right])
+        fess                              (get-in field [:points :fess])
+        bend-intersection-dexter          (v/project top-right fess (:x top-left))
+        bend-intersection-sinister        (v/project top-left fess (:x top-right))
+        {line-dexter        :line
+         line-dexter-length :length}      (line/create line-style
+                                                       (v/abs (v/- bend-intersection-dexter fess))
+                                                       :angle -45
+                                                       :reversed? true)
+        {line-sinister :line}             (line/create line-style
+                                                       (v/abs (v/- bend-intersection-sinister fess))
+                                                       :angle 45)
+        bend-intersection-dexter-adjusted (v/extend fess bend-intersection-dexter line-dexter-length)
+        field-1                           (field/make-field
+                                           (svg/make-path ["M" fess
+                                                           (line/stitch line-sinister)
+                                                           "L" top-right
+                                                           "L" top-left
+                                                           "L" bend-intersection-dexter-adjusted
+                                                           (line/stitch line-dexter)
+                                                           "z"])
+                                           {:parent  field
+                                            :context [:per-chevron :top]})
+        field-2                           (field/make-field
+                                           (svg/make-path ["M" fess
+                                                           (line/stitch line-sinister)
+                                                           "L" bottom-right
+                                                           "L" bottom-left
+                                                           "L" bend-intersection-dexter-adjusted
+                                                           (line/stitch line-dexter)
+                                                           "z"])
+                                           {:parent field
+                                            :meta   {:context [:per-chevron :bottom]}})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -211,58 +219,78 @@
       [top-level-render (second parts) field-2]]]))
 
 (defn per-saltire [parts field top-level-render {:keys [line-style]}]
-  (let [mask-id-1                  (svg/id "division-saltire-1_")
-        mask-id-2                  (svg/id "division-saltire-2_")
-        mask-id-3                  (svg/id "division-saltire-3_")
-        mask-id-4                  (svg/id "division-saltire-4_")
-        top-left                   (get-in field [:points :top-left])
-        top-right                  (get-in field [:points :top-right])
-        bottom-left                (get-in field [:points :bottom-left])
-        bottom-right               (get-in field [:points :bottom-right])
-        width                      (:width field)
-        fess                       (get-in field [:points :fess])
-        fess-x-rel-dexter          (- (first fess) (first top-left))
-        fess-y-rel-dexter          (- (second fess) (second top-left))
-        fess-dir-dexter            [1 (/ fess-y-rel-dexter fess-x-rel-dexter)]
-        bend-intersection-sinister [(* (first fess-dir-dexter) width)
-                                    (* (second fess-dir-dexter) width)]
-        fess-x-rel-sinister        (- (first fess) (first top-right))
-        fess-y-rel-sinister        (- (second fess) (second top-right))
-        fess-dir-sinister          [1 (/ fess-y-rel-sinister fess-x-rel-sinister)]
-        bend-intersection-dexter   (svg/translate
-                                    top-right
-                                    [(* (first fess-dir-sinister) (- width))
-                                     (* (second fess-dir-sinister) (- width))])
-        field-1                    (field/make-field (svg/make-path ["M" top-left
-                                                                     "L" top-right
-                                                                     "L" (svg/translate top-right [0 overlap])
-                                                                     "L" (svg/translate fess [0 overlap])
-                                                                     "L" (svg/translate top-left [0 overlap])
-                                                                     "z"])
-                                                     {:parent  field
-                                                      :context [:per-saltire :top]})
-        field-2                    (field/make-field (svg/make-path ["M" top-right
-                                                                     "L" (svg/translate bend-intersection-sinister [0 overlap])
-                                                                     "L" (svg/translate fess [0 overlap])
-                                                                     "L" fess
-                                                                     "z"])
-                                                     {:parent field
-                                                      :meta   {:context [:per-saltire :right]}})
-        field-3                    (field/make-field (svg/make-path ["M" fess
-                                                                     "L" bend-intersection-sinister
-                                                                     "L" bottom-right
-                                                                     "L" bottom-left
-                                                                     "L" (svg/translate bend-intersection-dexter [0 (- overlap)])
-                                                                     "L" (svg/translate fess [(- overlap) 0])
-                                                                     "z"])
-                                                     {:parent field
-                                                      :meta   {:context [:per-saltire :bottom]}})
-        field-4                    (field/make-field (svg/make-path ["M" fess
-                                                                     "L" bend-intersection-dexter
-                                                                     "L" top-left
-                                                                     "z"])
-                                                     {:parent field
-                                                      :meta   {:context [:per-saltire :left]}})]
+  (let [mask-id-1                           (svg/id "division-saltire-1_")
+        mask-id-2                           (svg/id "division-saltire-2_")
+        mask-id-3                           (svg/id "division-saltire-3_")
+        mask-id-4                           (svg/id "division-saltire-4_")
+        top-left                            (get-in field [:points :top-left])
+        top-right                           (get-in field [:points :top-right])
+        bottom-left                         (get-in field [:points :bottom-left])
+        bottom-right                        (get-in field [:points :bottom-right])
+        fess                                (get-in field [:points :fess])
+        bend-intersection-sinister          (v/project top-left fess (:x top-right))
+        bend-intersection-dexter            (v/project top-right fess (:x top-left))
+        {line-chief-dexter        :line
+         line-chief-dexter-length :length}  (line/create line-style
+                                                         (v/abs (v/- top-left fess))
+                                                         :angle 45
+                                                         :reversed? true)
+        {line-chief-sinister :line}         (line/create line-style
+                                                         (v/abs (v/- top-right fess))
+                                                         :angle -45
+                                                         :flipped? true)
+        {line-base-sinister        :line
+         line-base-sinister-length :length} (line/create line-style
+                                                         (v/abs (v/- bend-intersection-sinister fess))
+                                                         :angle 225
+                                                         :reversed? true)
+        {line-base-dexter :line}            (line/create line-style
+                                                         (v/abs (v/- bend-intersection-dexter fess))
+                                                         :angle -225
+                                                         :flipped? true)
+        top-left-adjusted                   (v/extend
+                                                fess
+                                              top-left
+                                              line-chief-dexter-length)
+        bend-intersection-sinister-adjusted (v/extend
+                                                fess
+                                              bend-intersection-sinister
+                                              line-base-sinister-length)
+        field-1                             (field/make-field
+                                             (svg/make-path ["M" top-left-adjusted
+                                                             (line/stitch line-chief-dexter)
+                                                             "L" fess
+                                                             (line/stitch line-chief-sinister)
+                                                             "L" top-right
+                                                             "z"])
+                                             {:parent  field
+                                              :context [:per-saltire :top]})
+        field-2                             (field/make-field
+                                             (svg/make-path ["M" fess
+                                                             (line/stitch line-chief-sinister)
+                                                             "L" bend-intersection-sinister-adjusted
+                                                             (line/stitch line-base-sinister)
+                                                             "z"])
+                                             {:parent field
+                                              :meta   {:context [:per-saltire :right]}})
+        field-3                             (field/make-field
+                                             (svg/make-path ["M" bend-intersection-sinister-adjusted
+                                                             (line/stitch line-base-sinister)
+                                                             "L" fess
+                                                             (line/stitch line-base-dexter)
+                                                             "L" bottom-left
+                                                             "L" bottom-right
+                                                             "z"])
+                                             {:parent field
+                                              :meta   {:context [:per-saltire :bottom]}})
+        field-4                             (field/make-field
+                                             (svg/make-path ["M" fess
+                                                             (line/stitch line-base-dexter)
+                                                             "L" top-left-adjusted
+                                                             (line/stitch line-chief-dexter)
+                                                             "z"])
+                                             {:parent field
+                                              :meta   {:context [:per-saltire :left]}})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -301,24 +329,23 @@
         dexter       (get-in field [:points :dexter])
         sinister     (get-in field [:points :sinister])
         field-1      (field/make-field (svg/make-path ["M" top-left
-                                                       "L" (svg/translate top-right [overlap 0])
-                                                       "L" (svg/translate fess [overlap overlap])
-                                                       "L" (svg/translate dexter [0 overlap])
+                                                       "L" top-right
+                                                       "L" fess
+                                                       "L" dexter
                                                        "z"])
                                        {:parent  field
                                         :context [:per-quarterly :top-left]})
         field-2      (field/make-field (svg/make-path ["M" chief
                                                        "L" top-right
-                                                       "L" (svg/translate sinister [0 overlap])
-                                                       "L" (svg/translate fess [overlap overlap])
+                                                       "L" sinister
                                                        "L" fess
                                                        "z"])
                                        {:parent field
                                         :meta   {:context [:per-quarterly :top-right]}})
-        field-3      (field/make-field (svg/make-path ["M" (svg/translate fess [(- overlap) 0])
+        field-3      (field/make-field (svg/make-path ["M" fess
                                                        "L" sinister
                                                        "L" bottom-right
-                                                       "L" (svg/translate base [(- overlap) 0])
+                                                       "L" base
                                                        "z"])
                                        {:parent field
                                         :meta   {:context [:per-quarterly :bottom-right]}})
@@ -384,55 +411,53 @@
                                     [(* (first fess-dir-sinister) (- width))
                                      (* (second fess-dir-sinister) (- width))])
         field-1                    (field/make-field (svg/make-path ["M" top-left
-                                                                     "L" (svg/translate chief [overlap 0])
-                                                                     "L" (svg/translate fess [overlap 0])
-                                                                     "L" (svg/translate fess [0 overlap])
-                                                                     "L" (svg/translate top-left [0 overlap])
+                                                                     "L" chief
+                                                                     "L" fess
+                                                                     "L" top-left
                                                                      "z"])
                                                      {:parent  field
                                                       :context [:per-gyronny :one]})
         field-2                    (field/make-field (svg/make-path ["M" fess
                                                                      "L" chief
                                                                      "L" top-right
-                                                                     "L" (svg/translate top-right [0 overlap])
-                                                                     "L" (svg/translate fess [0 overlap])
+                                                                     "L" fess
                                                                      "z"])
                                                      {:parent field
                                                       :meta   {:context [:per-gyronny :two]}})
         field-3                    (field/make-field (svg/make-path ["M" fess
                                                                      "L" top-right
-                                                                     "L" (svg/translate sinister [0 overlap])
-                                                                     "L" (svg/translate fess [0 overlap])
+                                                                     "L" sinister
+                                                                     "L" fess
                                                                      "z"])
                                                      {:parent field
                                                       :meta   {:context [:per-gyronny :three]}})
         field-4                    (field/make-field (svg/make-path ["M" fess
                                                                      "L" sinister
-                                                                     "L" (svg/translate bend-intersection-sinister [0 overlap])
-                                                                     "L" (svg/translate fess [0 overlap])
+                                                                     "L" bend-intersection-sinister
+                                                                     "L" fess
                                                                      "z"])
                                                      {:parent field
                                                       :meta   {:context [:per-gyronny :four]}})
         field-5                    (field/make-field (svg/make-path ["M" fess
                                                                      "L" bend-intersection-sinister
                                                                      "L" bottom-right
-                                                                     "L" (svg/translate base [(- overlap) 0])
-                                                                     "L" (svg/translate fess [(- overlap) 0])
+                                                                     "L" base
+                                                                     "L" fess
                                                                      "z"])
                                                      {:parent field
                                                       :meta   {:context [:per-gyronny :five]}})
         field-6                    (field/make-field (svg/make-path ["M" fess
                                                                      "L" base
                                                                      "L" bottom-left
-                                                                     "L" (svg/translate bend-intersection-dexter [0 (- overlap)])
-                                                                     "L" (svg/translate fess [(- overlap) 0])
+                                                                     "L" bend-intersection-dexter
+                                                                     "L" fess
                                                                      "z"])
                                                      {:parent field
                                                       :meta   {:context [:per-gyronny :six]}})
         field-7                    (field/make-field (svg/make-path ["M" fess
                                                                      "L" bend-intersection-dexter
-                                                                     "L" (svg/translate dexter [0 (- overlap)])
-                                                                     "L" (svg/translate fess [0 (- overlap)])
+                                                                     "L" dexter
+                                                                     "L" fess
                                                                      "z"])
                                                      {:parent field
                                                       :meta   {:context [:per-gyronny :seven]}})
@@ -500,15 +525,15 @@
         col1         (- (first fess) (/ width 6))
         col2         (+ (first fess) (/ width 6))
         field-1      (field/make-field (svg/make-path ["M" top-left
-                                                       "L" (svg/translate [col1 (second chief)] [overlap 0])
-                                                       "L" (svg/translate [col1 (second base)] [overlap 0])
+                                                       "L" [col1 (second chief)]
+                                                       "L" [col1 (second base)]
                                                        "L" bottom-left
                                                        "z"])
                                        {:parent  field
                                         :context [:per-tierced-pale :left]})
         field-2      (field/make-field (svg/make-path ["M" [col1 (second chief)]
-                                                       "L" (svg/translate [col2 (second chief)] [overlap 0])
-                                                       "L" (svg/translate [col2 (second base)] [overlap 0])
+                                                       "L" [col2 (second chief)]
+                                                       "L" [col2 (second base)]
                                                        "L" [col1 (second base)]
                                                        "z"])
                                        {:parent field
@@ -554,15 +579,15 @@
         row2         (+ (second fess) (/ height 6))
         field-1      (field/make-field (svg/make-path ["M" top-left
                                                        "L" top-right
-                                                       "L" (svg/translate [(first sinister) row1] [0 overlap])
-                                                       "L" (svg/translate [(first dexter) row1] [0 overlap])
+                                                       "L" [(first sinister) row1]
+                                                       "L" [(first dexter) row1]
                                                        "z"])
                                        {:parent  field
                                         :context [:per-tierced-fesse :top]})
         field-2      (field/make-field (svg/make-path ["M" [(first dexter) row1]
                                                        "L" [(first sinister) row1]
-                                                       "L" (svg/translate [(first sinister) row2] [0 overlap])
-                                                       "L" (svg/translate [(first dexter) row2] [0 overlap])
+                                                       "L" [(first sinister) row2]
+                                                       "L" [(first dexter) row2]
                                                        "z"])
                                        {:parent field
                                         :meta   {:context [:per-tierced-fesse :middle]}})
@@ -603,17 +628,16 @@
         fess         (get-in field [:points :fess])
         field-1      (field/make-field (svg/make-path ["M" top-left
                                                        "L" top-right
-                                                       "L" (svg/translate top-right [0 overlap])
-                                                       "L" (svg/translate fess [0 overlap])
-                                                       "L" (svg/translate top-left [0 overlap])
+                                                       "L" fess
+                                                       "L" top-left
                                                        "z"])
                                        {:parent  field
                                         :context [:per-tierced-pairle :top]})
         field-2      (field/make-field (svg/make-path ["M" fess
                                                        "L" top-right
                                                        "L" bottom-right
-                                                       "L" (svg/translate base [(- overlap) 0])
-                                                       "L" (svg/translate fess [(- overlap) 0])
+                                                       "L" base
+                                                       "L" fess
                                                        "z"])
                                        {:parent field
                                         :meta   {:context [:per-tierced-pairle :right]}})
@@ -665,28 +689,31 @@
                                     top-right
                                     [(* (first fess-dir-sinister) (- width))
                                      (* (second fess-dir-sinister) (- width))])
-        field-1                    (field/make-field (svg/make-path ["M" top-left
-                                                                     "L" (svg/translate chief [overlap 0])
-                                                                     "L" (svg/translate fess [overlap 0])
-                                                                     "L" (svg/translate bend-intersection-dexter [0 overlap])
-                                                                     "z"])
-                                                     {:parent  field
-                                                      :context [:per-tierced-pairle-reversed :left]})
-        field-2                    (field/make-field (svg/make-path ["M" chief
-                                                                     "L" top-right
-                                                                     "L" (svg/translate bend-intersection-sinister [0 overlap])
-                                                                     "L" (svg/translate fess [0 overlap])
-                                                                     "z"])
-                                                     {:parent field
-                                                      :meta   {:context [:per-tierced-pairle-reversed :right]}})
-        field-3                    (field/make-field (svg/make-path ["M" fess
-                                                                     "L" bend-intersection-sinister
-                                                                     "L" bottom-right
-                                                                     "L" bottom-left
-                                                                     "L" bend-intersection-dexter
-                                                                     "z"])
-                                                     {:parent field
-                                                      :meta   {:context [:per-tierced-pall-reversed :bottom]}})]
+        field-1                    (field/make-field
+                                    (svg/make-path ["M" top-left
+                                                    "L" chief
+                                                    "L" fess
+                                                    "L" bend-intersection-dexter
+                                                    "z"])
+                                    {:parent  field
+                                     :context [:per-tierced-pairle-reversed :left]})
+        field-2                    (field/make-field
+                                    (svg/make-path ["M" chief
+                                                    "L" top-right
+                                                    "L" bend-intersection-sinister
+                                                    "L" fess
+                                                    "z"])
+                                    {:parent field
+                                     :meta   {:context [:per-tierced-pairle-reversed :right]}})
+        field-3                    (field/make-field
+                                    (svg/make-path ["M" fess
+                                                    "L" bend-intersection-sinister
+                                                    "L" bottom-right
+                                                    "L" bottom-left
+                                                    "L" bend-intersection-dexter
+                                                    "z"])
+                                    {:parent field
+                                     :meta   {:context [:per-tierced-pall-reversed :bottom]}})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}

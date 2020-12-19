@@ -3,31 +3,37 @@
             [clojure.string :as s]
             [or.coad.svg :as svg]))
 
-(defn straight [length]
-  ["l" [length 0]])
+(defn straight [length _]
+  {:line   ["l" [length 0]]
+   :length length})
 
-(defn invected [length]
+(defn invected [length _]
   (let [width       10
         radius      (/ width 2)
         repetitions (-> length
                         (/ width)
                         Math/ceil
                         int)]
-    (->> ["a" radius radius 0 0 1 [width 0]]
-         (repeat repetitions)
-         (apply concat)
-         vec)))
-(defn engrailed [length]
+    {:line   (->> ["a" radius radius 0 0 1 [width 0]]
+                  (repeat repetitions)
+                  (apply concat)
+                  vec)
+     :length (* repetitions width)}))
+
+(defn engrailed [length _]
   (let [width       10
         radius      (/ width 2)
         repetitions (-> length
                         (/ width)
                         Math/ceil
                         int)]
-    (->> ["a" radius radius 0 0 0 [width 0]]
-         (repeat repetitions)
-         (apply concat)
-         vec)))
+    {:line   (->> ["a" radius radius 0 0 0 [radius (- radius)]
+                   "a" radius radius 0 0 0 [radius radius]]
+                  (repeat repetitions)
+                  (apply concat)
+                  vec)
+     :length (* repetitions width)}))
+
 (def kinds
   [["Straight" :straight straight]
    ["Invected" :invected invected]
@@ -44,14 +50,18 @@
        (map (fn [[name key _]]
               [key name]))))
 
-(defn create [kind length angle]
-  (-> ((get kinds-function-map kind) length)
-      svg/make-path
-      (->>
-       (str "M 0,0 "))
-      svgpath
-      (.rotate angle)
-      .toString))
+(defn create [kind length & {:keys [angle reversed? flipped?]}]
+  (let [line ((get kinds-function-map kind) length reversed?)]
+    (update line :line
+            #(-> %
+                 svg/make-path
+                 (->>
+                  (str "M 0,0 "))
+                 svgpath
+                 (cond->
+                     flipped? (.scale 1 -1))
+                 (.rotate angle)
+                 .toString))))
 
 (defn translate [path dx dy]
   (-> path
@@ -60,4 +70,4 @@
       .toString))
 
 (defn stitch [path]
-  (s/replace path #"^M[0-9.-]+[, ][0-9.-]+" ""))
+  (s/replace path #"^M[, ]*[0-9.-]+[, ][, ]*[0-9.-]+" ""))
