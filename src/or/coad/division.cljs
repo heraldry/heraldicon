@@ -1,7 +1,8 @@
 (ns or.coad.division
   (:require [or.coad.field :as field]
             [or.coad.line :as line]
-            [or.coad.svg :as svg]))
+            [or.coad.svg :as svg]
+            [or.coad.vector :as v]))
 
 (def overlap 0.1)
 
@@ -14,7 +15,7 @@
         bottom-right (get-in field [:points :bottom-right])
         chief (get-in field [:points :chief])
         base (get-in field [:points :base])
-        line (line/create line-style (- (second base) (second chief)) 90)
+        line (line/create line-style (:y (v/- base chief)) 90)
         field-1 (field/make-field
                  (svg/make-path ["M" chief
                                  (line/stitch line)
@@ -53,7 +54,7 @@
         bottom-right (get-in field [:points :bottom-right])
         dexter (get-in field [:points :dexter])
         sinister (get-in field [:points :sinister])
-        line (line/create line-style (- (first sinister) (first dexter)) 0)
+        line (line/create line-style (:x (v/- sinister dexter)) 0)
         field-1 (field/make-field
                  (svg/make-path ["M" dexter
                                  (line/stitch line)
@@ -91,26 +92,23 @@
         bottom-left (get-in field [:points :bottom-left])
         bottom-right (get-in field [:points :bottom-right])
         fess (get-in field [:points :fess])
-        fess-x-rel (- (first fess) (first top-left))
-        fess-y-rel (- (second fess) (second top-left))
-        width (:width field)
-        fess-dir [1 (/ fess-y-rel fess-x-rel)]
-        bend-intersection [(* (first fess-dir) width)
-                           (* (second fess-dir) width)]
-        field-1 (field/make-field (svg/make-path ["M" top-left
-                                                  "L" top-right
-                                                  "L" (svg/translate bend-intersection [0 overlap])
-                                                  "L" (svg/translate top-left [0 overlap])
-                                                  "z"])
-                                  {:parent field
-                                   :context [:per-bend :top]})
-        field-2 (field/make-field (svg/make-path ["M" top-left
-                                                  "L" bend-intersection
-                                                  "L" bottom-right
-                                                  "L" bottom-left
-                                                  "z"])
-                                  {:parent field
-                                   :meta {:context [:per-bend :bottom]}})]
+        bend-intersection (v/project top-left fess (:x top-right))
+        line (line/create line-style (v/abs (v/- bend-intersection top-left)) 45)
+        field-1 (field/make-field
+                 (svg/make-path ["M" top-left
+                                 (line/stitch line)
+                                 "L" top-right
+                                 "z"])
+                 {:parent field
+                  :context [:per-bend :top]})
+        field-2 (field/make-field
+                 (svg/make-path ["M" top-left
+                                 (line/stitch line)
+                                 "L" bottom-right
+                                 "L" bottom-left
+                                 "z"])
+                 {:parent field
+                  :meta {:context [:per-bend :bottom]}})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -132,28 +130,23 @@
         bottom-left (get-in field [:points :bottom-left])
         bottom-right (get-in field [:points :bottom-right])
         fess (get-in field [:points :fess])
-        fess-x-rel (- (first fess) (first top-right))
-        fess-y-rel (- (second fess) (second top-right))
-        width (:width field)
-        fess-dir [1 (/ fess-y-rel fess-x-rel)]
-        bend-intersection (svg/translate
-                           top-right
-                           [(* (first fess-dir) (- width))
-                            (* (second fess-dir) (- width))])
-        field-1 (field/make-field (svg/make-path ["M" top-left
-                                                  "L" top-right
-                                                  "L" (svg/translate top-right [0 overlap])
-                                                  "L" (svg/translate bend-intersection [0 overlap])
-                                                  "z"])
-                                  {:parent field
-                                   :context [:per-bend-sinister :top]})
-        field-2 (field/make-field (svg/make-path ["M" top-right
-                                                  "L" bottom-right
-                                                  "L" bottom-left
-                                                  "L" bend-intersection
-                                                  "z"])
-                                  {:parent field
-                                   :meta {:context [:per-bend-sinister :bottom]}})]
+        bend-intersection (v/project top-right fess (:x top-left))
+        line (line/create line-style (v/abs (v/- bend-intersection top-right)) -45)
+        field-1 (field/make-field
+                 (svg/make-path ["M" bend-intersection
+                                 (line/stitch line)
+                                 "L" top-left
+                                 "z"])
+                 {:parent field
+                  :context [:per-bend-sinister :top]})
+        field-2 (field/make-field
+                 (svg/make-path ["M" bend-intersection
+                                 (line/stitch line)
+                                 "L" bottom-right
+                                 "L" bottom-left
+                                 "z"])
+                 {:parent field
+                  :meta {:context [:per-bend-sinister :bottom]}})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}

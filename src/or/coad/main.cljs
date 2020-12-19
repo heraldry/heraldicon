@@ -138,7 +138,6 @@
 
 (defn start []
   (rf/dispatch-sync [:initialize-db])
-  (println "line" (line/invected 101))
   (r/render [app]
             (.getElementById js/document "app")))
 
