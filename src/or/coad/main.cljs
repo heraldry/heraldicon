@@ -5,6 +5,7 @@
             [or.coad.field :as field]
             [or.coad.field-content :as field-content]
             [or.coad.filter :as filter]
+            [or.coad.line :as line]
             [or.coad.ordinary :as ordinary]
             [re-frame.core :as rf]
             [reagent.core :as r]))
@@ -24,6 +25,7 @@
  (fn [db [_]]
    (merge {:coat-of-arms {:escutcheon :heater
                           :content {:division {:type :per-pale
+                                               :line-style :straight
                                                :extra {}
                                                :parts [{:tincture :azure}
                                                        {:tincture :sable}
@@ -93,6 +95,15 @@
        ^{:key key}
        [:option {:value (name key)} display-name])]]
    [:fieldset
+    [:label {:for "line"} "Line"]
+    [:select {:name "line"
+              :id "line"
+              :value (name (get-in coat-of-arms [:content :division :line-style]))
+              :on-change #(rf/dispatch [:set-in [:coat-of-arms :content :division :line-style] (keyword (-> % .-target .-value))])}
+     (for [[key display-name] line/options]
+       ^{:key key}
+       [:option {:value (name key)} display-name])]]
+   [:fieldset
     [:label {:for "ordinary"} "Ordinary"]
     [:select {:name "ordinary"
               :id "ordinary"
@@ -127,6 +138,7 @@
 
 (defn start []
   (rf/dispatch-sync [:initialize-db])
+  (println "line" (line/invected 101))
   (r/render [app]
             (.getElementById js/document "app")))
 

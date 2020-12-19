@@ -1,7 +1,7 @@
 (ns or.coad.division
   (:require [or.coad.field :as field]
-            [or.coad.svg :as svg]
-            [or.coad.tincture :refer [tinctures]]))
+            [or.coad.line :as line]
+            [or.coad.svg :as svg]))
 
 (defn base-area [fill]
   [:rect {:x -1000
@@ -12,7 +12,7 @@
 
 (def overlap 0.1)
 
-(defn per-pale [parts field top-level-render]
+(defn per-pale [parts field top-level-render {:keys [line-style]}]
   (let [mask-id-1 (svg/id "division-pale-1_")
         mask-id-2 (svg/id "division-pale-2_")
         top-left (get-in field [:points :top-left])
@@ -21,20 +21,23 @@
         bottom-right (get-in field [:points :bottom-right])
         chief (get-in field [:points :chief])
         base (get-in field [:points :base])
-        field-1 (field/make-field (svg/make-path ["M" top-left
-                                                  "L" (svg/translate chief [overlap 0])
-                                                  "L" (svg/translate base [overlap 0])
-                                                  "L" bottom-left
-                                                  "z"])
-                                  {:parent field
-                                   :context [:per-pale :left]})
-        field-2 (field/make-field (svg/make-path ["M" chief
-                                                  "L" top-right
-                                                  "L" bottom-right
-                                                  "L" base
-                                                  "z"])
-                                  {:parent field
-                                   :meta {:context [:per-pale :left]}})]
+        line (line/create line-style (- (second base) (second chief)) 90)
+        field-1 (field/make-field
+                 (svg/make-path ["M" chief
+                                 (line/stitch line)
+                                 "L" bottom-left
+                                 "L" top-left
+                                 "z"])
+                 {:parent field
+                  :context [:per-pale :left]})
+        field-2 (field/make-field
+                 (svg/make-path ["M" chief
+                                 (line/stitch line)
+                                 "L" bottom-right
+                                 "L" top-right
+                                 "z"])
+                 {:parent field
+                  :meta {:context [:per-pale :left]}})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -48,7 +51,7 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (second parts) field-2]]]))
 
-(defn per-fess [parts field top-level-render]
+(defn per-fess [parts field top-level-render {:keys [line-style]}]
   (let [mask-id-1 (svg/id "division-fess-1_")
         mask-id-2 (svg/id "division-fess-2_")
         top-left (get-in field [:points :top-left])
@@ -57,20 +60,23 @@
         bottom-right (get-in field [:points :bottom-right])
         dexter (get-in field [:points :dexter])
         sinister (get-in field [:points :sinister])
-        field-1 (field/make-field (svg/make-path ["M" top-left
-                                                  "L" top-right
-                                                  "L" (svg/translate sinister [0 overlap])
-                                                  "L" (svg/translate dexter [0 overlap])
-                                                  "z"])
-                                  {:parent field
-                                   :context [:per-fess :top]})
-        field-2 (field/make-field (svg/make-path ["M" dexter
-                                                  "L" sinister
-                                                  "L" bottom-right
-                                                  "L" bottom-left
-                                                  "z"])
-                                  {:parent field
-                                   :meta {:context [:per-fess :bottom]}})]
+        line (line/create line-style (- (first sinister) (first dexter)) 0)
+        field-1 (field/make-field
+                 (svg/make-path ["M" dexter
+                                 (line/stitch line)
+                                 "L" top-right
+                                 "L" top-left
+                                 "z"])
+                 {:parent field
+                  :context [:per-fess :top]})
+        field-2 (field/make-field
+                 (svg/make-path ["M" dexter
+                                 (line/stitch line)
+                                 "L" bottom-right
+                                 "L" bottom-left
+                                 "z"])
+                 {:parent field
+                  :meta {:context [:per-fess :bottom]}})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -84,7 +90,7 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (second parts) field-2]]]))
 
-(defn per-bend [parts field top-level-render]
+(defn per-bend [parts field top-level-render {:keys [line-style]}]
   (let [mask-id-1 (svg/id "division-bend-1_")
         mask-id-2 (svg/id "division-bend-2_")
         top-left (get-in field [:points :top-left])
@@ -125,7 +131,7 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (second parts) field-2]]]))
 
-(defn per-bend-sinister [parts field top-level-render]
+(defn per-bend-sinister [parts field top-level-render {:keys [line-style]}]
   (let [mask-id-1 (svg/id "division-bend-sinister-1_")
         mask-id-2 (svg/id "division-bend-sinister-2_")
         top-left (get-in field [:points :top-left])
@@ -168,7 +174,7 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (second parts) field-2]]]))
 
-(defn per-chevron [parts field top-level-render]
+(defn per-chevron [parts field top-level-render {:keys [line-style]}]
   (let [mask-id-1 (svg/id "division-chevron-1_")
         mask-id-2 (svg/id "division-chevron-2_")
         top-left (get-in field [:points :top-left])
@@ -218,7 +224,7 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (second parts) field-2]]]))
 
-(defn per-saltire [parts field top-level-render]
+(defn per-saltire [parts field top-level-render {:keys [line-style]}]
   (let [mask-id-1 (svg/id "division-saltire-1_")
         mask-id-2 (svg/id "division-saltire-2_")
         mask-id-3 (svg/id "division-saltire-3_")
@@ -738,6 +744,6 @@
        (map (fn [[name key _]]
               [key name]))))
 
-(defn render [{:keys [type parts]} field top-level-render]
+(defn render [{:keys [type parts] :as division} field top-level-render]
   (let [function (get kinds-function-map type)]
-    [function parts field top-level-render]))
+    [function parts field top-level-render division]))
