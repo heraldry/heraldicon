@@ -47,3 +47,11 @@
           (cljs.core// (cljs.core/- to-x from-x))
           (cljs.core/* (cljs.core/- x from-x))
           (cljs.core/+ from-y))})
+
+(defn extend [from to l]
+  (let [diff (- to from)
+        distance (abs diff)
+        direction (/ diff distance)]
+    (-> direction
+        (* l)
+        (+ from))))
