@@ -107,10 +107,9 @@
     (let [coat-of-arms @(rf/subscribe [:get :coat-of-arms])]
       [:<>
        [:div {:style {:width "100%"
-                      :height "100vh"
                       :position "relative"}}
         [:svg {:id "svg"
-               :style {:width "60%"
+               :style {:width "30em"
                        :position "absolute"
                        :left 0
                        :top 0}
@@ -118,9 +117,8 @@
                :preserveAspectRatio "xMidYMin slice"}
          defs
          [render-shield coat-of-arms]]
-        [:div {:style {:width "40%"
-                       :position "absolute"
-                       :left "60%"
+        [:div {:style {:position "absolute"
+                       :left "30em"
                        :top 0}}
          [controls coat-of-arms]]]])))
 
