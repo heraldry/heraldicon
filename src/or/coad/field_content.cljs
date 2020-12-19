@@ -8,8 +8,9 @@
         tincture   (:tincture content)]
     [:<>
      (cond
-       tincture [:path {:d    (:shape field)
-                        :fill (get tincture/tinctures tincture)}]
+       tincture [:path {:d      (:shape field)
+                        :fill   (get tincture/tinctures tincture)
+                        :stroke (get tincture/tinctures tincture)}]
        division [division/render division field render])
      #_(for [[idx ordinary] (map-indexed vector ordinaries)]
          ^{:key idx} [ordinary/render ordinary])]))
