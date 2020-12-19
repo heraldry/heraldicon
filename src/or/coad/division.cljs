@@ -761,18 +761,18 @@
         chief                      (get-in field [:points :chief])
         fess                       (get-in field [:points :fess])
         width                      (:width field)
-        fess-x-rel-dexter          (- (first fess) (first top-left))
-        fess-y-rel-dexter          (- (second fess) (second top-left))
-        fess-dir-dexter            [1 (/ fess-y-rel-dexter fess-x-rel-dexter)]
-        bend-intersection-sinister [(* (first fess-dir-dexter) width)
-                                    (* (second fess-dir-dexter) width)]
-        fess-x-rel-sinister        (- (first fess) (first top-right))
-        fess-y-rel-sinister        (- (second fess) (second top-right))
-        fess-dir-sinister          [1 (/ fess-y-rel-sinister fess-x-rel-sinister)]
-        bend-intersection-dexter   (svg/translate
+        fess-x-rel-dexter          (- (:x fess) (:x top-left))
+        fess-y-rel-dexter          (- (:y fess) (:y top-left))
+        fess-dir-dexter            (v/v 1 (/ fess-y-rel-dexter fess-x-rel-dexter))
+        bend-intersection-sinister (v/v (* (:x fess-dir-dexter) width)
+                                        (* (:y fess-dir-dexter) width))
+        fess-x-rel-sinister        (- (:x fess) (:x top-right))
+        fess-y-rel-sinister        (- (:y fess) (:y top-right))
+        fess-dir-sinister          (v/v 1 (/ fess-y-rel-sinister fess-x-rel-sinister))
+        bend-intersection-dexter   (v/+
                                     top-right
-                                    [(* (first fess-dir-sinister) (- width))
-                                     (* (second fess-dir-sinister) (- width))])
+                                    (v/v (* (:x fess-dir-sinister) (- width))
+                                         (* (:y fess-dir-sinister) (- width))))
         field-1                    (field/make-field
                                     (svg/make-path ["M" top-left
                                                     "L" chief
