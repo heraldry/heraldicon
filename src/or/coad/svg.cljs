@@ -21,11 +21,27 @@
           [x x y y]
           rest))
 
+(defn avg-x-y [[[x y] & rest]]
+  (let [[sx sy n] (reduce (fn [[sx sy n] [x y]]
+                            [(+ sx x)
+                             (+ sy y)
+                             (inc n)])
+                          [x y 1]
+                          rest)]
+    [(/ sx n)
+     (/ sy n)]))
+
 (defn bounding-box [d]
   (let [path (new-path d)
         points (points path 1000)
         box (min-max-x-y points)]
     box))
+
+(defn center [d]
+  (let [path (new-path d)
+        points (points path 1000)
+        center (avg-x-y points)]
+    center))
 
 (defn s [[x y]]
   (str x "," y))
