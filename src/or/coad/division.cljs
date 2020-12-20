@@ -19,6 +19,7 @@
         field-1      (field/make-field
                       (svg/make-path ["M" base
                                       (line/stitch line)
+                                      "L" chief
                                       "L" top-left
                                       "L" bottom-left
                                       "z"])
@@ -27,6 +28,7 @@
         field-2      (field/make-field
                       (svg/make-path ["M" base
                                       (line/stitch line)
+                                      "L" chief
                                       "L" top-right
                                       "L" bottom-right
                                       "z"])
@@ -37,12 +39,15 @@
       [:mask {:id mask-id-1}
        [:path {:d    (:shape field-1)
                :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" base
-                            (line/stitch line)])}]]
+       [:path.overlap {:d (:shape field-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
-               :fill "#fff"}]]]
+               :fill "#fff"}]
+       [:path.overlap {:d (svg/make-path
+                           ["M" chief
+                            "L" top-right
+                            "L" bottom-right
+                            "L" base])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -62,6 +67,7 @@
         field-1      (field/make-field
                       (svg/make-path ["M" dexter
                                       (line/stitch line)
+                                      "L" sinister
                                       "L" top-right
                                       "L" top-left
                                       "z"])
@@ -70,6 +76,7 @@
         field-2      (field/make-field
                       (svg/make-path ["M" dexter
                                       (line/stitch line)
+                                      "L" sinister
                                       "L" bottom-right
                                       "L" bottom-left
                                       "z"])
@@ -80,12 +87,15 @@
       [:mask {:id mask-id-1}
        [:path {:d    (:shape field-1)
                :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" dexter
-                            (line/stitch line)])}]]
+       [:path.overlap {:d (:shape field-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
-               :fill "#fff"}]]]
+               :fill "#fff"}]
+       [:path.overlap {:d (svg/make-path
+                           ["M" sinister
+                            "L" bottom-right
+                            "L" bottom-left
+                            "L" dexter])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -106,6 +116,7 @@
         field-1           (field/make-field
                            (svg/make-path ["M" top-left
                                            (line/stitch line)
+                                           "L" bend-intersection
                                            "L" top-right
                                            "z"])
                            {:parent  field
@@ -113,6 +124,7 @@
         field-2           (field/make-field
                            (svg/make-path ["M" top-left
                                            (line/stitch line)
+                                           "L" bend-intersection
                                            "L" bottom-right
                                            "L" bottom-left
                                            "z"])
@@ -123,12 +135,15 @@
       [:mask {:id mask-id-1}
        [:path {:d    (:shape field-1)
                :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" top-left
-                            (line/stitch line)])}]]
+       [:path.overlap {:d (:shape field-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
-               :fill "#fff"}]]]
+               :fill "#fff"}]
+       [:path.overlap {:d (svg/make-path
+                           ["M" bend-intersection
+                            "L" bottom-right
+                            "L" bottom-left
+                            "L" top-left])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -155,6 +170,7 @@
         field-1                    (field/make-field
                                     (svg/make-path ["M" bend-intersection-adjusted
                                                     (line/stitch line)
+                                                    "L" top-right
                                                     "L" top-left
                                                     "z"])
                                     {:parent  field
@@ -162,6 +178,7 @@
         field-2                    (field/make-field
                                     (svg/make-path ["M" bend-intersection-adjusted
                                                     (line/stitch line)
+                                                    "L" top-right
                                                     "L" bottom-right
                                                     "L" bottom-left
                                                     "z"])
@@ -172,12 +189,15 @@
       [:mask {:id mask-id-1}
        [:path {:d    (:shape field-1)
                :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" bend-intersection-adjusted
-                            (line/stitch line)])}]]
+       [:path.overlap {:d (:shape field-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
-               :fill "#fff"}]]]
+               :fill "#fff"}]
+       [:path.overlap {:d (svg/make-path
+                           ["M" top-right
+                            "L" bottom-right
+                            "L" bottom-left
+                            "L" bend-intersection-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -204,6 +224,7 @@
         field-1                           (field/make-field
                                            (svg/make-path ["M" fess
                                                            (line/stitch line-sinister)
+                                                           "L" bend-intersection-sinister
                                                            "L" top-right
                                                            "L" top-left
                                                            "L" bend-intersection-dexter-adjusted
@@ -214,6 +235,7 @@
         field-2                           (field/make-field
                                            (svg/make-path ["M" fess
                                                            (line/stitch line-sinister)
+                                                           "L" bend-intersection-sinister
                                                            "L" bottom-right
                                                            "L" bottom-left
                                                            "L" bend-intersection-dexter-adjusted
@@ -226,14 +248,15 @@
       [:mask {:id mask-id-1}
        [:path {:d    (:shape field-1)
                :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" bend-intersection-dexter-adjusted
-                            (line/stitch line-dexter)
-                            "L" fess
-                            (line/stitch line-sinister)])}]]
+       [:path.overlap {:d (:shape field-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
-               :fill "#fff"}]]]
+               :fill "#fff"}]
+       [:path.overlap {:d (svg/make-path
+                           ["L" bend-intersection-sinister
+                            "L" bottom-right
+                            "L" bottom-left
+                            "L" bend-intersection-dexter-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -289,6 +312,7 @@
         field-2                             (field/make-field
                                              (svg/make-path ["M" fess
                                                              (line/stitch line-chief-sinister)
+                                                             "L" top-right
                                                              "L" bend-intersection-sinister-adjusted
                                                              (line/stitch line-base-sinister)
                                                              "z"])
@@ -299,6 +323,7 @@
                                                              (line/stitch line-base-sinister)
                                                              "L" fess
                                                              (line/stitch line-base-dexter)
+                                                             "L" bend-intersection-dexter
                                                              "L" bottom-left
                                                              "L" bottom-right
                                                              "z"])
@@ -307,6 +332,7 @@
         field-4                             (field/make-field
                                              (svg/make-path ["M" fess
                                                              (line/stitch line-base-dexter)
+                                                             "L" bend-intersection-dexter
                                                              "L" top-left-adjusted
                                                              (line/stitch line-chief-dexter)
                                                              "z"])
@@ -317,26 +343,31 @@
       [:mask {:id mask-id-1}
        [:path {:d    (:shape field-1)
                :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" top-left-adjusted
-                            (line/stitch line-chief-dexter)
-                            "L" fess
-                            (line/stitch line-chief-sinister)])}]]
+       [:path.overlap {:d (:shape field-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" bend-intersection-sinister-adjusted
-                            (line/stitch line-base-sinister)])}]]
+                           ["M" top-right
+                            "L" bend-intersection-sinister-adjusted
+                            (line/stitch line-base-sinister)
+                            "L" fess])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape field-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["L" fess
-                            (line/stitch line-base-dexter)])}]]
+                           ["M" fess
+                            (line/stitch line-base-dexter)
+                            "L" bend-intersection-dexter
+                            "L" bottom-left
+                            "L" bottom-right
+                            "L" bend-intersection-sinister-adjusted])}]]
       [:mask {:id mask-id-4}
        [:path {:d    (:shape field-4)
-               :fill "#fff"}]]]
+               :fill "#fff"}]
+       [:path.overlap {:d (svg/make-path
+                           ["M" bend-intersection-dexter
+                            "L" top-left-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -383,6 +414,7 @@
                                                                       (line/stitch line-chief)
                                                                       "L" fess
                                                                       (line/stitch line-dexter)
+                                                                      "L" dexter
                                                                       "L" top-left
                                                                       "z"])
                                                       {:parent  field
@@ -391,12 +423,14 @@
                                                                       (line/stitch line-chief)
                                                                       "L" fess
                                                                       (line/stitch line-sinister)
+                                                                      "L" sinister
                                                                       "L" top-right
                                                                       "z"])
                                                       {:parent field
                                                        :meta   {:context [:per-quarterly :top-right]}})
         field-3                     (field/make-field (svg/make-path ["M" fess
                                                                       (line/stitch line-sinister)
+                                                                      "L" sinister
                                                                       "L" bottom-right
                                                                       "L" base-adjusted
                                                                       (line/stitch line-base)
@@ -407,6 +441,7 @@
                                                                       (line/stitch line-base)
                                                                       "L" fess
                                                                       (line/stitch line-dexter)
+                                                                      "L" dexter
                                                                       "L" bottom-left
                                                                       "z"])
                                                       {:parent field
@@ -416,26 +451,32 @@
       [:mask {:id mask-id-1}
        [:path {:d    (:shape field-1)
                :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" chief-adjusted
-                            (line/stitch line-chief)
-                            "L" fess
-                            (line/stitch line-dexter)])}]]
+       [:path.overlap {:d (:shape field-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
-                            (line/stitch line-sinister)])}]]
+                            (line/stitch line-sinister)
+                            "L" sinister
+                            "L" top-right
+                            "L" chief-adjusted])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape field-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" base-adjusted
-                            (line/stitch line-base)])}]]
+                           ["M" sinister
+                            "L" bottom-right
+                            "L" base-adjusted
+                            (line/stitch line-base)
+                            "L" fess])}]]
       [:mask {:id mask-id-4}
        [:path {:d    (:shape field-4)
-               :fill "#fff"}]]]
+               :fill "#fff"}]
+       [:path.overlap {:d (svg/make-path
+                           ["M" dexter
+                            "L" bottom-left
+                            "L" base-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -507,6 +548,7 @@
 
         field-1 (field/make-field (svg/make-path ["M" fess
                                                   (line/stitch line-chief-dexter)
+                                                  "L" top-left
                                                   "L" chief-adjusted
                                                   (line/stitch line-chief)
                                                   "z"])
@@ -516,11 +558,13 @@
                                                   (line/stitch line-chief)
                                                   "L" fess
                                                   (line/stitch line-chief-sinister)
+                                                  "L" top-right
                                                   "z"])
                                   {:parent field
                                    :meta   {:context [:per-gyronny :two]}})
         field-3 (field/make-field (svg/make-path ["M" fess
                                                   (line/stitch line-chief-sinister)
+                                                  "L" top-right
                                                   "L" sinister-adjusted
                                                   (line/stitch line-sinister)
                                                   "z"])
@@ -530,11 +574,13 @@
                                                   (line/stitch line-sinister)
                                                   "L" fess
                                                   (line/stitch line-base-sinister)
+                                                  "L" bend-intersection-sinister
                                                   "z"])
                                   {:parent field
                                    :meta   {:context [:per-gyronny :four]}})
         field-5 (field/make-field (svg/make-path ["M" fess
                                                   (line/stitch line-base-sinister)
+                                                  "L" bend-intersection-sinister
                                                   "L" bottom-right
                                                   "L" base-adjusted
                                                   (line/stitch line-base)
@@ -545,12 +591,14 @@
                                                   (line/stitch line-base)
                                                   "L" fess
                                                   (line/stitch line-base-dexter)
+                                                  "L" bend-intersection-dexter
                                                   "L" bottom-left
                                                   "z"])
                                   {:parent field
                                    :meta   {:context [:per-gyronny :six]}})
         field-7 (field/make-field (svg/make-path ["M" fess
                                                   (line/stitch line-base-dexter)
+                                                  "L" bend-intersection-dexter
                                                   "L" dexter-adjusted
                                                   (line/stitch line-dexter)
                                                   "z"])
@@ -560,6 +608,7 @@
                                                   (line/stitch line-dexter)
                                                   "L" fess
                                                   (line/stitch line-chief-dexter)
+                                                  "L" top-left
                                                   "z"])
                                   {:parent field
                                    :meta   {:context [:per-gyronny :eight]}})]
@@ -568,50 +617,63 @@
       [:mask {:id mask-id-1}
        [:path {:d    (:shape field-1)
                :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" chief-adjusted
-                            (line/stitch line-chief)
-                            "L" fess
-                            (line/stitch line-chief-dexter)])}]]
+       [:path.overlap {:d (:shape field-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
-                            (line/stitch line-chief-sinister)])}]]
+                            (line/stitch line-chief-sinister)
+                            "L" top-right
+                            "L" chief-adjusted])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape field-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" sinister-adjusted
-                            (line/stitch line-sinister)])}]]
+                           ["M" top-right
+                            "L" sinister-adjusted
+                            (line/stitch line-sinister)
+                            "L" fess])}]]
       [:mask {:id mask-id-4}
        [:path {:d    (:shape field-4)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
-                            (line/stitch line-base-sinister)])}]]
+                            (line/stitch line-base-sinister)
+                            "L" bend-intersection-sinister
+                            "L" sinister-adjusted])}]]
       [:mask {:id mask-id-5}
        [:path {:d    (:shape field-5)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" base-adjusted
-                            (line/stitch line-base)])}]]
+                           ["M" bend-intersection-sinister
+                            "L" bottom-right
+                            "L" base-adjusted
+                            (line/stitch line-base)
+                            "L" fess])}]]
       [:mask {:id mask-id-6}
        [:path {:d    (:shape field-6)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
-                            (line/stitch line-base-dexter)])}]]
+                            (line/stitch line-base-dexter)
+                            "L" bend-intersection-dexter
+                            "L" bottom-left
+                            "L" base-adjusted])}]]
       [:mask {:id mask-id-7}
        [:path {:d    (:shape field-7)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" dexter-adjusted
-                            (line/stitch line-dexter)])}]]
+                           ["M" bend-intersection-dexter
+                            "L" dexter-adjusted
+                            (line/stitch line-dexter)
+                            "L" fess])}]]
       [:mask {:id mask-id-8}
        [:path {:d    (:shape field-8)
-               :fill "#fff"}]]]
+               :fill "#fff"}]
+       [:path.overlap {:d (svg/make-path
+                           ["L" top-left
+                            "L" dexter-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -644,6 +706,7 @@
         col1                           (- (:x fess) (/ width 6))
         col2                           (+ (:x fess) (/ width 6))
         first-chief                    (v/v col1 (:y chief))
+        first-base                     (v/v col1 (:y base))
         second-chief                   (v/v col2 (:y chief))
         second-base                    (v/v col2 (:y base))
         {line :line}                   (line/create line-style
@@ -659,6 +722,7 @@
         field-1                        (field/make-field
                                         (svg/make-path ["M" first-chief
                                                         (line/stitch line)
+                                                        "L" first-base
                                                         "L" bottom-left
                                                         "L" top-left
                                                         "z"])
@@ -667,14 +731,17 @@
         field-2                        (field/make-field
                                         (svg/make-path ["M" first-chief
                                                         (line/stitch line)
+                                                        "L" first-base
                                                         "L" second-base-adjusted
                                                         (line/stitch line-reversed)
+                                                        "L" second-chief
                                                         "z"])
                                         {:parent field
                                          :meta   {:context [:per-tierced-pale :middle]}})
         field-3                        (field/make-field
                                         (svg/make-path ["M" second-base-adjusted
                                                         (line/stitch line-reversed)
+                                                        "L" second-chief
                                                         "L" top-right
                                                         "L" bottom-right
                                                         "z"])
@@ -685,18 +752,24 @@
       [:mask {:id mask-id-1}
        [:path {:d    (:shape field-1)
                :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" first-chief
-                            (line/stitch line)])}]]
+       [:path.overlap {:d (:shape field-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" second-base-adjusted
-                            (line/stitch line-reversed)])}]]
+                           ["M" first-base
+                            "L" second-base-adjusted
+                            (line/stitch line-reversed)
+                            "L" second-chief
+                            "L" first-chief])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape field-3)
-               :fill "#fff"}]]]
+               :fill "#fff"}]
+       [:path.overlap {:d (svg/make-path
+                           ["M" second-chief
+                            "L" top-right
+                            "L" bottom-right
+                            "L" second-base-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -719,6 +792,7 @@
         row1                           (- (:y fess) (/ height 6))
         row2                           (+ (:y fess) (/ height 6))
         first-dexter                   (v/v (:x dexter) row1)
+        first-sinister                 (v/v (:x sinister) row1)
         second-dexter                  (v/v (:x dexter) row2)
         second-sinister                (v/v (:x sinister) row2)
         {line :line}                   (line/create line-style
@@ -733,6 +807,7 @@
         field-1                        (field/make-field
                                         (svg/make-path ["M" first-dexter
                                                         (line/stitch line)
+                                                        "L" first-sinister
                                                         "L" top-right
                                                         "L" top-left
                                                         "z"])
@@ -741,14 +816,17 @@
         field-2                        (field/make-field
                                         (svg/make-path ["M" first-dexter
                                                         (line/stitch line)
+                                                        "L" first-sinister
                                                         "L" second-sinister-adjusted
                                                         (line/stitch line-reversed)
+                                                        "L" dexter
                                                         "z"])
                                         {:parent field
                                          :meta   {:context [:per-tierced-fesse :middle]}})
         field-3                        (field/make-field
                                         (svg/make-path ["M" second-sinister-adjusted
                                                         (line/stitch line-reversed)
+                                                        "L" dexter
                                                         "L" bottom-left
                                                         "L" bottom-right
                                                         "z"])
@@ -759,18 +837,24 @@
       [:mask {:id mask-id-1}
        [:path {:d    (:shape field-1)
                :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" first-dexter
-                            (line/stitch line)])}]]
+       [:path.overlap {:d (:shape field-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" second-sinister-adjusted
-                            (line/stitch line-reversed)])}]]
+                           ["M" first-sinister
+                            "L" second-sinister-adjusted
+                            (line/stitch line-reversed)
+                            "L" dexter
+                            "L" first-dexter])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape field-3)
-               :fill "#fff"}]]]
+               :fill "#fff"}]
+       [:path.overlap {:d (svg/make-path
+                           ["M" dexter
+                            "L" bottom-left
+                            "L" bottom-right
+                            "L" second-sinister-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -819,12 +903,14 @@
                                                              (line/stitch line-chief-dexter)
                                                              "L" fess
                                                              (line/stitch line-chief-sinister)
+                                                             "L" top-right
                                                              "z"])
                                              {:parent  field
                                               :context [:per-tierced-pairle :top]})
         field-2                             (field/make-field
                                              (svg/make-path ["M" fess
                                                              (line/stitch line-chief-sinister)
+                                                             "L" top-right
                                                              "L" bottom-right
                                                              "L" base-adjusted
                                                              (line/stitch line-base-reversed)
@@ -834,6 +920,7 @@
         field-3                             (field/make-field
                                              (svg/make-path ["M" fess
                                                              (line/stitch line-base)
+                                                             "L" base
                                                              "L" bottom-left
                                                              "L" top-left-adjusted
                                                              (line/stitch line-chief-dexter)
@@ -845,20 +932,23 @@
       [:mask {:id mask-id-1}
        [:path {:d    (:shape field-1)
                :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" top-left-adjusted
-                            (line/stitch line-chief-dexter)
-                            "L" fess
-                            (line/stitch line-chief-sinister)])}]]
+       [:path.overlap {:d (:shape field-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" base-adjusted
-                            (line/stitch line-base-reversed)])}]]
+                           ["M" top-right
+                            "L" bottom-right
+                            "L" base-adjusted
+                            (line/stitch line-base-reversed)
+                            "L" fess])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape field-3)
-               :fill "#fff"}]]]
+               :fill "#fff"}]
+       [:path.overlap {:d (svg/make-path
+                           ["M" base
+                            "L" bottom-left
+                            "L" top-left-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -909,6 +999,7 @@
                                                               (line/stitch line-chief-reversed)
                                                               "L" fess
                                                               (line/stitch line-base-dexter)
+                                                              "L" bend-intersection-dexter
                                                               "L" top-left
                                                               "z"])
                                               {:parent  field
@@ -916,6 +1007,7 @@
         field-2                              (field/make-field
                                               (svg/make-path ["M" fess
                                                               (line/stitch line-chief)
+                                                              "L" chief
                                                               "L" top-right
                                                               "L" bend-intersection-sinister-adjusted
                                                               (line/stitch line-base-sinister)
@@ -927,6 +1019,7 @@
                                                               (line/stitch line-base-sinister)
                                                               "L" fess
                                                               (line/stitch line-base-dexter)
+                                                              "L" bend-intersection-dexter
                                                               "L" bottom-left
                                                               "L" bottom-right
                                                               "z"])
@@ -937,19 +1030,24 @@
       [:mask {:id mask-id-1}
        [:path {:d    (:shape field-1)
                :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path ["M" chief-adjusted
-                                          (line/stitch line-chief-reversed)
-                                          "L" fess
-                                          (line/stitch line-base-dexter)])}]]
+       [:path.overlap {:d (:shape field-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape field-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" bend-intersection-sinister-adjusted
-                            (line/stitch line-base-sinister)])}]]
+                           ["M" chief
+                            "L" top-right
+                            "L" bend-intersection-sinister-adjusted
+                            (line/stitch line-base-sinister)
+                            "L" fess])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape field-3)
-               :fill "#fff"}]]]
+               :fill "#fff"}]
+       [:path.overlap {:d (svg/make-path
+                           ["L" bend-intersection-dexter
+                            "L" bottom-left
+                            "L" bottom-right
+                            "L" bend-intersection-sinister-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (first parts) field-1]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
