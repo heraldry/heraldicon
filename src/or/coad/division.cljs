@@ -134,22 +134,27 @@
         bottom-right (get-in field [:points :bottom-right])
         fess (get-in field [:points :fess])
         bend-intersection (v/project top-right fess (:x top-left))
-        {line :line} (line/create line-style
-                                  (v/abs (v/- bend-intersection top-right))
-                                  :angle 135
-                                  :flipped? true)
+        {line :line
+         line-length :length} (line/create line-style
+                                           (v/abs (v/- bend-intersection top-right))
+                                           :angle -45
+                                           :flipped? false)
+        bend-intersection-adjusted (v/extend
+                                    top-right
+                                     bend-intersection
+                                     line-length)
         field-1 (field/make-field
-                 (svg/make-path ["M" top-right
+                 (svg/make-path ["M" bend-intersection-adjusted
                                  (line/stitch line)
                                  "L" top-left
                                  "z"])
                  {:parent field
                   :context [:per-bend-sinister :top]})
         field-2 (field/make-field
-                 (svg/make-path ["M" top-right
+                 (svg/make-path ["M" bend-intersection-adjusted
                                  (line/stitch line)
-                                 "L" bottom-left
                                  "L" bottom-right
+                                 "L" bottom-left
                                  "z"])
                  {:parent field
                   :meta {:context [:per-bend-sinister :bottom]}})]
@@ -179,8 +184,7 @@
         {line-dexter :line
          line-dexter-length :length} (line/create line-style
                                                   (v/abs (v/- bend-intersection-dexter fess))
-                                                  :angle -45
-                                                  :reversed? true)
+                                                  :angle -45)
         {line-sinister :line} (line/create line-style
                                            (v/abs (v/- bend-intersection-sinister fess))
                                            :angle 45)
