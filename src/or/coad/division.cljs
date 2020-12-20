@@ -700,7 +700,7 @@
      [:g {:mask (str "url(#" mask-id-3 ")")}
       [top-level-render (nth parts 2) field-3]]]))
 
-(defn tierced-in-pairle [parts field top-level-render]
+(defn tierced-in-pairle [parts field top-level-render {:keys [line-style]}]
   (let [mask-id-1 (svg/id "division-tierced-pairle-1_")
         mask-id-2 (svg/id "division-tierced-pairle-2_")
         mask-id-3 (svg/id "division-tierced-pairle-3_")
@@ -710,28 +710,58 @@
         bottom-right (get-in field [:points :bottom-right])
         base (get-in field [:points :base])
         fess (get-in field [:points :fess])
-        field-1 (field/make-field (svg/make-path ["M" top-left
-                                                  "L" top-right
-                                                  "L" fess
-                                                  "L" top-left
-                                                  "z"])
-                                  {:parent field
-                                   :context [:per-tierced-pairle :top]})
-        field-2 (field/make-field (svg/make-path ["M" fess
-                                                  "L" top-right
-                                                  "L" bottom-right
-                                                  "L" base
-                                                  "L" fess
-                                                  "z"])
-                                  {:parent field
-                                   :meta {:context [:per-tierced-pairle :right]}})
-        field-3 (field/make-field (svg/make-path ["M" fess
-                                                  "L" base
-                                                  "L" bottom-left
-                                                  "L" top-left
-                                                  "z"])
-                                  {:parent field
-                                   :meta {:context [:per-tierced-pall :left]}})]
+        {line-chief-dexter :line
+         line-chief-dexter-length :length} (line/create line-style
+                                                        (v/abs (v/- top-left fess))
+                                                        :angle 45
+                                                        :reversed? true)
+        {line-chief-sinister :line} (line/create line-style
+                                                 (v/abs (v/- top-right fess))
+                                                 :angle -45
+                                                 :flipped? true)
+        {line-base :line} (line/create line-style
+                                       (v/abs (v/- base fess))
+                                       :flipped? true
+                                       :angle 90)
+        {line-base-reversed :line
+         line-base-reversed-length :length} (line/create line-style
+                                                         (v/abs (v/- base fess))
+                                                         :angle -90
+                                                         :reversed? true)
+        top-left-adjusted (v/extend
+                           fess
+                            top-left
+                            line-chief-dexter-length)
+        base-adjusted (v/extend
+                       fess
+                        base
+                        line-base-reversed-length)
+        field-1 (field/make-field
+                 (svg/make-path ["M" top-left-adjusted
+                                 (line/stitch line-chief-dexter)
+                                 "L" fess
+                                 (line/stitch line-chief-sinister)
+                                 "z"])
+                 {:parent field
+                  :context [:per-tierced-pairle :top]})
+        field-2 (field/make-field
+                 (svg/make-path ["M" fess
+                                 (line/stitch line-chief-sinister)
+                                 "L" bottom-right
+                                 "L" base-adjusted
+                                 (line/stitch line-base-reversed)
+                                 "z"])
+                 {:parent field
+                  :meta {:context [:per-tierced-pairle :right]}})
+        field-3 (field/make-field
+                 (svg/make-path ["M" fess
+                                 (line/stitch line-base)
+                                 "L" bottom-left
+                                 "L" top-left-adjusted
+                                 (line/stitch line-chief-dexter)
+                                 "z"])
+                 {:parent field
+                  :meta {:context [:per-tierced-pall :left]}})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -750,7 +780,7 @@
      [:g {:mask (str "url(#" mask-id-3 ")")}
       [top-level-render (nth parts 2) field-3]]]))
 
-(defn tierced-in-pairle-reversed [parts field top-level-render]
+(defn tierced-in-pairle-reversed [parts field top-level-render {:keys [line-style]}]
   (let [mask-id-1 (svg/id "division-tierced-pairle-reversed-1_")
         mask-id-2 (svg/id "division-tierced-pairle-reversed-2_")
         mask-id-3 (svg/id "division-tierced-pairle-reversed-3_")
@@ -760,41 +790,59 @@
         bottom-right (get-in field [:points :bottom-right])
         chief (get-in field [:points :chief])
         fess (get-in field [:points :fess])
-        width (:width field)
-        fess-x-rel-dexter (- (:x fess) (:x top-left))
-        fess-y-rel-dexter (- (:y fess) (:y top-left))
-        fess-dir-dexter (v/v 1 (/ fess-y-rel-dexter fess-x-rel-dexter))
-        bend-intersection-sinister (v/v (* (:x fess-dir-dexter) width)
-                                        (* (:y fess-dir-dexter) width))
-        fess-x-rel-sinister (- (:x fess) (:x top-right))
-        fess-y-rel-sinister (- (:y fess) (:y top-right))
-        fess-dir-sinister (v/v 1 (/ fess-y-rel-sinister fess-x-rel-sinister))
-        bend-intersection-dexter (v/+
-                                  top-right
-                                  (v/v (* (:x fess-dir-sinister) (- width))
-                                       (* (:y fess-dir-sinister) (- width))))
+        bend-intersection-dexter (v/project top-right fess (:x top-left))
+        bend-intersection-sinister (v/project top-left fess (:x top-right))
+        {line-base-sinister :line
+         line-base-sinister-length :length} (line/create line-style
+                                                         (v/abs (v/- bend-intersection-sinister fess))
+                                                         :angle -135
+                                                         :reversed? true)
+        {line-base-dexter :line} (line/create line-style
+                                              (v/abs (v/- bend-intersection-dexter fess))
+                                              :angle -225
+                                              :flipped? true)
+        {line-chief :line} (line/create line-style
+                                        (v/abs (v/- chief fess))
+                                        :flipped? true
+                                        :angle -90)
+        {line-chief-reversed :line
+         line-chief-reversed-length :length} (line/create line-style
+                                                          (v/abs (v/- chief fess))
+                                                          :angle 90
+                                                          :reversed? true)
+        bend-intersection-sinister-adjusted (v/extend
+                                             fess
+                                              bend-intersection-sinister
+                                              line-base-sinister-length)
+        chief-adjusted (v/extend
+                        fess
+                         chief
+                         line-chief-reversed-length)
         field-1 (field/make-field
-                 (svg/make-path ["M" top-left
-                                 "L" chief
+                 (svg/make-path ["M" chief-adjusted
+                                 (line/stitch line-chief-reversed)
                                  "L" fess
-                                 "L" bend-intersection-dexter
+                                 (line/stitch line-base-dexter)
+                                 "L" top-left
                                  "z"])
                  {:parent field
                   :context [:per-tierced-pairle-reversed :left]})
         field-2 (field/make-field
-                 (svg/make-path ["M" chief
+                 (svg/make-path ["M" fess
+                                 (line/stitch line-chief)
                                  "L" top-right
-                                 "L" bend-intersection-sinister
-                                 "L" fess
+                                 "L" bend-intersection-sinister-adjusted
+                                 (line/stitch line-base-sinister)
                                  "z"])
                  {:parent field
                   :meta {:context [:per-tierced-pairle-reversed :right]}})
         field-3 (field/make-field
-                 (svg/make-path ["M" fess
-                                 "L" bend-intersection-sinister
-                                 "L" bottom-right
+                 (svg/make-path ["M" bend-intersection-sinister-adjusted
+                                 (line/stitch line-base-sinister)
+                                 "L" fess
+                                 (line/stitch line-base-dexter)
                                  "L" bottom-left
-                                 "L" bend-intersection-dexter
+                                 "L" bottom-right
                                  "z"])
                  {:parent field
                   :meta {:context [:per-tierced-pall-reversed :bottom]}})]
