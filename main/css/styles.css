@@ -33,7 +33,7 @@ fieldset select {
 }
 
 mask path.overlap {
-  stroke-width: 1;
+  stroke-width: 0.1;
   fill: none;
   stroke: #fff;
 }
