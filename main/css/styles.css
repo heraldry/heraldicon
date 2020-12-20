@@ -31,3 +31,9 @@ fieldset {
 fieldset select {
   float: right;
 }
+
+mask path.overlap {
+  stroke-width: 1;
+  fill: none;
+  stroke: #fff;
+}
