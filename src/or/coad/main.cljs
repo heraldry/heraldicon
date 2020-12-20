@@ -30,8 +30,9 @@
                                                     :parts      [{:tincture :azure}
                                                                  {:tincture :sable}
                                                                  {:tincture :gules}]}
-                                       :ordinaries [{:type    :pale
-                                                     :content :or}]}}} db)))
+                                       :ordinaries [{:type       :pale
+                                                     :line-style :straight
+                                                     :content    {:tincture :or}}]}}} db)))
 
 (rf/reg-event-db
  :set
@@ -110,6 +111,15 @@
               :value     (name (get-in coat-of-arms [:content :ordinaries 0 :type]))
               :on-change #(rf/dispatch [:set-in [:coat-of-arms :content :ordinaries 0 :type] (keyword (-> % .-target .-value))])}
      (for [[key display-name] ordinary/options]
+       ^{:key key}
+       [:option {:value (name key)} display-name])]]
+   [:fieldset
+    [:label {:for "line2"} "Line"]
+    [:select {:name      "line2"
+              :id        "line2"
+              :value     (name (get-in coat-of-arms [:content :ordinaries 0 :line-style]))
+              :on-change #(rf/dispatch [:set-in [:coat-of-arms :content :ordinaries 0 :line-style] (keyword (-> % .-target .-value))])}
+     (for [[key display-name] line/options]
        ^{:key key}
        [:option {:value (name key)} display-name])]]])
 
