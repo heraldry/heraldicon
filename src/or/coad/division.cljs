@@ -4,7 +4,7 @@
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
-(defn per-pale [parts field top-level-render {:keys [line-style]}]
+(defn per-pale [{:keys [parts line-style]} field top-level-render]
   (let [mask-id-1 (svg/id "division-pale-1_")
         mask-id-2 (svg/id "division-pale-2_")
         top-left (get-in field [:points :top-left])
@@ -53,7 +53,7 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (second parts) field-2]]]))
 
-(defn per-fess [parts field top-level-render {:keys [line-style]}]
+(defn per-fess [{:keys [parts line-style]} field top-level-render]
   (let [mask-id-1 (svg/id "division-fess-1_")
         mask-id-2 (svg/id "division-fess-2_")
         top-left (get-in field [:points :top-left])
@@ -101,7 +101,7 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (second parts) field-2]]]))
 
-(defn per-bend [parts field top-level-render {:keys [line-style]}]
+(defn per-bend [{:keys [parts line-style]} field top-level-render]
   (let [mask-id-1 (svg/id "division-bend-1_")
         mask-id-2 (svg/id "division-bend-2_")
         top-left (get-in field [:points :top-left])
@@ -149,7 +149,7 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (second parts) field-2]]]))
 
-(defn per-bend-sinister [parts field top-level-render {:keys [line-style]}]
+(defn per-bend-sinister [{:keys [parts line-style]} field top-level-render]
   (let [mask-id-1 (svg/id "division-bend-sinister-1_")
         mask-id-2 (svg/id "division-bend-sinister-2_")
         top-left (get-in field [:points :top-left])
@@ -203,7 +203,7 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (second parts) field-2]]]))
 
-(defn per-chevron [parts field top-level-render {:keys [line-style]}]
+(defn per-chevron [{:keys [parts line-style]} field top-level-render]
   (let [mask-id-1 (svg/id "division-chevron-1_")
         mask-id-2 (svg/id "division-chevron-2_")
         top-left (get-in field [:points :top-left])
@@ -262,7 +262,7 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (second parts) field-2]]]))
 
-(defn per-saltire [parts field top-level-render {:keys [line-style]}]
+(defn per-saltire [{:keys [parts line-style]} field top-level-render]
   (let [mask-id-1 (svg/id "division-saltire-1_")
         mask-id-2 (svg/id "division-saltire-2_")
         mask-id-3 (svg/id "division-saltire-3_")
@@ -377,7 +377,7 @@
      [:g {:mask (str "url(#" mask-id-4 ")")}
       [top-level-render (second parts) field-4]]]))
 
-(defn quarterly [parts field top-level-render {:keys [line-style]}]
+(defn quarterly [{:keys [parts line-style]} field top-level-render]
   (let [mask-id-1 (svg/id "division-quarterly-1_")
         mask-id-2 (svg/id "division-quarterly-2_")
         mask-id-3 (svg/id "division-quarterly-3_")
@@ -486,7 +486,7 @@
      [:g {:mask (str "url(#" mask-id-4 ")")}
       [top-level-render (second parts) field-4]]]))
 
-(defn gyronny [parts field top-level-render {:keys [line-style]}]
+(defn gyronny [{:keys [parts line-style]} field top-level-render]
   (let [mask-id-1 (svg/id "division-gyronny-1_")
         mask-id-2 (svg/id "division-gyronny-2_")
         mask-id-3 (svg/id "division-gyronny-3_")
@@ -691,7 +691,7 @@
      [:g {:mask (str "url(#" mask-id-8 ")")}
       [top-level-render (second parts) field-8]]]))
 
-(defn tierced-in-pale [parts field top-level-render {:keys [line-style]}]
+(defn tierced-in-pale [{:keys [parts line-style]} field top-level-render]
   (let [mask-id-1 (svg/id "division-tierced-pale-1_")
         mask-id-2 (svg/id "division-tierced-pale-2_")
         mask-id-3 (svg/id "division-tierced-pale-3_")
@@ -777,7 +777,7 @@
      [:g {:mask (str "url(#" mask-id-3 ")")}
       [top-level-render (nth parts 2) field-3]]]))
 
-(defn tierced-in-fesse [parts field top-level-render {:keys [line-style]}]
+(defn tierced-in-fesse [{:keys [parts line-style]} field top-level-render]
   (let [mask-id-1 (svg/id "division-tierced-pale-1_")
         mask-id-2 (svg/id "division-tierced-pale-2_")
         mask-id-3 (svg/id "division-tierced-pale-3_")
@@ -862,7 +862,7 @@
      [:g {:mask (str "url(#" mask-id-3 ")")}
       [top-level-render (nth parts 2) field-3]]]))
 
-(defn tierced-in-pairle [parts field top-level-render {:keys [line-style]}]
+(defn tierced-in-pairle [{:keys [parts line-style]} field top-level-render]
   (let [mask-id-1 (svg/id "division-tierced-pairle-1_")
         mask-id-2 (svg/id "division-tierced-pairle-2_")
         mask-id-3 (svg/id "division-tierced-pairle-3_")
@@ -956,7 +956,7 @@
      [:g {:mask (str "url(#" mask-id-3 ")")}
       [top-level-render (nth parts 2) field-3]]]))
 
-(defn tierced-in-pairle-reversed [parts field top-level-render {:keys [line-style]}]
+(defn tierced-in-pairle-reversed [{:keys [parts line-style]} field top-level-render]
   (let [mask-id-1 (svg/id "division-tierced-pairle-reversed-1_")
         mask-id-2 (svg/id "division-tierced-pairle-reversed-2_")
         mask-id-3 (svg/id "division-tierced-pairle-reversed-3_")
@@ -1080,6 +1080,6 @@
        (map (fn [[name key _]]
               [key name]))))
 
-(defn render [{:keys [type parts] :as division} field top-level-render]
+(defn render [{:keys [type] :as division} field top-level-render]
   (let [function (get kinds-function-map type)]
-    [function parts field top-level-render division]))
+    [function division field top-level-render]))
