@@ -34,10 +34,54 @@
                 vec)
      :length (* repetitions width)}))
 
+(defn embattled [length _]
+  (let [width 10
+        half-width (/ width 2)
+        quarter-width (/ width 4)
+        repetitions (-> length
+                        (/ width)
+                        Math/ceil
+                        int)]
+    {:line (->> ["l" [quarter-width 0] [0 (- half-width)] [half-width 0] [0 half-width] [quarter-width 0]]
+                (repeat repetitions)
+                (apply concat)
+                vec)
+     :length (* repetitions width)}))
+
+(defn indented [length _]
+  (let [width 10
+        half-width (/ width 2)
+        repetitions (-> length
+                        (/ width)
+                        Math/ceil
+                        int)]
+    {:line (->> ["l" [half-width (- half-width)] [half-width half-width]]
+                (repeat repetitions)
+                (apply concat)
+                vec)
+     :length (* repetitions width)}))
+
+(defn dancetty [length _]
+  (let [width 20
+        half-width (/ width 2)
+        quarter-width (/ width 4)
+        repetitions (-> length
+                        (/ width)
+                        Math/ceil
+                        int)]
+    {:line (->> ["l" [quarter-width (- quarter-width)] [half-width half-width] [quarter-width (- quarter-width)]]
+                (repeat repetitions)
+                (apply concat)
+                vec)
+     :length (* repetitions width)}))
+
 (def kinds
   [["Straight" :straight straight]
    ["Invected" :invected invected]
-   ["Engrailed" :engrailed engrailed]])
+   ["Engrailed" :engrailed engrailed]
+   ["Embattled" :embattled embattled]
+   ["Indented" :indented indented]
+   ["Dancetty" :dancetty dancetty]])
 
 (def kinds-function-map
   (->> kinds
