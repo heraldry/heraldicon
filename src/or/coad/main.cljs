@@ -107,14 +107,36 @@
                :fill "#f0f0f0"}]
        [field-content/render content transformed-field]]]]))
 
+(defn form-for-ordinary [path]
+  [:div.ordinary
+   [:div.setting
+    [:label {:for "ordinary-type"} "Type"]
+    [:select {:name      "ordinary-type"
+              :id        "ordinary-type"
+              :value     (name @(rf/subscribe [:get-in (conj path :type)]))
+              :on-change #(rf/dispatch [:set-in (conj path :type) (keyword (-> % .-target .-value))])}
+     (for [[key display-name] ordinary/options]
+       ^{:key key}
+       [:option {:value (name key)} display-name])]]
+   [:div.setting
+    [:label {:for "line2"} "Line"]
+    [:select {:name      "line2"
+              :id        "line2"
+              :value     (name @(rf/subscribe [:get-in (concat path [:line :style])]))
+              :on-change #(rf/dispatch [:set-in (concat path [:line :style]) (keyword (-> % .-target .-value))])}
+     (for [[key display-name] line/options]
+       ^{:key key}
+       [:option {:value (name key)} display-name])]]])
+
 (defn form-for-field [path]
   (let [division-type @(rf/subscribe [:get-division-type path])]
     [:div.field
      [:div.division
+      [:div.title "Division"]
       [:div.setting
-       [:label {:for "division"} "Division"]
-       [:select {:name      "division"
-                 :id        "division"
+       [:label {:for "division-type"} "Type"]
+       [:select {:name      "division-type"
+                 :id        "division-type"
                  :value     (name division-type)
                  :on-change #(rf/dispatch [:set-division path (keyword (-> % .-target .-value))])}
         (for [[key display-name] (into [[:none "None"]] division/options)]
@@ -166,24 +188,13 @@
              (for [[display-name key] options]
                ^{:key key}
                [:option {:value (name key)} display-name])])]]])
-     #_[:fieldset
-        [:label {:for "ordinary"} "Ordinary"]
-        [:select {:name      "ordinary"
-                  :id        "ordinary"
-                  :value     (name @(rf/subscribe [:get-in (concat path [:ordinaries 0 :type])]))
-                  :on-change #(rf/dispatch [:set-in (concat path [:ordinaries 0 :type]) (keyword (-> % .-target .-value))])}
-         (for [[key display-name] ordinary/options]
-           ^{:key key}
-           [:option {:value (name key)} display-name])]]
-     #_[:fieldset
-        [:label {:for "line2"} "Line"]
-        [:select {:name      "line2"
-                  :id        "line2"
-                  :value     (name @(rf/subscribe [:get-in (concat path [:ordinaries 0 :line :style])]))
-                  :on-change #(rf/dispatch [:set-in (concat path [:ordinaries 0 :line :style]) (keyword (-> % .-target .-value))])}
-         (for [[key display-name] line/options]
-           ^{:key key}
-           [:option {:value (name key)} display-name])]]]))
+     [:div.ordinaries
+      [:div.title "Ordinaries"]
+      (let [ordinaries @(rf/subscribe [:get-in (conj path :ordinaries)])]
+        (for [[idx _] (map-indexed vector ordinaries)]
+          ^{:key idx}
+          [:div.ordinary
+           [form-for-ordinary (vec (concat path [:ordinaries idx]))]]))]]))
 
 (defn form []
   [:div.form
@@ -206,17 +217,20 @@
        [:div {:style {:width    "100%"
                       :position "relative"}}
         [:svg {:id                  "svg"
-               :style               {:width    "30em"
+               :style               {:width    "25em"
                                      :position "absolute"
                                      :left     0
                                      :top      0}
-               :viewBox             "0 0 600 1000"
+               :viewBox             "0 0 520 1000"
                :preserveAspectRatio "xMidYMin slice"}
          defs
          [render-shield coat-of-arms]]
         [:div {:style {:position "absolute"
-                       :left     "30em"
-                       :top      0}}
+                       :left     "27em"
+                       :top      0
+                       :width    "calc(100vw - 27em)"
+                       :height   "100vh"
+                       :overflow "auto"}}
          [form]]]])))
 
 (defn stop []
