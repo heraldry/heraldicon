@@ -5,13 +5,14 @@
             [or.coad.field :as field]
             [or.coad.field-content :as field-content]
             [or.coad.filter :as filter]
+            [or.coad.hatching :as hatching]
             [or.coad.line :as line]
             [or.coad.ordinary :as ordinary]
             [or.coad.tincture :as tincture]
             [re-frame.core :as rf]
             [reagent.dom :as r]))
 
-                                        ; subs
+;; subs
 
 
 (rf/reg-sub
@@ -30,12 +31,13 @@
    (let [division (get-in db (concat path [:division :type]))]
      (or division :none))))
 
-                                        ; events
+;; events
 
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:rendering    {:outline :off}
+   (merge {:rendering    {:mode    :colours
+                          :outline :off}
            :coat-of-arms {:escutcheon :heater
                           :content    {:content {:tincture :argent}}}} db)))
 
@@ -93,7 +95,7 @@
                                      (vec (concat (subvec ordinaries 0 index)
                                                   (subvec ordinaries (inc index)))))))))
 
-                                        ; views
+;; views
 
 (def defs
   (into
@@ -240,6 +242,20 @@
        ^{:key key}
        [:option {:value (name key)} display-name])]]
    [:div.setting
+    [:label {:for "mode"} "Mode"]
+    [:select {:name      "mode"
+              :id        "mode"
+              :value     (name @(rf/subscribe [:get :rendering :mode]))
+              :on-change #(let [new-mode (keyword (-> % .-target .-value))]
+                            (rf/dispatch [:set :rendering :mode new-mode])
+                            (case new-mode
+                              :hatching (rf/dispatch [:set :rendering :outline :on])
+                              :colours  (rf/dispatch [:set :rendering :outline :off])))}
+     (for [[display-name key] [["Colours" :colours]
+                               ["Hatching" :hatching]]]
+       ^{:key key}
+       [:option {:value (name key)} display-name])]]
+   [:div.setting
     [:label {:for "outline"} "Outline"]
     [:select {:name      "outline"
               :id        "outline"
@@ -259,7 +275,9 @@
 (defn app []
   (fn []
     (let [coat-of-arms @(rf/subscribe [:get :coat-of-arms])
-          options      {:outline? (= @(rf/subscribe [:get :rendering :outline]) :on)}]
+          mode         @(rf/subscribe [:get :rendering :mode])
+          options      {:outline? (= @(rf/subscribe [:get :rendering :outline]) :on)
+                        :mode     mode}]
       [:<>
        [:div {:style {:width    "100%"
                       :position "relative"}}
@@ -271,6 +289,8 @@
                :viewBox             "0 0 520 1000"
                :preserveAspectRatio "xMidYMin slice"}
          defs
+         (when (= mode :hatching)
+           hatching/patterns)
          [render-shield coat-of-arms options]]
         [:div {:style {:position "absolute"
                        :left     "27em"
