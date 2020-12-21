@@ -60,7 +60,7 @@
          (update-in (concat path [:division :line :style]) #(or % :straight))
          (update-in (concat path [:division :content]) (fn [current-value]
                                                          (let [current (or current-value [])
-                                                               default (into [{:content {:tincture :argent}}
+                                                               default (into [{:content {:tincture :or}}
                                                                               {:content {:tincture :azure}}]
                                                                              (cond
                                                                                (#{:per-saltire :quarterly} value)      [0 1]
@@ -74,6 +74,23 @@
                                                              (> (count current) (count default)) (subvec current 0 (count default))
                                                              :else                               current))))
          (update-in path dissoc :content)))))
+
+(rf/reg-event-db
+ :add-ordinary
+ (fn [db [_ path value]]
+   (update-in db (conj path :ordinaries) #(-> %
+                                              (conj {:type    value
+                                                     :line    {:style :straight}
+                                                     :content {:content {:tincture :or}}})
+                                              vec))))
+(rf/reg-event-db
+ :remove-ordinary
+ (fn [db [_ path]]
+   (let [ordinaries-path (drop-last path)
+         index           (last path)]
+     (update-in db ordinaries-path (fn [ordinaries]
+                                     (vec (concat (subvec ordinaries 0 index)
+                                                  (subvec ordinaries (inc index)))))))))
 
                                         ; views
 
@@ -107,26 +124,34 @@
                :fill "#f0f0f0"}]
        [field-content/render content transformed-field]]]]))
 
+(declare form-for-field)
+
 (defn form-for-ordinary [path]
-  [:div.ordinary
-   [:div.setting
-    [:label {:for "ordinary-type"} "Type"]
-    [:select {:name      "ordinary-type"
-              :id        "ordinary-type"
-              :value     (name @(rf/subscribe [:get-in (conj path :type)]))
-              :on-change #(rf/dispatch [:set-in (conj path :type) (keyword (-> % .-target .-value))])}
-     (for [[key display-name] ordinary/options]
-       ^{:key key}
-       [:option {:value (name key)} display-name])]]
-   [:div.setting
-    [:label {:for "line2"} "Line"]
-    [:select {:name      "line2"
-              :id        "line2"
-              :value     (name @(rf/subscribe [:get-in (concat path [:line :style])]))
-              :on-change #(rf/dispatch [:set-in (concat path [:line :style]) (keyword (-> % .-target .-value))])}
-     (for [[key display-name] line/options]
-       ^{:key key}
-       [:option {:value (name key)} display-name])]]])
+  [:<>
+   [:a.remove {:href     "#"
+               :on-click #(rf/dispatch [:remove-ordinary path])}
+    "x"]
+   [:div.ordinary
+    [:div.setting
+     [:label {:for "ordinary-type"} "Type"]
+     [:select {:name      "ordinary-type"
+               :id        "ordinary-type"
+               :value     (name @(rf/subscribe [:get-in (conj path :type)]))
+               :on-change #(rf/dispatch [:set-in (conj path :type) (keyword (-> % .-target .-value))])}
+      (for [[key display-name] ordinary/options]
+        ^{:key key}
+        [:option {:value (name key)} display-name])]]
+    [:div.setting
+     [:label {:for "line2"} "Line"]
+     [:select {:name      "line2"
+               :id        "line2"
+               :value     (name @(rf/subscribe [:get-in (concat path [:line :style])]))
+               :on-change #(rf/dispatch [:set-in (concat path [:line :style]) (keyword (-> % .-target .-value))])}
+      (for [[key display-name] line/options]
+        ^{:key key}
+        [:option {:value (name key)} display-name])]]
+    [:div.parts
+     [form-for-field (conj path :content)]]]])
 
 (defn form-for-field [path]
   (let [division-type @(rf/subscribe [:get-division-type path])]
@@ -188,13 +213,16 @@
              (for [[display-name key] options]
                ^{:key key}
                [:option {:value (name key)} display-name])])]]])
-     [:div.ordinaries
-      [:div.title "Ordinaries"]
-      (let [ordinaries @(rf/subscribe [:get-in (conj path :ordinaries)])]
-        (for [[idx _] (map-indexed vector ordinaries)]
-          ^{:key idx}
-          [:div.ordinary
-           [form-for-ordinary (vec (concat path [:ordinaries idx]))]]))]]))
+     [:div.ordinaries-section
+      [:div.title
+       "Ordinaries"
+       [:a.add {:on-click #(rf/dispatch [:add-ordinary path :pale])}
+        "+"]]
+      [:div.ordinaries
+       (let [ordinaries @(rf/subscribe [:get-in (conj path :ordinaries)])]
+         (for [[idx _] (map-indexed vector ordinaries)]
+           ^{:key idx}
+           [form-for-ordinary (vec (concat path [:ordinaries idx]))]))]]]))
 
 (defn form []
   [:div.form
