@@ -157,9 +157,8 @@
   (let [division-type @(rf/subscribe [:get-division-type path])]
     [:div.field
      [:div.division
-      [:div.title "Division"]
       [:div.setting
-       [:label {:for "division-type"} "Type"]
+       [:label {:for "division-type"} "Division"]
        [:select {:name "division-type"
                  :id "division-type"
                  :value (name division-type)
@@ -179,6 +178,7 @@
             (for [[key display-name] line/options]
               ^{:key key}
               [:option {:value (name key)} display-name])]]]
+         [:div.title "Parts"]
          [:div.parts
           (let [content @(rf/subscribe [:get-in (concat path [:division :content])])
                 mandatory-part-count (division/mandatory-part-count division-type)]
