@@ -1,5 +1,7 @@
 (ns or.coad.main
-  (:require [goog.string.format]  ;; required for release build
+  (:require ["js-base64" :as base64]
+            [cljs.reader :as reader]
+            [goog.string.format]  ;; required for release build
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
             [or.coad.field :as field]
@@ -274,7 +276,10 @@
     (let [coat-of-arms @(rf/subscribe [:get :coat-of-arms])
           mode @(rf/subscribe [:get :rendering :mode])
           options {:outline? (= @(rf/subscribe [:get :rendering :outline]) :on)
-                   :mode mode}]
+                   :mode mode}
+          state-base64 (.encode base64 (prn-str coat-of-arms))]
+      (when coat-of-arms
+        (js/history.replaceState nil nil (str "#" state-base64)))
       [:<>
        [:div {:style {:width "100%"
                       :position "relative"}}
@@ -290,6 +295,34 @@
            hatching/patterns)
          [render-shield coat-of-arms options]]
         [:div {:style {:position "absolute"
+                       :left 10
+                       :top "37em"
+                       :width "25em"}}
+         [:button {:on-click #(let [data (->>
+                                          (js/document.getElementById "coa-data")
+                                          .-value
+                                          (.decode base64)
+                                          reader/read-string)]
+                                (rf/dispatch [:set :coat-of-arms data]))}
+          "Load"]
+         [:button {:on-click #(do (->>
+                                   (js/document.getElementById "coa-data")
+                                   .select)
+                                  (js/document.execCommand "copy"))}
+          "Copy"]
+         [:button {:on-click #(do (->
+                                   (js/navigator.clipboard.readText)
+                                   (.then (fn [text]
+                                            (-> (js/document.getElementById "coa-data")
+                                                .-value
+                                                (set! text))))))}
+          "Paste"]
+         [:textarea {:id "coa-data"
+                     :cols 100
+                     :rows 10
+                     :style {:width "100%"}
+                     :default-value state-base64}]]
+        [:div {:style {:position "absolute"
                        :left "27em"
                        :top 0
                        :width "calc(100vw - 27em)"
@@ -302,6 +335,13 @@
 
 (defn start []
   (rf/dispatch-sync [:initialize-db])
+  (let [hash (subs js/location.hash 1)]
+    (when (> (count hash) 0)
+      (let [data (->>
+                  hash
+                  (.decode base64)
+                  reader/read-string)]
+        (rf/dispatch-sync [:set :coat-of-arms data]))))
   (r/render [app]
             (.getElementById js/document "app")))
 
