@@ -58,7 +58,12 @@
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get content 0) field-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get content 1) field-2 options]]]))
+      [top-level-render (get content 1) field-2 options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" chief
+                     "L" base])}]])]))
 
 (defn per-fess [{:keys [content line]} field top-level-render options]
   (let [mask-id-1 (svg/id "division-fess-1_")
@@ -107,7 +112,12 @@
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get content 0) field-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get content 1) field-2 options]]]))
+      [top-level-render (get content 1) field-2 options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" sinister
+                     "L" dexter])}]])]))
 
 (defn per-bend [{:keys [content line]} field top-level-render options]
   (let [mask-id-1 (svg/id "division-bend-1_")
@@ -156,7 +166,12 @@
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get content 0) field-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get content 1) field-2 options]]]))
+      [top-level-render (get content 1) field-2 options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" bend-intersection
+                     "L" top-left])}]])]))
 
 (defn per-bend-sinister [{:keys [content line]} field top-level-render options]
   (let [mask-id-1 (svg/id "division-bend-sinister-1_")
@@ -211,7 +226,12 @@
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get content 0) field-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get content 1) field-2 options]]]))
+      [top-level-render (get content 1) field-2 options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" bend-intersection-adjusted
+                     "L" top-right])}]])]))
 
 (defn per-chevron [{:keys [content line]} field top-level-render options]
   (let [mask-id-1 (svg/id "division-chevron-1_")
@@ -271,7 +291,14 @@
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get content 0) field-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get content 1) field-2 options]]]))
+      [top-level-render (get content 1) field-2 options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" bend-intersection-dexter-adjusted
+                     (line/stitch line-dexter)
+                     "L" fess
+                     (line/stitch line-sinister)])}]])]))
 
 (defn per-saltire [{:keys [content line]} field top-level-render options]
   (let [mask-id-1 (svg/id "division-saltire-1_")
@@ -387,7 +414,21 @@
      [:g {:mask (str "url(#" mask-id-3 ")")}
       [top-level-render (get-part content 2) field-3 options]]
      [:g {:mask (str "url(#" mask-id-4 ")")}
-      [top-level-render (get-part content 3) field-4 options]]]))
+      [top-level-render (get-part content 3) field-4 options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" top-left-adjusted
+                     (line/stitch line-chief-dexter)])}]
+        [:path {:d (svg/make-path
+                    ["M" fess
+                     (line/stitch line-chief-sinister)])}]
+        [:path {:d (svg/make-path
+                    ["M" bend-intersection-sinister-adjusted
+                     (line/stitch line-base-sinister)])}]
+        [:path {:d (svg/make-path
+                    ["M" fess
+                     (line/stitch line-base-dexter)])}]])]))
 
 (defn quarterly [{:keys [content line]} field top-level-render options]
   (let [mask-id-1 (svg/id "division-quarterly-1_")
@@ -497,7 +538,21 @@
      [:g {:mask (str "url(#" mask-id-3 ")")}
       [top-level-render (get-part content 2) field-3 options]]
      [:g {:mask (str "url(#" mask-id-4 ")")}
-      [top-level-render (get-part content 3) field-4 options]]]))
+      [top-level-render (get-part content 3) field-4 options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" chief-adjusted
+                     (line/stitch line-chief)])}]
+        [:path {:d (svg/make-path
+                    ["M" fess
+                     (line/stitch line-sinister)])}]
+        [:path {:d (svg/make-path
+                    ["M" base-adjusted
+                     (line/stitch line-base)])}]
+        [:path {:d (svg/make-path
+                    ["M" fess
+                     (line/stitch line-dexter)])}]])]))
 
 (defn gyronny [{:keys [content line]} field top-level-render options]
   (let [mask-id-1 (svg/id "division-gyronny-1_")
@@ -703,7 +758,33 @@
      [:g {:mask (str "url(#" mask-id-7 ")")}
       [top-level-render (get-part content 6) field-7 options]]
      [:g {:mask (str "url(#" mask-id-8 ")")}
-      [top-level-render (get-part content 7) field-8 options]]]))
+      [top-level-render (get-part content 7) field-8 options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" fess
+                     (line/stitch line-chief-dexter)])}]
+        [:path {:d (svg/make-path
+                    ["M" chief-adjusted
+                     (line/stitch line-chief)])}]
+        [:path {:d (svg/make-path
+                    ["M" fess
+                     (line/stitch line-chief-sinister)])}]
+        [:path {:d (svg/make-path
+                    ["M" sinister-adjusted
+                     (line/stitch line-sinister)])}]
+        [:path {:d (svg/make-path
+                    ["M" fess
+                     (line/stitch line-base-sinister)])}]
+        [:path {:d (svg/make-path
+                    ["M" base-adjusted
+                     (line/stitch line-base)])}]
+        [:path {:d (svg/make-path
+                    ["M" fess
+                     (line/stitch line-base-dexter)])}]
+        [:path {:d (svg/make-path
+                    ["M" dexter-adjusted
+                     (line/stitch line-dexter)])}]])]))
 
 (defn tierced-per-pale [{:keys [content line]} field top-level-render options]
   (let [mask-id-1 (svg/id "division-tierced-pale-1_")
@@ -790,12 +871,20 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (get content 1) field-2 options]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get content 2) field-3 options]]]))
+      [top-level-render (get content 2) field-3 options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" first-chief
+                     (line/stitch line)])}]
+        [:path {:d (svg/make-path
+                    ["M" second-base-adjusted
+                     (line/stitch line-reversed)])}]])]))
 
 (defn tierced-per-fess [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1 (svg/id "division-tierced-pale-1_")
-        mask-id-2 (svg/id "division-tierced-pale-2_")
-        mask-id-3 (svg/id "division-tierced-pale-3_")
+  (let [mask-id-1 (svg/id "division-tierced-fess-1_")
+        mask-id-2 (svg/id "division-tierced-fess-2_")
+        mask-id-3 (svg/id "division-tierced-fess-3_")
         line-style (or (:style line) :straight)
         top-left (get-in field [:points :top-left])
         top-right (get-in field [:points :top-right])
@@ -876,7 +965,15 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (get content 1) field-2 options]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get content 2) field-3 options]]]))
+      [top-level-render (get content 2) field-3 options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" first-dexter
+                     (line/stitch line)])}]
+        [:path {:d (svg/make-path
+                    ["M" second-sinister-adjusted
+                     (line/stitch line-reversed)])}]])]))
 
 (defn tierced-per-pairle [{:keys [content line]} field top-level-render options]
   (let [mask-id-1 (svg/id "division-tierced-pairle-1_")
@@ -971,7 +1068,18 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (get content 1) field-2 options]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get content 2) field-3 options]]]))
+      [top-level-render (get content 2) field-3 options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" top-left-adjusted
+                     (line/stitch line-chief-dexter)])}]
+        [:path {:d (svg/make-path
+                    ["M" fess
+                     (line/stitch line-chief-sinister)])}]
+        [:path {:d (svg/make-path
+                    ["M" fess
+                     (line/stitch line-base)])}]])]))
 
 (defn tierced-per-pairle-reversed [{:keys [content line]} field top-level-render options]
   (let [mask-id-1 (svg/id "division-tierced-pairle-reversed-1_")
@@ -1071,7 +1179,18 @@
      [:g {:mask (str "url(#" mask-id-2 ")")}
       [top-level-render (get content 1) field-2 options]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get content 2) field-3 options]]]))
+      [top-level-render (get content 2) field-3 options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" fess
+                     (line/stitch line-chief)])}]
+        [:path {:d (svg/make-path
+                    ["M" bend-intersection-sinister-adjusted
+                     (line/stitch line-base-sinister)])}]
+        [:path {:d (svg/make-path
+                    ["M" fess
+                     (line/stitch line-base-dexter)])}]])]))
 
 (def kinds
   [["Per Pale" :per-pale per-pale]
