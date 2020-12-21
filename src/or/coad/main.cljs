@@ -289,6 +289,7 @@
                       :position "relative"}}
         [:svg {:id                  "svg"
                :style               {:width    "25em"
+                                     :height   "30em"
                                      :position "absolute"
                                      :left     0
                                      :top      0}
