@@ -308,9 +308,11 @@
                                           reader/read-string)]
                                 (rf/dispatch [:set :coat-of-arms data]))}
           "Load"]
-         [:button {:on-click #(->>
-                               (js/document.getElementById "coa-data")
-                               .select)}
+         [:button {:on-click #(do
+                                (->>
+                                 (js/document.getElementById "coa-data")
+                                 .select)
+                                (js/document.execCommand "copy"))}
           "Copy"]
          [:button {:on-click #(->
                                (js/navigator.clipboard.readText)
@@ -325,7 +327,12 @@
                      :cols 100
                      :rows 10
                      :style {:width "100%"}
-                     :value state-base64}]]
+                     :value state-base64
+                     ;; TODO: this doesn't seem to work right now
+                     :on-change (fn [event]
+                                  (-> (js/document.getElementById "coa-data")
+                                      .-value
+                                      (set! (-> event .-target .-value))))}]]
         [:div {:style {:position "absolute"
                        :left "27em"
                        :top 0
