@@ -298,15 +298,17 @@
          (when (= mode :hatching)
            hatching/patterns)
          [render-shield coat-of-arms options]]
-        [:div {:style {:position      "absolute"
-                       :left          10
-                       :top           "31em"
-                       :width         "calc(25em - 20px)"
-                       :height        "5em"
-                       :padding-left  10
-                       :padding-right 10
-                       :border        "1px solid #ddd"}}
-         (blazon/encode-field (:content coat-of-arms) :root? true)]
+        [:div.blazonry {:style {:position      "absolute"
+                                :left          10
+                                :top           "31em"
+                                :width         "calc(25em - 20px)"
+                                :height        "5em"
+                                :padding-left  10
+                                :padding-right 10
+                                :border        "1px solid #ddd"}}
+         [:span.disclaimer "Blazon (very rudimentary, very beta)"]
+         [:div.blazon
+          (blazon/encode-field (:content coat-of-arms) :root? true)]]
         [:div {:style {:position "absolute"
                        :left     10
                        :top      "37em"

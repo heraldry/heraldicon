@@ -105,3 +105,13 @@ mask path.overlap {
   stroke-width: 0.5;
   fill: none;
 }
+
+.disclaimer {
+  font-size: 0.8em;
+  color: #bbb;
+}
+
+.blazon {
+  font-size: 1.2em;
+  font-style: italic;
+}
