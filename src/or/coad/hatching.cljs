@@ -52,21 +52,19 @@
 (def azure
   (let [id "hatching-azure"]
     [id
-     (let [width (* spacing 2)]
-       [:pattern {:id            id
-                  :width         width
-                  :height        width
-                  :pattern-units "userSpaceOnUse"}
-        [:rect {:x      0
-                :y      0
-                :width  width
-                :height width
-                :fill   "#f5f5f5"}]
-        [:g {:stroke       "#000"
-             :stroke-width line-thickness}
-         [:path {:d (str "M" 0 "," 0 " L" width "," 0)}]
-         [:path {:d (str "M" 0 "," spacing " L" width "," spacing)}]
-         [:path {:d (str "M" 0 "," width " L" width "," width)}]]])]))
+     [:pattern {:id            id
+                :width         spacing
+                :height        spacing
+                :pattern-units "userSpaceOnUse"}
+      [:rect {:x      0
+              :y      0
+              :width  spacing
+              :height spacing
+              :fill   "#f5f5f5"}]
+      [:g {:stroke       "#000"
+           :stroke-width line-thickness}
+       [:path {:d (str "M" 0 "," 0 " L" spacing "," 0)}]
+       [:path {:d (str "M" 0 "," spacing " L" spacing "," spacing)}]]]]))
 
 (def vert
   (let [id "hatching-vert"]
@@ -90,21 +88,19 @@
 (def gules
   (let [id "hatching-gules"]
     [id
-     (let [width (* spacing 2)]
-       [:pattern {:id            id
-                  :width         width
-                  :height        width
-                  :pattern-units "userSpaceOnUse"}
-        [:rect {:x      0
-                :y      0
-                :width  width
-                :height width
-                :fill   "#f5f5f5"}]
-        [:g {:stroke       "#000"
-             :stroke-width line-thickness}
-         [:path {:d (str "M" 0 "," 0 " L" 0 "," width)}]
-         [:path {:d (str "M" spacing "," 0 " L" spacing "," width)}]
-         [:path {:d (str "M" width "," 0 " L" width "," width)}]]])]))
+     [:pattern {:id            id
+                :width         spacing
+                :height        spacing
+                :pattern-units "userSpaceOnUse"}
+      [:rect {:x      0
+              :y      0
+              :width  spacing
+              :height spacing
+              :fill   "#f5f5f5"}]
+      [:g {:stroke       "#000"
+           :stroke-width line-thickness}
+       [:path {:d (str "M" 0 "," 0 " L" 0 "," spacing)}]
+       [:path {:d (str "M" spacing "," 0 " L" spacing "," spacing)}]]]]))
 
 (def purpure
   (let [id "hatching-purpure"]
@@ -128,24 +124,21 @@
 (def sable
   (let [id "hatching-sable"]
     [id
-     (let [width (* spacing 2)]
-       [:pattern {:id            id
-                  :width         width
-                  :height        width
-                  :pattern-units "userSpaceOnUse"}
-        [:rect {:x      0
-                :y      0
-                :width  width
-                :height width
-                :fill   "#f5f5f5"}]
-        [:g {:stroke       "#000"
-             :stroke-width line-thickness}
-         [:path {:d (str "M" 0 "," 0 " L" width "," 0)}]
-         [:path {:d (str "M" 0 "," spacing " L" width "," spacing)}]
-         [:path {:d (str "M" 0 "," width " L" width "," width)}]
-         [:path {:d (str "M" 0 "," 0 " L" 0 "," width)}]
-         [:path {:d (str "M" spacing "," 0 " L" spacing "," width)}]
-         [:path {:d (str "M" width "," 0 " L" width "," width)}]]])]))
+     [:pattern {:id            id
+                :width         spacing
+                :height        spacing
+                :pattern-units "userSpaceOnUse"}
+      [:rect {:x      0
+              :y      0
+              :width  spacing
+              :height spacing
+              :fill   "#f5f5f5"}]
+      [:g {:stroke       "#000"
+           :stroke-width line-thickness}
+       [:path {:d (str "M" 0 "," 0 " L" spacing "," 0)}]
+       [:path {:d (str "M" 0 "," spacing " L" spacing "," spacing)}]
+       [:path {:d (str "M" 0 "," 0 " L" 0 "," spacing)}]
+       [:path {:d (str "M" spacing "," 0 " L" spacing "," spacing)}]]]]))
 
 (def murrey
   (let [id "hatching-murrey"]
@@ -173,17 +166,14 @@
   (let [id "hatching-sanguine"]
     [id
      [:<>
-      (let [width (* spacing 2)]
-        [:pattern {:id            "hatching-sanguine-secondary"
-                   :width         width
-                   :height        width
-                   :pattern-units "userSpaceOnUse"}
-         [:g {:stroke       "#000"
-              :stroke-width line-thickness}
-          [:path {:d (str "M" 0 "," 0 " L" width "," 0)}]
-          [:path {:d (str "M" 0 "," spacing " L" width "," spacing)}]
-          [:path {:d (str "M" 0 "," width " L" width "," width)}]]])
-
+      [:pattern {:id            "hatching-sanguine-secondary"
+                 :width         spacing
+                 :height        spacing
+                 :pattern-units "userSpaceOnUse"}
+       [:g {:stroke       "#000"
+            :stroke-width line-thickness}
+        [:path {:d (str "M" 0 "," 0 " L" spacing "," 0)}]
+        [:path {:d (str "M" 0 "," spacing " L" spacing "," spacing)}]]]
       (let [width  150
             height 200]
         [:pattern {:id            id
@@ -212,16 +202,14 @@
   (let [id "hatching-tenne"]
     [id
      [:<>
-      (let [width (* spacing 2)]
-        [:pattern {:id            "hatching-tenne-secondary"
-                   :width         width
-                   :height        width
-                   :pattern-units "userSpaceOnUse"}
-         [:g {:stroke       "#000"
-              :stroke-width line-thickness}
-          [:path {:d (str "M" 0 "," 0 " L" 0 "," width)}]
-          [:path {:d (str "M" spacing "," 0 " L" spacing "," width)}]
-          [:path {:d (str "M" width "," 0 " L" width "," width)}]]])
+      [:pattern {:id            "hatching-tenne-secondary"
+                 :width         spacing
+                 :height        spacing
+                 :pattern-units "userSpaceOnUse"}
+       [:g {:stroke       "#000"
+            :stroke-width line-thickness}
+        [:path {:d (str "M" 0 "," 0 " L" 0 "," spacing)}]
+        [:path {:d (str "M" spacing "," 0 " L" spacing "," spacing)}]]]
       (let [width  150
             height 200]
         [:pattern {:id            id
