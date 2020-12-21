@@ -31,14 +31,6 @@ a:visited {
   padding: 10px;
 }
 
-fieldset {
-  width: 16em;
-}
-
-fieldset select {
-  float: right;
-}
-
 mask path.overlap {
   stroke-width: 0.1;
   fill: none;
@@ -76,4 +68,20 @@ mask path.overlap {
 .setting select {
   position: absolute;
   left: 7em;
+}
+
+.ordinaries {
+  margin-top: 1em;
+}
+
+.title {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 0.5em;
+}
+
+.field {
+  width: 100%;
+  padding-top: 0.5em;
+  border-top: solid 1px #bbb;
 }
