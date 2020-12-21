@@ -11,8 +11,8 @@
       part)))
 
 (defn per-pale [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1    (svg/id "division-pale-1_")
-        mask-id-2    (svg/id "division-pale-2_")
+  (let [mask-id-1    (svg/id "division-pale-1")
+        mask-id-2    (svg/id "division-pale-2")
         top-left     (get-in field [:points :top-left])
         top-right    (get-in field [:points :top-right])
         bottom-left  (get-in field [:points :bottom-left])
@@ -66,8 +66,8 @@
                      "L" base])}]])]))
 
 (defn per-fess [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1    (svg/id "division-fess-1_")
-        mask-id-2    (svg/id "division-fess-2_")
+  (let [mask-id-1    (svg/id "division-fess-1")
+        mask-id-2    (svg/id "division-fess-2")
         top-left     (get-in field [:points :top-left])
         top-right    (get-in field [:points :top-right])
         bottom-left  (get-in field [:points :bottom-left])
@@ -120,8 +120,8 @@
                      "L" dexter])}]])]))
 
 (defn per-bend [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1         (svg/id "division-bend-1_")
-        mask-id-2         (svg/id "division-bend-2_")
+  (let [mask-id-1         (svg/id "division-bend-1")
+        mask-id-2         (svg/id "division-bend-2")
         top-left          (get-in field [:points :top-left])
         top-right         (get-in field [:points :top-right])
         bottom-left       (get-in field [:points :bottom-left])
@@ -174,8 +174,8 @@
                      "L" top-left])}]])]))
 
 (defn per-bend-sinister [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1                  (svg/id "division-bend-sinister-1_")
-        mask-id-2                  (svg/id "division-bend-sinister-2_")
+  (let [mask-id-1                  (svg/id "division-bend-sinister-1")
+        mask-id-2                  (svg/id "division-bend-sinister-2")
         top-left                   (get-in field [:points :top-left])
         top-right                  (get-in field [:points :top-right])
         bottom-left                (get-in field [:points :bottom-left])
@@ -234,8 +234,8 @@
                      "L" top-right])}]])]))
 
 (defn per-chevron [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1                         (svg/id "division-chevron-1_")
-        mask-id-2                         (svg/id "division-chevron-2_")
+  (let [mask-id-1                         (svg/id "division-chevron-1")
+        mask-id-2                         (svg/id "division-chevron-2")
         line-style                        (or (:style line) :straight)
         top-left                          (get-in field [:points :top-left])
         top-right                         (get-in field [:points :top-right])
@@ -301,10 +301,10 @@
                      (line/stitch line-sinister)])}]])]))
 
 (defn per-saltire [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1                           (svg/id "division-saltire-1_")
-        mask-id-2                           (svg/id "division-saltire-2_")
-        mask-id-3                           (svg/id "division-saltire-3_")
-        mask-id-4                           (svg/id "division-saltire-4_")
+  (let [mask-id-1                           (svg/id "division-saltire-1")
+        mask-id-2                           (svg/id "division-saltire-2")
+        mask-id-3                           (svg/id "division-saltire-3")
+        mask-id-4                           (svg/id "division-saltire-4")
         line-style                          (or (:style line) :straight)
         top-left                            (get-in field [:points :top-left])
         top-right                           (get-in field [:points :top-right])
@@ -431,10 +431,10 @@
                      (line/stitch line-base-dexter)])}]])]))
 
 (defn quarterly [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1                   (svg/id "division-quarterly-1_")
-        mask-id-2                   (svg/id "division-quarterly-2_")
-        mask-id-3                   (svg/id "division-quarterly-3_")
-        mask-id-4                   (svg/id "division-quarterly-4_")
+  (let [mask-id-1                   (svg/id "division-quarterly-1")
+        mask-id-2                   (svg/id "division-quarterly-2")
+        mask-id-3                   (svg/id "division-quarterly-3")
+        mask-id-4                   (svg/id "division-quarterly-4")
         line-style                  (or (:style line) :straight)
         top-left                    (get-in field [:points :top-left])
         top-right                   (get-in field [:points :top-right])
@@ -555,14 +555,14 @@
                      (line/stitch line-dexter)])}]])]))
 
 (defn gyronny [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1                      (svg/id "division-gyronny-1_")
-        mask-id-2                      (svg/id "division-gyronny-2_")
-        mask-id-3                      (svg/id "division-gyronny-3_")
-        mask-id-4                      (svg/id "division-gyronny-4_")
-        mask-id-5                      (svg/id "division-gyronny-5_")
-        mask-id-6                      (svg/id "division-gyronny-6_")
-        mask-id-7                      (svg/id "division-gyronny-7_")
-        mask-id-8                      (svg/id "division-gyronny-8_")
+  (let [mask-id-1                      (svg/id "division-gyronny-1")
+        mask-id-2                      (svg/id "division-gyronny-2")
+        mask-id-3                      (svg/id "division-gyronny-3")
+        mask-id-4                      (svg/id "division-gyronny-4")
+        mask-id-5                      (svg/id "division-gyronny-5")
+        mask-id-6                      (svg/id "division-gyronny-6")
+        mask-id-7                      (svg/id "division-gyronny-7")
+        mask-id-8                      (svg/id "division-gyronny-8")
         line-style                     (or (:style line) :straight)
         top-left                       (get-in field [:points :top-left])
         top-right                      (get-in field [:points :top-right])
@@ -787,9 +787,9 @@
                      (line/stitch line-dexter)])}]])]))
 
 (defn tierced-per-pale [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1                      (svg/id "division-tierced-pale-1_")
-        mask-id-2                      (svg/id "division-tierced-pale-2_")
-        mask-id-3                      (svg/id "division-tierced-pale-3_")
+  (let [mask-id-1                      (svg/id "division-tierced-pale-1")
+        mask-id-2                      (svg/id "division-tierced-pale-2")
+        mask-id-3                      (svg/id "division-tierced-pale-3")
         line-style                     (or (:style line) :straight)
         top-left                       (get-in field [:points :top-left])
         top-right                      (get-in field [:points :top-right])
@@ -882,9 +882,9 @@
                      (line/stitch line-reversed)])}]])]))
 
 (defn tierced-per-fess [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1                      (svg/id "division-tierced-fess-1_")
-        mask-id-2                      (svg/id "division-tierced-fess-2_")
-        mask-id-3                      (svg/id "division-tierced-fess-3_")
+  (let [mask-id-1                      (svg/id "division-tierced-fess-1")
+        mask-id-2                      (svg/id "division-tierced-fess-2")
+        mask-id-3                      (svg/id "division-tierced-fess-3")
         line-style                     (or (:style line) :straight)
         top-left                       (get-in field [:points :top-left])
         top-right                      (get-in field [:points :top-right])
@@ -976,9 +976,9 @@
                      (line/stitch line-reversed)])}]])]))
 
 (defn tierced-per-pairle [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1                           (svg/id "division-tierced-pairle-1_")
-        mask-id-2                           (svg/id "division-tierced-pairle-2_")
-        mask-id-3                           (svg/id "division-tierced-pairle-3_")
+  (let [mask-id-1                           (svg/id "division-tierced-pairle-1")
+        mask-id-2                           (svg/id "division-tierced-pairle-2")
+        mask-id-3                           (svg/id "division-tierced-pairle-3")
         line-style                          (or (:style line) :straight)
         top-left                            (get-in field [:points :top-left])
         top-right                           (get-in field [:points :top-right])
@@ -1082,9 +1082,9 @@
                      (line/stitch line-base)])}]])]))
 
 (defn tierced-per-pairle-reversed [{:keys [content line]} field top-level-render options]
-  (let [mask-id-1                            (svg/id "division-tierced-pairle-reversed-1_")
-        mask-id-2                            (svg/id "division-tierced-pairle-reversed-2_")
-        mask-id-3                            (svg/id "division-tierced-pairle-reversed-3_")
+  (let [mask-id-1                            (svg/id "division-tierced-pairle-reversed-1")
+        mask-id-2                            (svg/id "division-tierced-pairle-reversed-2")
+        mask-id-3                            (svg/id "division-tierced-pairle-reversed-3")
         line-style                           (or (:style line) :straight)
         top-left                             (get-in field [:points :top-left])
         top-right                            (get-in field [:points :top-right])

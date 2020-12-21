@@ -59,7 +59,7 @@
   (atom 0))
 
 (defn id [prefix]
-  (str prefix (swap! -current-id inc)))
+  (str prefix "_" (swap! -current-id inc)))
 
 (defn translate [[x y] [dx dy]]
   [(+ x dx)

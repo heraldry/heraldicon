@@ -7,7 +7,7 @@
 (def band-quotient 5)
 
 (defn pale [{:keys [content line]} field top-level-render options]
-  (let [mask-id                        (svg/id "ordinary-pale_")
+  (let [mask-id                        (svg/id "ordinary-pale")
         line-style                     (or (:style line) :straight)
         chief                          (get-in field [:points :chief])
         base                           (get-in field [:points :base])
@@ -57,7 +57,7 @@
                      (line/stitch line-reversed)])}]])]))
 
 (defn fess [{:keys [content line]} field top-level-render options]
-  (let [mask-id                        (svg/id "ordinary-fess_")
+  (let [mask-id                        (svg/id "ordinary-fess")
         line-style                     (or (:style line) :straight)
         dexter                         (get-in field [:points :dexter])
         sinister                       (get-in field [:points :sinister])
@@ -106,7 +106,7 @@
                      (line/stitch line-reversed)])}]])]))
 
 (defn chief [{:keys [content line]} field top-level-render options]
-  (let [mask-id                        (svg/id "ordinary-chief_")
+  (let [mask-id                        (svg/id "ordinary-chief")
         line-style                     (or (:style line) :straight)
         top-left                       (get-in field [:points :top-left])
         top-right                      (get-in field [:points :top-right])
@@ -147,7 +147,7 @@
                      (line/stitch line-reversed)])}]])]))
 
 (defn base [{:keys [content line]} field top-level-render options]
-  (let [mask-id        (svg/id "ordinary-base_")
+  (let [mask-id        (svg/id "ordinary-base")
         line-style     (or (:style line) :straight)
         bottom-left    (get-in field [:points :bottom-left])
         bottom-right   (get-in field [:points :bottom-right])
