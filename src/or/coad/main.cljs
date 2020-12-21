@@ -55,15 +55,19 @@
      (-> db
          (update-in path dissoc :division)
          (assoc-in (conj path :content) {:tincture :argent}))
-                                        ; TODO:
-                                        ; - set :content if this is being created
-                                        ; - also add/remove things from :content as necessary
      (-> db
          (assoc-in (concat path [:division :type]) value)
          (assoc-in (concat path [:division :line :style]) :straight)
-         (assoc-in (concat path [:division :content]) [{:content {:tincture :argent}}
-                                                       {:content {:tincture :azure}}
-                                                       {:content {:tincture :or}}])
+         (assoc-in (concat path [:division :content])
+                   (into [{:content {:tincture :argent}}
+                          {:content {:tincture :azure}}]
+                         (cond
+                           (#{:per-saltire :quarterly} value)      [0 1]
+                           (= :gyronny value)                      [0 1 0 1 0 1]
+                           (#{:tierced-per-pale
+                              :tierced-per-fess
+                              :tierced-per-pairle
+                              :tierced-per-pairle-reversed} value) [{:content {:tincture :or}}])))
          (update-in path dissoc :content)))))
 
                                         ; views
@@ -110,29 +114,32 @@
        (for [[key display-name] (into [[:none "None"]] division/options)]
          ^{:key key}
          [:option {:value (name key)} display-name])]
+      (when (not= division :none)
+        [:<>
+         [:div.line
+          [:label {:for "line"} "Line"]
+          [:select {:name      "line"
+                    :id        "line"
+                    :value     (name @(rf/subscribe [:get-in (concat path [:division :line :style])]))
+                    :on-change #(rf/dispatch [:set-in (concat path [:division :line :style]) (keyword (-> % .-target .-value))])}
+           (for [[key display-name] line/options]
+             ^{:key key}
+             [:option {:value (name key)} display-name])]]
+         [:div.parts]])]
 
-      (if (not= division :none)
-        [:div
-         [:label {:for "line"} "Line"]
-         [:select {:name      "line"
-                   :id        "line"
-                   :value     (name @(rf/subscribe [:get-in (concat path [:division :line :style])]))
-                   :on-change #(rf/dispatch [:set-in (concat path [:division :line :style]) (keyword (-> % .-target .-value))])}
-          (for [[key display-name] line/options]
-            ^{:key key}
-            [:option {:value (name key)} display-name])]]
-        [:div.tincture
-         [:label {:for "tincture"} "Tincture"]
-         [:select {:name      "tincture"
-                   :id        "tincture"
-                   :value     (name @(rf/subscribe [:get-in (concat path [:content :tincture])]))
-                   :on-change #(rf/dispatch [:set-in (concat path [:content :tincture]) (keyword (-> % .-target .-value))])}
-          (for [[group-name & options] tincture/options]
-            ^{:key group-name}
-            [:optgroup {:label group-name}
-             (for [[display-name key] options]
-               ^{:key key}
-               [:option {:value (name key)} display-name])])]])]
+     (when (= division :none)
+       [:div.tincture
+        [:label {:for "tincture"} "Tincture"]
+        [:select {:name      "tincture"
+                  :id        "tincture"
+                  :value     (name @(rf/subscribe [:get-in (concat path [:content :tincture])]))
+                  :on-change #(rf/dispatch [:set-in (concat path [:content :tincture]) (keyword (-> % .-target .-value))])}
+         (for [[group-name & options] tincture/options]
+           ^{:key group-name}
+           [:optgroup {:label group-name}
+            (for [[display-name key] options]
+              ^{:key key}
+              [:option {:value (name key)} display-name])])]])
      #_[:fieldset
         [:label {:for "ordinary"} "Ordinary"]
         [:select {:name      "ordinary"
