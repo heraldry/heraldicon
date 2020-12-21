@@ -225,8 +225,9 @@
            [form-for-ordinary (vec (concat path [:ordinaries idx]))]))]]]))
 
 (defn form []
-  [:div.form
-   [:div.escutcheon
+  [:<>
+   [:div.general {:style {:margin-bottom "1.5em"}}
+    [:div.title "General"]
     [:div.setting
      [:label {:for "escutcheon"} "Escutcheon"]
      [:select {:name "escutcheon"
@@ -236,6 +237,7 @@
       (for [[key display-name] escutcheon/options]
         ^{:key key}
         [:option {:value (name key)} display-name])]]]
+   [:div.title "Coat of Arms"]
    [form-for-field [:coat-of-arms :content]]])
 
 (defn app []
