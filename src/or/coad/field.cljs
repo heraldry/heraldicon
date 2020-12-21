@@ -4,6 +4,8 @@
             [or.coad.vector :as v]))
 
 (defn make-field [shape meta]
+  ;; TODO: bounding-box is an expensive operation, if the calling context knows
+  ;; the dimensions, then it should pass them down, only use bounding box when necessary
   (let [[min-x max-x min-y max-y] (svg/bounding-box shape)
         top-left                  (v/v min-x min-y)
         top-right                 (v/v max-x min-y)
@@ -14,6 +16,8 @@
         chief                     (v/avg top-left top-right)
         base                      (v/avg bottom-left bottom-right)
         ;; not actually center, but chosen such that bend lines at 45° run together in it
+        ;; TODO: this needs to be fixed to work with sub-fields, especially those where
+        ;; the fess point calculated like this isn't even included in the field
         fess                      (v/v (:x chief) (+ min-y (/ width 2)))
         dexter                    (v/v min-x (:y fess))
         sinister                  (v/v max-x (:y fess))

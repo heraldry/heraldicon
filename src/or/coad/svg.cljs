@@ -32,13 +32,13 @@
 
 (defn bounding-box [d]
   (let [path   (new-path d)
-        points (points path 1000)
+        points (points path 50)
         box    (min-max-x-y points)]
     box))
 
 (defn center [d]
   (let [path   (new-path d)
-        points (points path 1000)
+        points (points path 50)
         center (avg-x-y points)]
     center))
 
