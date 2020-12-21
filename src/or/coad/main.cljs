@@ -35,13 +35,16 @@
 
 ;; events
 
+(def default-coat-of-arms
+  {:escutcheon :heater
+   :content {:content {:tincture :argent}}})
+
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
    (merge {:rendering {:mode :colours
                        :outline :off}
-           :coat-of-arms {:escutcheon :heater
-                          :content {:content {:tincture :argent}}}} db)))
+           :coat-of-arms default-coat-of-arms} db)))
 
 (rf/reg-event-db
  :set
@@ -305,23 +308,24 @@
                                           reader/read-string)]
                                 (rf/dispatch [:set :coat-of-arms data]))}
           "Load"]
-         [:button {:on-click #(do (->>
-                                   (js/document.getElementById "coa-data")
-                                   .select)
-                                  (js/document.execCommand "copy"))}
+         [:button {:on-click #(->>
+                               (js/document.getElementById "coa-data")
+                               .select)}
           "Copy"]
-         [:button {:on-click #(do (->
-                                   (js/navigator.clipboard.readText)
-                                   (.then (fn [text]
-                                            (-> (js/document.getElementById "coa-data")
-                                                .-value
-                                                (set! text))))))}
+         [:button {:on-click #(->
+                               (js/navigator.clipboard.readText)
+                               (.then (fn [text]
+                                        (-> (js/document.getElementById "coa-data")
+                                            .-value
+                                            (set! text)))))}
           "Paste"]
+         [:button {:on-click #(rf/dispatch-sync [:set :coat-of-arms default-coat-of-arms])}
+          "Reset"]
          [:textarea {:id "coa-data"
                      :cols 100
                      :rows 10
                      :style {:width "100%"}
-                     :default-value state-base64}]]
+                     :value state-base64}]]
         [:div {:style {:position "absolute"
                        :left "27em"
                        :top 0
