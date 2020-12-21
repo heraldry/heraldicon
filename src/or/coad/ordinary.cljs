@@ -45,7 +45,7 @@
        [:path {:d (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content field]]]))
+      [top-level-render content ordinary-field]]]))
 
 (defn fess [{:keys [content line]} field top-level-render]
   (let [mask-id (svg/id "ordinary-fess_")
@@ -86,7 +86,7 @@
        [:path {:d (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content field]]]))
+      [top-level-render content ordinary-field]]]))
 
 (defn chief [{:keys [content line]} field top-level-render]
   (let [mask-id (svg/id "ordinary-chief_")
@@ -121,7 +121,7 @@
        [:path {:d (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content field]]]))
+      [top-level-render content ordinary-field]]]))
 
 (defn base [{:keys [content line]} field top-level-render]
   (let [mask-id (svg/id "ordinary-base_")
@@ -152,7 +152,7 @@
        [:path {:d (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content field]]]))
+      [top-level-render content ordinary-field]]]))
 
 (defn bend [{:keys [content line]} field top-level-render]
   [:<>])
