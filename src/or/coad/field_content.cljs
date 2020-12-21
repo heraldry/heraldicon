@@ -6,7 +6,7 @@
 (defn render [content field]
   (let [division   (:division content)
         ordinaries (:ordinaries content)
-        tincture   (:tincture content)]
+        tincture   (get-in  content [:content :tincture])]
     [:<>
      (cond
        tincture [:path {:d      (:shape field)
