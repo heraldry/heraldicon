@@ -15,8 +15,13 @@
 
 (rf/reg-sub
  :get
- (fn [db [_ key]]
-   (key db)))
+ (fn [db [_ & args]]
+   (get-in db args)))
+
+(rf/reg-sub
+ :get-in
+ (fn [db [_ path]]
+   (get-in db path)))
 
                                         ; events
 
@@ -35,8 +40,8 @@
 
 (rf/reg-event-db
  :set
- (fn [db [_ key value]]
-   (assoc db key value)))
+ (fn [db [_ & args]]
+   (assoc-in db (drop-last args) (last args))))
 
 (rf/reg-event-db
  :set-in
@@ -74,23 +79,14 @@
                :fill "#f0f0f0"}]
        [field-content/render content transformed-field]]]]))
 
-(defn controls [coat-of-arms]
-  [:div.controls {}
-   [:fieldset
-    [:label {:for "escutcheon"} "Escutcheon"]
-    [:select {:name      "escutcheon"
-              :id        "escutcheon"
-              :value     (name (get-in coat-of-arms [:escutcheon]))
-              :on-change #(rf/dispatch [:set-in [:coat-of-arms :escutcheon] (keyword (-> % .-target .-value))])}
-     (for [[key display-name] escutcheon/options]
-       ^{:key key}
-       [:option {:value (name key)} display-name])]]
+(defn form-for-field [path]
+  [:div
    [:fieldset
     [:label {:for "division"} "Division"]
     [:select {:name      "division"
               :id        "division"
-              :value     (name (get-in coat-of-arms [:content :division :type]))
-              :on-change #(rf/dispatch [:set-in [:coat-of-arms :content :division :type] (keyword (-> % .-target .-value))])}
+              :value     (name @(rf/subscribe [:get-in (concat path [:division :type])]))
+              :on-change #(rf/dispatch [:set-in (concat path [:division :type]) (keyword (-> % .-target .-value))])}
      (for [[key display-name] division/options]
        ^{:key key}
        [:option {:value (name key)} display-name])]]
@@ -98,8 +94,8 @@
     [:label {:for "line"} "Line"]
     [:select {:name      "line"
               :id        "line"
-              :value     (name (get-in coat-of-arms [:content :division :line :style]))
-              :on-change #(rf/dispatch [:set-in [:coat-of-arms :content :division :line :style] (keyword (-> % .-target .-value))])}
+              :value     (name @(rf/subscribe [:get-in (concat path [:division :line :style])]))
+              :on-change #(rf/dispatch [:set-in (concat path [:division :line :style]) (keyword (-> % .-target .-value))])}
      (for [[key display-name] line/options]
        ^{:key key}
        [:option {:value (name key)} display-name])]]
@@ -107,8 +103,8 @@
     [:label {:for "ordinary"} "Ordinary"]
     [:select {:name      "ordinary"
               :id        "ordinary"
-              :value     (name (get-in coat-of-arms [:content :ordinaries 0 :type]))
-              :on-change #(rf/dispatch [:set-in [:coat-of-arms :content :ordinaries 0 :type] (keyword (-> % .-target .-value))])}
+              :value     (name @(rf/subscribe [:get-in (concat path [:ordinaries 0 :type])]))
+              :on-change #(rf/dispatch [:set-in (concat path [:ordinaries 0 :type]) (keyword (-> % .-target .-value))])}
      (for [[key display-name] ordinary/options]
        ^{:key key}
        [:option {:value (name key)} display-name])]]
@@ -116,11 +112,24 @@
     [:label {:for "line2"} "Line"]
     [:select {:name      "line2"
               :id        "line2"
-              :value     (name (get-in coat-of-arms [:content :ordinaries 0 :line :style]))
-              :on-change #(rf/dispatch [:set-in [:coat-of-arms :content :ordinaries 0 :line :style] (keyword (-> % .-target .-value))])}
+              :value     (name @(rf/subscribe [:get-in (concat path [:ordinaries 0 :line :style])]))
+              :on-change #(rf/dispatch [:set-in (concat path [:ordinaries 0 :line :style]) (keyword (-> % .-target .-value))])}
      (for [[key display-name] line/options]
        ^{:key key}
        [:option {:value (name key)} display-name])]]])
+
+(defn form []
+  [:div.form
+   [:fieldset
+    [:label {:for "escutcheon"} "Escutcheon"]
+    [:select {:name      "escutcheon"
+              :id        "escutcheon"
+              :value     (name @(rf/subscribe [:get :coat-of-arms :escutcheon]))
+              :on-change #(rf/dispatch [:set :coat-of-arms :escutcheon (keyword (-> % .-target .-value))])}
+     (for [[key display-name] escutcheon/options]
+       ^{:key key}
+       [:option {:value (name key)} display-name])]]
+   [form-for-field [:coat-of-arms :content]]])
 
 (defn app []
   (fn []
@@ -140,7 +149,7 @@
         [:div {:style {:position "absolute"
                        :left     "30em"
                        :top      0}}
-         [controls coat-of-arms]]]])))
+         [form]]]])))
 
 (defn stop []
   (println "Stopping..."))
