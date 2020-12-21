@@ -25,14 +25,13 @@
  (fn [db [_]]
    (merge {:coat-of-arms {:escutcheon :heater
                           :content {:division {:type :per-pale
-                                               :line-style :straight
-                                               :extra {}
-                                               :parts [{:tincture :azure}
-                                                       {:tincture :sable}
-                                                       {:tincture :gules}]}
+                                               :line {:style :straight}
+                                               :content [{:content {:tincture :azure}}
+                                                         {:content {:tincture :sable}}
+                                                         {:content {:tincture :gules}}]}
                                     :ordinaries [{:type :pale
-                                                  :line-style :straight
-                                                  :content {:tincture :or}}]}}} db)))
+                                                  :line {:style :straight}
+                                                  :content {:content {:tincture :or}}}]}}} db)))
 
 (rf/reg-event-db
  :set
@@ -99,8 +98,8 @@
     [:label {:for "line"} "Line"]
     [:select {:name "line"
               :id "line"
-              :value (name (get-in coat-of-arms [:content :division :line-style]))
-              :on-change #(rf/dispatch [:set-in [:coat-of-arms :content :division :line-style] (keyword (-> % .-target .-value))])}
+              :value (name (get-in coat-of-arms [:content :division :line :style]))
+              :on-change #(rf/dispatch [:set-in [:coat-of-arms :content :division :line :style] (keyword (-> % .-target .-value))])}
      (for [[key display-name] line/options]
        ^{:key key}
        [:option {:value (name key)} display-name])]]
@@ -117,8 +116,8 @@
     [:label {:for "line2"} "Line"]
     [:select {:name "line2"
               :id "line2"
-              :value (name (get-in coat-of-arms [:content :ordinaries 0 :line-style]))
-              :on-change #(rf/dispatch [:set-in [:coat-of-arms :content :ordinaries 0 :line-style] (keyword (-> % .-target .-value))])}
+              :value (name (get-in coat-of-arms [:content :ordinaries 0 :line :style]))
+              :on-change #(rf/dispatch [:set-in [:coat-of-arms :content :ordinaries 0 :line :style] (keyword (-> % .-target .-value))])}
      (for [[key display-name] line/options]
        ^{:key key}
        [:option {:value (name key)} display-name])]]])
