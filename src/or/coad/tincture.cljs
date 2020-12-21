@@ -1,11 +1,11 @@
 (ns or.coad.tincture)
 
 (def tinctures
-  {:or              "#f1b952"
+  {:argent          "#f5f5f5"
+   :or              "#f1b952"
    :azure           "#1b6690"
    :vert            "#429042"
    :gules           "#b93535"
-   :argent          "#f5f5f5"
    :sable           "#373737"
    :purpure         "#8f3f6a"
    :murrey          "#8f3f6a"
@@ -23,3 +23,30 @@
    :lead            "#cbcaca"
    :steel           "#cbcaca"
    :white           "#f5f5f5"})
+
+(def options
+  [["Metal"
+    ["Argent (metal)" :argent]
+    ["Or (metal)" :or]]
+   ["Tincture"
+    ["Azure" :azure]
+    ["Gules" :gules]
+    ["Purpure" :purpure]
+    ["Sable" :sable]
+    ["Vert" :vert]]
+   ["Secondary"
+    ["Bronze" :bronze]
+    ["Brunatre" :brunatre]
+    ["Carnation" :carnation]
+    ["Celestial Azure" :celestial-azure]
+    ["Cendree" :cendree]
+    ["Copper" :copper]
+    ["Iron" :iron]
+    ["Lead" :lead]
+    ["Murrey" :murrey]
+    ["Orange" :orange]
+    ["Rose" :rose]
+    ["Sanguine" :sanguine]
+    ["Steel" :steel]
+    ["Tenne" :tenne]
+    ["White" :white]]])
