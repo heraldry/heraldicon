@@ -21,7 +21,7 @@
                 (encode-field content)]))
 
 (defn upper-case-first [s]
-  (str (s/upper-case (first s)) (s/join (rest s))))
+  (str (s/upper-case (or (first s) "")) (s/join (rest s))))
 
 (defn encode-field [field & {:keys [root?]}]
   (let [division               (:division field)
