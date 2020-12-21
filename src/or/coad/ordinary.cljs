@@ -46,7 +46,15 @@
        [:path {:d    (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content ordinary-field options]]]))
+      [top-level-render content ordinary-field options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" first-chief
+                     (line/stitch line)])}]
+        [:path {:d (svg/make-path
+                    ["M" second-base-adjusted
+                     (line/stitch line-reversed)])}]])]))
 
 (defn fess [{:keys [content line]} field top-level-render options]
   (let [mask-id                        (svg/id "ordinary-fess_")
@@ -87,7 +95,15 @@
        [:path {:d    (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content ordinary-field options]]]))
+      [top-level-render content ordinary-field options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" first-dexter
+                     (line/stitch line)])}]
+        [:path {:d (svg/make-path
+                    ["M" second-sinister-adjusted
+                     (line/stitch line-reversed)])}]])]))
 
 (defn chief [{:keys [content line]} field top-level-render options]
   (let [mask-id                        (svg/id "ordinary-chief_")
@@ -123,7 +139,12 @@
        [:path {:d    (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content ordinary-field options]]]))
+      [top-level-render content ordinary-field options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" row-sinister-adjusted
+                     (line/stitch line-reversed)])}]])]))
 
 (defn base [{:keys [content line]} field top-level-render options]
   (let [mask-id        (svg/id "ordinary-base_")
@@ -155,7 +176,12 @@
        [:path {:d    (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content ordinary-field options]]]))
+      [top-level-render content ordinary-field options]]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" row-dexter
+                     (line/stitch line)])}]])]))
 
 (defn bend [{:keys [content line]} field top-level-render]
   [:<>])

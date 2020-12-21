@@ -69,7 +69,7 @@
                                                                                (#{:tierced-per-pale
                                                                                   :tierced-per-fess
                                                                                   :tierced-per-pairle
-                                                                                  :tierced-per-pairle-reversed} value) [{:content {:tincture :or}}]))]
+                                                                                  :tierced-per-pairle-reversed} value) [{:content {:tincture :gules}}]))]
                                                            (cond
                                                              (< (count current) (count default)) (into current (subvec default (count current)))
                                                              (> (count current) (count default)) (subvec current 0 (count default))
@@ -123,9 +123,9 @@
       [:g {:mask "url(#mask-shield)"}
        [:path {:d    (:shape transformed-field)
                :fill "#f0f0f0"}]
-       [field-content/render content transformed-field options]
-       (when (:outline? options)
-         [:path.outline {:d (:shape transformed-field)}])]]]))
+       [field-content/render content transformed-field options]]
+      (when (:outline? options)
+        [:path.outline {:d (:shape transformed-field)}])]]))
 
 (declare form-for-field)
 

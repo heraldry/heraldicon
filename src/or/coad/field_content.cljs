@@ -12,11 +12,7 @@
        tincture [:<>
                  [:path {:d      (:shape field)
                          :fill   (get tincture/tinctures tincture)
-                         :stroke (get tincture/tinctures tincture)}]
-                 (when (:outline? options)
-                   [:path.outline {:d     (:shape field)
-                                   :class (when (get-in field [:meta :ordinary?])
-                                            "ordinary")}])]
+                         :stroke (get tincture/tinctures tincture)}]]
        division [division/render division field render options])
      (for [[idx ordinary] (map-indexed vector ordinaries)]
        ^{:key idx} [ordinary/render ordinary field render options])]))
