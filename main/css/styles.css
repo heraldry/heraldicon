@@ -27,6 +27,10 @@ a:visited {
   color: #1b6690;
 }
 
+a:hover {
+  cursor: pointer;
+}
+
 .controls {
   padding: 10px;
 }
