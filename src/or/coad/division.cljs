@@ -1101,3 +1101,11 @@
 (defn render [{:keys [type] :as division} field top-level-render]
   (let [function (get kinds-function-map type)]
     [function division field top-level-render]))
+
+(defn mandatory-part-count [type]
+  (case type
+    :tierced-per-pale            3
+    :tierced-per-fess            3
+    :tierced-per-pairle          3
+    :tierced-per-pairle-reversed 3
+    2))
