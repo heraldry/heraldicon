@@ -105,7 +105,3 @@ mask path.overlap {
   stroke-width: 0.5;
   fill: none;
 }
-
-.outline.ordinary {
-  stroke-width: 1;
-}
