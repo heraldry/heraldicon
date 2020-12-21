@@ -6,7 +6,7 @@
 
 (def band-quotient 5)
 
-(defn pale [{:keys [content line]} field top-level-render]
+(defn pale [{:keys [content line]} field top-level-render options]
   (let [mask-id                        (svg/id "ordinary-pale_")
         line-style                     (or (:style line) :straight)
         chief                          (get-in field [:points :chief])
@@ -37,17 +37,18 @@
                                                         (line/stitch line-reversed)
                                                         "L" second-chief
                                                         "z"])
-                                        {:parent field
-                                         :meta   {:context [:pale]}})]
+                                        {:parent    field
+                                         :context   [:pale]
+                                         :ordinary? true})]
     [:<>
      [:defs
       [:mask {:id mask-id}
        [:path {:d    (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content ordinary-field]]]))
+      [top-level-render content ordinary-field options]]]))
 
-(defn fess [{:keys [content line]} field top-level-render]
+(defn fess [{:keys [content line]} field top-level-render options]
   (let [mask-id                        (svg/id "ordinary-fess_")
         line-style                     (or (:style line) :straight)
         dexter                         (get-in field [:points :dexter])
@@ -69,26 +70,26 @@
                                                     :flipped? true
                                                     :angle 180)
         second-sinister-adjusted       (v/extend second-dexter second-sinister line-reversed-length)
-
-        ordinary-field (field/make-field
-                        (svg/make-path ["M" first-dexter
-                                        (line/stitch line)
-                                        "L" first-sinister
-                                        "L" second-sinister-adjusted
-                                        (line/stitch line-reversed)
-                                        "L" dexter
-                                        "z"])
-                        {:parent field
-                         :meta   {:context [:fess]}})]
+        ordinary-field                 (field/make-field
+                                        (svg/make-path ["M" first-dexter
+                                                        (line/stitch line)
+                                                        "L" first-sinister
+                                                        "L" second-sinister-adjusted
+                                                        (line/stitch line-reversed)
+                                                        "L" dexter
+                                                        "z"])
+                                        {:parent    field
+                                         :context   [:fess]
+                                         :ordinary? true})]
     [:<>
      [:defs
       [:mask {:id mask-id}
        [:path {:d    (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content ordinary-field]]]))
+      [top-level-render content ordinary-field options]]]))
 
-(defn chief [{:keys [content line]} field top-level-render]
+(defn chief [{:keys [content line]} field top-level-render options]
   (let [mask-id                        (svg/id "ordinary-chief_")
         line-style                     (or (:style line) :straight)
         top-left                       (get-in field [:points :top-left])
@@ -113,17 +114,18 @@
                                                         (line/stitch line-reversed)
                                                         "L" row-dexter
                                                         "z"])
-                                        {:parent field
-                                         :meta   {:context [:chief]}})]
+                                        {:parent    field
+                                         :context   [:chief]
+                                         :ordinary? true})]
     [:<>
      [:defs
       [:mask {:id mask-id}
        [:path {:d    (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content ordinary-field]]]))
+      [top-level-render content ordinary-field options]]]))
 
-(defn base [{:keys [content line]} field top-level-render]
+(defn base [{:keys [content line]} field top-level-render options]
   (let [mask-id        (svg/id "ordinary-base_")
         line-style     (or (:style line) :straight)
         bottom-left    (get-in field [:points :bottom-left])
@@ -145,14 +147,15 @@
                                         "L" bottom-left
                                         "z"])
                         {:parent field
-                         :meta   {:context [:base]}})]
+                         :meta   {:context   [:base]
+                                  :ordinary? true}})]
     [:<>
      [:defs
       [:mask {:id mask-id}
        [:path {:d    (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content ordinary-field]]]))
+      [top-level-render content ordinary-field options]]]))
 
 (defn bend [{:keys [content line]} field top-level-render]
   [:<>])
@@ -196,6 +199,6 @@
        (map (fn [[name key _]]
               [key name]))))
 
-(defn render [{:keys [type] :as ordinary} field top-level-render]
+(defn render [{:keys [type] :as ordinary} field top-level-render options]
   (let [function (get kinds-function-map type)]
-    [function ordinary field top-level-render]))
+    [function ordinary field top-level-render options]))

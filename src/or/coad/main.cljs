@@ -35,7 +35,8 @@
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:coat-of-arms {:escutcheon :heater
+   (merge {:rendering    {:outline :off}
+           :coat-of-arms {:escutcheon :heater
                           :content    {:content {:tincture :argent}}}} db)))
 
 (rf/reg-event-db
@@ -108,7 +109,7 @@
      (for [[idx ordinary] (map-indexed vector ordinaries)]
        ^{:key idx} [ordinary/render ordinary])]))
 
-(defn render-shield [coat-of-arms]
+(defn render-shield [coat-of-arms options]
   (let [field             (escutcheon/field (:escutcheon coat-of-arms))
         transformed-field (field/transform-to-width field 100)
         content           (:content coat-of-arms)]
@@ -122,7 +123,9 @@
       [:g {:mask "url(#mask-shield)"}
        [:path {:d    (:shape transformed-field)
                :fill "#f0f0f0"}]
-       [field-content/render content transformed-field]]]]))
+       [field-content/render content transformed-field options]
+       (when (:outline? options)
+         [:path.outline {:d (:shape transformed-field)}])]]]))
 
 (declare form-for-field)
 
@@ -224,25 +227,39 @@
            ^{:key idx}
            [form-for-ordinary (vec (concat path [:ordinaries idx]))]))]]]))
 
+(defn form-general []
+  [:div.general {:style {:margin-bottom "1.5em"}}
+   [:div.title "General"]
+   [:div.setting
+    [:label {:for "escutcheon"} "Escutcheon"]
+    [:select {:name      "escutcheon"
+              :id        "escutcheon"
+              :value     (name @(rf/subscribe [:get :coat-of-arms :escutcheon]))
+              :on-change #(rf/dispatch [:set :coat-of-arms :escutcheon (keyword (-> % .-target .-value))])}
+     (for [[key display-name] escutcheon/options]
+       ^{:key key}
+       [:option {:value (name key)} display-name])]]
+   [:div.setting
+    [:label {:for "outline"} "Outline"]
+    [:select {:name      "outline"
+              :id        "outline"
+              :value     (name @(rf/subscribe [:get :rendering :outline]))
+              :on-change #(rf/dispatch [:set :rendering :outline (keyword (-> % .-target .-value))])}
+     (for [[display-name key] [["On" :on]
+                               ["Off" :off]]]
+       ^{:key key}
+       [:option {:value (name key)} display-name])]]])
+
 (defn form []
   [:<>
-   [:div.general {:style {:margin-bottom "1.5em"}}
-    [:div.title "General"]
-    [:div.setting
-     [:label {:for "escutcheon"} "Escutcheon"]
-     [:select {:name      "escutcheon"
-               :id        "escutcheon"
-               :value     (name @(rf/subscribe [:get :coat-of-arms :escutcheon]))
-               :on-change #(rf/dispatch [:set :coat-of-arms :escutcheon (keyword (-> % .-target .-value))])}
-      (for [[key display-name] escutcheon/options]
-        ^{:key key}
-        [:option {:value (name key)} display-name])]]]
+   [form-general]
    [:div.title "Coat of Arms"]
    [form-for-field [:coat-of-arms :content]]])
 
 (defn app []
   (fn []
-    (let [coat-of-arms @(rf/subscribe [:get :coat-of-arms])]
+    (let [coat-of-arms @(rf/subscribe [:get :coat-of-arms])
+          options      {:outline? (= @(rf/subscribe [:get :rendering :outline]) :on)}]
       [:<>
        [:div {:style {:width    "100%"
                       :position "relative"}}
@@ -254,7 +271,7 @@
                :viewBox             "0 0 520 1000"
                :preserveAspectRatio "xMidYMin slice"}
          defs
-         [render-shield coat-of-arms]]
+         [render-shield coat-of-arms options]]
         [:div {:style {:position "absolute"
                        :left     "27em"
                        :top      0

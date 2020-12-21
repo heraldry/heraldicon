@@ -99,3 +99,13 @@ mask path.overlap {
   border-top: solid 1px #bbb;
   padding-top: 0.5em;
 }
+
+.outline {
+  stroke: #000;
+  stroke-width: 0.5;
+  fill: none;
+}
+
+.outline.ordinary {
+  stroke-width: 1;
+}
