@@ -133,8 +133,7 @@
 
 (defn form-for-ordinary [path]
   [:<>
-   [:a.remove {:href     "#"
-               :on-click #(rf/dispatch [:remove-ordinary path])}
+   [:a.remove {:on-click #(rf/dispatch [:remove-ordinary path])}
     "x"]
    [:div.ordinary
     [:div.setting
@@ -192,15 +191,13 @@
               [:div.part
                (if (number? part)
                  [:<>
-                  [:a.change {:href     "#"
-                              :on-click #(rf/dispatch [:set-in (concat path [:division :content idx])
+                  [:a.change {:on-click #(rf/dispatch [:set-in (concat path [:division :content idx])
                                                        (get content part)])}
                    "o"]
                   [:span.same (str "Same as " (inc part))]]
                  [:<>
                   (when (>= idx mandatory-part-count)
-                    [:a.remove {:href     "#"
-                                :on-click #(rf/dispatch [:set-in (concat path [:division :content idx])
+                    [:a.remove {:on-click #(rf/dispatch [:set-in (concat path [:division :content idx])
                                                          (mod idx mandatory-part-count)])}
                      "x"])
                   [form-for-field (vec (concat path [:division :content idx]))]])]))]])]
