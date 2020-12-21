@@ -45,20 +45,24 @@ mask path.overlap {
   margin-bottom: 1em;
 }
 
-.field .parts {
+.parts {
   position: relative;
   padding-left: 2em;
   margin-top: 0.5em;
 }
 
-.field .parts .change {
+.change {
   position: absolute;
   left: 1em;
 }
 
-.field .parts .remove {
+.remove {
   position: absolute;
   left: 1em;
+}
+
+.add {
+  margin-left: 1em;
 }
 
 .setting {
@@ -70,8 +74,13 @@ mask path.overlap {
   left: 7em;
 }
 
-.ordinaries {
+.ordinaries-section {
   margin-top: 1em;
+}
+
+.ordinaries {
+  position: relative;
+  padding-left: 2em;
 }
 
 .title {
@@ -84,4 +93,10 @@ mask path.overlap {
   width: 100%;
   padding-top: 0.5em;
   border-top: solid 1px #bbb;
+}
+
+.ordinary {
+  margin-bottom: 1em;
+  border-top: solid 1px #bbb;
+  padding-top: 0.5em;
 }
