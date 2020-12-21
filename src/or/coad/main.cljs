@@ -2,6 +2,7 @@
   (:require ["js-base64" :as base64]
             [cljs.reader :as reader]
             [goog.string.format]  ;; required for release build
+            [or.coad.blazon :as blazon]
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
             [or.coad.field :as field]
@@ -297,6 +298,15 @@
          (when (= mode :hatching)
            hatching/patterns)
          [render-shield coat-of-arms options]]
+        [:div {:style {:position "absolute"
+                       :left 10
+                       :top "31em"
+                       :width "calc(25em - 20px)"
+                       :height "5em"
+                       :padding-left 10
+                       :padding-right 10
+                       :border "1px solid #ddd"}}
+         (blazon/encode-field (:content coat-of-arms) :root? true)]
         [:div {:style {:position "absolute"
                        :left 10
                        :top "37em"
