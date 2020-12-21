@@ -25,7 +25,7 @@
    (get-in db path)))
 
 (rf/reg-sub
- :get-division
+ :get-division-type
  (fn [db [_ path]]
    (let [division (get-in db (concat path [:division :type]))]
      (or division :none))))
@@ -54,20 +54,25 @@
    (if (= value :none)
      (-> db
          (update-in path dissoc :division)
-         (assoc-in (conj path :content) {:tincture :argent}))
+         (update-in (conj path :content) #(or % {:tincture :argent})))
      (-> db
          (assoc-in (concat path [:division :type]) value)
-         (assoc-in (concat path [:division :line :style]) :straight)
-         (assoc-in (concat path [:division :content])
-                   (into [{:content {:tincture :argent}}
-                          {:content {:tincture :azure}}]
-                         (cond
-                           (#{:per-saltire :quarterly} value) [0 1]
-                           (= :gyronny value) [0 1 0 1 0 1]
-                           (#{:tierced-per-pale
-                              :tierced-per-fess
-                              :tierced-per-pairle
-                              :tierced-per-pairle-reversed} value) [{:content {:tincture :or}}])))
+         (update-in (concat path [:division :line :style]) #(or % :straight))
+         (update-in (concat path [:division :content]) (fn [current-value]
+                                                         (let [current (or current-value [])
+                                                               default (into [{:content {:tincture :argent}}
+                                                                              {:content {:tincture :azure}}]
+                                                                             (cond
+                                                                               (#{:per-saltire :quarterly} value) [0 1]
+                                                                               (= :gyronny value) [0 1 0 1 0 1]
+                                                                               (#{:tierced-per-pale
+                                                                                  :tierced-per-fess
+                                                                                  :tierced-per-pairle
+                                                                                  :tierced-per-pairle-reversed} value) [{:content {:tincture :or}}]))]
+                                                           (cond
+                                                             (< (count current) (count default)) (into current (subvec default (count current)))
+                                                             (> (count current) (count default)) (subvec current 0 (count default))
+                                                             :else current))))
          (update-in path dissoc :content)))))
 
                                         ; views
@@ -103,43 +108,64 @@
        [field-content/render content transformed-field]]]]))
 
 (defn form-for-field [path]
-  (let [division @(rf/subscribe [:get-division path])]
+  (let [division-type @(rf/subscribe [:get-division-type path])]
     [:div.field
      [:div.division
-      [:label {:for "division"} "Division"]
-      [:select {:name "division"
-                :id "division"
-                :value (name division)
-                :on-change #(rf/dispatch [:set-division path (keyword (-> % .-target .-value))])}
-       (for [[key display-name] (into [[:none "None"]] division/options)]
-         ^{:key key}
-         [:option {:value (name key)} display-name])]
-      (when (not= division :none)
+      [:div.setting
+       [:label {:for "division"} "Division"]
+       [:select {:name "division"
+                 :id "division"
+                 :value (name division-type)
+                 :on-change #(rf/dispatch [:set-division path (keyword (-> % .-target .-value))])}
+        (for [[key display-name] (into [[:none "None"]] division/options)]
+          ^{:key key}
+          [:option {:value (name key)} display-name])]]
+      (when (not= division-type :none)
         [:<>
          [:div.line
-          [:label {:for "line"} "Line"]
-          [:select {:name "line"
-                    :id "line"
-                    :value (name @(rf/subscribe [:get-in (concat path [:division :line :style])]))
-                    :on-change #(rf/dispatch [:set-in (concat path [:division :line :style]) (keyword (-> % .-target .-value))])}
-           (for [[key display-name] line/options]
-             ^{:key key}
-             [:option {:value (name key)} display-name])]]
-         [:div.parts]])]
-
-     (when (= division :none)
-       [:div.tincture
-        [:label {:for "tincture"} "Tincture"]
-        [:select {:name "tincture"
-                  :id "tincture"
-                  :value (name @(rf/subscribe [:get-in (concat path [:content :tincture])]))
-                  :on-change #(rf/dispatch [:set-in (concat path [:content :tincture]) (keyword (-> % .-target .-value))])}
-         (for [[group-name & options] tincture/options]
-           ^{:key group-name}
-           [:optgroup {:label group-name}
-            (for [[display-name key] options]
+          [:div.setting
+           [:label {:for "line"} "Line"]
+           [:select {:name "line"
+                     :id "line"
+                     :value (name @(rf/subscribe [:get-in (concat path [:division :line :style])]))
+                     :on-change #(rf/dispatch [:set-in (concat path [:division :line :style]) (keyword (-> % .-target .-value))])}
+            (for [[key display-name] line/options]
               ^{:key key}
-              [:option {:value (name key)} display-name])])]])
+              [:option {:value (name key)} display-name])]]]
+         [:div.parts
+          (let [content @(rf/subscribe [:get-in (concat path [:division :content])])
+                mandatory-part-count (division/mandatory-part-count division-type)]
+            (for [[idx part] (map-indexed vector content)]
+              ^{:key idx}
+              [:div.part
+               (if (number? part)
+                 [:<>
+                  [:a.change {:href "#"
+                              :on-click #(rf/dispatch [:set-in (concat path [:division :content idx])
+                                                       (get content part)])}
+                   "o"]
+                  [:span.same (str "Same as " (inc part))]]
+                 [:<>
+                  (when (>= idx mandatory-part-count)
+                    [:a.remove {:href "#"
+                                :on-click #(rf/dispatch [:set-in (concat path [:division :content idx])
+                                                         (mod idx mandatory-part-count)])}
+                     "x"])
+                  [form-for-field (vec (concat path [:division :content idx]))]])]))]])]
+     (when (= division-type :none)
+       [:div.tincture
+        [:div.setting
+         [:label {:for "tincture"} "Tincture"]
+         [:select {:name "tincture"
+                   :id "tincture"
+                   :value (name @(rf/subscribe [:get-in (concat path [:content :tincture])]))
+                   :on-change #(rf/dispatch [:set-in (concat path [:content :tincture]) (keyword (-> % .-target .-value))])}
+          (for [[group-name & options] tincture/options]
+            ^{:key group-name}
+            [:optgroup {:label group-name}
+             (for [[display-name key] options]
+               ^{:key key}
+               [:option {:value (name key)} display-name])])]]])
      #_[:fieldset
         [:label {:for "ordinary"} "Ordinary"]
         [:select {:name "ordinary"
@@ -161,15 +187,16 @@
 
 (defn form []
   [:div.form
-   [:fieldset
-    [:label {:for "escutcheon"} "Escutcheon"]
-    [:select {:name "escutcheon"
-              :id "escutcheon"
-              :value (name @(rf/subscribe [:get :coat-of-arms :escutcheon]))
-              :on-change #(rf/dispatch [:set :coat-of-arms :escutcheon (keyword (-> % .-target .-value))])}
-     (for [[key display-name] escutcheon/options]
-       ^{:key key}
-       [:option {:value (name key)} display-name])]]
+   [:div.escutcheon
+    [:div.setting
+     [:label {:for "escutcheon"} "Escutcheon"]
+     [:select {:name "escutcheon"
+               :id "escutcheon"
+               :value (name @(rf/subscribe [:get :coat-of-arms :escutcheon]))
+               :on-change #(rf/dispatch [:set :coat-of-arms :escutcheon (keyword (-> % .-target .-value))])}
+      (for [[key display-name] escutcheon/options]
+        ^{:key key}
+        [:option {:value (name key)} display-name])]]]
    [form-for-field [:coat-of-arms :content]]])
 
 (defn app []

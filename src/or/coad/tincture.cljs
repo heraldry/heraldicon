@@ -26,8 +26,8 @@
 
 (def options
   [["Metal"
-    ["Argent (metal)" :argent]
-    ["Or (metal)" :or]]
+    ["Argent" :argent]
+    ["Or" :or]]
    ["Tincture"
     ["Azure" :azure]
     ["Gules" :gules]

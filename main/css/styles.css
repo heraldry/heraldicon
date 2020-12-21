@@ -15,9 +15,16 @@ body {
 a,
 a:hover,
 a:focus,
-a:active {
+a:active,
+a:visited {
   text-decoration: none;
   color: inherit;
+}
+
+a,
+a:hover,
+a:visited {
+  color: #1b6690;
 }
 
 .controls {
@@ -36,4 +43,37 @@ mask path.overlap {
   stroke-width: 0.1;
   fill: none;
   stroke: #fff;
+}
+
+.escutcheon {
+  margin-bottom: 1em;
+}
+
+.part {
+  margin-bottom: 1em;
+}
+
+.field .parts {
+  position: relative;
+  padding-left: 2em;
+  margin-top: 0.5em;
+}
+
+.field .parts .change {
+  position: absolute;
+  left: 1em;
+}
+
+.field .parts .remove {
+  position: absolute;
+  left: 1em;
+}
+
+.setting {
+  position: relative;
+}
+
+.setting select {
+  position: absolute;
+  left: 7em;
 }
