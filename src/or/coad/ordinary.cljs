@@ -6,8 +6,9 @@
 
 (def band-quotient 5)
 
-(defn pale [{:keys [content line-style]} field top-level-render]
+(defn pale [{:keys [content line]} field top-level-render]
   (let [mask-id (svg/id "ordinary-pale_")
+        line-style (or (:style line) :straight)
         chief (get-in field [:points :chief])
         base (get-in field [:points :base])
         fess (get-in field [:points :fess])
@@ -46,8 +47,9 @@
      [:g {:mask (str "url(#" mask-id ")")}
       [top-level-render content field]]]))
 
-(defn fess [{:keys [content line-style]} field top-level-render]
+(defn fess [{:keys [content line]} field top-level-render]
   (let [mask-id (svg/id "ordinary-fess_")
+        line-style (or (:style line) :straight)
         dexter (get-in field [:points :dexter])
         sinister (get-in field [:points :sinister])
         fess (get-in field [:points :fess])
@@ -86,14 +88,9 @@
      [:g {:mask (str "url(#" mask-id ")")}
       [top-level-render content field]]]))
 
-(defn bend [{:keys [content line-style]} field top-level-render]
-  [:<>])
-
-(defn bend-sinister [{:keys [content line-style]} field top-level-render]
-  [:<>])
-
-(defn chief [{:keys [content line-style]} field top-level-render]
+(defn chief [{:keys [content line]} field top-level-render]
   (let [mask-id (svg/id "ordinary-chief_")
+        line-style (or (:style line) :straight)
         top-left (get-in field [:points :top-left])
         top-right (get-in field [:points :top-right])
         dexter (get-in field [:points :dexter])
@@ -117,7 +114,7 @@
                                         "L" row-dexter
                                         "z"])
                         {:parent field
-                         :meta {:context [:fess]}})]
+                         :meta {:context [:chief]}})]
     [:<>
      [:defs
       [:mask {:id mask-id}
@@ -126,8 +123,9 @@
      [:g {:mask (str "url(#" mask-id ")")}
       [top-level-render content field]]]))
 
-(defn base [{:keys [content line-style]} field top-level-render]
+(defn base [{:keys [content line]} field top-level-render]
   (let [mask-id (svg/id "ordinary-base_")
+        line-style (or (:style line) :straight)
         bottom-left (get-in field [:points :bottom-left])
         bottom-right (get-in field [:points :bottom-right])
         dexter (get-in field [:points :dexter])
@@ -147,7 +145,7 @@
                                         "L" bottom-left
                                         "z"])
                         {:parent field
-                         :meta {:context [:fess]}})]
+                         :meta {:context [:base]}})]
     [:<>
      [:defs
       [:mask {:id mask-id}
@@ -156,16 +154,22 @@
      [:g {:mask (str "url(#" mask-id ")")}
       [top-level-render content field]]]))
 
-(defn cross [{:keys [content line-style]} field top-level-render]
+(defn bend [{:keys [content line]} field top-level-render]
   [:<>])
 
-(defn saltire [{:keys [content line-style]} field top-level-render]
+(defn bend-sinister [{:keys [content line]} field top-level-render]
   [:<>])
 
-(defn chevron [{:keys [content line-style]} field top-level-render]
+(defn cross [{:keys [content line]} field top-level-render]
   [:<>])
 
-(defn pall [{:keys [content line-style]} field top-level-render]
+(defn saltire [{:keys [content line]} field top-level-render]
+  [:<>])
+
+(defn chevron [{:keys [content line]} field top-level-render]
+  [:<>])
+
+(defn pall [{:keys [content line]} field top-level-render]
   [:<>])
 
 (def kinds
