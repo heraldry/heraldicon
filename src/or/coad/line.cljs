@@ -189,8 +189,9 @@
        (map (fn [[name key _]]
               [key name]))))
 
-(defn create [kind length & {:keys [angle reversed? flipped?]}]
-  (let [line ((get kinds-function-map kind) length reversed?)]
+(defn create [kind length & {:keys [angle reversed? flipped? extra] :or {extra 50}}]
+  (let [line ((get kinds-function-map kind)
+              (+ length extra) reversed?)]
     (update line :line
             #(-> %
                  svg/make-path
