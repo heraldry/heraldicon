@@ -1,18 +1,18 @@
 (ns or.coad.ordinary
-  (:require [or.coad.field :as field]
+  (:require [or.coad.field-environment :as field-environment]
             [or.coad.line :as line]
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
 (def band-quotient 5)
 
-(defn pale [{:keys [content line]} field top-level-render options]
+(defn pale [{:keys [content line] :as field} environment top-level-render options]
   (let [mask-id (svg/id "ordinary-pale")
         line-style (or (:style line) :straight)
-        chief (get-in field [:points :chief])
-        base (get-in field [:points :base])
-        fess (get-in field [:points :fess])
-        width (:width field)
+        chief (get-in environment [:points :chief])
+        base (get-in environment [:points :base])
+        fess (get-in environment [:points :fess])
+        width (:width environment)
         col1 (- (:x fess) (/ width band-quotient 2))
         col2 (+ (:x fess) (/ width band-quotient 2))
         first-chief (v/v col1 (:y chief))
@@ -29,7 +29,7 @@
                                                     :angle -90
                                                     :reversed? true)
         second-base-adjusted (v/extend second-chief second-base line-reversed-length)
-        ordinary-field (field/make-field
+        ordinary-field (field-environment/create
                         (svg/make-path ["M" first-chief
                                         (line/stitch line)
                                         "L" first-base
@@ -56,13 +56,13 @@
                     ["M" second-base-adjusted
                      (line/stitch line-reversed)])}]])]))
 
-(defn fess [{:keys [content line]} field top-level-render options]
+(defn fess [{:keys [content line] :as field} environment top-level-render options]
   (let [mask-id (svg/id "ordinary-fess")
         line-style (or (:style line) :straight)
-        dexter (get-in field [:points :dexter])
-        sinister (get-in field [:points :sinister])
-        fess (get-in field [:points :fess])
-        height (:height field)
+        dexter (get-in environment [:points :dexter])
+        sinister (get-in environment [:points :sinister])
+        fess (get-in environment [:points :fess])
+        height (:height environment)
         row1 (- (:y fess) (/ height band-quotient 2))
         row2 (+ (:y fess) (/ height band-quotient 2))
         first-dexter (v/v (:x dexter) row1)
@@ -78,7 +78,7 @@
                                                     :flipped? true
                                                     :angle 180)
         second-sinister-adjusted (v/extend second-dexter second-sinister line-reversed-length)
-        ordinary-field (field/make-field
+        ordinary-field (field-environment/create
                         (svg/make-path ["M" first-dexter
                                         (line/stitch line)
                                         "L" first-sinister
@@ -105,14 +105,14 @@
                     ["M" second-sinister-adjusted
                      (line/stitch line-reversed)])}]])]))
 
-(defn chief [{:keys [content line]} field top-level-render options]
+(defn chief [{:keys [content line] :as field} environment top-level-render options]
   (let [mask-id (svg/id "ordinary-chief")
         line-style (or (:style line) :straight)
-        top-left (get-in field [:points :top-left])
-        top-right (get-in field [:points :top-right])
-        dexter (get-in field [:points :dexter])
-        sinister (get-in field [:points :sinister])
-        height (:height field)
+        top-left (get-in environment [:points :top-left])
+        top-right (get-in environment [:points :top-right])
+        dexter (get-in environment [:points :dexter])
+        sinister (get-in environment [:points :sinister])
+        height (:height environment)
         row (+ (:y chief) (/ height band-quotient))
         row-dexter (v/v (:x dexter) row)
         row-sinister (v/v (:x sinister) row)
@@ -123,7 +123,7 @@
                                                     :flipped? true
                                                     :angle 180)
         row-sinister-adjusted (v/extend row-dexter row-sinister line-reversed-length)
-        ordinary-field (field/make-field
+        ordinary-field (field-environment/create
                         (svg/make-path ["M" top-left
                                         "L" top-right
                                         "L" row-sinister-adjusted
@@ -146,21 +146,21 @@
                     ["M" row-sinister-adjusted
                      (line/stitch line-reversed)])}]])]))
 
-(defn base [{:keys [content line]} field top-level-render options]
+(defn base [{:keys [content line] :as field} environment top-level-render options]
   (let [mask-id (svg/id "ordinary-base")
         line-style (or (:style line) :straight)
-        bottom-left (get-in field [:points :bottom-left])
-        bottom-right (get-in field [:points :bottom-right])
-        dexter (get-in field [:points :dexter])
-        sinister (get-in field [:points :sinister])
-        base (get-in field [:points :base])
-        height (:height field)
+        bottom-left (get-in environment [:points :bottom-left])
+        bottom-right (get-in environment [:points :bottom-right])
+        dexter (get-in environment [:points :dexter])
+        sinister (get-in environment [:points :sinister])
+        base (get-in environment [:points :base])
+        height (:height environment)
         row (- (:y base) (/ height band-quotient))
         row-dexter (v/v (:x dexter) row)
         row-sinister (v/v (:x sinister) row)
         {line :line} (line/create line-style
                                   (:x (v/- sinister dexter)))
-        ordinary-field (field/make-field
+        ordinary-field (field-environment/create
                         (svg/make-path ["M" row-dexter
                                         (line/stitch line)
                                         "L" row-sinister
@@ -183,22 +183,22 @@
                     ["M" row-dexter
                      (line/stitch line)])}]])]))
 
-(defn bend [{:keys [content line]} field top-level-render]
+(defn bend [{:keys [content line] :as field} field top-level-render]
   [:<>])
 
-(defn bend-sinister [{:keys [content line]} field top-level-render]
+(defn bend-sinister [{:keys [content line] :as field} field top-level-render]
   [:<>])
 
-(defn cross [{:keys [content line]} field top-level-render]
+(defn cross [{:keys [content line] :as field} field top-level-render]
   [:<>])
 
-(defn saltire [{:keys [content line]} field top-level-render]
+(defn saltire [{:keys [content line] :as field} field top-level-render]
   [:<>])
 
-(defn chevron [{:keys [content line]} field top-level-render]
+(defn chevron [{:keys [content line] :as field} field top-level-render]
   [:<>])
 
-(defn pall [{:keys [content line]} field top-level-render]
+(defn pall [{:keys [content line] :as field} field top-level-render]
   [:<>])
 
 (def kinds
@@ -225,6 +225,6 @@
        (map (fn [[name key _]]
               [key name]))))
 
-(defn render [{:keys [type] :as ordinary} field top-level-render options]
+(defn render [{:keys [type] :as ordinary} environment top-level-render options]
   (let [function (get kinds-function-map type)]
-    [function ordinary field top-level-render options]))
+    [function ordinary environment top-level-render options]))

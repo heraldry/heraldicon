@@ -1,33 +1,37 @@
 (ns or.coad.escutcheon
-  (:require [or.coad.field :as field]))
+  (:require [or.coad.field-environment :as field-environment]))
 
 (def heater
   ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
-  (field/make-field (str "m 0,0"
-                         "h 3"
-                         "v 2"
-                         "a 6 6 0 0 1 -3,5.196152422706632"
-                         "a 6 6 0 0 1 -3,-5.196152422706632"
-                         "v -2"
-                         "z")
-                    {:context [:root]}))
+  (field-environment/create
+   (str "m 0,0"
+        "h 3"
+        "v 2"
+        "a 6 6 0 0 1 -3,5.196152422706632"
+        "a 6 6 0 0 1 -3,-5.196152422706632"
+        "v -2"
+        "z")
+   {:context [:root]}))
 
 (def square-french
-  (field/make-field (str "m 0,0"
-                         "v 15.7"
-                         "c 0,6 6,12 12,13"
-                         "c 6,-1 12,-7 12,-13"
-                         "V 0"
-                         "z")
-                    {:context [:root]}))
+  (field-environment/create
+   (str "m 0,0"
+        "v 15.7"
+        "c 0,6 6,12 12,13"
+        "c 6,-1 12,-7 12,-13"
+        "V 0"
+        "z")
+   {:context [:root]}))
+
 (def square-iberian
-  (field/make-field (str "m 0,0"
-                         "h 5"
-                         "v 7"
-                         "a 5 5 0 0 1 -10,0"
-                         "v -7"
-                         "z")
-                    {:context [:root]}))
+  (field-environment/create
+   (str "m 0,0"
+        "h 5"
+        "v 7"
+        "a 5 5 0 0 1 -10,0"
+        "v -7"
+        "z")
+   {:context [:root]}))
 
 (def kinds
   [["Heater" :heater heater]

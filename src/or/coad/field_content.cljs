@@ -4,18 +4,18 @@
             [or.coad.ordinary :as ordinary]
             [or.coad.tincture :as tincture]))
 
-(defn render [content field options]
-  (let [division (:division content)
-        ordinaries (:ordinaries content)
-        tincture (get-in content [:content :tincture])]
+(defn render [field environment options]
+  (let [division (:division field)
+        ordinaries (:ordinaries field)
+        tincture (get-in field [:content :tincture])]
     [:<>
      (cond
        tincture (let [fill (case (:mode options)
                              :colours (get tincture/tinctures tincture)
                              :hatching (hatching/get-for tincture))]
-                  [:path {:d (:shape field)
+                  [:path {:d (:shape environment)
                           :fill fill
                           :stroke fill}])
-       division [division/render division field render options])
+       division [division/render division environment render options])
      (for [[idx ordinary] (map-indexed vector ordinaries)]
-       ^{:key idx} [ordinary/render ordinary field render options])]))
+       ^{:key idx} [ordinary/render ordinary environment render options])]))
