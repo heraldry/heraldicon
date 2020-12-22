@@ -29,24 +29,24 @@
                                                     :angle -90
                                                     :reversed? true)
         second-base-adjusted (v/extend second-chief second-base line-reversed-length)
-        ordinary-field (field-environment/create
-                        (svg/make-path ["M" first-chief
-                                        (line/stitch line)
-                                        "L" first-base
-                                        "L" second-base-adjusted
-                                        (line/stitch line-reversed)
-                                        "L" second-chief
-                                        "z"])
-                        {:parent ordinary
-                         :context [:pale]
-                         :ordinary? true})]
+        ordinary-environment (field-environment/create
+                              (svg/make-path ["M" first-chief
+                                              (line/stitch line)
+                                              "L" first-base
+                                              "L" second-base-adjusted
+                                              (line/stitch line-reversed)
+                                              "L" second-chief
+                                              "z"])
+                              {:parent ordinary
+                               :context [:pale]
+                               :ordinary? true})]
     [:<>
      [:defs
       [:mask {:id mask-id}
-       [:path {:d (:shape ordinary-field)
+       [:path {:d (:shape ordinary-environment)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render field ordinary-field options]]
+      [top-level-render field ordinary-environment options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -78,24 +78,24 @@
                                                     :flipped? true
                                                     :angle 180)
         second-sinister-adjusted (v/extend second-dexter second-sinister line-reversed-length)
-        ordinary-field (field-environment/create
-                        (svg/make-path ["M" first-dexter
-                                        (line/stitch line)
-                                        "L" first-sinister
-                                        "L" second-sinister-adjusted
-                                        (line/stitch line-reversed)
-                                        "L" dexter
-                                        "z"])
-                        {:parent ordinary
-                         :context [:fess]
-                         :ordinary? true})]
+        ordinary-environment (field-environment/create
+                              (svg/make-path ["M" first-dexter
+                                              (line/stitch line)
+                                              "L" first-sinister
+                                              "L" second-sinister-adjusted
+                                              (line/stitch line-reversed)
+                                              "L" dexter
+                                              "z"])
+                              {:parent ordinary
+                               :context [:fess]
+                               :ordinary? true})]
     [:<>
      [:defs
       [:mask {:id mask-id}
-       [:path {:d (:shape ordinary-field)
+       [:path {:d (:shape ordinary-environment)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render field ordinary-field options]]
+      [top-level-render field ordinary-environment options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -123,23 +123,23 @@
                                                     :flipped? true
                                                     :angle 180)
         row-sinister-adjusted (v/extend row-dexter row-sinister line-reversed-length)
-        ordinary-field (field-environment/create
-                        (svg/make-path ["M" top-left
-                                        "L" top-right
-                                        "L" row-sinister-adjusted
-                                        (line/stitch line-reversed)
-                                        "L" row-dexter
-                                        "z"])
-                        {:parent ordinary
-                         :context [:chief]
-                         :ordinary? true})]
+        ordinary-environment (field-environment/create
+                              (svg/make-path ["M" top-left
+                                              "L" top-right
+                                              "L" row-sinister-adjusted
+                                              (line/stitch line-reversed)
+                                              "L" row-dexter
+                                              "z"])
+                              {:parent ordinary
+                               :context [:chief]
+                               :ordinary? true})]
     [:<>
      [:defs
       [:mask {:id mask-id}
-       [:path {:d (:shape ordinary-field)
+       [:path {:d (:shape ordinary-environment)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render field ordinary-field options]]
+      [top-level-render field ordinary-environment options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -160,23 +160,23 @@
         row-sinister (v/v (:x sinister) row)
         {line :line} (line/create line-style
                                   (:x (v/- sinister dexter)))
-        ordinary-field (field-environment/create
-                        (svg/make-path ["M" row-dexter
-                                        (line/stitch line)
-                                        "L" row-sinister
-                                        "L" bottom-right
-                                        "L" bottom-left
-                                        "z"])
-                        {:parent field
-                         :meta {:context [:base]
-                                :ordinary? true}})]
+        ordinary-environment (field-environment/create
+                              (svg/make-path ["M" row-dexter
+                                              (line/stitch line)
+                                              "L" row-sinister
+                                              "L" bottom-right
+                                              "L" bottom-left
+                                              "z"])
+                              {:parent field
+                               :meta {:context [:base]
+                                      :ordinary? true}})]
     [:<>
      [:defs
       [:mask {:id mask-id}
-       [:path {:d (:shape ordinary-field)
+       [:path {:d (:shape ordinary-environment)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render field ordinary-field options]]
+      [top-level-render field ordinary-environment options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path

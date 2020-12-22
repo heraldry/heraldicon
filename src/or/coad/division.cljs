@@ -23,32 +23,32 @@
         {line :line} (line/create line-style
                                   (:y (v/- base chief))
                                   :angle -90)
-        field-1 (field-environment/create
-                 (svg/make-path ["M" base
-                                 (line/stitch line)
-                                 "L" chief
-                                 "L" top-left
-                                 "L" bottom-left
-                                 "z"])
-                 {:parent field
-                  :context [:per-pale :left]})
-        field-2 (field-environment/create
-                 (svg/make-path ["M" base
-                                 (line/stitch line)
-                                 "L" chief
-                                 "L" top-right
-                                 "L" bottom-right
-                                 "z"])
-                 {:parent field
-                  :context [:per-pale :left]})]
+        environment-1 (field-environment/create
+                       (svg/make-path ["M" base
+                                       (line/stitch line)
+                                       "L" chief
+                                       "L" top-left
+                                       "L" bottom-left
+                                       "z"])
+                       {:parent field
+                        :context [:per-pale :left]})
+        environment-2 (field-environment/create
+                       (svg/make-path ["M" base
+                                       (line/stitch line)
+                                       "L" chief
+                                       "L" top-right
+                                       "L" bottom-right
+                                       "z"])
+                       {:parent field
+                        :context [:per-pale :left]})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d (:shape field-1)
+       [:path {:d (:shape environment-1)
                :fill "#fff"}]
-       [:path.overlap {:d (:shape field-1)}]]
+       [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
-       [:path {:d (:shape field-2)
+       [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" chief
@@ -56,9 +56,9 @@
                             "L" bottom-right
                             "L" base])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) field-1 options]]
+      [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) field-2 options]]
+      [top-level-render (get fields 1) environment-2 options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -77,32 +77,32 @@
         line-style (or (:style line) :straight)
         {line :line} (line/create line-style
                                   (:x (v/- sinister dexter)))
-        field-1 (field-environment/create
-                 (svg/make-path ["M" dexter
-                                 (line/stitch line)
-                                 "L" sinister
-                                 "L" top-right
-                                 "L" top-left
-                                 "z"])
-                 {:parent field
-                  :context [:per-fess :top]})
-        field-2 (field-environment/create
-                 (svg/make-path ["M" dexter
-                                 (line/stitch line)
-                                 "L" sinister
-                                 "L" bottom-right
-                                 "L" bottom-left
-                                 "z"])
-                 {:parent field
-                  :context [:per-fess :bottom]})]
+        environment-1 (field-environment/create
+                       (svg/make-path ["M" dexter
+                                       (line/stitch line)
+                                       "L" sinister
+                                       "L" top-right
+                                       "L" top-left
+                                       "z"])
+                       {:parent field
+                        :context [:per-fess :top]})
+        environment-2 (field-environment/create
+                       (svg/make-path ["M" dexter
+                                       (line/stitch line)
+                                       "L" sinister
+                                       "L" bottom-right
+                                       "L" bottom-left
+                                       "z"])
+                       {:parent field
+                        :context [:per-fess :bottom]})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d (:shape field-1)
+       [:path {:d (:shape environment-1)
                :fill "#fff"}]
-       [:path.overlap {:d (:shape field-1)}]]
+       [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
-       [:path {:d (:shape field-2)
+       [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" sinister
@@ -110,9 +110,9 @@
                             "L" bottom-left
                             "L" dexter])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) field-1 options]]
+      [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) field-2 options]]
+      [top-level-render (get fields 1) environment-2 options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -132,31 +132,31 @@
         {line :line} (line/create line-style
                                   (v/abs (v/- bend-intersection top-left))
                                   :angle 45)
-        field-1 (field-environment/create
-                 (svg/make-path ["M" top-left
-                                 (line/stitch line)
-                                 "L" bend-intersection
-                                 "L" top-right
-                                 "z"])
-                 {:parent field
-                  :context [:per-bend :top]})
-        field-2 (field-environment/create
-                 (svg/make-path ["M" top-left
-                                 (line/stitch line)
-                                 "L" bend-intersection
-                                 "L" bottom-right
-                                 "L" bottom-left
-                                 "z"])
-                 {:parent field
-                  :context [:per-bend :bottom]})]
+        environment-1 (field-environment/create
+                       (svg/make-path ["M" top-left
+                                       (line/stitch line)
+                                       "L" bend-intersection
+                                       "L" top-right
+                                       "z"])
+                       {:parent field
+                        :context [:per-bend :top]})
+        environment-2 (field-environment/create
+                       (svg/make-path ["M" top-left
+                                       (line/stitch line)
+                                       "L" bend-intersection
+                                       "L" bottom-right
+                                       "L" bottom-left
+                                       "z"])
+                       {:parent field
+                        :context [:per-bend :bottom]})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d (:shape field-1)
+       [:path {:d (:shape environment-1)
                :fill "#fff"}]
-       [:path.overlap {:d (:shape field-1)}]]
+       [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
-       [:path {:d (:shape field-2)
+       [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" bend-intersection
@@ -164,9 +164,9 @@
                             "L" bottom-left
                             "L" top-left])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) field-1 options]]
+      [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) field-2 options]]
+      [top-level-render (get fields 1) environment-2 options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -192,31 +192,31 @@
                                     top-right
                                      bend-intersection
                                      line-length)
-        field-1 (field-environment/create
-                 (svg/make-path ["M" bend-intersection-adjusted
-                                 (line/stitch line)
-                                 "L" top-right
-                                 "L" top-left
-                                 "z"])
-                 {:parent field
-                  :context [:per-bend-sinister :top]})
-        field-2 (field-environment/create
-                 (svg/make-path ["M" bend-intersection-adjusted
-                                 (line/stitch line)
-                                 "L" top-right
-                                 "L" bottom-right
-                                 "L" bottom-left
-                                 "z"])
-                 {:parent field
-                  :context [:per-bend-sinister :bottom]})]
+        environment-1 (field-environment/create
+                       (svg/make-path ["M" bend-intersection-adjusted
+                                       (line/stitch line)
+                                       "L" top-right
+                                       "L" top-left
+                                       "z"])
+                       {:parent field
+                        :context [:per-bend-sinister :top]})
+        environment-2 (field-environment/create
+                       (svg/make-path ["M" bend-intersection-adjusted
+                                       (line/stitch line)
+                                       "L" top-right
+                                       "L" bottom-right
+                                       "L" bottom-left
+                                       "z"])
+                       {:parent field
+                        :context [:per-bend-sinister :bottom]})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d (:shape field-1)
+       [:path {:d (:shape environment-1)
                :fill "#fff"}]
-       [:path.overlap {:d (:shape field-1)}]]
+       [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
-       [:path {:d (:shape field-2)
+       [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" top-right
@@ -224,9 +224,9 @@
                             "L" bottom-left
                             "L" bend-intersection-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) field-1 options]]
+      [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) field-2 options]]
+      [top-level-render (get fields 1) environment-2 options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -252,36 +252,36 @@
                                            (v/abs (v/- bend-intersection-sinister fess))
                                            :angle 45)
         bend-intersection-dexter-adjusted (v/extend fess bend-intersection-dexter line-dexter-length)
-        field-1 (field-environment/create
-                 (svg/make-path ["M" fess
-                                 (line/stitch line-sinister)
-                                 "L" bend-intersection-sinister
-                                 "L" top-right
-                                 "L" top-left
-                                 "L" bend-intersection-dexter-adjusted
-                                 (line/stitch line-dexter)
-                                 "z"])
-                 {:parent field
-                  :context [:per-chevron :top]})
-        field-2 (field-environment/create
-                 (svg/make-path ["M" fess
-                                 (line/stitch line-sinister)
-                                 "L" bend-intersection-sinister
-                                 "L" bottom-right
-                                 "L" bottom-left
-                                 "L" bend-intersection-dexter-adjusted
-                                 (line/stitch line-dexter)
-                                 "z"])
-                 {:parent field
-                  :context [:per-chevron :bottom]})]
+        environment-1 (field-environment/create
+                       (svg/make-path ["M" fess
+                                       (line/stitch line-sinister)
+                                       "L" bend-intersection-sinister
+                                       "L" top-right
+                                       "L" top-left
+                                       "L" bend-intersection-dexter-adjusted
+                                       (line/stitch line-dexter)
+                                       "z"])
+                       {:parent field
+                        :context [:per-chevron :top]})
+        environment-2 (field-environment/create
+                       (svg/make-path ["M" fess
+                                       (line/stitch line-sinister)
+                                       "L" bend-intersection-sinister
+                                       "L" bottom-right
+                                       "L" bottom-left
+                                       "L" bend-intersection-dexter-adjusted
+                                       (line/stitch line-dexter)
+                                       "z"])
+                       {:parent field
+                        :context [:per-chevron :bottom]})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d (:shape field-1)
+       [:path {:d (:shape environment-1)
                :fill "#fff"}]
-       [:path.overlap {:d (:shape field-1)}]]
+       [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
-       [:path {:d (:shape field-2)
+       [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" bend-intersection-sinister
@@ -289,9 +289,9 @@
                             "L" bottom-left
                             "L" bend-intersection-dexter-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) field-1 options]]
+      [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) field-2 options]]
+      [top-level-render (get fields 1) environment-2 options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -339,52 +339,52 @@
                                              fess
                                               bend-intersection-sinister
                                               line-base-sinister-length)
-        field-1 (field-environment/create
-                 (svg/make-path ["M" top-left-adjusted
-                                 (line/stitch line-chief-dexter)
-                                 "L" fess
-                                 (line/stitch line-chief-sinister)
-                                 "L" top-right
-                                 "z"])
-                 {:parent field
-                  :context [:per-saltire :top]})
-        field-2 (field-environment/create
-                 (svg/make-path ["M" fess
-                                 (line/stitch line-chief-sinister)
-                                 "L" top-right
-                                 "L" bend-intersection-sinister-adjusted
-                                 (line/stitch line-base-sinister)
-                                 "z"])
-                 {:parent field
-                  :context [:per-saltire :right]})
-        field-3 (field-environment/create
-                 (svg/make-path ["M" bend-intersection-sinister-adjusted
-                                 (line/stitch line-base-sinister)
-                                 "L" fess
-                                 (line/stitch line-base-dexter)
-                                 "L" bend-intersection-dexter
-                                 "L" bottom-left
-                                 "L" bottom-right
-                                 "z"])
-                 {:parent field
-                  :context [:per-saltire :bottom]})
-        field-4 (field-environment/create
-                 (svg/make-path ["M" fess
-                                 (line/stitch line-base-dexter)
-                                 "L" bend-intersection-dexter
-                                 "L" top-left-adjusted
-                                 (line/stitch line-chief-dexter)
-                                 "z"])
-                 {:parent field
-                  :context [:per-saltire :left]})]
+        environment-1 (field-environment/create
+                       (svg/make-path ["M" top-left-adjusted
+                                       (line/stitch line-chief-dexter)
+                                       "L" fess
+                                       (line/stitch line-chief-sinister)
+                                       "L" top-right
+                                       "z"])
+                       {:parent field
+                        :context [:per-saltire :top]})
+        environment-2 (field-environment/create
+                       (svg/make-path ["M" fess
+                                       (line/stitch line-chief-sinister)
+                                       "L" top-right
+                                       "L" bend-intersection-sinister-adjusted
+                                       (line/stitch line-base-sinister)
+                                       "z"])
+                       {:parent field
+                        :context [:per-saltire :right]})
+        environment-3 (field-environment/create
+                       (svg/make-path ["M" bend-intersection-sinister-adjusted
+                                       (line/stitch line-base-sinister)
+                                       "L" fess
+                                       (line/stitch line-base-dexter)
+                                       "L" bend-intersection-dexter
+                                       "L" bottom-left
+                                       "L" bottom-right
+                                       "z"])
+                       {:parent field
+                        :context [:per-saltire :bottom]})
+        environment-4 (field-environment/create
+                       (svg/make-path ["M" fess
+                                       (line/stitch line-base-dexter)
+                                       "L" bend-intersection-dexter
+                                       "L" top-left-adjusted
+                                       (line/stitch line-chief-dexter)
+                                       "z"])
+                       {:parent field
+                        :context [:per-saltire :left]})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d (:shape field-1)
+       [:path {:d (:shape environment-1)
                :fill "#fff"}]
-       [:path.overlap {:d (:shape field-1)}]]
+       [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
-       [:path {:d (:shape field-2)
+       [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" top-right
@@ -392,7 +392,7 @@
                             (line/stitch line-base-sinister)
                             "L" fess])}]]
       [:mask {:id mask-id-3}
-       [:path {:d (:shape field-3)
+       [:path {:d (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
@@ -402,19 +402,19 @@
                             "L" bottom-right
                             "L" bend-intersection-sinister-adjusted])}]]
       [:mask {:id mask-id-4}
-       [:path {:d (:shape field-4)
+       [:path {:d (:shape environment-4)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" bend-intersection-dexter
                             "L" top-left-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get-field fields 0) field-1 options]]
+      [top-level-render (get-field fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get-field fields 1) field-2 options]]
+      [top-level-render (get-field fields 1) environment-2 options]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get-field fields 2) field-3 options]]
+      [top-level-render (get-field fields 2) environment-3 options]]
      [:g {:mask (str "url(#" mask-id-4 ")")}
-      [top-level-render (get-field fields 3) field-4 options]]
+      [top-level-render (get-field fields 3) environment-4 options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -464,54 +464,54 @@
                                          :flipped? true)
         chief-adjusted (v/extend fess chief line-chief-length)
         base-adjusted (v/extend fess base line-base-length)
-        field-1 (field-environment/create
-                 (svg/make-path ["M" chief-adjusted
-                                 (line/stitch line-chief)
-                                 "L" fess
-                                 (line/stitch line-dexter)
-                                 "L" dexter
-                                 "L" top-left
-                                 "z"])
-                 {:parent field
-                  :context [:per-quarterly :top-left]})
-        field-2 (field-environment/create
-                 (svg/make-path ["M" chief-adjusted
-                                 (line/stitch line-chief)
-                                 "L" fess
-                                 (line/stitch line-sinister)
-                                 "L" sinister
-                                 "L" top-right
-                                 "z"])
-                 {:parent field
-                  :context [:per-quarterly :top-right]})
-        field-3 (field-environment/create
-                 (svg/make-path ["M" fess
-                                 (line/stitch line-sinister)
-                                 "L" sinister
-                                 "L" bottom-right
-                                 "L" base-adjusted
-                                 (line/stitch line-base)
-                                 "z"])
-                 {:parent field
-                  :context [:per-quarterly :bottom-right]})
-        field-4 (field-environment/create
-                 (svg/make-path ["M" base-adjusted
-                                 (line/stitch line-base)
-                                 "L" fess
-                                 (line/stitch line-dexter)
-                                 "L" dexter
-                                 "L" bottom-left
-                                 "z"])
-                 {:parent field
-                  :context [:per-quarterly :bottom-left]})]
+        environment-1 (field-environment/create
+                       (svg/make-path ["M" chief-adjusted
+                                       (line/stitch line-chief)
+                                       "L" fess
+                                       (line/stitch line-dexter)
+                                       "L" dexter
+                                       "L" top-left
+                                       "z"])
+                       {:parent field
+                        :context [:per-quarterly :top-left]})
+        environment-2 (field-environment/create
+                       (svg/make-path ["M" chief-adjusted
+                                       (line/stitch line-chief)
+                                       "L" fess
+                                       (line/stitch line-sinister)
+                                       "L" sinister
+                                       "L" top-right
+                                       "z"])
+                       {:parent field
+                        :context [:per-quarterly :top-right]})
+        environment-3 (field-environment/create
+                       (svg/make-path ["M" fess
+                                       (line/stitch line-sinister)
+                                       "L" sinister
+                                       "L" bottom-right
+                                       "L" base-adjusted
+                                       (line/stitch line-base)
+                                       "z"])
+                       {:parent field
+                        :context [:per-quarterly :bottom-right]})
+        environment-4 (field-environment/create
+                       (svg/make-path ["M" base-adjusted
+                                       (line/stitch line-base)
+                                       "L" fess
+                                       (line/stitch line-dexter)
+                                       "L" dexter
+                                       "L" bottom-left
+                                       "z"])
+                       {:parent field
+                        :context [:per-quarterly :bottom-left]})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d (:shape field-1)
+       [:path {:d (:shape environment-1)
                :fill "#fff"}]
-       [:path.overlap {:d (:shape field-1)}]]
+       [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
-       [:path {:d (:shape field-2)
+       [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
@@ -520,7 +520,7 @@
                             "L" top-right
                             "L" chief-adjusted])}]]
       [:mask {:id mask-id-3}
-       [:path {:d (:shape field-3)
+       [:path {:d (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" sinister
@@ -529,20 +529,20 @@
                             (line/stitch line-base)
                             "L" fess])}]]
       [:mask {:id mask-id-4}
-       [:path {:d (:shape field-4)
+       [:path {:d (:shape environment-4)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" dexter
                             "L" bottom-left
                             "L" base-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get-field fields 0) field-1 options]]
+      [top-level-render (get-field fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get-field fields 1) field-2 options]]
+      [top-level-render (get-field fields 1) environment-2 options]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get-field fields 2) field-3 options]]
+      [top-level-render (get-field fields 2) environment-3 options]]
      [:g {:mask (str "url(#" mask-id-4 ")")}
-      [top-level-render (get-field fields 3) field-4 options]]
+      [top-level-render (get-field fields 3) environment-4 options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -618,88 +618,88 @@
                                               (v/abs (v/- bend-intersection-dexter fess))
                                               :flipped? true
                                               :angle -225)
-        field-1 (field-environment/create
-                 (svg/make-path ["M" fess
-                                 (line/stitch line-chief-dexter)
-                                 "L" top-left
-                                 "L" chief-adjusted
-                                 (line/stitch line-chief)
-                                 "z"])
-                 {:parent field
-                  :context [:per-gyronny :one]})
-        field-2 (field-environment/create
-                 (svg/make-path ["M" chief-adjusted
-                                 (line/stitch line-chief)
-                                 "L" fess
-                                 (line/stitch line-chief-sinister)
-                                 "L" top-right
-                                 "z"])
-                 {:parent field
-                  :context [:per-gyronny :two]})
-        field-3 (field-environment/create
-                 (svg/make-path ["M" fess
-                                 (line/stitch line-chief-sinister)
-                                 "L" top-right
-                                 "L" sinister-adjusted
-                                 (line/stitch line-sinister)
-                                 "z"])
-                 {:parent field
-                  :context [:per-gyronny :three]})
-        field-4 (field-environment/create
-                 (svg/make-path ["M" sinister-adjusted
-                                 (line/stitch line-sinister)
-                                 "L" fess
-                                 (line/stitch line-base-sinister)
-                                 "L" bend-intersection-sinister
-                                 "z"])
-                 {:parent field
-                  :context [:per-gyronny :four]})
-        field-5 (field-environment/create
-                 (svg/make-path ["M" fess
-                                 (line/stitch line-base-sinister)
-                                 "L" bend-intersection-sinister
-                                 "L" bottom-right
-                                 "L" base-adjusted
-                                 (line/stitch line-base)
-                                 "z"])
-                 {:parent field
-                  :context [:per-gyronny :five]})
-        field-6 (field-environment/create
-                 (svg/make-path ["M" base-adjusted
-                                 (line/stitch line-base)
-                                 "L" fess
-                                 (line/stitch line-base-dexter)
-                                 "L" bend-intersection-dexter
-                                 "L" bottom-left
-                                 "z"])
-                 {:parent field
-                  :context [:per-gyronny :six]})
-        field-7 (field-environment/create
-                 (svg/make-path ["M" fess
-                                 (line/stitch line-base-dexter)
-                                 "L" bend-intersection-dexter
-                                 "L" dexter-adjusted
-                                 (line/stitch line-dexter)
-                                 "z"])
-                 {:parent field
-                  :context [:per-gyronny :seven]})
-        field-8 (field-environment/create
-                 (svg/make-path ["M" dexter-adjusted
-                                 (line/stitch line-dexter)
-                                 "L" fess
-                                 (line/stitch line-chief-dexter)
-                                 "L" top-left
-                                 "z"])
-                 {:parent field
-                  :context [:per-gyronny :eight]})]
+        environment-1 (field-environment/create
+                       (svg/make-path ["M" fess
+                                       (line/stitch line-chief-dexter)
+                                       "L" top-left
+                                       "L" chief-adjusted
+                                       (line/stitch line-chief)
+                                       "z"])
+                       {:parent field
+                        :context [:per-gyronny :one]})
+        environment-2 (field-environment/create
+                       (svg/make-path ["M" chief-adjusted
+                                       (line/stitch line-chief)
+                                       "L" fess
+                                       (line/stitch line-chief-sinister)
+                                       "L" top-right
+                                       "z"])
+                       {:parent field
+                        :context [:per-gyronny :two]})
+        environment-3 (field-environment/create
+                       (svg/make-path ["M" fess
+                                       (line/stitch line-chief-sinister)
+                                       "L" top-right
+                                       "L" sinister-adjusted
+                                       (line/stitch line-sinister)
+                                       "z"])
+                       {:parent field
+                        :context [:per-gyronny :three]})
+        environment-4 (field-environment/create
+                       (svg/make-path ["M" sinister-adjusted
+                                       (line/stitch line-sinister)
+                                       "L" fess
+                                       (line/stitch line-base-sinister)
+                                       "L" bend-intersection-sinister
+                                       "z"])
+                       {:parent field
+                        :context [:per-gyronny :four]})
+        environment-5 (field-environment/create
+                       (svg/make-path ["M" fess
+                                       (line/stitch line-base-sinister)
+                                       "L" bend-intersection-sinister
+                                       "L" bottom-right
+                                       "L" base-adjusted
+                                       (line/stitch line-base)
+                                       "z"])
+                       {:parent field
+                        :context [:per-gyronny :five]})
+        environment-6 (field-environment/create
+                       (svg/make-path ["M" base-adjusted
+                                       (line/stitch line-base)
+                                       "L" fess
+                                       (line/stitch line-base-dexter)
+                                       "L" bend-intersection-dexter
+                                       "L" bottom-left
+                                       "z"])
+                       {:parent field
+                        :context [:per-gyronny :six]})
+        environment-7 (field-environment/create
+                       (svg/make-path ["M" fess
+                                       (line/stitch line-base-dexter)
+                                       "L" bend-intersection-dexter
+                                       "L" dexter-adjusted
+                                       (line/stitch line-dexter)
+                                       "z"])
+                       {:parent field
+                        :context [:per-gyronny :seven]})
+        environment-8 (field-environment/create
+                       (svg/make-path ["M" dexter-adjusted
+                                       (line/stitch line-dexter)
+                                       "L" fess
+                                       (line/stitch line-chief-dexter)
+                                       "L" top-left
+                                       "z"])
+                       {:parent field
+                        :context [:per-gyronny :eight]})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d (:shape field-1)
+       [:path {:d (:shape environment-1)
                :fill "#fff"}]
-       [:path.overlap {:d (:shape field-1)}]]
+       [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
-       [:path {:d (:shape field-2)
+       [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
@@ -707,7 +707,7 @@
                             "L" top-right
                             "L" chief-adjusted])}]]
       [:mask {:id mask-id-3}
-       [:path {:d (:shape field-3)
+       [:path {:d (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" top-right
@@ -715,7 +715,7 @@
                             (line/stitch line-sinister)
                             "L" fess])}]]
       [:mask {:id mask-id-4}
-       [:path {:d (:shape field-4)
+       [:path {:d (:shape environment-4)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
@@ -723,7 +723,7 @@
                             "L" bend-intersection-sinister
                             "L" sinister-adjusted])}]]
       [:mask {:id mask-id-5}
-       [:path {:d (:shape field-5)
+       [:path {:d (:shape environment-5)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" bend-intersection-sinister
@@ -732,7 +732,7 @@
                             (line/stitch line-base)
                             "L" fess])}]]
       [:mask {:id mask-id-6}
-       [:path {:d (:shape field-6)
+       [:path {:d (:shape environment-6)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
@@ -741,7 +741,7 @@
                             "L" bottom-left
                             "L" base-adjusted])}]]
       [:mask {:id mask-id-7}
-       [:path {:d (:shape field-7)
+       [:path {:d (:shape environment-7)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" bend-intersection-dexter
@@ -749,27 +749,27 @@
                             (line/stitch line-dexter)
                             "L" fess])}]]
       [:mask {:id mask-id-8}
-       [:path {:d (:shape field-8)
+       [:path {:d (:shape environment-8)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" top-left
                             "L" dexter-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get-field fields 0) field-1 options]]
+      [top-level-render (get-field fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get-field fields 1) field-2 options]]
+      [top-level-render (get-field fields 1) environment-2 options]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get-field fields 2) field-3 options]]
+      [top-level-render (get-field fields 2) environment-3 options]]
      [:g {:mask (str "url(#" mask-id-4 ")")}
-      [top-level-render (get-field fields 3) field-4 options]]
+      [top-level-render (get-field fields 3) environment-4 options]]
      [:g {:mask (str "url(#" mask-id-5 ")")}
-      [top-level-render (get-field fields 4) field-5 options]]
+      [top-level-render (get-field fields 4) environment-5 options]]
      [:g {:mask (str "url(#" mask-id-6 ")")}
-      [top-level-render (get-field fields 5) field-6 options]]
+      [top-level-render (get-field fields 5) environment-6 options]]
      [:g {:mask (str "url(#" mask-id-7 ")")}
-      [top-level-render (get-field fields 6) field-7 options]]
+      [top-level-render (get-field fields 6) environment-7 options]]
      [:g {:mask (str "url(#" mask-id-8 ")")}
-      [top-level-render (get-field fields 7) field-8 options]]
+      [top-level-render (get-field fields 7) environment-8 options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -826,42 +826,42 @@
                                                     :angle -90
                                                     :reversed? true)
         second-base-adjusted (v/extend second-chief second-base line-reversed-length)
-        field-1 (field-environment/create
-                 (svg/make-path ["M" first-chief
-                                 (line/stitch line)
-                                 "L" first-base
-                                 "L" bottom-left
-                                 "L" top-left
-                                 "z"])
-                 {:parent field
-                  :context [:tierced-per-pale :left]})
-        field-2 (field-environment/create
-                 (svg/make-path ["M" first-chief
-                                 (line/stitch line)
-                                 "L" first-base
-                                 "L" second-base-adjusted
-                                 (line/stitch line-reversed)
-                                 "L" second-chief
-                                 "z"])
-                 {:parent field
-                  :context [:tierced-per-pale :middle]})
-        field-3 (field-environment/create
-                 (svg/make-path ["M" second-base-adjusted
-                                 (line/stitch line-reversed)
-                                 "L" second-chief
-                                 "L" top-right
-                                 "L" bottom-right
-                                 "z"])
-                 {:parent field
-                  :context [:tierced-per-pale :right]})]
+        environment-1 (field-environment/create
+                       (svg/make-path ["M" first-chief
+                                       (line/stitch line)
+                                       "L" first-base
+                                       "L" bottom-left
+                                       "L" top-left
+                                       "z"])
+                       {:parent field
+                        :context [:tierced-per-pale :left]})
+        environment-2 (field-environment/create
+                       (svg/make-path ["M" first-chief
+                                       (line/stitch line)
+                                       "L" first-base
+                                       "L" second-base-adjusted
+                                       (line/stitch line-reversed)
+                                       "L" second-chief
+                                       "z"])
+                       {:parent field
+                        :context [:tierced-per-pale :middle]})
+        environment-3 (field-environment/create
+                       (svg/make-path ["M" second-base-adjusted
+                                       (line/stitch line-reversed)
+                                       "L" second-chief
+                                       "L" top-right
+                                       "L" bottom-right
+                                       "z"])
+                       {:parent field
+                        :context [:tierced-per-pale :right]})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d (:shape field-1)
+       [:path {:d (:shape environment-1)
                :fill "#fff"}]
-       [:path.overlap {:d (:shape field-1)}]]
+       [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
-       [:path {:d (:shape field-2)
+       [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" first-base
@@ -870,7 +870,7 @@
                             "L" second-chief
                             "L" first-chief])}]]
       [:mask {:id mask-id-3}
-       [:path {:d (:shape field-3)
+       [:path {:d (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" second-chief
@@ -878,11 +878,11 @@
                             "L" bottom-right
                             "L" second-base-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) field-1 options]]
+      [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) field-2 options]]
+      [top-level-render (get fields 1) environment-2 options]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get fields 2) field-3 options]]
+      [top-level-render (get fields 2) environment-3 options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -920,42 +920,42 @@
                                                     :flipped? true
                                                     :angle 180)
         second-sinister-adjusted (v/extend second-dexter second-sinister line-reversed-length)
-        field-1 (field-environment/create
-                 (svg/make-path ["M" first-dexter
-                                 (line/stitch line)
-                                 "L" first-sinister
-                                 "L" top-right
-                                 "L" top-left
-                                 "z"])
-                 {:parent field
-                  :context [:tierced-per-fess :top]})
-        field-2 (field-environment/create
-                 (svg/make-path ["M" first-dexter
-                                 (line/stitch line)
-                                 "L" first-sinister
-                                 "L" second-sinister-adjusted
-                                 (line/stitch line-reversed)
-                                 "L" dexter
-                                 "z"])
-                 {:parent field
-                  :context [:tierced-per-fess :middle]})
-        field-3 (field-environment/create
-                 (svg/make-path ["M" second-sinister-adjusted
-                                 (line/stitch line-reversed)
-                                 "L" dexter
-                                 "L" bottom-left
-                                 "L" bottom-right
-                                 "z"])
-                 {:parent field
-                  :context [:tierced-per-fess :bottom]})]
+        environment-1 (field-environment/create
+                       (svg/make-path ["M" first-dexter
+                                       (line/stitch line)
+                                       "L" first-sinister
+                                       "L" top-right
+                                       "L" top-left
+                                       "z"])
+                       {:parent field
+                        :context [:tierced-per-fess :top]})
+        environment-2 (field-environment/create
+                       (svg/make-path ["M" first-dexter
+                                       (line/stitch line)
+                                       "L" first-sinister
+                                       "L" second-sinister-adjusted
+                                       (line/stitch line-reversed)
+                                       "L" dexter
+                                       "z"])
+                       {:parent field
+                        :context [:tierced-per-fess :middle]})
+        environment-3 (field-environment/create
+                       (svg/make-path ["M" second-sinister-adjusted
+                                       (line/stitch line-reversed)
+                                       "L" dexter
+                                       "L" bottom-left
+                                       "L" bottom-right
+                                       "z"])
+                       {:parent field
+                        :context [:tierced-per-fess :bottom]})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d (:shape field-1)
+       [:path {:d (:shape environment-1)
                :fill "#fff"}]
-       [:path.overlap {:d (:shape field-1)}]]
+       [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
-       [:path {:d (:shape field-2)
+       [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" first-sinister
@@ -964,7 +964,7 @@
                             "L" dexter
                             "L" first-dexter])}]]
       [:mask {:id mask-id-3}
-       [:path {:d (:shape field-3)
+       [:path {:d (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" dexter
@@ -972,11 +972,11 @@
                             "L" bottom-right
                             "L" second-sinister-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) field-1 options]]
+      [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) field-2 options]]
+      [top-level-render (get fields 1) environment-2 options]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get fields 2) field-3 options]]
+      [top-level-render (get fields 2) environment-3 options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -1023,43 +1023,43 @@
                        fess
                         base
                         line-base-reversed-length)
-        field-1 (field-environment/create
-                 (svg/make-path ["M" top-left-adjusted
-                                 (line/stitch line-chief-dexter)
-                                 "L" fess
-                                 (line/stitch line-chief-sinister)
-                                 "L" top-right
-                                 "z"])
-                 {:parent field
-                  :context [:tierced-per-pairle :top]})
-        field-2 (field-environment/create
-                 (svg/make-path ["M" fess
-                                 (line/stitch line-chief-sinister)
-                                 "L" top-right
-                                 "L" bottom-right
-                                 "L" base-adjusted
-                                 (line/stitch line-base-reversed)
-                                 "z"])
-                 {:parent field
-                  :context [:tierced-per-pairle :right]})
-        field-3 (field-environment/create
-                 (svg/make-path ["M" fess
-                                 (line/stitch line-base)
-                                 "L" base
-                                 "L" bottom-left
-                                 "L" top-left-adjusted
-                                 (line/stitch line-chief-dexter)
-                                 "z"])
-                 {:parent field
-                  :context [:tierced-per-pairle :left]})]
+        environment-1 (field-environment/create
+                       (svg/make-path ["M" top-left-adjusted
+                                       (line/stitch line-chief-dexter)
+                                       "L" fess
+                                       (line/stitch line-chief-sinister)
+                                       "L" top-right
+                                       "z"])
+                       {:parent field
+                        :context [:tierced-per-pairle :top]})
+        environment-2 (field-environment/create
+                       (svg/make-path ["M" fess
+                                       (line/stitch line-chief-sinister)
+                                       "L" top-right
+                                       "L" bottom-right
+                                       "L" base-adjusted
+                                       (line/stitch line-base-reversed)
+                                       "z"])
+                       {:parent field
+                        :context [:tierced-per-pairle :right]})
+        environment-3 (field-environment/create
+                       (svg/make-path ["M" fess
+                                       (line/stitch line-base)
+                                       "L" base
+                                       "L" bottom-left
+                                       "L" top-left-adjusted
+                                       (line/stitch line-chief-dexter)
+                                       "z"])
+                       {:parent field
+                        :context [:tierced-per-pairle :left]})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d (:shape field-1)
+       [:path {:d (:shape environment-1)
                :fill "#fff"}]
-       [:path.overlap {:d (:shape field-1)}]]
+       [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
-       [:path {:d (:shape field-2)
+       [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" top-right
@@ -1068,18 +1068,18 @@
                             (line/stitch line-base-reversed)
                             "L" fess])}]]
       [:mask {:id mask-id-3}
-       [:path {:d (:shape field-3)
+       [:path {:d (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" base
                             "L" bottom-left
                             "L" top-left-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) field-1 options]]
+      [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) field-2 options]]
+      [top-level-render (get fields 1) environment-2 options]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get fields 2) field-3 options]]
+      [top-level-render (get fields 2) environment-3 options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -1131,45 +1131,45 @@
                         fess
                          chief
                          line-chief-reversed-length)
-        field-1 (field-environment/create
-                 (svg/make-path ["M" chief-adjusted
-                                 (line/stitch line-chief-reversed)
-                                 "L" fess
-                                 (line/stitch line-base-dexter)
-                                 "L" bend-intersection-dexter
-                                 "L" top-left
-                                 "z"])
-                 {:parent field
-                  :context [:tierced-per-pairle-reversed :left]})
-        field-2 (field-environment/create
-                 (svg/make-path ["M" fess
-                                 (line/stitch line-chief)
-                                 "L" chief
-                                 "L" top-right
-                                 "L" bend-intersection-sinister-adjusted
-                                 (line/stitch line-base-sinister)
-                                 "z"])
-                 {:parent field
-                  :context [:tierced-per-pairle-reversed :right]})
-        field-3 (field-environment/create
-                 (svg/make-path ["M" bend-intersection-sinister-adjusted
-                                 (line/stitch line-base-sinister)
-                                 "L" fess
-                                 (line/stitch line-base-dexter)
-                                 "L" bend-intersection-dexter
-                                 "L" bottom-left
-                                 "L" bottom-right
-                                 "z"])
-                 {:parent field
-                  :context [:tierced-per-pairle-reversed :bottom]})]
+        environment-1 (field-environment/create
+                       (svg/make-path ["M" chief-adjusted
+                                       (line/stitch line-chief-reversed)
+                                       "L" fess
+                                       (line/stitch line-base-dexter)
+                                       "L" bend-intersection-dexter
+                                       "L" top-left
+                                       "z"])
+                       {:parent field
+                        :context [:tierced-per-pairle-reversed :left]})
+        environment-2 (field-environment/create
+                       (svg/make-path ["M" fess
+                                       (line/stitch line-chief)
+                                       "L" chief
+                                       "L" top-right
+                                       "L" bend-intersection-sinister-adjusted
+                                       (line/stitch line-base-sinister)
+                                       "z"])
+                       {:parent field
+                        :context [:tierced-per-pairle-reversed :right]})
+        environment-3 (field-environment/create
+                       (svg/make-path ["M" bend-intersection-sinister-adjusted
+                                       (line/stitch line-base-sinister)
+                                       "L" fess
+                                       (line/stitch line-base-dexter)
+                                       "L" bend-intersection-dexter
+                                       "L" bottom-left
+                                       "L" bottom-right
+                                       "z"])
+                       {:parent field
+                        :context [:tierced-per-pairle-reversed :bottom]})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
-       [:path {:d (:shape field-1)
+       [:path {:d (:shape environment-1)
                :fill "#fff"}]
-       [:path.overlap {:d (:shape field-1)}]]
+       [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
-       [:path {:d (:shape field-2)
+       [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" chief
@@ -1178,7 +1178,7 @@
                             (line/stitch line-base-sinister)
                             "L" fess])}]]
       [:mask {:id mask-id-3}
-       [:path {:d (:shape field-3)
+       [:path {:d (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" bend-intersection-dexter
@@ -1186,11 +1186,11 @@
                             "L" bottom-right
                             "L" bend-intersection-sinister-adjusted])}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) field-1 options]]
+      [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) field-2 options]]
+      [top-level-render (get fields 1) environment-2 options]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get fields 2) field-3 options]]
+      [top-level-render (get fields 2) environment-3 options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
