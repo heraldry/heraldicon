@@ -1,6 +1,8 @@
 (ns or.coad.main
   (:require ["js-base64" :as base64]
+            [cljs-http.client :as http]
             [cljs.reader :as reader]
+            [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [goog.string.format]  ;; required for release build
             [or.coad.blazon :as blazon]
             [or.coad.division :as division]
@@ -34,11 +36,35 @@
    (let [division (get-in db (concat path [:division :type]))]
      (or division :none))))
 
+(rf/reg-sub
+ :charge-data
+ (fn [db [_ name]]
+   (let [data (get-in db [:charge-data name])]
+     (cond
+       (= data :loading) nil
+       data              data
+       :else             (do
+                           (rf/dispatch-sync [:set :charge-data name :loading])
+                           (println "fetching" (str "data/" name))
+                           (go-catch
+                            (->
+                             (http/get (str "data/" name))
+                             <?
+                             :body
+                             (as-> result
+                                 (rf/dispatch [:set :charge-data name (first result)]))))
+                           nil)))))
+
 ;; events
+
 
 (def default-coat-of-arms
   {:escutcheon :heater
-   :field      {:content {:tincture :none}}})
+   :field      {:content {:tincture :none}
+                :charges [{:type      :wolf
+                           :attitude  :rampant
+                           :primary   :sable
+                           :secondary :gules}]}})
 
 (rf/reg-event-db
  :initialize-db
