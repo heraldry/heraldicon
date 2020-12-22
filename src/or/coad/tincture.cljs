@@ -1,4 +1,5 @@
-(ns or.coad.tincture)
+(ns or.coad.tincture
+  (:require [or.coad.hatching :as hatching]))
 
 (def tinctures
   {;; metal
@@ -55,3 +56,9 @@
     ["Rose" :rose]
     ["Steel" :steel]
     ["White" :white]]])
+
+(defn pick [tincture {:keys [mode]}]
+  (cond
+    (= tincture :none) "url(#void)"
+    (= mode :colours) (get tinctures tincture)
+    (= mode :hatching) (hatching/get-for tincture)))
