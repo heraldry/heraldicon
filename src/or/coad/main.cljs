@@ -59,29 +59,41 @@
 
 (rf/reg-event-db
  :set-division
- (fn [db [_ path value]]
-   (if (= value :none)
+ (fn [db [_ path new-type]]
+   (if (= new-type :none)
      (-> db
          (update-in path dissoc :division)
          (update-in (conj path :content) #(or % {:tincture :argent})))
      (-> db
-         (assoc-in (concat path [:division :type]) value)
+         (assoc-in (concat path [:division :type]) new-type)
          (update-in (concat path [:division :line :style]) #(or % :straight))
-         (update-in (concat path [:division :content]) (fn [current-value]
-                                                         (let [current (or current-value [])
-                                                               default (into [{:content {:tincture :or}}
-                                                                              {:content {:tincture :azure}}]
-                                                                             (cond
-                                                                               (#{:per-saltire :quarterly} value)      [0 1]
-                                                                               (= :gyronny value)                      [0 1 0 1 0 1]
-                                                                               (#{:tierced-per-pale
-                                                                                  :tierced-per-fess
-                                                                                  :tierced-per-pairle
-                                                                                  :tierced-per-pairle-reversed} value) [{:content {:tincture :gules}}]))]
-                                                           (cond
-                                                             (< (count current) (count default)) (into current (subvec default (count current)))
-                                                             (> (count current) (count default)) (subvec current 0 (count default))
-                                                             :else                               current))))
+         (update-in (concat path [:division :content])
+                    (fn [current-value]
+                      (let [current                      (or current-value [])
+                            current-type                 (get-in db (concat path [:division :type]))
+                            current-mandatory-part-count (division/mandatory-part-count current-type)
+                            new-mandatory-part-count     (division/mandatory-part-count new-type)
+                            min-mandatory-part-count     (min current-mandatory-part-count
+                                                              new-mandatory-part-count)
+                            _                            (println current-mandatory-part-count new-mandatory-part-count min-mandatory-part-count)
+                            current                      (if (or (= current-mandatory-part-count
+                                                                    new-mandatory-part-count)
+                                                                 (<= (count current) min-mandatory-part-count))
+                                                           current
+                                                           (subvec current 0 min-mandatory-part-count))
+                            default                      (into [{:content {:tincture :or}}
+                                                                {:content {:tincture :azure}}]
+                                                               (cond
+                                                                 (#{:per-saltire :quarterly} new-type)      [0 1]
+                                                                 (= :gyronny new-type)                      [0 1 0 1 0 1]
+                                                                 (#{:tierced-per-pale
+                                                                    :tierced-per-fess
+                                                                    :tierced-per-pairle
+                                                                    :tierced-per-pairle-reversed} new-type) [{:content {:tincture :gules}}]))]
+                        (cond
+                          (< (count current) (count default)) (into current (subvec default (count current)))
+                          (> (count current) (count default)) (subvec current 0 (count default))
+                          :else                               current))))
          (update-in path dissoc :content)))))
 
 (rf/reg-event-db
