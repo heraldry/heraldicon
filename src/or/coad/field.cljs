@@ -13,7 +13,10 @@
                              (= tincture :none) "url(#void)"
                              (= mode :colours)  (get tincture/tinctures tincture)
                              (= mode :hatching) (hatching/get-for tincture))]
-                  [:path {:d      (:shape environment)
+                  [:rect {:x      -25
+                          :y      -25
+                          :width  150
+                          :height 250
                           :fill   fill
                           :stroke fill}])
        division [division/render division environment render options])

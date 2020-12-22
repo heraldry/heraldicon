@@ -48,15 +48,14 @@
 (defn s [[x y]]
   (str x "," y))
 
-(defn make-path [coll]
-  (s/join " " (map (fn [v]
-                     (cond
-                       (string? v)     v
-                       (and (map? v)
-                            (:x v)
-                            (:y v))    (str (:x v) "," (:y v))
-                       (sequential? v) (s/join "," (map str v))
-                       :else           (str v))) coll)))
+(defn make-path [v]
+  (cond
+    (string? v)     v
+    (and (map? v)
+         (:x v)
+         (:y v))    (str (:x v) "," (:y v))
+    (sequential? v) (s/join " " (map make-path v))
+    :else           (str v)))
 
 (def -current-id
   (atom 0))
