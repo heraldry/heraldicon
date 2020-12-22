@@ -167,9 +167,9 @@
                                               "L" bottom-right
                                               "L" bottom-left
                                               "z"])
-                              {:parent field
-                               :meta   {:context   [:base]
-                                        :ordinary? true}})]
+                              {:parent    ordinary
+                               :context   [:base]
+                               :ordinary? true})]
     [:<>
      [:defs
       [:mask {:id mask-id}
