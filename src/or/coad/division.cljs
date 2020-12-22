@@ -1,5 +1,6 @@
 (ns or.coad.division
   (:require [or.coad.field-environment :as field-environment]
+            [or.coad.infinity :as infinity]
             [or.coad.line :as line]
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
@@ -15,7 +16,6 @@
         mask-id-2 (svg/id "division-pale-2")
         top-left (get-in environment [:points :top-left])
         top-right (get-in environment [:points :top-right])
-        bottom-left (get-in environment [:points :bottom-left])
         bottom-right (get-in environment [:points :bottom-right])
         top (get-in environment [:points :top])
         bottom (get-in environment [:points :bottom])
@@ -26,9 +26,9 @@
         environment-1 (field-environment/create
                        (svg/make-path ["M" bottom
                                        (line/stitch line)
-                                       "L" top
-                                       "L" top-left
-                                       "L" bottom-left
+                                       (infinity/path :counter-clockwise
+                                                      [:top :bottom]
+                                                      [top bottom])
                                        "z"])
                        {:parent field
                         :context [:per-pale :left]
@@ -37,9 +37,9 @@
         environment-2 (field-environment/create
                        (svg/make-path ["M" bottom
                                        (line/stitch line)
-                                       "L" top
-                                       "L" top-right
-                                       "L" bottom-right
+                                       (infinity/path :clockwise
+                                                      [:top :bottom]
+                                                      [top bottom])
                                        "z"])
                        {:parent field
                         :context [:per-pale :left]
@@ -73,7 +73,6 @@
   (let [mask-id-1 (svg/id "division-fess-1")
         mask-id-2 (svg/id "division-fess-2")
         top-left (get-in environment [:points :top-left])
-        top-right (get-in environment [:points :top-right])
         bottom-left (get-in environment [:points :bottom-left])
         bottom-right (get-in environment [:points :bottom-right])
         left (get-in environment [:points :left])
@@ -84,9 +83,9 @@
         environment-1 (field-environment/create
                        (svg/make-path ["M" left
                                        (line/stitch line)
-                                       "L" right
-                                       "L" top-right
-                                       "L" top-left
+                                       (infinity/path :counter-clockwise
+                                                      [:right :left]
+                                                      [right left])
                                        "z"])
                        {:parent field
                         :context [:per-fess :top]
@@ -95,9 +94,9 @@
         environment-2 (field-environment/create
                        (svg/make-path ["M" left
                                        (line/stitch line)
-                                       "L" right
-                                       "L" bottom-right
-                                       "L" bottom-left
+                                       (infinity/path :clockwise
+                                                      [:right :left]
+                                                      [right left])
                                        "z"])
                        {:parent field
                         :context [:per-fess :bottom]
@@ -143,8 +142,9 @@
         environment-1 (field-environment/create
                        (svg/make-path ["M" top-left
                                        (line/stitch line)
-                                       "L" bend-intersection
-                                       "L" top-right
+                                       (infinity/path :counter-clockwise
+                                                      [:right :top-left]
+                                                      [bend-intersection top-left])
                                        "z"])
                        {:parent field
                         :context [:per-bend :top]
@@ -153,9 +153,9 @@
         environment-2 (field-environment/create
                        (svg/make-path ["M" top-left
                                        (line/stitch line)
-                                       "L" bend-intersection
-                                       "L" bottom-right
-                                       "L" bottom-left
+                                       (infinity/path :clockwise
+                                                      [:right :top-left]
+                                                      [bend-intersection top-left])
                                        "z"])
                        {:parent field
                         :context [:per-bend :bottom]
@@ -207,8 +207,9 @@
         environment-1 (field-environment/create
                        (svg/make-path ["M" bend-intersection-adjusted
                                        (line/stitch line)
-                                       "L" top-right
-                                       "L" top-left
+                                       (infinity/path :counter-clockwise
+                                                      [:top-right :left]
+                                                      [top-right bend-intersection])
                                        "z"])
                        {:parent field
                         :context [:per-bend-sinister :top]
@@ -217,9 +218,9 @@
         environment-2 (field-environment/create
                        (svg/make-path ["M" bend-intersection-adjusted
                                        (line/stitch line)
-                                       "L" top-right
-                                       "L" bottom-right
-                                       "L" bottom-left
+                                       (infinity/path :clockwise
+                                                      [:top-right :left]
+                                                      [top-right bend-intersection])
                                        "z"])
                        {:parent field
                         :context [:per-bend-sinister :bottom]
@@ -269,26 +270,27 @@
                                         :angle 45)
         bend-intersection-left-adjusted (v/extend fess bend-intersection-left line-left-length)
         environment-1 (field-environment/create
-                       (svg/make-path ["M" fess
-                                       (line/stitch line-right)
-                                       "L" bend-intersection-right
-                                       "L" top-right
-                                       "L" top-left
-                                       "L" bend-intersection-left-adjusted
+                       (svg/make-path ["M" bend-intersection-left-adjusted
                                        (line/stitch line-left)
+                                       "L" fess
+                                       (line/stitch line-right)
+                                       (infinity/path :counter-clockwise
+                                                      [:right :left]
+                                                      [bend-intersection-right bend-intersection-left])
                                        "z"])
                        {:parent field
                         :context [:per-chevron :top]
                         :bounding-box (svg/bounding-box
                                        [top-left bottom-right])})
         environment-2 (field-environment/create
-                       (svg/make-path ["M" fess
-                                       (line/stitch line-right)
-                                       "L" bend-intersection-right
-                                       "L" bottom-right
-                                       "L" bottom-left
-                                       "L" bend-intersection-left-adjusted
+                       (svg/make-path ["M" bend-intersection-left-adjusted
                                        (line/stitch line-left)
+                                       "L" fess
+                                       (line/stitch line-right)
+                                       (infinity/path :clockwise
+                                                      [:right :left]
+                                                      [bend-intersection-right bend-intersection-left])
+                                       "z"
                                        "z"])
                        {:parent field
                         :context [:per-chevron :bottom]
@@ -364,18 +366,22 @@
                                        (line/stitch line-top-left)
                                        "L" fess
                                        (line/stitch line-top-right)
-                                       "L" top-right
+                                       (infinity/path :counter-clockwise
+                                                      [:top-right :top-left]
+                                                      [top-right top-left])
                                        "z"])
                        {:parent field
                         :context [:per-saltire :top]
                         :bounding-box (svg/bounding-box
                                        [top-left fess top-right])})
         environment-2 (field-environment/create
-                       (svg/make-path ["M" fess
-                                       (line/stitch line-top-right)
-                                       "L" top-right
-                                       "L" bend-intersection-right-adjusted
+                       (svg/make-path ["M" bend-intersection-right-adjusted
                                        (line/stitch line-bottom-right)
+                                       "L" fess
+                                       (line/stitch line-top-right)
+                                       (infinity/path :clockwise
+                                                      [:top-right :bottom]
+                                                      [top-right bend-intersection-right])
                                        "z"])
                        {:parent field
                         :context [:per-saltire :right]
@@ -386,20 +392,22 @@
                                        (line/stitch line-bottom-right)
                                        "L" fess
                                        (line/stitch line-bottom-left)
-                                       "L" bend-intersection-left
-                                       "L" bottom-left
-                                       "L" bottom-right
+                                       (infinity/path :counter-clockwise
+                                                      [:left :right]
+                                                      [bend-intersection-left bend-intersection-right])
                                        "z"])
                        {:parent field
                         :context [:per-saltire :bottom]
                         :bounding-box (svg/bounding-box
                                        [bottom-left fess bottom-right])})
         environment-4 (field-environment/create
-                       (svg/make-path ["M" fess
-                                       (line/stitch line-bottom-left)
-                                       "L" bend-intersection-left
-                                       "L" top-left-adjusted
+                       (svg/make-path ["M" top-left-adjusted
                                        (line/stitch line-top-left)
+                                       "L" fess
+                                       (line/stitch line-bottom-left)
+                                       (infinity/path :clockwise
+                                                      [:bottom-left :top-left]
+                                                      [bend-intersection-left top-left])
                                        "z"])
                        {:parent field
                         :context [:per-saltire :left]
@@ -497,8 +505,9 @@
                                        (line/stitch line-top)
                                        "L" fess
                                        (line/stitch line-left)
-                                       "L" left
-                                       "L" top-left
+                                       (infinity/path :clockwise
+                                                      [:left :top]
+                                                      [left top])
                                        "z"])
                        {:parent field
                         :context [:per-quarterly :top-left]
@@ -509,20 +518,22 @@
                                        (line/stitch line-top)
                                        "L" fess
                                        (line/stitch line-right)
-                                       "L" right
-                                       "L" top-right
+                                       (infinity/path :counter-clockwise
+                                                      [:right :top]
+                                                      [right top])
                                        "z"])
                        {:parent field
                         :context [:per-quarterly :top-right]
                         :bounding-box (svg/bounding-box
                                        [fess top-right])})
         environment-3 (field-environment/create
-                       (svg/make-path ["M" fess
-                                       (line/stitch line-right)
-                                       "L" right
-                                       "L" bottom-right
-                                       "L" bottom-adjusted
+                       (svg/make-path ["M" bottom-adjusted
                                        (line/stitch line-bottom)
+                                       "L" fess
+                                       (line/stitch line-right)
+                                       (infinity/path :clockwise
+                                                      [:right :bottom]
+                                                      [right bottom])
                                        "z"])
                        {:parent field
                         :context [:per-quarterly :bottom-right]
@@ -533,8 +544,9 @@
                                        (line/stitch line-bottom)
                                        "L" fess
                                        (line/stitch line-left)
-                                       "L" left
-                                       "L" bottom-left
+                                       (infinity/path :counter-clockwise
+                                                      [:left :bottom]
+                                                      [left bottom])
                                        "z"])
                        {:parent field
                         :context [:per-quarterly :bottom-left]
@@ -655,11 +667,13 @@
                                               :flipped? true
                                               :angle -225)
         environment-1 (field-environment/create
-                       (svg/make-path ["M" fess
-                                       (line/stitch line-top-left)
-                                       "L" top-left
-                                       "L" top-adjusted
+                       (svg/make-path ["M" top-adjusted
                                        (line/stitch line-top)
+                                       "L" fess
+                                       (line/stitch line-top-left)
+                                       (infinity/path :clockwise
+                                                      [:top-left :top]
+                                                      [top-left top])
                                        "z"])
                        {:parent field
                         :context [:per-gyronny :one]
@@ -670,18 +684,22 @@
                                        (line/stitch line-top)
                                        "L" fess
                                        (line/stitch line-top-right)
-                                       "L" top-right
+                                       (infinity/path :counter-clockwise
+                                                      [:top-right :top]
+                                                      [top-right top])
                                        "z"])
                        {:parent field
                         :context [:per-gyronny :two]
                         :bounding-box (svg/bounding-box
                                        [top fess top-right])})
         environment-3 (field-environment/create
-                       (svg/make-path ["M" fess
-                                       (line/stitch line-top-right)
-                                       "L" top-right
-                                       "L" right-adjusted
+                       (svg/make-path ["M" right-adjusted
                                        (line/stitch line-right)
+                                       "L" fess
+                                       (line/stitch line-top-right)
+                                       (infinity/path :clockwise
+                                                      [:top-right :right]
+                                                      [top-right right])
                                        "z"])
                        {:parent field
                         :context [:per-gyronny :three]
@@ -692,19 +710,22 @@
                                        (line/stitch line-right)
                                        "L" fess
                                        (line/stitch line-bottom-right)
-                                       "L" bend-intersection-right
+                                       (infinity/path :counter-clockwise
+                                                      [:bottom-right :right]
+                                                      [bend-intersection-right right])
                                        "z"])
                        {:parent field
                         :context [:per-gyronny :four]
                         :bounding-box (svg/bounding-box
                                        [right fess bottom-right])})
         environment-5 (field-environment/create
-                       (svg/make-path ["M" fess
-                                       (line/stitch line-bottom-right)
-                                       "L" bend-intersection-right
-                                       "L" bottom-right
-                                       "L" bottom-adjusted
+                       (svg/make-path ["M" bottom-adjusted
                                        (line/stitch line-bottom)
+                                       "L" fess
+                                       (line/stitch line-bottom-right)
+                                       (infinity/path :clockwise
+                                                      [:bottom-right :bottom]
+                                                      [bend-intersection-right bottom])
                                        "z"])
                        {:parent field
                         :context [:per-gyronny :five]
@@ -715,19 +736,22 @@
                                        (line/stitch line-bottom)
                                        "L" fess
                                        (line/stitch line-bottom-left)
-                                       "L" bend-intersection-left
-                                       "L" bottom-left
+                                       (infinity/path :counter-clockwise
+                                                      [:bottom-left :bottom]
+                                                      [bend-intersection-left bottom])
                                        "z"])
                        {:parent field
                         :context [:per-gyronny :six]
                         :bounding-box (svg/bounding-box
                                        [bottom fess bottom-left])})
         environment-7 (field-environment/create
-                       (svg/make-path ["M" fess
-                                       (line/stitch line-bottom-left)
-                                       "L" bend-intersection-left
-                                       "L" left-adjusted
+                       (svg/make-path ["M" left-adjusted
                                        (line/stitch line-left)
+                                       "L" fess
+                                       (line/stitch line-bottom-left)
+                                       (infinity/path :clockwise
+                                                      [:bottom-left :left]
+                                                      [bend-intersection-left left])
                                        "z"])
                        {:parent field
                         :context [:per-gyronny :seven]
@@ -738,7 +762,9 @@
                                        (line/stitch line-left)
                                        "L" fess
                                        (line/stitch line-top-left)
-                                       "L" top-left
+                                       (infinity/path :counter-clockwise
+                                                      [:top-left :left]
+                                                      [top-left left])
                                        "z"])
                        {:parent field
                         :context [:per-gyronny :eight]
@@ -854,9 +880,7 @@
         mask-id-2 (svg/id "division-tierced-pale-2")
         mask-id-3 (svg/id "division-tierced-pale-3")
         line-style (or (:style line) :straight)
-        top-left (get-in environment [:points :top-left])
         top-right (get-in environment [:points :top-right])
-        bottom-left (get-in environment [:points :bottom-left])
         bottom-right (get-in environment [:points :bottom-right])
         top (get-in environment [:points :top])
         bottom (get-in environment [:points :bottom])
@@ -881,28 +905,31 @@
         environment-1 (field-environment/create
                        (svg/make-path ["M" first-top
                                        (line/stitch line)
-                                       "L" first-bottom
-                                       "L" bottom-left
-                                       "L" top-left
+                                       (infinity/path :clockwise
+                                                      [:bottom :top]
+                                                      [first-bottom first-top])
                                        "z"])
                        {:parent field
                         :context [:tierced-per-pale :left]})
         environment-2 (field-environment/create
-                       (svg/make-path ["M" first-top
-                                       (line/stitch line)
-                                       "L" first-bottom
-                                       "L" second-bottom-adjusted
+                       (svg/make-path ["M" second-bottom-adjusted
                                        (line/stitch line-reversed)
-                                       "L" second-top
+                                       (infinity/path :counter-clockwise
+                                                      [:top :top]
+                                                      [second-top first-top])
+                                       (line/stitch line)
+                                       (infinity/path :counter-clockwise
+                                                      [:bottom :bottom]
+                                                      [first-bottom second-bottom])
                                        "z"])
                        {:parent field
                         :context [:tierced-per-pale :middle]})
         environment-3 (field-environment/create
                        (svg/make-path ["M" second-bottom-adjusted
                                        (line/stitch line-reversed)
-                                       "L" second-top
-                                       "L" top-right
-                                       "L" bottom-right
+                                       (infinity/path :clockwise
+                                                      [:top :bottom]
+                                                      [second-top second-bottom])
                                        "z"])
                        {:parent field
                         :context [:tierced-per-pale :right]})]
@@ -949,8 +976,6 @@
         mask-id-2 (svg/id "division-tierced-fess-2")
         mask-id-3 (svg/id "division-tierced-fess-3")
         line-style (or (:style line) :straight)
-        top-left (get-in environment [:points :top-left])
-        top-right (get-in environment [:points :top-right])
         bottom-left (get-in environment [:points :bottom-left])
         bottom-right (get-in environment [:points :bottom-right])
         left (get-in environment [:points :left])
@@ -975,28 +1000,31 @@
         environment-1 (field-environment/create
                        (svg/make-path ["M" first-left
                                        (line/stitch line)
-                                       "L" first-right
-                                       "L" top-right
-                                       "L" top-left
+                                       (infinity/path :counter-clockwise
+                                                      [:right :left]
+                                                      [first-right first-left])
                                        "z"])
                        {:parent field
                         :context [:tierced-per-fess :top]})
         environment-2 (field-environment/create
                        (svg/make-path ["M" first-left
                                        (line/stitch line)
-                                       "L" first-right
-                                       "L" second-right-adjusted
+                                       (infinity/path :clockwise
+                                                      [:right :right]
+                                                      [first-right second-right-adjusted])
                                        (line/stitch line-reversed)
-                                       "L" left
+                                       (infinity/path :clockwise
+                                                      [:left :left]
+                                                      [second-left first-left])
                                        "z"])
                        {:parent field
                         :context [:tierced-per-fess :middle]})
         environment-3 (field-environment/create
                        (svg/make-path ["M" second-right-adjusted
                                        (line/stitch line-reversed)
-                                       "L" left
-                                       "L" bottom-left
-                                       "L" bottom-right
+                                       (infinity/path :counter-clockwise
+                                                      [:left :right]
+                                                      [second-left second-right-adjusted])
                                        "z"])
                        {:parent field
                         :context [:tierced-per-fess :bottom]})]
@@ -1019,7 +1047,7 @@
        [:path {:d (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" left
+                           ["M" second-left
                             "L" bottom-left
                             "L" bottom-right
                             "L" second-right-adjusted])}]]]
@@ -1046,7 +1074,6 @@
         top-left (get-in environment [:points :top-left])
         top-right (get-in environment [:points :top-right])
         bottom-left (get-in environment [:points :bottom-left])
-        bottom-right (get-in environment [:points :bottom-right])
         bottom (get-in environment [:points :bottom])
         fess (get-in environment [:points :fess])
         {line-top-left :line
@@ -1080,27 +1107,31 @@
                                        (line/stitch line-top-left)
                                        "L" fess
                                        (line/stitch line-top-right)
-                                       "L" top-right
+                                       (infinity/path :counter-clockwise
+                                                      [:top-right :top-left]
+                                                      [top-right top-left])
                                        "z"])
                        {:parent field
                         :context [:tierced-per-pairle :top]})
         environment-2 (field-environment/create
-                       (svg/make-path ["M" fess
-                                       (line/stitch line-top-right)
-                                       "L" top-right
-                                       "L" bottom-right
-                                       "L" bottom-adjusted
+                       (svg/make-path ["M" bottom-adjusted
                                        (line/stitch line-bottom-reversed)
+                                       "L" fess
+                                       (line/stitch line-top-right)
+                                       (infinity/path :clockwise
+                                                      [:top-right :bottom]
+                                                      [top-right bottom])
                                        "z"])
                        {:parent field
                         :context [:tierced-per-pairle :right]})
         environment-3 (field-environment/create
-                       (svg/make-path ["M" fess
-                                       (line/stitch line-bottom)
-                                       "L" bottom
-                                       "L" bottom-left
-                                       "L" top-left-adjusted
+                       (svg/make-path ["M" top-left-adjusted
                                        (line/stitch line-top-left)
+                                       "L" fess
+                                       (line/stitch line-bottom)
+                                       (infinity/path :clockwise
+                                                      [:bottom :top-left]
+                                                      [bottom top-left])
                                        "z"])
                        {:parent field
                         :context [:tierced-per-pairle :left]})]
@@ -1114,9 +1145,7 @@
        [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" top-right
-                            "L" bottom-right
-                            "L" bottom-adjusted
+                           ["M" bottom-adjusted
                             (line/stitch line-bottom-reversed)
                             "L" fess])}]]
       [:mask {:id mask-id-3}
@@ -1188,18 +1217,20 @@
                                        (line/stitch line-top-reversed)
                                        "L" fess
                                        (line/stitch line-bottom-left)
-                                       "L" bend-intersection-left
-                                       "L" top-left
+                                       (infinity/path :clockwise
+                                                      [:bottom-left :top]
+                                                      [bend-intersection-left top-adjusted])
                                        "z"])
                        {:parent field
                         :context [:tierced-per-pairle-reversed :left]})
         environment-2 (field-environment/create
-                       (svg/make-path ["M" fess
-                                       (line/stitch line-top)
-                                       "L" top
-                                       "L" top-right
-                                       "L" bend-intersection-right-adjusted
+                       (svg/make-path ["M" bend-intersection-right-adjusted
                                        (line/stitch line-bottom-right)
+                                       "L" fess
+                                       (line/stitch line-top)
+                                       (infinity/path :clockwise
+                                                      [:top :bottom-right]
+                                                      [top bend-intersection-right-adjusted])
                                        "z"])
                        {:parent field
                         :context [:tierced-per-pairle-reversed :right]})
@@ -1208,9 +1239,9 @@
                                        (line/stitch line-bottom-right)
                                        "L" fess
                                        (line/stitch line-bottom-left)
-                                       "L" bend-intersection-left
-                                       "L" bottom-left
-                                       "L" bottom-right
+                                       (infinity/path :counter-clockwise
+                                                      [:bottom-left :bottom-right]
+                                                      [bend-intersection-left bend-intersection-right-adjusted])
                                        "z"])
                        {:parent field
                         :context [:tierced-per-pairle-reversed :bottom]})]
