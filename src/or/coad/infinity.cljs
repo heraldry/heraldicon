@@ -71,8 +71,7 @@
                            (drop-last)
                            vec)
         path (->
-              ["L" start
-               "L" ((function first-point) start)]
+              ["L" ((function first-point) start)]
               (into (map (fn [point]
                            ((function point))) middle-points))
               (into ["L" ((function last-point) end)
