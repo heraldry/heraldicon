@@ -39,7 +39,9 @@
                                               "z"])
                               {:parent ordinary
                                :context [:pale]
-                               :ordinary? true})]
+                               :ordinary? true
+                               :bounding-box (svg/bounding-box
+                                              [first-chief second-base])})]
     [:<>
      [:defs
       [:mask {:id mask-id}
@@ -88,7 +90,9 @@
                                               "z"])
                               {:parent ordinary
                                :context [:fess]
-                               :ordinary? true})]
+                               :ordinary? true
+                               :bounding-box (svg/bounding-box
+                                              [first-sinister second-dexter])})]
     [:<>
      [:defs
       [:mask {:id mask-id}
@@ -132,7 +136,9 @@
                                               "z"])
                               {:parent ordinary
                                :context [:chief]
-                               :ordinary? true})]
+                               :ordinary? true
+                               :bounding-box (svg/bounding-box
+                                              [top-left row-sinister])})]
     [:<>
      [:defs
       [:mask {:id mask-id}
@@ -169,7 +175,9 @@
                                               "z"])
                               {:parent ordinary
                                :context [:base]
-                               :ordinary? true})]
+                               :ordinary? true
+                               :bounding-box (svg/bounding-box
+                                              [row-dexter bottom-right])})]
     [:<>
      [:defs
       [:mask {:id mask-id}

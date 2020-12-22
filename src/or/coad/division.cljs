@@ -31,7 +31,9 @@
                                        "L" bottom-left
                                        "z"])
                        {:parent field
-                        :context [:per-pale :left]})
+                        :context [:per-pale :left]
+                        :bounding-box (svg/bounding-box
+                                       [top-left base])})
         environment-2 (field-environment/create
                        (svg/make-path ["M" base
                                        (line/stitch line)
@@ -40,7 +42,9 @@
                                        "L" bottom-right
                                        "z"])
                        {:parent field
-                        :context [:per-pale :left]})]
+                        :context [:per-pale :left]
+                        :bounding-box (svg/bounding-box
+                                       [chief bottom-right])})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -85,7 +89,9 @@
                                        "L" top-left
                                        "z"])
                        {:parent field
-                        :context [:per-fess :top]})
+                        :context [:per-fess :top]
+                        :bounding-box (svg/bounding-box
+                                       [top-left sinister])})
         environment-2 (field-environment/create
                        (svg/make-path ["M" dexter
                                        (line/stitch line)
@@ -94,7 +100,9 @@
                                        "L" bottom-left
                                        "z"])
                        {:parent field
-                        :context [:per-fess :bottom]})]
+                        :context [:per-fess :bottom]
+                        :bounding-box (svg/bounding-box
+                                       [dexter bottom-right])})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -139,7 +147,9 @@
                                        "L" top-right
                                        "z"])
                        {:parent field
-                        :context [:per-bend :top]})
+                        :context [:per-bend :top]
+                        :bounding-box (svg/bounding-box
+                                       [top-left bend-intersection])})
         environment-2 (field-environment/create
                        (svg/make-path ["M" top-left
                                        (line/stitch line)
@@ -148,7 +158,9 @@
                                        "L" bottom-left
                                        "z"])
                        {:parent field
-                        :context [:per-bend :bottom]})]
+                        :context [:per-bend :bottom]
+                        :bounding-box (svg/bounding-box
+                                       [top-left bend-intersection])})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -199,7 +211,9 @@
                                        "L" top-left
                                        "z"])
                        {:parent field
-                        :context [:per-bend-sinister :top]})
+                        :context [:per-bend-sinister :top]
+                        :bounding-box (svg/bounding-box
+                                       [top-right bend-intersection])})
         environment-2 (field-environment/create
                        (svg/make-path ["M" bend-intersection-adjusted
                                        (line/stitch line)
@@ -208,7 +222,9 @@
                                        "L" bottom-left
                                        "z"])
                        {:parent field
-                        :context [:per-bend-sinister :bottom]})]
+                        :context [:per-bend-sinister :bottom]
+                        :bounding-box (svg/bounding-box
+                                       [top-right bottom-left])})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -262,7 +278,9 @@
                                        (line/stitch line-dexter)
                                        "z"])
                        {:parent field
-                        :context [:per-chevron :top]})
+                        :context [:per-chevron :top]
+                        :bounding-box (svg/bounding-box
+                                       [top-left bottom-right])})
         environment-2 (field-environment/create
                        (svg/make-path ["M" fess
                                        (line/stitch line-sinister)
@@ -273,7 +291,9 @@
                                        (line/stitch line-dexter)
                                        "z"])
                        {:parent field
-                        :context [:per-chevron :bottom]})]
+                        :context [:per-chevron :bottom]
+                        :bounding-box (svg/bounding-box
+                                       [bottom-left fess bottom-right])})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -347,7 +367,9 @@
                                        "L" top-right
                                        "z"])
                        {:parent field
-                        :context [:per-saltire :top]})
+                        :context [:per-saltire :top]
+                        :bounding-box (svg/bounding-box
+                                       [top-left fess top-right])})
         environment-2 (field-environment/create
                        (svg/make-path ["M" fess
                                        (line/stitch line-chief-sinister)
@@ -356,7 +378,9 @@
                                        (line/stitch line-base-sinister)
                                        "z"])
                        {:parent field
-                        :context [:per-saltire :right]})
+                        :context [:per-saltire :right]
+                        :bounding-box (svg/bounding-box
+                                       [top-right fess bottom-right])})
         environment-3 (field-environment/create
                        (svg/make-path ["M" bend-intersection-sinister-adjusted
                                        (line/stitch line-base-sinister)
@@ -367,7 +391,9 @@
                                        "L" bottom-right
                                        "z"])
                        {:parent field
-                        :context [:per-saltire :bottom]})
+                        :context [:per-saltire :bottom]
+                        :bounding-box (svg/bounding-box
+                                       [bottom-left fess bottom-right])})
         environment-4 (field-environment/create
                        (svg/make-path ["M" fess
                                        (line/stitch line-base-dexter)
@@ -376,7 +402,9 @@
                                        (line/stitch line-chief-dexter)
                                        "z"])
                        {:parent field
-                        :context [:per-saltire :left]})]
+                        :context [:per-saltire :left]
+                        :bounding-box (svg/bounding-box
+                                       [top-left fess bottom-left])})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -473,7 +501,9 @@
                                        "L" top-left
                                        "z"])
                        {:parent field
-                        :context [:per-quarterly :top-left]})
+                        :context [:per-quarterly :top-left]
+                        :bounding-box (svg/bounding-box
+                                       [top-left fess])})
         environment-2 (field-environment/create
                        (svg/make-path ["M" chief-adjusted
                                        (line/stitch line-chief)
@@ -483,7 +513,9 @@
                                        "L" top-right
                                        "z"])
                        {:parent field
-                        :context [:per-quarterly :top-right]})
+                        :context [:per-quarterly :top-right]
+                        :bounding-box (svg/bounding-box
+                                       [fess top-right])})
         environment-3 (field-environment/create
                        (svg/make-path ["M" fess
                                        (line/stitch line-sinister)
@@ -493,7 +525,9 @@
                                        (line/stitch line-base)
                                        "z"])
                        {:parent field
-                        :context [:per-quarterly :bottom-right]})
+                        :context [:per-quarterly :bottom-right]
+                        :bounding-box (svg/bounding-box
+                                       [fess bottom-right])})
         environment-4 (field-environment/create
                        (svg/make-path ["M" base-adjusted
                                        (line/stitch line-base)
@@ -503,7 +537,9 @@
                                        "L" bottom-left
                                        "z"])
                        {:parent field
-                        :context [:per-quarterly :bottom-left]})]
+                        :context [:per-quarterly :bottom-left]
+                        :bounding-box (svg/bounding-box
+                                       [fess bottom-left])})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
@@ -626,7 +662,9 @@
                                        (line/stitch line-chief)
                                        "z"])
                        {:parent field
-                        :context [:per-gyronny :one]})
+                        :context [:per-gyronny :one]
+                        :bounding-box (svg/bounding-box
+                                       [top-left fess chief])})
         environment-2 (field-environment/create
                        (svg/make-path ["M" chief-adjusted
                                        (line/stitch line-chief)
@@ -635,7 +673,9 @@
                                        "L" top-right
                                        "z"])
                        {:parent field
-                        :context [:per-gyronny :two]})
+                        :context [:per-gyronny :two]
+                        :bounding-box (svg/bounding-box
+                                       [chief fess top-right])})
         environment-3 (field-environment/create
                        (svg/make-path ["M" fess
                                        (line/stitch line-chief-sinister)
@@ -644,7 +684,9 @@
                                        (line/stitch line-sinister)
                                        "z"])
                        {:parent field
-                        :context [:per-gyronny :three]})
+                        :context [:per-gyronny :three]
+                        :bounding-box (svg/bounding-box
+                                       [top-right fess sinister])})
         environment-4 (field-environment/create
                        (svg/make-path ["M" sinister-adjusted
                                        (line/stitch line-sinister)
@@ -653,7 +695,9 @@
                                        "L" bend-intersection-sinister
                                        "z"])
                        {:parent field
-                        :context [:per-gyronny :four]})
+                        :context [:per-gyronny :four]
+                        :bounding-box (svg/bounding-box
+                                       [sinister fess bottom-right])})
         environment-5 (field-environment/create
                        (svg/make-path ["M" fess
                                        (line/stitch line-base-sinister)
@@ -663,7 +707,9 @@
                                        (line/stitch line-base)
                                        "z"])
                        {:parent field
-                        :context [:per-gyronny :five]})
+                        :context [:per-gyronny :five]
+                        :bounding-box (svg/bounding-box
+                                       [bottom-right fess base])})
         environment-6 (field-environment/create
                        (svg/make-path ["M" base-adjusted
                                        (line/stitch line-base)
@@ -673,7 +719,9 @@
                                        "L" bottom-left
                                        "z"])
                        {:parent field
-                        :context [:per-gyronny :six]})
+                        :context [:per-gyronny :six]
+                        :bounding-box (svg/bounding-box
+                                       [base fess bottom-left])})
         environment-7 (field-environment/create
                        (svg/make-path ["M" fess
                                        (line/stitch line-base-dexter)
@@ -682,7 +730,9 @@
                                        (line/stitch line-dexter)
                                        "z"])
                        {:parent field
-                        :context [:per-gyronny :seven]})
+                        :context [:per-gyronny :seven]
+                        :bounding-box (svg/bounding-box
+                                       [bottom-left fess dexter])})
         environment-8 (field-environment/create
                        (svg/make-path ["M" dexter-adjusted
                                        (line/stitch line-dexter)
@@ -691,7 +741,9 @@
                                        "L" top-left
                                        "z"])
                        {:parent field
-                        :context [:per-gyronny :eight]})]
+                        :context [:per-gyronny :eight]
+                        :bounding-box (svg/bounding-box
+                                       [dexter fess top-left])})]
     [:<>
      [:defs
       [:mask {:id mask-id-1}
