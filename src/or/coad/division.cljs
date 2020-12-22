@@ -15,7 +15,6 @@
   (let [mask-id-1     (svg/id "division-pale-1")
         mask-id-2     (svg/id "division-pale-2")
         top-left      (get-in environment [:points :top-left])
-        top-right     (get-in environment [:points :top-right])
         bottom-right  (get-in environment [:points :bottom-right])
         top           (get-in environment [:points :top])
         bottom        (get-in environment [:points :bottom])
@@ -49,16 +48,10 @@
      [:defs
       [:mask {:id mask-id-1}
        [:path {:d    (:shape environment-1)
-               :fill "#fff"}]
-       [:path.overlap {:d (:shape environment-1)}]]
+               :fill "#fff"}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape environment-2)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" top
-                            "L" top-right
-                            "L" bottom-right
-                            "L" bottom])}]]]
+               :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -73,7 +66,6 @@
   (let [mask-id-1     (svg/id "division-fess-1")
         mask-id-2     (svg/id "division-fess-2")
         top-left      (get-in environment [:points :top-left])
-        bottom-left   (get-in environment [:points :bottom-left])
         bottom-right  (get-in environment [:points :bottom-right])
         left          (get-in environment [:points :left])
         right         (get-in environment [:points :right])
@@ -110,12 +102,7 @@
        [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape environment-2)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" right
-                            "L" bottom-right
-                            "L" bottom-left
-                            "L" left])}]]]
+               :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -131,8 +118,6 @@
         mask-id-2         (svg/id "division-bend-2")
         top-left          (get-in environment [:points :top-left])
         top-right         (get-in environment [:points :top-right])
-        bottom-left       (get-in environment [:points :bottom-left])
-        bottom-right      (get-in environment [:points :bottom-right])
         fess              (get-in environment [:points :fess])
         bend-intersection (v/project top-left fess (:x top-right))
         line-style        (or (:style line) :straight)
@@ -169,12 +154,7 @@
        [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape environment-2)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" bend-intersection
-                            "L" bottom-right
-                            "L" bottom-left
-                            "L" top-left])}]]]
+               :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -191,7 +171,6 @@
         top-left                   (get-in environment [:points :top-left])
         top-right                  (get-in environment [:points :top-right])
         bottom-left                (get-in environment [:points :bottom-left])
-        bottom-right               (get-in environment [:points :bottom-right])
         fess                       (get-in environment [:points :fess])
         bend-intersection          (v/project top-right fess (:x top-left))
         line-style                 (or (:style line) :straight)
@@ -234,12 +213,7 @@
        [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape environment-2)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" top-right
-                            "L" bottom-right
-                            "L" bottom-left
-                            "L" bend-intersection-adjusted])}]]]
+               :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -304,12 +278,7 @@
        [:path.overlap {:d (:shape environment-1)}]]
       [:mask {:id mask-id-2}
        [:path {:d    (:shape environment-2)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" bend-intersection-right
-                            "L" bottom-right
-                            "L" bottom-left
-                            "L" bend-intersection-left-adjusted])}]]]
+               :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -423,26 +392,17 @@
        [:path {:d    (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" top-right
-                            "L" bend-intersection-right-adjusted
-                            (line/stitch line-bottom-right)
-                            "L" fess])}]]
+                           ["M" bend-intersection-right-adjusted
+                            (line/stitch line-bottom-right)])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
-                            (line/stitch line-bottom-left)
-                            "L" bend-intersection-left
-                            "L" bottom-left
-                            "L" bottom-right
-                            "L" bend-intersection-right-adjusted])}]]
+                            (line/stitch line-bottom-left)])}]]
       [:mask {:id mask-id-4}
        [:path {:d    (:shape environment-4)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" bend-intersection-left
-                            "L" top-left-adjusted])}]]]
+               :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get-field fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -563,26 +523,16 @@
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
-                            (line/stitch line-right)
-                            "L" right
-                            "L" top-right
-                            "L" top-adjusted])}]]
+                            (line/stitch line-right)])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" right
-                            "L" bottom-right
-                            "L" bottom-adjusted
-                            (line/stitch line-bottom)
-                            "L" fess])}]]
+                           ["M" bottom-adjusted
+                            (line/stitch line-bottom)])}]]
       [:mask {:id mask-id-4}
        [:path {:d    (:shape environment-4)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" left
-                            "L" bottom-left
-                            "L" bottom-adjusted])}]]]
+               :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get-field fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -781,57 +731,40 @@
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
-                            (line/stitch line-top-right)
-                            "L" top-right
-                            "L" top-adjusted])}]]
+                            (line/stitch line-top-right)])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" top-right
-                            "L" right-adjusted
-                            (line/stitch line-right)
-                            "L" fess])}]]
+                           ["M" right-adjusted
+                            (line/stitch line-right)])}]]
       [:mask {:id mask-id-4}
        [:path {:d    (:shape environment-4)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
-                            (line/stitch line-bottom-right)
-                            "L" bend-intersection-right
-                            "L" right-adjusted])}]]
+                            (line/stitch line-bottom-right)])}]]
       [:mask {:id mask-id-5}
        [:path {:d    (:shape environment-5)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" bend-intersection-right
-                            "L" bottom-right
-                            "L" bottom-adjusted
-                            (line/stitch line-bottom)
-                            "L" fess])}]]
+                           ["M" bottom-adjusted
+                            (line/stitch line-bottom)])}]]
       [:mask {:id mask-id-6}
        [:path {:d    (:shape environment-6)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
-                            (line/stitch line-bottom-left)
-                            "L" bend-intersection-left
-                            "L" bottom-left
-                            "L" bottom-adjusted])}]]
+                            (line/stitch line-bottom-left)])}]]
       [:mask {:id mask-id-7}
        [:path {:d    (:shape environment-7)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" bend-intersection-left
-                            "L" left-adjusted
-                            (line/stitch line-left)
-                            "L" fess])}]]
+                           ["M" left-adjusted
+                            (line/stitch line-left)])}]]
       [:mask {:id mask-id-8}
        [:path {:d    (:shape environment-8)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" top-left
-                            "L" left-adjusted])}]]]
+               :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get-field fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -880,8 +813,6 @@
         mask-id-2                      (svg/id "division-tierced-pale-2")
         mask-id-3                      (svg/id "division-tierced-pale-3")
         line-style                     (or (:style line) :straight)
-        top-right                      (get-in environment [:points :top-right])
-        bottom-right                   (get-in environment [:points :bottom-right])
         top                            (get-in environment [:points :top])
         bottom                         (get-in environment [:points :bottom])
         fess                           (get-in environment [:points :fess])
@@ -943,19 +874,11 @@
        [:path {:d    (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" first-bottom
-                            "L" second-bottom-adjusted
-                            (line/stitch line-reversed)
-                            "L" second-top
-                            "L" first-top])}]]
+                           ["M" second-bottom-adjusted
+                            (line/stitch line-reversed)])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape environment-3)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" second-top
-                            "L" top-right
-                            "L" bottom-right
-                            "L" second-bottom-adjusted])}]]]
+               :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -976,8 +899,6 @@
         mask-id-2                      (svg/id "division-tierced-fess-2")
         mask-id-3                      (svg/id "division-tierced-fess-3")
         line-style                     (or (:style line) :straight)
-        bottom-left                    (get-in environment [:points :bottom-left])
-        bottom-right                   (get-in environment [:points :bottom-right])
         left                           (get-in environment [:points :left])
         right                          (get-in environment [:points :right])
         fess                           (get-in environment [:points :fess])
@@ -1038,19 +959,11 @@
        [:path {:d    (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" first-right
-                            "L" second-right-adjusted
-                            (line/stitch line-reversed)
-                            "L" left
-                            "L" first-left])}]]
+                           ["M" second-right-adjusted
+                            (line/stitch line-reversed)])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape environment-3)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" second-left
-                            "L" bottom-left
-                            "L" bottom-right
-                            "L" second-right-adjusted])}]]]
+               :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -1073,7 +986,6 @@
         line-style                            (or (:style line) :straight)
         top-left                              (get-in environment [:points :top-left])
         top-right                             (get-in environment [:points :top-right])
-        bottom-left                           (get-in environment [:points :bottom-left])
         bottom                                (get-in environment [:points :bottom])
         fess                                  (get-in environment [:points :fess])
         {line-top-left        :line
@@ -1146,15 +1058,10 @@
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" bottom-adjusted
-                            (line/stitch line-bottom-reversed)
-                            "L" fess])}]]
+                            (line/stitch line-bottom-reversed)])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape environment-3)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" bottom
-                            "L" bottom-left
-                            "L" top-left-adjusted])}]]]
+               :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
@@ -1180,8 +1087,6 @@
         line-style                         (or (:style line) :straight)
         top-left                           (get-in environment [:points :top-left])
         top-right                          (get-in environment [:points :top-right])
-        bottom-left                        (get-in environment [:points :bottom-left])
-        bottom-right                       (get-in environment [:points :bottom-right])
         top                                (get-in environment [:points :top])
         fess                               (get-in environment [:points :fess])
         bend-intersection-left             (v/project top-right fess (:x top-left))
@@ -1255,19 +1160,11 @@
        [:path {:d    (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
-                           ["M" top
-                            "L" top-right
-                            "L" bend-intersection-right-adjusted
-                            (line/stitch line-bottom-right)
-                            "L" fess])}]]
+                           ["M" bend-intersection-right-adjusted
+                            (line/stitch line-bottom-right)])}]]
       [:mask {:id mask-id-3}
        [:path {:d    (:shape environment-3)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" bend-intersection-left
-                            "L" bottom-left
-                            "L" bottom-right
-                            "L" bend-intersection-right-adjusted])}]]]
+               :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
