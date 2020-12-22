@@ -5,8 +5,8 @@
             [or.coad.blazon :as blazon]
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
+            [or.coad.field :as field]
             [or.coad.field-environment :as field-environment]
-            [or.coad.field-content :as field-content]
             [or.coad.filter :as filter]
             [or.coad.hatching :as hatching]
             [or.coad.line :as line]
@@ -38,7 +38,7 @@
 
 (def default-coat-of-arms
   {:escutcheon :heater
-   :content    {:content {:tincture :argent}}})
+   :field      {:content {:tincture :argent}}})
 
 (rf/reg-event-db
  :initialize-db
@@ -67,7 +67,7 @@
      (-> db
          (assoc-in (concat path [:division :type]) new-type)
          (update-in (concat path [:division :line :style]) #(or % :straight))
-         (update-in (concat path [:division :content])
+         (update-in (concat path [:division :fields])
                     (fn [current-value]
                       (let [current                      (or current-value [])
                             current-type                 (get-in db (concat path [:division :type]))
@@ -75,7 +75,6 @@
                             new-mandatory-part-count     (division/mandatory-part-count new-type)
                             min-mandatory-part-count     (min current-mandatory-part-count
                                                               new-mandatory-part-count)
-                            _                            (println current-mandatory-part-count new-mandatory-part-count min-mandatory-part-count)
                             current                      (if (or (= current-mandatory-part-count
                                                                     new-mandatory-part-count)
                                                                  (<= (count current) min-mandatory-part-count))
@@ -100,9 +99,9 @@
  :add-ordinary
  (fn [db [_ path value]]
    (update-in db (conj path :ordinaries) #(-> %
-                                              (conj {:type    value
-                                                     :line    {:style :straight}
-                                                     :content {:content {:tincture :or}}})
+                                              (conj {:type  value
+                                                     :line  {:style :straight}
+                                                     :field {:content {:tincture :or}}})
                                               vec))))
 (rf/reg-event-db
  :remove-ordinary
@@ -132,7 +131,7 @@
 (defn render-shield [coat-of-arms options]
   (let [shield      (escutcheon/field (:escutcheon coat-of-arms))
         environment (field-environment/transform-to-width shield 100)
-        content     (:content coat-of-arms)]
+        field       (:field coat-of-arms)]
     [:g {:filter "url(#shadow)"}
      [:g {:transform "translate(10,10) scale(5,5)"}
       [:defs
@@ -143,7 +142,7 @@
       [:g {:mask "url(#mask-shield)"}
        [:path {:d    (:shape environment)
                :fill "#f0f0f0"}]
-       [field-content/render content environment options]]
+       [field/render field environment options]]
       (when (:outline? options)
         [:path.outline {:d (:shape environment)}])]]))
 
@@ -173,7 +172,7 @@
         ^{:key key}
         [:option {:value (name key)} display-name])]]
     [:div.parts
-     [form-for-field (conj path :content)]]]])
+     [form-for-field (conj path :field)]]]])
 
 (defn form-for-field [path]
   (let [division-type @(rf/subscribe [:get-division-type path])]
@@ -202,23 +201,23 @@
               [:option {:value (name key)} display-name])]]]
          [:div.title "Parts"]
          [:div.parts
-          (let [content              @(rf/subscribe [:get-in (concat path [:division :content])])
+          (let [content              @(rf/subscribe [:get-in (concat path [:division :fields])])
                 mandatory-part-count (division/mandatory-part-count division-type)]
             (for [[idx part] (map-indexed vector content)]
               ^{:key idx}
               [:div.part
                (if (number? part)
                  [:<>
-                  [:a.change {:on-click #(rf/dispatch [:set-in (concat path [:division :content idx])
+                  [:a.change {:on-click #(rf/dispatch [:set-in (concat path [:division :fields idx])
                                                        (get content part)])}
                    "o"]
                   [:span.same (str "Same as " (inc part))]]
                  [:<>
                   (when (>= idx mandatory-part-count)
-                    [:a.remove {:on-click #(rf/dispatch [:set-in (concat path [:division :content idx])
+                    [:a.remove {:on-click #(rf/dispatch [:set-in (concat path [:division :fields idx])
                                                          (mod idx mandatory-part-count)])}
                      "x"])
-                  [form-for-field (vec (concat path [:division :content idx]))]])]))]])]
+                  [form-for-field (vec (concat path [:division :fields idx]))]])]))]])]
      (when (= division-type :none)
        [:div.tincture
         [:div.setting
@@ -285,7 +284,7 @@
   [:<>
    [form-general]
    [:div.title "Coat of Arms"]
-   [form-for-field [:coat-of-arms :content]]])
+   [form-for-field [:coat-of-arms :field]]])
 
 (defn app []
   (fn []
@@ -321,7 +320,7 @@
                                 :border        "1px solid #ddd"}}
          [:span.disclaimer "Blazon (very rudimentary, very beta)"]
          [:div.blazon
-          (blazon/encode-field (:content coat-of-arms) :root? true)]]
+          (blazon/encode-field (:field coat-of-arms) :root? true)]]
         [:div {:style {:position "absolute"
                        :left     10
                        :top      "37em"
