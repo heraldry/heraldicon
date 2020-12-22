@@ -37,9 +37,11 @@
                                                         (line/stitch line-reversed)
                                                         "L" second-chief
                                                         "z"])
-                                        {:parent    ordinary
-                                         :context   [:pale]
-                                         :ordinary? true})]
+                                        {:parent       ordinary
+                                         :context      [:pale]
+                                         :ordinary?    true
+                                         :bounding-box (svg/bounding-box
+                                                        [first-chief second-base])})]
     [:<>
      [:defs
       [:mask {:id mask-id}
@@ -86,9 +88,11 @@
                                                         (line/stitch line-reversed)
                                                         "L" dexter
                                                         "z"])
-                                        {:parent    ordinary
-                                         :context   [:fess]
-                                         :ordinary? true})]
+                                        {:parent       ordinary
+                                         :context      [:fess]
+                                         :ordinary?    true
+                                         :bounding-box (svg/bounding-box
+                                                        [first-sinister second-dexter])})]
     [:<>
      [:defs
       [:mask {:id mask-id}
@@ -130,9 +134,11 @@
                                                         (line/stitch line-reversed)
                                                         "L" row-dexter
                                                         "z"])
-                                        {:parent    ordinary
-                                         :context   [:chief]
-                                         :ordinary? true})]
+                                        {:parent       ordinary
+                                         :context      [:chief]
+                                         :ordinary?    true
+                                         :bounding-box (svg/bounding-box
+                                                        [top-left row-sinister])})]
     [:<>
      [:defs
       [:mask {:id mask-id}
@@ -167,9 +173,11 @@
                                               "L" bottom-right
                                               "L" bottom-left
                                               "z"])
-                              {:parent    ordinary
-                               :context   [:base]
-                               :ordinary? true})]
+                              {:parent       ordinary
+                               :context      [:base]
+                               :ordinary?    true
+                               :bounding-box (svg/bounding-box
+                                              [row-dexter bottom-right])})]
     [:<>
      [:defs
       [:mask {:id mask-id}

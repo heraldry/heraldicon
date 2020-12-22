@@ -3,10 +3,9 @@
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
-(defn create [shape meta]
-  ;; TODO: bounding-box is an expensive operation, if the calling context knows
-  ;; the dimensions, then it should pass them down, only use bounding box when necessary
-  (let [[min-x max-x min-y max-y] (svg/bounding-box shape)
+(defn create [shape {:keys [bounding-box ideal-box] :as meta}]
+  (let [[min-x max-x min-y max-y] (or bounding-box
+                                      (svg/bounding-box-from-path shape))
         top-left                  (v/v min-x min-y)
         top-right                 (v/v max-x min-y)
         bottom-left               (v/v min-x max-y)
