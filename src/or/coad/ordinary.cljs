@@ -1,5 +1,6 @@
 (ns or.coad.ordinary
   (:require [or.coad.field-environment :as field-environment]
+            [or.coad.infinity :as infinity]
             [or.coad.line :as line]
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
@@ -32,10 +33,13 @@
         ordinary-environment (field-environment/create
                               (svg/make-path ["M" first-top
                                               (line/stitch line)
-                                              "L" first-bottom
-                                              "L" second-bottom-adjusted
+                                              (infinity/path :counter-clockwise
+                                                             [:bottom :bottom]
+                                                             [first-bottom second-bottom-adjusted])
                                               (line/stitch line-reversed)
-                                              "L" second-top
+                                              (infinity/path :counter-clockwise
+                                                             [:top :top]
+                                                             [second-top first-top])
                                               "z"])
                               {:parent ordinary
                                :context [:pale]
@@ -83,10 +87,13 @@
         ordinary-environment (field-environment/create
                               (svg/make-path ["M" first-left
                                               (line/stitch line)
-                                              "L" first-right
-                                              "L" second-right-adjusted
+                                              (infinity/path :clockwise
+                                                             [:right :right]
+                                                             [first-right second-right-adjusted])
                                               (line/stitch line-reversed)
-                                              "L" left
+                                              (infinity/path :clockwise
+                                                             [:left :left]
+                                                             [second-left first-left])
                                               "z"])
                               {:parent ordinary
                                :context [:fess]
@@ -113,7 +120,6 @@
   (let [mask-id (svg/id "ordinary-top")
         line-style (or (:style line) :straight)
         top-left (get-in environment [:points :top-left])
-        top-right (get-in environment [:points :top-right])
         top (get-in environment [:points :top])
         left (get-in environment [:points :left])
         right (get-in environment [:points :right])
@@ -129,11 +135,11 @@
                                                     :angle 180)
         row-right-adjusted (v/extend row-left row-right line-reversed-length)
         ordinary-environment (field-environment/create
-                              (svg/make-path ["M" top-left
-                                              "L" top-right
-                                              "L" row-right-adjusted
+                              (svg/make-path ["M" row-right-adjusted
                                               (line/stitch line-reversed)
-                                              "L" row-left
+                                              (infinity/path :clockwise
+                                                             [:left :right]
+                                                             [row-left row-right-adjusted])
                                               "z"])
                               {:parent ordinary
                                :context [:top]
@@ -156,7 +162,6 @@
 (defn base [{:keys [field line] :as ordinary} environment top-level-render options]
   (let [mask-id (svg/id "ordinary-bottom")
         line-style (or (:style line) :straight)
-        bottom-left (get-in environment [:points :bottom-left])
         bottom-right (get-in environment [:points :bottom-right])
         left (get-in environment [:points :left])
         right (get-in environment [:points :right])
@@ -170,9 +175,9 @@
         ordinary-environment (field-environment/create
                               (svg/make-path ["M" row-left
                                               (line/stitch line)
-                                              "L" row-right
-                                              "L" bottom-right
-                                              "L" bottom-left
+                                              (infinity/path :clockwise
+                                                             [:right :left]
+                                                             [row-right row-left])
                                               "z"])
                               {:parent ordinary
                                :context [:bottom]
