@@ -11,7 +11,8 @@
         "a 6 6 0 0 1 -3,-5.196152422706632"
         "v -2"
         "z")
-   {:context [:root]}))
+   {:context [:root]
+    :bounding-box [-3 3 0 (+ 2 5.196152422706632)]}))
 
 (def square-french
   (field-environment/create
@@ -21,7 +22,8 @@
         "c 6,-1 12,-7 12,-13"
         "V 0"
         "z")
-   {:context [:root]}))
+   {:context [:root]
+    :bounding-box [0 (* 2 12) 0 (+ 15.7 13)]}))
 
 (def square-iberian
   (field-environment/create
@@ -31,7 +33,8 @@
         "a 5 5 0 0 1 -10,0"
         "v -7"
         "z")
-   {:context [:root]}))
+   {:context [:root]
+    :bounding-box [-5 5 0 (+ 7 5)]}))
 
 (def kinds
   [["Heater" :heater heater]

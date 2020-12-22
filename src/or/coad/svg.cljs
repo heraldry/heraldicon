@@ -30,11 +30,14 @@
                       rest)]
     (v// s n)))
 
-(defn bounding-box [d]
+(defn bounding-box-from-path [d]
   (let [path (new-path d)
         points (points path 50)
         box (min-max-x-y points)]
     box))
+
+(defn bounding-box [points]
+  (min-max-x-y points))
 
 (defn center [d]
   (let [path (new-path d)
