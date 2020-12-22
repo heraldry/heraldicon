@@ -1,9 +1,9 @@
-(ns or.coad.field
+(ns or.coad.field-environment
   (:require ["svgpath" :as svgpath]
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
-(defn make-field [shape meta]
+(defn create [shape meta]
   ;; TODO: bounding-box is an expensive operation, if the calling context knows
   ;; the dimensions, then it should pass them down, only use bounding box when necessary
   (let [[min-x max-x min-y max-y] (svg/bounding-box shape)
@@ -40,13 +40,13 @@
         (assoc-in [:points :nombril] nombril)
         (assoc-in [:meta] meta))))
 
-(defn transform-to-width [field target-width]
-  (let [width (:width field)
-        top-left (get-in field [:points :top-left])
+(defn transform-to-width [environment target-width]
+  (let [width (:width environment)
+        top-left (get-in environment [:points :top-left])
         offset (v/- top-left)
         scale-factor (/ target-width width)]
-    (-> field
-        (assoc-in [:shape] (-> (:shape field)
+    (-> environment
+        (assoc-in [:shape] (-> (:shape environment)
                                (svgpath)
                                (.translate (:x offset) (:y offset))
                                (.scale scale-factor)
@@ -57,4 +57,4 @@
                                          (map (fn [[key value]]
                                                 [key (-> value
                                                          (v/+ offset)
-                                                         (v/* scale-factor))]) (:points field)))))))
+                                                         (v/* scale-factor))]) (:points environment)))))))

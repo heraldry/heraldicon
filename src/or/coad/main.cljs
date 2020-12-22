@@ -5,7 +5,7 @@
             [or.coad.blazon :as blazon]
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
-            [or.coad.field :as field]
+            [or.coad.field-environment :as field-environment]
             [or.coad.field-content :as field-content]
             [or.coad.filter :as filter]
             [or.coad.hatching :as hatching]
@@ -130,22 +130,22 @@
        ^{:key idx} [ordinary/render ordinary])]))
 
 (defn render-shield [coat-of-arms options]
-  (let [field (escutcheon/field (:escutcheon coat-of-arms))
-        transformed-field (field/transform-to-width field 100)
+  (let [shield (escutcheon/field (:escutcheon coat-of-arms))
+        environment (field-environment/transform-to-width shield 100)
         content (:content coat-of-arms)]
     [:g {:filter "url(#shadow)"}
      [:g {:transform "translate(10,10) scale(5,5)"}
       [:defs
        [:mask#mask-shield
-        [:path {:d (:shape transformed-field)
+        [:path {:d (:shape environment)
                 :fill "#fff"
                 :stroke "none"}]]]
       [:g {:mask "url(#mask-shield)"}
-       [:path {:d (:shape transformed-field)
+       [:path {:d (:shape environment)
                :fill "#f0f0f0"}]
-       [field-content/render content transformed-field options]]
+       [field-content/render content environment options]]
       (when (:outline? options)
-        [:path.outline {:d (:shape transformed-field)}])]]))
+        [:path.outline {:d (:shape environment)}])]]))
 
 (declare form-for-field)
 
