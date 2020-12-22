@@ -36,10 +36,28 @@
    {:context      [:root]
     :bounding-box [-5 5 0 (+ 7 5)]}))
 
+(def french-modern
+  (field-environment/create
+   (str "m 0,0"
+        "h 7"
+        "v 15"
+        "a 1 1 0 0 1 -1,1"
+        "h -5"
+        "a 1 1 0 0 0 -1,1"
+        "a 1 1 0 0 0 -1,-1"
+        "h -5"
+        "a 1 1 0 0 1 -1,-1"
+        "v -15"
+        "h 7"
+        "z")
+   {:context      [:root]
+    :bounding-box [-7 7 0 (* 2 8)]}))
+
 (def kinds
   [["Heater" :heater heater]
    ["Square French" :square-french square-french]
-   ["Square Iberian" :square-iberian square-iberian]])
+   ["Square Iberian" :square-iberian square-iberian]
+   ["French Modern" :french-modern french-modern]])
 
 (def kinds-map
   (->> kinds
