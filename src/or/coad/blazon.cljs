@@ -15,10 +15,10 @@
   (when (not= style :straight)
     (translate style)))
 
-(defn encode-ordinary [{:keys [type content line]}]
+(defn encode-ordinary [{:keys [type field line]}]
   (combine " " ["a" (translate type)
                 (translate-line line)
-                (encode-field content)]))
+                (encode-field field)]))
 
 (defn upper-case-first [s]
   (str (s/upper-case (or (first s) "")) (s/join (rest s))))
@@ -29,10 +29,10 @@
         tincture               (get-in  field [:content :tincture])
         field-description      (cond
                                  tincture (translate tincture)
-                                 division (let [{:keys [type line content]} division]
+                                 division (let [{:keys [type line fields]} division]
                                             (combine " " [(translate type)
                                                           (translate-line line)
-                                                          (combine " and " (map encode-field content))])))
+                                                          (combine " and " (map encode-field fields))])))
         ordinaries-description (combine ", " (map encode-ordinary ordinaries))
         blazon                 (upper-case-first (combine ", " [field-description ordinaries-description]))]
     (if (or root?
