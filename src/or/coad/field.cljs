@@ -8,9 +8,11 @@
   (let [tincture (get-in field [:content :tincture])]
     [:<>
      (cond
-       tincture (let [fill (case (:mode options)
-                             :colours  (get tincture/tinctures tincture)
-                             :hatching (hatching/get-for tincture))]
+       tincture (let [mode (:mode options)
+                      fill (cond
+                             (= tincture :none) "url(#void)"
+                             (= mode :colours)  (get tincture/tinctures tincture)
+                             (= mode :hatching) (hatching/get-for tincture))]
                   [:path {:d      (:shape environment)
                           :fill   fill
                           :stroke fill}])

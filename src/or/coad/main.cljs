@@ -38,7 +38,7 @@
 
 (def default-coat-of-arms
   {:escutcheon :heater
-   :field      {:content {:tincture :argent}}})
+   :field      {:content {:tincture :none}}})
 
 (rf/reg-event-db
  :initialize-db
@@ -63,7 +63,7 @@
    (if (= new-type :none)
      (-> db
          (update-in path dissoc :division)
-         (update-in (conj path :content) #(or % {:tincture :argent})))
+         (update-in (conj path :content) #(or % {:tincture :none})))
      (-> db
          (assoc-in (concat path [:division :type]) new-type)
          (update-in (concat path [:division :line :style]) #(or % :straight))
@@ -80,7 +80,7 @@
                                                                  (<= (count current) min-mandatory-part-count))
                                                            current
                                                            (subvec current 0 min-mandatory-part-count))
-                            default                      (into [{:content {:tincture :or}}
+                            default                      (into [{:content {:tincture :none}}
                                                                 {:content {:tincture :azure}}]
                                                                (cond
                                                                  (#{:per-saltire :quarterly} new-type)      [0 1]
@@ -101,7 +101,7 @@
    (update-in db (conj path :ordinaries) #(-> %
                                               (conj {:type  value
                                                      :line  {:style :straight}
-                                                     :field {:content {:tincture :or}}})
+                                                     :field {:content {:tincture :none}}})
                                               vec))))
 (rf/reg-event-db
  :remove-ordinary
@@ -118,7 +118,25 @@
   (into
    [:defs
     filter/shadow
-    filter/shiny]))
+    filter/shiny
+    [:pattern#void {:width         20
+                    :height        20
+                    :pattern-units "userSpaceOnUse"}
+     [:rect {:x      0
+             :y      0
+             :width  20
+             :height 20
+             :fill   "#fff"}]
+     [:rect {:x      0
+             :y      0
+             :width  10
+             :height 10
+             :fill   "#ddd"}]
+     [:rect {:x      10
+             :y      10
+             :width  10
+             :height 10
+             :fill   "#ddd"}]]]))
 
 (defn render-coat-of-arms [data]
   (let [division   (:division data)
@@ -226,6 +244,7 @@
                    :id        "tincture"
                    :value     (name @(rf/subscribe [:get-in (concat path [:content :tincture])]))
                    :on-change #(rf/dispatch [:set-in (concat path [:content :tincture]) (keyword (-> % .-target .-value))])}
+          [:option {:value "none"} "None"]
           (for [[group-name & options] tincture/options]
             ^{:key group-name}
             [:optgroup {:label group-name}
