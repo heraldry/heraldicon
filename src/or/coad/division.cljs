@@ -66,8 +66,8 @@
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
-                    ["M" chief
-                     "L" base])}]])]))
+                    ["M" base
+                     (line/stitch line)])}]])]))
 
 (defn per-fess [{:keys [fields line] :as field} environment top-level-render options]
   (let [mask-id-1     (svg/id "division-fess-1")
@@ -124,8 +124,8 @@
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
-                    ["M" sinister
-                     "L" dexter])}]])]))
+                    ["M" dexter
+                     (line/stitch line)])}]])]))
 
 (defn per-bend [{:keys [fields line] :as field} environment top-level-render options]
   (let [mask-id-1         (svg/id "division-bend-1")
@@ -182,8 +182,8 @@
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
-                    ["M" bend-intersection
-                     "L" top-left])}]])]))
+                    ["M" top-left
+                     (line/stitch line)])}]])]))
 
 (defn per-bend-sinister [{:keys [fields line] :as field} environment top-level-render options]
   (let [mask-id-1                  (svg/id "division-bend-sinister-1")
@@ -247,7 +247,7 @@
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" bend-intersection-adjusted
-                     "L" top-right])}]])]))
+                     (line/stitch line)])}]])]))
 
 (defn per-chevron [{:keys [fields line] :as field} environment top-level-render options]
   (let [mask-id-1                         (svg/id "division-chevron-1")
