@@ -6,7 +6,7 @@
 
 (def band-quotient 5)
 
-(defn pale [{:keys [content line] :as field} environment top-level-render options]
+(defn pale [{:keys [field line] :as ordinary} environment top-level-render options]
   (let [mask-id (svg/id "ordinary-pale")
         line-style (or (:style line) :straight)
         chief (get-in environment [:points :chief])
@@ -37,7 +37,7 @@
                                         (line/stitch line-reversed)
                                         "L" second-chief
                                         "z"])
-                        {:parent field
+                        {:parent ordinary
                          :context [:pale]
                          :ordinary? true})]
     [:<>
@@ -46,7 +46,7 @@
        [:path {:d (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content ordinary-field options]]
+      [top-level-render field ordinary-field options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -56,7 +56,7 @@
                     ["M" second-base-adjusted
                      (line/stitch line-reversed)])}]])]))
 
-(defn fess [{:keys [content line] :as field} environment top-level-render options]
+(defn fess [{:keys [field line] :as ordinary} environment top-level-render options]
   (let [mask-id (svg/id "ordinary-fess")
         line-style (or (:style line) :straight)
         dexter (get-in environment [:points :dexter])
@@ -86,7 +86,7 @@
                                         (line/stitch line-reversed)
                                         "L" dexter
                                         "z"])
-                        {:parent field
+                        {:parent ordinary
                          :context [:fess]
                          :ordinary? true})]
     [:<>
@@ -95,7 +95,7 @@
        [:path {:d (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content ordinary-field options]]
+      [top-level-render field ordinary-field options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -105,7 +105,7 @@
                     ["M" second-sinister-adjusted
                      (line/stitch line-reversed)])}]])]))
 
-(defn chief [{:keys [content line] :as field} environment top-level-render options]
+(defn chief [{:keys [field line] :as ordinary} environment top-level-render options]
   (let [mask-id (svg/id "ordinary-chief")
         line-style (or (:style line) :straight)
         top-left (get-in environment [:points :top-left])
@@ -130,7 +130,7 @@
                                         (line/stitch line-reversed)
                                         "L" row-dexter
                                         "z"])
-                        {:parent field
+                        {:parent ordinary
                          :context [:chief]
                          :ordinary? true})]
     [:<>
@@ -139,14 +139,14 @@
        [:path {:d (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content ordinary-field options]]
+      [top-level-render field ordinary-field options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" row-sinister-adjusted
                      (line/stitch line-reversed)])}]])]))
 
-(defn base [{:keys [content line] :as field} environment top-level-render options]
+(defn base [{:keys [field line] :as ordinary} environment top-level-render options]
   (let [mask-id (svg/id "ordinary-base")
         line-style (or (:style line) :straight)
         bottom-left (get-in environment [:points :bottom-left])
@@ -176,29 +176,29 @@
        [:path {:d (:shape ordinary-field)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render content ordinary-field options]]
+      [top-level-render field ordinary-field options]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" row-dexter
                      (line/stitch line)])}]])]))
 
-(defn bend [{:keys [content line] :as field} field top-level-render]
+(defn bend [{:keys [field line] :as ordinary} field top-level-render]
   [:<>])
 
-(defn bend-sinister [{:keys [content line] :as field} field top-level-render]
+(defn bend-sinister [{:keys [field line] :as ordinary} field top-level-render]
   [:<>])
 
-(defn cross [{:keys [content line] :as field} field top-level-render]
+(defn cross [{:keys [field line] :as ordinary} field top-level-render]
   [:<>])
 
-(defn saltire [{:keys [content line] :as field} field top-level-render]
+(defn saltire [{:keys [field line] :as ordinary} field top-level-render]
   [:<>])
 
-(defn chevron [{:keys [content line] :as field} field top-level-render]
+(defn chevron [{:keys [field line] :as ordinary} field top-level-render]
   [:<>])
 
-(defn pall [{:keys [content line] :as field} field top-level-render]
+(defn pall [{:keys [field line] :as ordinary} field top-level-render]
   [:<>])
 
 (def kinds
