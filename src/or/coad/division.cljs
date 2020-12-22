@@ -1223,6 +1223,7 @@
 
 (defn mandatory-part-count [type]
   (case type
+    nil 0
     :tierced-per-pale 3
     :tierced-per-fess 3
     :tierced-per-pairle 3
