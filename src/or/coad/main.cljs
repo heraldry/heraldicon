@@ -61,10 +61,11 @@
 (def default-coat-of-arms
   {:escutcheon :heater
    :field      {:content {:tincture :none}
-                :charges [{:type      :wolf
-                           :attitude  :rampant
-                           :primary   :sable
-                           :secondary :gules}]}})
+                :charges [{:type     :wolf
+                           :attitude :rampant
+                           :tincture {:primary :sable
+                                      :armed   :or
+                                      :langued :gules}}]}})
 
 (rf/reg-event-db
  :initialize-db
