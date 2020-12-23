@@ -5,20 +5,16 @@
             [or.coad.vector :as v]
             [re-frame.core :as rf]))
 
-(def placeholder-primary "#214263")
-(def placeholder-armed "#848401")
-(def placeholder-langued "#840101")
-(def placeholder-attired "#010184")
-(def placeholder-unguled "#018401")
-(def placeholder-eyes-and-teeth "#848484")
+(def placeholder-colours
+  {:primary        "#214263"
+   :armed          "#848401"
+   :langued        "#840101"
+   :attired        "#010184"
+   :unguled        "#018401"
+   :eyes-and-teeth "#848484"})
 
 (def placeholder-regex
-  (re-pattern (str "(?i)(" (s/join "|" [placeholder-primary
-                                        placeholder-armed
-                                        placeholder-langued
-                                        placeholder-attired
-                                        placeholder-unguled
-                                        placeholder-eyes-and-teeth]) ")")))
+  (re-pattern (str "(?i)(" (s/join "|" (vals placeholder-colours)) ")")))
 
 (defn find-charge [charge-map [group & rest]]
   (let [next (-> charge-map :groups group)]
@@ -37,24 +33,16 @@
           variant-data      (get variants variant)]
       (:path variant-data))))
 
+(defn pick-placeholder-tincture [match {:keys [primary] :as tincture}]
+  (let [lowercase-match (s/lower-case match)
+        reverse-lookup  (into {} (map (fn [[key value]] [(s/lower-case value) key]) placeholder-colours))
+        kind            (get reverse-lookup lowercase-match)]
+    (or (get tincture kind)
+        primary)))
+
 (defn replace-tinctures [string tincture]
   (s/replace string placeholder-regex (fn [[_ match]]
-                                        (let [primary         (:primary tincture)
-                                              lowercase-match (s/lower-case match)]
-                                          (cond
-                                            (= lowercase-match
-                                               placeholder-primary)        primary
-                                            (= lowercase-match
-                                               placeholder-armed)          (or (:armed tincture) primary)
-                                            (= lowercase-match
-                                               placeholder-langued)        (or (:langued tincture) primary)
-                                            (= lowercase-match
-                                               placeholder-attired)        (or (:attired tincture) primary)
-                                            (= lowercase-match
-                                               placeholder-unguled)        (or (:unguled tincture) primary)
-                                            (= lowercase-match
-                                               placeholder-eyes-and-teeth) (or (:eyes-and-teeth tincture) primary)
-                                            :else                          match)))))
+                                        (pick-placeholder-tincture match tincture))))
 
 (defn replace-in-hiccup [hiccup tincture]
   (walk/postwalk #(cond-> %
