@@ -3,7 +3,7 @@
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
-(defn create [shape {:keys [bounding-box] :as meta}]
+(defn create [shape {:keys [bounding-box context] :as meta}]
   (let [[min-x max-x min-y max-y] (or bounding-box
                                       (svg/bounding-box-from-path shape))
         top-left                  (v/v min-x min-y)
@@ -17,7 +17,11 @@
         ;; not actually center, but chosen such that bend lines at 45° run together in it
         ;; TODO: this needs to be fixed to work with sub-fields, especially those where
         ;; the fess point calculated like this isn't even included in the field
-        fess                      (v/v (:x top) (+ min-y (/ width 2)))
+        ;; update: for now only the root environment gets the "smart" fess point, the others
+        ;; just get the middle, even if that'll break saltire-like divisions
+        fess                      (if (= context :root)
+                                    (v/v (:x top) (+ min-y (/ width 2)))
+                                    (v/avg top-left bottom-right))
         left                      (v/v min-x (:y fess))
         right                     (v/v max-x (:y fess))
         honour                    (v/avg top fess)
