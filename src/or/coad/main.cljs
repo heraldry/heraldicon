@@ -55,7 +55,10 @@
                               <!
                               :body
                               (as-> result
-                                  (rf/dispatch [:set :loaded-data name result]))))
+                                  (let [parsed (if (string? result)
+                                                 (reader/read-string result)
+                                                 result)]
+                                    (rf/dispatch [:set :loaded-data name parsed])))))
                            nil)))))
 
 ;; events
