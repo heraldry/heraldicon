@@ -31,7 +31,7 @@
     (let [lookup-path       (-> charge-map :lookup type)
           charge-data       (-> (find-charge charge-map lookup-path)
                                 :charges type)
-          attitude-variants (-> charge-data :attitudes attitude :variants)
+          attitude-variants (-> charge-data :attitudes (get attitude) :variants)
           variants          (or attitude-variants
                                 (-> charge-data :variants))
           variant-data      (get variants variant)]

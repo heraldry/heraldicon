@@ -141,6 +141,21 @@
                                      (vec (concat (subvec ordinaries 0 index)
                                                   (subvec ordinaries (inc index)))))))))
 
+(rf/reg-event-db
+ :add-charge
+ (fn [db [_ path charge]]
+   (update-in db (conj path :charges) #(-> %
+                                           (conj charge)
+                                           vec))))
+(rf/reg-event-db
+ :remove-charge
+ (fn [db [_ path]]
+   (let [charge-path (drop-last path)
+         index       (last path)]
+     (update-in db charge-path (fn [charges]
+                                 (vec (concat (subvec charges 0 index)
+                                              (subvec charges (inc index)))))))))
+
 ;; views
 
 (def defs
@@ -304,8 +319,8 @@
       [:div.title
        "Charges"
        [:a.add {:on-click #(rf/dispatch [:add-charge path {:type     :roundel
-                                                           :tincture :none
-                                                           :variant  :default}])}
+                                                           :tincture {:primary :none}
+                                                           :variant  :variant-roundel-1}])}
         "+"]]
       [:div.charges
        (let [charges @(rf/subscribe [:get-in (conj path :charges)])]

@@ -1,0 +1,11 @@
+([:svg
+  {:height "90", :width "50"}
+  [:rect
+   {:width "49.05",
+    :height "89.05",
+    :x ".483",
+    :y ".483",
+    :ry "15.076",
+    :fill "#214263",
+    :stroke "#000",
+    :stroke-width ".95"}]])
