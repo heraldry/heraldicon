@@ -1,9 +1,10 @@
 (ns or.coad.main
+  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require ["js-base64" :as base64]
             [cljs-http.client :as http]
+            [cljs.core.async :refer [<!]]
             [cljs.reader :as reader]
             [clojure.string :as s]
-            [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [goog.string.format]  ;; required for release build
             [or.coad.blazon :as blazon]
             [or.coad.charge :as charge]
@@ -48,13 +49,13 @@
        data data
        :else (do
                (rf/dispatch-sync [:set :loaded-data name :loading])
-               (go-catch
-                (->
-                 (http/get name)
-                 <?
-                 :body
-                 (as-> result
-                       (rf/dispatch [:set :loaded-data name result]))))
+               (go
+                 (->
+                  (http/get name)
+                  <!
+                  :body
+                  (as-> result
+                        (rf/dispatch [:set :loaded-data name result]))))
                nil)))))
 
 ;; events
