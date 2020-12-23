@@ -1,15 +1,9 @@
 ([:svg
   {:height "90", :width "50"}
   [:path
-   {:stroke "#000",
-    :transform "scale(2.53075 4.62076) rotate(45 -.144 .235)",
-    :color "#000",
-    :font-weight "400",
-    :overflow "visible",
-    :fill "#214263",
-    :style
-    "line-height:normal;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-feature-settings:normal;font-variation-settings:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000;text-transform:none;text-orientation:mixed;white-space:normal;shape-padding:0;shape-margin:0;inline-size:0;isolation:auto;mix-blend-mode:normal;solid-color:#000;solid-opacity:1",
-    :stroke-width ".288",
-    :d
+   {:d
     "M8.291-7.537c-1.123 0-2.033.91-2.033 2.033V5.291c0 1.123.91 2.033 2.033 2.033h10.795c1.123 0 2.033-.91 2.033-2.033V-5.504c0-1.123-.91-2.033-2.033-2.033z",
-    :font-family "sans-serif"}]])
+    :transform "scale(2.53075 4.62076) rotate(45 -.144 .235)",
+    :fill "#214263",
+    :stroke "#000",
+    :stroke-width ".288"}]])
