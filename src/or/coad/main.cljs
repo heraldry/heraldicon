@@ -286,8 +286,8 @@
                  [:span.node-name.clickable
                   {:on-click #(rf/dispatch [:toggle-in flag-path])}
                   (if open?
-                    [:i.far.fa-folder-open]
-                    [:i.far.fa-folder]) (:name group)]
+                    [:i.far.fa-minus-square]
+                    [:i.far.fa-plus-square]) (:name group)]
                  (when open?
                    [tree-for-charge-map
                     group
@@ -305,8 +305,8 @@
                  [:span.node-name.clickable
                   {:on-click #(rf/dispatch [:toggle-in flag-path])}
                   (if open?
-                    [:i.far.fa-folder-open]
-                    [:i.far.fa-folder]) [:b (:name charge)]]
+                    [:i.far.fa-minus-square]
+                    [:i.far.fa-plus-square]) [:b (:name charge)]]
                  (when open?
                    [tree-for-charge-map
                     charge
@@ -325,8 +325,8 @@
                  [:span.node-name.clickable
                   {:on-click #(rf/dispatch [:toggle-in flag-path])}
                   (if open?
-                    [:i.far.fa-folder-open]
-                    [:i.far.fa-folder]) [:em (:name attitude)]]
+                    [:i.far.fa-minus-square]
+                    [:i.far.fa-plus-square]) [:em (:name attitude)]]
                  (when open?
                    [tree-for-charge-map
                     attitude
