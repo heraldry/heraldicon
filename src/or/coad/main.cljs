@@ -5,6 +5,7 @@
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [goog.string.format]  ;; required for release build
             [or.coad.blazon :as blazon]
+            [or.coad.charge :as charge]
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
             [or.coad.field :as field]
@@ -14,6 +15,7 @@
             [or.coad.line :as line]
             [or.coad.ordinary :as ordinary]
             [or.coad.tincture :as tincture]
+            [or.coad.util :as util]
             [re-frame.core :as rf]
             [reagent.dom :as r]))
 
@@ -45,7 +47,6 @@
        data data
        :else (do
                (rf/dispatch-sync [:set :loaded-data name :loading])
-               (println "fetching" name)
                (go-catch
                 (->
                  (http/get name)
@@ -254,11 +255,50 @@
      [form-for-field (conj path :field)]]]])
 
 (defn form-for-charge [path]
-  [:<>
-   [:a.remove {:on-click #(rf/dispatch [:remove-charge path])}
-    "x"]
-   [:div.charge
-    [form-for-tincture "Primary" (concat path [:tincture :primary])]]])
+  (let [charge @(rf/subscribe [:get-in path])
+        charge-variant-data (charge/get-charge-variant-data charge)
+        supported-tinctures (:supported-tinctures charge-variant-data)
+        sorted-supported-tinctures (filter supported-tinctures [:primary :armed :langued :attired :unguled])
+        eyes-and-teeth-support (:eyes-and-teeth supported-tinctures)]
+    [:<>
+     [:a.remove {:on-click #(rf/dispatch [:remove-charge path])}
+      "x"]
+     [:div.charge
+      [:div.placeholders
+       [:div.title "Supported tinctures"]
+       (for [t sorted-supported-tinctures]
+         ^{:key t} [form-for-tincture
+                    (util/upper-case-first (util/translate t))
+                    (concat path [:tincture t])])
+       (when eyes-and-teeth-support
+         [:div.setting
+          [:input {:type "checkbox"
+                   :id "eyes-and-teeth"
+                   :name "eyes-and-teeth"
+                   :checked (-> charge
+                                :tincture
+                                :eyes-and-teeth
+                                boolean)
+                   :on-change #(let [checked (-> % .-target .-checked)]
+                                 (rf/dispatch [:set-in
+                                               (concat path [:tincture :eyes-and-teeth])
+                                               (if checked
+                                                 :argent
+                                                 nil)]))}]
+          [:label {:for "eyes-and-teeth"} "White eyes and teeth"]])
+       [:div.setting
+        [:input {:type "checkbox"
+                 :id "outline"
+                 :name "outline"
+                 :checked (-> charge
+                              :hints
+                              :outline?
+                              boolean)
+                 :on-change #(let [checked (-> % .-target .-checked)]
+                               (rf/dispatch [:set-in
+                                             (concat path [:hints :outline?])
+                                             checked]))}]
+        [:label {:for "outline"} "Draw outline"]]]]]))
 
 (defn form-for-field [path]
   (let [division-type @(rf/subscribe [:get-division-type path])]
