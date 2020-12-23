@@ -20,8 +20,22 @@
                                         placeholder-unguled
                                         placeholder-eyes-and-teeth]) ")")))
 
-(defn get-charge-name [type attitude]
-  "charges/animal/wolf/passant/wolf-1.edn")
+(defn find-charge [charge-map [group & rest]]
+  (let [next (-> charge-map :groups group)]
+    (if rest
+      (recur next rest)
+      next)))
+
+(defn get-charge-data-path [{:keys [type attitude variant]}]
+  (if-let [charge-map @(rf/subscribe [:load-data "data/charge-map.edn"])]
+    (let [lookup-path (-> charge-map :lookup type)
+          charge-data (-> (find-charge charge-map lookup-path)
+                          :charges type)
+          attitude-variants (-> charge-data :attitudes attitude :variants)
+          variants (or attitude-variants
+                       (-> charge-data :variants))
+          variant-data (get variants variant)]
+      (:path variant-data))))
 
 (defn replace-tinctures [string tincture]
   (s/replace string placeholder-regex (fn [[_ match]]
@@ -47,10 +61,11 @@
                     (string? %) (replace-tinctures tincture))
                  hiccup))
 
-(defn render [{:keys [type attitude tincture]} environment top-level-render options]
-  (let [charge-name (get-charge-name type attitude)]
-    (if-let [data @(rf/subscribe [:charge-data charge-name])]
-      (let [meta (get data 1)
+(defn render [{:keys [tincture] :as charge} environment top-level-render options]
+  (if-let [charge-data-path (get-charge-data-path charge)]
+    (if-let [data @(rf/subscribe [:load-data charge-data-path])]
+      (let [data (first data)
+            meta (get data 1)
             width (js/parseFloat (:width meta))
             height (js/parseFloat (:height meta))
             target-width (* (:width environment) 0.8)
@@ -67,4 +82,5 @@
                                                tincture)))]
         [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")}
          (assoc color-adjusted-data 0 :g)])
-      [:<>])))
+      [:<>])
+    [:<>]))
