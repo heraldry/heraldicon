@@ -113,7 +113,7 @@ mask path.overlap {
   padding-left: 2em;
 }
 
-.charge {
+div.charge {
   margin-bottom: 1em;
   border-top: solid 1px #bbb;
   padding-top: 0.5em;
@@ -133,4 +133,29 @@ mask path.overlap {
 .blazon {
   font-size: 1.2em;
   font-style: italic;
+}
+
+.tree {
+  margin-bottom: 1em;
+}
+
+.tree ul {
+  list-style: none;
+  padding-left: 1.5em;
+  margin: 0;
+}
+
+.tree > ul {
+  padding-left: 0;
+}
+
+.tree ul li {
+}
+
+.tree span.node-name i {
+  width: 1.5em;
+}
+
+.clickable {
+  cursor: pointer;
 }
