@@ -1,20 +1,13 @@
 (ns or.coad.charge
   (:require [clojure.string :as s]
             [clojure.walk :as walk]
+            [or.coad.config :as config]
             [or.coad.tincture :as tincture]
             [or.coad.vector :as v]
             [re-frame.core :as rf]))
 
-(def placeholder-colours
-  {:primary "#214263"
-   :armed "#848401"
-   :langued "#840101"
-   :attired "#010184"
-   :unguled "#018401"
-   :eyes-and-teeth "#848484"})
-
 (def placeholder-regex
-  (re-pattern (str "(?i)(" (s/join "|" (vals placeholder-colours)) ")")))
+  (re-pattern (str "(?i)(" (s/join "|" (vals config/placeholder-colours)) ")")))
 
 (defn find-charge [charge-map [group & rest]]
   (let [next (-> charge-map :groups group)]
@@ -35,7 +28,9 @@
 
 (defn pick-placeholder-tincture [match {:keys [primary] :as tincture}]
   (let [lowercase-match (s/lower-case match)
-        reverse-lookup (into {} (map (fn [[key value]] [(s/lower-case value) key]) placeholder-colours))
+        reverse-lookup (into {} (map (fn [[key value]]
+                                       [(s/lower-case value) key])
+                                     config/placeholder-colours))
         kind (get reverse-lookup lowercase-match)]
     (or (get tincture kind)
         primary)))
