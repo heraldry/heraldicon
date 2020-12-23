@@ -1,0 +1,65 @@
+{
+    :type :root
+    :key :root
+    :name "root"
+    :groups {
+        :animal {
+            :type :group
+            :key :animal
+            :name "animal"
+            :charges {
+                :wolf {
+                    :type :charge
+                    :key :wolf
+                    :name "wolf"
+                    :attitudes {
+                        :rampant-regardant {
+                            :type :attitude
+                            :key :rampant-regardant
+                            :name "rampant-regardant"
+                            :variants {
+                                :variant-wolf-rampant-regardant-1 {
+                                    :key :variant-wolf-rampant-regardant-1
+                                    :type :variant
+                                    :name "variant-wolf-rampant-regardant-1"
+                                    :path "data/charges/group-animal/charge-wolf/attitude-rampant-regardant/variant-wolf-rampant-regardant-1.edn"
+                                }
+                            }
+                        }
+                        :passant {
+                            :type :attitude
+                            :key :passant
+                            :name "passant"
+                            :variants {
+                                :variant-wolf-passant-1 {
+                                    :key :variant-wolf-passant-1
+                                    :type :variant
+                                    :name "variant-wolf-passant-1"
+                                    :path "data/charges/group-animal/charge-wolf/attitude-passant/variant-wolf-passant-1.edn"
+                                }
+                            }
+                        }
+                        :rampant {
+                            :type :attitude
+                            :key :rampant
+                            :name "rampant"
+                            :variants {
+                                :variant-wolf-rampant-1 {
+                                    :key :variant-wolf-rampant-1
+                                    :type :variant
+                                    :name "variant-wolf-rampant-1"
+                                    :path "data/charges/group-animal/charge-wolf/attitude-rampant/variant-wolf-rampant-1.edn"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    :lookup {
+        :wolf [
+            :animal
+        ]
+    }
+}
