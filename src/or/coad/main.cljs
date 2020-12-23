@@ -67,7 +67,8 @@
                                  :armed :or
                                  :langued :gules
                                  :eyes-and-teeth :argent}
-                      :variant :variant-wolf-rampant-regardant-1}]}})
+                      :variant :variant-wolf-rampant-regardant-1
+                      :hints {:outline? true}}]}})
 
 (rf/reg-event-db
  :initialize-db
