@@ -37,22 +37,22 @@
      (or division :none))))
 
 (rf/reg-sub
- :charge-data
+ :load-data
  (fn [db [_ name]]
-   (let [data (get-in db [:charge-data name])]
+   (let [data (get-in db [:loaded-data name])]
      (cond
        (= data :loading) nil
        data data
        :else (do
-               (rf/dispatch-sync [:set :charge-data name :loading])
-               (println "fetching" (str "data/" name))
+               (rf/dispatch-sync [:set :loaded-data name :loading])
+               (println "fetching" name)
                (go-catch
                 (->
-                 (http/get (str "data/" name))
+                 (http/get name)
                  <?
                  :body
                  (as-> result
-                       (rf/dispatch [:set :charge-data name (first result)]))))
+                       (rf/dispatch [:set :loaded-data name result]))))
                nil)))))
 
 ;; events
@@ -62,11 +62,12 @@
   {:escutcheon :heater
    :field {:content {:tincture :none}
            :charges [{:type :wolf
-                      :attitude :rampant
+                      :attitude :rampant-regardant
                       :tincture {:primary :sable
                                  :armed :or
                                  :langued :gules
-                                 :eyes-and-teeth :argent}}]}})
+                                 :eyes-and-teeth :argent}
+                      :variant :variant-wolf-rampant-regardant-1}]}})
 
 (rf/reg-event-db
  :initialize-db

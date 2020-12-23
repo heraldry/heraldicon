@@ -15,3 +15,6 @@ release:
 generate-svg-clj:
 	./optimize-svgs.sh
 	./svg-to-clj.sh
+
+generate-charge-map:
+	./generate-charge-map.py
