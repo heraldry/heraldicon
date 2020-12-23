@@ -29,6 +29,45 @@
                                                           :variants {:variant-wolf-rampant-1 {:key :variant-wolf-rampant-1
                                                                                               :type :variant
                                                                                               :name "variant-wolf-rampant-1"
-                                                                                              :path "data/charges/group-animal/charge-wolf/attitude-rampant/variant-wolf-rampant-1.edn"}}}}}}}}
+                                                                                              :path "data/charges/group-animal/charge-wolf/attitude-rampant/variant-wolf-rampant-1.edn"}}}}}}}
 
- :lookup {:wolf [:animal]}}
+          :simple {:type :group
+                   :key :simple
+                   :name "simple"
+                   :charges {:fusil {:type :charge
+                                     :key :fusil
+                                     :name "fusil"
+                                     :variants {:variant-fusil-1 {:key :variant-fusil-1
+                                                                  :type :variant
+                                                                  :name "variant-fusil-1"
+                                                                  :path "data/charges/group-simple/charge-fusil/variant-fusil-1.edn"}}}
+
+                             :annulet {:type :charge
+                                       :key :annulet
+                                       :name "annulet"
+                                       :variants {:variant-annulet-1 {:key :variant-annulet-1
+                                                                      :type :variant
+                                                                      :name "variant-annulet-1"
+                                                                      :path "data/charges/group-simple/charge-annulet/variant-annulet-1.edn"}}}
+
+                             :roundel {:type :charge
+                                       :key :roundel
+                                       :name "roundel"
+                                       :variants {:variant-roundel-1 {:key :variant-roundel-1
+                                                                      :type :variant
+                                                                      :name "variant-roundel-1"
+                                                                      :path "data/charges/group-simple/charge-roundel/variant-roundel-1.edn"}}}
+
+                             :billet {:type :charge
+                                      :key :billet
+                                      :name "billet"
+                                      :variants {:variant-billet-1 {:key :variant-billet-1
+                                                                    :type :variant
+                                                                    :name "variant-billet-1"
+                                                                    :path "data/charges/group-simple/charge-billet/variant-billet-1.edn"}}}}}}
+
+ :lookup {:wolf [:animal]
+          :fusil [:simple]
+          :annulet [:simple]
+          :roundel [:simple]
+          :billet [:simple]}}
