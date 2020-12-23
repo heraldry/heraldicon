@@ -104,6 +104,21 @@ mask path.overlap {
   padding-top: 0.5em;
 }
 
+.charges-section {
+  margin-top: 1em;
+}
+
+.charges {
+  position: relative;
+  padding-left: 2em;
+}
+
+.charge {
+  margin-bottom: 1em;
+  border-top: solid 1px #bbb;
+  padding-top: 0.5em;
+}
+
 .outline {
   stroke: #000;
   stroke-width: 0.5;
