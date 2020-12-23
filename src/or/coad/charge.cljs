@@ -6,10 +6,10 @@
             [re-frame.core :as rf]))
 
 (def placeholder-primary "#214263")
-(def placeholder-armed "#424201")
-(def placeholder-langued "#420001")
-(def placeholder-attired "#010142")
-(def placeholder-unguled "#014201")
+(def placeholder-armed "#848401")
+(def placeholder-langued "#840101")
+(def placeholder-attired "#010184")
+(def placeholder-unguled "#018401")
 
 (def placeholder-regex
   (re-pattern (str "(?i)(" (s/join "|" [placeholder-primary
