@@ -61,7 +61,7 @@
                     (string? %) (replace-tinctures tincture))
                  hiccup))
 
-(defn render [{:keys [tincture] :as charge} environment top-level-render options]
+(defn render [{:keys [tincture] :as charge} environment options]
   (if-let [charge-data-path (get-charge-data-path charge)]
     (if-let [data @(rf/subscribe [:load-data charge-data-path])]
       (let [data (first data)
