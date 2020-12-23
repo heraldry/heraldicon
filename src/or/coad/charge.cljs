@@ -15,8 +15,11 @@
       (recur next rest)
       next)))
 
+(defn get-charge-map []
+  @(rf/subscribe [:load-data "data/charge-map.edn"]))
+
 (defn get-charge-variant-data [{:keys [type attitude variant]}]
-  (when-let [charge-map @(rf/subscribe [:load-data "data/charge-map.edn"])]
+  (when-let [charge-map (get-charge-map)]
     (let [lookup-path       (get-in charge-map
                                     [:lookup type])
           charge-data       (get-in (find-charge charge-map lookup-path)

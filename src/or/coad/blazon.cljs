@@ -16,10 +16,20 @@
                 (translate-line line)
                 (encode-field field)]))
 
-(defn encode-field [field & {:keys [root?]}]
-  (let [division               (:division field)
-        ordinaries             (:ordinaries field)
-        tincture               (get-in  field [:content :tincture])
+(defn encode-charge [{:keys [type attitude tincture]}]
+  (let [primary (:primary tincture)]
+    (combine " " ["a" (util/translate type)
+                  (util/translate attitude)
+                  (util/translate primary)
+                  (combine " and " (map (fn [colour-key]
+                                          (when-let [t (get tincture colour-key)]
+                                            (when (not= t primary)
+                                              (combine " " [(util/translate colour-key)
+                                                            (util/translate t)]))))
+                                        [:armed :langued :attired :unguled]))])))
+
+(defn encode-field [{:keys [division ordinaries charges] :as field} & {:keys [root?]}]
+  (let [tincture               (get-in  field [:content :tincture])
         field-description      (cond
                                  tincture (util/translate tincture)
                                  division (let [{:keys [type line fields]} division]
@@ -27,7 +37,11 @@
                                                           (translate-line line)
                                                           (combine " and " (map encode-field fields))])))
         ordinaries-description (combine ", " (map encode-ordinary ordinaries))
-        blazon                 (util/upper-case-first (combine ", " [field-description ordinaries-description]))]
+        charges-description    (combine ", " (map encode-charge charges))
+        blazon                 (util/upper-case-first
+                                (combine ", " [field-description
+                                               ordinaries-description
+                                               charges-description]))]
     (if (or root?
             tincture)
       blazon

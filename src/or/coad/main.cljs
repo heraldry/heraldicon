@@ -2,6 +2,7 @@
   (:require ["js-base64" :as base64]
             [cljs-http.client :as http]
             [cljs.reader :as reader]
+            [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [goog.string.format]  ;; required for release build
             [or.coad.blazon :as blazon]
@@ -71,6 +72,17 @@
                            :variant  :variant-wolf-rampant-regardant-1
                            :hints    {:outline? true}}]}})
 
+(def default-ordinary
+  {:type  :pale
+   :line  {:style :straight}
+   :field {:content {:tincture :none}}})
+
+(def default-charge
+  {:type     :roundel
+   :tincture {:primary :none}
+   :variant  :variant-roundel-1
+   :hints    {:outline? true}})
+
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
@@ -87,6 +99,11 @@
  :set-in
  (fn [db [_ path value]]
    (assoc-in db path value)))
+
+(rf/reg-event-db
+ :toggle-in
+ (fn [db [_ path]]
+   (update-in db path not)))
 
 (rf/reg-event-db
  :set-division
@@ -130,9 +147,7 @@
  :add-ordinary
  (fn [db [_ path value]]
    (update-in db (conj path :ordinaries) #(-> %
-                                              (conj {:type  value
-                                                     :line  {:style :straight}
-                                                     :field {:content {:tincture :none}}})
+                                              (conj value)
                                               vec))))
 (rf/reg-event-db
  :remove-ordinary
@@ -157,6 +172,11 @@
      (update-in db charge-path (fn [charges]
                                  (vec (concat (subvec charges 0 index)
                                               (subvec charges (inc index)))))))))
+
+(rf/reg-event-db
+ :update-charge
+ (fn [db [_ path changes]]
+   (update-in db path merge changes)))
 
 ;; views
 
@@ -218,7 +238,7 @@
     [:label {:for "tincture"} title]
     [:select {:name      "tincture"
               :id        "tincture"
-              :value     (name @(rf/subscribe [:get-in path]))
+              :value     (name (or @(rf/subscribe [:get-in path]) :none))
               :on-change #(rf/dispatch [:set-in path (keyword (-> % .-target .-value))])}
      [:option {:value "none"} "None"]
      (for [[group-name & options] tincture/options]
@@ -254,51 +274,133 @@
     [:div.parts
      [form-for-field (conj path :field)]]]])
 
+(defn tree-for-charge-map [{:keys [type key name groups charges attitudes variants]}
+                           tree-path
+                           path selected-charge charge-variant-data & {:keys [charge-type
+                                                                              charge-attitude]}]
+  (-> [:ul]
+      (into (for [[key group] groups]
+              ^{:key key}
+              (let [node-path (conj tree-path :groups key)
+                    flag-path (-> path
+                                  (concat [:hints :ui :charge-map])
+                                  vec
+                                  (conj node-path))
+                    open?     @(rf/subscribe [:get-in flag-path])]
+                [:li.group
+                 [:span.node-name.clickable
+                  {:on-click #(rf/dispatch [:toggle-in flag-path])}
+                  (if open?
+                    [:i.far.fa-folder-open]
+                    [:i.far.fa-folder]) (:name group)]
+                 (when open?
+                   [tree-for-charge-map
+                    group
+                    node-path
+                    path selected-charge charge-variant-data])])))
+      (into (for [[key charge] charges]
+              ^{:key key}
+              (let [node-path (conj tree-path :charges key)
+                    flag-path (-> path
+                                  (concat [:hints :ui :charge-map])
+                                  vec
+                                  (conj node-path))
+                    open?     @(rf/subscribe [:get-in flag-path])]
+                [:li.charge
+                 [:span.node-name.clickable
+                  {:on-click #(rf/dispatch [:toggle-in flag-path])}
+                  (if open?
+                    [:i.far.fa-folder-open]
+                    [:i.far.fa-folder]) [:b (:name charge)]]
+                 (when open?
+                   [tree-for-charge-map
+                    charge
+                    node-path
+                    path selected-charge charge-variant-data
+                    :charge-type (:key charge)])])))
+      (into (for [[key attitude] attitudes]
+              ^{:key key}
+              (let [node-path (conj tree-path :attitudes key)
+                    flag-path (-> path
+                                  (concat [:hints :ui :charge-map])
+                                  vec
+                                  (conj node-path))
+                    open?     @(rf/subscribe [:get-in flag-path])]
+                [:li.attitude
+                 [:span.node-name.clickable
+                  {:on-click #(rf/dispatch [:toggle-in flag-path])}
+                  (if open?
+                    [:i.far.fa-folder-open]
+                    [:i.far.fa-folder]) [:em (:name attitude)]]
+                 (when open?
+                   [tree-for-charge-map
+                    attitude
+                    node-path
+                    path selected-charge charge-variant-data
+                    :charge-type charge-type
+                    :charge-attitude (:key attitude)])])))
+      (into (for [[key variant] variants]
+              ^{:key key}
+              [:li.variant
+               [:span.node-name.clickable
+                {:on-click #(rf/dispatch [:update-charge path {:type     charge-type
+                                                               :attitude charge-attitude
+                                                               :variant  (:key variant)}])}
+                [:i.fa.fa-picture-o] (:name variant)]]))))
+
 (defn form-for-charge [path]
   (let [charge                     @(rf/subscribe [:get-in path])
         charge-variant-data        (charge/get-charge-variant-data charge)
+        charge-map                 (charge/get-charge-map)
         supported-tinctures        (:supported-tinctures charge-variant-data)
         sorted-supported-tinctures (filter supported-tinctures [:primary :armed :langued :attired :unguled])
         eyes-and-teeth-support     (:eyes-and-teeth supported-tinctures)]
-    [:<>
-     [:a.remove {:on-click #(rf/dispatch [:remove-charge path])}
-      "x"]
-     [:div.charge
-      [:div.placeholders
-       [:div.title "Supported tinctures"]
-       (for [t sorted-supported-tinctures]
-         ^{:key t} [form-for-tincture
-                    (util/upper-case-first (util/translate t))
-                    (concat path [:tincture t])])
-       (when eyes-and-teeth-support
+    (if (and charge-map
+             charge-variant-data)
+      [:<>
+       [:a.remove {:on-click #(rf/dispatch [:remove-charge path])}
+        "x"]
+       [:div.charge
+        [:div.title (s/join " " [(-> charge :type util/translate util/upper-case-first)
+                                 (-> charge :attitude util/translate)])]
+        [:div.tree
+         [tree-for-charge-map charge-map [] path charge charge-variant-data]]
+        [:div.placeholders
+         [:div.title "Supported tinctures"]
+         (for [t sorted-supported-tinctures]
+           ^{:key t} [form-for-tincture
+                      (util/upper-case-first (util/translate t))
+                      (concat path [:tincture t])])
+         (when eyes-and-teeth-support
+           [:div.setting
+            [:input {:type      "checkbox"
+                     :id        "eyes-and-teeth"
+                     :name      "eyes-and-teeth"
+                     :checked   (-> charge
+                                    :tincture
+                                    :eyes-and-teeth
+                                    boolean)
+                     :on-change #(let [checked (-> % .-target .-checked)]
+                                   (rf/dispatch [:set-in
+                                                 (concat path [:tincture :eyes-and-teeth])
+                                                 (if checked
+                                                   :argent
+                                                   nil)]))}]
+            [:label {:for "eyes-and-teeth"} "White eyes and teeth"]])
          [:div.setting
           [:input {:type      "checkbox"
-                   :id        "eyes-and-teeth"
-                   :name      "eyes-and-teeth"
+                   :id        "outline"
+                   :name      "outline"
                    :checked   (-> charge
-                                  :tincture
-                                  :eyes-and-teeth
+                                  :hints
+                                  :outline?
                                   boolean)
                    :on-change #(let [checked (-> % .-target .-checked)]
                                  (rf/dispatch [:set-in
-                                               (concat path [:tincture :eyes-and-teeth])
-                                               (if checked
-                                                 :argent
-                                                 nil)]))}]
-          [:label {:for "eyes-and-teeth"} "White eyes and teeth"]])
-       [:div.setting
-        [:input {:type      "checkbox"
-                 :id        "outline"
-                 :name      "outline"
-                 :checked   (-> charge
-                                :hints
-                                :outline?
-                                boolean)
-                 :on-change #(let [checked (-> % .-target .-checked)]
-                               (rf/dispatch [:set-in
-                                             (concat path [:hints :outline?])
-                                             checked]))}]
-        [:label {:for "outline"} "Draw outline"]]]]]))
+                                               (concat path [:hints :outline?])
+                                               checked]))}]
+          [:label {:for "outline"} "Draw outline"]]]]]
+      [:<>])))
 
 (defn form-for-field [path]
   (let [division-type @(rf/subscribe [:get-division-type path])]
@@ -349,7 +451,7 @@
      [:div.ordinaries-section
       [:div.title
        "Ordinaries"
-       [:a.add {:on-click #(rf/dispatch [:add-ordinary path :pale])}
+       [:a.add {:on-click #(rf/dispatch [:add-ordinary path default-ordinary])}
         "+"]]
       [:div.ordinaries
        (let [ordinaries @(rf/subscribe [:get-in (conj path :ordinaries)])]
@@ -359,9 +461,7 @@
      [:div.charges-section
       [:div.title
        "Charges"
-       [:a.add {:on-click #(rf/dispatch [:add-charge path {:type     :roundel
-                                                           :tincture {:primary :none}
-                                                           :variant  :variant-roundel-1}])}
+       [:a.add {:on-click #(rf/dispatch [:add-charge path default-charge])}
         "+"]]
       [:div.charges
        (let [charges @(rf/subscribe [:get-in (conj path :charges)])]

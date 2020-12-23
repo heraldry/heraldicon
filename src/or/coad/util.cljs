@@ -5,6 +5,7 @@
   (str (s/upper-case (or (first s) "")) (s/join (rest s))))
 
 (defn translate [keyword]
-  (-> keyword
-      name
-      (s/replace "-" " ")))
+  (when keyword
+    (-> keyword
+        name
+        (s/replace "-" " "))))
