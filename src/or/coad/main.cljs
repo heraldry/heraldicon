@@ -63,9 +63,10 @@
    :field      {:content {:tincture :none}
                 :charges [{:type     :wolf
                            :attitude :rampant
-                           :tincture {:primary :sable
-                                      :armed   :or
-                                      :langued :gules}}]}})
+                           :tincture {:primary        :sable
+                                      :armed          :or
+                                      :langued        :gules
+                                      :eyes-and-teeth :argent}}]}})
 
 (rf/reg-event-db
  :initialize-db

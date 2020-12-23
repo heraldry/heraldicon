@@ -10,13 +10,15 @@
 (def placeholder-langued "#840101")
 (def placeholder-attired "#010184")
 (def placeholder-unguled "#018401")
+(def placeholder-eyes-and-teeth "#848484")
 
 (def placeholder-regex
   (re-pattern (str "(?i)(" (s/join "|" [placeholder-primary
                                         placeholder-armed
                                         placeholder-langued
                                         placeholder-attired
-                                        placeholder-unguled]) ")")))
+                                        placeholder-unguled
+                                        placeholder-eyes-and-teeth]) ")")))
 
 (defn get-charge-name [type attitude]
   "charges/animal/wolf/passant/wolf-1.edn")
@@ -27,15 +29,18 @@
                                               lowercase-match (s/lower-case match)]
                                           (cond
                                             (= lowercase-match
-                                               placeholder-primary) primary
+                                               placeholder-primary)        primary
                                             (= lowercase-match
-                                               placeholder-armed)   (or (:armed tincture) primary)
+                                               placeholder-armed)          (or (:armed tincture) primary)
                                             (= lowercase-match
-                                               placeholder-langued) (or (:langued tincture) primary)
+                                               placeholder-langued)        (or (:langued tincture) primary)
                                             (= lowercase-match
-                                               placeholder-attired) (or (:attired tincture) primary)
+                                               placeholder-attired)        (or (:attired tincture) primary)
                                             (= lowercase-match
-                                               placeholder-unguled) (or (:unguled tincture) primary))))))
+                                               placeholder-unguled)        (or (:unguled tincture) primary)
+                                            (= lowercase-match
+                                               placeholder-eyes-and-teeth) (or (:eyes-and-teeth tincture) primary)
+                                            :else                          match)))))
 
 (defn replace-in-hiccup [hiccup tincture]
   (walk/postwalk #(cond-> %
