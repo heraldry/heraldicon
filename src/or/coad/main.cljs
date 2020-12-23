@@ -195,6 +195,22 @@
 
 (declare form-for-field)
 
+(defn form-for-tincture [title path]
+  [:div.tincture
+   [:div.setting
+    [:label {:for "tincture"} title]
+    [:select {:name      "tincture"
+              :id        "tincture"
+              :value     (name @(rf/subscribe [:get-in path]))
+              :on-change #(rf/dispatch [:set-in path (keyword (-> % .-target .-value))])}
+     [:option {:value "none"} "None"]
+     (for [[group-name & options] tincture/options]
+       ^{:key group-name}
+       [:optgroup {:label group-name}
+        (for [[display-name key] options]
+          ^{:key key}
+          [:option {:value (name key)} display-name])])]]])
+
 (defn form-for-ordinary [path]
   [:<>
    [:a.remove {:on-click #(rf/dispatch [:remove-ordinary path])}
@@ -220,6 +236,13 @@
         [:option {:value (name key)} display-name])]]
     [:div.parts
      [form-for-field (conj path :field)]]]])
+
+(defn form-for-charge [path]
+  [:<>
+   [:a.remove {:on-click #(rf/dispatch [:remove-charge path])}
+    "x"]
+   [:div.charge
+    [form-for-tincture "Primary" (concat path [:tincture :primary])]]])
 
 (defn form-for-field [path]
   (let [division-type @(rf/subscribe [:get-division-type path])]
@@ -266,20 +289,7 @@
                      "x"])
                   [form-for-field (vec (concat path [:division :fields idx]))]])]))]])]
      (when (= division-type :none)
-       [:div.tincture
-        [:div.setting
-         [:label {:for "tincture"} "Tincture"]
-         [:select {:name      "tincture"
-                   :id        "tincture"
-                   :value     (name @(rf/subscribe [:get-in (concat path [:content :tincture])]))
-                   :on-change #(rf/dispatch [:set-in (concat path [:content :tincture]) (keyword (-> % .-target .-value))])}
-          [:option {:value "none"} "None"]
-          (for [[group-name & options] tincture/options]
-            ^{:key group-name}
-            [:optgroup {:label group-name}
-             (for [[display-name key] options]
-               ^{:key key}
-               [:option {:value (name key)} display-name])])]]])
+       [form-for-tincture "Tincture" (concat path [:content :tincture])])
      [:div.ordinaries-section
       [:div.title
        "Ordinaries"
@@ -289,7 +299,19 @@
        (let [ordinaries @(rf/subscribe [:get-in (conj path :ordinaries)])]
          (for [[idx _] (map-indexed vector ordinaries)]
            ^{:key idx}
-           [form-for-ordinary (vec (concat path [:ordinaries idx]))]))]]]))
+           [form-for-ordinary (vec (concat path [:ordinaries idx]))]))]]
+     [:div.charges-section
+      [:div.title
+       "Charges"
+       [:a.add {:on-click #(rf/dispatch [:add-charge path {:type     :roundel
+                                                           :tincture :none
+                                                           :variant  :default}])}
+        "+"]]
+      [:div.charges
+       (let [charges @(rf/subscribe [:get-in (conj path :charges)])]
+         (for [[idx _] (map-indexed vector charges)]
+           ^{:key idx}
+           [form-for-charge (vec (concat path [:charges idx]))]))]]]))
 
 (defn form-general []
   [:div.general {:style {:margin-bottom "1.5em"}}
