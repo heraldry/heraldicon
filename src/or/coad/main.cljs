@@ -65,7 +65,8 @@
                       :attitude :rampant
                       :tincture {:primary :sable
                                  :armed :or
-                                 :langued :gules}}]}})
+                                 :langued :gules
+                                 :eyes-and-teeth :argent}}]}})
 
 (rf/reg-event-db
  :initialize-db
