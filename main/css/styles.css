@@ -57,12 +57,12 @@ mask path.overlap {
 
 .change {
   position: absolute;
-  left: 1em;
+  left: 0;
 }
 
 .remove {
   position: absolute;
-  left: 1em;
+  left: 0;
 }
 
 .add {

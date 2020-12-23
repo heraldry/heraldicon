@@ -246,8 +246,7 @@
 
 (defn form-for-ordinary [path]
   [:<>
-   [:a.remove {:on-click #(rf/dispatch [:remove-ordinary path])}
-    "x"]
+   [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
    [:div.ordinary
     [:div.setting
      [:label {:for "ordinary-type"} "Type"]
@@ -354,8 +353,7 @@
     (if (and charge-map
              charge-variant-data)
       [:<>
-       [:a.remove {:on-click #(rf/dispatch [:remove-charge path])}
-        "x"]
+       [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-charge path])}]]
        [:div.charge
         [:div.title (s/join " " [(-> charge :type util/translate util/upper-case-first)
                                  (-> charge :attitude util/translate)])]
@@ -434,21 +432,20 @@
                  [:<>
                   [:a.change {:on-click #(rf/dispatch [:set-in (concat path [:division :fields idx])
                                                        (get content part)])}
-                   "o"]
+                   [:i.far.fa-edit]]
                   [:span.same (str "Same as " (inc part))]]
                  [:<>
                   (when (>= idx mandatory-part-count)
                     [:a.remove {:on-click #(rf/dispatch [:set-in (concat path [:division :fields idx])
                                                          (mod idx mandatory-part-count)])}
-                     "x"])
+                     [:i.far.fa-times-circle]])
                   [form-for-field (vec (concat path [:division :fields idx]))]])]))]])]
      (when (= division-type :none)
        [form-for-tincture "Tincture" (concat path [:content :tincture])])
      [:div.ordinaries-section
       [:div.title
        "Ordinaries"
-       [:a.add {:on-click #(rf/dispatch [:add-ordinary path default-ordinary])}
-        "+"]]
+       [:a.add {:on-click #(rf/dispatch [:add-ordinary path default-ordinary])} [:i.fas.fa-plus]]]
       [:div.ordinaries
        (let [ordinaries @(rf/subscribe [:get-in (conj path :ordinaries)])]
          (for [[idx _] (map-indexed vector ordinaries)]
@@ -457,8 +454,7 @@
      [:div.charges-section
       [:div.title
        "Charges"
-       [:a.add {:on-click #(rf/dispatch [:add-charge path default-charge])}
-        "+"]]
+       [:a.add {:on-click #(rf/dispatch [:add-charge path default-charge])} [:i.fas.fa-plus]]]
       [:div.charges
        (let [charges @(rf/subscribe [:get-in (conj path :charges)])]
          (for [[idx _] (map-indexed vector charges)]
