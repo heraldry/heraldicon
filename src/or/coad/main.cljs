@@ -62,15 +62,7 @@
 
 (def default-coat-of-arms
   {:escutcheon :heater
-   :field      {:content {:tincture :none}
-                :charges [{:type     :wolf
-                           :attitude :rampant-regardant
-                           :tincture {:primary        :sable
-                                      :armed          :or
-                                      :langued        :gules
-                                      :eyes-and-teeth :argent}
-                           :variant  :variant-wolf-rampant-regardant-1
-                           :hints    {:outline? true}}]}})
+   :field      {:content {:tincture :none}}})
 
 (def default-ordinary
   {:type  :pale
