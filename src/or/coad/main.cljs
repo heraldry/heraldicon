@@ -275,14 +275,14 @@
                            path selected-charge charge-variant-data & {:keys [charge-type
                                                                               charge-attitude]}]
   (-> [:ul]
-      (into (for [[key group] groups]
-              ^{:key key}
+      (into (for [[key group] (sort-by first groups)]
               (let [node-path (conj tree-path :groups key)
                     flag-path (-> path
                                   (concat [:hints :ui :charge-map])
                                   vec
                                   (conj node-path))
                     open?     @(rf/subscribe [:get-in flag-path])]
+                ^{:key key}
                 [:li.group
                  [:span.node-name.clickable
                   {:on-click #(rf/dispatch [:toggle-in flag-path])}
@@ -294,14 +294,14 @@
                     group
                     node-path
                     path selected-charge charge-variant-data])])))
-      (into (for [[key charge] charges]
-              ^{:key key}
+      (into (for [[key charge] (sort-by first charges)]
               (let [node-path (conj tree-path :charges key)
                     flag-path (-> path
                                   (concat [:hints :ui :charge-map])
                                   vec
                                   (conj node-path))
                     open?     @(rf/subscribe [:get-in flag-path])]
+                ^{:key key}
                 [:li.charge
                  [:span.node-name.clickable
                   {:on-click #(rf/dispatch [:toggle-in flag-path])}
@@ -314,14 +314,14 @@
                     node-path
                     path selected-charge charge-variant-data
                     :charge-type (:key charge)])])))
-      (into (for [[key attitude] attitudes]
-              ^{:key key}
+      (into (for [[key attitude] (sort-by first attitudes)]
               (let [node-path (conj tree-path :attitudes key)
                     flag-path (-> path
                                   (concat [:hints :ui :charge-map])
                                   vec
                                   (conj node-path))
                     open?     @(rf/subscribe [:get-in flag-path])]
+                ^{:key key}
                 [:li.attitude
                  [:span.node-name.clickable
                   {:on-click #(rf/dispatch [:toggle-in flag-path])}
@@ -335,7 +335,7 @@
                     path selected-charge charge-variant-data
                     :charge-type charge-type
                     :charge-attitude (:key attitude)])])))
-      (into (for [[key variant] variants]
+      (into (for [[key variant] (sort-by first variants)]
               ^{:key key}
               [:li.variant
                [:span.node-name.clickable
