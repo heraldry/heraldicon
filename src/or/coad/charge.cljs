@@ -5,21 +5,44 @@
             [or.coad.vector :as v]
             [re-frame.core :as rf]))
 
+(def placeholder-primary "#214263")
+(def placeholder-armed "#424201")
+(def placeholder-langued "#420001")
+(def placeholder-attired "#010142")
+(def placeholder-unguled "#014201")
+
+(def placeholder-regex
+  (re-pattern (str "(?i)(" (s/join "|" [placeholder-primary
+                                        placeholder-armed
+                                        placeholder-langued
+                                        placeholder-attired
+                                        placeholder-unguled]) ")")))
+
 (defn get-charge-name [type attitude]
-  "animal/wolf/rampant/wolf-1.edn")
+  "charges/animal/wolf/passant/wolf-1.edn")
 
-(defn replace-tinctures [string primary secondary]
-  (s/replace string #"(#ccc|#e60000)" (fn [[_ match]]
-                                        (case match
-                                          "#ccc" primary
-                                          "#e60000" secondary))))
+(defn replace-tinctures [string tincture]
+  (s/replace string placeholder-regex (fn [[_ match]]
+                                        (let [primary (:primary tincture)
+                                              lowercase-match (s/lower-case match)]
+                                          (cond
+                                            (= lowercase-match
+                                               placeholder-primary) primary
+                                            (= lowercase-match
+                                               placeholder-armed) (or (:armed tincture) primary)
+                                            (= lowercase-match
+                                               placeholder-langued) (or (:langued tincture) primary)
+                                            (= lowercase-match
+                                               placeholder-attired) (or (:attired tincture) primary)
+                                            (= lowercase-match
+                                               placeholder-unguled) (or (:unguled tincture) primary))))))
 
-(defn replace-in-hiccup [hiccup primary secondary]
+(defn replace-in-hiccup [hiccup tincture]
   (walk/postwalk #(cond-> %
-                    (string? %) (replace-tinctures primary secondary))
+                    (string? %) (replace-tinctures tincture))
                  hiccup))
 
-(defn render [{:keys [type attitude primary secondary]} environment top-level-render options]
+(defn render [{:keys [type attitude tincture]} environment top-level-render options]
   (let [charge-name (get-charge-name type attitude)]
     (if-let [data @(rf/subscribe [:charge-data charge-name])]
       (let [meta (get data 1)
@@ -34,8 +57,9 @@
                          (v/+ (-> environment :points :fess)))
             color-adjusted-data (replace-in-hiccup
                                  data
-                                 (tincture/pick primary options)
-                                 (tincture/pick secondary options))]
+                                 (into {} (map (fn [[key value]]
+                                                 [key (tincture/pick value options)])
+                                               tincture)))]
         [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")}
          (assoc color-adjusted-data 0 :g)])
       [:<>])))
