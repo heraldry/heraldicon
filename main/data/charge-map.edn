@@ -23,6 +23,12 @@
                                     :type :variant
                                     :name "variant-wolf-rampant-regardant-1"
                                     :path "data/charges/group-animal/charge-wolf/attitude-rampant-regardant/variant-wolf-rampant-regardant-1.edn"
+                                    :supported-tinctures #{
+                                        :eyes-and-teeth
+                                        :primary
+                                        :armed
+                                        :langued
+                                    }
                                 }
                             }
                         }
@@ -36,6 +42,12 @@
                                     :type :variant
                                     :name "variant-wolf-passant-1"
                                     :path "data/charges/group-animal/charge-wolf/attitude-passant/variant-wolf-passant-1.edn"
+                                    :supported-tinctures #{
+                                        :eyes-and-teeth
+                                        :primary
+                                        :armed
+                                        :langued
+                                    }
                                 }
                             }
                         }
@@ -49,6 +61,12 @@
                                     :type :variant
                                     :name "variant-wolf-rampant-1"
                                     :path "data/charges/group-animal/charge-wolf/attitude-rampant/variant-wolf-rampant-1.edn"
+                                    :supported-tinctures #{
+                                        :eyes-and-teeth
+                                        :primary
+                                        :armed
+                                        :langued
+                                    }
                                 }
                             }
                         }
@@ -71,6 +89,9 @@
                             :type :variant
                             :name "variant-fusil-1"
                             :path "data/charges/group-simple/charge-fusil/variant-fusil-1.edn"
+                            :supported-tinctures #{
+                                :primary
+                            }
                         }
                     }
                 }
@@ -84,6 +105,9 @@
                             :type :variant
                             :name "variant-annulet-1"
                             :path "data/charges/group-simple/charge-annulet/variant-annulet-1.edn"
+                            :supported-tinctures #{
+                                :primary
+                            }
                         }
                     }
                 }
@@ -97,6 +121,9 @@
                             :type :variant
                             :name "variant-roundel-1"
                             :path "data/charges/group-simple/charge-roundel/variant-roundel-1.edn"
+                            :supported-tinctures #{
+                                :primary
+                            }
                         }
                     }
                 }
@@ -110,6 +137,9 @@
                             :type :variant
                             :name "variant-billet-1"
                             :path "data/charges/group-simple/charge-billet/variant-billet-1.edn"
+                            :supported-tinctures #{
+                                :primary
+                            }
                         }
                     }
                 }
