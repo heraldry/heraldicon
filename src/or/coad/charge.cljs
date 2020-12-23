@@ -61,7 +61,16 @@
                     (string? %) (replace-tinctures tincture))
                  hiccup))
 
-(defn render [{:keys [tincture] :as charge} environment options]
+(defn remove-outlines [hiccup]
+  (walk/postwalk #(cond-> %
+                    (vector? %) ((fn [v]
+                                   (if (or (= v [:stroke "#000"])
+                                           (= v [:stroke "#0000000"]))
+                                     [:stroke "none"]
+                                     v))))
+                 hiccup))
+
+(defn render [{:keys [tincture hints] :as charge} environment options]
   (if-let [charge-data-path (get-charge-data-path charge)]
     (if-let [data @(rf/subscribe [:load-data charge-data-path])]
       (let [data (first data)
@@ -81,8 +90,12 @@
                                  data
                                  (into {} (map (fn [[key value]]
                                                  [key (tincture/pick value options)])
-                                               tincture)))]
+                                               tincture)))
+            adjusted-data (if (or (:outline? hints)
+                                  (:outline? options))
+                            color-adjusted-data
+                            (remove-outlines color-adjusted-data))]
         [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")}
-         (assoc color-adjusted-data 0 :g)])
+         (assoc adjusted-data 0 :g)])
       [:<>])
     [:<>]))
