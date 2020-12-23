@@ -19,4 +19,4 @@
      (for [[idx ordinary] (map-indexed vector ordinaries)]
        ^{:key idx} [ordinary/render ordinary environment render options])
      (for [[idx charge] (map-indexed vector charges)]
-       ^{:key idx} [charge/render charge environment render options])]))
+       ^{:key idx} [charge/render charge environment options])]))
