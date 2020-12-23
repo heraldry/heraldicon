@@ -10,28 +10,29 @@
   (re-pattern (str "(?i)(" (s/join "|" (vals config/placeholder-colours)) ")")))
 
 (defn find-charge [charge-map [group & rest]]
-  (let [next (-> charge-map :groups group)]
+  (let [next (get-in charge-map [:groups group])]
     (if rest
       (recur next rest)
       next)))
 
-(defn get-charge-data-path [{:keys [type attitude variant]}]
-  (if-let [charge-map @(rf/subscribe [:load-data "data/charge-map.edn"])]
-    (let [lookup-path       (-> charge-map :lookup type)
-          charge-data       (-> (find-charge charge-map lookup-path)
-                                :charges type)
-          attitude-variants (-> charge-data :attitudes (get attitude) :variants)
+(defn get-charge-variant-data [{:keys [type attitude variant]}]
+  (when-let [charge-map @(rf/subscribe [:load-data "data/charge-map.edn"])]
+    (let [lookup-path       (get-in charge-map
+                                    [:lookup type])
+          charge-data       (get-in (find-charge charge-map lookup-path)
+                                    [:charges type])
+          attitude-variants (get-in charge-data
+                                    [:attitudes attitude :variants])
           variants          (or attitude-variants
-                                (-> charge-data :variants))
-          variant-data      (get variants variant)]
-      (:path variant-data))))
+                                (:variants charge-data))]
+      (get variants variant))))
 
 (defn pick-placeholder-tincture [match {:keys [primary] :as tincture}]
-  (let [lowercase-match (s/lower-case match)
-        reverse-lookup  (into {} (map (fn [[key value]]
-                                        [(s/lower-case value) key])
-                                      config/placeholder-colours))
-        kind            (get reverse-lookup lowercase-match)]
+  (let [lower-case-match (s/lower-case match)
+        reverse-lookup   (into {} (map (fn [[key value]]
+                                         [(s/lower-case value) key])
+                                       config/placeholder-colours))
+        kind             (get reverse-lookup lower-case-match)]
     (or (get tincture kind)
         primary)))
 
@@ -54,7 +55,9 @@
                  hiccup))
 
 (defn render [{:keys [tincture hints] :as charge} environment options]
-  (if-let [charge-data-path (get-charge-data-path charge)]
+  (if-let [charge-data-path (-> charge
+                                get-charge-variant-data
+                                :path)]
     (if-let [data @(rf/subscribe [:load-data charge-data-path])]
       (let [data                (first data)
             meta                (get data 1)
