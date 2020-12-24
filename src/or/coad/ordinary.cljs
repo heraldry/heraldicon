@@ -7,7 +7,7 @@
 
 (def band-quotient 5)
 
-(defn pale [{:keys [field line] :as ordinary} environment top-level-render options]
+(defn pale [{:keys [field line] :as ordinary} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id (svg/id "ordinary-pale")
         line-style (or (:style line) :straight)
         top (get-in environment [:points :top])
@@ -52,7 +52,7 @@
        [:path {:d (:shape ordinary-environment)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render field ordinary-environment options]]
+      [top-level-render field ordinary-environment options :db-path (conj db-path :field)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -62,7 +62,7 @@
                     ["M" second-bottom-adjusted
                      (line/stitch line-reversed)])}]])]))
 
-(defn fess [{:keys [field line] :as ordinary} environment top-level-render options]
+(defn fess [{:keys [field line] :as ordinary} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id (svg/id "ordinary-fess")
         line-style (or (:style line) :straight)
         left (get-in environment [:points :left])
@@ -106,7 +106,7 @@
        [:path {:d (:shape ordinary-environment)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render field ordinary-environment options]]
+      [top-level-render field ordinary-environment options :db-path (conj db-path :field)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -116,7 +116,7 @@
                     ["M" second-right-adjusted
                      (line/stitch line-reversed)])}]])]))
 
-(defn chief [{:keys [field line] :as ordinary} environment top-level-render options]
+(defn chief [{:keys [field line] :as ordinary} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id (svg/id "ordinary-top")
         line-style (or (:style line) :straight)
         top-left (get-in environment [:points :top-left])
@@ -152,14 +152,14 @@
        [:path {:d (:shape ordinary-environment)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render field ordinary-environment options]]
+      [top-level-render field ordinary-environment options :db-path (conj db-path :field)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" row-right-adjusted
                      (line/stitch line-reversed)])}]])]))
 
-(defn base [{:keys [field line] :as ordinary} environment top-level-render options]
+(defn base [{:keys [field line] :as ordinary} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id (svg/id "ordinary-bottom")
         line-style (or (:style line) :straight)
         bottom-right (get-in environment [:points :bottom-right])
@@ -190,29 +190,29 @@
        [:path {:d (:shape ordinary-environment)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [top-level-render field ordinary-environment options]]
+      [top-level-render field ordinary-environment options :db-path (conj db-path :field)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" row-left
                      (line/stitch line)])}]])]))
 
-(defn bend [{:keys [field line] :as ordinary} field top-level-render]
+(defn bend [{:keys [field line] :as ordinary} field top-level-render & {:keys [db-path]}]
   [:<>])
 
-(defn bend-right [{:keys [field line] :as ordinary} field top-level-render]
+(defn bend-right [{:keys [field line] :as ordinary} field top-level-render & {:keys [db-path]}]
   [:<>])
 
-(defn cross [{:keys [field line] :as ordinary} field top-level-render]
+(defn cross [{:keys [field line] :as ordinary} field top-level-render & {:keys [db-path]}]
   [:<>])
 
-(defn saltire [{:keys [field line] :as ordinary} field top-level-render]
+(defn saltire [{:keys [field line] :as ordinary} field top-level-render & {:keys [db-path]}]
   [:<>])
 
-(defn chevron [{:keys [field line] :as ordinary} field top-level-render]
+(defn chevron [{:keys [field line] :as ordinary} field top-level-render & {:keys [db-path]}]
   [:<>])
 
-(defn pall [{:keys [field line] :as ordinary} field top-level-render]
+(defn pall [{:keys [field line] :as ordinary} field top-level-render & {:keys [db-path]}]
   [:<>])
 
 (def kinds
@@ -239,6 +239,6 @@
        (map (fn [[name key _]]
               [key name]))))
 
-(defn render [{:keys [type] :as ordinary} environment top-level-render options]
+(defn render [{:keys [type] :as ordinary} environment top-level-render options & {:keys [db-path]}]
   (let [function (get kinds-function-map type)]
-    [function ordinary environment top-level-render options]))
+    [function ordinary environment top-level-render options :db-path db-path]))

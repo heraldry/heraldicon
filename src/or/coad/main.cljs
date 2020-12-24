@@ -22,6 +22,11 @@
             [re-frame.core :as rf]
             [reagent.dom :as r]))
 
+(defn remove-key-recursively [data key]
+  (walk/postwalk #(cond-> %
+                    (map? %) (dissoc key))
+                 data))
+
 ;; subs
 
 
@@ -38,7 +43,7 @@
 (rf/reg-sub
  :get-division-type
  (fn [db [_ path]]
-   (let [division (get-in db (concat path [:division :type]))]
+   (let [division (get-in db (conj path :division :type))]
      (or division :none))))
 
 (rf/reg-sub
@@ -110,12 +115,12 @@
          (update-in path dissoc :division)
          (update-in (conj path :content) #(or % {:tincture :none})))
      (-> db
-         (assoc-in (concat path [:division :type]) new-type)
-         (update-in (concat path [:division :line :style]) #(or % :straight))
-         (update-in (concat path [:division :fields])
+         (assoc-in (conj path :division :type) new-type)
+         (update-in (conj path :division :line :style) #(or % :straight))
+         (update-in (conj path :division :fields)
                     (fn [current-value]
                       (let [current (or current-value [])
-                            current-type (get-in db (concat path [:division :type]))
+                            current-type (get-in db (conj path :division :type))
                             current-mandatory-part-count (division/mandatory-part-count current-type)
                             new-mandatory-part-count (division/mandatory-part-count new-type)
                             min-mandatory-part-count (min current-mandatory-part-count
@@ -175,7 +180,17 @@
  (fn [db [_ path changes]]
    (update-in db path merge changes)))
 
+(rf/reg-event-db
+ :select-component
+ (fn [db [_ path]]
+   (println "select" path)
+   (-> db
+       (remove-key-recursively :selected?)
+       (assoc-in (conj path :ui :selected?) true))))
+
+
 ;; views
+
 
 (def -current-id
   (atom 0))
@@ -215,7 +230,7 @@
      (for [[idx ordinary] (map-indexed vector ordinaries)]
        ^{:key idx} [ordinary/render ordinary])]))
 
-(defn render-shield [coat-of-arms options]
+(defn render-shield [coat-of-arms options & {:keys [db-path]}]
   (let [shield (escutcheon/field (:escutcheon coat-of-arms))
         environment (field-environment/transform-to-width shield 100)
         field (:field coat-of-arms)]
@@ -229,7 +244,7 @@
       [:g {:mask "url(#mask-shield)"}
        [:path {:d (:shape environment)
                :fill "#f0f0f0"}]
-       [field/render field environment options]]
+       [field/render field environment options :db-path (conj db-path :field)]]
       (when (:outline? options)
         [:path.outline {:d (:shape environment)}])]]))
 
@@ -253,31 +268,33 @@
             [:option {:value (name key)} display-name])])]])])
 
 (defn form-for-ordinary [path]
-  [:<>
-   [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
-   [:div.ordinary.component
-    (let [element-id (id "ordinary-type")]
-      [:div.setting
-       [:label {:for element-id} "Type"]
-       [:select {:name "ordinary-type"
-                 :id element-id
-                 :value (name @(rf/subscribe [:get-in (conj path :type)]))
-                 :on-change #(rf/dispatch [:set-in (conj path :type) (keyword (-> % .-target .-value))])}
-        (for [[key display-name] ordinary/options]
-          ^{:key key}
-          [:option {:value (name key)} display-name])]])
-    (let [element-id (id "line")]
-      [:div.setting
-       [:label {:for element-id} "Line"]
-       [:select {:name "line"
-                 :id element-id
-                 :value (name @(rf/subscribe [:get-in (concat path [:line :style])]))
-                 :on-change #(rf/dispatch [:set-in (concat path [:line :style]) (keyword (-> % .-target .-value))])}
-        (for [[key display-name] line/options]
-          ^{:key key}
-          [:option {:value (name key)} display-name])]])
-    [:div.parts
-     [form-for-field (conj path :field)]]]])
+  (let [selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])]
+    [:<>
+     [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
+     [:div.ordinary.component {:class (when selected? "selected")}
+      (let [element-id (id "ordinary-type")]
+        [:div.setting
+         [:label {:for element-id} "Type"]
+         [:select {:name "ordinary-type"
+                   :id element-id
+                   :value (name @(rf/subscribe [:get-in (conj path :type)]))
+                   :on-change #(rf/dispatch [:set-in (conj path :type) (keyword (-> % .-target .-value))])}
+          (for [[key display-name] ordinary/options]
+            ^{:key key}
+            [:option {:value (name key)} display-name])]])
+      (let [element-id (id "line")
+            line-style-path (conj path :line :style)]
+        [:div.setting
+         [:label {:for element-id} "Line"]
+         [:select {:name "line"
+                   :id element-id
+                   :value (name @(rf/subscribe [:get-in line-style-path]))
+                   :on-change #(rf/dispatch [:set-in line-style-path (keyword (-> % .-target .-value))])}
+          (for [[key display-name] line/options]
+            ^{:key key}
+            [:option {:value (name key)} display-name])]])
+      [:div.parts
+       [form-for-field (conj path :field)]]]]))
 
 (def node-icons
   {:group {:closed "fa-plus-square"
@@ -405,6 +422,7 @@
 
 (defn form-for-charge [path]
   (let [charge @(rf/subscribe [:get-in path])
+        selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])
         charge-variant-data (charge/get-charge-variant-data charge)
         charge-map (charge/get-charge-map)
         supported-tinctures (-> charge-variant-data
@@ -416,7 +434,7 @@
              charge-variant-data)
       [:<>
        [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-charge path])}]]
-       [:div.charge.component
+       [:div.charge.component {:class (when selected? "selected")}
         [:div.title (s/join " " [(-> charge :type util/translate util/upper-case-first)
                                  (-> charge :attitude util/translate)])]
         [:div {:style {:margin-bottom "1em"}}
@@ -426,7 +444,7 @@
           (for [t sorted-supported-tinctures]
             ^{:key t} [form-for-tincture
                        (util/upper-case-first (util/translate t))
-                       (concat path [:tincture t])])]
+                       (conj path :tincture t)])]
          [:div
           {:style {:width "40%"
                    :float "left"}}
@@ -442,7 +460,7 @@
                                      boolean)
                         :on-change #(let [checked (-> % .-target .-checked)]
                                       (rf/dispatch [:set-in
-                                                    (concat path [:tincture :eyes-and-teeth])
+                                                    (conj path :tincture :eyes-and-teeth)
                                                     (if checked
                                                       :argent
                                                       nil)]))}]
@@ -458,7 +476,7 @@
                                    boolean)
                       :on-change #(let [checked (-> % .-target .-checked)]
                                     (rf/dispatch [:set-in
-                                                  (concat path [:hints :outline?])
+                                                  (conj path :hints :outline?)
                                                   checked]))}]
              [:label {:for element-id} "Draw outline"]])]
          [:div.spacer]]
@@ -470,8 +488,9 @@
       [:<>])))
 
 (defn form-for-field [path]
-  (let [division-type @(rf/subscribe [:get-division-type path])]
-    [:div.field.component
+  (let [division-type @(rf/subscribe [:get-division-type path])
+        selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])]
+    [:div.field.component {:class (when selected? "selected")}
      [:div.division
       (let [element-id (id "division-type")]
         [:div.setting
@@ -486,37 +505,39 @@
       (when (not= division-type :none)
         [:<>
          [:div.line
-          (let [element-id (id "division-type")]
+          (let [element-id (id "division-type")
+                line-style (conj path :division :line :style)]
             [:div.setting
              [:label {:for element-id} "Line"]
              [:select {:name "line"
                        :id element-id
-                       :value (name @(rf/subscribe [:get-in (concat path [:division :line :style])]))
-                       :on-change #(rf/dispatch [:set-in (concat path [:division :line :style]) (keyword (-> % .-target .-value))])}
+                       :value (name @(rf/subscribe [:get-in line-style]))
+                       :on-change #(rf/dispatch [:set-in line-style (keyword (-> % .-target .-value))])}
               (for [[key display-name] line/options]
                 ^{:key key}
                 [:option {:value (name key)} display-name])]])]
          [:div.title "Parts"]
          [:div.parts
-          (let [content @(rf/subscribe [:get-in (concat path [:division :fields])])
+          (let [content @(rf/subscribe [:get-in (conj path :division :fields)])
                 mandatory-part-count (division/mandatory-part-count division-type)]
             (for [[idx part] (map-indexed vector content)]
-              ^{:key idx}
-              [:div.part
-               (if (number? part)
-                 [:<>
-                  [:a.change {:on-click #(rf/dispatch [:set-in (concat path [:division :fields idx])
-                                                       (get content part)])}
-                   [:i.far.fa-edit]]
-                  [:span.same (str "Same as " (inc part))]]
-                 [:<>
-                  (when (>= idx mandatory-part-count)
-                    [:a.remove {:on-click #(rf/dispatch [:set-in (concat path [:division :fields idx])
-                                                         (mod idx mandatory-part-count)])}
-                     [:i.far.fa-times-circle]])
-                  [form-for-field (vec (concat path [:division :fields idx]))]])]))]])]
+              (let [part-path (conj path :division :fields idx)]
+                ^{:key idx}
+                [:div.part
+                 (if (number? part)
+                   [:<>
+                    [:a.change {:on-click #(rf/dispatch [:set-in part-path
+                                                         (get content part)])}
+                     [:i.far.fa-edit]]
+                    [:span.same (str "Same as " (inc part))]]
+                   [:<>
+                    (when (>= idx mandatory-part-count)
+                      [:a.remove {:on-click #(rf/dispatch [:set-in part-path
+                                                           (mod idx mandatory-part-count)])}
+                       [:i.far.fa-times-circle]])
+                    [form-for-field part-path]])])))]])]
      (when (= division-type :none)
-       [form-for-tincture "Tincture" (concat path [:content :tincture])])
+       [form-for-tincture "Tincture" (conj path :content :tincture)])
      [:div.ordinaries-section
       [:div.title
        "Ordinaries"
@@ -525,7 +546,7 @@
        (let [ordinaries @(rf/subscribe [:get-in (conj path :ordinaries)])]
          (for [[idx _] (map-indexed vector ordinaries)]
            ^{:key idx}
-           [form-for-ordinary (vec (concat path [:ordinaries idx]))]))]]
+           [form-for-ordinary (conj path :ordinaries idx)]))]]
      [:div.charges-section
       [:div.title
        "Charges"
@@ -534,7 +555,7 @@
        (let [charges @(rf/subscribe [:get-in (conj path :charges)])]
          (for [[idx _] (map-indexed vector charges)]
            ^{:key idx}
-           [form-for-charge (vec (concat path [:charges idx]))]))]]]))
+           [form-for-charge (conj path :charges idx)]))]]]))
 
 (defn form-general []
   [:div.general.component
@@ -585,18 +606,13 @@
    [:div.title "Coat of Arms"]
    [form-for-field [:coat-of-arms :field]]])
 
-(defn remove-ui-from-hints [data]
-  (walk/postwalk #(cond-> %
-                    (map? %) (dissoc :ui))
-                 data))
-
 (defn app []
   (fn []
     (let [coat-of-arms @(rf/subscribe [:get :coat-of-arms])
           mode @(rf/subscribe [:get :rendering :mode])
           options {:outline? (= @(rf/subscribe [:get :rendering :outline]) :on)
                    :mode mode}
-          stripped-coat-of-arms (remove-ui-from-hints coat-of-arms)
+          stripped-coat-of-arms (remove-key-recursively coat-of-arms :ui)
           state-base64 (.encode base64 (prn-str stripped-coat-of-arms))]
       (when coat-of-arms
         (js/history.replaceState nil nil (str "#" state-base64)))
@@ -614,7 +630,7 @@
          defs
          (when (= mode :hatching)
            hatching/patterns)
-         [render-shield coat-of-arms options]]
+         [render-shield coat-of-arms options :db-path [:coat-of-arms]]]
         [:div.blazonry {:style {:position "absolute"
                                 :left 10
                                 :top "31em"
