@@ -668,7 +668,7 @@
               :on-click #(rf/dispatch [:select-component nil])}
         [:svg {:id "svg"
                :style {:width "25em"
-                       :height "30em"
+                       :height "32em"
                        :position "absolute"
                        :left 0
                        :top 0}
@@ -680,7 +680,7 @@
          [render-shield coat-of-arms options :db-path [:coat-of-arms]]]
         [:div.blazonry {:style {:position "absolute"
                                 :left 10
-                                :top "31em"
+                                :top "32em"
                                 :width "calc(25em - 20px)"
                                 :padding 10
                                 :border "1px solid #ddd"}}
