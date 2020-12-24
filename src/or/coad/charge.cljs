@@ -43,9 +43,26 @@
   (s/replace string placeholder-regex (fn [[_ match]]
                                         (pick-placeholder-tincture match tincture))))
 
+(defn split-style-value [value]
+  (-> value
+      (s/split #";")
+      (->>
+       (map (fn [chunk]
+              (-> chunk
+                  (s/split #":" 2)
+                  (as-> [key value]
+                        [(keyword (s/trim key)) (s/trim value)])))))
+      (into {})))
+
 (defn replace-in-hiccup [hiccup tincture]
   (walk/postwalk #(cond-> %
-                    (string? %) (replace-tinctures tincture))
+                    (string? %) (replace-tinctures tincture)
+                    (and (vector? %)
+                         (-> % count (= 2))
+                         (-> % first (= :style))) ((fn [[key value]]
+                                                     (if (= key :style)
+                                                       [:style (split-style-value value)]
+                                                       [key value]))))
                  hiccup))
 
 (defn remove-outlines [hiccup]
