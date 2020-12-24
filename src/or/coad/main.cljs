@@ -295,7 +295,7 @@
                                                                               still-on-path?]}]
 
   (let [flag-path       (-> db-path
-                            (concat [:hints :ui :charge-map])
+                            (concat [:ui :charge-map])
                             vec
                             (conj tree-path))
         db-open?        @(rf/subscribe [:get-in flag-path])
@@ -587,8 +587,7 @@
 
 (defn remove-ui-from-hints [data]
   (walk/postwalk #(cond-> %
-                    (and (vector? %)
-                         (= (first %) :hints)) (update 1 dissoc :ui))
+                    (map? %) (dissoc :ui))
                  data))
 
 (defn app []
