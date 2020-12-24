@@ -23,12 +23,14 @@
         {line :line} (line/create line-style
                                   (:y (v/- bottom top))
                                   :flipped? true
-                                  :angle 90)
+                                  :angle 90
+                                  :options options)
         {line-reversed :line
          line-reversed-length :length} (line/create line-style
                                                     (:y (v/- bottom top))
                                                     :angle -90
-                                                    :reversed? true)
+                                                    :reversed? true
+                                                    :options options)
         second-bottom-adjusted (v/extend second-top second-bottom line-reversed-length)
         ordinary-environment (field-environment/create
                               (svg/make-path ["M" first-top
@@ -76,13 +78,15 @@
         second-left (v/v (:x left) row2)
         second-right (v/v (:x right) row2)
         {line :line} (line/create line-style
-                                  (:x (v/- right left)))
+                                  (:x (v/- right left))
+                                  :options options)
         {line-reversed :line
          line-reversed-length :length} (line/create line-style
                                                     (:x (v/- right left))
                                                     :reversed? true
                                                     :flipped? true
-                                                    :angle 180)
+                                                    :angle 180
+                                                    :options options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
         ordinary-environment (field-environment/create
                               (svg/make-path ["M" first-left
@@ -132,7 +136,8 @@
                                                     (:x (v/- right left))
                                                     :reversed? true
                                                     :flipped? true
-                                                    :angle 180)
+                                                    :angle 180
+                                                    :options options)
         row-right-adjusted (v/extend row-left row-right line-reversed-length)
         ordinary-environment (field-environment/create
                               (svg/make-path ["M" row-right-adjusted
@@ -171,7 +176,8 @@
         row-left (v/v (:x left) row)
         row-right (v/v (:x right) row)
         {line :line} (line/create line-style
-                                  (:x (v/- right left)))
+                                  (:x (v/- right left))
+                                  :options options)
         ordinary-environment (field-environment/create
                               (svg/make-path ["M" row-left
                                               (line/stitch line)

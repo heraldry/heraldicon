@@ -22,7 +22,8 @@
         line-style (or (:style line) :straight)
         {line :line} (line/create line-style
                                   (:y (v/- bottom top))
-                                  :angle -90)
+                                  :angle -90
+                                  :options options)
         environment-1 (field-environment/create
                        (svg/make-path ["M" bottom
                                        (line/stitch line)
@@ -72,7 +73,8 @@
         right (get-in environment [:points :right])
         line-style (or (:style line) :straight)
         {line :line} (line/create line-style
-                                  (:x (v/- right left)))
+                                  (:x (v/- right left))
+                                  :options options)
         environment-1 (field-environment/create
                        (svg/make-path ["M" left
                                        (line/stitch line)
@@ -124,7 +126,8 @@
         line-style (or (:style line) :straight)
         {line :line} (line/create line-style
                                   (v/abs (v/- bend-intersection top-left))
-                                  :angle 45)
+                                  :angle 45
+                                  :options options)
         environment-1 (field-environment/create
                        (svg/make-path ["M" top-left
                                        (line/stitch line)
@@ -179,7 +182,8 @@
          line-length :length} (line/create line-style
                                            (v/abs (v/- bend-intersection top-right))
                                            :angle -45
-                                           :flipped? false)
+                                           :flipped? false
+                                           :options options)
         bend-intersection-adjusted (v/extend
                                     top-right
                                      bend-intersection
@@ -239,10 +243,12 @@
         {line-left :line
          line-left-length :length} (line/create line-style
                                                 (v/abs (v/- bend-intersection-left fess))
-                                                :angle -45)
+                                                :angle -45
+                                                :options options)
         {line-right :line} (line/create line-style
                                         (v/abs (v/- bend-intersection-right fess))
-                                        :angle 45)
+                                        :angle 45
+                                        :options options)
         bend-intersection-left-adjusted (v/extend fess bend-intersection-left line-left-length)
         environment-1 (field-environment/create
                        (svg/make-path ["M" bend-intersection-left-adjusted
@@ -309,20 +315,24 @@
          line-top-left-length :length} (line/create line-style
                                                     (v/abs (v/- top-left fess))
                                                     :angle 45
-                                                    :reversed? true)
+                                                    :reversed? true
+                                                    :options options)
         {line-top-right :line} (line/create line-style
                                             (v/abs (v/- top-right fess))
                                             :angle -45
-                                            :flipped? true)
+                                            :flipped? true
+                                            :options options)
         {line-bottom-right :line
          line-bottom-right-length :length} (line/create line-style
                                                         (v/abs (v/- bend-intersection-right fess))
                                                         :angle 225
-                                                        :reversed? true)
+                                                        :reversed? true
+                                                        :options options)
         {line-bottom-left :line} (line/create line-style
                                               (v/abs (v/- bend-intersection-left fess))
                                               :angle -225
-                                              :flipped? true)
+                                              :flipped? true
+                                              :options options)
         top-left-adjusted (v/extend
                            fess
                             top-left
@@ -446,19 +456,23 @@
          line-top-length :length} (line/create line-style
                                                (v/abs (v/- top fess))
                                                :angle 90
-                                               :reversed? true)
+                                               :reversed? true
+                                               :options options)
         {line-right :line} (line/create line-style
                                         (v/abs (v/- right fess))
-                                        :flipped? true)
+                                        :flipped? true
+                                        :options options)
         {line-bottom :line
          line-bottom-length :length} (line/create line-style
                                                   (v/abs (v/- bottom fess))
                                                   :angle -90
-                                                  :reversed? true)
+                                                  :reversed? true
+                                                  :options options)
         {line-left :line} (line/create line-style
                                        (v/abs (v/- left fess))
                                        :angle -180
-                                       :flipped? true)
+                                       :flipped? true
+                                       :options options)
         top-adjusted (v/extend fess top line-top-length)
         bottom-adjusted (v/extend fess bottom line-bottom-length)
         environment-1 (field-environment/create
@@ -580,21 +594,25 @@
          line-top-length :length} (line/create line-style
                                                (v/abs (v/- top fess))
                                                :angle 90
-                                               :reversed? true)
+                                               :reversed? true
+                                               :options options)
         {line-right :line
          line-right-length :length} (line/create line-style
                                                  (v/abs (v/- right fess))
                                                  :reversed? true
-                                                 :angle 180)
+                                                 :angle 180
+                                                 :options options)
         {line-bottom :line
          line-bottom-length :length} (line/create line-style
                                                   (v/abs (v/- bottom fess))
                                                   :angle -90
-                                                  :reversed? true)
+                                                  :reversed? true
+                                                  :options options)
         {line-left :line
          line-left-length :length} (line/create line-style
                                                 (v/abs (v/- left fess))
-                                                :reversed? true)
+                                                :reversed? true
+                                                :options options)
         top-adjusted (v/extend fess top line-top-length)
         bottom-adjusted (v/extend fess bottom line-bottom-length)
         left-adjusted (v/extend fess left line-left-length)
@@ -604,19 +622,23 @@
         {line-top-left :line} (line/create line-style
                                            (v/abs (v/- top-left fess))
                                            :flipped? true
-                                           :angle -135)
+                                           :angle -135
+                                           :options options)
         {line-top-right :line} (line/create line-style
                                             (v/abs (v/- top-right fess))
                                             :flipped? true
-                                            :angle -45)
+                                            :angle -45
+                                            :options options)
         {line-bottom-right :line} (line/create line-style
                                                (v/abs (v/- bend-intersection-right fess))
                                                :flipped? true
-                                               :angle 45)
+                                               :angle 45
+                                               :options options)
         {line-bottom-left :line} (line/create line-style
                                               (v/abs (v/- bend-intersection-left fess))
                                               :flipped? true
-                                              :angle -225)
+                                              :angle -225
+                                              :options options)
         environment-1 (field-environment/create
                        (svg/make-path ["M" top-adjusted
                                        (line/stitch line-top)
@@ -827,12 +849,14 @@
         {line :line} (line/create line-style
                                   (:y (v/- bottom top))
                                   :flipped? true
-                                  :angle 90)
+                                  :angle 90
+                                  :options options)
         {line-reversed :line
          line-reversed-length :length} (line/create line-style
                                                     (:y (v/- bottom top))
                                                     :angle -90
-                                                    :reversed? true)
+                                                    :reversed? true
+                                                    :options options)
         second-bottom-adjusted (v/extend second-top second-bottom line-reversed-length)
         environment-1 (field-environment/create
                        (svg/make-path ["M" first-top
@@ -911,13 +935,15 @@
         second-left (v/v (:x left) row2)
         second-right (v/v (:x right) row2)
         {line :line} (line/create line-style
-                                  (:x (v/- right left)))
+                                  (:x (v/- right left))
+                                  :options options)
         {line-reversed :line
          line-reversed-length :length} (line/create line-style
                                                     (:x (v/- right left))
                                                     :reversed? true
                                                     :flipped? true
-                                                    :angle 180)
+                                                    :angle 180
+                                                    :options options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
         environment-1 (field-environment/create
                        (svg/make-path ["M" first-left
@@ -993,20 +1019,24 @@
          line-top-left-length :length} (line/create line-style
                                                     (v/abs (v/- top-left fess))
                                                     :angle 45
-                                                    :reversed? true)
+                                                    :reversed? true
+                                                    :options options)
         {line-top-right :line} (line/create line-style
                                             (v/abs (v/- top-right fess))
                                             :angle -45
-                                            :flipped? true)
+                                            :flipped? true
+                                            :options options)
         {line-bottom :line} (line/create line-style
                                          (v/abs (v/- bottom fess))
                                          :flipped? true
-                                         :angle 90)
+                                         :angle 90
+                                         :options options)
         {line-bottom-reversed :line
          line-bottom-reversed-length :length} (line/create line-style
                                                            (v/abs (v/- bottom fess))
                                                            :angle -90
-                                                           :reversed? true)
+                                                           :reversed? true
+                                                           :options options)
         top-left-adjusted (v/extend
                            fess
                             top-left
@@ -1096,20 +1126,24 @@
          line-bottom-right-length :length} (line/create line-style
                                                         (v/abs (v/- bend-intersection-right fess))
                                                         :angle -135
-                                                        :reversed? true)
+                                                        :reversed? true
+                                                        :options options)
         {line-bottom-left :line} (line/create line-style
                                               (v/abs (v/- bend-intersection-left fess))
                                               :angle -225
-                                              :flipped? true)
+                                              :flipped? true
+                                              :options options)
         {line-top :line} (line/create line-style
                                       (v/abs (v/- top fess))
                                       :flipped? true
-                                      :angle -90)
+                                      :angle -90
+                                      :options options)
         {line-top-reversed :line
          line-top-reversed-length :length} (line/create line-style
                                                         (v/abs (v/- top fess))
                                                         :angle 90
-                                                        :reversed? true)
+                                                        :reversed? true
+                                                        :options options)
         bend-intersection-right-adjusted (v/extend
                                           fess
                                            bend-intersection-right
