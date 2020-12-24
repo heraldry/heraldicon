@@ -46,15 +46,15 @@
                                        [top bottom-right])})]
     [:<>
      [:defs
-      [:mask {:id mask-id-1}
+      [:clipPath {:id mask-id-1}
        [:path {:d (:shape environment-1)
                :fill "#fff"}]]
-      [:mask {:id mask-id-2}
+      [:clipPath {:id mask-id-2}
        [:path {:d (:shape environment-2)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id-1 ")")}
+     [:g {:clip-path (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:mask (str "url(#" mask-id-2 ")")}
+     [:g {:clip-path (str "url(#" mask-id-2 ")")}
       [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      (when (:outline? options)
        [:g.outline
@@ -96,16 +96,16 @@
                                        [left bottom-right])})]
     [:<>
      [:defs
-      [:mask {:id mask-id-1}
+      [:clipPath {:id mask-id-1}
        [:path {:d (:shape environment-1)
                :fill "#fff"}]
        [:path.overlap {:d (:shape environment-1)}]]
-      [:mask {:id mask-id-2}
+      [:clipPath {:id mask-id-2}
        [:path {:d (:shape environment-2)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id-1 ")")}
+     [:g {:clip-path (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:mask (str "url(#" mask-id-2 ")")}
+     [:g {:clip-path (str "url(#" mask-id-2 ")")}
       [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      (when (:outline? options)
        [:g.outline
@@ -148,16 +148,16 @@
                                        [top-left bend-intersection])})]
     [:<>
      [:defs
-      [:mask {:id mask-id-1}
+      [:clipPath {:id mask-id-1}
        [:path {:d (:shape environment-1)
                :fill "#fff"}]
        [:path.overlap {:d (:shape environment-1)}]]
-      [:mask {:id mask-id-2}
+      [:clipPath {:id mask-id-2}
        [:path {:d (:shape environment-2)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id-1 ")")}
+     [:g {:clip-path (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:mask (str "url(#" mask-id-2 ")")}
+     [:g {:clip-path (str "url(#" mask-id-2 ")")}
       [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      (when (:outline? options)
        [:g.outline
@@ -207,16 +207,16 @@
                                        [top-right bottom-left])})]
     [:<>
      [:defs
-      [:mask {:id mask-id-1}
+      [:clipPath {:id mask-id-1}
        [:path {:d (:shape environment-1)
                :fill "#fff"}]
        [:path.overlap {:d (:shape environment-1)}]]
-      [:mask {:id mask-id-2}
+      [:clipPath {:id mask-id-2}
        [:path {:d (:shape environment-2)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id-1 ")")}
+     [:g {:clip-path (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:mask (str "url(#" mask-id-2 ")")}
+     [:g {:clip-path (str "url(#" mask-id-2 ")")}
       [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      (when (:outline? options)
        [:g.outline
@@ -272,16 +272,16 @@
                                        [bottom-left fess bottom-right])})]
     [:<>
      [:defs
-      [:mask {:id mask-id-1}
+      [:clipPath {:id mask-id-1}
        [:path {:d (:shape environment-1)
                :fill "#fff"}]
        [:path.overlap {:d (:shape environment-1)}]]
-      [:mask {:id mask-id-2}
+      [:clipPath {:id mask-id-2}
        [:path {:d (:shape environment-2)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id-1 ")")}
+     [:g {:clip-path (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:mask (str "url(#" mask-id-2 ")")}
+     [:g {:clip-path (str "url(#" mask-id-2 ")")}
       [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      (when (:outline? options)
        [:g.outline
@@ -384,32 +384,32 @@
                                        [top-left fess bottom-left])})]
     [:<>
      [:defs
-      [:mask {:id mask-id-1}
+      [:clipPath {:id mask-id-1}
        [:path {:d (:shape environment-1)
                :fill "#fff"}]
        [:path.overlap {:d (:shape environment-1)}]]
-      [:mask {:id mask-id-2}
+      [:clipPath {:id mask-id-2}
        [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" bend-intersection-right-adjusted
                             (line/stitch line-bottom-right)])}]]
-      [:mask {:id mask-id-3}
+      [:clipPath {:id mask-id-3}
        [:path {:d (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
                             (line/stitch line-bottom-left)])}]]
-      [:mask {:id mask-id-4}
+      [:clipPath {:id mask-id-4}
        [:path {:d (:shape environment-4)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id-1 ")")}
+     [:g {:clip-path (str "url(#" mask-id-1 ")")}
       [top-level-render (get-field fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:mask (str "url(#" mask-id-2 ")")}
+     [:g {:clip-path (str "url(#" mask-id-2 ")")}
       [top-level-render (get-field fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:mask (str "url(#" mask-id-3 ")")}
+     [:g {:clip-path (str "url(#" mask-id-3 ")")}
       [top-level-render (get-field fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
-     [:g {:mask (str "url(#" mask-id-4 ")")}
+     [:g {:clip-path (str "url(#" mask-id-4 ")")}
       [top-level-render (get-field fields 3) environment-4 options :db-path (conj db-path :fields 3)]]
      (when (:outline? options)
        [:g.outline
@@ -514,32 +514,32 @@
                                        [fess bottom-left])})]
     [:<>
      [:defs
-      [:mask {:id mask-id-1}
+      [:clipPath {:id mask-id-1}
        [:path {:d (:shape environment-1)
                :fill "#fff"}]
        [:path.overlap {:d (:shape environment-1)}]]
-      [:mask {:id mask-id-2}
+      [:clipPath {:id mask-id-2}
        [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
                             (line/stitch line-right)])}]]
-      [:mask {:id mask-id-3}
+      [:clipPath {:id mask-id-3}
        [:path {:d (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" bottom-adjusted
                             (line/stitch line-bottom)])}]]
-      [:mask {:id mask-id-4}
+      [:clipPath {:id mask-id-4}
        [:path {:d (:shape environment-4)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id-1 ")")}
+     [:g {:clip-path (str "url(#" mask-id-1 ")")}
       [top-level-render (get-field fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:mask (str "url(#" mask-id-2 ")")}
+     [:g {:clip-path (str "url(#" mask-id-2 ")")}
       [top-level-render (get-field fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:mask (str "url(#" mask-id-3 ")")}
+     [:g {:clip-path (str "url(#" mask-id-3 ")")}
       [top-level-render (get-field fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
-     [:g {:mask (str "url(#" mask-id-4 ")")}
+     [:g {:clip-path (str "url(#" mask-id-4 ")")}
       [top-level-render (get-field fields 3) environment-4 options :db-path (conj db-path :fields 3)]]
      (when (:outline? options)
        [:g.outline
@@ -722,64 +722,64 @@
                                        [left fess top-left])})]
     [:<>
      [:defs
-      [:mask {:id mask-id-1}
+      [:clipPath {:id mask-id-1}
        [:path {:d (:shape environment-1)
                :fill "#fff"}]
        [:path.overlap {:d (:shape environment-1)}]]
-      [:mask {:id mask-id-2}
+      [:clipPath {:id mask-id-2}
        [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
                             (line/stitch line-top-right)])}]]
-      [:mask {:id mask-id-3}
+      [:clipPath {:id mask-id-3}
        [:path {:d (:shape environment-3)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" right-adjusted
                             (line/stitch line-right)])}]]
-      [:mask {:id mask-id-4}
+      [:clipPath {:id mask-id-4}
        [:path {:d (:shape environment-4)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
                             (line/stitch line-bottom-right)])}]]
-      [:mask {:id mask-id-5}
+      [:clipPath {:id mask-id-5}
        [:path {:d (:shape environment-5)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" bottom-adjusted
                             (line/stitch line-bottom)])}]]
-      [:mask {:id mask-id-6}
+      [:clipPath {:id mask-id-6}
        [:path {:d (:shape environment-6)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" fess
                             (line/stitch line-bottom-left)])}]]
-      [:mask {:id mask-id-7}
+      [:clipPath {:id mask-id-7}
        [:path {:d (:shape environment-7)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" left-adjusted
                             (line/stitch line-left)])}]]
-      [:mask {:id mask-id-8}
+      [:clipPath {:id mask-id-8}
        [:path {:d (:shape environment-8)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id-1 ")")}
+     [:g {:clip-path (str "url(#" mask-id-1 ")")}
       [top-level-render (get-field fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:mask (str "url(#" mask-id-2 ")")}
+     [:g {:clip-path (str "url(#" mask-id-2 ")")}
       [top-level-render (get-field fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:mask (str "url(#" mask-id-3 ")")}
+     [:g {:clip-path (str "url(#" mask-id-3 ")")}
       [top-level-render (get-field fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
-     [:g {:mask (str "url(#" mask-id-4 ")")}
+     [:g {:clip-path (str "url(#" mask-id-4 ")")}
       [top-level-render (get-field fields 3) environment-4 options :db-path (conj db-path :fields 3)]]
-     [:g {:mask (str "url(#" mask-id-5 ")")}
+     [:g {:clip-path (str "url(#" mask-id-5 ")")}
       [top-level-render (get-field fields 4) environment-5 options :db-path (conj db-path :fields 4)]]
-     [:g {:mask (str "url(#" mask-id-6 ")")}
+     [:g {:clip-path (str "url(#" mask-id-6 ")")}
       [top-level-render (get-field fields 5) environment-6 options :db-path (conj db-path :fields 5)]]
-     [:g {:mask (str "url(#" mask-id-7 ")")}
+     [:g {:clip-path (str "url(#" mask-id-7 ")")}
       [top-level-render (get-field fields 6) environment-7 options :db-path (conj db-path :fields 6)]]
-     [:g {:mask (str "url(#" mask-id-8 ")")}
+     [:g {:clip-path (str "url(#" mask-id-8 ")")}
       [top-level-render (get-field fields 7) environment-8 options :db-path (conj db-path :fields 7)]]
      (when (:outline? options)
        [:g.outline
@@ -866,24 +866,24 @@
                         :context [:tierced-per-pale :right]})]
     [:<>
      [:defs
-      [:mask {:id mask-id-1}
+      [:clipPath {:id mask-id-1}
        [:path {:d (:shape environment-1)
                :fill "#fff"}]
        [:path.overlap {:d (:shape environment-1)}]]
-      [:mask {:id mask-id-2}
+      [:clipPath {:id mask-id-2}
        [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" second-bottom-adjusted
                             (line/stitch line-reversed)])}]]
-      [:mask {:id mask-id-3}
+      [:clipPath {:id mask-id-3}
        [:path {:d (:shape environment-3)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id-1 ")")}
+     [:g {:clip-path (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:mask (str "url(#" mask-id-2 ")")}
+     [:g {:clip-path (str "url(#" mask-id-2 ")")}
       [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:mask (str "url(#" mask-id-3 ")")}
+     [:g {:clip-path (str "url(#" mask-id-3 ")")}
       [top-level-render (get fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
      (when (:outline? options)
        [:g.outline
@@ -951,24 +951,24 @@
                         :context [:tierced-per-fess :bottom]})]
     [:<>
      [:defs
-      [:mask {:id mask-id-1}
+      [:clipPath {:id mask-id-1}
        [:path {:d (:shape environment-1)
                :fill "#fff"}]
        [:path.overlap {:d (:shape environment-1)}]]
-      [:mask {:id mask-id-2}
+      [:clipPath {:id mask-id-2}
        [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" second-right-adjusted
                             (line/stitch line-reversed)])}]]
-      [:mask {:id mask-id-3}
+      [:clipPath {:id mask-id-3}
        [:path {:d (:shape environment-3)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id-1 ")")}
+     [:g {:clip-path (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:mask (str "url(#" mask-id-2 ")")}
+     [:g {:clip-path (str "url(#" mask-id-2 ")")}
       [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:mask (str "url(#" mask-id-3 ")")}
+     [:g {:clip-path (str "url(#" mask-id-3 ")")}
       [top-level-render (get fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
      (when (:outline? options)
        [:g.outline
@@ -1049,24 +1049,24 @@
                         :context [:tierced-per-pairle :left]})]
     [:<>
      [:defs
-      [:mask {:id mask-id-1}
+      [:clipPath {:id mask-id-1}
        [:path {:d (:shape environment-1)
                :fill "#fff"}]
        [:path.overlap {:d (:shape environment-1)}]]
-      [:mask {:id mask-id-2}
+      [:clipPath {:id mask-id-2}
        [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" bottom-adjusted
                             (line/stitch line-bottom-reversed)])}]]
-      [:mask {:id mask-id-3}
+      [:clipPath {:id mask-id-3}
        [:path {:d (:shape environment-3)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id-1 ")")}
+     [:g {:clip-path (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:mask (str "url(#" mask-id-2 ")")}
+     [:g {:clip-path (str "url(#" mask-id-2 ")")}
       [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:mask (str "url(#" mask-id-3 ")")}
+     [:g {:clip-path (str "url(#" mask-id-3 ")")}
       [top-level-render (get fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
      (when (:outline? options)
        [:g.outline
@@ -1152,24 +1152,24 @@
                         :context [:tierced-per-pairle-reversed :bottom]})]
     [:<>
      [:defs
-      [:mask {:id mask-id-1}
+      [:clipPath {:id mask-id-1}
        [:path {:d (:shape environment-1)
                :fill "#fff"}]
        [:path.overlap {:d (:shape environment-1)}]]
-      [:mask {:id mask-id-2}
+      [:clipPath {:id mask-id-2}
        [:path {:d (:shape environment-2)
                :fill "#fff"}]
        [:path.overlap {:d (svg/make-path
                            ["M" bend-intersection-right-adjusted
                             (line/stitch line-bottom-right)])}]]
-      [:mask {:id mask-id-3}
+      [:clipPath {:id mask-id-3}
        [:path {:d (:shape environment-3)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id-1 ")")}
+     [:g {:clip-path (str "url(#" mask-id-1 ")")}
       [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:mask (str "url(#" mask-id-2 ")")}
+     [:g {:clip-path (str "url(#" mask-id-2 ")")}
       [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:mask (str "url(#" mask-id-3 ")")}
+     [:g {:clip-path (str "url(#" mask-id-3 ")")}
       [top-level-render (get fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
      (when (:outline? options)
        [:g.outline
