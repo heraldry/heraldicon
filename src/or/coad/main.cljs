@@ -485,6 +485,9 @@
 (defn form-general []
   [:div.general.component
    [:div.title "General"]
+   [:div.setting
+    [:button {:on-click #(rf/dispatch-sync [:set :coat-of-arms default-coat-of-arms])}
+     "Reset"]]
    (let [element-id (id "escutcheon")]
      [:div.setting
       [:label {:for element-id} "Escutcheon"]
@@ -552,53 +555,15 @@
          (when (= mode :hatching)
            hatching/patterns)
          [render-shield coat-of-arms options]]
-        [:div.blazonry {:style {:position      "absolute"
-                                :left          10
-                                :top           "31em"
-                                :width         "calc(25em - 20px)"
-                                :height        "5em"
-                                :padding-left  10
-                                :padding-right 10
-                                :border        "1px solid #ddd"}}
+        [:div.blazonry {:style {:position "absolute"
+                                :left     10
+                                :top      "31em"
+                                :width    "calc(25em - 20px)"
+                                :padding  10
+                                :border   "1px solid #ddd"}}
          [:span.disclaimer "Blazon (very rudimentary, very beta)"]
          [:div.blazon
           (blazon/encode-field (:field coat-of-arms) :root? true)]]
-        [:div {:style {:position "absolute"
-                       :left     10
-                       :top      "37em"
-                       :width    "25em"}}
-         [:button {:on-click #(let [data (->>
-                                          (js/document.getElementById "coa-data")
-                                          .-value
-                                          (.decode base64)
-                                          reader/read-string)]
-                                (rf/dispatch [:set :coat-of-arms data]))}
-          "Load"]
-         [:button {:on-click #(do
-                                (->>
-                                 (js/document.getElementById "coa-data")
-                                 .select)
-                                (js/document.execCommand "copy"))}
-          "Copy"]
-         [:button {:on-click #(->
-                               (js/navigator.clipboard.readText)
-                               (.then (fn [text]
-                                        (-> (js/document.getElementById "coa-data")
-                                            .-value
-                                            (set! text)))))}
-          "Paste"]
-         [:button {:on-click #(rf/dispatch-sync [:set :coat-of-arms default-coat-of-arms])}
-          "Reset"]
-         [:textarea {:id        "coa-data"
-                     :cols      100
-                     :rows      10
-                     :style     {:width "100%"}
-                     :value     state-base64
-                     ;; TODO: this doesn't seem to work right now
-                     :on-change (fn [event]
-                                  (-> (js/document.getElementById "coa-data")
-                                      .-value
-                                      (set! (-> event .-target .-value))))}]]
         [:div {:style {:position "absolute"
                        :left     "27em"
                        :top      0
