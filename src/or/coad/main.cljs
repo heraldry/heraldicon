@@ -298,8 +298,11 @@
                       (concat [:hints :ui :charge-map])
                       vec
                       (conj tree-path))
+        db-open? @(rf/subscribe [:get-in flag-path])
         open? (or (= type :root)
-                  @(rf/subscribe [:get-in flag-path]))
+                  (and (nil? db-open?)
+                       still-on-path?)
+                  db-open?)
         charge-type (if (= type :charge)
                       key
                       charge-type)
