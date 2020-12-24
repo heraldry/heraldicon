@@ -278,79 +278,94 @@
     [:div.parts
      [form-for-field (conj path :field)]]]])
 
-(defn tree-for-charge-map [{:keys [type key name groups charges attitudes variants]}
+(def node-icons
+  {:group    {:closed "fa-plus-square"
+              :open   "fa-minus-square"}
+   :attitude {:closed "fa-plus-square"
+              :open   "fa-minus-square"}
+   :charge   {:closed "fa-plus-square"
+              :open   "fa-minus-square"}
+   :variant  {:normal "fa-image"}})
+
+(defn tree-for-charge-map [{:keys [key type name groups charges attitudes variants]}
                            tree-path
                            path selected-charge charge-variant-data & {:keys [charge-type
                                                                               charge-attitude]}]
-  (-> [:ul]
-      (into (for [[key group] (sort-by first groups)]
-              (let [node-path (conj tree-path :groups key)
-                    flag-path (-> path
-                                  (concat [:hints :ui :charge-map])
-                                  vec
-                                  (conj node-path))
-                    open?     @(rf/subscribe [:get-in flag-path])]
-                ^{:key key}
-                [:li.group
-                 [:span.node-name.clickable
-                  {:on-click #(rf/dispatch [:toggle-in flag-path])}
-                  (if open?
-                    [:i.far.fa-minus-square]
-                    [:i.far.fa-plus-square]) (:name group)]
-                 (when open?
-                   [tree-for-charge-map
-                    group
-                    node-path
-                    path selected-charge charge-variant-data])])))
-      (into (for [[key charge] (sort-by first charges)]
-              (let [node-path (conj tree-path :charges key)
-                    flag-path (-> path
-                                  (concat [:hints :ui :charge-map])
-                                  vec
-                                  (conj node-path))
-                    open?     @(rf/subscribe [:get-in flag-path])]
-                ^{:key key}
-                [:li.charge
-                 [:span.node-name.clickable
-                  {:on-click #(rf/dispatch [:toggle-in flag-path])}
-                  (if open?
-                    [:i.far.fa-minus-square]
-                    [:i.far.fa-plus-square]) [:b (:name charge)]]
-                 (when open?
-                   [tree-for-charge-map
-                    charge
-                    node-path
-                    path selected-charge charge-variant-data
-                    :charge-type (:key charge)])])))
-      (into (for [[key attitude] (sort-by first attitudes)]
-              (let [node-path (conj tree-path :attitudes key)
-                    flag-path (-> path
-                                  (concat [:hints :ui :charge-map])
-                                  vec
-                                  (conj node-path))
-                    open?     @(rf/subscribe [:get-in flag-path])]
-                ^{:key key}
-                [:li.attitude
-                 [:span.node-name.clickable
-                  {:on-click #(rf/dispatch [:toggle-in flag-path])}
-                  (if open?
-                    [:i.far.fa-minus-square]
-                    [:i.far.fa-plus-square]) [:em (:name attitude)]]
-                 (when open?
-                   [tree-for-charge-map
-                    attitude
-                    node-path
-                    path selected-charge charge-variant-data
-                    :charge-type charge-type
-                    :charge-attitude (:key attitude)])])))
-      (into (for [[key variant] (sort-by first variants)]
-              ^{:key key}
-              [:li.variant
-               [:span.node-name.clickable
-                {:on-click #(rf/dispatch [:update-charge path {:type     charge-type
-                                                               :attitude charge-attitude
-                                                               :variant  (:key variant)}])}
-                [:i.fa.fa-picture-o] (:name variant)]]))))
+
+  (let [flag-path       (-> path
+                            (concat [:hints :ui :charge-map])
+                            vec
+                            (conj tree-path))
+        open?           (or (= type :root)
+                            @(rf/subscribe [:get-in flag-path]))
+        charge-type     (if (= type :charge)
+                          key
+                          charge-type)
+        charge-attitude (if (= type :attitude)
+                          key
+                          charge-attitude)]
+    (cond-> [:<>]
+      (not= type
+            :root)    (conj
+                       [:span.node-name.clickable
+                        (if (= type :variant)
+                          {:on-click #(rf/dispatch [:update-charge path {:type     charge-type
+                                                                         :attitude charge-attitude
+                                                                         :variant  key}])}
+                          {:on-click #(rf/dispatch [:toggle-in flag-path])})
+                        (if (= type :variant)
+                          [:i.far {:class (-> node-icons (get type) :normal)}]
+                          (if open?
+                            [:i.far {:class (-> node-icons (get type) :open)}]
+                            [:i.far {:class (-> node-icons (get type) :closed)}]))
+                        [(case type
+                           :charge   :b
+                           :attitude :em
+                           :<>) name]])
+      (and open?
+           groups)    (conj [:ul
+                             (for [[key group] (sort-by first groups)]
+                               ^{:key key}
+                               [:li.group
+                                [tree-for-charge-map
+                                 group
+                                 (conj tree-path :groups key)
+                                 path selected-charge charge-variant-data
+                                 :charge-type charge-type
+                                 :charge-attitude charge-attitude]])])
+      (and open?
+           charges)   (conj [:ul
+                             (for [[key charge] (sort-by first charges)]
+                               ^{:key key}
+                               [:li.charge
+                                [tree-for-charge-map
+                                 charge
+                                 (conj tree-path :charges key)
+                                 path selected-charge charge-variant-data
+                                 :charge-type charge-type
+                                 :charge-attitude] charge-attitude])])
+      (and open?
+           attitudes) (conj [:ul
+                             (for [[key attitude] (sort-by first attitudes)]
+                               ^{:key key}
+                               [:li.attitude
+                                [tree-for-charge-map
+                                 attitude
+                                 (conj tree-path :attitudes key)
+                                 path selected-charge charge-variant-data
+                                 :charge-type charge-type
+                                 :charge-attitude charge-attitude]])])
+      (and open?
+           variants)  (conj [:ul
+                             (for [[key variant] (sort-by first variants)]
+                               ^{:key key}
+                               [:li.variant
+                                [tree-for-charge-map
+                                 variant
+                                 (conj tree-path :variants key)
+                                 path selected-charge charge-variant-data
+                                 :charge-type charge-type
+                                 :charge-attitude charge-attitude]])]))))
 
 (defn form-for-charge [path]
   (let [charge                     @(rf/subscribe [:get-in path])
