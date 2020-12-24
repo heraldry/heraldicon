@@ -172,7 +172,7 @@
    ["Renaissance" :renaissance renaissance]
    ["Swiss" :swiss swiss]
    ["English" :english english]
-   ["Old German" :old-german old-german]
+   ["Ugly shape for testing" :old-german old-german]
    ["Polish" :polish polish]
    ["Polish (19th century)" :polish-19th-century polish-19th-century]])
 
