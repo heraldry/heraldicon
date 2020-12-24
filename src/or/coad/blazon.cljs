@@ -1,5 +1,6 @@
 (ns or.coad.blazon
   (:require [clojure.string :as s]
+            [or.coad.division :as division]
             [or.coad.util :as util]))
 
 (declare encode-field)
@@ -32,10 +33,21 @@
   (let [tincture (get-in field [:content :tincture])
         field-description (cond
                             tincture (util/translate tincture)
-                            division (let [{:keys [type line fields]} division]
-                                       (combine " " [(util/translate type)
-                                                     (translate-line line)
-                                                     (combine " and " (map encode-field fields))])))
+                            division (let [{:keys [type line fields]} division
+                                           mandatory-part-count (division/mandatory-part-count type)]
+                                       (combine
+                                        " "
+                                        [(util/translate type)
+                                         (translate-line line)
+                                         (combine " and "
+                                                  (map
+                                                   (fn [[index part]]
+                                                     (cond
+                                                       (< index
+                                                          mandatory-part-count) (encode-field part)
+                                                       (not (number? part)) (combine " " [(division/part-name type index) (encode-field part)])))
+                                                   (sort-by #(division/part-position type (first %))
+                                                            (map-indexed vector fields))))])))
         ordinaries-description (combine ", " (map encode-ordinary ordinaries))
         charges-description (combine ", " (map encode-charge charges))
         blazon (util/upper-case-first
@@ -43,6 +55,8 @@
                                ordinaries-description
                                charges-description]))]
     (if (or root?
-            tincture)
+            (and tincture
+                 (-> ordinaries-description count zero?)
+                 (-> charges-description count zero?)))
       blazon
       (str "[" blazon "]"))))
