@@ -137,12 +137,13 @@ div.charge {
 
 .disclaimer {
   font-size: 0.8em;
-  color: #bbb;
+  color: #aaa;
 }
 
 .blazon {
   font-size: 1.2em;
   font-style: italic;
+  margin-top: 5px;
 }
 
 .tree {
