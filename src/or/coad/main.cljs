@@ -703,7 +703,10 @@
                        :width "calc(100vw - 27em)"
                        :height "100vh"
                        :overflow "auto"}}
-         [form]]]])))
+         [form]]]
+       [:div.credits
+        [:a {:href "https://github.com/or/coad/"
+             :target "_blank"} "Code and resource attribution on " [:i.fab.fa-github] " github:or/coad"]]])))
 
 (defn stop []
   (println "Stopping..."))
