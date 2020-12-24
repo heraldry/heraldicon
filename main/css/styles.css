@@ -102,6 +102,7 @@ mask path.overlap {
   border-radius: 10px;
   overflow: auto;
   padding-bottom: 0.5em;
+  background-color: #fff;
 }
 
 .field {
@@ -174,4 +175,8 @@ div.charge {
 
 div.spacer {
   clear: both;
+}
+
+.selected.component {
+  background-color: #eef;
 }
