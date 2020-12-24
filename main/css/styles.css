@@ -96,6 +96,7 @@ mask path.overlap {
 }
 
 .component {
+  position: relative;
   padding: 10px;
   padding-left: 1em;
   border: solid 1px #bbb;
@@ -179,4 +180,14 @@ div.spacer {
 
 .selected.component {
   background-color: #eef;
+}
+
+.selector {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  cursor: pointer;
 }

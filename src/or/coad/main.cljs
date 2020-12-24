@@ -133,8 +133,8 @@
                             default                      (into [{:content {:tincture :none}}
                                                                 {:content {:tincture :azure}}]
                                                                (cond
-                                                                 (#{:per-saltire :quarterly} new-type)      [0 1]
-                                                                 (= :gyronny new-type)                      [0 1 0 1 0 1]
+                                                                 (#{:per-saltire :quarterly} new-type)      [{:ref 0} {:ref 1}]
+                                                                 (= :gyronny new-type)                      [{:ref 0} {:ref 1} {:ref 0} {:ref 1} {:ref 0} {:ref 1}]
                                                                  (#{:tierced-per-pale
                                                                     :tierced-per-fess
                                                                     :tierced-per-pairle
@@ -183,10 +183,10 @@
 (rf/reg-event-db
  :select-component
  (fn [db [_ path]]
-   (println "select" path)
    (-> db
        (remove-key-recursively :selected?)
-       (assoc-in (conj path :ui :selected?) true))))
+       (cond->
+           path (assoc-in (conj path :ui :selected?) true)))))
 
 
 ;; views
@@ -203,6 +203,7 @@
    [:defs
     filter/shadow
     filter/shiny
+    filter/glow
     [:pattern#void {:width         20
                     :height        20
                     :pattern-units "userSpaceOnUse"}
@@ -220,7 +221,41 @@
              :y      10
              :width  10
              :height 10
-             :fill   "#ddd"}]]]))
+             :fill   "#ddd"}]]
+    (let [spacing 2
+          width   (* spacing 2)
+          size    0.3]
+      [:pattern {:id            "selected"
+                 :width         width
+                 :height        width
+                 :pattern-units "userSpaceOnUse"}
+       [:rect {:x      0
+               :y      0
+               :width  width
+               :height width
+               :fill   "#f5f5f5"}]
+       [:g {:fill "#000"}
+        [:circle {:cx 0
+                  :cy 0
+                  :r  size}]
+        [:circle {:cx width
+                  :cy 0
+                  :r  size}]
+        [:circle {:cx 0
+                  :cy width
+                  :r  size}]
+        [:circle {:cx width
+                  :cy width
+                  :r  size}]
+        [:circle {:cx spacing
+                  :cy spacing
+                  :r  size}]]])]))
+
+(defn selector [path]
+  [:a.selector {:on-click (fn [event]
+                            (rf/dispatch [:select-component path])
+                            (.stopPropagation event))}
+   [:i.fas.fa-search]])
 
 (defn render-coat-of-arms [data]
   (let [division   (:division data)
@@ -271,7 +306,8 @@
   (let [selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])]
     [:<>
      [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
-     [:div.ordinary.component {:class (when selected? "selected")}
+     [:div.ordinary.component
+      {:class (when selected? "selected")}
       (let [element-id (id "ordinary-type")]
         [:div.setting
          [:label {:for element-id} "Type"]
@@ -434,7 +470,9 @@
              charge-variant-data)
       [:<>
        [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-charge path])}]]
-       [:div.charge.component {:class (when selected? "selected")}
+       [:div.charge.component
+        {:class (when selected? "selected")}
+        [selector path]
         [:div.title (s/join " " [(-> charge :type util/translate util/upper-case-first)
                                  (-> charge :attitude util/translate)])]
         [:div {:style {:margin-bottom "1em"}}
@@ -490,7 +528,10 @@
 (defn form-for-field [path]
   (let [division-type @(rf/subscribe [:get-division-type path])
         selected?     @(rf/subscribe [:get-in (conj path :ui :selected?)])]
-    [:div.field.component {:class (when selected? "selected")}
+    [:div.field.component
+     {:class (when selected? "selected")}
+     [selector path]
+
      [:div.division
       (let [element-id (id "division-type")]
         [:div.setting
@@ -521,18 +562,23 @@
           (let [content              @(rf/subscribe [:get-in (conj path :division :fields)])
                 mandatory-part-count (division/mandatory-part-count division-type)]
             (for [[idx part] (map-indexed vector content)]
-              (let [part-path (conj path :division :fields idx)]
+              (let [part-path (conj path :division :fields idx)
+                    ref       (:ref part)
+                    selected? (-> part :ui :selected?)]
                 ^{:key idx}
                 [:div.part
-                 (if (number? part)
+                 (if ref
                    [:<>
                     [:a.change {:on-click #(rf/dispatch [:set-in part-path
-                                                         (get content part)])}
+                                                         (get content ref)])}
                      [:i.far.fa-edit]]
-                    [:span.same (str "Same as " (inc part))]]
+                    [:div.component.ref
+                     {:class (when selected? "selected")}
+                     [selector part-path]
+                     [:span.same (str "Same as " (inc ref))]]]
                    [:<>
                     (when (>= idx mandatory-part-count)
-                      [:a.remove {:on-click #(rf/dispatch [:set-in part-path
+                      [:a.remove {:on-click #(rf/dispatch [:set-in (conj part-path :ref)
                                                            (mod idx mandatory-part-count)])}
                        [:i.far.fa-times-circle]])
                     [form-for-field part-path]])])))]])]
@@ -617,8 +663,9 @@
       (when coat-of-arms
         (js/history.replaceState nil nil (str "#" state-base64)))
       [:<>
-       [:div {:style {:width    "100%"
-                      :position "relative"}}
+       [:div {:style    {:width    "100%"
+                         :position "relative"}
+              :on-click #(rf/dispatch [:select-component nil])}
         [:svg {:id                  "svg"
                :style               {:width    "25em"
                                      :height   "30em"

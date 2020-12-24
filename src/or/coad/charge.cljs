@@ -74,7 +74,7 @@
                                      v))))
                  hiccup))
 
-(defn render [{:keys [tincture hints] :as charge} environment options & {:keys [db-path]}]
+(defn render [{:keys [tincture hints ui] :as charge} environment options & {:keys [db-path]}]
   (if-let [charge-data-path (-> charge
                                 get-charge-variant-data
                                 :path)]
@@ -106,7 +106,8 @@
                           (rf/dispatch [:select-component db-path])
                           (.stopPropagation event))
              :style     {:pointer-events "visiblePainted"
-                         :cursor         "pointer"}}
+                         :cursor         "pointer"
+                         :filter         (when (-> ui :selected?) "url(#glow)")}}
          (assoc adjusted-data 0 :g)])
       [:<>])
     [:<>]))

@@ -45,7 +45,7 @@
                                                           (cond
                                                             (< index
                                                                mandatory-part-count) (encode-field part)
-                                                            (not (number? part))     (combine " " [(division/part-name type index) (encode-field part)])))
+                                                            (not (:ref part))        (combine " " [(division/part-name type index) (encode-field part)])))
                                                         (sort-by #(division/part-position type (first %))
                                                                  (map-indexed vector fields))))])))
         ordinaries-description (combine ", " (map encode-ordinary ordinaries))
