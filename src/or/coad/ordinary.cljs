@@ -48,10 +48,10 @@
                                               [first-top second-bottom])})]
     [:<>
      [:defs
-      [:mask {:id mask-id}
+      [:clipPath {:id mask-id}
        [:path {:d (:shape ordinary-environment)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id ")")}
+     [:g {:clip-path (str "url(#" mask-id ")")}
       [top-level-render field ordinary-environment options :db-path (conj db-path :field)]]
      (when (:outline? options)
        [:g.outline
@@ -102,10 +102,10 @@
                                               [first-right second-left])})]
     [:<>
      [:defs
-      [:mask {:id mask-id}
+      [:clipPath {:id mask-id}
        [:path {:d (:shape ordinary-environment)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id ")")}
+     [:g {:clip-path (str "url(#" mask-id ")")}
       [top-level-render field ordinary-environment options :db-path (conj db-path :field)]]
      (when (:outline? options)
        [:g.outline
@@ -148,10 +148,10 @@
                                               [top-left row-right])})]
     [:<>
      [:defs
-      [:mask {:id mask-id}
+      [:clipPath {:id mask-id}
        [:path {:d (:shape ordinary-environment)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id ")")}
+     [:g {:clip-path (str "url(#" mask-id ")")}
       [top-level-render field ordinary-environment options :db-path (conj db-path :field)]]
      (when (:outline? options)
        [:g.outline
@@ -186,10 +186,10 @@
                                               [row-left bottom-right])})]
     [:<>
      [:defs
-      [:mask {:id mask-id}
+      [:clipPath {:id mask-id}
        [:path {:d (:shape ordinary-environment)
                :fill "#fff"}]]]
-     [:g {:mask (str "url(#" mask-id ")")}
+     [:g {:clip-path (str "url(#" mask-id ")")}
       [top-level-render field ordinary-environment options :db-path (conj db-path :field)]]
      (when (:outline? options)
        [:g.outline
