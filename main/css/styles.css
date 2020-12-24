@@ -92,10 +92,16 @@ mask path.overlap {
   margin-bottom: 0.5em;
 }
 
+.component {
+  padding: 15px;
+  border: solid 1px #bbb;
+  border-radius: 10px;
+  overflow: auto;
+}
+
 .field {
-  width: 100%;
-  padding-top: 0.5em;
-  border-top: solid 1px #bbb;
+  display: inline-block;
+  min-width: 20em;
 }
 
 .ordinary {
@@ -117,6 +123,7 @@ div.charge {
   margin-bottom: 1em;
   border-top: solid 1px #bbb;
   padding-top: 0.5em;
+  min-width: 25em;
 }
 
 .outline {
@@ -137,6 +144,7 @@ div.charge {
 
 .tree {
   margin-bottom: 1em;
+  clear: both;
 }
 
 .tree ul {
@@ -158,4 +166,8 @@ div.charge {
 
 .clickable {
   cursor: pointer;
+}
+
+div.spacer {
+  clear: both;
 }

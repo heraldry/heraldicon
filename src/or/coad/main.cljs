@@ -247,7 +247,7 @@
 (defn form-for-ordinary [path]
   [:<>
    [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
-   [:div.ordinary
+   [:div.ordinary.component
     [:div.setting
      [:label {:for "ordinary-type"} "Type"]
      [:select {:name      "ordinary-type"
@@ -356,51 +356,57 @@
              charge-variant-data)
       [:<>
        [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-charge path])}]]
-       [:div.charge
+       [:div.charge.component
         [:div.title (s/join " " [(-> charge :type util/translate util/upper-case-first)
                                  (-> charge :attitude util/translate)])]
+        [:div {:style {:margin-bottom "1em"}}
+         [:div.placeholders
+          {:style {:width "60%"
+                   :float "left"}}
+          (for [t sorted-supported-tinctures]
+            ^{:key t} [form-for-tincture
+                       (util/upper-case-first (util/translate t))
+                       (concat path [:tincture t])])]
+         [:div
+          {:style {:width "40%"
+                   :float "left"}}
+          (when eyes-and-teeth-support
+            [:div.setting
+             [:input {:type      "checkbox"
+                      :id        "eyes-and-teeth"
+                      :name      "eyes-and-teeth"
+                      :checked   (-> charge
+                                     :tincture
+                                     :eyes-and-teeth
+                                     boolean)
+                      :on-change #(let [checked (-> % .-target .-checked)]
+                                    (rf/dispatch [:set-in
+                                                  (concat path [:tincture :eyes-and-teeth])
+                                                  (if checked
+                                                    :argent
+                                                    nil)]))}]
+             [:label {:for "eyes-and-teeth"} "White eyes and teeth"]])
+          [:div.setting
+           [:input {:type      "checkbox"
+                    :id        "outline"
+                    :name      "outline"
+                    :checked   (-> charge
+                                   :hints
+                                   :outline?
+                                   boolean)
+                    :on-change #(let [checked (-> % .-target .-checked)]
+                                  (rf/dispatch [:set-in
+                                                (concat path [:hints :outline?])
+                                                checked]))}]
+           [:label {:for "outline"} "Draw outline"]]]
+         [:div.spacer]]
         [:div.tree
-         [tree-for-charge-map charge-map [] path charge charge-variant-data]]
-        [:div.placeholders
-         [:div.title "Supported tinctures"]
-         (for [t sorted-supported-tinctures]
-           ^{:key t} [form-for-tincture
-                      (util/upper-case-first (util/translate t))
-                      (concat path [:tincture t])])
-         (when eyes-and-teeth-support
-           [:div.setting
-            [:input {:type      "checkbox"
-                     :id        "eyes-and-teeth"
-                     :name      "eyes-and-teeth"
-                     :checked   (-> charge
-                                    :tincture
-                                    :eyes-and-teeth
-                                    boolean)
-                     :on-change #(let [checked (-> % .-target .-checked)]
-                                   (rf/dispatch [:set-in
-                                                 (concat path [:tincture :eyes-and-teeth])
-                                                 (if checked
-                                                   :argent
-                                                   nil)]))}]
-            [:label {:for "eyes-and-teeth"} "White eyes and teeth"]])
-         [:div.setting
-          [:input {:type      "checkbox"
-                   :id        "outline"
-                   :name      "outline"
-                   :checked   (-> charge
-                                  :hints
-                                  :outline?
-                                  boolean)
-                   :on-change #(let [checked (-> % .-target .-checked)]
-                                 (rf/dispatch [:set-in
-                                               (concat path [:hints :outline?])
-                                               checked]))}]
-          [:label {:for "outline"} "Draw outline"]]]]]
+         [tree-for-charge-map charge-map [] path charge charge-variant-data]]]]
       [:<>])))
 
 (defn form-for-field [path]
   (let [division-type @(rf/subscribe [:get-division-type path])]
-    [:div.field
+    [:div.field.component
      [:div.division
       [:div.setting
        [:label {:for "division-type"} "Division"]
