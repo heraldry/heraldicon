@@ -19,9 +19,10 @@
         ;; the fess point calculated like this isn't even included in the field
         ;; update: for now only the root environment gets the "smart" fess point, the others
         ;; just get the middle, even if that'll break saltire-like divisions
-        fess (if (= context :root)
-               (v/v (:x top) (+ min-y (/ width 2)))
-               (v/avg top-left bottom-right))
+        fess (or (-> meta :points :fess)
+                 (if (= context :root)
+                   (v/v (:x top) (+ min-y (/ width 2)))
+                   (v/avg top-left bottom-right)))
         left (v/v min-x (:y fess))
         right (v/v max-x (:y fess))
         honour (v/avg top fess)
