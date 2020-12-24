@@ -71,6 +71,7 @@ mask path.overlap {
 
 .setting {
   position: relative;
+  margin-bottom: 3px;
 }
 
 .setting select {
