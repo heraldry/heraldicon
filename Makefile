@@ -14,7 +14,7 @@ release:
 
 generate-svg-clj:
 	./optimize-svgs.sh
-	./svg-to-clj.sh
+	./svg-to-edn.sh
 
 generate-charge-map:
 	./generate-charge-map.py
