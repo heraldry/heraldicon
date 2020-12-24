@@ -19,7 +19,10 @@ def group_by_type(coll):
 
         groups[type][child_data[K("key")]] = child_data
 
-    return groups
+    return {
+        k: dict(sorted(v.items(), key=lambda x: x[0].name))
+        for k, v in sorted(groups.items(), key=lambda x: x[0].name)
+    }
 
 
 def get_supported_colours(data):
@@ -28,7 +31,7 @@ def get_supported_colours(data):
         if colour in data:
             result.add(key)
 
-    return result
+    return list(sorted(result, key=lambda x: x.name))
 
 
 def traverse(directory, data_path):
