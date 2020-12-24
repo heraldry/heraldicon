@@ -1183,6 +1183,22 @@
                     ["M" fess
                      (line/stitch line-bottom-left)])}]])]))
 
+(defn part-name [type index]
+  (-> {:per-saltire ["I." "III." "IV." "II."]
+       :quarterly ["I." "II." "IV." "III."]
+       :gyronny ["I." "II." "IV." "VI." "VIII." "VII." "V." "III."]}
+      (get-in [type index])))
+
+;; TODO: this doesn't work well with per-saltire, because the 2nd field should be on the left,
+;; but the first two should always be at index 0, 1; perhaps for per-saltire it needs to be
+;; rendered counter clockwise?
+(defn part-position [type index]
+  (-> {:per-saltire [1 2 4 3]
+       :quarterly [1 2 4 3]
+       :gyronny [1 2 4 6 8 7 5 3]}
+      (get-in [type index])
+      (or index)))
+
 (def kinds
   [["Per Pale" :per-pale per-pale]
    ["Per Fess" :per-fess per-fess]
