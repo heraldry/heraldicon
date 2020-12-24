@@ -205,7 +205,7 @@
     {:x (+ x dx)
      :y (+ y dy)}))
 
-(defn degrade-path [path]
+(defn squiggly-path [path]
   (let [points   (-> path
                      svg/new-path
                      (svg/points 100))
@@ -224,7 +224,7 @@
                           (->>
                            (str "M 0,0 "))
                           (cond->
-                              (:degrade? options) degrade-path))]
+                              (:squiggly? options) squiggly-path))]
     (assoc line :line
            (-> adjusted-path
                svgpath

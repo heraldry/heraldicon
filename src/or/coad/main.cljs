@@ -88,9 +88,9 @@
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:options      {:mode     :colours
-                          :outline? false
-                          :degrade? false}
+   (merge {:options      {:mode      :colours
+                          :outline?  false
+                          :squiggly? false}
            :coat-of-arms default-coat-of-arms} db)))
 
 (rf/reg-event-db
@@ -620,49 +620,42 @@
        (for [[key display-name] escutcheon/options]
          ^{:key key}
          [:option {:value (name key)} display-name])]])
-   (let [element-id (id "mode")]
+   (let [on-change #(let [new-mode (keyword (-> % .-target .-value))]
+                      (rf/dispatch [:set :options :mode new-mode])
+                      (case new-mode
+                        :hatching (rf/dispatch [:set :options :outline? true])
+                        :colours  (rf/dispatch [:set :options :outline? false])))]
      [:div.setting
-      [:label {:for element-id} "Mode"]
-      [:select {:name      "mode"
-                :id        element-id
-                :value     (name @(rf/subscribe [:get :options :mode]))
-                :on-change #(let [new-mode (keyword (-> % .-target .-value))]
-                              (rf/dispatch [:set :options :mode new-mode])
-                              (case new-mode
-                                :hatching (rf/dispatch [:set :options :outline? true])
-                                :colours  (rf/dispatch [:set :options :outline? false])))}
-       (for [[display-name key] [["Colours" :colours]
-                                 ["Hatching" :hatching]]]
-         ^{:key key}
-         [:option {:value (name key)} display-name])]])
+      (for [[display-name key] [["Colours" :colours]
+                                ["Hatching" :hatching]]]
+        (let [element-id (id "mode")]
+          ^{:key key}
+          [:<>
+           [:input {:id        element-id
+                    :type      "radio"
+                    :name      "mode"
+                    :value     (name key)
+                    :checked   (= key @(rf/subscribe [:get :options :mode]))
+                    :on-change on-change}]
+           [:label {:for element-id} display-name]]))])
    (let [element-id (id "outline")]
      [:div.setting
-      [:label {:for element-id} "Outline"]
-      [:select {:name      "outline"
-                :id        element-id
-                :value     (if @(rf/subscribe [:get :options :outline?])
-                             "on"
-                             "off")
-                :on-change #(rf/dispatch [:set :options :outline? (if (= (-> % .-target .-value) "on") true false)])}
-       (for [[display-name value] [["On" "on"]
-                                   ["Off" "off"]]]
-         ^{:key value}
-         [:option {:value value} display-name])]])
-   (let [element-id (id "degrade")]
+      [:input {:type      "checkbox"
+               :id        element-id
+               :name      "outline"
+               :checked   @(rf/subscribe [:get :options :outline?])
+               :on-change #(let [checked (-> % .-target .-checked)]
+                             (rf/dispatch [:set :options :outline? checked]))}]
+      [:label {:for element-id} "Draw outline"]])
+   (let [element-id (id "squiggly")]
      [:div.setting
-      [:label {:for element-id} "Degrade"]
-      [:select {:name      "degrade"
-                :id        element-id
-                :value     (if @(rf/subscribe [:get :options :degrade?])
-                             "on"
-                             "off")
-                :on-change #(rf/dispatch [:set :options :degrade? (if (= (-> % .-target .-value) "on") true false)])}
-       (for [[display-name value] [["On"  "on"]
-                                   ["Off" "off"]]]
-         ^{:key value}
-         [:option {:value value} display-name])]
-      [:span {:style {:margin-left "6em"}}
-       "(experimental)"]])])
+      [:input {:type      "checkbox"
+               :id        element-id
+               :name      "squiggly"
+               :checked   @(rf/subscribe [:get :options :squiggly?])
+               :on-change #(let [checked (-> % .-target .-checked)]
+                             (rf/dispatch [:set :options :squiggly? checked]))}]
+      [:label {:for element-id} "Squiggly lines (experimental)"]])])
 
 (defn form []
   [:<>
