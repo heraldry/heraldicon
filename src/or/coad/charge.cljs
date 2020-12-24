@@ -75,11 +75,11 @@
                                      v))))
                  hiccup))
 
-(defn degrade-paths [hiccup]
+(defn squiggly-paths [hiccup]
   (walk/postwalk #(cond-> %
                     (vector? %) ((fn [v]
                                    (if (= (first v) :d)
-                                     [:d (line/degrade-path (second v))]
+                                     [:d (line/squiggly-path (second v))]
                                      v))))
                  hiccup))
 
@@ -108,10 +108,10 @@
                               (cond->
                                (not (or (:outline? hints)
                                         (:outline? options))) remove-outlines
-                               (and (:degrade? options)
+                               (and (:squiggly? options)
                                     (get #{:roundel
                                            :fusil
-                                           :billet} type)) degrade-paths))]
+                                           :billet} type)) squiggly-paths))]
         [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
              :on-click (fn [event]
                          (rf/dispatch [:select-component db-path])
