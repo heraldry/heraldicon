@@ -88,8 +88,9 @@
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:rendering {:mode :colours
-                       :outline :off}
+   (merge {:options {:mode :colours
+                     :outline? false
+                     :degrade? false}
            :coat-of-arms default-coat-of-arms} db)))
 
 (rf/reg-event-db
@@ -624,12 +625,12 @@
       [:label {:for element-id} "Mode"]
       [:select {:name "mode"
                 :id element-id
-                :value (name @(rf/subscribe [:get :rendering :mode]))
+                :value (name @(rf/subscribe [:get :options :mode]))
                 :on-change #(let [new-mode (keyword (-> % .-target .-value))]
-                              (rf/dispatch [:set :rendering :mode new-mode])
+                              (rf/dispatch [:set :options :mode new-mode])
                               (case new-mode
-                                :hatching (rf/dispatch [:set :rendering :outline :on])
-                                :colours (rf/dispatch [:set :rendering :outline :off])))}
+                                :hatching (rf/dispatch [:set :options :outline? true])
+                                :colours (rf/dispatch [:set :options :outline? false])))}
        (for [[display-name key] [["Colours" :colours]
                                  ["Hatching" :hatching]]]
          ^{:key key}
@@ -639,12 +640,27 @@
       [:label {:for element-id} "Outline"]
       [:select {:name "outline"
                 :id element-id
-                :value (name @(rf/subscribe [:get :rendering :outline]))
-                :on-change #(rf/dispatch [:set :rendering :outline (keyword (-> % .-target .-value))])}
-       (for [[display-name key] [["On" :on]
-                                 ["Off" :off]]]
-         ^{:key key}
-         [:option {:value (name key)} display-name])]])])
+                :value (if @(rf/subscribe [:get :options :outline?])
+                         "on"
+                         "off")
+                :on-change #(rf/dispatch [:set :options :outline? (if (= (-> % .-target .-value) "on") true false)])}
+       (for [[display-name value] [["On" "on"]
+                                   ["Off" "off"]]]
+         ^{:key value}
+         [:option {:value value} display-name])]])
+   (let [element-id (id "degrade")]
+     [:div.setting
+      [:label {:for element-id} "Degrade"]
+      [:select {:name "degrade"
+                :id element-id
+                :value (if @(rf/subscribe [:get :options :degrade?])
+                         "on"
+                         "off")
+                :on-change #(rf/dispatch [:set :options :degrade? (if (= (-> % .-target .-value) "on") true false)])}
+       (for [[display-name value] [["On" "on"]
+                                   ["Off" "off"]]]
+         ^{:key value}
+         [:option {:value value} display-name])]])])
 
 (defn form []
   [:<>
@@ -655,9 +671,8 @@
 (defn app []
   (fn []
     (let [coat-of-arms @(rf/subscribe [:get :coat-of-arms])
-          mode @(rf/subscribe [:get :rendering :mode])
-          options {:outline? (= @(rf/subscribe [:get :rendering :outline]) :on)
-                   :mode mode}
+          mode @(rf/subscribe [:get :options :mode])
+          options @(rf/subscribe [:get :options])
           stripped-coat-of-arms (remove-key-recursively coat-of-arms :ui)
           state-base64 (.encode base64 (prn-str stripped-coat-of-arms))]
       (when coat-of-arms
