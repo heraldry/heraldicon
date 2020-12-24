@@ -76,7 +76,7 @@
 (def default-charge
   {:type     :roundel
    :tincture {:primary :none}
-   :variant  :variant-roundel-1
+   :variant  :default
    :hints    {:outline? true}})
 
 (rf/reg-event-db
