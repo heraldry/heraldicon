@@ -237,11 +237,11 @@
     [:g {:filter "url(#shadow)"}
      [:g {:transform "translate(10,10) scale(5,5)"}
       [:defs
-       [:mask#mask-shield
+       [:clipPath#mask-shield
         [:path {:d      (:shape environment)
                 :fill   "#fff"
                 :stroke "none"}]]]
-      [:g {:mask "url(#mask-shield)"}
+      [:g {:clip-path "url(#mask-shield)"}
        [:path {:d    (:shape environment)
                :fill "#f0f0f0"}]
        [field/render field environment options :db-path (conj db-path :field)]]
