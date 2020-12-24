@@ -1,7 +1,9 @@
 (ns or.coad.line
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
-            [or.coad.svg :as svg]))
+            [or.coad.catmullrom :as catmullrom]
+            [or.coad.svg :as svg]
+            [or.coad.vector :as v]))
 
 (defn straight [length _]
   {:line   ["l" [length 0]]
@@ -189,19 +191,47 @@
        (map (fn [[name key _]]
               [key name]))))
 
-(defn create [kind length & {:keys [angle reversed? flipped? extra] :or {extra 50}}]
-  (let [line ((get kinds-function-map kind)
-              (+ length extra) reversed?)]
-    (update line :line
-            #(-> %
-                 svg/make-path
-                 (->>
-                  (str "M 0,0 "))
-                 svgpath
-                 (cond->
-                     flipped? (.scale 1 -1))
-                 (.rotate angle)
-                 .toString))))
+(defn jiggle [[previous
+               {:keys [x y] :as current}
+               _]]
+  (let [dist          (-> current
+                          (v/- previous)
+                          (v/abs))
+        jiggle-radius (/ dist 4)
+        dx            (- (* (rand) jiggle-radius)
+                         jiggle-radius)
+        dy            (- (* (rand) jiggle-radius)
+                         jiggle-radius)]
+    {:x (+ x dx)
+     :y (+ y dy)}))
+
+(defn degrade-path [path]
+  (let [points   (-> path
+                     svg/new-path
+                     (svg/points 100))
+        points   (vec (concat [(first points)]
+                              (map jiggle (partition 3 1 points))
+                              [(last points)]))
+        curve    (catmullrom/catmullrom points)
+        new-path (catmullrom/curve->svg-path-relative curve)]
+    new-path))
+
+(defn create [kind length & {:keys [angle reversed? flipped? extra options] :or {extra 50}}]
+  (let [line          ((get kinds-function-map kind)
+                       (+ length extra) reversed?)
+        adjusted-path (-> (:line line)
+                          svg/make-path
+                          (->>
+                           (str "M 0,0 "))
+                          (cond->
+                              (:degrade? options) degrade-path))]
+    (assoc line :line
+           (-> adjusted-path
+               svgpath
+               (cond->
+                   flipped? (.scale 1 -1))
+               (.rotate angle)
+               .toString))))
 
 (defn translate [path dx dy]
   (-> path
