@@ -660,7 +660,9 @@
        (for [[display-name value] [["On" "on"]
                                    ["Off" "off"]]]
          ^{:key value}
-         [:option {:value value} display-name])]])])
+         [:option {:value value} display-name])]
+      [:span {:style {:margin-left "6em"}}
+       "(experimental)"]])])
 
 (defn form []
   [:<>
