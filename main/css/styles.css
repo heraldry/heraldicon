@@ -48,7 +48,7 @@ mask path.overlap {
 }
 
 .part {
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
 }
 
 .parts {
@@ -96,10 +96,12 @@ mask path.overlap {
 }
 
 .component {
-  padding: 15px;
+  padding: 10px;
+  padding-left: 1em;
   border: solid 1px #bbb;
   border-radius: 10px;
   overflow: auto;
+  padding-bottom: 0.5em;
 }
 
 .field {
@@ -108,9 +110,8 @@ mask path.overlap {
 }
 
 .ordinary {
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
   border-top: solid 1px #bbb;
-  padding-top: 0.5em;
 }
 
 .charges-section {
@@ -123,10 +124,10 @@ mask path.overlap {
 }
 
 div.charge {
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
   border-top: solid 1px #bbb;
-  padding-top: 0.5em;
   min-width: 25em;
+  padding-bottom: 5px;
 }
 
 .outline {
@@ -147,8 +148,7 @@ div.charge {
 }
 
 .tree {
-  margin-bottom: 1em;
-  clear: both;
+  margin-bottom: 0.5em;
 }
 
 .tree ul {
