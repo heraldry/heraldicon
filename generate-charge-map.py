@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import re
 from glob import glob
 
 import edn_format
@@ -34,7 +35,16 @@ def get_supported_colours(data):
     return list(sorted(result, key=lambda x: x.name))
 
 
-def traverse(directory, data_path):
+def remove_duplicate_slugs(name, nodes):
+    for node in nodes:
+        if node[K("type")] in [K("attitude"), K("charge")]:
+            name = name.replace(node[K("key")].name, "")
+
+    name = re.sub(r"--+", "-", name)
+    return name
+
+
+def traverse(directory, data_path, nodes):
     global lookup
 
     dirs = glob(os.path.join(directory, "*/"))
@@ -51,7 +61,7 @@ def traverse(directory, data_path):
     data = {
         K("type"): K(type),
         K("key"): key,
-        K("name"): name,
+        K("name"): name.replace("-", " "),
     }
 
     if type == "charge":
@@ -60,17 +70,23 @@ def traverse(directory, data_path):
     if dirs:
 
         def dir_data(d):
-            return traverse(d, data_path + [key])
+            return traverse(d, data_path + [key], nodes + [data])
 
         data.update(group_by_type(map(dir_data, dirs)))
 
     if files:
 
-        def file_data(f):
+        def file_data(f, parent_data):
             filename = os.path.basename(f)
-            name = filename.rsplit(".", 1)[0]
+            variant_key = filename.rsplit(".", 1)[0]
+            variant_key = remove_duplicate_slugs(variant_key, nodes + [parent_data])
+            if variant_key == "variant-default":
+                variant_key = "default"
+
+            name = variant_key.replace("-", " ").replace("-", " ")
+
             data = {
-                K("key"): K(name),
+                K("key"): K(variant_key),
                 K("type"): K("variant"),
                 K("name"): name,
                 K("path"): os.path.join(directory, filename),
@@ -82,7 +98,7 @@ def traverse(directory, data_path):
 
             return data
 
-        data.update(group_by_type(map(file_data, files)))
+        data.update(group_by_type(map(lambda f: file_data(f, data), files)))
 
     return data
 
@@ -102,7 +118,7 @@ if __name__ == "__main__":
     read_config()
 
     os.chdir("main")
-    data = traverse("data/charges", [])
+    data = traverse("data/charges", [], [])
     data[K("lookup")] = lookup
     edn = edn_format.dumps(data, indent=4)
     open("data/charge-map.edn", "w").write(edn)
