@@ -6,9 +6,10 @@
             [or.coad.vector :as v]))
 
 (defn get-field [fields index]
-  (let [part (get fields index)]
-    (if (number? part)
-      (get fields part)
+  (let [part (get fields index)
+        ref (:ref part)]
+    (if ref
+      (assoc (get fields ref) :ui (:ui part))
       part)))
 
 (defn per-pale [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]

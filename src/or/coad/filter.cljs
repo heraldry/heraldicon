@@ -53,3 +53,20 @@
    [:feBlend {:mode "normal"
               :in "highlight"
               :in2 "blurOut"}]])
+
+(def glow
+  [:filter {:id "glow"
+            :x "-100%"
+            :y "-100%"
+            :width "300%"
+            :height "300%"}
+   [:feColorMatrix {:in "SourceAlpha"
+                    :type "matrix"
+                    :values "0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0"
+                    :result "colorOut"}]
+   [:feGaussianBlur {:in "colorOut"
+                     :result "blurOut"
+                     :stdDeviation "10"}]
+   [:feBlend {:in "SourceGraphic"
+              :in2 "glowOut"
+              :mode "normal"}]])
