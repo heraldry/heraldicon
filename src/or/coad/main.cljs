@@ -347,7 +347,9 @@
   (let [charge                     @(rf/subscribe [:get-in path])
         charge-variant-data        (charge/get-charge-variant-data charge)
         charge-map                 (charge/get-charge-map)
-        supported-tinctures        (:supported-tinctures charge-variant-data)
+        supported-tinctures        (-> charge-variant-data
+                                       :supported-tinctures
+                                       set)
         sorted-supported-tinctures (filter supported-tinctures [:primary :armed :langued :attired :unguled])
         eyes-and-teeth-support     (:eyes-and-teeth supported-tinctures)]
     (if (and charge-map

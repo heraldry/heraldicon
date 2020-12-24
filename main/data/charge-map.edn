@@ -8,148 +8,27 @@
             :key :animal
             :name "animal"
             :charges {
-                :wolf {
-                    :type :charge
-                    :key :wolf
-                    :name "wolf"
-                    :attitudes {
-                        :rampant-regardant {
-                            :type :attitude
-                            :key :rampant-regardant
-                            :name "rampant-regardant"
-                            :variants {
-                                :variant-wolf-rampant-regardant-1 {
-                                    :key :variant-wolf-rampant-regardant-1
-                                    :type :variant
-                                    :name "variant-wolf-rampant-regardant-1"
-                                    :path "data/charges/group-animal/charge-wolf/attitude-rampant-regardant/variant-wolf-rampant-regardant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :passant {
-                            :type :attitude
-                            :key :passant
-                            :name "passant"
-                            :variants {
-                                :variant-wolf-passant-1 {
-                                    :key :variant-wolf-passant-1
-                                    :type :variant
-                                    :name "variant-wolf-passant-1"
-                                    :path "data/charges/group-animal/charge-wolf/attitude-passant/variant-wolf-passant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :rampant {
-                            :type :attitude
-                            :key :rampant
-                            :name "rampant"
-                            :variants {
-                                :variant-wolf-rampant-1 {
-                                    :key :variant-wolf-rampant-1
-                                    :type :variant
-                                    :name "variant-wolf-rampant-1"
-                                    :path "data/charges/group-animal/charge-wolf/attitude-rampant/variant-wolf-rampant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
                 :lion {
                     :type :charge
                     :key :lion
                     :name "lion"
                     :attitudes {
-                        :rampant-tail-nowed {
+                        :cadent-dexter {
                             :type :attitude
-                            :key :rampant-tail-nowed
-                            :name "rampant-tail-nowed"
+                            :key :cadent-dexter
+                            :name "cadent-dexter"
                             :variants {
-                                :variant-lion-rampant-tail-nowed-1 {
-                                    :key :variant-lion-rampant-tail-nowed-1
+                                :variant-lion-cadent-dexter-1 {
+                                    :key :variant-lion-cadent-dexter-1
                                     :type :variant
-                                    :name "variant-lion-rampant-tail-nowed-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-tail-nowed/variant-lion-rampant-tail-nowed-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
+                                    :name "variant-lion-cadent-dexter-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-cadent-dexter/variant-lion-cadent-dexter-1.edn"
+                                    :supported-tinctures [
                                         :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :statant {
-                            :type :attitude
-                            :key :statant
-                            :name "statant"
-                            :variants {
-                                :variant-lion-statant-1 {
-                                    :key :variant-lion-statant-1
-                                    :type :variant
-                                    :name "variant-lion-statant-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-statant/variant-lion-statant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
                                         :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :rampant-queue-fourche {
-                            :type :attitude
-                            :key :rampant-queue-fourche
-                            :name "rampant-queue-fourche"
-                            :variants {
-                                :variant-lion-rampant-queue-fourche-1 {
-                                    :key :variant-lion-rampant-queue-fourche-1
-                                    :type :variant
-                                    :name "variant-lion-rampant-queue-fourche-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-queue-fourche/variant-lion-rampant-queue-fourche-1.edn"
-                                    :supported-tinctures #{
                                         :langued
-                                        :eyes-and-teeth
-                                        :armed
                                         :primary
-                                    }
-                                }
-                            }
-                        }
-                        :rampant-guardant {
-                            :type :attitude
-                            :key :rampant-guardant
-                            :name "rampant-guardant"
-                            :variants {
-                                :variant-lion-rampant-guardant-1 {
-                                    :key :variant-lion-rampant-guardant-1
-                                    :type :variant
-                                    :name "variant-lion-rampant-guardant-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-guardant/variant-lion-rampant-guardant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
+                                    ]
                                 }
                             }
                         }
@@ -163,257 +42,12 @@
                                     :type :variant
                                     :name "variant-lion-couchant-1"
                                     :path "data/charges/group-animal/charge-lion/attitude-couchant/variant-lion-couchant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
+                                    :supported-tinctures [
+                                        :armed
                                         :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :passant-guardant {
-                            :type :attitude
-                            :key :passant-guardant
-                            :name "passant-guardant"
-                            :variants {
-                                :variant-lion-passant-guardant-1 {
-                                    :key :variant-lion-passant-guardant-1
-                                    :type :variant
-                                    :name "variant-lion-passant-guardant-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-passant-guardant/variant-lion-passant-guardant-1.edn"
-                                    :supported-tinctures #{
                                         :langued
-                                        :eyes-and-teeth
-                                        :armed
                                         :primary
-                                    }
-                                }
-                            }
-                        }
-                        :rampant-queue-saltire-reverse {
-                            :type :attitude
-                            :key :rampant-queue-saltire-reverse
-                            :name "rampant-queue-saltire-reverse"
-                            :variants {
-                                :variant-lion-rampant-queue-saltire-reverse-1 {
-                                    :key :variant-lion-rampant-queue-saltire-reverse-1
-                                    :type :variant
-                                    :name "variant-lion-rampant-queue-saltire-reverse-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-queue-saltire-reverse/variant-lion-rampant-queue-saltire-reverse-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :cadent-dexter {
-                            :type :attitude
-                            :key :cadent-dexter
-                            :name "cadent-dexter"
-                            :variants {
-                                :variant-lion-cadent-dexter-1 {
-                                    :key :variant-lion-cadent-dexter-1
-                                    :type :variant
-                                    :name "variant-lion-cadent-dexter-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-cadent-dexter/variant-lion-cadent-dexter-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :dormant {
-                            :type :attitude
-                            :key :dormant
-                            :name "dormant"
-                            :variants {
-                                :variant-lion-dormant-1 {
-                                    :key :variant-lion-dormant-1
-                                    :type :variant
-                                    :name "variant-lion-dormant-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-dormant/variant-lion-dormant-1.edn"
-                                    :supported-tinctures #{
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :sejant {
-                            :type :attitude
-                            :key :sejant
-                            :name "sejant"
-                            :variants {
-                                :variant-lion-sejant-1 {
-                                    :key :variant-lion-sejant-1
-                                    :type :variant
-                                    :name "variant-lion-sejant-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-sejant/variant-lion-sejant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :salient {
-                            :type :attitude
-                            :key :salient
-                            :name "salient"
-                            :variants {
-                                :variant-lion-salient-1 {
-                                    :key :variant-lion-salient-1
-                                    :type :variant
-                                    :name "variant-lion-salient-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-salient/variant-lion-salient-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :rampant-queue-saltire {
-                            :type :attitude
-                            :key :rampant-queue-saltire
-                            :name "rampant-queue-saltire"
-                            :variants {
-                                :variant-lion-rampant-queue-saltire-1 {
-                                    :key :variant-lion-rampant-queue-saltire-1
-                                    :type :variant
-                                    :name "variant-lion-rampant-queue-saltire-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-queue-saltire/variant-lion-rampant-queue-saltire-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :rampant-reguardant {
-                            :type :attitude
-                            :key :rampant-reguardant
-                            :name "rampant-reguardant"
-                            :variants {
-                                :variant-lion-rampant-regaurdant-1 {
-                                    :key :variant-lion-rampant-regaurdant-1
-                                    :type :variant
-                                    :name "variant-lion-rampant-regaurdant-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-reguardant/variant-lion-rampant-regaurdant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :statant-guardant {
-                            :type :attitude
-                            :key :statant-guardant
-                            :name "statant-guardant"
-                            :variants {
-                                :variant-lion-statant-guardant-1 {
-                                    :key :variant-lion-statant-guardant-1
-                                    :type :variant
-                                    :name "variant-lion-statant-guardant-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-statant-guardant/variant-lion-statant-guardant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :sejant-erect {
-                            :type :attitude
-                            :key :sejant-erect
-                            :name "sejant-erect"
-                            :variants {
-                                :variant-lion-sejant-erect-1 {
-                                    :key :variant-lion-sejant-erect-1
-                                    :type :variant
-                                    :name "variant-lion-sejant-erect-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-sejant-erect/variant-lion-sejant-erect-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :rampant-coward {
-                            :type :attitude
-                            :key :rampant-coward
-                            :name "rampant-coward"
-                            :variants {
-                                :variant-lion-rampant-coward-1 {
-                                    :key :variant-lion-rampant-coward-1
-                                    :type :variant
-                                    :name "variant-lion-rampant-coward-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-coward/variant-lion-rampant-coward-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :passant-reguardant {
-                            :type :attitude
-                            :key :passant-reguardant
-                            :name "passant-reguardant"
-                            :variants {
-                                :variant-lion-passant-reguardant-1 {
-                                    :key :variant-lion-passant-reguardant-1
-                                    :type :variant
-                                    :name "variant-lion-passant-reguardant-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-passant-reguardant/variant-lion-passant-reguardant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
-                                }
-                            }
-                        }
-                        :passant {
-                            :type :attitude
-                            :key :passant
-                            :name "passant"
-                            :variants {
-                                :variant-lion-passant-1 {
-                                    :key :variant-lion-passant-1
-                                    :type :variant
-                                    :name "variant-lion-passant-1"
-                                    :path "data/charges/group-animal/charge-lion/attitude-passant/variant-lion-passant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
-                                        :armed
-                                        :primary
-                                    }
+                                    ]
                                 }
                             }
                         }
@@ -427,12 +61,12 @@
                                     :type :variant
                                     :name "variant-lion-courant-1"
                                     :path "data/charges/group-animal/charge-lion/attitude-courant/variant-lion-courant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
+                                    :supported-tinctures [
                                         :armed
+                                        :eyes-and-teeth
+                                        :langued
                                         :primary
-                                    }
+                                    ]
                                 }
                             }
                         }
@@ -446,12 +80,86 @@
                                     :type :variant
                                     :name "variant-lion-coward-1"
                                     :path "data/charges/group-animal/charge-lion/attitude-coward/variant-lion-coward-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
+                                    :supported-tinctures [
+                                        :armed
                                         :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :dormant {
+                            :type :attitude
+                            :key :dormant
+                            :name "dormant"
+                            :variants {
+                                :variant-lion-dormant-1 {
+                                    :key :variant-lion-dormant-1
+                                    :type :variant
+                                    :name "variant-lion-dormant-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-dormant/variant-lion-dormant-1.edn"
+                                    :supported-tinctures [
                                         :armed
                                         :primary
-                                    }
+                                    ]
+                                }
+                            }
+                        }
+                        :passant {
+                            :type :attitude
+                            :key :passant
+                            :name "passant"
+                            :variants {
+                                :variant-lion-passant-1 {
+                                    :key :variant-lion-passant-1
+                                    :type :variant
+                                    :name "variant-lion-passant-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-passant/variant-lion-passant-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :passant-guardant {
+                            :type :attitude
+                            :key :passant-guardant
+                            :name "passant-guardant"
+                            :variants {
+                                :variant-lion-passant-guardant-1 {
+                                    :key :variant-lion-passant-guardant-1
+                                    :type :variant
+                                    :name "variant-lion-passant-guardant-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-passant-guardant/variant-lion-passant-guardant-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :passant-reguardant {
+                            :type :attitude
+                            :key :passant-reguardant
+                            :name "passant-reguardant"
+                            :variants {
+                                :variant-lion-passant-reguardant-1 {
+                                    :key :variant-lion-passant-reguardant-1
+                                    :type :variant
+                                    :name "variant-lion-passant-reguardant-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-passant-reguardant/variant-lion-passant-reguardant-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
                                 }
                             }
                         }
@@ -465,12 +173,304 @@
                                     :type :variant
                                     :name "variant-lion-rampant-1"
                                     :path "data/charges/group-animal/charge-lion/attitude-rampant/variant-lion-rampant-1.edn"
-                                    :supported-tinctures #{
-                                        :langued
-                                        :eyes-and-teeth
+                                    :supported-tinctures [
                                         :armed
+                                        :eyes-and-teeth
+                                        :langued
                                         :primary
-                                    }
+                                    ]
+                                }
+                            }
+                        }
+                        :rampant-coward {
+                            :type :attitude
+                            :key :rampant-coward
+                            :name "rampant-coward"
+                            :variants {
+                                :variant-lion-rampant-coward-1 {
+                                    :key :variant-lion-rampant-coward-1
+                                    :type :variant
+                                    :name "variant-lion-rampant-coward-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-coward/variant-lion-rampant-coward-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :rampant-guardant {
+                            :type :attitude
+                            :key :rampant-guardant
+                            :name "rampant-guardant"
+                            :variants {
+                                :variant-lion-rampant-guardant-1 {
+                                    :key :variant-lion-rampant-guardant-1
+                                    :type :variant
+                                    :name "variant-lion-rampant-guardant-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-guardant/variant-lion-rampant-guardant-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :rampant-queue-fourche {
+                            :type :attitude
+                            :key :rampant-queue-fourche
+                            :name "rampant-queue-fourche"
+                            :variants {
+                                :variant-lion-rampant-queue-fourche-1 {
+                                    :key :variant-lion-rampant-queue-fourche-1
+                                    :type :variant
+                                    :name "variant-lion-rampant-queue-fourche-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-queue-fourche/variant-lion-rampant-queue-fourche-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :rampant-queue-saltire {
+                            :type :attitude
+                            :key :rampant-queue-saltire
+                            :name "rampant-queue-saltire"
+                            :variants {
+                                :variant-lion-rampant-queue-saltire-1 {
+                                    :key :variant-lion-rampant-queue-saltire-1
+                                    :type :variant
+                                    :name "variant-lion-rampant-queue-saltire-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-queue-saltire/variant-lion-rampant-queue-saltire-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :rampant-queue-saltire-reverse {
+                            :type :attitude
+                            :key :rampant-queue-saltire-reverse
+                            :name "rampant-queue-saltire-reverse"
+                            :variants {
+                                :variant-lion-rampant-queue-saltire-reverse-1 {
+                                    :key :variant-lion-rampant-queue-saltire-reverse-1
+                                    :type :variant
+                                    :name "variant-lion-rampant-queue-saltire-reverse-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-queue-saltire-reverse/variant-lion-rampant-queue-saltire-reverse-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :rampant-reguardant {
+                            :type :attitude
+                            :key :rampant-reguardant
+                            :name "rampant-reguardant"
+                            :variants {
+                                :variant-lion-rampant-regaurdant-1 {
+                                    :key :variant-lion-rampant-regaurdant-1
+                                    :type :variant
+                                    :name "variant-lion-rampant-regaurdant-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-reguardant/variant-lion-rampant-regaurdant-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :rampant-tail-nowed {
+                            :type :attitude
+                            :key :rampant-tail-nowed
+                            :name "rampant-tail-nowed"
+                            :variants {
+                                :variant-lion-rampant-tail-nowed-1 {
+                                    :key :variant-lion-rampant-tail-nowed-1
+                                    :type :variant
+                                    :name "variant-lion-rampant-tail-nowed-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-rampant-tail-nowed/variant-lion-rampant-tail-nowed-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :salient {
+                            :type :attitude
+                            :key :salient
+                            :name "salient"
+                            :variants {
+                                :variant-lion-salient-1 {
+                                    :key :variant-lion-salient-1
+                                    :type :variant
+                                    :name "variant-lion-salient-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-salient/variant-lion-salient-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :sejant {
+                            :type :attitude
+                            :key :sejant
+                            :name "sejant"
+                            :variants {
+                                :variant-lion-sejant-1 {
+                                    :key :variant-lion-sejant-1
+                                    :type :variant
+                                    :name "variant-lion-sejant-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-sejant/variant-lion-sejant-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :sejant-erect {
+                            :type :attitude
+                            :key :sejant-erect
+                            :name "sejant-erect"
+                            :variants {
+                                :variant-lion-sejant-erect-1 {
+                                    :key :variant-lion-sejant-erect-1
+                                    :type :variant
+                                    :name "variant-lion-sejant-erect-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-sejant-erect/variant-lion-sejant-erect-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :statant {
+                            :type :attitude
+                            :key :statant
+                            :name "statant"
+                            :variants {
+                                :variant-lion-statant-1 {
+                                    :key :variant-lion-statant-1
+                                    :type :variant
+                                    :name "variant-lion-statant-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-statant/variant-lion-statant-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :statant-guardant {
+                            :type :attitude
+                            :key :statant-guardant
+                            :name "statant-guardant"
+                            :variants {
+                                :variant-lion-statant-guardant-1 {
+                                    :key :variant-lion-statant-guardant-1
+                                    :type :variant
+                                    :name "variant-lion-statant-guardant-1"
+                                    :path "data/charges/group-animal/charge-lion/attitude-statant-guardant/variant-lion-statant-guardant-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+                :wolf {
+                    :type :charge
+                    :key :wolf
+                    :name "wolf"
+                    :attitudes {
+                        :passant {
+                            :type :attitude
+                            :key :passant
+                            :name "passant"
+                            :variants {
+                                :variant-wolf-passant-1 {
+                                    :key :variant-wolf-passant-1
+                                    :type :variant
+                                    :name "variant-wolf-passant-1"
+                                    :path "data/charges/group-animal/charge-wolf/attitude-passant/variant-wolf-passant-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :rampant {
+                            :type :attitude
+                            :key :rampant
+                            :name "rampant"
+                            :variants {
+                                :variant-wolf-rampant-1 {
+                                    :key :variant-wolf-rampant-1
+                                    :type :variant
+                                    :name "variant-wolf-rampant-1"
+                                    :path "data/charges/group-animal/charge-wolf/attitude-rampant/variant-wolf-rampant-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
+                                }
+                            }
+                        }
+                        :rampant-regardant {
+                            :type :attitude
+                            :key :rampant-regardant
+                            :name "rampant-regardant"
+                            :variants {
+                                :variant-wolf-rampant-regardant-1 {
+                                    :key :variant-wolf-rampant-regardant-1
+                                    :type :variant
+                                    :name "variant-wolf-rampant-regardant-1"
+                                    :path "data/charges/group-animal/charge-wolf/attitude-rampant-regardant/variant-wolf-rampant-regardant-1.edn"
+                                    :supported-tinctures [
+                                        :armed
+                                        :eyes-and-teeth
+                                        :langued
+                                        :primary
+                                    ]
                                 }
                             }
                         }
@@ -483,22 +483,6 @@
             :key :simple
             :name "simple"
             :charges {
-                :fusil {
-                    :type :charge
-                    :key :fusil
-                    :name "fusil"
-                    :variants {
-                        :variant-fusil-1 {
-                            :key :variant-fusil-1
-                            :type :variant
-                            :name "variant-fusil-1"
-                            :path "data/charges/group-simple/charge-fusil/variant-fusil-1.edn"
-                            :supported-tinctures #{
-                                :primary
-                            }
-                        }
-                    }
-                }
                 :annulet {
                     :type :charge
                     :key :annulet
@@ -509,25 +493,9 @@
                             :type :variant
                             :name "variant-annulet-1"
                             :path "data/charges/group-simple/charge-annulet/variant-annulet-1.edn"
-                            :supported-tinctures #{
+                            :supported-tinctures [
                                 :primary
-                            }
-                        }
-                    }
-                }
-                :roundel {
-                    :type :charge
-                    :key :roundel
-                    :name "roundel"
-                    :variants {
-                        :variant-roundel-1 {
-                            :key :variant-roundel-1
-                            :type :variant
-                            :name "variant-roundel-1"
-                            :path "data/charges/group-simple/charge-roundel/variant-roundel-1.edn"
-                            :supported-tinctures #{
-                                :primary
-                            }
+                            ]
                         }
                     }
                 }
@@ -541,9 +509,41 @@
                             :type :variant
                             :name "variant-billet-1"
                             :path "data/charges/group-simple/charge-billet/variant-billet-1.edn"
-                            :supported-tinctures #{
+                            :supported-tinctures [
                                 :primary
-                            }
+                            ]
+                        }
+                    }
+                }
+                :fusil {
+                    :type :charge
+                    :key :fusil
+                    :name "fusil"
+                    :variants {
+                        :variant-fusil-1 {
+                            :key :variant-fusil-1
+                            :type :variant
+                            :name "variant-fusil-1"
+                            :path "data/charges/group-simple/charge-fusil/variant-fusil-1.edn"
+                            :supported-tinctures [
+                                :primary
+                            ]
+                        }
+                    }
+                }
+                :roundel {
+                    :type :charge
+                    :key :roundel
+                    :name "roundel"
+                    :variants {
+                        :variant-roundel-1 {
+                            :key :variant-roundel-1
+                            :type :variant
+                            :name "variant-roundel-1"
+                            :path "data/charges/group-simple/charge-roundel/variant-roundel-1.edn"
+                            :supported-tinctures [
+                                :primary
+                            ]
                         }
                     }
                 }
