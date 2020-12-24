@@ -74,7 +74,7 @@
                                      v))))
                  hiccup))
 
-(defn render [{:keys [tincture hints] :as charge} environment options]
+(defn render [{:keys [tincture hints] :as charge} environment options & {:keys [db-path]}]
   (if-let [charge-data-path (-> charge
                                 get-charge-variant-data
                                 :path)]
@@ -101,7 +101,12 @@
                                         (:outline? options))
                                   color-adjusted-data
                                   (remove-outlines color-adjusted-data))]
-        [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")}
+        [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
+             :on-click  (fn [event]
+                          (rf/dispatch [:select-component db-path])
+                          (.stopPropagation event))
+             :style     {:pointer-events "visiblePainted"
+                         :cursor         "pointer"}}
          (assoc adjusted-data 0 :g)])
       [:<>])
     [:<>]))

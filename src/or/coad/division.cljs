@@ -11,7 +11,7 @@
       (get fields part)
       part)))
 
-(defn per-pale [{:keys [fields line] :as field} environment top-level-render options]
+(defn per-pale [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id-1     (svg/id "division-pale-1")
         mask-id-2     (svg/id "division-pale-2")
         top-left      (get-in environment [:points :top-left])
@@ -53,16 +53,16 @@
        [:path {:d    (:shape environment-2)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options]]
+      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options]]
+      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" bottom
                      (line/stitch line)])}]])]))
 
-(defn per-fess [{:keys [fields line] :as field} environment top-level-render options]
+(defn per-fess [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id-1     (svg/id "division-fess-1")
         mask-id-2     (svg/id "division-fess-2")
         top-left      (get-in environment [:points :top-left])
@@ -104,16 +104,16 @@
        [:path {:d    (:shape environment-2)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options]]
+      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options]]
+      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" left
                      (line/stitch line)])}]])]))
 
-(defn per-bend [{:keys [fields line] :as field} environment top-level-render options]
+(defn per-bend [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id-1         (svg/id "division-bend-1")
         mask-id-2         (svg/id "division-bend-2")
         top-left          (get-in environment [:points :top-left])
@@ -156,16 +156,16 @@
        [:path {:d    (:shape environment-2)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options]]
+      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options]]
+      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" top-left
                      (line/stitch line)])}]])]))
 
-(defn per-bend-sinister [{:keys [fields line] :as field} environment top-level-render options]
+(defn per-bend-sinister [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id-1                  (svg/id "division-bend-right-1")
         mask-id-2                  (svg/id "division-bend-right-2")
         top-left                   (get-in environment [:points :top-left])
@@ -215,16 +215,16 @@
        [:path {:d    (:shape environment-2)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options]]
+      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options]]
+      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" bend-intersection-adjusted
                      (line/stitch line)])}]])]))
 
-(defn per-chevron [{:keys [fields line] :as field} environment top-level-render options]
+(defn per-chevron [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id-1                       (svg/id "division-chevron-1")
         mask-id-2                       (svg/id "division-chevron-2")
         line-style                      (or (:style line) :straight)
@@ -280,9 +280,9 @@
        [:path {:d    (:shape environment-2)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options]]
+      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options]]
+      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -291,7 +291,7 @@
                      "L" fess
                      (line/stitch line-right)])}]])]))
 
-(defn per-saltire [{:keys [fields line] :as field} environment top-level-render options]
+(defn per-saltire [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id-1                          (svg/id "division-saltire-1")
         mask-id-2                          (svg/id "division-saltire-2")
         mask-id-3                          (svg/id "division-saltire-3")
@@ -404,13 +404,13 @@
        [:path {:d    (:shape environment-4)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get-field fields 0) environment-1 options]]
+      [top-level-render (get-field fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get-field fields 1) environment-2 options]]
+      [top-level-render (get-field fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get-field fields 2) environment-3 options]]
+      [top-level-render (get-field fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
      [:g {:mask (str "url(#" mask-id-4 ")")}
-      [top-level-render (get-field fields 3) environment-4 options]]
+      [top-level-render (get-field fields 3) environment-4 options :db-path (conj db-path :fields 3)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -426,7 +426,7 @@
                     ["M" fess
                      (line/stitch line-bottom-left)])}]])]))
 
-(defn quarterly [{:keys [fields line] :as field} environment top-level-render options]
+(defn quarterly [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id-1                    (svg/id "division-quarterly-1")
         mask-id-2                    (svg/id "division-quarterly-2")
         mask-id-3                    (svg/id "division-quarterly-3")
@@ -534,13 +534,13 @@
        [:path {:d    (:shape environment-4)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get-field fields 0) environment-1 options]]
+      [top-level-render (get-field fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get-field fields 1) environment-2 options]]
+      [top-level-render (get-field fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get-field fields 2) environment-3 options]]
+      [top-level-render (get-field fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
      [:g {:mask (str "url(#" mask-id-4 ")")}
-      [top-level-render (get-field fields 3) environment-4 options]]
+      [top-level-render (get-field fields 3) environment-4 options :db-path (conj db-path :fields 3)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -556,7 +556,7 @@
                     ["M" fess
                      (line/stitch line-left)])}]])]))
 
-(defn gyronny [{:keys [fields line] :as field} environment top-level-render options]
+(defn gyronny [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id-1                    (svg/id "division-gyronny-1")
         mask-id-2                    (svg/id "division-gyronny-2")
         mask-id-3                    (svg/id "division-gyronny-3")
@@ -766,21 +766,21 @@
        [:path {:d    (:shape environment-8)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get-field fields 0) environment-1 options]]
+      [top-level-render (get-field fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get-field fields 1) environment-2 options]]
+      [top-level-render (get-field fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get-field fields 2) environment-3 options]]
+      [top-level-render (get-field fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
      [:g {:mask (str "url(#" mask-id-4 ")")}
-      [top-level-render (get-field fields 3) environment-4 options]]
+      [top-level-render (get-field fields 3) environment-4 options :db-path (conj db-path :fields 3)]]
      [:g {:mask (str "url(#" mask-id-5 ")")}
-      [top-level-render (get-field fields 4) environment-5 options]]
+      [top-level-render (get-field fields 4) environment-5 options :db-path (conj db-path :fields 4)]]
      [:g {:mask (str "url(#" mask-id-6 ")")}
-      [top-level-render (get-field fields 5) environment-6 options]]
+      [top-level-render (get-field fields 5) environment-6 options :db-path (conj db-path :fields 5)]]
      [:g {:mask (str "url(#" mask-id-7 ")")}
-      [top-level-render (get-field fields 6) environment-7 options]]
+      [top-level-render (get-field fields 6) environment-7 options :db-path (conj db-path :fields 6)]]
      [:g {:mask (str "url(#" mask-id-8 ")")}
-      [top-level-render (get-field fields 7) environment-8 options]]
+      [top-level-render (get-field fields 7) environment-8 options :db-path (conj db-path :fields 7)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -808,7 +808,7 @@
                     ["M" left-adjusted
                      (line/stitch line-left)])}]])]))
 
-(defn tierced-per-pale [{:keys [fields line] :as field} environment top-level-render options]
+(defn tierced-per-pale [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id-1                      (svg/id "division-tierced-pale-1")
         mask-id-2                      (svg/id "division-tierced-pale-2")
         mask-id-3                      (svg/id "division-tierced-pale-3")
@@ -880,11 +880,11 @@
        [:path {:d    (:shape environment-3)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options]]
+      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options]]
+      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get fields 2) environment-3 options]]
+      [top-level-render (get fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -894,7 +894,7 @@
                     ["M" second-bottom-adjusted
                      (line/stitch line-reversed)])}]])]))
 
-(defn tierced-per-fess [{:keys [fields line] :as field} environment top-level-render options]
+(defn tierced-per-fess [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id-1                      (svg/id "division-tierced-fess-1")
         mask-id-2                      (svg/id "division-tierced-fess-2")
         mask-id-3                      (svg/id "division-tierced-fess-3")
@@ -965,11 +965,11 @@
        [:path {:d    (:shape environment-3)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options]]
+      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options]]
+      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get fields 2) environment-3 options]]
+      [top-level-render (get fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -979,7 +979,7 @@
                     ["M" second-right-adjusted
                      (line/stitch line-reversed)])}]])]))
 
-(defn tierced-per-pairle [{:keys [fields line] :as field} environment top-level-render options]
+(defn tierced-per-pairle [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id-1                             (svg/id "division-tierced-pairle-1")
         mask-id-2                             (svg/id "division-tierced-pairle-2")
         mask-id-3                             (svg/id "division-tierced-pairle-3")
@@ -1063,11 +1063,11 @@
        [:path {:d    (:shape environment-3)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options]]
+      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options]]
+      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get fields 2) environment-3 options]]
+      [top-level-render (get fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -1080,7 +1080,7 @@
                     ["M" fess
                      (line/stitch line-bottom)])}]])]))
 
-(defn tierced-per-pairle-reversed [{:keys [fields line] :as field} environment top-level-render options]
+(defn tierced-per-pairle-reversed [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [mask-id-1                          (svg/id "division-tierced-pairle-reversed-1")
         mask-id-2                          (svg/id "division-tierced-pairle-reversed-2")
         mask-id-3                          (svg/id "division-tierced-pairle-reversed-3")
@@ -1166,11 +1166,11 @@
        [:path {:d    (:shape environment-3)
                :fill "#fff"}]]]
      [:g {:mask (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options]]
+      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
      [:g {:mask (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options]]
+      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
      [:g {:mask (str "url(#" mask-id-3 ")")}
-      [top-level-render (get fields 2) environment-3 options]]
+      [top-level-render (get fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -1224,9 +1224,9 @@
        (map (fn [[name key _]]
               [key name]))))
 
-(defn render [{:keys [type] :as division} environment top-level-render options]
+(defn render [{:keys [type] :as division} environment top-level-render options & {:keys [db-path]}]
   (let [function (get kinds-function-map type)]
-    [function division environment top-level-render options]))
+    [function division environment top-level-render options :db-path db-path]))
 
 (defn mandatory-part-count [type]
   (case type
