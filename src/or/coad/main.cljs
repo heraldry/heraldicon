@@ -176,6 +176,12 @@
 
 ;; views
 
+(def -current-id
+  (atom 0))
+
+(defn id [prefix]
+  (str prefix "_" (swap! -current-id inc)))
+
 (def defs
   (into
    [:defs
@@ -230,42 +236,45 @@
 
 (defn form-for-tincture [title path]
   [:div.tincture
-   [:div.setting
-    [:label {:for "tincture"} title]
-    [:select {:name "tincture"
-              :id "tincture"
-              :value (name (or @(rf/subscribe [:get-in path]) :none))
-              :on-change #(rf/dispatch [:set-in path (keyword (-> % .-target .-value))])}
-     [:option {:value "none"} "None"]
-     (for [[group-name & options] tincture/options]
-       ^{:key group-name}
-       [:optgroup {:label group-name}
-        (for [[display-name key] options]
-          ^{:key key}
-          [:option {:value (name key)} display-name])])]]])
+   (let [element-id (id "tincture")]
+     [:div.setting
+      [:label {:for element-id} title]
+      [:select {:name "tincture"
+                :id element-id
+                :value (name (or @(rf/subscribe [:get-in path]) :none))
+                :on-change #(rf/dispatch [:set-in path (keyword (-> % .-target .-value))])}
+       [:option {:value "none"} "None"]
+       (for [[group-name & options] tincture/options]
+         ^{:key group-name}
+         [:optgroup {:label group-name}
+          (for [[display-name key] options]
+            ^{:key key}
+            [:option {:value (name key)} display-name])])]])])
 
 (defn form-for-ordinary [path]
   [:<>
    [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
    [:div.ordinary.component
-    [:div.setting
-     [:label {:for "ordinary-type"} "Type"]
-     [:select {:name "ordinary-type"
-               :id "ordinary-type"
-               :value (name @(rf/subscribe [:get-in (conj path :type)]))
-               :on-change #(rf/dispatch [:set-in (conj path :type) (keyword (-> % .-target .-value))])}
-      (for [[key display-name] ordinary/options]
-        ^{:key key}
-        [:option {:value (name key)} display-name])]]
-    [:div.setting
-     [:label {:for "line2"} "Line"]
-     [:select {:name "line2"
-               :id "line2"
-               :value (name @(rf/subscribe [:get-in (concat path [:line :style])]))
-               :on-change #(rf/dispatch [:set-in (concat path [:line :style]) (keyword (-> % .-target .-value))])}
-      (for [[key display-name] line/options]
-        ^{:key key}
-        [:option {:value (name key)} display-name])]]
+    (let [element-id (id "ordinary-type")]
+      [:div.setting
+       [:label {:for element-id} "Type"]
+       [:select {:name "ordinary-type"
+                 :id element-id
+                 :value (name @(rf/subscribe [:get-in (conj path :type)]))
+                 :on-change #(rf/dispatch [:set-in (conj path :type) (keyword (-> % .-target .-value))])}
+        (for [[key display-name] ordinary/options]
+          ^{:key key}
+          [:option {:value (name key)} display-name])]])
+    (let [element-id (id "line")]
+      [:div.setting
+       [:label {:for element-id} "Line"]
+       [:select {:name "line"
+                 :id element-id
+                 :value (name @(rf/subscribe [:get-in (concat path [:line :style])]))
+                 :on-change #(rf/dispatch [:set-in (concat path [:line :style]) (keyword (-> % .-target .-value))])}
+        (for [[key display-name] line/options]
+          ^{:key key}
+          [:option {:value (name key)} display-name])]])
     [:div.parts
      [form-for-field (conj path :field)]]]])
 
@@ -371,34 +380,36 @@
           {:style {:width "40%"
                    :float "left"}}
           (when eyes-and-teeth-support
+            (let [element-id (id "eyes-and-teeth")]
+              [:div.setting
+               [:input {:type "checkbox"
+                        :id element-id
+                        :name "eyes-and-teeth"
+                        :checked (-> charge
+                                     :tincture
+                                     :eyes-and-teeth
+                                     boolean)
+                        :on-change #(let [checked (-> % .-target .-checked)]
+                                      (rf/dispatch [:set-in
+                                                    (concat path [:tincture :eyes-and-teeth])
+                                                    (if checked
+                                                      :argent
+                                                      nil)]))}]
+               [:label {:for element-id} "White eyes and teeth"]]))
+          (let [element-id (id "outline")]
             [:div.setting
              [:input {:type "checkbox"
-                      :id "eyes-and-teeth"
-                      :name "eyes-and-teeth"
+                      :id element-id
+                      :name "outline"
                       :checked (-> charge
-                                   :tincture
-                                   :eyes-and-teeth
+                                   :hints
+                                   :outline?
                                    boolean)
                       :on-change #(let [checked (-> % .-target .-checked)]
                                     (rf/dispatch [:set-in
-                                                  (concat path [:tincture :eyes-and-teeth])
-                                                  (if checked
-                                                    :argent
-                                                    nil)]))}]
-             [:label {:for "eyes-and-teeth"} "White eyes and teeth"]])
-          [:div.setting
-           [:input {:type "checkbox"
-                    :id "outline"
-                    :name "outline"
-                    :checked (-> charge
-                                 :hints
-                                 :outline?
-                                 boolean)
-                    :on-change #(let [checked (-> % .-target .-checked)]
-                                  (rf/dispatch [:set-in
-                                                (concat path [:hints :outline?])
-                                                checked]))}]
-           [:label {:for "outline"} "Draw outline"]]]
+                                                  (concat path [:hints :outline?])
+                                                  checked]))}]
+             [:label {:for element-id} "Draw outline"]])]
          [:div.spacer]]
         [:div.tree
          [tree-for-charge-map charge-map [] path charge charge-variant-data]]]]
@@ -408,27 +419,29 @@
   (let [division-type @(rf/subscribe [:get-division-type path])]
     [:div.field.component
      [:div.division
-      [:div.setting
-       [:label {:for "division-type"} "Division"]
-       [:select {:name "division-type"
-                 :id "division-type"
-                 :value (name division-type)
-                 :on-change #(rf/dispatch [:set-division path (keyword (-> % .-target .-value))])}
-        (for [[key display-name] (into [[:none "None"]] division/options)]
-          ^{:key key}
-          [:option {:value (name key)} display-name])]]
+      (let [element-id (id "division-type")]
+        [:div.setting
+         [:label {:for element-id} "Division"]
+         [:select {:name "division-type"
+                   :id element-id
+                   :value (name division-type)
+                   :on-change #(rf/dispatch [:set-division path (keyword (-> % .-target .-value))])}
+          (for [[key display-name] (into [[:none "None"]] division/options)]
+            ^{:key key}
+            [:option {:value (name key)} display-name])]])
       (when (not= division-type :none)
         [:<>
          [:div.line
-          [:div.setting
-           [:label {:for "line"} "Line"]
-           [:select {:name "line"
-                     :id "line"
-                     :value (name @(rf/subscribe [:get-in (concat path [:division :line :style])]))
-                     :on-change #(rf/dispatch [:set-in (concat path [:division :line :style]) (keyword (-> % .-target .-value))])}
-            (for [[key display-name] line/options]
-              ^{:key key}
-              [:option {:value (name key)} display-name])]]]
+          (let [element-id (id "division-type")]
+            [:div.setting
+             [:label {:for element-id} "Line"]
+             [:select {:name "line"
+                       :id element-id
+                       :value (name @(rf/subscribe [:get-in (concat path [:division :line :style])]))
+                       :on-change #(rf/dispatch [:set-in (concat path [:division :line :style]) (keyword (-> % .-target .-value))])}
+              (for [[key display-name] line/options]
+                ^{:key key}
+                [:option {:value (name key)} display-name])]])]
          [:div.title "Parts"]
          [:div.parts
           (let [content @(rf/subscribe [:get-in (concat path [:division :fields])])
@@ -472,39 +485,42 @@
 (defn form-general []
   [:div.general {:style {:margin-bottom "1.5em"}}
    [:div.title "General"]
-   [:div.setting
-    [:label {:for "escutcheon"} "Escutcheon"]
-    [:select {:name "escutcheon"
-              :id "escutcheon"
-              :value (name @(rf/subscribe [:get :coat-of-arms :escutcheon]))
-              :on-change #(rf/dispatch [:set :coat-of-arms :escutcheon (keyword (-> % .-target .-value))])}
-     (for [[key display-name] escutcheon/options]
-       ^{:key key}
-       [:option {:value (name key)} display-name])]]
-   [:div.setting
-    [:label {:for "mode"} "Mode"]
-    [:select {:name "mode"
-              :id "mode"
-              :value (name @(rf/subscribe [:get :rendering :mode]))
-              :on-change #(let [new-mode (keyword (-> % .-target .-value))]
-                            (rf/dispatch [:set :rendering :mode new-mode])
-                            (case new-mode
-                              :hatching (rf/dispatch [:set :rendering :outline :on])
-                              :colours (rf/dispatch [:set :rendering :outline :off])))}
-     (for [[display-name key] [["Colours" :colours]
-                               ["Hatching" :hatching]]]
-       ^{:key key}
-       [:option {:value (name key)} display-name])]]
-   [:div.setting
-    [:label {:for "outline"} "Outline"]
-    [:select {:name "outline"
-              :id "outline"
-              :value (name @(rf/subscribe [:get :rendering :outline]))
-              :on-change #(rf/dispatch [:set :rendering :outline (keyword (-> % .-target .-value))])}
-     (for [[display-name key] [["On" :on]
-                               ["Off" :off]]]
-       ^{:key key}
-       [:option {:value (name key)} display-name])]]])
+   (let [element-id (id "escutcheon")]
+     [:div.setting
+      [:label {:for element-id} "Escutcheon"]
+      [:select {:name "escutcheon"
+                :id element-id
+                :value (name @(rf/subscribe [:get :coat-of-arms :escutcheon]))
+                :on-change #(rf/dispatch [:set :coat-of-arms :escutcheon (keyword (-> % .-target .-value))])}
+       (for [[key display-name] escutcheon/options]
+         ^{:key key}
+         [:option {:value (name key)} display-name])]])
+   (let [element-id (id "mode")]
+     [:div.setting
+      [:label {:for element-id} "Mode"]
+      [:select {:name "mode"
+                :id element-id
+                :value (name @(rf/subscribe [:get :rendering :mode]))
+                :on-change #(let [new-mode (keyword (-> % .-target .-value))]
+                              (rf/dispatch [:set :rendering :mode new-mode])
+                              (case new-mode
+                                :hatching (rf/dispatch [:set :rendering :outline :on])
+                                :colours (rf/dispatch [:set :rendering :outline :off])))}
+       (for [[display-name key] [["Colours" :colours]
+                                 ["Hatching" :hatching]]]
+         ^{:key key}
+         [:option {:value (name key)} display-name])]])
+   (let [element-id (id "outline")]
+     [:div.setting
+      [:label {:for element-id} "Outline"]
+      [:select {:name "outline"
+                :id element-id
+                :value (name @(rf/subscribe [:get :rendering :outline]))
+                :on-change #(rf/dispatch [:set :rendering :outline (keyword (-> % .-target .-value))])}
+       (for [[display-name key] [["On" :on]
+                                 ["Off" :off]]]
+         ^{:key key}
+         [:option {:value (name key)} display-name])]])])
 
 (defn form []
   [:<>
