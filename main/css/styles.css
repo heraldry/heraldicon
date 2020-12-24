@@ -42,6 +42,8 @@ mask path.overlap {
 }
 
 .general {
+  display: inline-block;
+  min-width: 20em;
   margin-bottom: 1em;
 }
 

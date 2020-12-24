@@ -483,7 +483,7 @@
            [form-for-charge (vec (concat path [:charges idx]))]))]]]))
 
 (defn form-general []
-  [:div.general {:style {:margin-bottom "1.5em"}}
+  [:div.general.component
    [:div.title "General"]
    (let [element-id (id "escutcheon")]
      [:div.setting
