@@ -5,6 +5,7 @@
             [cljs.core.async :refer [<!]]
             [cljs.reader :as reader]
             [clojure.string :as s]
+            [clojure.walk :as walk]
             [goog.string.format]  ;; required for release build
             [or.coad.blazon :as blazon]
             [or.coad.charge :as charge]
@@ -581,13 +582,20 @@
    [:div.title "Coat of Arms"]
    [form-for-field [:coat-of-arms :field]]])
 
+(defn remove-ui-from-hints [data]
+  (walk/postwalk #(cond-> %
+                    (and (vector? %)
+                         (= (first %) :hints)) (update 1 dissoc :ui))
+                 data))
+
 (defn app []
   (fn []
-    (let [coat-of-arms @(rf/subscribe [:get :coat-of-arms])
-          mode         @(rf/subscribe [:get :rendering :mode])
-          options      {:outline? (= @(rf/subscribe [:get :rendering :outline]) :on)
-                        :mode     mode}
-          state-base64 (.encode base64 (prn-str coat-of-arms))]
+    (let [coat-of-arms          @(rf/subscribe [:get :coat-of-arms])
+          mode                  @(rf/subscribe [:get :rendering :mode])
+          options               {:outline? (= @(rf/subscribe [:get :rendering :outline]) :on)
+                                 :mode     mode}
+          stripped-coat-of-arms (remove-ui-from-hints coat-of-arms)
+          state-base64          (.encode base64 (prn-str stripped-coat-of-arms))]
       (when coat-of-arms
         (js/history.replaceState nil nil (str "#" state-base64)))
       [:<>
