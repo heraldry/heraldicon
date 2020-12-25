@@ -43,7 +43,7 @@
                                                          [second-top first-top])
                                           "z"]
                                          [first-top second-bottom]]]
-        field                          (if (:counterchanged? field)
+        field                          (if (charge/counterchangable? field parent)
                                          (assoc (charge/counterchange-field parent) :counterchanged? true)
                                          field)]
     [division/make-division
@@ -93,7 +93,7 @@
                                                          [second-left first-left])
                                           "z"]
                                          [first-right second-left]]]
-        field                          (if (:counterchanged? field)
+        field                          (if (charge/counterchangable? field parent)
                                          (assoc (charge/counterchange-field parent) :counterchanged? true)
                                          field)]
     [division/make-division
@@ -134,7 +134,7 @@
                                                          [row-left row-right-adjusted])
                                           "z"]
                                          [top-left row-right]]]
-        field                          (if (:counterchanged? field)
+        field                          (if (charge/counterchangable? field parent)
                                          (assoc (charge/counterchange-field parent) :counterchanged? true)
                                          field)]
     [division/make-division
@@ -167,7 +167,7 @@
                                        [row-right row-left])
                         "z"]
                        [row-left bottom-right]]]
-        field        (if (:counterchanged? field)
+        field        (if (charge/counterchangable? field parent)
                        (assoc (charge/counterchange-field parent) :counterchanged? true)
                        field)]
     [division/make-division
