@@ -123,7 +123,7 @@
   [:div.content
    [form-for-tincture (conj path :tincture) "Tincture"]])
 
-(defn form-for-ordinary [path]
+(defn form-for-ordinary [path & {:keys [parent-field]}]
   (let [selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])]
     [:<>
      [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
@@ -132,7 +132,7 @@
       [select (conj path :type) "type" "Type" ordinary/options]
       [select (conj path :line :style) "line" "Line" line/options]
       [:div.parts
-       [form-for-field (conj path :field)]]]]))
+       [form-for-field (conj path :field) :parent-field parent-field]]]]))
 
 (def node-icons
   {:group {:closed "fa-plus-square"
@@ -258,7 +258,7 @@
                                   :charge-attitude charge-attitude
                                   :still-on-path? following-path?]]))]))))
 
-(defn form-for-charge [path]
+(defn form-for-charge [path & {:keys [parent-field]}]
   (let [charge @(rf/subscribe [:get-in path])
         selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])
         charge-variant-data (charge/get-charge-variant-data charge)
@@ -303,20 +303,22 @@
            (get-in charge-map
                    [:lookup (:type charge)])
            :still-on-path? true]]
-         [form-for-field (conj path :field)]]]]
+         [form-for-field (conj path :field) :parent-field parent-field]]]]
       [:<>])))
 
-(defn form-for-field [path]
+(defn form-for-field [path & {:keys [parent-field]}]
   (let [division-type @(rf/subscribe [:get-division-type path])
-        selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])]
+        selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])
+        field @(rf/subscribe [:get-in path])]
     [:div.field.component
      {:class (when selected? "selected")}
      [selector path]
      [:div.division
       (when (not= path [:coat-of-arms :field])
-        [:<>
-         [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"]
-         [checkbox (conj path :counterchanged?) "counterchanged" "Counterchange" :disabled? false]])
+        [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"])
+      (when (and (not= path [:coat-of-arms :field])
+                 parent-field)
+        [checkbox (conj path :counterchanged?) "counterchanged" "Counterchange" :disabled? (not (division/counterchangable? parent-field))])
       [select path "division-type" "Division"
        (into [["None" :none]] division/options)
        :value division-type
@@ -359,7 +361,7 @@
        (let [ordinaries @(rf/subscribe [:get-in (conj path :ordinaries)])]
          (for [[idx _] (map-indexed vector ordinaries)]
            ^{:key idx}
-           [form-for-ordinary (conj path :ordinaries idx)]))]]
+           [form-for-ordinary (conj path :ordinaries idx) :parent-field field]))]]
      [:div.charges-section
       [:div.title
        "Charges"
@@ -368,7 +370,7 @@
        (let [charges @(rf/subscribe [:get-in (conj path :charges)])]
          (for [[idx _] (map-indexed vector charges)]
            ^{:key idx}
-           [form-for-charge (conj path :charges idx)]))]]]))
+           [form-for-charge (conj path :charges idx) :parent-field field]))]]]))
 
 (defn form-general []
   [:div.general.component
