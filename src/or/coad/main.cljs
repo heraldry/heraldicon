@@ -4,29 +4,26 @@
             [cljs-http.client :as http]
             [cljs.core.async :refer [<!]]
             [cljs.reader :as reader]
-            [clojure.string :as s]
             [clojure.walk :as walk]
             [goog.string.format]  ;; required for release build
             [or.coad.blazon :as blazon]
-            [or.coad.charge :as charge]
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
             [or.coad.field :as field]
             [or.coad.field-environment :as field-environment]
             [or.coad.filter :as filter]
+            [or.coad.form :as form]
             [or.coad.hatching :as hatching]
-            [or.coad.line :as line]
             [or.coad.ordinary :as ordinary]
-            [or.coad.tincture :as tincture]
-            [or.coad.util :as util]
             [re-frame.core :as rf]
             [reagent.dom :as r]))
+
+;; helper
 
 (defn remove-key-recursively [data key]
   (walk/postwalk #(cond-> %
                     (map? %) (dissoc key))
                  data))
-
 ;; subs
 
 
@@ -69,29 +66,13 @@
 
 ;; events
 
-
-(def default-coat-of-arms
-  {:escutcheon :heater
-   :field {:content {:tincture :none}}})
-
-(def default-ordinary
-  {:type :pale
-   :line {:style :straight}
-   :field {:content {:tincture :none}}})
-
-(def default-charge
-  {:type :roundel
-   :variant :default
-   :field {:content {:tincture :none}}
-   :hints {:outline? true}})
-
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
    (merge {:options {:mode :colours
                      :outline? false
                      :squiggly? false}
-           :coat-of-arms default-coat-of-arms} db)))
+           :coat-of-arms form/default-coat-of-arms} db)))
 
 (rf/reg-event-db
  :set
@@ -252,12 +233,6 @@
                   :cy spacing
                   :r size}]]])]))
 
-(defn selector [path]
-  [:a.selector {:on-click (fn [event]
-                            (rf/dispatch [:select-component path])
-                            (.stopPropagation event))}
-   [:i.fas.fa-search]])
-
 (defn render-coat-of-arms [data]
   (let [division (:division data)
         ordinaries (:ordinaries data)]
@@ -284,386 +259,11 @@
       (when (:outline? options)
         [:path.outline {:d (:shape environment)}])]]))
 
-(declare form-for-field)
-
-(defn form-for-tincture [title path]
-  [:div.tincture
-   (let [element-id (id "tincture")]
-     [:div.setting
-      [:label {:for element-id} title]
-      [:select {:name "tincture"
-                :id element-id
-                :value (name (or @(rf/subscribe [:get-in path]) :none))
-                :on-change #(rf/dispatch [:set-in path (keyword (-> % .-target .-value))])}
-       [:option {:value "none"} "None"]
-       (for [[group-name & options] tincture/options]
-         ^{:key group-name}
-         [:optgroup {:label group-name}
-          (for [[display-name key] options]
-            ^{:key key}
-            [:option {:value (name key)} display-name])])]])])
-
-(defn form-for-ordinary [path]
-  (let [selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])]
-    [:<>
-     [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
-     [:div.ordinary.component
-      {:class (when selected? "selected")}
-      (let [element-id (id "ordinary-type")]
-        [:div.setting
-         [:label {:for element-id} "Type"]
-         [:select {:name "ordinary-type"
-                   :id element-id
-                   :value (name @(rf/subscribe [:get-in (conj path :type)]))
-                   :on-change #(rf/dispatch [:set-in (conj path :type) (keyword (-> % .-target .-value))])}
-          (for [[key display-name] ordinary/options]
-            ^{:key key}
-            [:option {:value (name key)} display-name])]])
-      (let [element-id (id "line")
-            line-style-path (conj path :line :style)]
-        [:div.setting
-         [:label {:for element-id} "Line"]
-         [:select {:name "line"
-                   :id element-id
-                   :value (name @(rf/subscribe [:get-in line-style-path]))
-                   :on-change #(rf/dispatch [:set-in line-style-path (keyword (-> % .-target .-value))])}
-          (for [[key display-name] line/options]
-            ^{:key key}
-            [:option {:value (name key)} display-name])]])
-      [:div.parts
-       [form-for-field (conj path :field)]]]]))
-
-(def node-icons
-  {:group {:closed "fa-plus-square"
-           :open "fa-minus-square"}
-   :attitude {:closed "fa-plus-square"
-              :open "fa-minus-square"}
-   :charge {:closed "fa-plus-square"
-            :open "fa-minus-square"}
-   :variant {:normal "fa-image"}})
-
-(defn tree-for-charge-map [{:keys [key type name groups charges attitudes variants]}
-                           tree-path db-path
-                           selected-charge remaining-path-to-charge & {:keys [charge-type
-                                                                              charge-attitude
-                                                                              still-on-path?]}]
-
-  (let [flag-path (-> db-path
-                      (concat [:ui :charge-map])
-                      vec
-                      (conj tree-path))
-        db-open? @(rf/subscribe [:get-in flag-path])
-        open? (or (= type :root)
-                  (and (nil? db-open?)
-                       still-on-path?)
-                  db-open?)
-        charge-type (if (= type :charge)
-                      key
-                      charge-type)
-        charge-attitude (if (= type :attitude)
-                          key
-                          charge-attitude)]
-    (cond-> [:<>]
-      (not= type
-            :root) (conj
-                    [:span.node-name.clickable
-                     {:on-click (if (= type :variant)
-                                  #(rf/dispatch [:update-charge db-path {:type charge-type
-                                                                         :attitude charge-attitude
-                                                                         :variant key}])
-                                  #(rf/dispatch [:toggle-in flag-path]))
-                      :style {:color (when still-on-path? "#1b6690")}}
-                     (if (= type :variant)
-                       [:i.far {:class (-> node-icons (get type) :normal)}]
-                       (if open?
-                         [:i.far {:class (-> node-icons (get type) :open)}]
-                         [:i.far {:class (-> node-icons (get type) :closed)}]))
-                     [(cond
-                        (and (= type :variant)
-                             still-on-path?) :b
-                        (= type :charge) :b
-                        (= type :attitude) :em
-                        :else :<>) name]])
-      (and open?
-           groups) (conj [:ul
-                          (for [[key group] (sort-by first groups)]
-                            (let [following-path? (and still-on-path?
-                                                       (= (first remaining-path-to-charge)
-                                                          key))
-                                  remaining-path-to-charge (when following-path?
-                                                             (drop 1 remaining-path-to-charge))]
-                              ^{:key key}
-                              [:li.group
-                               [tree-for-charge-map
-                                group
-                                (conj tree-path :groups key)
-                                db-path selected-charge
-                                remaining-path-to-charge
-                                :charge-type charge-type
-                                :charge-attitude charge-attitude
-                                :still-on-path? following-path?]]))])
-      (and open?
-           charges) (conj [:ul
-                           (for [[key charge] (sort-by first charges)]
-                             (let [following-path? (and still-on-path?
-                                                        (-> remaining-path-to-charge
-                                                            count zero?)
-                                                        (= (:key charge)
-                                                           (:type selected-charge)))]
-                               ^{:key key}
-                               [:li.charge
-                                [tree-for-charge-map
-                                 charge
-                                 (conj tree-path :charges key)
-                                 db-path selected-charge
-                                 remaining-path-to-charge
-                                 :charge-type charge-type
-                                 :charge-attitude charge-attitude
-                                 :still-on-path? following-path?]]))])
-      (and open?
-           attitudes) (conj [:ul
-                             (for [[key attitude] (sort-by first attitudes)]
-                               (let [following-path? (and still-on-path?
-                                                          (-> remaining-path-to-charge
-                                                              count zero?)
-                                                          (= (:key attitude)
-                                                             (:attitude selected-charge)))]
-                                 ^{:key key}
-                                 [:li.attitude
-                                  [tree-for-charge-map
-                                   attitude
-                                   (conj tree-path :attitudes key)
-                                   db-path selected-charge
-                                   remaining-path-to-charge
-                                   :charge-type charge-type
-                                   :charge-attitude charge-attitude
-                                   :still-on-path? following-path?]]))])
-      (and open?
-           variants) (conj [:ul
-                            (for [[key variant] (sort-by first variants)]
-                              (let [following-path? (and still-on-path?
-                                                         (-> remaining-path-to-charge
-                                                             count zero?)
-                                                         (= (:key variant)
-                                                            (:variant selected-charge)))]
-                                ^{:key key}
-                                [:li.variant
-                                 [tree-for-charge-map
-                                  variant
-                                  (conj tree-path :variants key)
-                                  db-path selected-charge
-                                  remaining-path-to-charge
-                                  :charge-type charge-type
-                                  :charge-attitude charge-attitude
-                                  :still-on-path? following-path?]]))]))))
-
-(defn form-for-charge [path]
-  (let [charge @(rf/subscribe [:get-in path])
-        selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])
-        charge-variant-data (charge/get-charge-variant-data charge)
-        charge-map (charge/get-charge-map)
-        supported-tinctures (-> charge-variant-data
-                                :supported-tinctures
-                                set)
-        sorted-supported-tinctures (filter supported-tinctures [:armed :langued :attired :unguled])
-        eyes-and-teeth-support (:eyes-and-teeth supported-tinctures)]
-    (if (and charge-map
-             charge-variant-data)
-      [:<>
-       [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-charge path])}]]
-       [:div.charge.component
-        {:class (when selected? "selected")}
-        [selector path]
-        [:div.title (s/join " " [(-> charge :type util/translate util/upper-case-first)
-                                 (-> charge :attitude util/translate)])]
-        [:div {:style {:margin-bottom "1em"}}
-         [:div.placeholders
-          {:style {:width "60%"
-                   :float "left"}}
-          (for [t sorted-supported-tinctures]
-            ^{:key t} [form-for-tincture
-                       (util/upper-case-first (util/translate t))
-                       (conj path :tincture t)])]
-         [:div
-          {:style {:width "40%"
-                   :float "left"}}
-          (when eyes-and-teeth-support
-            (let [element-id (id "eyes-and-teeth")]
-              [:div.setting
-               [:input {:type "checkbox"
-                        :id element-id
-                        :name "eyes-and-teeth"
-                        :checked (-> charge
-                                     :tincture
-                                     :eyes-and-teeth
-                                     boolean)
-                        :on-change #(let [checked (-> % .-target .-checked)]
-                                      (rf/dispatch [:set-in
-                                                    (conj path :tincture :eyes-and-teeth)
-                                                    (if checked
-                                                      :argent
-                                                      nil)]))}]
-               [:label {:for element-id} "White eyes and teeth"]]))
-          (let [element-id (id "outline")]
-            [:div.setting
-             [:input {:type "checkbox"
-                      :id element-id
-                      :name "outline"
-                      :checked (-> charge
-                                   :hints
-                                   :outline?
-                                   boolean)
-                      :on-change #(let [checked (-> % .-target .-checked)]
-                                    (rf/dispatch [:set-in
-                                                  (conj path :hints :outline?)
-                                                  checked]))}]
-             [:label {:for element-id} "Draw outline"]])]
-         [:div.spacer]]
-        [:div.tree
-         [tree-for-charge-map charge-map [] path charge
-          (get-in charge-map
-                  [:lookup (:type charge)])
-          :still-on-path? true]]
-        [form-for-field (conj path :field)]]]
-      [:<>])))
-
-(defn form-for-field [path]
-  (let [division-type @(rf/subscribe [:get-division-type path])
-        selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])]
-    [:div.field.component
-     {:class (when selected? "selected")}
-     [selector path]
-
-     [:div.division
-      (let [element-id (id "division-type")]
-        [:div.setting
-         [:label {:for element-id} "Division"]
-         [:select {:name "division-type"
-                   :id element-id
-                   :value (name division-type)
-                   :on-change #(rf/dispatch [:set-division path (keyword (-> % .-target .-value))])}
-          (for [[key display-name] (into [[:none "None"]] division/options)]
-            ^{:key key}
-            [:option {:value (name key)} display-name])]])
-      (when (not= division-type :none)
-        [:<>
-         [:div.line
-          (let [element-id (id "division-type")
-                line-style (conj path :division :line :style)]
-            [:div.setting
-             [:label {:for element-id} "Line"]
-             [:select {:name "line"
-                       :id element-id
-                       :value (name @(rf/subscribe [:get-in line-style]))
-                       :on-change #(rf/dispatch [:set-in line-style (keyword (-> % .-target .-value))])}
-              (for [[key display-name] line/options]
-                ^{:key key}
-                [:option {:value (name key)} display-name])]])]
-         [:div.title "Parts"]
-         [:div.parts
-          (let [content @(rf/subscribe [:get-in (conj path :division :fields)])
-                mandatory-part-count (division/mandatory-part-count division-type)]
-            (for [[idx part] (map-indexed vector content)]
-              (let [part-path (conj path :division :fields idx)
-                    ref (:ref part)
-                    selected? (-> part :ui :selected?)]
-                ^{:key idx}
-                [:div.part
-                 (if ref
-                   [:<>
-                    [:a.change {:on-click #(rf/dispatch [:set-in part-path
-                                                         (get content ref)])}
-                     [:i.far.fa-edit]]
-                    [:div.component.ref
-                     {:class (when selected? "selected")}
-                     [selector part-path]
-                     [:span.same (str "Same as " (inc ref))]]]
-                   [:<>
-                    (when (>= idx mandatory-part-count)
-                      [:a.remove {:on-click #(rf/dispatch [:set-in (conj part-path :ref)
-                                                           (mod idx mandatory-part-count)])}
-                       [:i.far.fa-times-circle]])
-                    [form-for-field part-path]])])))]])]
-     (when (= division-type :none)
-       [form-for-tincture "Tincture" (conj path :content :tincture)])
-     [:div.ordinaries-section
-      [:div.title
-       "Ordinaries"
-       [:a.add {:on-click #(rf/dispatch [:add-ordinary path default-ordinary])} [:i.fas.fa-plus]]]
-      [:div.ordinaries
-       (let [ordinaries @(rf/subscribe [:get-in (conj path :ordinaries)])]
-         (for [[idx _] (map-indexed vector ordinaries)]
-           ^{:key idx}
-           [form-for-ordinary (conj path :ordinaries idx)]))]]
-     [:div.charges-section
-      [:div.title
-       "Charges"
-       [:a.add {:on-click #(rf/dispatch [:add-charge path default-charge])} [:i.fas.fa-plus]]]
-      [:div.charges
-       (let [charges @(rf/subscribe [:get-in (conj path :charges)])]
-         (for [[idx _] (map-indexed vector charges)]
-           ^{:key idx}
-           [form-for-charge (conj path :charges idx)]))]]]))
-
-(defn form-general []
-  [:div.general.component
-   [:div.title "General"]
-   [:div.setting
-    [:button {:on-click #(rf/dispatch-sync [:set :coat-of-arms default-coat-of-arms])}
-     "Reset"]]
-   (let [element-id (id "escutcheon")]
-     [:div.setting
-      [:label {:for element-id} "Escutcheon"]
-      [:select {:name "escutcheon"
-                :id element-id
-                :value (name @(rf/subscribe [:get :coat-of-arms :escutcheon]))
-                :on-change #(rf/dispatch [:set :coat-of-arms :escutcheon (keyword (-> % .-target .-value))])}
-       (for [[key display-name] escutcheon/options]
-         ^{:key key}
-         [:option {:value (name key)} display-name])]])
-   (let [on-change #(let [new-mode (keyword (-> % .-target .-value))]
-                      (rf/dispatch [:set :options :mode new-mode])
-                      (case new-mode
-                        :hatching (rf/dispatch [:set :options :outline? true])
-                        :colours (rf/dispatch [:set :options :outline? false])))]
-     [:div.setting
-      (let [current-mode @(rf/subscribe [:get :options :mode])]
-        (for [[display-name key] [["Colours" :colours]
-                                  ["Hatching" :hatching]]]
-          (let [element-id (id "mode")]
-            ^{:key key}
-            [:<>
-             [:input {:id element-id
-                      :type "radio"
-                      :name "mode"
-                      :value (name key)
-                      :checked (= key current-mode)
-                      :on-change on-change}]
-             [:label {:for element-id} display-name]])))])
-   (let [element-id (id "outline")]
-     [:div.setting
-      [:input {:type "checkbox"
-               :id element-id
-               :name "outline"
-               :checked @(rf/subscribe [:get :options :outline?])
-               :on-change #(let [checked (-> % .-target .-checked)]
-                             (rf/dispatch [:set :options :outline? checked]))}]
-      [:label {:for element-id} "Draw outline"]])
-   (let [element-id (id "squiggly")]
-     [:div.setting
-      [:input {:type "checkbox"
-               :id element-id
-               :name "squiggly"
-               :checked @(rf/subscribe [:get :options :squiggly?])
-               :on-change #(let [checked (-> % .-target .-checked)]
-                             (rf/dispatch [:set :options :squiggly? checked]))}]
-      [:label {:for element-id} "Squiggly lines (experimental)"]])])
-
-(defn form []
+(defn forms []
   [:<>
-   [form-general]
+   [form/form-general]
    [:div.title "Coat of Arms"]
-   [form-for-field [:coat-of-arms :field]]])
+   [form/form-for-field [:coat-of-arms :field]]])
 
 (defn app []
   (fn []
@@ -705,7 +305,7 @@
                        :width "calc(100vw - 27em)"
                        :height "100vh"
                        :overflow "auto"}}
-         [form]]]
+         [forms]]]
        [:div.credits
         [:a {:href "https://github.com/or/coad/"
              :target "_blank"} "Code and resource attribution on " [:i.fab.fa-github] " github:or/coad"]]])))

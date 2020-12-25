@@ -185,7 +185,7 @@
 (def options
   (->> kinds
        (map (fn [[name key _]]
-              [key name]))))
+              [name key]))))
 
 (defn field [type]
   (get kinds-map type))

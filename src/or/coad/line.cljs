@@ -189,7 +189,7 @@
 (def options
   (->> kinds
        (map (fn [[name key _]]
-              [key name]))))
+              [name key]))))
 
 (defn jiggle [[previous
                {:keys [x y] :as current}
