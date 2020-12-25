@@ -112,6 +112,7 @@
 
 (defn make-mask [data provided-placeholder-colours]
   (let [mask-id (svg/id "mask")
+        mask-inverted-id (svg/id "mask")
         unwanted-placeholder-colours (-> provided-placeholder-colours
                                          (dissoc :primary)
                                          (->>
@@ -119,13 +120,18 @@
                                           (map (fn [[k _]]
                                                  (get config/placeholder-colours k)))
                                           set))
-        adjusted-data (-> data
+        mask (-> data
+                 (replace-non-placeholder-colours-everywhere
+                  "#fff" unwanted-placeholder-colours)
+                 (replace-placeholder-colours-everywhere {:primary "#000"}))
+        mask-inverted (-> data
                           (replace-non-placeholder-colours-everywhere
-                           "#fff" unwanted-placeholder-colours)
-                          (replace-placeholder-colours-everywhere {:primary "#000"}))]
-    [mask-id adjusted-data]))
+                           "#000" unwanted-placeholder-colours)
+                          (replace-placeholder-colours-everywhere {:primary "#fff"}))]
+    [mask-id mask mask-inverted-id mask-inverted]))
 
-(defn render [{:keys [type tincture hints ui] :as charge} environment options & {:keys [db-path]}]
+(defn render [{:keys [type field tincture hints ui] :as charge}
+              environment top-level-render options & {:keys [db-path]}]
   (if-let [charge-data-path (-> charge
                                 get-charge-variant-data
                                 :path)]
@@ -160,13 +166,21 @@
                                                               (filter (fn [[_ v]]
                                                                         (not= v :none)) tincture))))
                                              (assoc :primary "none"))
-            [mask-id mask] (make-mask adjusted-charge provided-placeholder-colours)
+            [mask-id mask
+             mask-inverted-id mask-inverted] (make-mask adjusted-charge provided-placeholder-colours)
             coloured-charge (replace-placeholder-colours-everywhere
                              adjusted-charge
                              provided-placeholder-colours)]
         [:<>
-         [:mask {:id mask-id}
-          mask]
+         [:defs
+          [:mask {:id mask-id}
+           mask]
+          [:mask {:id mask-inverted-id}
+           mask-inverted]]
+         [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
+              :mask (str "url(#" mask-inverted-id ")")}
+          [:g {:transform (str "scale(" (/ 1 scale) "," (/ 1 scale) ") translate(" (- (:x position)) "," (- (:x position)) ")")}
+           [top-level-render field environment options :db-path (conj db-path :field)]]]
          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
               :mask (str "url(#" mask-id ")")
               :on-click (fn [event]
