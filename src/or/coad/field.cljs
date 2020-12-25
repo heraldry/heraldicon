@@ -22,9 +22,9 @@
                           :stroke fill}])
        division [division/render division environment render options :db-path (conj db-path :division)])
      (for [[idx ordinary] (map-indexed vector ordinaries)]
-       ^{:key idx} [ordinary/render ordinary environment render options :db-path (conj db-path :ordinaries idx)])
+       ^{:key idx} [ordinary/render ordinary field environment render options :db-path (conj db-path :ordinaries idx)])
      (for [[idx charge] (map-indexed vector charges)]
-       ^{:key idx} [charge/render charge environment render options :db-path (conj db-path :charges idx)])
+       ^{:key idx} [charge/render charge field environment render options :db-path (conj db-path :charges idx)])
      (when (-> ui :selected?)
        [:path {:d (:shape environment)
                :style {:opacity 0.25}

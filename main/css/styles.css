@@ -197,3 +197,7 @@ div.spacer {
   left: 10px;
   bottom: 10px;
 }
+
+input:disabled + label {
+  color: #ccc;
+}

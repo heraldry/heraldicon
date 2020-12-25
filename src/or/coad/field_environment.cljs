@@ -4,7 +4,8 @@
             [or.coad.vector :as v]))
 
 (defn create [shape {:keys [bounding-box context] :as meta}]
-  (let [[min-x max-x min-y max-y] (or bounding-box
+  (let [override-environment (:override-environment meta)
+        [min-x max-x min-y max-y] (or bounding-box
                                       (svg/bounding-box-from-path shape))
         top-left (v/v min-x min-y)
         top-right (v/v max-x min-y)
@@ -27,22 +28,26 @@
         right (v/v max-x (:y fess))
         honour (v/avg top fess)
         nombril (v/avg honour bottom)]
-    (-> {}
-        (assoc-in [:shape] shape)
-        (assoc-in [:width] width)
-        (assoc-in [:height] height)
-        (assoc-in [:points :top-left] top-left)
-        (assoc-in [:points :top-right] top-right)
-        (assoc-in [:points :bottom-left] bottom-left)
-        (assoc-in [:points :bottom-right] bottom-right)
-        (assoc-in [:points :top] top)
-        (assoc-in [:points :bottom] bottom)
-        (assoc-in [:points :fess] fess)
-        (assoc-in [:points :left] left)
-        (assoc-in [:points :right] right)
-        (assoc-in [:points :honour] honour)
-        (assoc-in [:points :nombril] nombril)
-        (assoc-in [:meta] meta))))
+    (if override-environment
+      (-> override-environment
+          (assoc :shape shape)
+          (assoc :meta meta))
+      (-> {}
+          (assoc-in [:shape] shape)
+          (assoc-in [:width] width)
+          (assoc-in [:height] height)
+          (assoc-in [:points :top-left] top-left)
+          (assoc-in [:points :top-right] top-right)
+          (assoc-in [:points :bottom-left] bottom-left)
+          (assoc-in [:points :bottom-right] bottom-right)
+          (assoc-in [:points :top] top)
+          (assoc-in [:points :bottom] bottom)
+          (assoc-in [:points :fess] fess)
+          (assoc-in [:points :left] left)
+          (assoc-in [:points :right] right)
+          (assoc-in [:points :honour] honour)
+          (assoc-in [:points :nombril] nombril)
+          (assoc-in [:meta] meta)))))
 
 (defn transform-to-width [environment target-width]
   (let [width (:width environment)
