@@ -12,10 +12,45 @@
       (assoc (get fields ref) :ui (:ui part))
       part)))
 
+(defn make-division [type fields parts mask-overlaps outline parent-environment parent top-level-render options & {:keys [db-path]}]
+  (let [mask-ids (->> (range (count fields))
+                      (map #(svg/id (str (name type) "-" %))))
+        environments (->> parts
+                          (map-indexed (fn [idx [shape-path bounding-box]]
+                                         (cond->
+                                          (field-environment/create
+                                           (svg/make-path shape-path)
+                                           {:parent parent
+                                            :context [type idx]
+                                            :bounding-box (svg/bounding-box bounding-box)})
+                                           (:inherit-environment? (get-field fields idx)) (assoc :points (:points parent-environment)))))
+                          vec)]
+    [:<>
+     [:defs
+      (for [[idx mask-id] (map-indexed vector mask-ids)]
+        (let [environment-shape (:shape (get environments idx))
+              overlap-paths (get mask-overlaps idx)]
+          ^{:key idx}
+          [:clipPath {:id mask-id}
+           [:path {:d environment-shape
+                   :fill "#fff"}]
+           (cond
+             (= overlap-paths :all) [:path.overlap {:d environment-shape}]
+             overlap-paths (for [[idx shape] (map-indexed vector overlap-paths)]
+                             ^{:key idx}
+                             [:path.overlap {:d shape}]))]))]
+     (for [[idx mask-id] (map-indexed vector mask-ids)]
+       ^{:key idx}
+       [:g {:clip-path (str "url(#" mask-id ")")}
+        [top-level-render
+         (get-field fields idx)
+         (get environments idx)
+         options
+         :db-path (conj db-path :fields idx)]])
+     outline]))
+
 (defn per-pale [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [mask-id-1 (svg/id "division-pale-1")
-        mask-id-2 (svg/id "division-pale-2")
-        top-left (get-in environment [:points :top-left])
+  (let [top-left (get-in environment [:points :top-left])
         bottom-right (get-in environment [:points :bottom-right])
         top (get-in environment [:points :top])
         bottom (get-in environment [:points :bottom])
@@ -24,50 +59,33 @@
                                   (:y (v/- bottom top))
                                   :angle -90
                                   :options options)
-        environment-1 (field-environment/create
-                       (svg/make-path ["M" bottom
-                                       (line/stitch line)
-                                       (infinity/path :counter-clockwise
-                                                      [:top :bottom]
-                                                      [top bottom])
-                                       "z"])
-                       {:parent field
-                        :context [:per-pale :left]
-                        :bounding-box (svg/bounding-box
-                                       [top-left bottom])})
-        environment-2 (field-environment/create
-                       (svg/make-path ["M" bottom
-                                       (line/stitch line)
-                                       (infinity/path :clockwise
-                                                      [:top :bottom]
-                                                      [top bottom])
-                                       "z"])
-                       {:parent field
-                        :context [:per-pale :left]
-                        :bounding-box (svg/bounding-box
-                                       [top bottom-right])})]
-    [:<>
-     [:defs
-      [:clipPath {:id mask-id-1}
-       [:path {:d (:shape environment-1)
-               :fill "#fff"}]]
-      [:clipPath {:id mask-id-2}
-       [:path {:d (:shape environment-2)
-               :fill "#fff"}]]]
-     [:g {:clip-path (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:clip-path (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
+        parts [[["M" bottom
+                 (line/stitch line)
+                 (infinity/path :counter-clockwise
+                                [:top :bottom]
+                                [top bottom])
+                 "z"]
+                [top-left bottom]]
+
+               [["M" bottom
+                 (line/stitch line)
+                 (infinity/path :clockwise
+                                [:top :bottom]
+                                [top bottom])
+                 "z"]
+                [top bottom-right]]]]
+    [make-division
+     :division-per-pale fields parts
+     [:all nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" bottom
-                     (line/stitch line)])}]])]))
+                     (line/stitch line)])}]])
+     environment field top-level-render options :db-path db-path]))
 
 (defn per-fess [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [mask-id-1 (svg/id "division-fess-1")
-        mask-id-2 (svg/id "division-fess-2")
-        top-left (get-in environment [:points :top-left])
+  (let [top-left (get-in environment [:points :top-left])
         bottom-right (get-in environment [:points :bottom-right])
         left (get-in environment [:points :left])
         right (get-in environment [:points :right])
@@ -75,51 +93,33 @@
         {line :line} (line/create line-style
                                   (:x (v/- right left))
                                   :options options)
-        environment-1 (field-environment/create
-                       (svg/make-path ["M" left
-                                       (line/stitch line)
-                                       (infinity/path :counter-clockwise
-                                                      [:right :left]
-                                                      [right left])
-                                       "z"])
-                       {:parent field
-                        :context [:per-fess :top]
-                        :bounding-box (svg/bounding-box
-                                       [top-left right])})
-        environment-2 (field-environment/create
-                       (svg/make-path ["M" left
-                                       (line/stitch line)
-                                       (infinity/path :clockwise
-                                                      [:right :left]
-                                                      [right left])
-                                       "z"])
-                       {:parent field
-                        :context [:per-fess :bottom]
-                        :bounding-box (svg/bounding-box
-                                       [left bottom-right])})]
-    [:<>
-     [:defs
-      [:clipPath {:id mask-id-1}
-       [:path {:d (:shape environment-1)
-               :fill "#fff"}]
-       [:path.overlap {:d (:shape environment-1)}]]
-      [:clipPath {:id mask-id-2}
-       [:path {:d (:shape environment-2)
-               :fill "#fff"}]]]
-     [:g {:clip-path (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:clip-path (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
+        parts [[["M" left
+                 (line/stitch line)
+                 (infinity/path :counter-clockwise
+                                [:right :left]
+                                [right left])
+                 "z"]
+                [top-left right]]
+
+               [["M" left
+                 (line/stitch line)
+                 (infinity/path :clockwise
+                                [:right :left]
+                                [right left])
+                 "z"]
+                [left bottom-right]]]]
+    [make-division
+     :division-per-fess fields parts
+     [:all nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" left
-                     (line/stitch line)])}]])]))
+                     (line/stitch line)])}]])
+     environment field top-level-render options :db-path db-path]))
 
 (defn per-bend [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [mask-id-1 (svg/id "division-bend-1")
-        mask-id-2 (svg/id "division-bend-2")
-        top-left (get-in environment [:points :top-left])
+  (let [top-left (get-in environment [:points :top-left])
         top-right (get-in environment [:points :top-right])
         fess (get-in environment [:points :fess])
         bend-intersection (v/project top-left fess (:x top-right))
@@ -128,51 +128,32 @@
                                   (v/abs (v/- bend-intersection top-left))
                                   :angle 45
                                   :options options)
-        environment-1 (field-environment/create
-                       (svg/make-path ["M" top-left
-                                       (line/stitch line)
-                                       (infinity/path :counter-clockwise
-                                                      [:right :top-left]
-                                                      [bend-intersection top-left])
-                                       "z"])
-                       {:parent field
-                        :context [:per-bend :top]
-                        :bounding-box (svg/bounding-box
-                                       [top-left bend-intersection])})
-        environment-2 (field-environment/create
-                       (svg/make-path ["M" top-left
-                                       (line/stitch line)
-                                       (infinity/path :clockwise
-                                                      [:right :top-left]
-                                                      [bend-intersection top-left])
-                                       "z"])
-                       {:parent field
-                        :context [:per-bend :bottom]
-                        :bounding-box (svg/bounding-box
-                                       [top-left bend-intersection])})]
-    [:<>
-     [:defs
-      [:clipPath {:id mask-id-1}
-       [:path {:d (:shape environment-1)
-               :fill "#fff"}]
-       [:path.overlap {:d (:shape environment-1)}]]
-      [:clipPath {:id mask-id-2}
-       [:path {:d (:shape environment-2)
-               :fill "#fff"}]]]
-     [:g {:clip-path (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:clip-path (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
+        parts [[["M" top-left
+                 (line/stitch line)
+                 (infinity/path :counter-clockwise
+                                [:right :top-left]
+                                [bend-intersection top-left])
+                 "z"]
+                [top-left bend-intersection]]
+               [["M" top-left
+                 (line/stitch line)
+                 (infinity/path :clockwise
+                                [:right :top-left]
+                                [bend-intersection top-left])
+                 "z"]
+                [top-left bend-intersection]]]]
+    [make-division
+     :division-per-bend fields parts
+     [:all nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" top-left
-                     (line/stitch line)])}]])]))
+                     (line/stitch line)])}]])
+     environment field top-level-render options :db-path db-path]))
 
 (defn per-bend-sinister [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [mask-id-1 (svg/id "division-bend-right-1")
-        mask-id-2 (svg/id "division-bend-right-2")
-        top-left (get-in environment [:points :top-left])
+  (let [top-left (get-in environment [:points :top-left])
         top-right (get-in environment [:points :top-right])
         bottom-left (get-in environment [:points :bottom-left])
         fess (get-in environment [:points :fess])
@@ -188,51 +169,33 @@
                                     top-right
                                      bend-intersection
                                      line-length)
-        environment-1 (field-environment/create
-                       (svg/make-path ["M" bend-intersection-adjusted
-                                       (line/stitch line)
-                                       (infinity/path :counter-clockwise
-                                                      [:top-right :left]
-                                                      [top-right bend-intersection])
-                                       "z"])
-                       {:parent field
-                        :context [:per-bend-sinister :top]
-                        :bounding-box (svg/bounding-box
-                                       [top-right bend-intersection])})
-        environment-2 (field-environment/create
-                       (svg/make-path ["M" bend-intersection-adjusted
-                                       (line/stitch line)
-                                       (infinity/path :clockwise
-                                                      [:top-right :left]
-                                                      [top-right bend-intersection])
-                                       "z"])
-                       {:parent field
-                        :context [:per-bend-sinister :bottom]
-                        :bounding-box (svg/bounding-box
-                                       [top-right bottom-left])})]
-    [:<>
-     [:defs
-      [:clipPath {:id mask-id-1}
-       [:path {:d (:shape environment-1)
-               :fill "#fff"}]
-       [:path.overlap {:d (:shape environment-1)}]]
-      [:clipPath {:id mask-id-2}
-       [:path {:d (:shape environment-2)
-               :fill "#fff"}]]]
-     [:g {:clip-path (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:clip-path (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
+        parts [[["M" bend-intersection-adjusted
+                 (line/stitch line)
+                 (infinity/path :counter-clockwise
+                                [:top-right :left]
+                                [top-right bend-intersection])
+                 "z"]
+                [top-right bend-intersection]]
+
+               [["M" bend-intersection-adjusted
+                 (line/stitch line)
+                 (infinity/path :clockwise
+                                [:top-right :left]
+                                [top-right bend-intersection])
+                 "z"]
+                [top-right bottom-left]]]]
+    [make-division
+     :division-per-bend-sinister fields parts
+     [:all nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" bend-intersection-adjusted
-                     (line/stitch line)])}]])]))
+                     (line/stitch line)])}]])
+     environment field top-level-render options :db-path db-path]))
 
 (defn per-chevron [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [mask-id-1 (svg/id "division-chevron-1")
-        mask-id-2 (svg/id "division-chevron-2")
-        line-style (or (:style line) :straight)
+  (let [line-style (or (:style line) :straight)
         top-left (get-in environment [:points :top-left])
         top-right (get-in environment [:points :top-right])
         bottom-left (get-in environment [:points :bottom-left])
@@ -250,60 +213,40 @@
                                         :angle 45
                                         :options options)
         bend-intersection-left-adjusted (v/extend fess bend-intersection-left line-left-length)
-        environment-1 (field-environment/create
-                       (svg/make-path ["M" bend-intersection-left-adjusted
-                                       (line/stitch line-left)
-                                       "L" fess
-                                       (line/stitch line-right)
-                                       (infinity/path :counter-clockwise
-                                                      [:right :left]
-                                                      [bend-intersection-right bend-intersection-left])
-                                       "z"])
-                       {:parent field
-                        :context [:per-chevron :top]
-                        :bounding-box (svg/bounding-box
-                                       [top-left bottom-right])})
-        environment-2 (field-environment/create
-                       (svg/make-path ["M" bend-intersection-left-adjusted
-                                       (line/stitch line-left)
-                                       "L" fess
-                                       (line/stitch line-right)
-                                       (infinity/path :clockwise
-                                                      [:right :left]
-                                                      [bend-intersection-right bend-intersection-left])
-                                       "z"
-                                       "z"])
-                       {:parent field
-                        :context [:per-chevron :bottom]
-                        :bounding-box (svg/bounding-box
-                                       [bottom-left fess bottom-right])})]
-    [:<>
-     [:defs
-      [:clipPath {:id mask-id-1}
-       [:path {:d (:shape environment-1)
-               :fill "#fff"}]
-       [:path.overlap {:d (:shape environment-1)}]]
-      [:clipPath {:id mask-id-2}
-       [:path {:d (:shape environment-2)
-               :fill "#fff"}]]]
-     [:g {:clip-path (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:clip-path (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
+        parts [[["M" bend-intersection-left-adjusted
+                 (line/stitch line-left)
+                 "L" fess
+                 (line/stitch line-right)
+                 (infinity/path :counter-clockwise
+                                [:right :left]
+                                [bend-intersection-right bend-intersection-left])
+                 "z"]
+                [top-left bottom-right]]
+
+               [["M" bend-intersection-left-adjusted
+                 (line/stitch line-left)
+                 "L" fess
+                 (line/stitch line-right)
+                 (infinity/path :clockwise
+                                [:right :left]
+                                [bend-intersection-right bend-intersection-left])
+                 "z"
+                 "z"]
+                [bottom-left fess bottom-right]]]]
+    [make-division
+     :division-per-chevron fields parts
+     [:all nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" bend-intersection-left-adjusted
                      (line/stitch line-left)
                      "L" fess
-                     (line/stitch line-right)])}]])]))
+                     (line/stitch line-right)])}]])
+     environment field top-level-render options :db-path db-path]))
 
 (defn per-saltire [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [mask-id-1 (svg/id "division-saltire-1")
-        mask-id-2 (svg/id "division-saltire-2")
-        mask-id-3 (svg/id "division-saltire-3")
-        mask-id-4 (svg/id "division-saltire-4")
-        line-style (or (:style line) :straight)
+  (let [line-style (or (:style line) :straight)
         top-left (get-in environment [:points :top-left])
         top-right (get-in environment [:points :top-right])
         bottom-left (get-in environment [:points :bottom-left])
@@ -341,87 +284,55 @@
                                           fess
                                            bend-intersection-right
                                            line-bottom-right-length)
-        environment-1 (field-environment/create
-                       (svg/make-path ["M" top-left-adjusted
-                                       (line/stitch line-top-left)
-                                       "L" fess
-                                       (line/stitch line-top-right)
-                                       (infinity/path :counter-clockwise
-                                                      [:top-right :top-left]
-                                                      [top-right top-left])
-                                       "z"])
-                       {:parent field
-                        :context [:per-saltire :top]
-                        :bounding-box (svg/bounding-box
-                                       [top-left fess top-right])})
-        environment-2 (field-environment/create
-                       (svg/make-path ["M" bend-intersection-right-adjusted
-                                       (line/stitch line-bottom-right)
-                                       "L" fess
-                                       (line/stitch line-top-right)
-                                       (infinity/path :clockwise
-                                                      [:top-right :bottom]
-                                                      [top-right bend-intersection-right])
-                                       "z"])
-                       {:parent field
-                        :context [:per-saltire :right]
-                        :bounding-box (svg/bounding-box
-                                       [top-right fess bottom-right])})
-        environment-3 (field-environment/create
-                       (svg/make-path ["M" bend-intersection-right-adjusted
-                                       (line/stitch line-bottom-right)
-                                       "L" fess
-                                       (line/stitch line-bottom-left)
-                                       (infinity/path :counter-clockwise
-                                                      [:left :right]
-                                                      [bend-intersection-left bend-intersection-right])
-                                       "z"])
-                       {:parent field
-                        :context [:per-saltire :bottom]
-                        :bounding-box (svg/bounding-box
-                                       [bottom-left fess bottom-right])})
-        environment-4 (field-environment/create
-                       (svg/make-path ["M" top-left-adjusted
-                                       (line/stitch line-top-left)
-                                       "L" fess
-                                       (line/stitch line-bottom-left)
-                                       (infinity/path :clockwise
-                                                      [:bottom-left :top-left]
-                                                      [bend-intersection-left top-left])
-                                       "z"])
-                       {:parent field
-                        :context [:per-saltire :left]
-                        :bounding-box (svg/bounding-box
-                                       [top-left fess bottom-left])})]
-    [:<>
-     [:defs
-      [:clipPath {:id mask-id-1}
-       [:path {:d (:shape environment-1)
-               :fill "#fff"}]
-       [:path.overlap {:d (:shape environment-1)}]]
-      [:clipPath {:id mask-id-2}
-       [:path {:d (:shape environment-2)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" bend-intersection-right-adjusted
-                            (line/stitch line-bottom-right)])}]]
-      [:clipPath {:id mask-id-3}
-       [:path {:d (:shape environment-3)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" fess
-                            (line/stitch line-bottom-left)])}]]
-      [:clipPath {:id mask-id-4}
-       [:path {:d (:shape environment-4)
-               :fill "#fff"}]]]
-     [:g {:clip-path (str "url(#" mask-id-1 ")")}
-      [top-level-render (get-field fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:clip-path (str "url(#" mask-id-2 ")")}
-      [top-level-render (get-field fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:clip-path (str "url(#" mask-id-3 ")")}
-      [top-level-render (get-field fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
-     [:g {:clip-path (str "url(#" mask-id-4 ")")}
-      [top-level-render (get-field fields 3) environment-4 options :db-path (conj db-path :fields 3)]]
+        parts [[["M" top-left-adjusted
+                 (line/stitch line-top-left)
+                 "L" fess
+                 (line/stitch line-top-right)
+                 (infinity/path :counter-clockwise
+                                [:top-right :top-left]
+                                [top-right top-left])
+                 "z"]
+                [top-left fess top-right]]
+
+               [["M" bend-intersection-right-adjusted
+                 (line/stitch line-bottom-right)
+                 "L" fess
+                 (line/stitch line-top-right)
+                 (infinity/path :clockwise
+                                [:top-right :bottom]
+                                [top-right bend-intersection-right])
+                 "z"]
+                [top-right fess bottom-right]]
+
+               [["M" bend-intersection-right-adjusted
+                 (line/stitch line-bottom-right)
+                 "L" fess
+                 (line/stitch line-bottom-left)
+                 (infinity/path :counter-clockwise
+                                [:left :right]
+                                [bend-intersection-left bend-intersection-right])
+                 "z"]
+                [bottom-left fess bottom-right]]
+
+               [["M" top-left-adjusted
+                 (line/stitch line-top-left)
+                 "L" fess
+                 (line/stitch line-bottom-left)
+                 (infinity/path :clockwise
+                                [:bottom-left :top-left]
+                                [bend-intersection-left top-left])
+                 "z"]
+                [top-left fess bottom-left]]]]
+    [make-division
+     :division-per-saltire fields parts
+     [:all
+      [(svg/make-path
+        ["M" bend-intersection-right-adjusted
+         (line/stitch line-bottom-right)])]
+      [(svg/make-path
+        ["M" fess
+         (line/stitch line-bottom-left)])]
+      nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -435,14 +346,11 @@
                      (line/stitch line-bottom-right)])}]
         [:path {:d (svg/make-path
                     ["M" fess
-                     (line/stitch line-bottom-left)])}]])]))
+                     (line/stitch line-bottom-left)])}]])
+     environment field top-level-render options :db-path db-path]))
 
 (defn quarterly [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [mask-id-1 (svg/id "division-quarterly-1")
-        mask-id-2 (svg/id "division-quarterly-2")
-        mask-id-3 (svg/id "division-quarterly-3")
-        mask-id-4 (svg/id "division-quarterly-4")
-        line-style (or (:style line) :straight)
+  (let [line-style (or (:style line) :straight)
         top-left (get-in environment [:points :top-left])
         top-right (get-in environment [:points :top-right])
         bottom-left (get-in environment [:points :bottom-left])
@@ -475,87 +383,55 @@
                                        :options options)
         top-adjusted (v/extend fess top line-top-length)
         bottom-adjusted (v/extend fess bottom line-bottom-length)
-        environment-1 (field-environment/create
-                       (svg/make-path ["M" top-adjusted
-                                       (line/stitch line-top)
-                                       "L" fess
-                                       (line/stitch line-left)
-                                       (infinity/path :clockwise
-                                                      [:left :top]
-                                                      [left top])
-                                       "z"])
-                       {:parent field
-                        :context [:per-quarterly :top-left]
-                        :bounding-box (svg/bounding-box
-                                       [top-left fess])})
-        environment-2 (field-environment/create
-                       (svg/make-path ["M" top-adjusted
-                                       (line/stitch line-top)
-                                       "L" fess
-                                       (line/stitch line-right)
-                                       (infinity/path :counter-clockwise
-                                                      [:right :top]
-                                                      [right top])
-                                       "z"])
-                       {:parent field
-                        :context [:per-quarterly :top-right]
-                        :bounding-box (svg/bounding-box
-                                       [fess top-right])})
-        environment-3 (field-environment/create
-                       (svg/make-path ["M" bottom-adjusted
-                                       (line/stitch line-bottom)
-                                       "L" fess
-                                       (line/stitch line-right)
-                                       (infinity/path :clockwise
-                                                      [:right :bottom]
-                                                      [right bottom])
-                                       "z"])
-                       {:parent field
-                        :context [:per-quarterly :bottom-right]
-                        :bounding-box (svg/bounding-box
-                                       [fess bottom-right])})
-        environment-4 (field-environment/create
-                       (svg/make-path ["M" bottom-adjusted
-                                       (line/stitch line-bottom)
-                                       "L" fess
-                                       (line/stitch line-left)
-                                       (infinity/path :counter-clockwise
-                                                      [:left :bottom]
-                                                      [left bottom])
-                                       "z"])
-                       {:parent field
-                        :context [:per-quarterly :bottom-left]
-                        :bounding-box (svg/bounding-box
-                                       [fess bottom-left])})]
-    [:<>
-     [:defs
-      [:clipPath {:id mask-id-1}
-       [:path {:d (:shape environment-1)
-               :fill "#fff"}]
-       [:path.overlap {:d (:shape environment-1)}]]
-      [:clipPath {:id mask-id-2}
-       [:path {:d (:shape environment-2)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" fess
-                            (line/stitch line-right)])}]]
-      [:clipPath {:id mask-id-3}
-       [:path {:d (:shape environment-3)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" bottom-adjusted
-                            (line/stitch line-bottom)])}]]
-      [:clipPath {:id mask-id-4}
-       [:path {:d (:shape environment-4)
-               :fill "#fff"}]]]
-     [:g {:clip-path (str "url(#" mask-id-1 ")")}
-      [top-level-render (get-field fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:clip-path (str "url(#" mask-id-2 ")")}
-      [top-level-render (get-field fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:clip-path (str "url(#" mask-id-3 ")")}
-      [top-level-render (get-field fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
-     [:g {:clip-path (str "url(#" mask-id-4 ")")}
-      [top-level-render (get-field fields 3) environment-4 options :db-path (conj db-path :fields 3)]]
+        parts [[["M" top-adjusted
+                 (line/stitch line-top)
+                 "L" fess
+                 (line/stitch line-left)
+                 (infinity/path :clockwise
+                                [:left :top]
+                                [left top])
+                 "z"]
+                [top-left fess]]
+
+               [["M" top-adjusted
+                 (line/stitch line-top)
+                 "L" fess
+                 (line/stitch line-right)
+                 (infinity/path :counter-clockwise
+                                [:right :top]
+                                [right top])
+                 "z"]
+                [fess top-right]]
+
+               [["M" bottom-adjusted
+                 (line/stitch line-bottom)
+                 "L" fess
+                 (line/stitch line-right)
+                 (infinity/path :clockwise
+                                [:right :bottom]
+                                [right bottom])
+                 "z"]
+                [fess bottom-right]]
+
+               [["M" bottom-adjusted
+                 (line/stitch line-bottom)
+                 "L" fess
+                 (line/stitch line-left)
+                 (infinity/path :counter-clockwise
+                                [:left :bottom]
+                                [left bottom])
+                 "z"]
+                [fess bottom-left]]]]
+    [make-division
+     :division-quarterly fields parts
+     [:all
+      [(svg/make-path
+        ["M" fess
+         (line/stitch line-right)])]
+      [(svg/make-path
+        ["M" bottom-adjusted
+         (line/stitch line-bottom)])]
+      nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -569,18 +445,11 @@
                      (line/stitch line-bottom)])}]
         [:path {:d (svg/make-path
                     ["M" fess
-                     (line/stitch line-left)])}]])]))
+                     (line/stitch line-left)])}]])
+     environment field top-level-render options :db-path db-path]))
 
 (defn gyronny [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [mask-id-1 (svg/id "division-gyronny-1")
-        mask-id-2 (svg/id "division-gyronny-2")
-        mask-id-3 (svg/id "division-gyronny-3")
-        mask-id-4 (svg/id "division-gyronny-4")
-        mask-id-5 (svg/id "division-gyronny-5")
-        mask-id-6 (svg/id "division-gyronny-6")
-        mask-id-7 (svg/id "division-gyronny-7")
-        mask-id-8 (svg/id "division-gyronny-8")
-        line-style (or (:style line) :straight)
+  (let [line-style (or (:style line) :straight)
         top-left (get-in environment [:points :top-left])
         top-right (get-in environment [:points :top-right])
         bottom-left (get-in environment [:points :bottom-left])
@@ -639,171 +508,107 @@
                                               :flipped? true
                                               :angle -225
                                               :options options)
-        environment-1 (field-environment/create
-                       (svg/make-path ["M" top-adjusted
-                                       (line/stitch line-top)
-                                       "L" fess
-                                       (line/stitch line-top-left)
-                                       (infinity/path :clockwise
-                                                      [:top-left :top]
-                                                      [top-left top])
-                                       "z"])
-                       {:parent field
-                        :context [:per-gyronny :one]
-                        :bounding-box (svg/bounding-box
-                                       [top-left fess top])})
-        environment-2 (field-environment/create
-                       (svg/make-path ["M" top-adjusted
-                                       (line/stitch line-top)
-                                       "L" fess
-                                       (line/stitch line-top-right)
-                                       (infinity/path :counter-clockwise
-                                                      [:top-right :top]
-                                                      [top-right top])
-                                       "z"])
-                       {:parent field
-                        :context [:per-gyronny :two]
-                        :bounding-box (svg/bounding-box
-                                       [top fess top-right])})
-        environment-3 (field-environment/create
-                       (svg/make-path ["M" right-adjusted
-                                       (line/stitch line-right)
-                                       "L" fess
-                                       (line/stitch line-top-right)
-                                       (infinity/path :clockwise
-                                                      [:top-right :right]
-                                                      [top-right right])
-                                       "z"])
-                       {:parent field
-                        :context [:per-gyronny :three]
-                        :bounding-box (svg/bounding-box
-                                       [top-right fess right])})
-        environment-4 (field-environment/create
-                       (svg/make-path ["M" right-adjusted
-                                       (line/stitch line-right)
-                                       "L" fess
-                                       (line/stitch line-bottom-right)
-                                       (infinity/path :counter-clockwise
-                                                      [:bottom-right :right]
-                                                      [bend-intersection-right right])
-                                       "z"])
-                       {:parent field
-                        :context [:per-gyronny :four]
-                        :bounding-box (svg/bounding-box
-                                       [right fess bottom-right])})
-        environment-5 (field-environment/create
-                       (svg/make-path ["M" bottom-adjusted
-                                       (line/stitch line-bottom)
-                                       "L" fess
-                                       (line/stitch line-bottom-right)
-                                       (infinity/path :clockwise
-                                                      [:bottom-right :bottom]
-                                                      [bend-intersection-right bottom])
-                                       "z"])
-                       {:parent field
-                        :context [:per-gyronny :five]
-                        :bounding-box (svg/bounding-box
-                                       [bottom-right fess bottom])})
-        environment-6 (field-environment/create
-                       (svg/make-path ["M" bottom-adjusted
-                                       (line/stitch line-bottom)
-                                       "L" fess
-                                       (line/stitch line-bottom-left)
-                                       (infinity/path :counter-clockwise
-                                                      [:bottom-left :bottom]
-                                                      [bend-intersection-left bottom])
-                                       "z"])
-                       {:parent field
-                        :context [:per-gyronny :six]
-                        :bounding-box (svg/bounding-box
-                                       [bottom fess bottom-left])})
-        environment-7 (field-environment/create
-                       (svg/make-path ["M" left-adjusted
-                                       (line/stitch line-left)
-                                       "L" fess
-                                       (line/stitch line-bottom-left)
-                                       (infinity/path :clockwise
-                                                      [:bottom-left :left]
-                                                      [bend-intersection-left left])
-                                       "z"])
-                       {:parent field
-                        :context [:per-gyronny :seven]
-                        :bounding-box (svg/bounding-box
-                                       [bottom-left fess left])})
-        environment-8 (field-environment/create
-                       (svg/make-path ["M" left-adjusted
-                                       (line/stitch line-left)
-                                       "L" fess
-                                       (line/stitch line-top-left)
-                                       (infinity/path :counter-clockwise
-                                                      [:top-left :left]
-                                                      [top-left left])
-                                       "z"])
-                       {:parent field
-                        :context [:per-gyronny :eight]
-                        :bounding-box (svg/bounding-box
-                                       [left fess top-left])})]
-    [:<>
-     [:defs
-      [:clipPath {:id mask-id-1}
-       [:path {:d (:shape environment-1)
-               :fill "#fff"}]
-       [:path.overlap {:d (:shape environment-1)}]]
-      [:clipPath {:id mask-id-2}
-       [:path {:d (:shape environment-2)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" fess
-                            (line/stitch line-top-right)])}]]
-      [:clipPath {:id mask-id-3}
-       [:path {:d (:shape environment-3)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" right-adjusted
-                            (line/stitch line-right)])}]]
-      [:clipPath {:id mask-id-4}
-       [:path {:d (:shape environment-4)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" fess
-                            (line/stitch line-bottom-right)])}]]
-      [:clipPath {:id mask-id-5}
-       [:path {:d (:shape environment-5)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" bottom-adjusted
-                            (line/stitch line-bottom)])}]]
-      [:clipPath {:id mask-id-6}
-       [:path {:d (:shape environment-6)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" fess
-                            (line/stitch line-bottom-left)])}]]
-      [:clipPath {:id mask-id-7}
-       [:path {:d (:shape environment-7)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" left-adjusted
-                            (line/stitch line-left)])}]]
-      [:clipPath {:id mask-id-8}
-       [:path {:d (:shape environment-8)
-               :fill "#fff"}]]]
-     [:g {:clip-path (str "url(#" mask-id-1 ")")}
-      [top-level-render (get-field fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:clip-path (str "url(#" mask-id-2 ")")}
-      [top-level-render (get-field fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:clip-path (str "url(#" mask-id-3 ")")}
-      [top-level-render (get-field fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
-     [:g {:clip-path (str "url(#" mask-id-4 ")")}
-      [top-level-render (get-field fields 3) environment-4 options :db-path (conj db-path :fields 3)]]
-     [:g {:clip-path (str "url(#" mask-id-5 ")")}
-      [top-level-render (get-field fields 4) environment-5 options :db-path (conj db-path :fields 4)]]
-     [:g {:clip-path (str "url(#" mask-id-6 ")")}
-      [top-level-render (get-field fields 5) environment-6 options :db-path (conj db-path :fields 5)]]
-     [:g {:clip-path (str "url(#" mask-id-7 ")")}
-      [top-level-render (get-field fields 6) environment-7 options :db-path (conj db-path :fields 6)]]
-     [:g {:clip-path (str "url(#" mask-id-8 ")")}
-      [top-level-render (get-field fields 7) environment-8 options :db-path (conj db-path :fields 7)]]
+        parts [[["M" top-adjusted
+                 (line/stitch line-top)
+                 "L" fess
+                 (line/stitch line-top-left)
+                 (infinity/path :clockwise
+                                [:top-left :top]
+                                [top-left top])
+                 "z"]
+                [top-left fess top]]
+
+               [["M" top-adjusted
+                 (line/stitch line-top)
+                 "L" fess
+                 (line/stitch line-top-right)
+                 (infinity/path :counter-clockwise
+                                [:top-right :top]
+                                [top-right top])
+                 "z"]
+                [top fess top-right]]
+
+               [["M" right-adjusted
+                 (line/stitch line-right)
+                 "L" fess
+                 (line/stitch line-top-right)
+                 (infinity/path :clockwise
+                                [:top-right :right]
+                                [top-right right])
+                 "z"]
+                [top-right fess right]]
+
+               [["M" right-adjusted
+                 (line/stitch line-right)
+                 "L" fess
+                 (line/stitch line-bottom-right)
+                 (infinity/path :counter-clockwise
+                                [:bottom-right :right]
+                                [bend-intersection-right right])
+                 "z"]
+                [right fess bottom-right]]
+
+               [["M" bottom-adjusted
+                 (line/stitch line-bottom)
+                 "L" fess
+                 (line/stitch line-bottom-right)
+                 (infinity/path :clockwise
+                                [:bottom-right :bottom]
+                                [bend-intersection-right bottom])
+                 "z"]
+                [bottom-right fess bottom]]
+
+               [["M" bottom-adjusted
+                 (line/stitch line-bottom)
+                 "L" fess
+                 (line/stitch line-bottom-left)
+                 (infinity/path :counter-clockwise
+                                [:bottom-left :bottom]
+                                [bend-intersection-left bottom])
+                 "z"]
+                [bottom fess bottom-left]]
+
+               [["M" left-adjusted
+                 (line/stitch line-left)
+                 "L" fess
+                 (line/stitch line-bottom-left)
+                 (infinity/path :clockwise
+                                [:bottom-left :left]
+                                [bend-intersection-left left])
+                 "z"]
+                [bottom-left fess left]]
+
+               [["M" left-adjusted
+                 (line/stitch line-left)
+                 "L" fess
+                 (line/stitch line-top-left)
+                 (infinity/path :counter-clockwise
+                                [:top-left :left]
+                                [top-left left])
+                 "z"]
+                [left fess top-left]]]]
+    [make-division
+     :division-gyronny fields parts
+     [:all
+      [(svg/make-path
+        ["M" fess
+         (line/stitch line-top-right)])]
+      [(svg/make-path
+        ["M" right-adjusted
+         (line/stitch line-right)])]
+      [(svg/make-path
+        ["M" fess
+         (line/stitch line-bottom-right)])]
+      [(svg/make-path
+        ["M" bottom-adjusted
+         (line/stitch line-bottom)])]
+      [(svg/make-path
+        ["M" fess
+         (line/stitch line-bottom-left)])]
+      [(svg/make-path
+        ["M" left-adjusted
+         (line/stitch line-left)])]
+      nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -829,13 +634,11 @@
                      (line/stitch line-bottom-left)])}]
         [:path {:d (svg/make-path
                     ["M" left-adjusted
-                     (line/stitch line-left)])}]])]))
+                     (line/stitch line-left)])}]])
+     environment field top-level-render options :db-path db-path]))
 
 (defn tierced-per-pale [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [mask-id-1 (svg/id "division-tierced-pale-1")
-        mask-id-2 (svg/id "division-tierced-pale-2")
-        mask-id-3 (svg/id "division-tierced-pale-3")
-        line-style (or (:style line) :straight)
+  (let [line-style (or (:style line) :straight)
         top (get-in environment [:points :top])
         top-left (get-in environment [:points :top-left])
         bottom (get-in environment [:points :bottom])
@@ -860,64 +663,40 @@
                                                     :reversed? true
                                                     :options options)
         second-bottom-adjusted (v/extend second-top second-bottom line-reversed-length)
-        environment-1 (field-environment/create
-                       (svg/make-path ["M" first-top
-                                       (line/stitch line)
-                                       (infinity/path :clockwise
-                                                      [:bottom :top]
-                                                      [first-bottom first-top])
-                                       "z"])
-                       {:parent field
-                        :context [:tierced-per-pale :left]
-                        :bounding-box (svg/bounding-box
-                                       [top-left first-bottom])})
-        environment-2 (field-environment/create
-                       (svg/make-path ["M" second-bottom-adjusted
-                                       (line/stitch line-reversed)
-                                       (infinity/path :counter-clockwise
-                                                      [:top :top]
-                                                      [second-top first-top])
-                                       (line/stitch line)
-                                       (infinity/path :counter-clockwise
-                                                      [:bottom :bottom]
-                                                      [first-bottom second-bottom])
-                                       "z"])
-                       {:parent field
-                        :context [:tierced-per-pale :middle]
-                        :bounding-box (svg/bounding-box
-                                       [first-top second-bottom])})
-        environment-3 (field-environment/create
-                       (svg/make-path ["M" second-bottom-adjusted
-                                       (line/stitch line-reversed)
-                                       (infinity/path :clockwise
-                                                      [:top :bottom]
-                                                      [second-top second-bottom])
-                                       "z"])
-                       {:parent field
-                        :context [:tierced-per-pale :right]
-                        :bounding-box (svg/bounding-box
-                                       [second-top bottom-right])})]
-    [:<>
-     [:defs
-      [:clipPath {:id mask-id-1}
-       [:path {:d (:shape environment-1)
-               :fill "#fff"}]
-       [:path.overlap {:d (:shape environment-1)}]]
-      [:clipPath {:id mask-id-2}
-       [:path {:d (:shape environment-2)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" second-bottom-adjusted
-                            (line/stitch line-reversed)])}]]
-      [:clipPath {:id mask-id-3}
-       [:path {:d (:shape environment-3)
-               :fill "#fff"}]]]
-     [:g {:clip-path (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:clip-path (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:clip-path (str "url(#" mask-id-3 ")")}
-      [top-level-render (get fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
+        parts [[["M" first-top
+                 (line/stitch line)
+                 (infinity/path :clockwise
+                                [:bottom :top]
+                                [first-bottom first-top])
+                 "z"]
+                [top-left first-bottom]]
+
+               [["M" second-bottom-adjusted
+                 (line/stitch line-reversed)
+                 (infinity/path :counter-clockwise
+                                [:top :top]
+                                [second-top first-top])
+                 (line/stitch line)
+                 (infinity/path :counter-clockwise
+                                [:bottom :bottom]
+                                [first-bottom second-bottom])
+                 "z"]
+                [first-top second-bottom]]
+
+               [["M" second-bottom-adjusted
+                 (line/stitch line-reversed)
+                 (infinity/path :clockwise
+                                [:top :bottom]
+                                [second-top second-bottom])
+                 "z"]
+                [second-top bottom-right]]]]
+    [make-division
+     :division-tierced-per-pale fields parts
+     [:all
+      [(svg/make-path
+        ["M" second-bottom-adjusted
+         (line/stitch line-reversed)])]
+      nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -925,13 +704,11 @@
                      (line/stitch line)])}]
         [:path {:d (svg/make-path
                     ["M" second-bottom-adjusted
-                     (line/stitch line-reversed)])}]])]))
+                     (line/stitch line-reversed)])}]])
+     environment field top-level-render options :db-path db-path]))
 
 (defn tierced-per-fess [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [mask-id-1 (svg/id "division-tierced-fess-1")
-        mask-id-2 (svg/id "division-tierced-fess-2")
-        mask-id-3 (svg/id "division-tierced-fess-3")
-        line-style (or (:style line) :straight)
+  (let [line-style (or (:style line) :straight)
         top-left (get-in environment [:points :top-left])
         left (get-in environment [:points :left])
         right (get-in environment [:points :right])
@@ -955,64 +732,40 @@
                                                     :angle 180
                                                     :options options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
-        environment-1 (field-environment/create
-                       (svg/make-path ["M" first-left
-                                       (line/stitch line)
-                                       (infinity/path :counter-clockwise
-                                                      [:right :left]
-                                                      [first-right first-left])
-                                       "z"])
-                       {:parent field
-                        :context [:tierced-per-fess :top]
-                        :bounding-box (svg/bounding-box
-                                       [top-left first-right])})
-        environment-2 (field-environment/create
-                       (svg/make-path ["M" first-left
-                                       (line/stitch line)
-                                       (infinity/path :clockwise
-                                                      [:right :right]
-                                                      [first-right second-right-adjusted])
-                                       (line/stitch line-reversed)
-                                       (infinity/path :clockwise
-                                                      [:left :left]
-                                                      [second-left first-left])
-                                       "z"])
-                       {:parent field
-                        :context [:tierced-per-fess :middle]
-                        :bounding-box (svg/bounding-box
-                                       [first-left second-right])})
-        environment-3 (field-environment/create
-                       (svg/make-path ["M" second-right-adjusted
-                                       (line/stitch line-reversed)
-                                       (infinity/path :counter-clockwise
-                                                      [:left :right]
-                                                      [second-left second-right-adjusted])
-                                       "z"])
-                       {:parent field
-                        :context [:tierced-per-fess :bottom]
-                        :bounding-box (svg/bounding-box
-                                       [second-left bottom-right])})]
-    [:<>
-     [:defs
-      [:clipPath {:id mask-id-1}
-       [:path {:d (:shape environment-1)
-               :fill "#fff"}]
-       [:path.overlap {:d (:shape environment-1)}]]
-      [:clipPath {:id mask-id-2}
-       [:path {:d (:shape environment-2)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" second-right-adjusted
-                            (line/stitch line-reversed)])}]]
-      [:clipPath {:id mask-id-3}
-       [:path {:d (:shape environment-3)
-               :fill "#fff"}]]]
-     [:g {:clip-path (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:clip-path (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:clip-path (str "url(#" mask-id-3 ")")}
-      [top-level-render (get fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
+        parts [[["M" first-left
+                 (line/stitch line)
+                 (infinity/path :counter-clockwise
+                                [:right :left]
+                                [first-right first-left])
+                 "z"]
+                [top-left first-right]]
+
+               [["M" first-left
+                 (line/stitch line)
+                 (infinity/path :clockwise
+                                [:right :right]
+                                [first-right second-right-adjusted])
+                 (line/stitch line-reversed)
+                 (infinity/path :clockwise
+                                [:left :left]
+                                [second-left first-left])
+                 "z"]
+                [first-left second-right]]
+
+               [["M" second-right-adjusted
+                 (line/stitch line-reversed)
+                 (infinity/path :counter-clockwise
+                                [:left :right]
+                                [second-left second-right-adjusted])
+                 "z"]
+                [second-left bottom-right]]]]
+    [make-division
+     :division-tierced-per-fess fields parts
+     [:all
+      [(svg/make-path
+        ["M" second-right-adjusted
+         (line/stitch line-reversed)])]
+      nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -1020,13 +773,11 @@
                      (line/stitch line)])}]
         [:path {:d (svg/make-path
                     ["M" second-right-adjusted
-                     (line/stitch line-reversed)])}]])]))
+                     (line/stitch line-reversed)])}]])
+     environment field top-level-render options :db-path db-path]))
 
 (defn tierced-per-pairle [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [mask-id-1 (svg/id "division-tierced-pairle-1")
-        mask-id-2 (svg/id "division-tierced-pairle-2")
-        mask-id-3 (svg/id "division-tierced-pairle-3")
-        line-style (or (:style line) :straight)
+  (let [line-style (or (:style line) :straight)
         top-left (get-in environment [:points :top-left])
         top-right (get-in environment [:points :top-right])
         bottom (get-in environment [:points :bottom])
@@ -1063,66 +814,42 @@
                          fess
                           bottom
                           line-bottom-reversed-length)
-        environment-1 (field-environment/create
-                       (svg/make-path ["M" top-left-adjusted
-                                       (line/stitch line-top-left)
-                                       "L" fess
-                                       (line/stitch line-top-right)
-                                       (infinity/path :counter-clockwise
-                                                      [:top-right :top-left]
-                                                      [top-right top-left])
-                                       "z"])
-                       {:parent field
-                        :context [:tierced-per-pairle :top]
-                        :bounding-box (svg/bounding-box
-                                       [top-left fess top-right])})
-        environment-2 (field-environment/create
-                       (svg/make-path ["M" bottom-adjusted
-                                       (line/stitch line-bottom-reversed)
-                                       "L" fess
-                                       (line/stitch line-top-right)
-                                       (infinity/path :clockwise
-                                                      [:top-right :bottom]
-                                                      [top-right bottom])
-                                       "z"])
-                       {:parent field
-                        :context [:tierced-per-pairle :right]
-                        :bounding-box (svg/bounding-box
-                                       [fess top-right bottom-right bottom])})
-        environment-3 (field-environment/create
-                       (svg/make-path ["M" top-left-adjusted
-                                       (line/stitch line-top-left)
-                                       "L" fess
-                                       (line/stitch line-bottom)
-                                       (infinity/path :clockwise
-                                                      [:bottom :top-left]
-                                                      [bottom top-left])
-                                       "z"])
-                       {:parent field
-                        :context [:tierced-per-pairle :left]
-                        :bounding-box (svg/bounding-box
-                                       [top-left fess bottom bottom-left])})]
-    [:<>
-     [:defs
-      [:clipPath {:id mask-id-1}
-       [:path {:d (:shape environment-1)
-               :fill "#fff"}]
-       [:path.overlap {:d (:shape environment-1)}]]
-      [:clipPath {:id mask-id-2}
-       [:path {:d (:shape environment-2)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" bottom-adjusted
-                            (line/stitch line-bottom-reversed)])}]]
-      [:clipPath {:id mask-id-3}
-       [:path {:d (:shape environment-3)
-               :fill "#fff"}]]]
-     [:g {:clip-path (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:clip-path (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:clip-path (str "url(#" mask-id-3 ")")}
-      [top-level-render (get fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
+        parts [[["M" top-left-adjusted
+                 (line/stitch line-top-left)
+                 "L" fess
+                 (line/stitch line-top-right)
+                 (infinity/path :counter-clockwise
+                                [:top-right :top-left]
+                                [top-right top-left])
+                 "z"]
+                [top-left fess top-right]]
+
+               [["M" bottom-adjusted
+                 (line/stitch line-bottom-reversed)
+                 "L" fess
+                 (line/stitch line-top-right)
+                 (infinity/path :clockwise
+                                [:top-right :bottom]
+                                [top-right bottom])
+                 "z"]
+                [fess top-right bottom-right bottom]]
+
+               [["M" top-left-adjusted
+                 (line/stitch line-top-left)
+                 "L" fess
+                 (line/stitch line-bottom)
+                 (infinity/path :clockwise
+                                [:bottom :top-left]
+                                [bottom top-left])
+                 "z"]
+                [top-left fess bottom bottom-left]]]]
+    [make-division
+     :division-tierced-per-fess fields parts
+     [:all
+      [(svg/make-path
+        ["M" bottom-adjusted
+         (line/stitch line-bottom-reversed)])]
+      nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -1133,13 +860,11 @@
                      (line/stitch line-top-right)])}]
         [:path {:d (svg/make-path
                     ["M" fess
-                     (line/stitch line-bottom)])}]])]))
+                     (line/stitch line-bottom)])}]])
+     environment field top-level-render options :db-path db-path]))
 
 (defn tierced-per-pairle-reversed [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [mask-id-1 (svg/id "division-tierced-pairle-reversed-1")
-        mask-id-2 (svg/id "division-tierced-pairle-reversed-2")
-        mask-id-3 (svg/id "division-tierced-pairle-reversed-3")
-        line-style (or (:style line) :straight)
+  (let [line-style (or (:style line) :straight)
         top-left (get-in environment [:points :top-left])
         top-right (get-in environment [:points :top-right])
         top (get-in environment [:points :top])
@@ -1176,66 +901,42 @@
                       fess
                        top
                        line-top-reversed-length)
-        environment-1 (field-environment/create
-                       (svg/make-path ["M" top-adjusted
-                                       (line/stitch line-top-reversed)
-                                       "L" fess
-                                       (line/stitch line-bottom-left)
-                                       (infinity/path :clockwise
-                                                      [:bottom-left :top]
-                                                      [bend-intersection-left top-adjusted])
-                                       "z"])
-                       {:parent field
-                        :context [:tierced-per-pairle-reversed :left]
-                        :bounding-box (svg/bounding-box
-                                       [top-left top fess bend-intersection-left])})
-        environment-2 (field-environment/create
-                       (svg/make-path ["M" bend-intersection-right-adjusted
-                                       (line/stitch line-bottom-right)
-                                       "L" fess
-                                       (line/stitch line-top)
-                                       (infinity/path :clockwise
-                                                      [:top :bottom-right]
-                                                      [top bend-intersection-right-adjusted])
-                                       "z"])
-                       {:parent field
-                        :context [:tierced-per-pairle-reversed :right]
-                        :bounding-box (svg/bounding-box
-                                       [top top-right bend-intersection-right fess])})
-        environment-3 (field-environment/create
-                       (svg/make-path ["M" bend-intersection-right-adjusted
-                                       (line/stitch line-bottom-right)
-                                       "L" fess
-                                       (line/stitch line-bottom-left)
-                                       (infinity/path :counter-clockwise
-                                                      [:bottom-left :bottom-right]
-                                                      [bend-intersection-left bend-intersection-right-adjusted])
-                                       "z"])
-                       {:parent field
-                        :context [:tierced-per-pairle-reversed :bottom]
-                        :bounding-box (svg/bounding-box
-                                       [fess bend-intersection-right bend-intersection-left])})]
-    [:<>
-     [:defs
-      [:clipPath {:id mask-id-1}
-       [:path {:d (:shape environment-1)
-               :fill "#fff"}]
-       [:path.overlap {:d (:shape environment-1)}]]
-      [:clipPath {:id mask-id-2}
-       [:path {:d (:shape environment-2)
-               :fill "#fff"}]
-       [:path.overlap {:d (svg/make-path
-                           ["M" bend-intersection-right-adjusted
-                            (line/stitch line-bottom-right)])}]]
-      [:clipPath {:id mask-id-3}
-       [:path {:d (:shape environment-3)
-               :fill "#fff"}]]]
-     [:g {:clip-path (str "url(#" mask-id-1 ")")}
-      [top-level-render (get fields 0) environment-1 options :db-path (conj db-path :fields 0)]]
-     [:g {:clip-path (str "url(#" mask-id-2 ")")}
-      [top-level-render (get fields 1) environment-2 options :db-path (conj db-path :fields 1)]]
-     [:g {:clip-path (str "url(#" mask-id-3 ")")}
-      [top-level-render (get fields 2) environment-3 options :db-path (conj db-path :fields 2)]]
+        parts [[["M" top-adjusted
+                 (line/stitch line-top-reversed)
+                 "L" fess
+                 (line/stitch line-bottom-left)
+                 (infinity/path :clockwise
+                                [:bottom-left :top]
+                                [bend-intersection-left top-adjusted])
+                 "z"]
+                [top-left top fess bend-intersection-left]]
+
+               [["M" bend-intersection-right-adjusted
+                 (line/stitch line-bottom-right)
+                 "L" fess
+                 (line/stitch line-top)
+                 (infinity/path :clockwise
+                                [:top :bottom-right]
+                                [top bend-intersection-right-adjusted])
+                 "z"]
+                [top top-right bend-intersection-right fess]]
+
+               [["M" bend-intersection-right-adjusted
+                 (line/stitch line-bottom-right)
+                 "L" fess
+                 (line/stitch line-bottom-left)
+                 (infinity/path :counter-clockwise
+                                [:bottom-left :bottom-right]
+                                [bend-intersection-left bend-intersection-right-adjusted])
+                 "z"]
+                [fess bend-intersection-right bend-intersection-left]]]]
+    [make-division
+     :division-tierced-per-fess fields parts
+     [:all
+      [(svg/make-path
+        ["M" bend-intersection-right-adjusted
+         (line/stitch line-bottom-right)])]
+      nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
@@ -1246,7 +947,8 @@
                      (line/stitch line-bottom-right)])}]
         [:path {:d (svg/make-path
                     ["M" fess
-                     (line/stitch line-bottom-left)])}]])]))
+                     (line/stitch line-bottom-left)])}]])
+     environment field top-level-render options :db-path db-path]))
 
 (defn part-name [type index]
   (-> {:per-saltire ["I." "III." "IV." "II."]
