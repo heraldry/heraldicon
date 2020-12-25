@@ -131,7 +131,7 @@
                                          (replace-placeholder-colours-everywhere {:primary "#fff"}))]
     [mask-id mask mask-inverted-id mask-inverted]))
 
-(defn render [{:keys [type field tincture hints ui] :as charge}
+(defn render [{:keys [type field tincture hints] :as charge}
               environment top-level-render options & {:keys [db-path]}]
   (if-let [charge-data-path (-> charge
                                 get-charge-variant-data
@@ -183,13 +183,7 @@
           [:g {:transform (str "scale(" (/ 1 scale) "," (/ 1 scale) ") translate(" (- (:x position)) "," (- (:x position)) ")")}
            [top-level-render field environment options :db-path (conj db-path :field)]]]
          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
-              :mask      (str "url(#" mask-id ")")
-              :on-click  (fn [event]
-                           (rf/dispatch [:select-component db-path])
-                           (.stopPropagation event))
-              :style     {:pointer-events "visiblePainted"
-                          :cursor         "pointer"
-                          :filter         (when (-> ui :selected?) "url(#glow)")}}
+              :mask      (str "url(#" mask-id ")")}
           coloured-charge]])
       [:<>])
     [:<>]))
