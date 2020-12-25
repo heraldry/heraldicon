@@ -143,7 +143,7 @@
 
 (defn counterchangable? [field parent]
   (and (:counterchanged? field)
-       (division/counterchangable? parent)))
+       (division/counterchangable? (-> parent :division :type))))
 
 (defn render [{:keys [type field tincture hints] :as charge} parent
               environment top-level-render options & {:keys [db-path]}]
