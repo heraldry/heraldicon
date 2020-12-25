@@ -81,8 +81,8 @@
 
 (def default-charge
   {:type :roundel
-   :tincture {:primary :none}
    :variant :default
+   :field {:content {:tincture :none}}
    :hints {:outline? true}})
 
 (rf/reg-event-db
@@ -465,7 +465,7 @@
         supported-tinctures (-> charge-variant-data
                                 :supported-tinctures
                                 set)
-        sorted-supported-tinctures (filter supported-tinctures [:primary :armed :langued :attired :unguled])
+        sorted-supported-tinctures (filter supported-tinctures [:armed :langued :attired :unguled])
         eyes-and-teeth-support (:eyes-and-teeth supported-tinctures)]
     (if (and charge-map
              charge-variant-data)
@@ -523,7 +523,8 @@
          [tree-for-charge-map charge-map [] path charge
           (get-in charge-map
                   [:lookup (:type charge)])
-          :still-on-path? true]]]]
+          :still-on-path? true]]
+        [form-for-field (conj path :field)]]]
       [:<>])))
 
 (defn form-for-field [path]
