@@ -40,17 +40,21 @@
 
 ;; components
 
-(defn checkbox [path name label & {:keys [on-change]}]
-  (let [element-id (id name)]
+(defn checkbox [path name label & {:keys [on-change disabled?]}]
+  (let [element-id (id name)
+        checked? (-> @(rf/subscribe [:get-in path])
+                     boolean
+                     (and (not disabled?)))]
     [:div.setting
      [:input {:type "checkbox"
               :id element-id
               :name name
-              :checked (boolean @(rf/subscribe [:get-in path]))
-              :on-change #(let [checked (-> % .-target .-checked)]
+              :checked checked?
+              :disabled disabled?
+              :on-change #(let [new-checked? (-> % .-target .-checked)]
                             (if on-change
-                              (on-change checked)
-                              (rf/dispatch [:set-in path checked])))}]
+                              (on-change new-checked?)
+                              (rf/dispatch [:set-in path new-checked?])))}]
      [:label {:for element-id} label]]))
 
 (defn select [path name label options & {:keys [grouped? value on-change]}]
@@ -310,7 +314,9 @@
      [selector path]
      [:div.division
       (when (not= path [:coat-of-arms :field])
-        [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"])
+        [:<>
+         [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"]
+         [checkbox (conj path :counterchanged?) "counterchanged" "Counterchange" :disabled? false]])
       [select path "division-type" "Division"
        (into [["None" :none]] division/options)
        :value division-type

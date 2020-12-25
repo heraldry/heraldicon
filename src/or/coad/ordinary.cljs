@@ -210,6 +210,6 @@
        (map (fn [[name key _]]
               [name key]))))
 
-(defn render [{:keys [type] :as ordinary} environment top-level-render options & {:keys [db-path]}]
+(defn render [{:keys [type] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [function (get kinds-function-map type)]
     [function ordinary environment top-level-render options :db-path db-path]))
