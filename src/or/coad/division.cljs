@@ -5,6 +5,17 @@
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
+(defn default-fields [type]
+  (into [{:content {:tincture :none}}
+         {:content {:tincture :azure}}]
+        (cond
+          (#{:per-saltire :quarterly} type) [{:ref 0} {:ref 1}]
+          (= :gyronny type) [{:ref 0} {:ref 1} {:ref 0} {:ref 1} {:ref 0} {:ref 1}]
+          (#{:tierced-per-pale
+             :tierced-per-fess
+             :tierced-per-pairle
+             :tierced-per-pairle-reversed} type) [{:content {:tincture :gules}}])))
+
 (defn get-field [fields index]
   (let [part (get fields index)
         ref (:ref part)]
@@ -12,18 +23,19 @@
       (assoc (get fields ref) :ui (:ui part))
       part)))
 
-(defn make-division [type fields parts mask-overlaps outline parent-environment parent top-level-render options & {:keys [db-path]}]
+(defn make-division [type fields parts mask-overlaps outline parent-environment parent
+                     top-level-render options & {:keys [db-path]}]
   (let [mask-ids (->> (range (count fields))
                       (map #(svg/id (str (name type) "-" %))))
         environments (->> parts
                           (map-indexed (fn [idx [shape-path bounding-box]]
-                                         (cond->
-                                          (field-environment/create
-                                           (svg/make-path shape-path)
-                                           {:parent parent
-                                            :context [type idx]
-                                            :bounding-box (svg/bounding-box bounding-box)})
-                                           (:inherit-environment? (get-field fields idx)) (assoc :points (:points parent-environment)))))
+                                         (field-environment/create
+                                          (svg/make-path shape-path)
+                                          {:parent parent
+                                           :context [type idx]
+                                           :bounding-box (svg/bounding-box bounding-box)
+                                           :override-environment (when (:inherit-environment? (get-field fields idx))
+                                                                   parent-environment)})))
                           vec)]
     [:<>
      [:defs

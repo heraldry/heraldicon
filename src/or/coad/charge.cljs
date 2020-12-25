@@ -2,6 +2,7 @@
   (:require [clojure.string :as s]
             [clojure.walk :as walk]
             [or.coad.config :as config]
+            [or.coad.division :as division]
             [or.coad.field-environment :as field-environment]
             [or.coad.line :as line]
             [or.coad.svg :as svg]
@@ -132,7 +133,15 @@
                           (replace-placeholder-colours-everywhere {:primary "#fff"}))]
     [mask-id mask mask-inverted-id mask-inverted]))
 
-(defn render [{:keys [type field tincture hints] :as charge}
+(defn counterchange-field [{:keys [division]}]
+  (let [type (:type division)]
+    {:division {:type type
+                :line (:line division)
+                :fields (-> (division/default-fields type)
+                            (assoc-in [0 :content :tincture] (get-in division [:fields 1 :content :tincture]))
+                            (assoc-in [1 :content :tincture] (get-in division [:fields 0 :content :tincture])))}}))
+
+(defn render [{:keys [type field tincture hints] :as charge} parent
               environment top-level-render options & {:keys [db-path]}]
   (if-let [charge-data-path (-> charge
                                 get-charge-variant-data
@@ -176,20 +185,24 @@
             clip-path-id (svg/id "clip-path")
             charge-width (* width scale)
             charge-height (* height scale)
-            charge-environment (cond->
-                                (field-environment/create
-                                 (svg/make-path ["M" position
-                                                 "l" (v/v charge-width 0)
-                                                 "l" (v/v 0 charge-height)
-                                                 "l" (v/v (- charge-width) 0)
-                                                 "l" (v/v 0 (- charge-height))
-                                                 "z"])
-                                 {:parent field
-                                  :context [:charge]
-                                  :bounding-box (svg/bounding-box
-                                                 [position (v/+ position
-                                                                (v/v charge-width charge-height))])})
-                                 (:inherit-environment? field) (assoc :points (:points environment)))]
+            charge-environment (field-environment/create
+                                (svg/make-path ["M" position
+                                                "l" (v/v charge-width 0)
+                                                "l" (v/v 0 charge-height)
+                                                "l" (v/v (- charge-width) 0)
+                                                "l" (v/v 0 (- charge-height))
+                                                "z"])
+                                {:parent field
+                                 :context [:charge]
+                                 :bounding-box (svg/bounding-box
+                                                [position (v/+ position
+                                                               (v/v charge-width charge-height))])
+                                 :override-environment (when (or (:inherit-environment? field)
+                                                                 (:counterchanged? field)) environment)})
+
+            field (if (:counterchanged? field)
+                    (counterchange-field parent)
+                    field)]
         [:<>
          [:defs
           [:mask {:id mask-id}
