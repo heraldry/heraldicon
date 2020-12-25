@@ -626,18 +626,19 @@
                         :hatching (rf/dispatch [:set :options :outline? true])
                         :colours  (rf/dispatch [:set :options :outline? false])))]
      [:div.setting
-      (for [[display-name key] [["Colours" :colours]
-                                ["Hatching" :hatching]]]
-        (let [element-id (id "mode")]
-          ^{:key key}
-          [:<>
-           [:input {:id        element-id
-                    :type      "radio"
-                    :name      "mode"
-                    :value     (name key)
-                    :checked   (= key @(rf/subscribe [:get :options :mode]))
-                    :on-change on-change}]
-           [:label {:for element-id} display-name]]))])
+      (let [current-mode @(rf/subscribe [:get :options :mode])]
+        (for [[display-name key] [["Colours" :colours]
+                                  ["Hatching" :hatching]]]
+          (let [element-id (id "mode")]
+            ^{:key key}
+            [:<>
+             [:input {:id        element-id
+                      :type      "radio"
+                      :name      "mode"
+                      :value     (name key)
+                      :checked   (= key current-mode)
+                      :on-change on-change}]
+             [:label {:for element-id} display-name]])))])
    (let [element-id (id "outline")]
      [:div.setting
       [:input {:type      "checkbox"
