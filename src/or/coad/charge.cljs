@@ -45,16 +45,16 @@
         primary)))
 
 (defn replace-placeholder-colours [string tincture]
-  (s/replace string placeholder-regex (fn [[_ match]]
-                                        (pick-placeholder-tincture match tincture))))
+  (s/replace string placeholder-regex
+             (fn [[_ match]]
+               (pick-placeholder-tincture match tincture))))
 
-(defn replace-non-placeholder-colour [string colour]
-  (s/replace string placeholder-regex (fn [[_ match]]
-                                        (println "match" match)
-                                        (let [match (s/lower-case match)]
-                                          (if (get config/placeholder-colours-set match)
-                                            match
-                                            colour)))))
+(defn replace-non-placeholder-colour [current colour unwanted-placeholder-colours]
+  (let [match (s/lower-case current)]
+    (if (and (get config/placeholder-colours-set match)
+             (not (get unwanted-placeholder-colours match)))
+      current
+      colour)))
 
 (defn split-style-value [value]
   (-> value
@@ -82,11 +82,14 @@
                     %)
                  data))
 
-(defn replace-non-placeholder-colours-everywhere [data colour]
+(defn replace-non-placeholder-colours-everywhere [data colour unwanted-placeholder-colours]
   (walk/postwalk #(if (and (vector? %)
                            (-> % second string?)
                            (->> % first (get #{:stroke :fill})))
-                    [(first %) (replace-non-placeholder-colour (second %) colour)]
+                    [(first %) (replace-non-placeholder-colour
+                                (second %)
+                                colour
+                                unwanted-placeholder-colours)]
                     %)
                  data))
 
@@ -107,11 +110,19 @@
                                      v))))
                  data))
 
-(defn make-mask [data]
+(defn make-mask [data provided-placeholder-colours]
   (let [mask-id (svg/id "mask")
+        unwanted-placeholder-colours (-> provided-placeholder-colours
+                                         (dissoc :primary)
+                                         (->>
+                                          (filter second)
+                                          (map (fn [[k _]]
+                                                 (get config/placeholder-colours k)))
+                                          set))
         adjusted-data (-> data
-                          (replace-non-placeholder-colours-everywhere "#fff")
-                          #_(replace-placeholder-colours-everywhere {:primary "#000"}))]
+                          (replace-non-placeholder-colours-everywhere
+                           "#fff" unwanted-placeholder-colours)
+                          (replace-placeholder-colours-everywhere {:primary "#000"}))]
     [mask-id adjusted-data]))
 
 (defn render [{:keys [type tincture hints ui] :as charge} environment options & {:keys [db-path]}]
@@ -142,27 +153,28 @@
                                              :fusil
                                              :billet} type)) squiggly-paths)
                                 (assoc 0 :g))
-            [mask-id mask] (make-mask adjusted-charge)
+            provided-placeholder-colours (-> {}
+                                             (into (map (fn [[key value]]
+                                                          [key (tincture/pick value options)])
+                                                        (into {}
+                                                              (filter (fn [[_ v]]
+                                                                        (not= v :none)) tincture))))
+                                             (assoc :primary "none"))
+            [mask-id mask] (make-mask adjusted-charge provided-placeholder-colours)
             coloured-charge (replace-placeholder-colours-everywhere
                              adjusted-charge
-                             (-> {}
-                                 (into (map (fn [[key value]]
-                                              [key (if (= key :primary)
-                                                     "none"
-                                                     (tincture/pick value options))])
-                                            tincture))))]
+                             provided-placeholder-colours)]
         [:<>
          [:mask {:id mask-id}
           mask]
          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
-              ;; :mask (str "url(#" mask-id ")")
+              :mask (str "url(#" mask-id ")")
               :on-click (fn [event]
                           (rf/dispatch [:select-component db-path])
                           (.stopPropagation event))
               :style {:pointer-events "visiblePainted"
                       :cursor "pointer"
                       :filter (when (-> ui :selected?) "url(#glow)")}}
-          ;; coloured-charge
-          mask]])
+          coloured-charge]])
       [:<>])
     [:<>]))
