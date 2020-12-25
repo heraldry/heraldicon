@@ -11,6 +11,6 @@ rm -rf assets/optimized-svgs/charges
 
     outdir="../../optimized-svgs/charges/$relpath"
     mkdir -p "$outdir"
-    svgo -f "$relpath" -o "$outdir"
+    svgo -f "$relpath" -o "$outdir" --disable=removeUnknownsAndDefaults
   done
 )
