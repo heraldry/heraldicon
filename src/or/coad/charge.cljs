@@ -199,7 +199,6 @@
                                                                (v/v charge-width charge-height))])
                                  :override-environment (when (or (:inherit-environment? field)
                                                                  (:counterchanged? field)) environment)})
-
             field (if (:counterchanged? field)
                     (counterchange-field parent)
                     field)]
