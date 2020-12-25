@@ -2,6 +2,7 @@
   (:require [clojure.string :as s]
             [clojure.walk :as walk]
             [or.coad.config :as config]
+            [or.coad.field-environment :as field-environment]
             [or.coad.line :as line]
             [or.coad.svg :as svg]
             [or.coad.tincture :as tincture]
@@ -172,7 +173,23 @@
             coloured-charge                  (replace-placeholder-colours-everywhere
                                               adjusted-charge
                                               provided-placeholder-colours)
-            clip-path-id                     (svg/id "clip-path")]
+            clip-path-id                     (svg/id "clip-path")
+            charge-width                     (* width scale)
+            charge-height                    (* height scale)
+            charge-environment               (cond->
+                                                 (field-environment/create
+                                                  (svg/make-path ["M" position
+                                                                  "l" (v/v charge-width 0)
+                                                                  "l" (v/v 0 charge-height)
+                                                                  "l" (v/v (- charge-width) 0)
+                                                                  "l" (v/v 0 (- charge-height))
+                                                                  "z"])
+                                                  {:parent       field
+                                                   :context      [:charge]
+                                                   :bounding-box (svg/bounding-box
+                                                                  [position (v/+ position
+                                                                                 (v/v charge-width charge-height))])})
+                                               (:inherit-environment? field) (assoc :points (:points environment)))]
         [:<>
          [:defs
           [:mask {:id mask-id}
@@ -182,14 +199,14 @@
           [:clipPath {:id clip-path-id}
            [:rect {:x      (:x position)
                    :y      (:y position)
-                   :width  (* width scale)
-                   :height (* height scale)
+                   :width  charge-width
+                   :height charge-height
                    :fill   "#fff"}]]]
          [:g {:clip-path (str "url(#" clip-path-id ")")}
           [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
                :mask      (str "url(#" mask-inverted-id ")")}
            [:g {:transform (str "scale(" (/ 1 scale) "," (/ 1 scale) ") translate(" (- (:x position)) "," (- (:y position)) ")")}
-            [top-level-render field environment options :db-path (conj db-path :field)]]]
+            [top-level-render field charge-environment options :db-path (conj db-path :field)]]]
           [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
                :mask      (str "url(#" mask-id ")")}
            coloured-charge]]])

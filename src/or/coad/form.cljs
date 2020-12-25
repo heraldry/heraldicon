@@ -22,7 +22,8 @@
 (def default-charge
   {:type    :roundel
    :variant :default
-   :field   {:content default-content}
+   :field   {:content              default-content
+             :inherit-environment? true}
    :hints   {:outline? true}})
 
 (def default-coat-of-arms
@@ -308,6 +309,8 @@
      {:class (when selected? "selected")}
      [selector path]
      [:div.division
+      (when (not= path [:coat-of-arms :field])
+        [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"])
       [select path "division-type" "Division"
        (into [["None" :none]] division/options)
        :value division-type
