@@ -141,6 +141,10 @@
                             (assoc-in [0 :content :tincture] (get-in division [:fields 1 :content :tincture]))
                             (assoc-in [1 :content :tincture] (get-in division [:fields 0 :content :tincture])))}}))
 
+(defn counterchangable? [field parent]
+  (and (:counterchanged? field)
+       (division/counterchangable? parent)))
+
 (defn render [{:keys [type field tincture hints] :as charge} parent
               environment top-level-render options & {:keys [db-path]}]
   (if-let [charge-data-path (-> charge
@@ -198,8 +202,8 @@
                                                 [position (v/+ position
                                                                (v/v charge-width charge-height))])
                                  :override-environment (when (or (:inherit-environment? field)
-                                                                 (:counterchanged? field)) environment)})
-            field (if (:counterchanged? field)
+                                                                 (counterchangable? field parent)) environment)})
+            field (if (counterchangable? field parent)
                     (counterchange-field parent)
                     field)]
         [:<>
