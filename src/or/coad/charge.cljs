@@ -188,7 +188,7 @@
          [:g {:clip-path (str "url(#" clip-path-id ")")}
           [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
                :mask      (str "url(#" mask-inverted-id ")")}
-           [:g {:transform (str "scale(" (/ 1 scale) "," (/ 1 scale) ") translate(" (- (:x position)) "," (- (:x position)) ")")}
+           [:g {:transform (str "scale(" (/ 1 scale) "," (/ 1 scale) ") translate(" (- (:x position)) "," (- (:y position)) ")")}
             [top-level-render field environment options :db-path (conj db-path :field)]]]
           [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
                :mask      (str "url(#" mask-id ")")}
