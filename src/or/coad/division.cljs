@@ -1287,7 +1287,7 @@
 (def options
   (->> kinds
        (map (fn [[name key _]]
-              [key name]))))
+              [name key]))))
 
 (defn render [{:keys [type] :as division} environment top-level-render options & {:keys [db-path]}]
   (let [function (get kinds-function-map type)]
