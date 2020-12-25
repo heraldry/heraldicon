@@ -95,12 +95,11 @@
                  data))
 
 (defn remove-outlines [data]
-  (walk/postwalk #(cond-> %
-                    (vector? %) ((fn [v]
-                                   (if (or (= v [:stroke "#000"])
-                                           (= v [:stroke "#0000000"]))
-                                     [:stroke "none"]
-                                     v))))
+  (walk/postwalk #(if (and (vector? %)
+                           (->> % first (get #{:stroke :fill}))
+                           (->> % second (get #{"#000000" "#000" "black"})))
+                    [(first %) "none"]
+                    %)
                  data))
 
 (defn squiggly-paths [data]
