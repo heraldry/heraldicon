@@ -1,5 +1,6 @@
 (ns or.coad.ordinary
-  (:require [or.coad.division :as division]
+  (:require [or.coad.charge :as charge]
+            [or.coad.division :as division]
             [or.coad.infinity :as infinity]
             [or.coad.line :as line]
             [or.coad.svg :as svg]
@@ -7,7 +8,7 @@
 
 (def band-quotient 5)
 
-(defn pale [{:keys [field line] :as ordinary} environment top-level-render options & {:keys [db-path]}]
+(defn pale [{:keys [field line] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [line-style                     (or (:style line) :straight)
         top                            (get-in environment [:points :top])
         bottom                         (get-in environment [:points :bottom])
@@ -41,7 +42,10 @@
                                                          [:top :top]
                                                          [second-top first-top])
                                           "z"]
-                                         [first-top second-bottom]]]]
+                                         [first-top second-bottom]]]
+        field                          (if (:counterchanged? field)
+                                         (assoc (charge/counterchange-field parent) :counterchanged? true)
+                                         field)]
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
@@ -55,7 +59,7 @@
                      (line/stitch line-reversed)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn fess [{:keys [field line] :as ordinary} environment top-level-render options & {:keys [db-path]}]
+(defn fess [{:keys [field line] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [line-style                     (or (:style line) :straight)
         left                           (get-in environment [:points :left])
         right                          (get-in environment [:points :right])
@@ -88,8 +92,10 @@
                                                          [:left :left]
                                                          [second-left first-left])
                                           "z"]
-                                         [first-right second-left]]]]
-
+                                         [first-right second-left]]]
+        field                          (if (:counterchanged? field)
+                                         (assoc (charge/counterchange-field parent) :counterchanged? true)
+                                         field)]
     [division/make-division
      :ordinary-fess [field] parts
      [:all]
@@ -103,7 +109,7 @@
                      (line/stitch line-reversed)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn chief [{:keys [field line] :as ordinary} environment top-level-render options & {:keys [db-path]}]
+(defn chief [{:keys [field line] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [line-style                     (or (:style line) :straight)
         top-left                       (get-in environment [:points :top-left])
         top                            (get-in environment [:points :top])
@@ -127,7 +133,10 @@
                                                          [:left :right]
                                                          [row-left row-right-adjusted])
                                           "z"]
-                                         [top-left row-right]]]]
+                                         [top-left row-right]]]
+        field                          (if (:counterchanged? field)
+                                         (assoc (charge/counterchange-field parent) :counterchanged? true)
+                                         field)]
     [division/make-division
      :ordinary-chief [field] parts
      [:all]
@@ -138,7 +147,7 @@
                      (line/stitch line-reversed)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn base [{:keys [field line] :as ordinary} environment top-level-render options & {:keys [db-path]}]
+(defn base [{:keys [field line] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [line-style   (or (:style line) :straight)
         bottom-right (get-in environment [:points :bottom-right])
         left         (get-in environment [:points :left])
@@ -157,7 +166,10 @@
                                        [:right :left]
                                        [row-right row-left])
                         "z"]
-                       [row-left bottom-right]]]]
+                       [row-left bottom-right]]]
+        field        (if (:counterchanged? field)
+                       (assoc (charge/counterchange-field parent) :counterchanged? true)
+                       field)]
     [division/make-division
      :ordinary-base [field] parts
      [:all]
@@ -212,4 +224,4 @@
 
 (defn render [{:keys [type] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [function (get kinds-function-map type)]
-    [function ordinary environment top-level-render options :db-path db-path]))
+    [function ordinary parent environment top-level-render options :db-path db-path]))

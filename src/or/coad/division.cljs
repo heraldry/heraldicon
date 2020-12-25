@@ -29,13 +29,15 @@
                           (map #(svg/id (str (name type) "-" %))))
         environments (->> parts
                           (map-indexed (fn [idx [shape-path bounding-box]]
-                                         (field-environment/create
-                                          (svg/make-path shape-path)
-                                          {:parent               parent
-                                           :context              [type idx]
-                                           :bounding-box         (svg/bounding-box bounding-box)
-                                           :override-environment (when (:inherit-environment? (get-field fields idx))
-                                                                   parent-environment)})))
+                                         (let [field (get-field fields idx)]
+                                           (field-environment/create
+                                            (svg/make-path shape-path)
+                                            {:parent               parent
+                                             :context              [type idx]
+                                             :bounding-box         (svg/bounding-box bounding-box)
+                                             :override-environment (when (or (:inherit-environment? field)
+                                                                             (:counterchanged? field))
+                                                                     parent-environment)}))))
                           vec)]
     [:<>
      [:defs
