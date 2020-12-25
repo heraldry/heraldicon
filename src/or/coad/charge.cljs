@@ -126,6 +126,7 @@
                                           "#fff" unwanted-placeholder-colours)
                                          (replace-placeholder-colours-everywhere {:primary "#000"}))
         mask-inverted                (-> data
+                                         remove-outlines
                                          (replace-non-placeholder-colours-everywhere
                                           "#000" unwanted-placeholder-colours)
                                          (replace-placeholder-colours-everywhere {:primary "#fff"}))]
