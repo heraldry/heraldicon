@@ -112,15 +112,7 @@
                                                                  (<= (count current) min-mandatory-part-count))
                                                            current
                                                            (subvec current 0 min-mandatory-part-count))
-                            default                      (into [{:content {:tincture :none}}
-                                                                {:content {:tincture :azure}}]
-                                                               (cond
-                                                                 (#{:per-saltire :quarterly} new-type)      [{:ref 0} {:ref 1}]
-                                                                 (= :gyronny new-type)                      [{:ref 0} {:ref 1} {:ref 0} {:ref 1} {:ref 0} {:ref 1}]
-                                                                 (#{:tierced-per-pale
-                                                                    :tierced-per-fess
-                                                                    :tierced-per-pairle
-                                                                    :tierced-per-pairle-reversed} new-type) [{:content {:tincture :gules}}]))]
+                            default                      (division/default-fields new-type)]
                         (cond
                           (< (count current) (count default)) (into current (subvec default (count current)))
                           (> (count current) (count default)) (subvec current 0 (count default))
