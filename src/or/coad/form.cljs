@@ -318,7 +318,8 @@
         [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"])
       (when (and (not= path [:coat-of-arms :field])
                  parent-field)
-        [checkbox (conj path :counterchanged?) "counterchanged" "Counterchange" :disabled? (not (division/counterchangable? parent-field))])
+        [checkbox (conj path :counterchanged?) "counterchanged" "Counterchange"
+         :disabled? (not (division/counterchangable? (-> parent-field :division :type)))])
       [select path "division-type" "Division"
        (into [["None" :none]] division/options)
        :value division-type
