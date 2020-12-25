@@ -171,19 +171,27 @@
              mask-inverted-id mask-inverted] (make-mask adjusted-charge provided-placeholder-colours)
             coloured-charge (replace-placeholder-colours-everywhere
                              adjusted-charge
-                             provided-placeholder-colours)]
+                             provided-placeholder-colours)
+            clip-path-id (svg/id "clip-path")]
         [:<>
          [:defs
           [:mask {:id mask-id}
            mask]
           [:mask {:id mask-inverted-id}
-           mask-inverted]]
-         [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
-              :mask (str "url(#" mask-inverted-id ")")}
-          [:g {:transform (str "scale(" (/ 1 scale) "," (/ 1 scale) ") translate(" (- (:x position)) "," (- (:x position)) ")")}
-           [top-level-render field environment options :db-path (conj db-path :field)]]]
-         [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
-              :mask (str "url(#" mask-id ")")}
-          coloured-charge]])
+           mask-inverted]
+          [:clipPath {:id clip-path-id}
+           [:rect {:x (:x position)
+                   :y (:y position)
+                   :width (* width scale)
+                   :height (* height scale)
+                   :fill "#fff"}]]]
+         [:g {:clip-path (str "url(#" clip-path-id ")")}
+          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
+               :mask (str "url(#" mask-inverted-id ")")}
+           [:g {:transform (str "scale(" (/ 1 scale) "," (/ 1 scale) ") translate(" (- (:x position)) "," (- (:x position)) ")")}
+            [top-level-render field environment options :db-path (conj db-path :field)]]]
+          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
+               :mask (str "url(#" mask-id ")")}
+           coloured-charge]]])
       [:<>])
     [:<>]))
