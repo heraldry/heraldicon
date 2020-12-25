@@ -117,7 +117,16 @@
                           (< (count current) (count default)) (into current (subvec default (count current)))
                           (> (count current) (count default)) (subvec current 0 (count default))
                           :else                               current))))
-         (update-in path dissoc :content)))))
+         (update-in path dissoc :content)
+         (cond->
+             (not (division/counterchangable? new-type)) (update-in (conj path :ordinaries) (fn [ordinaries]
+                                                                                              (->> ordinaries
+                                                                                                   (map #(update % :field dissoc :counterchanged?))
+                                                                                                   vec)))
+             (not (division/counterchangable? new-type)) (update-in (conj path :charges) (fn [charges]
+                                                                                           (->> charges
+                                                                                                (map #(update % :field dissoc :counterchanged?))
+                                                                                                vec))))))))
 
 (rf/reg-event-db
  :add-ordinary
