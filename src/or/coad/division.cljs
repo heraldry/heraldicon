@@ -837,7 +837,9 @@
         mask-id-3 (svg/id "division-tierced-pale-3")
         line-style (or (:style line) :straight)
         top (get-in environment [:points :top])
+        top-left (get-in environment [:points :top-left])
         bottom (get-in environment [:points :bottom])
+        bottom-right (get-in environment [:points :bottom-right])
         fess (get-in environment [:points :fess])
         width (:width environment)
         col1 (- (:x fess) (/ width 6))
@@ -866,7 +868,9 @@
                                                       [first-bottom first-top])
                                        "z"])
                        {:parent field
-                        :context [:tierced-per-pale :left]})
+                        :context [:tierced-per-pale :left]
+                        :bounding-box (svg/bounding-box
+                                       [top-left first-bottom])})
         environment-2 (field-environment/create
                        (svg/make-path ["M" second-bottom-adjusted
                                        (line/stitch line-reversed)
@@ -879,7 +883,9 @@
                                                       [first-bottom second-bottom])
                                        "z"])
                        {:parent field
-                        :context [:tierced-per-pale :middle]})
+                        :context [:tierced-per-pale :middle]
+                        :bounding-box (svg/bounding-box
+                                       [first-top second-bottom])})
         environment-3 (field-environment/create
                        (svg/make-path ["M" second-bottom-adjusted
                                        (line/stitch line-reversed)
@@ -888,7 +894,9 @@
                                                       [second-top second-bottom])
                                        "z"])
                        {:parent field
-                        :context [:tierced-per-pale :right]})]
+                        :context [:tierced-per-pale :right]
+                        :bounding-box (svg/bounding-box
+                                       [second-top bottom-right])})]
     [:<>
      [:defs
       [:clipPath {:id mask-id-1}
@@ -924,8 +932,10 @@
         mask-id-2 (svg/id "division-tierced-fess-2")
         mask-id-3 (svg/id "division-tierced-fess-3")
         line-style (or (:style line) :straight)
+        top-left (get-in environment [:points :top-left])
         left (get-in environment [:points :left])
         right (get-in environment [:points :right])
+        bottom-right (get-in environment [:points :bottom-right])
         fess (get-in environment [:points :fess])
         height (:height environment)
         row1 (- (:y fess) (/ height 6))
@@ -953,7 +963,9 @@
                                                       [first-right first-left])
                                        "z"])
                        {:parent field
-                        :context [:tierced-per-fess :top]})
+                        :context [:tierced-per-fess :top]
+                        :bounding-box (svg/bounding-box
+                                       [top-left first-right])})
         environment-2 (field-environment/create
                        (svg/make-path ["M" first-left
                                        (line/stitch line)
@@ -966,7 +978,9 @@
                                                       [second-left first-left])
                                        "z"])
                        {:parent field
-                        :context [:tierced-per-fess :middle]})
+                        :context [:tierced-per-fess :middle]
+                        :bounding-box (svg/bounding-box
+                                       [first-left second-right])})
         environment-3 (field-environment/create
                        (svg/make-path ["M" second-right-adjusted
                                        (line/stitch line-reversed)
@@ -975,7 +989,9 @@
                                                       [second-left second-right-adjusted])
                                        "z"])
                        {:parent field
-                        :context [:tierced-per-fess :bottom]})]
+                        :context [:tierced-per-fess :bottom]
+                        :bounding-box (svg/bounding-box
+                                       [second-left bottom-right])})]
     [:<>
      [:defs
       [:clipPath {:id mask-id-1}
@@ -1014,6 +1030,8 @@
         top-left (get-in environment [:points :top-left])
         top-right (get-in environment [:points :top-right])
         bottom (get-in environment [:points :bottom])
+        bottom-left (get-in environment [:points :bottom-left])
+        bottom-right (get-in environment [:points :bottom-right])
         fess (get-in environment [:points :fess])
         {line-top-left :line
          line-top-left-length :length} (line/create line-style
@@ -1055,7 +1073,9 @@
                                                       [top-right top-left])
                                        "z"])
                        {:parent field
-                        :context [:tierced-per-pairle :top]})
+                        :context [:tierced-per-pairle :top]
+                        :bounding-box (svg/bounding-box
+                                       [top-left fess top-right])})
         environment-2 (field-environment/create
                        (svg/make-path ["M" bottom-adjusted
                                        (line/stitch line-bottom-reversed)
@@ -1066,7 +1086,9 @@
                                                       [top-right bottom])
                                        "z"])
                        {:parent field
-                        :context [:tierced-per-pairle :right]})
+                        :context [:tierced-per-pairle :right]
+                        :bounding-box (svg/bounding-box
+                                       [fess top-right bottom-right bottom])})
         environment-3 (field-environment/create
                        (svg/make-path ["M" top-left-adjusted
                                        (line/stitch line-top-left)
@@ -1077,7 +1099,9 @@
                                                       [bottom top-left])
                                        "z"])
                        {:parent field
-                        :context [:tierced-per-pairle :left]})]
+                        :context [:tierced-per-pairle :left]
+                        :bounding-box (svg/bounding-box
+                                       [top-left fess bottom bottom-left])})]
     [:<>
      [:defs
       [:clipPath {:id mask-id-1}
@@ -1162,7 +1186,9 @@
                                                       [bend-intersection-left top-adjusted])
                                        "z"])
                        {:parent field
-                        :context [:tierced-per-pairle-reversed :left]})
+                        :context [:tierced-per-pairle-reversed :left]
+                        :bounding-box (svg/bounding-box
+                                       [top-left top fess bend-intersection-left])})
         environment-2 (field-environment/create
                        (svg/make-path ["M" bend-intersection-right-adjusted
                                        (line/stitch line-bottom-right)
@@ -1173,7 +1199,9 @@
                                                       [top bend-intersection-right-adjusted])
                                        "z"])
                        {:parent field
-                        :context [:tierced-per-pairle-reversed :right]})
+                        :context [:tierced-per-pairle-reversed :right]
+                        :bounding-box (svg/bounding-box
+                                       [top top-right bend-intersection-right fess])})
         environment-3 (field-environment/create
                        (svg/make-path ["M" bend-intersection-right-adjusted
                                        (line/stitch line-bottom-right)
@@ -1184,7 +1212,9 @@
                                                       [bend-intersection-left bend-intersection-right-adjusted])
                                        "z"])
                        {:parent field
-                        :context [:tierced-per-pairle-reversed :bottom]})]
+                        :context [:tierced-per-pairle-reversed :bottom]
+                        :bounding-box (svg/bounding-box
+                                       [fess bend-intersection-right bend-intersection-left])})]
     [:<>
      [:defs
       [:clipPath {:id mask-id-1}
