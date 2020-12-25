@@ -15,7 +15,7 @@
    :murrey "#8f3f6a"
    :sanguine "#b93535"
    :tenne "#725a44"
-   ;; secondary
+   ;; untraditional
    :carnation "#e9bea1"
    :brunatre "#725a44"
    :cendree "#cbcaca"
@@ -33,7 +33,7 @@
   [["Metal"
     ["Argent" :argent]
     ["Or" :or]]
-   ["Tincture"
+   ["Colour"
     ["Azure" :azure]
     ["Gules" :gules]
     ["Purpure" :purpure]
@@ -42,20 +42,7 @@
    ["Stain"
     ["Murrey" :murrey]
     ["Sanguine" :sanguine]
-    ["Tenné" :tenne]]
-   ["Secondary"
-    ["Bronze" :bronze]
-    ["Brunatre" :brunatre]
-    ["Carnation" :carnation]
-    ["Celestial Azure" :celestial-azure]
-    ["Cendree" :cendree]
-    ["Copper" :copper]
-    ["Iron" :iron]
-    ["Lead" :lead]
-    ["Orange" :orange]
-    ["Rose" :rose]
-    ["Steel" :steel]
-    ["White" :white]]])
+    ["Tenné" :tenne]]])
 
 (defn pick [tincture {:keys [mode]}]
   (cond
