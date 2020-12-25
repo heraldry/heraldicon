@@ -85,7 +85,8 @@
 (defn replace-non-placeholder-colours-everywhere [data colour unwanted-placeholder-colours]
   (walk/postwalk #(if (and (vector? %)
                            (-> % second string?)
-                           (->> % first (get #{:stroke :fill})))
+                           (->> % first (get #{:stroke :fill}))
+                           (-> % second (not= "none")))
                     [(first %) (replace-non-placeholder-colour
                                 (second %)
                                 colour
