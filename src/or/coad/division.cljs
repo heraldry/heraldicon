@@ -1015,3 +1015,8 @@
     :tierced-per-pairle          3
     :tierced-per-pairle-reversed 3
     2))
+
+(defn counterchangable? [{:keys [division]}]
+  ;; TODO: potentially also should look at the parts, maybe demand no
+  ;; ordinaries and charges as well, but for now this check suffices
+  (-> division :type mandatory-part-count (= 2)))
