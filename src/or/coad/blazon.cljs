@@ -17,17 +17,15 @@
                 (translate-line line)
                 (encode-field field)]))
 
-(defn encode-charge [{:keys [type attitude tincture]}]
-  (let [primary (:primary tincture)]
-    (combine " " ["a" (util/translate type)
-                  (util/translate attitude)
-                  (util/translate primary)
-                  (combine " and " (map (fn [colour-key]
-                                          (when-let [t (get tincture colour-key)]
-                                            (when (not= t primary)
-                                              (combine " " [(util/translate colour-key)
-                                                            (util/translate t)]))))
-                                        [:armed :langued :attired :unguled]))])))
+(defn encode-charge [{:keys [type attitude field tincture]}]
+  (combine " " ["a" (util/translate type)
+                (util/translate attitude)
+                (encode-field field)
+                (combine " and " (map (fn [colour-key]
+                                        (when-let [t (get tincture colour-key)]
+                                          (combine " " [(util/translate colour-key)
+                                                        (util/translate t)])))
+                                      [:armed :langued :attired :unguled]))]))
 
 (defn encode-field [{:keys [division ordinaries charges] :as field} & {:keys [root?]}]
   (let [tincture (get-in field [:content :tincture])
