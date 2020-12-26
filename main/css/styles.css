@@ -37,10 +37,6 @@ mask path.overlap {
   stroke: #fff;
 }
 
-.part {
-  margin-bottom: 0.5em;
-}
-
 .parts {
   position: relative;
   padding-left: 2em;
@@ -113,6 +109,7 @@ mask path.overlap {
 
 .component.closed .header {
   border-radius: 10px;
+  min-height: 1.1em;
 }
 
 .component h1 {
