@@ -246,52 +246,58 @@
                      (line/stitch line)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn per-chevron [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [line-style                      (or (:style line) :straight)
-        top-left                        (get-in environment [:points :top-left])
-        top-right                       (get-in environment [:points :top-right])
-        bottom-left                     (get-in environment [:points :bottom-left])
-        bottom-right                    (get-in environment [:points :bottom-right])
-        fess                            (get-in environment [:points :fess])
-        bend-intersection-left          (v/project top-right fess (:x top-left))
-        bend-intersection-right         (v/project top-left fess (:x top-right))
+(defn per-chevron [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
+  (let [points                        (:points environment)
+        top-left                      (:top-left points)
+        bottom-left                   (:bottom-left points)
+        bottom-right                  (:bottom-right points)
+        left                          (:left points)
+        right                         (:right points)
+        fess                          (:fess points)
+        diagonal-mode                 (or (:diagonal-mode hints) :forty-five-degrees)
+        direction                     (direction diagonal-mode points)
+        diagonal-bottom-left          (v/project-x fess (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-bottom-right         (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
+        angle-bottom-left             (angle-to-point fess diagonal-bottom-left)
+        angle-bottom-right            (angle-to-point fess diagonal-bottom-right)
+        line-style                    (or (:style line) :straight)
         {line-left        :line
-         line-left-length :length}      (line/create line-style
-                                                     (v/abs (v/- bend-intersection-left fess))
-                                                     :angle -45
-                                                     :options options)
-        {line-right :line}              (line/create line-style
-                                                     (v/abs (v/- bend-intersection-right fess))
-                                                     :angle 45
-                                                     :options options)
-        bend-intersection-left-adjusted (v/extend fess bend-intersection-left line-left-length)
-        parts                           [[["M" bend-intersection-left-adjusted
-                                           (line/stitch line-left)
-                                           "L" fess
-                                           (line/stitch line-right)
-                                           (infinity/path :counter-clockwise
-                                                          [:right :left]
-                                                          [bend-intersection-right bend-intersection-left])
-                                           "z"]
-                                          [top-left bottom-right]]
+         line-left-length :length}    (line/create line-style
+                                                   (v/abs (v/- diagonal-bottom-left fess))
+                                                   :angle (+ angle-bottom-left 180)
+                                                   :options options)
+        {line-right :line}            (line/create line-style
+                                                   (v/abs (v/- diagonal-bottom-right fess))
+                                                   :angle angle-bottom-right
+                                                   :options options)
+        diagonal-bottom-left-adjusted (v/extend fess diagonal-bottom-left line-left-length)
+        parts                         [[["M" diagonal-bottom-left-adjusted
+                                         (line/stitch line-left)
+                                         "L" fess
+                                         (line/stitch line-right)
+                                         (infinity/path :counter-clockwise
+                                                        [:right :left]
+                                                        [diagonal-bottom-right diagonal-bottom-left])
+                                         "z"]
+                                        [top-left bottom-right]]
 
-                                         [["M" bend-intersection-left-adjusted
-                                           (line/stitch line-left)
-                                           "L" fess
-                                           (line/stitch line-right)
-                                           (infinity/path :clockwise
-                                                          [:right :left]
-                                                          [bend-intersection-right bend-intersection-left])
-                                           "z"
-                                           "z"]
-                                          [bottom-left fess bottom-right]]]]
+                                       [["M" diagonal-bottom-left-adjusted
+                                         (line/stitch line-left)
+                                         "L" fess
+                                         (line/stitch line-right)
+                                         (infinity/path :clockwise
+                                                        [:right :left]
+                                                        [diagonal-bottom-right diagonal-bottom-left])
+                                         "z"
+                                         "z"]
+                                        [bottom-left fess bottom-right]]]]
     [make-division
      :division-per-chevron fields parts
      [:all nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
-                    ["M" bend-intersection-left-adjusted
+                    ["M" diagonal-bottom-left-adjusted
                      (line/stitch line-left)
                      "L" fess
                      (line/stitch line-right)])}]])
@@ -1072,7 +1078,7 @@
                                              :top-left-fess]
                :per-bend-sinister           [:forty-five-degrees
                                              :top-right-fess]
-               :chevron                     [:forty-five-degrees
+               :per-chevron                 [:forty-five-degrees
                                              :bottom-left-fess
                                              :bottom-right-fess]
                :per-saltire                 [:forty-five-degrees
