@@ -117,6 +117,15 @@
                           (< (count current) (count default)) (into current (subvec default (count current)))
                           (> (count current) (count default)) (subvec current 0 (count default))
                           :else                               current))))
+         (update-in (conj path :division :hints) (fn [{:keys [diagonal-mode] :as hints}]
+                                                   (if (-> new-type
+                                                           division/diagonal-options
+                                                           (->> (map second))
+                                                           set
+                                                           (get diagonal-mode)
+                                                           not)
+                                                     (dissoc hints :diagonal-mode)
+                                                     hints)))
          (update-in path dissoc :content)
          (cond->
              (not (division/counterchangable? new-type)) (update-in (conj path :ordinaries) (fn [ordinaries]

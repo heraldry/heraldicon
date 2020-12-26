@@ -16,12 +16,21 @@
              :tierced-per-pairle
              :tierced-per-pairle-reversed} type) [{:content {:tincture :gules}}])))
 
+(defn diagonal-default [type]
+  (or (get {:per-bend-sinister           :top-right-fess
+            :per-chevron                 :forty-five-degrees
+            :tierced-per-pairle-reversed :forty-five-degrees} type)
+      :top-left-fess))
+
 (defn get-field [fields index]
   (let [part (get fields index)
         ref  (:ref part)]
     (if ref
       (assoc (get fields ref) :ui (:ui part))
       part)))
+
+(defn division-context-key [key]
+  (keyword (str "division-" (name key))))
 
 (defn make-division [type fields parts mask-overlaps outline parent-environment parent
                      top-level-render options & {:keys [db-path]}]
@@ -63,7 +72,7 @@
          :db-path (conj db-path :fields idx)]])
      outline]))
 
-(defn per-pale [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn per-pale [{:keys [type fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points       (:points environment)
         top-left     (:top-left points)
         top          (:top points)
@@ -90,7 +99,7 @@
                         "z"]
                        [top bottom-right]]]]
     [make-division
-     :division-per-pale fields parts
+     (division-context-key type) fields parts
      [:all nil]
      (when (:outline? options)
        [:g.outline
@@ -99,7 +108,7 @@
                      (line/stitch line)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn per-fess [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn per-fess [{:keys [type fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points       (:points environment)
         top-left     (:top-left points)
         left         (:left points)
@@ -125,7 +134,7 @@
                         "z"]
                        [left bottom-right]]]]
     [make-division
-     :division-per-fess fields parts
+     (division-context-key type) fields parts
      [:all nil]
      (when (:outline? options)
        [:g.outline
@@ -159,7 +168,7 @@
     (v/v (-> dir :x Math/abs)
          (-> dir :y Math/abs))))
 
-(defn per-bend [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn per-bend [{:keys [type fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points         (:points environment)
         top-left       (:top-left points)
         top            (:top points)
@@ -167,7 +176,8 @@
         left           (:left points)
         right          (:right points)
         fess           (:fess points)
-        diagonal-mode  (or (:diagonal-mode hints) :forty-five-degrees)
+        diagonal-mode  (or (:diagonal-mode hints)
+                           (diagonal-default type))
         direction      (direction diagonal-mode points)
         diagonal-start (v/project-x fess (v/dot direction (v/v -1 -1)) (:x left))
         diagonal-end   (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
@@ -192,7 +202,7 @@
                           "z"]
                          [diagonal-start diagonal-end bottom]]]]
     [make-division
-     :division-per-bend fields parts
+     (division-context-key type) fields parts
      [:all nil]
      (when (:outline? options)
        [:g.outline
@@ -201,14 +211,15 @@
                      (line/stitch line)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn per-bend-sinister [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn per-bend-sinister [{:keys [type fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                (:points environment)
         top                   (:top points)
         bottom                (:bottom points)
         left                  (:left points)
         right                 (:right points)
         fess                  (:fess points)
-        diagonal-mode         (or (:diagonal-mode hints) :forty-five-degrees)
+        diagonal-mode         (or (:diagonal-mode hints)
+                                  (diagonal-default type))
         direction             (direction diagonal-mode points)
         diagonal-start        (v/project-x fess (v/dot direction (v/v 1 -1)) (:x right))
         diagonal-end          (v/project-x fess (v/dot direction (v/v -1 1)) (:x left))
@@ -239,7 +250,7 @@
                                  "z"]
                                 [diagonal-start bottom diagonal-end]]]]
     [make-division
-     :division-per-bend-sinister fields parts
+     (division-context-key type) fields parts
      [:all nil]
      (when (:outline? options)
        [:g.outline
@@ -248,7 +259,7 @@
                      (line/stitch line)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn per-chevron [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn per-chevron [{:keys [type fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                        (:points environment)
         top-left                      (:top-left points)
         bottom-left                   (:bottom-left points)
@@ -256,7 +267,8 @@
         left                          (:left points)
         right                         (:right points)
         fess                          (:fess points)
-        diagonal-mode                 (or (:diagonal-mode hints) :forty-five-degrees)
+        diagonal-mode                 (or (:diagonal-mode hints)
+                                          (diagonal-default type))
         direction                     (direction diagonal-mode points)
         diagonal-bottom-left          (v/project-x fess (v/dot direction (v/v -1 1)) (:x left))
         diagonal-bottom-right         (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
@@ -294,7 +306,7 @@
                                          "z"]
                                         [bottom-left fess bottom-right]]]]
     [make-division
-     :division-per-chevron fields parts
+     (division-context-key type) fields parts
      [:all nil]
      (when (:outline? options)
        [:g.outline
@@ -305,7 +317,7 @@
                      (line/stitch line-right)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn per-saltire [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn per-saltire [{:keys [type fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                             (:points environment)
         top-left                           (:top-left points)
         top-right                          (:top-right points)
@@ -314,7 +326,8 @@
         left                               (:left points)
         right                              (:right points)
         fess                               (:fess points)
-        diagonal-mode                      (or (:diagonal-mode hints) :forty-five-degrees)
+        diagonal-mode                      (or (:diagonal-mode hints)
+                                               (diagonal-default type))
         direction                          (direction diagonal-mode points)
         diagonal-top-left                  (v/project-x fess (v/dot direction (v/v -1 -1)) (:x left))
         diagonal-top-right                 (v/project-x fess (v/dot direction (v/v 1 -1)) (:x right))
@@ -395,7 +408,7 @@
                                               "z"]
                                              [diagonal-top-left fess diagonal-bottom-left]]]]
     [make-division
-     :division-per-saltire fields parts
+     (division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" diagonal-bottom-right-adjusted
@@ -420,7 +433,7 @@
                      (line/stitch line-bottom-left)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn quarterly [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn quarterly [{:keys [type fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                       (:points environment)
         top                          (:top points)
         top-left                     (:top-left points)
@@ -495,7 +508,7 @@
                                         "z"]
                                        [fess bottom-left]]]]
     [make-division
-     :division-quarterly fields parts
+     (division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" fess
@@ -520,14 +533,15 @@
                      (line/stitch line-left)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn gyronny [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn gyronny [{:keys [type fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                       (:points environment)
         top                          (:top points)
         bottom                       (:bottom points)
         left                         (:left points)
         right                        (:right points)
         fess                         (:fess points)
-        diagonal-mode                (or (:diagonal-mode hints) :forty-five-degrees)
+        diagonal-mode                (or (:diagonal-mode hints)
+                                         (diagonal-default type))
         direction                    (direction diagonal-mode points)
         diagonal-top-left            (v/project-x fess (v/dot direction (v/v -1 -1)) (:x left))
         diagonal-top-right           (v/project-x fess (v/dot direction (v/v 1 -1)) (:x right))
@@ -665,7 +679,7 @@
                                         "z"]
                                        [left fess diagonal-top-left]]]]
     [make-division
-     :division-gyronny fields parts
+     (division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" fess
@@ -714,7 +728,7 @@
                      (line/stitch line-left)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn tierced-per-pale [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn tierced-per-pale [{:keys [type fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                         (:points environment)
         top                            (:top points)
         top-left                       (:top-left points)
@@ -769,7 +783,7 @@
                                           "z"]
                                          [second-top bottom-right]]]]
     [make-division
-     :division-tierced-per-pale fields parts
+     (division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" second-bottom-adjusted
@@ -785,7 +799,7 @@
                      (line/stitch line-reversed)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn tierced-per-fess [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn tierced-per-fess [{:keys [type fields line] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                         (:points environment)
         top-left                       (:top-left points)
         bottom-right                   (:bottom-right points)
@@ -839,7 +853,7 @@
                                           "z"]
                                          [second-left bottom-right]]]]
     [make-division
-     :division-tierced-per-fess fields parts
+     (division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" second-right-adjusted
@@ -855,7 +869,7 @@
                      (line/stitch line-reversed)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn tierced-per-pairle [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn tierced-per-pairle [{:keys [type fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                                (:points environment)
         bottom                                (:bottom points)
         bottom-left                           (:bottom-left points)
@@ -863,7 +877,8 @@
         left                                  (:left points)
         right                                 (:right points)
         fess                                  (:fess points)
-        diagonal-mode                         (or (:diagonal-mode hints) :forty-five-degrees)
+        diagonal-mode                         (or (:diagonal-mode hints)
+                                                  (diagonal-default type))
         direction                             (direction diagonal-mode points)
         diagonal-top-left                     (v/project-x fess (v/dot direction (v/v -1 -1)) (:x left))
         diagonal-top-right                    (v/project-x fess (v/dot direction (v/v 1 -1)) (:x right))
@@ -930,7 +945,7 @@
                                                  "z"]
                                                 [diagonal-top-left fess bottom bottom-left]]]]
     [make-division
-     :division-tierced-per-fess fields parts
+     (division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" bottom-adjusted
@@ -949,7 +964,7 @@
                      (line/stitch line-bottom)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn tierced-per-pairle-reversed [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn tierced-per-pairle-reversed [{:keys [type fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                             (:points environment)
         top                                (:top points)
         top-left                           (:top-left points)
@@ -959,7 +974,8 @@
         left                               (:left points)
         right                              (:right points)
         fess                               (:fess points)
-        diagonal-mode                      (or (:diagonal-mode hints) :forty-five-degrees)
+        diagonal-mode                      (or (:diagonal-mode hints)
+                                               (diagonal-default type))
         direction                          (direction diagonal-mode points)
         diagonal-bottom-left               (v/project-x fess (v/dot direction (v/v -1 1)) (:x left))
         diagonal-bottom-right              (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
@@ -1026,7 +1042,7 @@
                                               "z"]
                                              [fess bottom-left bottom-right]]]]
     [make-division
-     :division-tierced-per-fess fields parts
+     (division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" diagonal-bottom-right-adjusted

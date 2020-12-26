@@ -57,7 +57,7 @@
                               (rf/dispatch [:set-in path new-checked?])))}]
      [:label {:for element-id} label]]))
 
-(defn select [path name label options & {:keys [grouped? value on-change]}]
+(defn select [path name label options & {:keys [grouped? value on-change default]}]
   (let [element-id (id name)]
     [:div.setting
      [:label {:for element-id} label]
@@ -65,6 +65,7 @@
                :id        element-id
                :value     (clojure.core/name (or value
                                                  @(rf/subscribe [:get-in path])
+                                                 default
                                                  :none))
                :on-change #(let [checked (keyword (-> % .-target .-value))]
                              (if on-change
@@ -333,7 +334,7 @@
             (let [diagonal-options (division/diagonal-options division-type)]
               (when (-> diagonal-options count (> 0))
                 [select (conj path :division :hints :diagonal-mode) "diagonal" "Diagonal"
-                 diagonal-options :default :forty-five-degrees]))
+                 diagonal-options :default (division/diagonal-default division-type)]))
             [select (conj path :division :line :style) "line" "Line" line/options]
             [:div.title "Parts"]
             [:div.parts
