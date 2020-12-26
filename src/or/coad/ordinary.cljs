@@ -6,20 +6,34 @@
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
-(def band-quotient 5)
+(defn thickness-default [type]
+  (or (get {} type)
+      30))
 
-(defn pale [{:keys [field line] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
-  (let [line-style (or (:style line) :straight)
-        top (get-in environment [:points :top])
-        bottom (get-in environment [:points :bottom])
-        fess (get-in environment [:points :fess])
+(defn thickness-options [type]
+  (get {:pale [20 50]
+        :fess [20 50]
+        :chief [10 40]
+        :base [10 40]} type))
+
+(defn pale [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  (let [points (:points environment)
+        top (:top points)
+        bottom (:bottom points)
+        fess (:fess points)
         width (:width environment)
-        col1 (- (:x fess) (/ width band-quotient 2))
-        col2 (+ (:x fess) (/ width band-quotient 2))
+        thickness (or (:thickness hints)
+                      (thickness-default type))
+        band-width (-> width
+                       (* thickness)
+                       (/ 100))
+        col1 (- (:x fess) (/ band-width 2))
+        col2 (+ col1 band-width)
         first-top (v/v col1 (:y top))
         first-bottom (v/v col1 (:y bottom))
         second-top (v/v col2 (:y top))
         second-bottom (v/v col2 (:y bottom))
+        line-style (or (:style line) :straight)
         {line :line} (line/create line-style
                                   (:y (v/- bottom top))
                                   :flipped? true
@@ -59,18 +73,24 @@
                      (line/stitch line-reversed)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn fess [{:keys [field line] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
-  (let [line-style (or (:style line) :straight)
-        left (get-in environment [:points :left])
-        right (get-in environment [:points :right])
-        fess (get-in environment [:points :fess])
+(defn fess [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  (let [points (:points environment)
+        left (:left points)
+        right (:right points)
+        fess (:fess points)
         height (:height environment)
-        row1 (- (:y fess) (/ height band-quotient 2))
-        row2 (+ (:y fess) (/ height band-quotient 2))
+        thickness (or (:thickness hints)
+                      (thickness-default type))
+        band-height (-> height
+                        (* thickness)
+                        (/ 100))
+        row1 (- (:y fess) (/ band-height 2))
+        row2 (+ row1 band-height)
         first-left (v/v (:x left) row1)
         first-right (v/v (:x right) row1)
         second-left (v/v (:x left) row2)
         second-right (v/v (:x right) row2)
+        line-style (or (:style line) :straight)
         {line :line} (line/create line-style
                                   (:x (v/- right left))
                                   :options options)
@@ -109,16 +129,22 @@
                      (line/stitch line-reversed)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn chief [{:keys [field line] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
-  (let [line-style (or (:style line) :straight)
-        top-left (get-in environment [:points :top-left])
-        top (get-in environment [:points :top])
-        left (get-in environment [:points :left])
-        right (get-in environment [:points :right])
+(defn chief [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  (let [points (:points environment)
+        top (:top points)
+        top-left (:top-left points)
+        left (:left points)
+        right (:right points)
         height (:height environment)
-        row (+ (:y top) (/ height band-quotient))
+        thickness (or (:thickness hints)
+                      (thickness-default type))
+        band-height (-> height
+                        (* thickness)
+                        (/ 100))
+        row (+ (:y top) band-height)
         row-left (v/v (:x left) row)
         row-right (v/v (:x right) row)
+        line-style (or (:style line) :straight)
         {line-reversed :line
          line-reversed-length :length} (line/create line-style
                                                     (:x (v/- right left))
@@ -147,16 +173,22 @@
                      (line/stitch line-reversed)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn base [{:keys [field line] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
-  (let [line-style (or (:style line) :straight)
-        bottom-right (get-in environment [:points :bottom-right])
-        left (get-in environment [:points :left])
-        right (get-in environment [:points :right])
-        bottom (get-in environment [:points :bottom])
+(defn base [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  (let [points (:points environment)
+        bottom (:bottom points)
+        bottom-right (:bottom-right points)
+        left (:left points)
+        right (:right points)
         height (:height environment)
-        row (- (:y bottom) (/ height band-quotient))
+        thickness (or (:thickness hints)
+                      (thickness-default type))
+        band-height (-> height
+                        (* thickness)
+                        (/ 100))
+        row (- (:y bottom) band-height)
         row-left (v/v (:x left) row)
         row-right (v/v (:x right) row)
+        line-style (or (:style line) :straight)
         {line :line} (line/create line-style
                                   (:x (v/- right left))
                                   :options options)
@@ -180,22 +212,22 @@
                      (line/stitch line)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn bend [{:keys [field line] :as ordinary} field top-level-render & {:keys [db-path]}]
+(defn bend [{:keys [type field line hints] :as ordinary} field top-level-render & {:keys [db-path]}]
   [:<>])
 
-(defn bend-right [{:keys [field line] :as ordinary} field top-level-render & {:keys [db-path]}]
+(defn bend-right [{:keys [type field line hints] :as ordinary} field top-level-render & {:keys [db-path]}]
   [:<>])
 
-(defn cross [{:keys [field line] :as ordinary} field top-level-render & {:keys [db-path]}]
+(defn cross [{:keys [type field line hints] :as ordinary} field top-level-render & {:keys [db-path]}]
   [:<>])
 
-(defn saltire [{:keys [field line] :as ordinary} field top-level-render & {:keys [db-path]}]
+(defn saltire [{:keys [type field line hints] :as ordinary} field top-level-render & {:keys [db-path]}]
   [:<>])
 
-(defn chevron [{:keys [field line] :as ordinary} field top-level-render & {:keys [db-path]}]
+(defn chevron [{:keys [type field line hints] :as ordinary} field top-level-render & {:keys [db-path]}]
   [:<>])
 
-(defn pall [{:keys [field line] :as ordinary} field top-level-render & {:keys [db-path]}]
+(defn pall [{:keys [type field line hints] :as ordinary} field top-level-render & {:keys [db-path]}]
   [:<>])
 
 (def kinds
