@@ -31,20 +31,10 @@ a:hover {
   cursor: pointer;
 }
 
-.controls {
-  padding: 10px;
-}
-
 mask path.overlap {
   stroke-width: 0.1;
   fill: none;
   stroke: #fff;
-}
-
-.general {
-  display: inline-block;
-  min-width: 20em;
-  margin-bottom: 1em;
 }
 
 .part {
@@ -77,14 +67,77 @@ mask path.overlap {
 }
 
 .setting select,
-.setting .control-element {
+.setting .slider {
   position: absolute;
   left: 6.5em;
 }
 
-.control-element {
+.setting input[type="checkbox"],
+.setting input[type="radio"] {
+  margin-left: 0px;
+  margin-right: 5px;
+}
+
+.setting label {
+  margin-right: 10px;
+}
+
+.slider {
   display: inline-block;
   margin-left: -1em;
+}
+
+.component {
+  display: inline-block;
+  min-width: 24em;
+  padding: 0;
+  background-color: #fff;
+  margin-bottom: 0.5em;
+}
+
+.component .header {
+  position: relative;
+  background-color: #eee;
+  border: solid 1px #bbb;
+  border-radius: 10px 10px 0 0;
+  padding: 4px;
+}
+
+.component .content {
+  border: solid 1px #bbb;
+  border-radius: 0 0 10px 10px;
+  border-top: 0;
+  padding: 10px;
+  padding-bottom: 0;
+}
+
+.component.closed .header {
+  border-radius: 10px;
+}
+
+.component h1 {
+  position: absolute;
+  left: 1.5em;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 1em;
+  margin: 0;
+}
+
+.component h2 {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 1em;
+  margin: 0;
+  margin-bottom: 0.5em;
+}
+
+.component.selected .content {
+  background-color: #eef;
+}
+
+.component.selected .header {
+  background-color: #cce;
 }
 
 .ordinaries-section {
@@ -96,32 +149,6 @@ mask path.overlap {
   padding-left: 2em;
 }
 
-.title {
-  font-weight: 600;
-  margin-bottom: 0.5em;
-}
-
-.component {
-  position: relative;
-  padding: 10px;
-  padding-left: 1em;
-  border: solid 1px #bbb;
-  border-radius: 10px;
-  overflow: auto;
-  padding-bottom: 0.5em;
-  background-color: #fff;
-}
-
-.field {
-  display: inline-block;
-  min-width: 20em;
-}
-
-.ordinary {
-  margin-bottom: 0.5em;
-  border-top: solid 1px #bbb;
-}
-
 .charges-section {
   margin-top: 1em;
 }
@@ -129,13 +156,6 @@ mask path.overlap {
 .charges {
   position: relative;
   padding-left: 2em;
-}
-
-div.charge {
-  margin-bottom: 0.5em;
-  border-top: solid 1px #bbb;
-  min-width: 25em;
-  padding-bottom: 5px;
 }
 
 .outline {
@@ -184,18 +204,11 @@ div.spacer {
   clear: both;
 }
 
-.selected.component {
-  background-color: #eef;
-}
-
 .selector {
-  position: absolute;
-  top: 2px;
-  right: 2px;
   display: inline-block;
   width: 1em;
   height: 1em;
-  cursor: pointer;
+  float: right;
 }
 
 .credits {
@@ -206,4 +219,10 @@ div.spacer {
 
 input:disabled + label {
   color: #ccc;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
 }

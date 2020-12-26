@@ -72,7 +72,8 @@
  (fn [db [_]]
    (merge {:options {:mode :colours
                      :outline? false
-                     :squiggly? false}
+                     :squiggly? false
+                     :ui {:open? true}}
            :coat-of-arms form/default-coat-of-arms} db)))
 
 (rf/reg-event-db
@@ -290,9 +291,10 @@
 
 (defn forms []
   [:<>
-   [form/form-general]
-   [:div.title "Coat of Arms"]
-   [form/form-for-field [:coat-of-arms :field]]])
+   [form/form-options]
+   [:div {:style {:padding-bottom "10px"}}
+    [:div.title "Coat of Arms"]
+    [form/form-for-field [:coat-of-arms :field]]]])
 
 (defn app []
   (fn []
@@ -306,7 +308,8 @@
       [:<>
        [:div {:style {:width "100%"
                       :height "100vh"
-                      :position "relative"}
+                      :position "relative"
+                      :padding-bottom "1em"}
               :on-click #(rf/dispatch [:select-component nil])}
         [:svg {:id "svg"
                :style {:width "25em"
@@ -335,7 +338,8 @@
                        :top 0
                        :width "calc(100vw - 27em)"
                        :height "100vh"
-                       :overflow "auto"}}
+                       :overflow "auto"
+                       :padding-bottom "1em"}}
          [forms]]]
        [:div.credits
         [:a {:href "https://github.com/or/coad/"
@@ -346,13 +350,14 @@
 
 (defn start []
   (rf/dispatch-sync [:initialize-db])
-  (let [hash (subs js/location.hash 1)]
-    (when (> (count hash) 0)
-      (let [data (->>
-                  hash
-                  (.decode base64)
-                  reader/read-string)]
-        (rf/dispatch-sync [:set :coat-of-arms data]))))
+  (when (not goog.DEBUG)
+    (let [hash (subs js/location.hash 1)]
+      (when (> (count hash) 0)
+        (let [data (->>
+                    hash
+                    (.decode base64)
+                    reader/read-string)]
+          (rf/dispatch-sync [:set :coat-of-arms data])))))
   (r/render [app]
             (.getElementById js/document "app")))
 
