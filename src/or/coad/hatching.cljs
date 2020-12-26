@@ -234,11 +234,12 @@
                  :height 1000
                  :fill "url(#hatching-tenne-secondary)"}]])]]))
 
-(def tinctures
-  {;; metal
-   :argent argent
-   :or or
-   ;; tincture
+(def metals
+  {:argent argent
+   :or or})
+
+(def colours
+  {;; tincture
    :azure azure
    :vert vert
    :gules gules
@@ -248,17 +249,17 @@
    :murrey murrey
    :sanguine sanguine
    :tenne tenne
-   ;; secondary
+   ;; untraditional
    :white argent})
 
 (def patterns
   (into
-   [:defs]
-   (for [[_ pattern] (vals tinctures)]
+   [:<>]
+   (for [[_ pattern] (vals (concat metals colours))]
      pattern)))
 
 (defn get-for [tincture]
-  (let [[id _] (get tinctures tincture)]
-    (if id
-      (str "url(#" id ")")
-      "#888")))
+  (let [[id _] (clojure.core/or (get metals tincture)
+                                (get colours tincture))]
+    (when id
+      (str "url(#" id ")"))))
