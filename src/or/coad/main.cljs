@@ -91,7 +91,7 @@
    (update-in db path not)))
 
 (rf/reg-event-db
- :set-division
+ :set-division-type
  (fn [db [_ path new-type]]
    (if (= new-type :none)
      (-> db

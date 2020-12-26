@@ -328,7 +328,7 @@
          [select path "division-type" "Division"
           (into [["None" :none]] division/options)
           :value division-type
-          :on-change #(rf/dispatch [:set-division path %])]
+          :on-change #(rf/dispatch [:set-division-type path %])]
          (when (not= division-type :none)
            [:<>
             (let [diagonal-options (division/diagonal-options division-type)]
