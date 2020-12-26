@@ -182,45 +182,52 @@
                      (line/stitch line)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn per-bend-sinister [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [top-left                   (get-in environment [:points :top-left])
-        top-right                  (get-in environment [:points :top-right])
-        bottom-left                (get-in environment [:points :bottom-left])
-        fess                       (get-in environment [:points :fess])
-        bend-intersection          (v/project top-right fess (:x top-left))
-        line-style                 (or (:style line) :straight)
+(defn per-bend-sinister [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
+  (let [top-left              (get-in environment [:points :top-left])
+        top-right             (get-in environment [:points :top-right])
+        top                   (get-in environment [:points :top])
+        bottom                (get-in environment [:points :bottom])
+        fess                  (get-in environment [:points :fess])
+        diagonal-mode         (or (:diagonal-mode hints :forty-five-degrees))
+        diagonal-start        (case diagonal-mode
+                                :top-right-fess top-right
+                                (let [top-right-to-fess (v/- fess top-right)]
+                                  (v/+ fess (v/v (-> top-right-to-fess :y)
+                                                 (-> top-right-to-fess :y -)))))
+        diagonal-end          (v/project diagonal-start fess (:x top-left))
+        angle                 (angle-to-point diagonal-start diagonal-end)
+        line-style            (or (:style line) :straight)
         {line        :line
-         line-length :length}      (line/create line-style
-                                                (v/abs (v/- bend-intersection top-right))
-                                                :angle -45
-                                                :flipped? false
-                                                :options options)
-        bend-intersection-adjusted (v/extend
-                                       top-right
-                                     bend-intersection
-                                     line-length)
-        parts                      [[["M" bend-intersection-adjusted
-                                      (line/stitch line)
-                                      (infinity/path :counter-clockwise
-                                                     [:top-right :left]
-                                                     [top-right bend-intersection])
-                                      "z"]
-                                     [top-right bend-intersection]]
+         line-length :length} (line/create line-style
+                                           (v/abs (v/- diagonal-end diagonal-start))
+                                           :angle (+ angle 180)
+                                           :options options)
+        diagonal-end-adjusted (v/extend
+                                  diagonal-start
+                                diagonal-end
+                                line-length)
+        parts                 [[["M" diagonal-end-adjusted
+                                 (line/stitch line)
+                                 (infinity/path :counter-clockwise
+                                                [:top :left]
+                                                [diagonal-start diagonal-end])
+                                 "z"]
+                                [diagonal-start top diagonal-end]]
 
-                                    [["M" bend-intersection-adjusted
-                                      (line/stitch line)
-                                      (infinity/path :clockwise
-                                                     [:top-right :left]
-                                                     [top-right bend-intersection])
-                                      "z"]
-                                     [top-right bottom-left]]]]
+                               [["M" diagonal-end-adjusted
+                                 (line/stitch line)
+                                 (infinity/path :clockwise
+                                                [:top :left]
+                                                [diagonal-start diagonal-end])
+                                 "z"]
+                                [diagonal-start bottom diagonal-end]]]]
     [make-division
      :division-per-bend-sinister fields parts
      [:all nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
-                    ["M" bend-intersection-adjusted
+                    ["M" diagonal-end-adjusted
                      (line/stitch line)])}]])
      environment field top-level-render options :db-path db-path]))
 
@@ -1038,3 +1045,25 @@
   ;; TODO: potentially also should look at the parts, maybe demand no
   ;; ordinaries and charges as well, but for now this check suffices
   (-> type mandatory-part-count (= 2)))
+
+(defn diagonal-options [type]
+  (cond-> []
+    (get #{:per-bend
+           :per-bend-sinister
+           :per-saltire
+           :gyronny
+           :tierced-per-pairle
+           :tierced-per-pairle-reversed}
+         type) (conj ["45°" :forty-five-degrees])
+    (get #{:per-bend
+           :per-saltire
+           :gyronny
+           :tierced-per-pairle
+           :tierced-per-pairle-reversed}
+         type) (conj ["Top-left to fess" :top-left-fess])
+    (get #{:per-bend-sinister
+           :per-saltire
+           :gyronny
+           :tierced-per-pairle
+           :tierced-per-pairle-reversed}
+         type) (conj ["Top-right to fess" :top-right-fess])))
