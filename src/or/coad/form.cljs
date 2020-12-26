@@ -147,11 +147,13 @@
 
 (defn form-for-ordinary [path & {:keys [parent-field]}]
   (let [selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])
-        ordinary-type @(rf/subscribe [:get-in (conj path :type)])]
+        ordinary @(rf/subscribe [:get-in path])
+        ordinary-type (:type ordinary)]
     [:<>
      [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
      [:div.ordinary.component
       {:class (when selected? "selected")}
+      [:div.title (-> ordinary :type util/translate util/upper-case-first)]
       [select (conj path :type) "type" "Type" ordinary/options
        :on-change #(rf/dispatch [:set-ordinary-type path %])]
       (let [[min-value max-value] (ordinary/thickness-options ordinary-type)]
