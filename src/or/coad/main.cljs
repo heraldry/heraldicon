@@ -72,7 +72,8 @@
  (fn [db [_]]
    (merge {:options      {:mode      :colours
                           :outline?  false
-                          :squiggly? false}
+                          :squiggly? false
+                          :ui        {:open? true}}
            :coat-of-arms form/default-coat-of-arms} db)))
 
 (rf/reg-event-db
@@ -290,9 +291,10 @@
 
 (defn forms []
   [:<>
-   [form/form-general]
-   [:div.title "Coat of Arms"]
-   [form/form-for-field [:coat-of-arms :field]]])
+   [form/form-options]
+   [:div {:style {:padding-bottom "10px"}}
+    [:div.title "Coat of Arms"]
+    [form/form-for-field [:coat-of-arms :field]]]])
 
 (defn app []
   (fn []
@@ -304,9 +306,10 @@
       (when coat-of-arms
         (js/history.replaceState nil nil (str "#" state-base64)))
       [:<>
-       [:div {:style    {:width    "100%"
-                         :height   "100vh"
-                         :position "relative"}
+       [:div {:style    {:width          "100%"
+                         :height         "100vh"
+                         :position       "relative"
+                         :padding-bottom "1em"}
               :on-click #(rf/dispatch [:select-component nil])}
         [:svg {:id                  "svg"
                :style               {:width    "25em"
@@ -330,12 +333,13 @@
          [:span.disclaimer "Blazon (very rudimentary, very beta)"]
          [:div.blazon
           (blazon/encode-field (:field coat-of-arms) :root? true)]]
-        [:div {:style {:position "absolute"
-                       :left     "27em"
-                       :top      0
-                       :width    "calc(100vw - 27em)"
-                       :height   "100vh"
-                       :overflow "auto"}}
+        [:div {:style {:position       "absolute"
+                       :left           "27em"
+                       :top            0
+                       :width          "calc(100vw - 27em)"
+                       :height         "100vh"
+                       :overflow       "auto"
+                       :padding-bottom "1em"}}
          [forms]]]
        [:div.credits
         [:a {:href   "https://github.com/or/coad/"
@@ -346,13 +350,14 @@
 
 (defn start []
   (rf/dispatch-sync [:initialize-db])
-  (let [hash (subs js/location.hash 1)]
-    (when (> (count hash) 0)
-      (let [data (->>
-                  hash
-                  (.decode base64)
-                  reader/read-string)]
-        (rf/dispatch-sync [:set :coat-of-arms data]))))
+  (when (not goog.DEBUG)
+    (let [hash (subs js/location.hash 1)]
+      (when (> (count hash) 0)
+        (let [data (->>
+                    hash
+                    (.decode base64)
+                    reader/read-string)]
+          (rf/dispatch-sync [:set :coat-of-arms data])))))
   (r/render [app]
             (.getElementById js/document "app")))
 
