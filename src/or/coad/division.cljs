@@ -855,23 +855,30 @@
                      (line/stitch line-reversed)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn tierced-per-pairle [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [line-style                            (or (:style line) :straight)
-        top-left                              (get-in environment [:points :top-left])
-        top-right                             (get-in environment [:points :top-right])
-        bottom                                (get-in environment [:points :bottom])
-        bottom-left                           (get-in environment [:points :bottom-left])
-        bottom-right                          (get-in environment [:points :bottom-right])
-        fess                                  (get-in environment [:points :fess])
+(defn tierced-per-pairle [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
+  (let [points                                (:points environment)
+        bottom                                (:bottom points)
+        bottom-left                           (:bottom-left points)
+        bottom-right                          (:bottom-right points)
+        left                                  (:left points)
+        right                                 (:right points)
+        fess                                  (:fess points)
+        diagonal-mode                         (or (:diagonal-mode hints) :forty-five-degrees)
+        direction                             (direction diagonal-mode points)
+        diagonal-top-left                     (v/project-x fess (v/dot direction (v/v -1 -1)) (:x left))
+        diagonal-top-right                    (v/project-x fess (v/dot direction (v/v 1 -1)) (:x right))
+        angle-top-left                        (angle-to-point fess diagonal-top-left)
+        angle-top-right                       (angle-to-point fess diagonal-top-right)
+        line-style                            (or (:style line) :straight)
         {line-top-left        :line
          line-top-left-length :length}        (line/create line-style
-                                                           (v/abs (v/- top-left fess))
-                                                           :angle 45
+                                                           (v/abs (v/- diagonal-top-left fess))
+                                                           :angle (+ angle-top-left 180)
                                                            :reversed? true
                                                            :options options)
         {line-top-right :line}                (line/create line-style
-                                                           (v/abs (v/- top-right fess))
-                                                           :angle -45
+                                                           (v/abs (v/- diagonal-top-right fess))
+                                                           :angle angle-top-right
                                                            :flipped? true
                                                            :options options)
         {line-bottom :line}                   (line/create line-style
@@ -885,43 +892,43 @@
                                                            :angle -90
                                                            :reversed? true
                                                            :options options)
-        top-left-adjusted                     (v/extend
+        diagonal-top-left-adjusted            (v/extend
                                                   fess
-                                                top-left
+                                                diagonal-top-left
                                                 line-top-left-length)
         bottom-adjusted                       (v/extend
                                                   fess
                                                 bottom
                                                 line-bottom-reversed-length)
-        parts                                 [[["M" top-left-adjusted
+        parts                                 [[["M" diagonal-top-left-adjusted
                                                  (line/stitch line-top-left)
                                                  "L" fess
                                                  (line/stitch line-top-right)
                                                  (infinity/path :counter-clockwise
-                                                                [:top-right :top-left]
-                                                                [top-right top-left])
+                                                                [:right :left]
+                                                                [diagonal-top-right diagonal-top-left])
                                                  "z"]
-                                                [top-left fess top-right]]
+                                                [diagonal-top-left fess diagonal-top-right]]
 
                                                [["M" bottom-adjusted
                                                  (line/stitch line-bottom-reversed)
                                                  "L" fess
                                                  (line/stitch line-top-right)
                                                  (infinity/path :clockwise
-                                                                [:top-right :bottom]
-                                                                [top-right bottom])
+                                                                [:right :bottom]
+                                                                [diagonal-top-right bottom])
                                                  "z"]
-                                                [fess top-right bottom-right bottom]]
+                                                [fess diagonal-top-right bottom-right bottom]]
 
-                                               [["M" top-left-adjusted
+                                               [["M" diagonal-top-left-adjusted
                                                  (line/stitch line-top-left)
                                                  "L" fess
                                                  (line/stitch line-bottom)
                                                  (infinity/path :clockwise
-                                                                [:bottom :top-left]
-                                                                [bottom top-left])
+                                                                [:bottom :left]
+                                                                [bottom diagonal-top-left])
                                                  "z"]
-                                                [top-left fess bottom bottom-left]]]]
+                                                [diagonal-top-left fess bottom bottom-left]]]]
     [make-division
      :division-tierced-per-fess fields parts
      [:all
@@ -932,7 +939,7 @@
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
-                    ["M" top-left-adjusted
+                    ["M" diagonal-top-left-adjusted
                      (line/stitch line-top-left)])}]
         [:path {:d (svg/make-path
                     ["M" fess
@@ -942,23 +949,32 @@
                      (line/stitch line-bottom)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn tierced-per-pairle-reversed [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [line-style                         (or (:style line) :straight)
-        top-left                           (get-in environment [:points :top-left])
-        top-right                          (get-in environment [:points :top-right])
-        top                                (get-in environment [:points :top])
-        fess                               (get-in environment [:points :fess])
-        bend-intersection-left             (v/project top-right fess (:x top-left))
-        bend-intersection-right            (v/project top-left fess (:x top-right))
+(defn tierced-per-pairle-reversed [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
+  (let [points                             (:points environment)
+        top                                (:top points)
+        top-left                           (:top-left points)
+        top-right                          (:top-right points)
+        bottom-left                        (:bottom-left points)
+        bottom-right                       (:bottom-right points)
+        left                               (:left points)
+        right                              (:right points)
+        fess                               (:fess points)
+        diagonal-mode                      (or (:diagonal-mode hints) :forty-five-degrees)
+        direction                          (direction diagonal-mode points)
+        diagonal-bottom-left               (v/project-x fess (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-bottom-right              (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
+        angle-bottom-left                  (angle-to-point fess diagonal-bottom-left)
+        angle-bottom-right                 (angle-to-point fess diagonal-bottom-right)
+        line-style                         (or (:style line) :straight)
         {line-bottom-right        :line
          line-bottom-right-length :length} (line/create line-style
-                                                        (v/abs (v/- bend-intersection-right fess))
-                                                        :angle -135
+                                                        (v/abs (v/- diagonal-bottom-right fess))
+                                                        :angle (+ angle-bottom-right 180)
                                                         :reversed? true
                                                         :options options)
         {line-bottom-left :line}           (line/create line-style
-                                                        (v/abs (v/- bend-intersection-left fess))
-                                                        :angle -225
+                                                        (v/abs (v/- diagonal-bottom-left fess))
+                                                        :angle angle-bottom-left
                                                         :flipped? true
                                                         :options options)
         {line-top :line}                   (line/create line-style
@@ -972,9 +988,9 @@
                                                         :angle 90
                                                         :reversed? true
                                                         :options options)
-        bend-intersection-right-adjusted   (v/extend
+        diagonal-bottom-right-adjusted     (v/extend
                                                fess
-                                             bend-intersection-right
+                                             diagonal-bottom-right
                                              line-bottom-right-length)
         top-adjusted                       (v/extend
                                                fess
@@ -985,35 +1001,35 @@
                                               "L" fess
                                               (line/stitch line-bottom-left)
                                               (infinity/path :clockwise
-                                                             [:bottom-left :top]
-                                                             [bend-intersection-left top-adjusted])
+                                                             [:left :top]
+                                                             [diagonal-bottom-left top-adjusted])
                                               "z"]
-                                             [top-left top fess bend-intersection-left]]
+                                             [top-left top fess diagonal-bottom-left]]
 
-                                            [["M" bend-intersection-right-adjusted
+                                            [["M" diagonal-bottom-right-adjusted
                                               (line/stitch line-bottom-right)
                                               "L" fess
                                               (line/stitch line-top)
                                               (infinity/path :clockwise
-                                                             [:top :bottom-right]
-                                                             [top bend-intersection-right-adjusted])
+                                                             [:top :right]
+                                                             [top diagonal-bottom-right-adjusted])
                                               "z"]
-                                             [top top-right bend-intersection-right fess]]
+                                             [top top-right diagonal-bottom-right fess]]
 
-                                            [["M" bend-intersection-right-adjusted
+                                            [["M" diagonal-bottom-right-adjusted
                                               (line/stitch line-bottom-right)
                                               "L" fess
                                               (line/stitch line-bottom-left)
                                               (infinity/path :counter-clockwise
-                                                             [:bottom-left :bottom-right]
-                                                             [bend-intersection-left bend-intersection-right-adjusted])
+                                                             [:left :right]
+                                                             [diagonal-bottom-left diagonal-bottom-right-adjusted])
                                               "z"]
-                                             [fess bend-intersection-right bend-intersection-left]]]]
+                                             [fess bottom-left bottom-right]]]]
     [make-division
      :division-tierced-per-fess fields parts
      [:all
       [(svg/make-path
-        ["M" bend-intersection-right-adjusted
+        ["M" diagonal-bottom-right-adjusted
          (line/stitch line-bottom-right)])]
       nil]
      (when (:outline? options)
@@ -1022,7 +1038,7 @@
                     ["M" fess
                      (line/stitch line-top)])}]
         [:path {:d (svg/make-path
-                    ["M" bend-intersection-right-adjusted
+                    ["M" diagonal-bottom-right-adjusted
                      (line/stitch line-bottom-right)])}]
         [:path {:d (svg/make-path
                     ["M" fess
