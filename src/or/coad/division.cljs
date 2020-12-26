@@ -139,19 +139,36 @@
         (/ Math/PI)
         (* 180))))
 
+(defn direction [diagonal-mode points]
+  (let [top-left (:top-left points)
+        top-right (:top-right points)
+        bottom-left (:bottom-left points)
+        bottom-right (:bottom-right points)
+        fess (:fess points)
+        fess-height (-> fess
+                        (v/- top-left)
+                        :y)
+        dir (case diagonal-mode
+              :top-left-fess (v/- fess top-left)
+              :top-right-fess (v/- fess top-right)
+              :bottom-left-fess (v/- fess bottom-left)
+              :bottom-right-fess (v/- fess bottom-right)
+              (v/v fess-height fess-height))]
+    (v/v (-> dir :x Math/abs)
+         (-> dir :y Math/abs))))
+
 (defn per-bend [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [top-left (get-in environment [:points :top-left])
-        top (get-in environment [:points :top])
-        top-right (get-in environment [:points :top-right])
-        bottom (get-in environment [:points :bottom])
-        fess (get-in environment [:points :fess])
+  (let [points (:points environment)
+        top-left (:top-left points)
+        top (:top points)
+        bottom (:bottom points)
+        left (:left points)
+        right (:right points)
+        fess (:fess points)
         diagonal-mode (or (:diagonal-mode hints) :forty-five-degrees)
-        diagonal-start (case diagonal-mode
-                         :top-left-fess top-left
-                         (let [top-left-to-fess (v/- fess top-left)]
-                           (v/+ fess (v/v (-> top-left-to-fess :y -)
-                                          (-> top-left-to-fess :y -)))))
-        diagonal-end (v/project diagonal-start fess (:x top-right))
+        direction (direction diagonal-mode points)
+        diagonal-start (v/project-x fess (v/dot direction (v/v -1 -1)) (:x left))
+        diagonal-end (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
         angle (angle-to-point diagonal-start diagonal-end)
         line-style (or (:style line) :straight)
         {line :line} (line/create line-style
@@ -183,18 +200,16 @@
      environment field top-level-render options :db-path db-path]))
 
 (defn per-bend-sinister [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [top-left (get-in environment [:points :top-left])
-        top-right (get-in environment [:points :top-right])
-        top (get-in environment [:points :top])
-        bottom (get-in environment [:points :bottom])
-        fess (get-in environment [:points :fess])
-        diagonal-mode (or (:diagonal-mode hints :forty-five-degrees))
-        diagonal-start (case diagonal-mode
-                         :top-right-fess top-right
-                         (let [top-right-to-fess (v/- fess top-right)]
-                           (v/+ fess (v/v (-> top-right-to-fess :y)
-                                          (-> top-right-to-fess :y -)))))
-        diagonal-end (v/project diagonal-start fess (:x top-left))
+  (let [points (:points environment)
+        top (:top points)
+        bottom (:bottom points)
+        left (:left points)
+        right (:right points)
+        fess (:fess points)
+        diagonal-mode (or (:diagonal-mode hints) :forty-five-degrees)
+        direction (direction diagonal-mode points)
+        diagonal-start (v/project-x fess (v/dot direction (v/v 1 -1)) (:x right))
+        diagonal-end (v/project-x fess (v/dot direction (v/v -1 1)) (:x left))
         angle (angle-to-point diagonal-start diagonal-end)
         line-style (or (:style line) :straight)
         {line :line
