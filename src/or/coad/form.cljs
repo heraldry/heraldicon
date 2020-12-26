@@ -87,6 +87,27 @@
           ^{:key key}
           [:option {:value (clojure.core/name key)} display-name]))]]))
 
+(defn range-input [path name label min-value max-value & {:keys [value on-change default display-function]}]
+  (let [element-id (id name)
+        value (or value
+                  @(rf/subscribe [:get-in path])
+                  default
+                  min-value)]
+    [:div.setting
+     [:label {:for element-id} label]
+     [:div.control-element
+      [:input {:name name
+               :type "range"
+               :id element-id
+               :min min-value
+               :max max-value
+               :value value
+               :on-change #(let [value (-> % .-target .-value)]
+                             (if on-change
+                               (on-change value)
+                               (rf/dispatch [:set-in path value])))}]
+      [:span {:style {:margin-left "1em"}} (display-function value)]]]))
+
 (defn radio-select [path name options & {:keys [on-change default]}]
   [:div.setting
    (let [current-value (or @(rf/subscribe [:get-in path])
@@ -125,12 +146,19 @@
    [form-for-tincture (conj path :tincture) "Tincture"]])
 
 (defn form-for-ordinary [path & {:keys [parent-field]}]
-  (let [selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])]
+  (let [selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])
+        ordinary-type @(rf/subscribe [:get-in (conj path :type)])]
     [:<>
      [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
      [:div.ordinary.component
       {:class (when selected? "selected")}
-      [select (conj path :type) "type" "Type" ordinary/options]
+      [select (conj path :type) "type" "Type" ordinary/options
+       :on-change #(rf/dispatch [:set-ordinary-type path %])]
+      (let [[min-value max-value] (ordinary/thickness-options ordinary-type)]
+        (when min-value
+          [range-input (conj path :hints :thickness) "thickness" "Thickness" min-value max-value
+           :display-function #(str % "%")
+           :default (ordinary/thickness-default ordinary-type)]))
       [select (conj path :line :style) "line" "Line" line/options]
       [:div.parts
        [form-for-field (conj path :field) :parent-field parent-field]]]]))

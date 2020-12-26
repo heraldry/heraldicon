@@ -76,9 +76,15 @@ mask path.overlap {
   margin-bottom: 3px;
 }
 
-.setting select {
+.setting select,
+.setting .control-element {
   position: absolute;
   left: 6.5em;
+}
+
+.control-element {
+  display: inline-block;
+  margin-left: -1em;
 }
 
 .ordinaries-section {
