@@ -132,30 +132,46 @@
                      (line/stitch line)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn per-bend [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [top-left          (get-in environment [:points :top-left])
-        top-right         (get-in environment [:points :top-right])
-        fess              (get-in environment [:points :fess])
-        bend-intersection (v/project top-left fess (:x top-right))
-        line-style        (or (:style line) :straight)
-        {line :line}      (line/create line-style
-                                       (v/abs (v/- bend-intersection top-left))
-                                       :angle 45
-                                       :options options)
-        parts             [[["M" top-left
-                             (line/stitch line)
-                             (infinity/path :counter-clockwise
-                                            [:right :top-left]
-                                            [bend-intersection top-left])
-                             "z"]
-                            [top-left bend-intersection]]
-                           [["M" top-left
-                             (line/stitch line)
-                             (infinity/path :clockwise
-                                            [:right :top-left]
-                                            [bend-intersection top-left])
-                             "z"]
-                            [top-left bend-intersection]]]]
+(defn angle-to-point [p1 p2]
+  (let [d         (v/- p2 p1)
+        angle-rad (Math/atan2 (:y d) (:x d))]
+    (-> angle-rad
+        (/ Math/PI)
+        (* 180))))
+
+(defn per-bend [{:keys [fields line hints] :as field} environment top-level-render options & {:keys [db-path]}]
+  (let [top-left       (get-in environment [:points :top-left])
+        top            (get-in environment [:points :top])
+        top-right      (get-in environment [:points :top-right])
+        bottom         (get-in environment [:points :bottom])
+        fess           (get-in environment [:points :fess])
+        diagonal-mode  (or (:diagonal-mode hints) :forty-five-degrees)
+        diagonal-start (case diagonal-mode
+                         :top-left-fess top-left
+                         (let [top-left-to-fess (v/- fess top-left)]
+                           (v/+ fess (v/v (-> top-left-to-fess :y -)
+                                          (-> top-left-to-fess :y -)))))
+        diagonal-end   (v/project diagonal-start fess (:x top-right))
+        angle          (angle-to-point diagonal-start diagonal-end)
+        line-style     (or (:style line) :straight)
+        {line :line}   (line/create line-style
+                                    (v/abs (v/- diagonal-end diagonal-start))
+                                    :angle angle
+                                    :options options)
+        parts          [[["M" diagonal-start
+                          (line/stitch line)
+                          (infinity/path :counter-clockwise
+                                         [:right :top]
+                                         [diagonal-end diagonal-start])
+                          "z"]
+                         [diagonal-start top diagonal-end]]
+                        [["M" diagonal-start
+                          (line/stitch line)
+                          (infinity/path :clockwise
+                                         [:right :top]
+                                         [diagonal-end diagonal-start])
+                          "z"]
+                         [diagonal-start diagonal-end bottom]]]]
     [make-division
      :division-per-bend fields parts
      [:all nil]
