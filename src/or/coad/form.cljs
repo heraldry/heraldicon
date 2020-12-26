@@ -139,7 +139,9 @@
         flag-path (conj path :ui :open?)
         content? (seq content)
         open? (and @(rf/subscribe [:get-in flag-path])
-                   content?)]
+                   content?)
+        show-selector? (and (not= path [:options])
+                            (= type :field))]
     [:div.component
      {:class (util/combine " " [(when selected? "selected")
                                 (when (not open?) "closed")])}
@@ -151,7 +153,7 @@
            [:i.fas.fa-chevron-circle-right])])
       [:h1 (util/combine " " [(when type
                                 (str (util/translate-cap-first type) ":")) title])]
-      (when (not= path [:options])
+      (when show-selector?
         [selector path])]
      (when (and open?
                 content?)
