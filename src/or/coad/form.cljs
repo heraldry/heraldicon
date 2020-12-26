@@ -330,6 +330,10 @@
           :on-change #(rf/dispatch [:set-division path %])]
          (when (not= division-type :none)
            [:<>
+            (let [diagonal-options (division/diagonal-options division-type)]
+              (when (-> diagonal-options count (> 0))
+                [select (conj path :division :hints :diagonal-mode) "diagonal" "Diagonal"
+                 diagonal-options :default :forty-five-degrees]))
             [select (conj path :division :line :style) "line" "Line" line/options]
             [:div.title "Parts"]
             [:div.parts
