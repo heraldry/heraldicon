@@ -288,6 +288,7 @@
         (js/history.replaceState nil nil (str "#" state-base64)))
       [:<>
        [:div {:style {:width "100%"
+                      :height "100vh"
                       :position "relative"}
               :on-click #(rf/dispatch [:select-component nil])}
         [:svg {:id "svg"
