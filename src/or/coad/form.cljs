@@ -28,7 +28,8 @@
 
 (def default-coat-of-arms
   {:escutcheon :heater
-   :field      {:content default-content}})
+   :field      {:content default-content
+                :ui      {:open? true}}})
 
 ;; helper
 
@@ -145,34 +146,50 @@
   [:div.content
    [form-for-tincture (conj path :tincture) "Tincture"]])
 
+(def node-icons
+  {:group         {:closed "fa-plus-square"
+                   :open   "fa-minus-square"}
+   :attitude      {:closed "fa-plus-square"
+                   :open   "fa-minus-square"}
+   :charge        {:closed "fa-plus-square"
+                   :open   "fa-minus-square"}
+   :variant       {:normal "fa-image"}
+   :form-field    {:closed "fa-plus-square"
+                   :open   "fa-minus-square"}
+   :form-ordinary {:closed "fa-plus-square"
+                   :open   "fa-minus-square"}
+   :form-charge   {:closed "fa-plus-square"
+                   :open   "fa-minus-square"}})
+
 (defn form-for-ordinary [path & {:keys [parent-field]}]
   (let [selected?     @(rf/subscribe [:get-in (conj path :ui :selected?)])
         ordinary      @(rf/subscribe [:get-in path])
-        ordinary-type (:type ordinary)]
+        ordinary-type (:type ordinary)
+        flag-path     (conj path :ui :open?)
+        open?         @(rf/subscribe [:get-in flag-path])]
     [:<>
      [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
      [:div.ordinary.component
       {:class (when selected? "selected")}
-      [:div.title (-> ordinary :type util/translate util/upper-case-first)]
-      [select (conj path :type) "type" "Type" ordinary/options
-       :on-change #(rf/dispatch [:set-ordinary-type path %])]
-      (let [[min-value max-value] (ordinary/thickness-options ordinary-type)]
-        (when min-value
-          [range-input (conj path :hints :thickness) "thickness" "Thickness" min-value max-value
-           :display-function #(str % "%")
-           :default (ordinary/thickness-default ordinary-type)]))
-      [select (conj path :line :style) "line" "Line" line/options]
-      [:div.parts
-       [form-for-field (conj path :field) :parent-field parent-field]]]]))
-
-(def node-icons
-  {:group    {:closed "fa-plus-square"
-              :open   "fa-minus-square"}
-   :attitude {:closed "fa-plus-square"
-              :open   "fa-minus-square"}
-   :charge   {:closed "fa-plus-square"
-              :open   "fa-minus-square"}
-   :variant  {:normal "fa-image"}})
+      [:span.clickable {:on-click #(rf/dispatch [:toggle-in flag-path])
+                        :style    {:margin-right "0.5em"}}
+       (if open?
+         [:i.far {:class (-> node-icons :form-ordinary :open)}]
+         [:i.far {:class (-> node-icons :form-ordinary :closed)}])]
+      [:div.title {:style {:display "inline-block"}}
+       (-> ordinary :type util/translate util/upper-case-first)]
+      (when open?
+        [:<>
+         [select (conj path :type) "type" "Type" ordinary/options
+          :on-change #(rf/dispatch [:set-ordinary-type path %])]
+         (let [[min-value max-value] (ordinary/thickness-options ordinary-type)]
+           (when min-value
+             [range-input (conj path :hints :thickness) "thickness" "Thickness" min-value max-value
+              :display-function #(str % "%")
+              :default (ordinary/thickness-default ordinary-type)]))
+         [select (conj path :line :style) "line" "Line" line/options]
+         [:div.parts
+          [form-for-field (conj path :field) :parent-field parent-field]]])]]))
 
 (defn tree-for-charge-map [{:keys [key type name groups charges attitudes variants]}
                            tree-path db-path
@@ -298,7 +315,9 @@
                                        :supported-tinctures
                                        set)
         sorted-supported-tinctures (filter supported-tinctures [:armed :langued :attired :unguled])
-        eyes-and-teeth-support     (:eyes-and-teeth supported-tinctures)]
+        eyes-and-teeth-support     (:eyes-and-teeth supported-tinctures)
+        flag-path                  (conj path :ui :open?)
+        open?                      @(rf/subscribe [:get-in flag-path])]
     (if (and charge-map
              charge-variant-data)
       [:<>
@@ -306,35 +325,43 @@
        [:div.charge.component
         {:class (when selected? "selected")}
         [selector path]
-        [:div.title (s/join " " [(-> charge :type util/translate util/upper-case-first)
-                                 (-> charge :attitude util/translate)])]
-        [:div {:style {:margin-bottom "1em"}}
-         [:div.placeholders
-          {:style {:width "50%"
-                   :float "left"}}
-          (for [t sorted-supported-tinctures]
-            ^{:key t}
-            [form-for-tincture
-             (conj path :tincture t)
-             (util/upper-case-first (util/translate t))])]
-         [:div
-          {:style {:width "50%"
-                   :float "left"}}
-          (when eyes-and-teeth-support
-            [checkbox
-             (conj path :tincture :eyes-and-teeth)
-             "eyes-and-teeth" "White eyes and teeth"
-             :on-change #(rf/dispatch [:set-in
-                                       (conj path :tincture :eyes-and-teeth)
-                                       (if % :argent nil)])])
-          [checkbox (conj path :hints :outline?) "outline" "Draw outline"]]
-         [:div.spacer]
-         [:div.tree
-          [tree-for-charge-map charge-map [] path charge
-           (get-in charge-map
-                   [:lookup (:type charge)])
-           :still-on-path? true]]
-         [form-for-field (conj path :field) :parent-field parent-field]]]]
+        [:span.clickable {:on-click #(rf/dispatch [:toggle-in flag-path])
+                          :style    {:margin-right "0.5em"}}
+         (if open?
+           [:i.far {:class (-> node-icons :form-charge :open)}]
+           [:i.far {:class (-> node-icons :form-charge :closed)}])]
+        [:div.title {:style {:display "inline-block"}}
+         (s/join " " [(-> charge :type util/translate util/upper-case-first)
+                      (-> charge :attitude util/translate)])]
+        (when open?
+          [:<>
+           [:div {:style {:margin-bottom "1em"}}
+            [:div.placeholders
+             {:style {:width "50%"
+                      :float "left"}}
+             (for [t sorted-supported-tinctures]
+               ^{:key t}
+               [form-for-tincture
+                (conj path :tincture t)
+                (util/upper-case-first (util/translate t))])]
+            [:div
+             {:style {:width "50%"
+                      :float "left"}}
+             (when eyes-and-teeth-support
+               [checkbox
+                (conj path :tincture :eyes-and-teeth)
+                "eyes-and-teeth" "White eyes and teeth"
+                :on-change #(rf/dispatch [:set-in
+                                          (conj path :tincture :eyes-and-teeth)
+                                          (if % :argent nil)])])
+             [checkbox (conj path :hints :outline?) "outline" "Draw outline"]]
+            [:div.spacer]
+            [:div.tree
+             [tree-for-charge-map charge-map [] path charge
+              (get-in charge-map
+                      [:lookup (:type charge)])
+              :still-on-path? true]]
+            [form-for-field (conj path :field) :parent-field parent-field]]])]]
       [:<>])))
 
 (defn form-for-field [path & {:keys [parent-field]}]
@@ -342,78 +369,95 @@
         selected?       @(rf/subscribe [:get-in (conj path :ui :selected?)])
         field           @(rf/subscribe [:get-in path])
         counterchanged? (and @(rf/subscribe [:get-in (conj path :counterchanged?)])
-                             (division/counterchangable? (-> parent-field :division :type)))]
+                             (division/counterchangable? (-> parent-field :division :type)))
+        flag-path       (conj path :ui :open?)
+        open?           @(rf/subscribe [:get-in flag-path])
+        root-field?     (= path [:coat-of-arms :field])]
     [:div.field.component
      {:class (when selected? "selected")}
      [selector path]
      [:div.division
-      [:div.title (if (= division-type :none)
-                    (-> (-> field :content :tincture) util/translate util/upper-case-first)
-                    (-> division-type util/translate util/upper-case-first))]
-      (when (not= path [:coat-of-arms :field])
-        [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"])
-      (when (and (not= path [:coat-of-arms :field])
-                 parent-field)
-        [checkbox (conj path :counterchanged?) "counterchanged" "Counterchange"
-         :disabled? (not (division/counterchangable? (-> parent-field :division :type)))])
-      (when (not counterchanged?)
+      (when (not root-field?)
+        [:span.clickable {:on-click #(rf/dispatch [:toggle-in flag-path])
+                          :style    {:margin-right "0.5em"}}
+         (if open?
+           [:i.far {:class (-> node-icons :form-field :open)}]
+           [:i.far {:class (-> node-icons :form-field :closed)}])])
+      [:div.title {:style {:display "inline-block"}}
+       (if (= division-type :none)
+         (-> (-> field :content :tincture) util/translate util/upper-case-first)
+         (-> division-type util/translate util/upper-case-first))]
+      (when (or root-field?
+                open?)
         [:<>
-         [select path "division-type" "Division"
-          (into [["None" :none]] division/options)
-          :value division-type
-          :on-change #(rf/dispatch [:set-division-type path %])]
-         (when (not= division-type :none)
+         (when (not= path [:coat-of-arms :field])
+           [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"])
+         (when (and (not= path [:coat-of-arms :field])
+                    parent-field)
+           [checkbox (conj path :counterchanged?) "counterchanged" "Counterchange"
+            :disabled? (not (division/counterchangable? (-> parent-field :division :type)))])
+         (when (not counterchanged?)
            [:<>
-            (let [diagonal-options (division/diagonal-options division-type)]
-              (when (-> diagonal-options count (> 0))
-                [select (conj path :division :hints :diagonal-mode) "diagonal" "Diagonal"
-                 diagonal-options :default (division/diagonal-default division-type)]))
-            [select (conj path :division :line :style) "line" "Line" line/options]
-            [:div.title "Parts"]
-            [:div.parts
-             (let [content              @(rf/subscribe [:get-in (conj path :division :fields)])
-                   mandatory-part-count (division/mandatory-part-count division-type)]
-               (for [[idx part] (map-indexed vector content)]
-                 (let [part-path (conj path :division :fields idx)
-                       ref       (:ref part)
-                       selected? (-> part :ui :selected?)]
-                   ^{:key idx}
-                   [:div.part
-                    (if ref
-                      [:<>
-                       [:a.change {:on-click #(rf/dispatch [:set-in part-path
-                                                            (get content ref)])}
-                        [:i.far.fa-edit]]
-                       [:div.component.ref
-                        {:class (when selected? "selected")}
-                        [selector part-path]
-                        [:span.same (str "Same as " (inc ref))]]]
-                      [:<>
-                       (when (>= idx mandatory-part-count)
-                         [:a.remove {:on-click #(rf/dispatch [:set-in (conj part-path :ref)
-                                                              (mod idx mandatory-part-count)])}
-                          [:i.far.fa-times-circle]])
-                       [form-for-field part-path]])])))]])
-         (when (= division-type :none)
-           [form-for-content (conj path :content)])])]
-     [:div.ordinaries-section
-      [:div.title
-       "Ordinaries"
-       [:a.add {:on-click #(rf/dispatch [:add-ordinary path default-ordinary])} [:i.fas.fa-plus]]]
-      [:div.ordinaries
-       (let [ordinaries @(rf/subscribe [:get-in (conj path :ordinaries)])]
-         (for [[idx _] (map-indexed vector ordinaries)]
-           ^{:key idx}
-           [form-for-ordinary (conj path :ordinaries idx) :parent-field field]))]]
-     [:div.charges-section
-      [:div.title
-       "Charges"
-       [:a.add {:on-click #(rf/dispatch [:add-charge path default-charge])} [:i.fas.fa-plus]]]
-      [:div.charges
-       (let [charges @(rf/subscribe [:get-in (conj path :charges)])]
-         (for [[idx _] (map-indexed vector charges)]
-           ^{:key idx}
-           [form-for-charge (conj path :charges idx) :parent-field field]))]]]))
+            [select path "division-type" "Division"
+             (into [["None" :none]] division/options)
+             :value division-type
+             :on-change #(rf/dispatch [:set-division-type path %])]
+            (when (not= division-type :none)
+              [:<>
+               (let [diagonal-options (division/diagonal-options division-type)]
+                 (when (-> diagonal-options count (> 0))
+                   [select (conj path :division :hints :diagonal-mode) "diagonal" "Diagonal"
+                    diagonal-options :default (division/diagonal-default division-type)]))
+               [select (conj path :division :line :style) "line" "Line" line/options]
+               [:div.title "Parts"]
+               [:div.parts
+                (let [content              @(rf/subscribe [:get-in (conj path :division :fields)])
+                      mandatory-part-count (division/mandatory-part-count division-type)]
+                  (for [[idx part] (map-indexed vector content)]
+                    (let [part-path (conj path :division :fields idx)
+                          ref       (:ref part)
+                          selected? (-> part :ui :selected?)]
+                      ^{:key idx}
+                      [:div.part
+                       (if ref
+                         [:<>
+                          [:a.change {:on-click #(rf/dispatch [:set-in part-path
+                                                               (get content ref)])}
+                           [:i.far.fa-edit]]
+                          [:div.component.ref
+                           {:class (when selected? "selected")}
+                           [selector part-path]
+                           [:span.same (str "Same as " (inc ref))]]]
+                         [:<>
+                          (when (>= idx mandatory-part-count)
+                            [:a.remove {:on-click #(rf/dispatch [:set-in (conj part-path :ref)
+                                                                 (mod idx mandatory-part-count)])}
+                             [:i.far.fa-times-circle]])
+                          [form-for-field part-path]])])))]])
+            (when (= division-type :none)
+              [form-for-content (conj path :content)])])
+         [:div.ordinaries-section
+          [:div.title
+           "Ordinaries"
+           [:a.add {:on-click #(rf/dispatch [:add-ordinary path (-> default-ordinary
+                                                                    (assoc-in [:ui :open?] true)
+                                                                    (assoc-in [:field :ui :open?] true))])} [:i.fas.fa-plus]]]
+          [:div.ordinaries
+           (let [ordinaries @(rf/subscribe [:get-in (conj path :ordinaries)])]
+             (for [[idx _] (map-indexed vector ordinaries)]
+               ^{:key idx}
+               [form-for-ordinary (conj path :ordinaries idx) :parent-field field]))]]
+         [:div.charges-section
+          [:div.title
+           "Charges"
+           [:a.add {:on-click #(rf/dispatch [:add-charge path (-> default-charge
+                                                                  (assoc-in [:ui :open?] true)
+                                                                  (assoc-in [:field :ui :open?] true))])} [:i.fas.fa-plus]]]
+          [:div.charges
+           (let [charges @(rf/subscribe [:get-in (conj path :charges)])]
+             (for [[idx _] (map-indexed vector charges)]
+               ^{:key idx}
+               [form-for-charge (conj path :charges idx) :parent-field field]))]]])]]))
 
 (defn form-general []
   [:div.general.component
