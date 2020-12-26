@@ -1,0 +1,59 @@
+#+TITLE: Features
+
+Here's a list of things already supported and things I'm working on.
+
+- [X] provide several escutcheons with their own dimensions and points (fess,
+      dexter, sinister, honour, nombril, etc.)
+- [X] main divisions
+- [X] some ordinaries
+- [X] charge library, not a lot of charges yet, but the structure is there
+- [X] charges can be *armed*, *langued*, *attired*, and *unguled*, SVGs in the
+      charge library just have to use specific placeholder colours for them
+- [X] option to whiten the eyes of a charge, if it supports it
+- [X] several line styles
+- [X] render with *hatching*
+- [X] render with or without outlines, this means outlines of
+      divisions/ordinaries, but also outlines inside charges
+- [X] draw outlines a little squiggly, so it looks more like a drawing, this is
+      basic and has some little glitches
+- [X] *sub fields* in all division parts, ordinaries, and now also charges
+- [X] *counterchanged* charges and ordinaries
+- [X] *dimidiation* - achieved by propagating the parent's environment with its
+      dimension and fess points, so anything rendered to that sub field will
+      just be cut off by the part's boundaries
+- [X] basic *blazonry*, this is just a first attempt at recursive translation of
+      the field(s), it doesn't yet follow all the rules
+- [X] *render hint* about the angles of divisions/ordinaries using diagonal
+      lines, e.g. saltire can either stretch to go from corners to fess point or
+      use 45° around the fess point, this largely depends on the context
+- [X] attempt to reduce anti-aliasing as much as possible; division parts are
+      rendered on top of each other with a clip path, drawing well past the
+      borders to avoid white lines at the edges, they also draw an extra outline
+      path on the edges that will be rendered over by the other parts, to make
+      that seam nicely anti-aliased; sometimes there are still some minor
+      glitches, but a bit of zooming fixes most of them, and in proper SVG
+      exports I could use masks instead of clip paths, I believe that would
+      improve it even further
+- [X] clickable components in the shield and the form, to make it easier to find
+      them and understand the structure
+- [ ] add furs
+- [ ] configure charge position and size
+- [ ] configure charge number and arrangements
+- [ ] add configurable paly divisions
+- [ ] add configurable chequered divisions
+- [ ] add undo functionality in the form
+- [ ] add option to set a different line style on the other side of the ordinary
+      and pick the right default one, e.g. wavy generally seems to have a
+      "counter" wave, but others should be mirrored, embattled defaults to straight
+- [ ] add options to offset line styles and adjust their eccentricity and
+      pattern width
+- [ ] add more ordinaries
+- [ ] add more charges
+- [ ] add more divisions
+- [ ] add configurable bordure that precisely fits the escutcheon shape
+- [ ] have a server-side version that can generate an SVG on the fly
+- [ ] make local storage possible
+- [ ] make remote storage possible
+- [ ] make database searchable
+- [ ] improve blazonry output for given data
+- [ ] write blazonry parser
