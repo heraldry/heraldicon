@@ -347,6 +347,9 @@
      {:class (when selected? "selected")}
      [selector path]
      [:div.division
+      [:div.title (if (= division-type :none)
+                    (-> (-> field :content :tincture) util/translate util/upper-case-first)
+                    (-> division-type util/translate util/upper-case-first))]
       (when (not= path [:coat-of-arms :field])
         [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"])
       (when (and (not= path [:coat-of-arms :field])
