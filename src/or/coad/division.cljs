@@ -1047,23 +1047,34 @@
   (-> type mandatory-part-count (= 2)))
 
 (defn diagonal-options [type]
-  (cond-> []
-    (get #{:per-bend
-           :per-bend-sinister
-           :per-saltire
-           :gyronny
-           :tierced-per-pairle
-           :tierced-per-pairle-reversed}
-         type) (conj ["45°" :forty-five-degrees])
-    (get #{:per-bend
-           :per-saltire
-           :gyronny
-           :tierced-per-pairle
-           :tierced-per-pairle-reversed}
-         type) (conj ["Top-left to fess" :top-left-fess])
-    (get #{:per-bend-sinister
-           :per-saltire
-           :gyronny
-           :tierced-per-pairle
-           :tierced-per-pairle-reversed}
-         type) (conj ["Top-right to fess" :top-right-fess])))
+  (let [options {:forty-five-degrees "45°"
+                 :top-left-fess "Top-left to fess"
+                 :top-right-fess "Top-right to fess"
+                 :bottom-left-fess "Bottom-left to fess"
+                 :bottom-right-fess "Bottom-right to fess"}]
+    (->> type
+         (get {:per-bend [:forty-five-degrees
+                          :top-left-fess]
+               :per-bend-sinister [:forty-five-degrees
+                                   :top-right-fess]
+               :chevron [:forty-five-degrees
+                         :bottom-left-fess
+                         :bottom-right-fess]
+               :per-saltire [:forty-five-degrees
+                             :top-left-fess
+                             :top-right-fess
+                             :bottom-left-fess
+                             :bottom-right-fess]
+               :gyronny [:forty-five-degrees
+                         :top-left-fess
+                         :top-right-fess
+                         :bottom-left-fess
+                         :bottom-right-fess]
+               :tierced-per-pairle [:forty-five-degrees
+                                    :top-left-fess
+                                    :top-right-fess]
+               :tierced-per-pairle-reversed [:forty-five-degrees
+                                             :bottom-left-fess
+                                             :bottom-right-fess]})
+         (map (fn [key]
+                [(get options key) key])))))
