@@ -309,7 +309,9 @@
 (defn form-for-field [path & {:keys [parent-field]}]
   (let [division-type @(rf/subscribe [:get-division-type path])
         selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])
-        field @(rf/subscribe [:get-in path])]
+        field @(rf/subscribe [:get-in path])
+        counterchanged? (and @(rf/subscribe [:get-in (conj path :counterchanged?)])
+                             (division/counterchangable? (-> parent-field :division :type)))]
     [:div.field.component
      {:class (when selected? "selected")}
      [selector path]
@@ -320,40 +322,42 @@
                  parent-field)
         [checkbox (conj path :counterchanged?) "counterchanged" "Counterchange"
          :disabled? (not (division/counterchangable? (-> parent-field :division :type)))])
-      [select path "division-type" "Division"
-       (into [["None" :none]] division/options)
-       :value division-type
-       :on-change #(rf/dispatch [:set-division path %])]
-      (when (not= division-type :none)
+      (when (not counterchanged?)
         [:<>
-         [select (conj path :division :line :style) "line" "Line" line/options]
-         [:div.title "Parts"]
-         [:div.parts
-          (let [content @(rf/subscribe [:get-in (conj path :division :fields)])
-                mandatory-part-count (division/mandatory-part-count division-type)]
-            (for [[idx part] (map-indexed vector content)]
-              (let [part-path (conj path :division :fields idx)
-                    ref (:ref part)
-                    selected? (-> part :ui :selected?)]
-                ^{:key idx}
-                [:div.part
-                 (if ref
-                   [:<>
-                    [:a.change {:on-click #(rf/dispatch [:set-in part-path
-                                                         (get content ref)])}
-                     [:i.far.fa-edit]]
-                    [:div.component.ref
-                     {:class (when selected? "selected")}
-                     [selector part-path]
-                     [:span.same (str "Same as " (inc ref))]]]
-                   [:<>
-                    (when (>= idx mandatory-part-count)
-                      [:a.remove {:on-click #(rf/dispatch [:set-in (conj part-path :ref)
-                                                           (mod idx mandatory-part-count)])}
-                       [:i.far.fa-times-circle]])
-                    [form-for-field part-path]])])))]])]
-     (when (= division-type :none)
-       [form-for-content (conj path :content)])
+         [select path "division-type" "Division"
+          (into [["None" :none]] division/options)
+          :value division-type
+          :on-change #(rf/dispatch [:set-division path %])]
+         (when (not= division-type :none)
+           [:<>
+            [select (conj path :division :line :style) "line" "Line" line/options]
+            [:div.title "Parts"]
+            [:div.parts
+             (let [content @(rf/subscribe [:get-in (conj path :division :fields)])
+                   mandatory-part-count (division/mandatory-part-count division-type)]
+               (for [[idx part] (map-indexed vector content)]
+                 (let [part-path (conj path :division :fields idx)
+                       ref (:ref part)
+                       selected? (-> part :ui :selected?)]
+                   ^{:key idx}
+                   [:div.part
+                    (if ref
+                      [:<>
+                       [:a.change {:on-click #(rf/dispatch [:set-in part-path
+                                                            (get content ref)])}
+                        [:i.far.fa-edit]]
+                       [:div.component.ref
+                        {:class (when selected? "selected")}
+                        [selector part-path]
+                        [:span.same (str "Same as " (inc ref))]]]
+                      [:<>
+                       (when (>= idx mandatory-part-count)
+                         [:a.remove {:on-click #(rf/dispatch [:set-in (conj part-path :ref)
+                                                              (mod idx mandatory-part-count)])}
+                          [:i.far.fa-times-circle]])
+                       [form-for-field part-path]])])))]])
+         (when (= division-type :none)
+           [form-for-content (conj path :content)])])]
      [:div.ordinaries-section
       [:div.title
        "Ordinaries"
