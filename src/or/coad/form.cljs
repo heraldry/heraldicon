@@ -134,20 +134,20 @@
                             (.stopPropagation event))}
    [:i.fas.fa-search]])
 
-(defn section [path title & content]
+(defn component [path type title & content]
   (let [selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])
         flag-path (conj path :ui :open?)
         open?     @(rf/subscribe [:get-in flag-path])]
     [:div.component
-     {:class (str (when selected? "selected")
-                  " "
-                  (when (not open?) "closed"))}
+     {:class (util/combine " " [(when selected? "selected")
+                                (when (not open?) "closed")])}
      [:div.header.clickable {:on-click #(rf/dispatch [:toggle-in flag-path])}
       [:a.arrow
        (if open?
          [:i.fas.fa-chevron-circle-down]
          [:i.fas.fa-chevron-circle-right])]
-      [:h1 title]
+      [:h1 (util/combine " " [(when type
+                                (str (util/translate-cap-first type) ":")) title])]
       (when (not= path [:options])
         [selector path])]
      (when open?
@@ -186,8 +186,8 @@
         ordinary-type (:type ordinary)]
     [:<>
      [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
-     [section
-      path (-> ordinary :type util/translate util/upper-case-first)
+     [component
+      path :ordinary (-> ordinary :type util/translate-cap-first)
       [select (conj path :type) "type" "Type" ordinary/options
        :on-change #(rf/dispatch [:set-ordinary-type path %])]
       (let [[min-value max-value] (ordinary/thickness-options ordinary-type)]
@@ -326,8 +326,8 @@
              charge-variant-data)
       [:<>
        [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-charge path])}]]
-       [section path (s/join " " [(-> charge :type util/translate util/upper-case-first)
-                                  (-> charge :attitude util/translate)])
+       [component path :charge (s/join " " [(-> charge :type util/translate-cap-first)
+                                            (-> charge :attitude util/translate)])
         [:div.placeholders
          {:style {:width "50%"
                   :float "left"}}
@@ -335,7 +335,7 @@
            ^{:key t}
            [form-for-tincture
             (conj path :tincture t)
-            (util/upper-case-first (util/translate t))])]
+            (util/translate-cap-first t)])]
         [:div
          {:style {:width "50%"
                   :float "left"}}
@@ -362,9 +362,10 @@
         counterchanged? (and @(rf/subscribe [:get-in (conj path :counterchanged?)])
                              (division/counterchangable? (-> parent-field :division :type)))
         root-field?     (= path [:coat-of-arms :field])]
-    [section path (if (= division-type :none)
-                    (-> (-> field :content :tincture) util/translate util/upper-case-first)
-                    (-> division-type util/translate util/upper-case-first))
+    [component path :field (cond
+                             (:counterchanged? field) "Counterchanged"
+                             (= division-type :none)  (-> field :content :tincture util/translate-cap-first)
+                             :else                    (-> division-type util/translate-cap-first))
      [:div.division
       (when (not root-field?)
         [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"])
@@ -412,7 +413,7 @@
                        [form-for-field part-path]])])))]])
          (when (= division-type :none)
            [form-for-content (conj path :content)])])]
-     [:div.ordinaries-section
+     [:div.ordinaries-component
       [:h2
        "Ordinaries"
        [:a.add {:on-click #(rf/dispatch [:add-ordinary path (-> default-ordinary
@@ -423,7 +424,7 @@
          (for [[idx _] (map-indexed vector ordinaries)]
            ^{:key idx}
            [form-for-ordinary (conj path :ordinaries idx) :parent-field field]))]]
-     [:div.charges-section
+     [:div.charges-component
       [:h2
        "Charges"
        [:a.add {:on-click #(rf/dispatch [:add-charge path (-> default-charge
@@ -436,7 +437,7 @@
            [form-for-charge (conj path :charges idx) :parent-field field]))]]]))
 
 (defn form-options []
-  [section [:options] "Options"
+  [component [:options] nil "Options"
    [select [:coat-of-arms :escutcheon] "escutcheon" "Escutcheon" escutcheon/options]
    (let [path [:options :mode]]
      [radio-select path "mode" [["Colours" :colours]

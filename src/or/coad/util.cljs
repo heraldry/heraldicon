@@ -5,7 +5,21 @@
   (str (s/upper-case (or (first s) "")) (s/join (rest s))))
 
 (defn translate [keyword]
-  (when keyword
-    (-> keyword
-        name
-        (s/replace "-" " "))))
+  (case keyword
+    :none "[no tincture]"
+    (when keyword
+      (-> keyword
+          name
+          (s/replace "-" " ")))))
+
+(defn translate-line [{:keys [style]}]
+  (when (not= style :straight)
+    (translate style)))
+
+(defn translate-cap-first [keyword]
+  (-> keyword
+      translate
+      upper-case-first))
+
+(defn combine [separator words]
+  (s/join separator (filter #(> (count %) 0) words)))

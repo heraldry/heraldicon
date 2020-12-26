@@ -91,7 +91,6 @@ mask path.overlap {
   display: inline-block;
   min-width: 24em;
   padding: 0;
-  background-color: #fff;
   margin-bottom: 0.5em;
 }
 
@@ -104,6 +103,7 @@ mask path.overlap {
 }
 
 .component .content {
+  background-color: #fff;
   border: solid 1px #bbb;
   border-radius: 0 0 10px 10px;
   border-top: 0;
