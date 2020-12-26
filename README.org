@@ -1,6 +1,6 @@
 #+TITLE: Coat of Arms Editor
 
-TL;DR: https://coat-of-arms.org
+TL;DR: https://coat-of-arms.org and [[./features.org][features]]
 
 ** About
 I've started to learn about heraldry. There are many resources online, but I
@@ -51,6 +51,9 @@ still the goal.
 This data structure also is not intended for human consumption or manipulation,
 it is only the source of truth behind the curtains. And the editor is the tool
 to wrap around it.
+
+I think [[https://github.com/edn-format/edn][EDN]] is perfect for this and will result in well-structured and concise
+representations.
 
 ** Licensing/attribution
 I'm still working on this, so if you see any work that isn't properly
