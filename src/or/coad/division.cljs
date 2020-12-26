@@ -64,10 +64,11 @@
      outline]))
 
 (defn per-pale [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [top-left (get-in environment [:points :top-left])
-        bottom-right (get-in environment [:points :bottom-right])
-        top (get-in environment [:points :top])
-        bottom (get-in environment [:points :bottom])
+  (let [points (:points environment)
+        top-left (:top-left points)
+        top (:top points)
+        bottom (:bottom points)
+        bottom-right (:bottom-right points)
         line-style (or (:style line) :straight)
         {line :line} (line/create line-style
                                   (:y (v/- bottom top))
@@ -99,10 +100,11 @@
      environment field top-level-render options :db-path db-path]))
 
 (defn per-fess [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [top-left (get-in environment [:points :top-left])
-        bottom-right (get-in environment [:points :bottom-right])
-        left (get-in environment [:points :left])
-        right (get-in environment [:points :right])
+  (let [points (:points environment)
+        top-left (:top-left points)
+        left (:left points)
+        right (:right points)
+        bottom-right (:bottom-right points)
         line-style (or (:style line) :straight)
         {line :line} (line/create line-style
                                   (:x (v/- right left))
@@ -713,13 +715,14 @@
      environment field top-level-render options :db-path db-path]))
 
 (defn tierced-per-pale [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [line-style (or (:style line) :straight)
-        top (get-in environment [:points :top])
-        top-left (get-in environment [:points :top-left])
-        bottom (get-in environment [:points :bottom])
-        bottom-right (get-in environment [:points :bottom-right])
-        fess (get-in environment [:points :fess])
+  (let [points (:points environment)
+        top (:top points)
+        top-left (:top-left points)
+        bottom (:bottom points)
+        bottom-right (:bottom-right points)
+        fess (:fess points)
         width (:width environment)
+        line-style (or (:style line) :straight)
         col1 (- (:x fess) (/ width 6))
         col2 (+ (:x fess) (/ width 6))
         first-top (v/v col1 (:y top))
@@ -783,13 +786,14 @@
      environment field top-level-render options :db-path db-path]))
 
 (defn tierced-per-fess [{:keys [fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [line-style (or (:style line) :straight)
-        top-left (get-in environment [:points :top-left])
-        left (get-in environment [:points :left])
-        right (get-in environment [:points :right])
-        bottom-right (get-in environment [:points :bottom-right])
-        fess (get-in environment [:points :fess])
+  (let [points (:points environment)
+        top-left (:top-left points)
+        bottom-right (:bottom-right points)
+        left (:left points)
+        right (:right points)
+        fess (:fess points)
         height (:height environment)
+        line-style (or (:style line) :straight)
         row1 (- (:y fess) (/ height 6))
         row2 (+ (:y fess) (/ height 6))
         first-left (v/v (:x left) row1)
