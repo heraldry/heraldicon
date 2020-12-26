@@ -139,6 +139,23 @@
                                                                                                 vec))))))))
 
 (rf/reg-event-db
+ :set-ordinary-type
+ (fn [db [_ path new-type]]
+   (-> db
+       (assoc-in (conj path :type) new-type)
+       (update-in (conj path :hints) (fn [hints]
+                                       (let [[min-value
+                                              max-value] (ordinary/thickness-options
+                                                          new-type)]
+                                         (if min-value
+                                           (update hints :thickness
+                                                   #(-> %
+                                                        (or (ordinary/thickness-default new-type))
+                                                        (min max-value)
+                                                        (max min-value)))
+                                           (dissoc hints :thickness))))))))
+
+(rf/reg-event-db
  :add-ordinary
  (fn [db [_ path value]]
    (update-in db (conj path :ordinaries) #(-> %
