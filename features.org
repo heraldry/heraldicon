@@ -36,7 +36,9 @@ Here's a list of things already supported and things I'm working on.
       improve it even further
 - [X] clickable components in the shield and the form, to make it easier to find
       them and understand the structure
-- [ ] add furs
+- [X] add furs - added ermine-based furs
+- [ ] add vair - might need to treat this as a paly division, because the number
+      of elements can be specified
 - [ ] configure charge position and size
 - [ ] configure charge number and arrangements
 - [ ] add configurable paly divisions

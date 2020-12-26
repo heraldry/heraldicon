@@ -15,6 +15,7 @@
             [or.coad.form :as form]
             [or.coad.hatching :as hatching]
             [or.coad.ordinary :as ordinary]
+            [or.coad.tincture :as tincture]
             [re-frame.core :as rf]
             [reagent.dom :as r]))
 
@@ -196,6 +197,7 @@
     filter/shadow
     filter/shiny
     filter/glow
+    tincture/patterns
     [:pattern#void {:width 20
                     :height 20
                     :pattern-units "userSpaceOnUse"}
@@ -298,7 +300,8 @@
                :preserveAspectRatio "xMidYMin slice"}
          defs
          (when (= mode :hatching)
-           hatching/patterns)
+           [:defs
+            hatching/patterns])
          [render-shield coat-of-arms options :db-path [:coat-of-arms]]]
         [:div.blazonry {:style {:position "absolute"
                                 :left 10
