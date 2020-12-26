@@ -173,19 +173,13 @@
    [form-for-tincture (conj path :tincture) "Tincture"]])
 
 (def node-icons
-  {:group         {:closed "fa-plus-square"
-                   :open   "fa-minus-square"}
-   :attitude      {:closed "fa-plus-square"
-                   :open   "fa-minus-square"}
-   :charge        {:closed "fa-plus-square"
-                   :open   "fa-minus-square"}
-   :variant       {:normal "fa-image"}
-   :form-field    {:closed "fa-plus-square"
-                   :open   "fa-minus-square"}
-   :form-ordinary {:closed "fa-plus-square"
-                   :open   "fa-minus-square"}
-   :form-charge   {:closed "fa-plus-square"
-                   :open   "fa-minus-square"}})
+  {:group    {:closed "fa-plus-square"
+              :open   "fa-minus-square"}
+   :attitude {:closed "fa-plus-square"
+              :open   "fa-minus-square"}
+   :charge   {:closed "fa-plus-square"
+              :open   "fa-minus-square"}
+   :variant  {:normal "fa-image"}})
 
 (defn form-for-ordinary [path & {:keys [parent-field]}]
   (let [ordinary      @(rf/subscribe [:get-in path])
