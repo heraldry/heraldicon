@@ -137,20 +137,24 @@
 (defn component [path type title & content]
   (let [selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])
         flag-path (conj path :ui :open?)
-        open?     @(rf/subscribe [:get-in flag-path])]
+        content?  (seq content)
+        open?     (and @(rf/subscribe [:get-in flag-path])
+                       content?)]
     [:div.component
      {:class (util/combine " " [(when selected? "selected")
                                 (when (not open?) "closed")])}
      [:div.header.clickable {:on-click #(rf/dispatch [:toggle-in flag-path])}
-      [:a.arrow
-       (if open?
-         [:i.fas.fa-chevron-circle-down]
-         [:i.fas.fa-chevron-circle-right])]
+      (when content?
+        [:a.arrow
+         (if open?
+           [:i.fas.fa-chevron-circle-down]
+           [:i.fas.fa-chevron-circle-right])])
       [:h1 (util/combine " " [(when type
                                 (str (util/translate-cap-first type) ":")) title])]
       (when (not= path [:options])
         [selector path])]
-     (when open?
+     (when (and open?
+                content?)
        (into [:div.content]
              content))]))
 
@@ -392,19 +396,16 @@
                    mandatory-part-count (division/mandatory-part-count division-type)]
                (for [[idx part] (map-indexed vector content)]
                  (let [part-path (conj path :division :fields idx)
-                       ref       (:ref part)
-                       selected? (-> part :ui :selected?)]
+                       ref       (:ref part)]
                    ^{:key idx}
-                   [:div.part
+                   [:div
                     (if ref
                       [:<>
                        [:a.change {:on-click #(rf/dispatch [:set-in part-path
-                                                            (get content ref)])}
+                                                            (-> (get content ref)
+                                                                (assoc-in [:ui :open?] true))])}
                         [:i.far.fa-edit]]
-                       [:div.component.ref
-                        {:class (when selected? "selected")}
-                        [selector part-path]
-                        [:span.same (str "Same as " (inc ref))]]]
+                       [component part-path :ref (str "Same as " (inc ref))]]
                       [:<>
                        (when (>= idx mandatory-part-count)
                          [:a.remove {:on-click #(rf/dispatch [:set-in (conj part-path :ref)
