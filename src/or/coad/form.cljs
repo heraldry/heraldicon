@@ -1,6 +1,7 @@
 (ns or.coad.form
   (:require [clojure.string :as s]
             [or.coad.charge :as charge]
+            [or.coad.config :as config]
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
             [or.coad.line :as line]
@@ -8,28 +9,6 @@
             [or.coad.tincture :as tincture]
             [or.coad.util :as util]
             [re-frame.core :as rf]))
-
-;; defaults
-
-(def default-content
-  {:tincture :none})
-
-(def default-ordinary
-  {:type :pale
-   :line {:style :straight}
-   :field {:content default-content}})
-
-(def default-charge
-  {:type :roundel
-   :variant :default
-   :field {:content default-content
-           :inherit-environment? true}
-   :hints {:outline? true}})
-
-(def default-coat-of-arms
-  {:escutcheon :heater
-   :field {:content default-content
-           :ui {:open? true}}})
 
 ;; helper
 
@@ -417,7 +396,7 @@
      [:div.ordinaries-component
       [:h2
        "Ordinaries"
-       [:a.add {:on-click #(rf/dispatch [:add-ordinary path (-> default-ordinary
+       [:a.add {:on-click #(rf/dispatch [:add-ordinary path (-> config/default-ordinary
                                                                 (assoc-in [:ui :open?] true)
                                                                 (assoc-in [:field :ui :open?] true))])} [:i.fas.fa-plus]]]
       [:div.ordinaries
@@ -428,7 +407,7 @@
      [:div.charges-component
       [:h2
        "Charges"
-       [:a.add {:on-click #(rf/dispatch [:add-charge path (-> default-charge
+       [:a.add {:on-click #(rf/dispatch [:add-charge path (-> config/default-charge
                                                               (assoc-in [:ui :open?] true)
                                                               (assoc-in [:field :ui :open?] true))])} [:i.fas.fa-plus]]]
       [:div.charges
@@ -453,5 +432,5 @@
    [checkbox [:options :outline?] "outline" "Draw outline"]
    [checkbox [:options :squiggly?] "squiggly" "Squiggly lines (experimental)"]
    [:div.setting
-    [:button {:on-click #(rf/dispatch-sync [:set :coat-of-arms default-coat-of-arms])}
+    [:button {:on-click #(rf/dispatch-sync [:set :coat-of-arms config/default-coat-of-arms])}
      "Clear shield"]]])
