@@ -7,6 +7,7 @@
             [clojure.walk :as walk]
             [goog.string.format]  ;; required for release build
             [or.coad.blazon :as blazon]
+            [or.coad.config :as config]
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
             [or.coad.field :as field]
@@ -74,7 +75,7 @@
                      :outline? false
                      :squiggly? false
                      :ui {:open? true}}
-           :coat-of-arms form/default-coat-of-arms} db)))
+           :coat-of-arms config/default-coat-of-arms} db)))
 
 (rf/reg-event-db
  :set
