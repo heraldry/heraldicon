@@ -221,3 +221,11 @@ button:hover {
   color: #ccc;
   cursor: default;
 }
+
+.submenu {
+  position: absolute;
+  min-width: 20em;
+  min-height: 3em;
+  z-index: 2;
+  top: -1.2em;
+}
