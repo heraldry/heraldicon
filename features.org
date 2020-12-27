@@ -39,10 +39,12 @@ Here's a list of things already supported and things I'm working on.
 - [X] add furs - added ermine-based furs
 - [ ] add vair - might need to treat this as a paly division, because the number
       of elements can be specified
+- [ ] add other field *treatments*, some of which might have configurable colours
 - [ ] configure charge position and size
 - [ ] configure charge number and arrangements
-- [ ] add configurable paly divisions
-- [ ] add configurable chequered divisions
+- [ ] add *semy*
+- [ ] add configurable *paly divisions*
+- [ ] add configurable *chequered divisions*
 - [ ] add undo functionality in the form
 - [ ] add option to set a different line style on the other side of the ordinary
       and pick the right default one, e.g. wavy generally seems to have a
@@ -59,3 +61,9 @@ Here's a list of things already supported and things I'm working on.
 - [ ] make database searchable
 - [ ] improve blazonry output for given data
 - [ ] write blazonry parser
+
+** Technical issues
+- [ ] solidify spec for EDN representation
+- [ ] version EDN representation with migration functions, so old links continue
+      working
+- [ ] divisions and ordinaries might benefit from some macros
