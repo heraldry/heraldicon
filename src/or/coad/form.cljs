@@ -21,13 +21,13 @@
 ;; components
 
 (defn checkbox [path name label & {:keys [on-change disabled?]}]
-  (let [element-id (id name)
+  (let [component-id (id name)
         checked? (-> @(rf/subscribe [:get-in path])
                      boolean
                      (and (not disabled?)))]
     [:div.setting
      [:input {:type "checkbox"
-              :id element-id
+              :id component-id
               :name name
               :checked checked?
               :disabled disabled?
@@ -35,14 +35,14 @@
                             (if on-change
                               (on-change new-checked?)
                               (rf/dispatch [:set-in path new-checked?])))}]
-     [:label {:for element-id} label]]))
+     [:label {:for component-id} label]]))
 
 (defn select [path name label options & {:keys [grouped? value on-change default]}]
-  (let [element-id (id name)]
+  (let [component-id (id name)]
     [:div.setting
-     [:label {:for element-id} label]
+     [:label {:for component-id} label]
      [:select {:name name
-               :id element-id
+               :id component-id
                :value (clojure.core/name (or value
                                              @(rf/subscribe [:get-in path])
                                              default
@@ -68,17 +68,17 @@
           [:option {:value (clojure.core/name key)} display-name]))]]))
 
 (defn range-input [path name label min-value max-value & {:keys [value on-change default display-function]}]
-  (let [element-id (id name)
+  (let [component-id (id name)
         value (or value
                   @(rf/subscribe [:get-in path])
                   default
                   min-value)]
     [:div.setting
-     [:label {:for element-id} label]
+     [:label {:for component-id} label]
      [:div.slider
       [:input {:name name
                :type "range"
-               :id element-id
+               :id component-id
                :min min-value
                :max max-value
                :value value
@@ -93,10 +93,10 @@
    (let [current-value (or @(rf/subscribe [:get-in path])
                            default)]
      (for [[display-name key] options]
-       (let [element-id (id name)]
+       (let [component-id (id name)]
          ^{:key key}
          [:<>
-          [:input {:id element-id
+          [:input {:id component-id
                    :type "radio"
                    :name "mode"
                    :value (clojure.core/name key)
@@ -105,7 +105,7 @@
                                  (if on-change
                                    (on-change value)
                                    (rf/dispatch [:set-in path value])))}]
-          [:label {:for element-id} display-name]])))])
+          [:label {:for component-id} display-name]])))])
 
 (defn selector [path]
   [:a.selector {:on-click (fn [event]
@@ -163,10 +163,9 @@
 (defn form-for-ordinary [path & {:keys [parent-field]}]
   (let [ordinary @(rf/subscribe [:get-in path])
         ordinary-type (:type ordinary)]
-    [:<>
-     [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-ordinary path])}]]
-     [component
-      path :ordinary (-> ordinary :type util/translate-cap-first)
+    [component
+     path :ordinary (-> ordinary :type util/translate-cap-first)
+     [:div.settings
       [select (conj path :type) "type" "Type" ordinary/options
        :on-change #(rf/dispatch [:set-ordinary-type path %])]
       (let [diagonal-options (ordinary/diagonal-options ordinary-type)]
@@ -178,8 +177,8 @@
           [range-input (conj path :hints :thickness) "thickness" "Thickness" min-value max-value
            :display-function #(str % "%")
            :default (ordinary/thickness-default ordinary-type)]))
-      [select (conj path :line :style) "line" "Line" line/options]
-      [form-for-field (conj path :field) :parent-field parent-field]]]))
+      [select (conj path :line :style) "line" "Line" line/options]]
+     [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn tree-for-charge-map [{:keys [key type name groups charges attitudes variants]}
                            tree-path db-path
@@ -307,10 +306,9 @@
         eyes-and-teeth-support (:eyes-and-teeth supported-tinctures)]
     (if (and charge-map
              charge-variant-data)
-      [:<>
-       [:a.remove [:i.far.fa-trash-alt {:on-click #(rf/dispatch [:remove-charge path])}]]
-       [component path :charge (s/join " " [(-> charge :type util/translate-cap-first)
-                                            (-> charge :attitude util/translate)])
+      [component path :charge (s/join " " [(-> charge :type util/translate-cap-first)
+                                           (-> charge :attitude util/translate)])
+       [:div.settings
         [:div.placeholders
          {:style {:width "50%"
                   :float "left"}}
@@ -330,13 +328,13 @@
                                       (conj path :tincture :eyes-and-teeth)
                                       (if % :argent nil)])])
          [checkbox (conj path :hints :outline?) "outline" "Draw outline"]]
-        [:div.spacer]
-        [:div.tree
-         [tree-for-charge-map charge-map [] path charge
-          (get-in charge-map
-                  [:lookup (:type charge)])
-          :still-on-path? true]]
-        [form-for-field (conj path :field) :parent-field parent-field]]]
+        [:div.spacer]]
+       [:div.tree
+        [tree-for-charge-map charge-map [] path charge
+         (get-in charge-map
+                 [:lookup (:type charge)])
+         :still-on-path? true]]
+       [form-for-field (conj path :field) :parent-field parent-field]]
       [:<>])))
 
 (defn form-for-field [path & {:keys [parent-field]}]
@@ -349,7 +347,7 @@
                              (:counterchanged? field) "Counterchanged"
                              (= division-type :none) (-> field :content :tincture util/translate-cap-first)
                              :else (-> division-type util/translate-cap-first))
-     [:div.division
+     [:div.settings
       (when (not root-field?)
         [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"])
       (when (and (not= path [:coat-of-arms :field])
@@ -393,24 +391,41 @@
                        [form-for-field part-path]])])))]])
          (when (= division-type :none)
            [form-for-content (conj path :content)])])]
-     [:div.ordinaries-component
-      [:a.add {:on-click #(rf/dispatch [:add-ordinary path (-> config/default-ordinary
-                                                               (assoc-in [:ui :open?] true)
-                                                               (assoc-in [:field :ui :open?] true))])} [:i.fas.fa-plus]
-       "ordinary"]
-      [:a.add {:on-click #(rf/dispatch [:add-charge path (-> config/default-charge
-                                                             (assoc-in [:ui :open?] true)
-                                                             (assoc-in [:field :ui :open?] true))])} [:i.fas.fa-plus]
-       "charge"]
-      [:div.ordinaries
+     [:div {:style {:margin-bottom "0.5em"}}
+      [:button {:on-click #(rf/dispatch [:add-component path (-> config/default-ordinary
+                                                                 (assoc-in [:ui :open?] true)
+                                                                 (assoc-in [:field :ui :open?] true))])}
+       [:i.fas.fa-plus] " Add ordinary"]
+      " "
+      [:button {:on-click #(rf/dispatch [:add-component path (-> config/default-charge
+                                                                 (assoc-in [:ui :open?] true)
+                                                                 (assoc-in [:field :ui :open?] true))])}
+       [:i.fas.fa-plus] " Add charge"]]
+     [:div.components
+      [:ul
        (let [components @(rf/subscribe [:get-in (conj path :components)])]
-         (for [[idx element] (map-indexed vector components)]
-           [:div.element
-            (if (-> element :component (= :ordinary))
-              ^{:key idx}
-              [form-for-ordinary (conj path :components idx) :parent-field field]
-              ^{:key idx}
-              [form-for-charge (conj path :components idx) :parent-field field])]))]]]))
+         (for [[idx component] (reverse (map-indexed vector components))]
+           (let [component-path (conj path :components idx)]
+             ^{:key idx}
+             [:li
+              [:div {:style {:padding-right "10px"
+                             :white-space "nowrap"}}
+               [:a (if (zero? idx)
+                     {:class "disabled"}
+                     {:on-click #(rf/dispatch [:move-component-down component-path])})
+                [:i.fas.fa-chevron-down]]
+               " "
+               [:a (if (= idx (dec (count components)))
+                     {:class "disabled"}
+                     {:on-click #(rf/dispatch [:move-component-up component-path])})
+                [:i.fas.fa-chevron-up]]]
+              [:div
+               (if (-> component :component (= :ordinary))
+                 [form-for-ordinary component-path :parent-field field]
+                 [form-for-charge component-path :parent-field field])]
+              [:div {:style {:padding-left "10px"}}
+               [:a {:on-click #(rf/dispatch [:remove-component component-path])}
+                [:i.far.fa-trash-alt]]]])))]]]))
 
 (defn form-options []
   [component [:options] nil "Options"
