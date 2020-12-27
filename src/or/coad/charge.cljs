@@ -133,13 +133,15 @@
                           (replace-placeholder-colours-everywhere {:primary "#fff"}))]
     [mask-id mask mask-inverted-id mask-inverted]))
 
-(defn counterchange-field [{:keys [division]}]
+(defn counterchange-field [field {:keys [division]}]
   (let [type (:type division)]
-    {:division {:type type
-                :line (:line division)
-                :fields (-> (division/default-fields type)
-                            (assoc-in [0 :content :tincture] (get-in division [:fields 1 :content :tincture]))
-                            (assoc-in [1 :content :tincture] (get-in division [:fields 0 :content :tincture])))}}))
+    (-> field
+        (dissoc :content)
+        (assoc :division {:type type
+                          :line (:line division)
+                          :fields (-> (division/default-fields type)
+                                      (assoc-in [0 :content :tincture] (get-in division [:fields 1 :content :tincture]))
+                                      (assoc-in [1 :content :tincture] (get-in division [:fields 0 :content :tincture])))}))))
 
 (defn counterchangable? [field parent]
   (and (:counterchanged? field)
@@ -204,7 +206,7 @@
                                  :override-environment (when (or (:inherit-environment? field)
                                                                  (counterchangable? field parent)) environment)})
             field (if (counterchangable? field parent)
-                    (counterchange-field parent)
+                    (counterchange-field field parent)
                     field)]
         [:<>
          [:defs
