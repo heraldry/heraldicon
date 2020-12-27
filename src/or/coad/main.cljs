@@ -144,17 +144,23 @@
  (fn [db [_ path new-type]]
    (-> db
        (assoc-in (conj path :type) new-type)
-       (update-in (conj path :hints) (fn [hints]
+       (update-in (conj path :hints) (fn [{:keys [diagonal-mode] :as hints}]
                                        (let [[min-value
                                               max-value] (ordinary/thickness-options
                                                           new-type)]
-                                         (if min-value
-                                           (update hints :thickness
-                                                   #(-> %
-                                                        (or (ordinary/thickness-default new-type))
-                                                        (min max-value)
-                                                        (max min-value)))
-                                           (dissoc hints :thickness))))))))
+                                         (cond-> hints
+                                           min-value       (update :thickness
+                                                                   #(-> %
+                                                                        (or (ordinary/thickness-default new-type))
+                                                                        (min max-value)
+                                                                        (max min-value)))
+                                           (not min-value) (dissoc hints :thickness)
+                                           (-> new-type
+                                               ordinary/diagonal-options
+                                               (->> (map second))
+                                               set
+                                               (get diagonal-mode)
+                                               not)        (dissoc hints :diagonal-mode))))))))
 
 (rf/reg-event-db
  :add-ordinary
