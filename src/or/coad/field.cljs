@@ -5,7 +5,7 @@
             [or.coad.tincture :as tincture]
             [re-frame.core :as rf]))
 
-(defn render [{:keys [division ordinaries charges ui] :as field} environment options & {:keys [db-path]}]
+(defn render [{:keys [division components ui] :as field} environment options & {:keys [db-path]}]
   (let [tincture (get-in field [:content :tincture])]
     [:g {:on-click (fn [event]
                      (rf/dispatch [:select-component db-path])
@@ -21,10 +21,10 @@
                           :fill fill
                           :stroke fill}])
        division [division/render division environment render options :db-path (conj db-path :division)])
-     (for [[idx ordinary] (map-indexed vector ordinaries)]
-       ^{:key idx} [ordinary/render ordinary field environment render options :db-path (conj db-path :ordinaries idx)])
-     (for [[idx charge] (map-indexed vector charges)]
-       ^{:key idx} [charge/render charge field environment render options :db-path (conj db-path :charges idx)])
+     (for [[idx element] (map-indexed vector components)]
+       (if (-> element :component (= :ordinary))
+         ^{:key idx} [ordinary/render element field environment render options :db-path (conj db-path :components idx)]
+         ^{:key idx} [charge/render element field environment render options :db-path (conj db-path :components idx)]))
      (when (-> ui :selected?)
        [:path {:d (:shape environment)
                :style {:opacity 0.25}
