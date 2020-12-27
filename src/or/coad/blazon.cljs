@@ -19,7 +19,12 @@
                                                                        (util/translate t)])))
                                                 [:armed :langued :attired :unguled]))]))
 
-(defn encode-field [{:keys [division ordinaries charges counterchanged?] :as field} & {:keys [root?]}]
+(defn encode-component [component]
+  (case (:component component)
+    :ordinary (encode-ordinary component)
+    :charge (encode-charge component)))
+
+(defn encode-field [{:keys [division components counterchanged?] :as field} & {:keys [root?]}]
   (if counterchanged?
     "counterchanged"
     (let [tincture (get-in field [:content :tincture])
@@ -46,15 +51,12 @@
                                                                                   (encode-field part)])))
                                                           (sort-by #(division/part-position type (first %))
                                                                    (map-indexed vector fields))))])))
-          ordinaries-description (util/combine ", " (map encode-ordinary ordinaries))
-          charges-description (util/combine ", " (map encode-charge charges))
+          components-description (util/combine ", " (map encode-component components))
           blazon (util/upper-case-first
                   (util/combine ", " [field-description
-                                      ordinaries-description
-                                      charges-description]))]
+                                      components-description]))]
       (if (or root?
               (and tincture
-                   (-> ordinaries-description count zero?)
-                   (-> charges-description count zero?)))
+                   (-> components-description count zero?)))
         blazon
         (str "[" blazon "]")))))
