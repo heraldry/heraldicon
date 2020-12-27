@@ -82,8 +82,7 @@
         top (:top points)
         bottom (:bottom points)
         bottom-right (:bottom-right points)
-        line-style (or (:style line) :straight)
-        {line :line} (line/create line-style
+        {line :line} (line/create line
                                   (:y (v/- bottom top))
                                   :angle -90
                                   :options options)
@@ -118,8 +117,7 @@
         left (:left points)
         right (:right points)
         bottom-right (:bottom-right points)
-        line-style (or (:style line) :straight)
-        {line :line} (line/create line-style
+        {line :line} (line/create line
                                   (:x (v/- right left))
                                   :options options)
         parts [[["M" left
@@ -186,8 +184,7 @@
         diagonal-start (v/project-x fess (v/dot direction (v/v -1 -1)) (:x left))
         diagonal-end (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
         angle (angle-to-point diagonal-start diagonal-end)
-        line-style (or (:style line) :straight)
-        {line :line} (line/create line-style
+        {line :line} (line/create line
                                   (v/abs (v/- diagonal-end diagonal-start))
                                   :angle angle
                                   :options options)
@@ -228,9 +225,8 @@
         diagonal-start (v/project-x fess (v/dot direction (v/v 1 -1)) (:x right))
         diagonal-end (v/project-x fess (v/dot direction (v/v -1 1)) (:x left))
         angle (angle-to-point diagonal-start diagonal-end)
-        line-style (or (:style line) :straight)
         {line :line
-         line-length :length} (line/create line-style
+         line-length :length} (line/create line
                                            (v/abs (v/- diagonal-end diagonal-start))
                                            :angle (+ angle 180)
                                            :options options)
@@ -278,13 +274,12 @@
         diagonal-bottom-right (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
         angle-bottom-left (angle-to-point fess diagonal-bottom-left)
         angle-bottom-right (angle-to-point fess diagonal-bottom-right)
-        line-style (or (:style line) :straight)
         {line-left :line
-         line-left-length :length} (line/create line-style
+         line-left-length :length} (line/create line
                                                 (v/abs (v/- diagonal-bottom-left fess))
                                                 :angle (+ angle-bottom-left 180)
                                                 :options options)
-        {line-right :line} (line/create line-style
+        {line-right :line} (line/create line
                                         (v/abs (v/- diagonal-bottom-right fess))
                                         :angle angle-bottom-right
                                         :options options)
@@ -341,25 +336,24 @@
         angle-top-right (angle-to-point fess diagonal-top-right)
         angle-bottom-left (angle-to-point fess diagonal-bottom-left)
         angle-bottom-right (angle-to-point fess diagonal-bottom-right)
-        line-style (or (:style line) :straight)
         {line-top-left :line
-         line-top-left-length :length} (line/create line-style
+         line-top-left-length :length} (line/create line
                                                     (v/abs (v/- diagonal-top-left fess))
                                                     :angle (+ angle-top-left 180)
                                                     :reversed? true
                                                     :options options)
-        {line-top-right :line} (line/create line-style
+        {line-top-right :line} (line/create line
                                             (v/abs (v/- diagonal-top-right fess))
                                             :angle angle-top-right
                                             :flipped? true
                                             :options options)
         {line-bottom-right :line
-         line-bottom-right-length :length} (line/create line-style
+         line-bottom-right-length :length} (line/create line
                                                         (v/abs (v/- diagonal-bottom-right fess))
                                                         :angle (+ angle-bottom-right 180)
                                                         :reversed? true
                                                         :options options)
-        {line-bottom-left :line} (line/create line-style
+        {line-bottom-left :line} (line/create line
                                               (v/abs (v/- diagonal-bottom-left fess))
                                               :angle angle-bottom-left
                                               :flipped? true
@@ -449,24 +443,23 @@
         left (:left points)
         right (:right points)
         fess (:fess points)
-        line-style (or (:style line) :straight)
         {line-top :line
-         line-top-length :length} (line/create line-style
+         line-top-length :length} (line/create line
                                                (v/abs (v/- top fess))
                                                :angle 90
                                                :reversed? true
                                                :options options)
-        {line-right :line} (line/create line-style
+        {line-right :line} (line/create line
                                         (v/abs (v/- right fess))
                                         :flipped? true
                                         :options options)
         {line-bottom :line
-         line-bottom-length :length} (line/create line-style
+         line-bottom-length :length} (line/create line
                                                   (v/abs (v/- bottom fess))
                                                   :angle -90
                                                   :reversed? true
                                                   :options options)
-        {line-left :line} (line/create line-style
+        {line-left :line} (line/create line
                                        (v/abs (v/- left fess))
                                        :angle -180
                                        :flipped? true
@@ -557,27 +550,26 @@
         angle-top-right (angle-to-point fess diagonal-top-right)
         angle-bottom-left (angle-to-point fess diagonal-bottom-left)
         angle-bottom-right (angle-to-point fess diagonal-bottom-right)
-        line-style (or (:style line) :straight)
         {line-top :line
-         line-top-length :length} (line/create line-style
+         line-top-length :length} (line/create line
                                                (v/abs (v/- top fess))
                                                :angle 90
                                                :reversed? true
                                                :options options)
         {line-right :line
-         line-right-length :length} (line/create line-style
+         line-right-length :length} (line/create line
                                                  (v/abs (v/- right fess))
                                                  :reversed? true
                                                  :angle 180
                                                  :options options)
         {line-bottom :line
-         line-bottom-length :length} (line/create line-style
+         line-bottom-length :length} (line/create line
                                                   (v/abs (v/- bottom fess))
                                                   :angle -90
                                                   :reversed? true
                                                   :options options)
         {line-left :line
-         line-left-length :length} (line/create line-style
+         line-left-length :length} (line/create line
                                                 (v/abs (v/- left fess))
                                                 :reversed? true
                                                 :options options)
@@ -585,22 +577,22 @@
         bottom-adjusted (v/extend fess bottom line-bottom-length)
         left-adjusted (v/extend fess left line-left-length)
         right-adjusted (v/extend fess right line-right-length)
-        {line-top-left :line} (line/create line-style
+        {line-top-left :line} (line/create line
                                            (v/abs (v/- diagonal-top-left fess))
                                            :flipped? true
                                            :angle angle-top-left
                                            :options options)
-        {line-top-right :line} (line/create line-style
+        {line-top-right :line} (line/create line
                                             (v/abs (v/- diagonal-top-right fess))
                                             :flipped? true
                                             :angle angle-top-right
                                             :options options)
-        {line-bottom-right :line} (line/create line-style
+        {line-bottom-right :line} (line/create line
                                                (v/abs (v/- diagonal-bottom-right fess))
                                                :flipped? true
                                                :angle angle-bottom-right
                                                :options options)
-        {line-bottom-left :line} (line/create line-style
+        {line-bottom-left :line} (line/create line
                                               (v/abs (v/- diagonal-bottom-left fess))
                                               :flipped? true
                                               :angle angle-bottom-left
@@ -744,27 +736,26 @@
         bottom-right (:bottom-right points)
         fess (:fess points)
         width (:width environment)
-        line-style (or (:style line) :straight)
         col1 (- (:x fess) (/ width 6))
         col2 (+ (:x fess) (/ width 6))
         first-top (v/v col1 (:y top))
         first-bottom (v/v col1 (:y bottom))
         second-top (v/v col2 (:y top))
         second-bottom (v/v col2 (:y bottom))
-        {line :line} (line/create line-style
-                                  (:y (v/- bottom top))
-                                  :flipped? true
-                                  :angle 90
-                                  :options options)
+        {line-one :line} (line/create line
+                                      (:y (v/- bottom top))
+                                      :flipped? true
+                                      :angle 90
+                                      :options options)
         {line-reversed :line
-         line-reversed-length :length} (line/create line-style
+         line-reversed-length :length} (line/create line
                                                     (:y (v/- bottom top))
                                                     :angle -90
                                                     :reversed? true
                                                     :options options)
         second-bottom-adjusted (v/extend second-top second-bottom line-reversed-length)
         parts [[["M" first-top
-                 (line/stitch line)
+                 (line/stitch line-one)
                  (infinity/path :clockwise
                                 [:bottom :top]
                                 [first-bottom first-top])
@@ -776,7 +767,7 @@
                  (infinity/path :counter-clockwise
                                 [:top :top]
                                 [second-top first-top])
-                 (line/stitch line)
+                 (line/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:bottom :bottom]
                                 [first-bottom second-bottom])
@@ -815,18 +806,17 @@
         right (:right points)
         fess (:fess points)
         height (:height environment)
-        line-style (or (:style line) :straight)
         row1 (- (:y fess) (/ height 6))
         row2 (+ (:y fess) (/ height 6))
         first-left (v/v (:x left) row1)
         first-right (v/v (:x right) row1)
         second-left (v/v (:x left) row2)
         second-right (v/v (:x right) row2)
-        {line :line} (line/create line-style
-                                  (:x (v/- right left))
-                                  :options options)
+        {line-one :line} (line/create line
+                                      (:x (v/- right left))
+                                      :options options)
         {line-reversed :line
-         line-reversed-length :length} (line/create line-style
+         line-reversed-length :length} (line/create line
                                                     (:x (v/- right left))
                                                     :reversed? true
                                                     :flipped? true
@@ -834,7 +824,7 @@
                                                     :options options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
         parts [[["M" first-left
-                 (line/stitch line)
+                 (line/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:right :left]
                                 [first-right first-left])
@@ -842,7 +832,7 @@
                 [top-left first-right]]
 
                [["M" first-left
-                 (line/stitch line)
+                 (line/stitch line-one)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [first-right second-right-adjusted])
@@ -892,25 +882,24 @@
         diagonal-top-right (v/project-x fess (v/dot direction (v/v 1 -1)) (:x right))
         angle-top-left (angle-to-point fess diagonal-top-left)
         angle-top-right (angle-to-point fess diagonal-top-right)
-        line-style (or (:style line) :straight)
         {line-top-left :line
-         line-top-left-length :length} (line/create line-style
+         line-top-left-length :length} (line/create line
                                                     (v/abs (v/- diagonal-top-left fess))
                                                     :angle (+ angle-top-left 180)
                                                     :reversed? true
                                                     :options options)
-        {line-top-right :line} (line/create line-style
+        {line-top-right :line} (line/create line
                                             (v/abs (v/- diagonal-top-right fess))
                                             :angle angle-top-right
                                             :flipped? true
                                             :options options)
-        {line-bottom :line} (line/create line-style
+        {line-bottom :line} (line/create line
                                          (v/abs (v/- bottom fess))
                                          :flipped? true
                                          :angle 90
                                          :options options)
         {line-bottom-reversed :line
-         line-bottom-reversed-length :length} (line/create line-style
+         line-bottom-reversed-length :length} (line/create line
                                                            (v/abs (v/- bottom fess))
                                                            :angle -90
                                                            :reversed? true
@@ -989,25 +978,24 @@
         diagonal-bottom-right (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
         angle-bottom-left (angle-to-point fess diagonal-bottom-left)
         angle-bottom-right (angle-to-point fess diagonal-bottom-right)
-        line-style (or (:style line) :straight)
         {line-bottom-right :line
-         line-bottom-right-length :length} (line/create line-style
+         line-bottom-right-length :length} (line/create line
                                                         (v/abs (v/- diagonal-bottom-right fess))
                                                         :angle (+ angle-bottom-right 180)
                                                         :reversed? true
                                                         :options options)
-        {line-bottom-left :line} (line/create line-style
+        {line-bottom-left :line} (line/create line
                                               (v/abs (v/- diagonal-bottom-left fess))
                                               :angle angle-bottom-left
                                               :flipped? true
                                               :options options)
-        {line-top :line} (line/create line-style
+        {line-top :line} (line/create line
                                       (v/abs (v/- top fess))
                                       :flipped? true
                                       :angle -90
                                       :options options)
         {line-top-reversed :line
-         line-top-reversed-length :length} (line/create line-style
+         line-top-reversed-length :length} (line/create line
                                                         (v/abs (v/- top fess))
                                                         :angle 90
                                                         :reversed? true

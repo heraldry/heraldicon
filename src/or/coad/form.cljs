@@ -65,7 +65,7 @@
           ^{:key key}
           [:option {:value (name key)} display-name]))]]))
 
-(defn range-input [path label min-value max-value & {:keys [value on-change default display-function]}]
+(defn range-input [path label min-value max-value & {:keys [value on-change default display-function step]}]
   (let [component-id (id "range")
         value (or value
                   @(rf/subscribe [:get-in path])
@@ -78,6 +78,7 @@
                :id component-id
                :min min-value
                :max max-value
+               :step step
                :value value
                :on-change #(let [value (-> % .-target .-value)]
                              (if on-change
@@ -145,6 +146,29 @@
 
 (declare form-for-field)
 
+(defn form-for-line [path]
+  (let [line @(rf/subscribe [:get-in path])
+        style-names (->> line/options
+                         (map (comp vec reverse))
+                         (into {}))
+        submenu-path [:ui :open-submenu path]
+        submenu-open? @(rf/subscribe [:get-in submenu-path])]
+    [:div.setting
+     [:label "Line"] [:div {:style {:display "inline-block"}}
+                      [:a {:on-click #(rf/dispatch [:set-in submenu-path true])}
+                       (get style-names (:style line))]
+                      (when submenu-open?
+                        [:div.component.submenu
+                         [:div.header [:a {:on-click #(rf/dispatch [:set-in submenu-path false])}
+                                       [:i.far.fa-times-circle]]
+                          " " "Line"]
+                         [:div.content
+                          [select (conj path :style) "Line" line/options]
+                          [range-input (conj path :eccentricity) "Eccentricity" 0.5 2 :step 0.01]
+                          [range-input (conj path :width) "Width" 2 100
+                           :display-function #(str % "%")]
+                          [range-input (conj path :offset) "Offset" -1 1 :step 0.01]]])]]))
+
 (defn form-for-tincture [path label]
   [:div.tincture
    [select path label (into [["None" :none]] tincture/options) :grouped? true]])
@@ -179,7 +203,7 @@
           [range-input (conj path :hints :thickness) "Thickness" min-value max-value
            :display-function #(str % "%")
            :default (ordinary/thickness-default ordinary-type)]))
-      [select (conj path :line :style) "Line" line/options]]
+      [form-for-line (conj path :line)]]
      [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn tree-for-charge-map [{:keys [key type name groups charges attitudes variants]}
@@ -368,7 +392,7 @@
               (when (-> diagonal-options count (> 0))
                 [select (conj path :division :hints :diagonal-mode) "Diagonal"
                  diagonal-options :default (division/diagonal-default division-type)]))
-            [select (conj path :division :line :style) "Line" line/options]])
+            [form-for-line (conj path :division :line)]])
          (when (= division-type :none)
            [form-for-content (conj path :content)])])]
      (when (not counterchanged?)
