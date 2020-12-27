@@ -81,7 +81,7 @@
                  "z"]
                 [first-top second-bottom]]]
         field (if (charge/counterchangable? field parent)
-                (assoc (charge/counterchange-field parent) :counterchanged? true)
+                (charge/counterchange-field field parent)
                 field)]
     [division/make-division
      :ordinary-pale [field] parts
@@ -137,7 +137,7 @@
                  "z"]
                 [first-right second-left]]]
         field (if (charge/counterchangable? field parent)
-                (assoc (charge/counterchange-field parent) :counterchanged? true)
+                (charge/counterchange-field field parent)
                 field)]
     [division/make-division
      :ordinary-fess [field] parts
@@ -184,7 +184,7 @@
                  "z"]
                 [top-left row-right]]]
         field (if (charge/counterchangable? field parent)
-                (assoc (charge/counterchange-field parent) :counterchanged? true)
+                (charge/counterchange-field field parent)
                 field)]
     [division/make-division
      :ordinary-chief [field] parts
@@ -223,7 +223,7 @@
                  "z"]
                 [row-left bottom-right]]]
         field (if (charge/counterchangable? field parent)
-                (assoc (charge/counterchange-field parent) :counterchanged? true)
+                (charge/counterchange-field field parent)
                 field)]
     [division/make-division
      :ordinary-base [field] parts
@@ -284,7 +284,7 @@
                  "z"]
                 [first-right second-left]]]
         field (if (charge/counterchangable? field parent)
-                (assoc (charge/counterchange-field parent) :counterchanged? true)
+                (charge/counterchange-field field parent)
                 field)]
     [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
                          "rotate(" angle ")")}
@@ -350,7 +350,7 @@
                  "z"]
                 [first-right second-left]]]
         field (if (charge/counterchangable? field parent)
-                (assoc (charge/counterchange-field parent) :counterchanged? true)
+                (charge/counterchange-field field parent)
                 field)]
     [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
                          "rotate(" angle ")")}
