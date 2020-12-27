@@ -125,14 +125,16 @@
      {:class (util/combine " " [(when selected? "selected")
                                 (when (not open?) "closed")])}
      [:div.header.clickable {:on-click #(rf/dispatch [:toggle-in flag-path])}
-      (when content?
-        [:a.arrow
-         (if open?
-           [:i.fas.fa-chevron-circle-down]
-           [:i.fas.fa-chevron-circle-right])])
+      [:a.arrow {:style {:opacity (if content? 1 0)}}
+       (if open?
+         [:i.fas.fa-chevron-circle-down]
+         [:i.fas.fa-chevron-circle-right])]
       [:h1 (util/combine " " [(when title-prefix
-                                (str (util/upper-case-first title-prefix) " >"))
-                              (when type
+                                (str (util/upper-case-first title-prefix) ":"))
+                              (when (and type
+                                         (-> #{:field :ref}
+                                             (get type)
+                                             not))
                                 (str (util/translate-cap-first type) ":"))
                               title])]
       (when show-selector?
