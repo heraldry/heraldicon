@@ -190,6 +190,10 @@
       path :ordinary (-> ordinary :type util/translate-cap-first)
       [select (conj path :type) "type" "Type" ordinary/options
        :on-change #(rf/dispatch [:set-ordinary-type path %])]
+      (let [diagonal-options (ordinary/diagonal-options ordinary-type)]
+        (when (-> diagonal-options count (> 0))
+          [select (conj path :hints :diagonal-mode) "diagonal" "Diagonal"
+           diagonal-options :default (ordinary/diagonal-default ordinary-type)]))
       (let [[min-value max-value] (ordinary/thickness-options ordinary-type)]
         (when min-value
           [range-input (conj path :hints :thickness) "thickness" "Thickness" min-value max-value
