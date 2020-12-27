@@ -160,34 +160,50 @@
                                                not) (dissoc hints :diagonal-mode))))))))
 
 (rf/reg-event-db
- :add-ordinary
+ :add-component
  (fn [db [_ path value]]
    (update-in db (conj path :components) #(-> %
                                               (conj value)
                                               vec))))
 (rf/reg-event-db
- :remove-ordinary
+ :remove-component
  (fn [db [_ path]]
-   (let [ordinaries-path (drop-last path)
+   (let [components-path (drop-last path)
          index (last path)]
-     (update-in db ordinaries-path (fn [ordinaries]
-                                     (vec (concat (subvec ordinaries 0 index)
-                                                  (subvec ordinaries (inc index)))))))))
+     (update-in db components-path (fn [components]
+                                     (vec (concat (subvec components 0 index)
+                                                  (subvec components (inc index)))))))))
 
 (rf/reg-event-db
- :add-charge
- (fn [db [_ path charge]]
-   (update-in db (conj path :components) #(-> %
-                                              (conj charge)
-                                              vec))))
-(rf/reg-event-db
- :remove-charge
+ :move-component-up
  (fn [db [_ path]]
-   (let [charge-path (drop-last path)
+   (let [components-path (drop-last path)
          index (last path)]
-     (update-in db charge-path (fn [charges]
-                                 (vec (concat (subvec charges 0 index)
-                                              (subvec charges (inc index)))))))))
+     (update-in db components-path (fn [components]
+                                     (let [num-components (count components)]
+                                       (if (>= index num-components)
+                                         components
+                                         (-> components
+                                             (subvec 0 index)
+                                             (conj (get components (inc index)))
+                                             (conj (get components index))
+                                             (concat (subvec components (+ index 2)))
+                                             vec))))))))
+
+(rf/reg-event-db
+ :move-component-down
+ (fn [db [_ path]]
+   (let [components-path (drop-last path)
+         index (last path)]
+     (update-in db components-path (fn [components]
+                                     (if (zero? index)
+                                       components
+                                       (-> components
+                                           (subvec 0 (dec index))
+                                           (conj (get components index))
+                                           (conj (get components (dec index)))
+                                           (concat (subvec components (inc index)))
+                                           vec)))))))
 
 (rf/reg-event-db
  :update-charge
@@ -287,7 +303,8 @@
 (defn forms []
   [:<>
    [form/form-options]
-   [:div {:style {:padding-bottom "10px"}}
+   [:div {:style {:display "inline-block"
+                  :padding-bottom "10px"}}
     [:div.title "Coat of Arms"]
     [form/form-for-field [:coat-of-arms :field]]]])
 

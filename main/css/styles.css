@@ -48,13 +48,8 @@ mask path.overlap {
   left: 0;
 }
 
-.remove {
-  position: absolute;
-  left: 0;
-}
-
-.add {
-  margin-left: 1em;
+.settings {
+  margin-bottom: 0.5em;
 }
 
 .setting {
@@ -84,7 +79,6 @@ mask path.overlap {
 }
 
 .component {
-  display: inline-block;
   min-width: 24em;
   padding: 0;
   margin-bottom: 0.5em;
@@ -137,22 +131,18 @@ mask path.overlap {
   background-color: #cce;
 }
 
-.ordinaries-section {
-  margin-top: 1em;
+.components > ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
 }
 
-.ordinaries {
-  position: relative;
-  padding-left: 2em;
+.components > ul > li {
+  display: table-row;
 }
 
-.charges-section {
-  margin-top: 1em;
-}
-
-.charges {
-  position: relative;
-  padding-left: 2em;
+.components > ul > li > div {
+  display: table-cell;
 }
 
 .outline {
@@ -225,4 +215,21 @@ input:disabled + label {
   font-weight: 600;
   font-size: 1.2em;
   margin-bottom: 0.5em;
+}
+
+button {
+  min-height: 1.1em;
+  border: solid 1px #bbb;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #cce;
+}
+
+.disabled,
+.disabled:hover {
+  color: #ccc;
+  cursor: default;
 }
