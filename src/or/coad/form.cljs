@@ -55,15 +55,15 @@
                    (-> group-options first keyword?))
             (let [key (-> group-options first)]
               ^{:key key}
-              [:option {:value (clojure.core/name key)} group-name])
+              [:option {:value (name key)} group-name])
             ^{:key group-name}
             [:optgroup {:label group-name}
              (for [[display-name key] group-options]
                ^{:key key}
-               [:option {:value (clojure.core/name key)} display-name])]))
+               [:option {:value (name key)} display-name])]))
         (for [[display-name key] options]
           ^{:key key}
-          [:option {:value (clojure.core/name key)} display-name]))]]))
+          [:option {:value (name key)} display-name]))]]))
 
 (defn range-input [path label min-value max-value & {:keys [value on-change default display-function]}]
   (let [component-id (id "range")
@@ -83,7 +83,8 @@
                              (if on-change
                                (on-change value)
                                (rf/dispatch [:set-in path value])))}]
-      [:span {:style {:margin-left "1em"}} (display-function value)]]]))
+      [:span {:style {:margin-left "1em"}} (cond-> value
+                                             display-function display-function)]]]))
 
 (defn radio-select [path options & {:keys [on-change default]}]
   [:div.setting
