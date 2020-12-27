@@ -11,8 +11,9 @@
          (-> config/default-field
              (assoc-in [:content :tincture] :azure))]
         (cond
-          (#{:per-saltire :quarterly} type)      [{:ref 0} {:ref 1}]
-          (= :gyronny type)                      [{:ref 0} {:ref 1} {:ref 0} {:ref 1} {:ref 0} {:ref 1}]
+          (= :per-saltire type)                  [{:ref 1} {:ref 0}]
+          (= :quarterly type)                    [{:ref 1} {:ref 0}]
+          (= :gyronny type)                      [{:ref 1} {:ref 0} {:ref 0} {:ref 1} {:ref 1} {:ref 0}]
           (#{:tierced-per-pale
              :tierced-per-fess
              :tierced-per-pairle
@@ -381,6 +382,16 @@
                                               "z"]
                                              [top-left fess top-right]]
 
+                                            [["M" diagonal-top-left-adjusted
+                                              (line/stitch line-top-left)
+                                              "L" fess
+                                              (line/stitch line-bottom-left)
+                                              (infinity/path :clockwise
+                                                             [:left :left]
+                                                             [diagonal-bottom-left diagonal-top-left-adjusted])
+                                              "z"]
+                                             [diagonal-top-left fess diagonal-bottom-left]]
+
                                             [["M" diagonal-bottom-right-adjusted
                                               (line/stitch line-bottom-right)
                                               "L" fess
@@ -399,26 +410,17 @@
                                                              [:left :right]
                                                              [diagonal-bottom-left diagonal-bottom-right-adjusted])
                                               "z"]
-                                             [bottom-left fess bottom-right]]
+                                             [bottom-left fess bottom-right]]]]
 
-                                            [["M" diagonal-top-left-adjusted
-                                              (line/stitch line-top-left)
-                                              "L" fess
-                                              (line/stitch line-bottom-left)
-                                              (infinity/path :clockwise
-                                                             [:left :left]
-                                                             [diagonal-bottom-left diagonal-top-left-adjusted])
-                                              "z"]
-                                             [diagonal-top-left fess diagonal-bottom-left]]]]
     [make-division
      (division-context-key type) fields parts
      [:all
       [(svg/make-path
-        ["M" diagonal-bottom-right-adjusted
-         (line/stitch line-bottom-right)])]
-      [(svg/make-path
         ["M" fess
          (line/stitch line-bottom-left)])]
+      [(svg/make-path
+        ["M" diagonal-bottom-right-adjusted
+         (line/stitch line-bottom-right)])]
       nil]
      (when (:outline? options)
        [:g.outline
@@ -494,22 +496,23 @@
                                       [["M" bottom-adjusted
                                         (line/stitch line-bottom)
                                         "L" fess
-                                        (line/stitch line-right)
-                                        (infinity/path :clockwise
-                                                       [:right :bottom]
-                                                       [right bottom])
-                                        "z"]
-                                       [fess bottom-right]]
-
-                                      [["M" bottom-adjusted
-                                        (line/stitch line-bottom)
-                                        "L" fess
                                         (line/stitch line-left)
                                         (infinity/path :counter-clockwise
                                                        [:left :bottom]
                                                        [left bottom])
                                         "z"]
-                                       [fess bottom-left]]]]
+                                       [fess bottom-left]]
+
+                                      [["M" bottom-adjusted
+                                        (line/stitch line-bottom)
+                                        "L" fess
+                                        (line/stitch line-right)
+                                        (infinity/path :clockwise
+                                                       [:right :bottom]
+                                                       [right bottom])
+                                        "z"]
+                                       [fess bottom-right]]]]
+
     [make-division
      (division-context-key type) fields parts
      [:all
@@ -622,6 +625,16 @@
                                         "z"]
                                        [top fess diagonal-top-right]]
 
+                                      [["M" left-adjusted
+                                        (line/stitch line-left)
+                                        "L" fess
+                                        (line/stitch line-top-left)
+                                        (infinity/path :counter-clockwise
+                                                       [:left :left]
+                                                       [diagonal-top-left left])
+                                        "z"]
+                                       [left fess diagonal-top-left]]
+
                                       [["M" right-adjusted
                                         (line/stitch line-right)
                                         "L" fess
@@ -631,6 +644,16 @@
                                                        [diagonal-top-right right])
                                         "z"]
                                        [diagonal-top-right fess right]]
+
+                                      [["M" left-adjusted
+                                        (line/stitch line-left)
+                                        "L" fess
+                                        (line/stitch line-bottom-left)
+                                        (infinity/path :clockwise
+                                                       [:left :left]
+                                                       [diagonal-bottom-left left])
+                                        "z"]
+                                       [diagonal-bottom-left fess left]]
 
                                       [["M" right-adjusted
                                         (line/stitch line-right)
@@ -645,16 +668,6 @@
                                       [["M" bottom-adjusted
                                         (line/stitch line-bottom)
                                         "L" fess
-                                        (line/stitch line-bottom-right)
-                                        (infinity/path :clockwise
-                                                       [:right :bottom]
-                                                       [diagonal-bottom-right bottom])
-                                        "z"]
-                                       [diagonal-bottom-right fess bottom]]
-
-                                      [["M" bottom-adjusted
-                                        (line/stitch line-bottom)
-                                        "L" fess
                                         (line/stitch line-bottom-left)
                                         (infinity/path :counter-clockwise
                                                        [:left :bottom]
@@ -662,25 +675,16 @@
                                         "z"]
                                        [bottom fess diagonal-bottom-left]]
 
-                                      [["M" left-adjusted
-                                        (line/stitch line-left)
+                                      [["M" bottom-adjusted
+                                        (line/stitch line-bottom)
                                         "L" fess
-                                        (line/stitch line-bottom-left)
+                                        (line/stitch line-bottom-right)
                                         (infinity/path :clockwise
-                                                       [:left :left]
-                                                       [diagonal-bottom-left left])
+                                                       [:right :bottom]
+                                                       [diagonal-bottom-right bottom])
                                         "z"]
-                                       [diagonal-bottom-left fess left]]
+                                       [diagonal-bottom-right fess bottom]]]]
 
-                                      [["M" left-adjusted
-                                        (line/stitch line-left)
-                                        "L" fess
-                                        (line/stitch line-top-left)
-                                        (infinity/path :counter-clockwise
-                                                       [:left :left]
-                                                       [diagonal-top-left left])
-                                        "z"]
-                                       [left fess diagonal-top-left]]]]
     [make-division
      (division-context-key type) fields parts
      [:all
@@ -688,20 +692,21 @@
         ["M" fess
          (line/stitch line-top-right)])]
       [(svg/make-path
+        ["M" left-adjusted
+         (line/stitch line-left)])]
+      [(svg/make-path
         ["M" right-adjusted
          (line/stitch line-right)])]
       [(svg/make-path
         ["M" fess
+         (line/stitch line-bottom-left)])]
+      [(svg/make-path
+        ["M" fess
          (line/stitch line-bottom-right)])]
+
       [(svg/make-path
         ["M" bottom-adjusted
          (line/stitch line-bottom)])]
-      [(svg/make-path
-        ["M" fess
-         (line/stitch line-bottom-left)])]
-      [(svg/make-path
-        ["M" left-adjusted
-         (line/stitch line-left)])]
       nil]
      (when (:outline? options)
        [:g.outline
@@ -1065,9 +1070,18 @@
      environment field top-level-render options :db-path db-path]))
 
 (defn part-name [type index]
-  (-> {:per-saltire ["I." "III." "IV." "II."]
-       :quarterly   ["I." "II." "IV." "III."]
-       :gyronny     ["I." "II." "IV." "VI." "VIII." "VII." "V." "III."]}
+  (-> {:per-pale                    ["dexter" "sinister"]
+       :per-fess                    ["chief" "base"]
+       :per-bend                    ["chief" "base"]
+       :per-bend-sinister           ["chief" "base"]
+       :per-saltire                 ["chief" "dexter" "sinister" "base"]
+       :per-chevron                 ["chief" "base"]
+       :quarterly                   ["I" "II" "III" "IV"]
+       :gyronny                     ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"]
+       :tierced-per-pale            ["dexter" "fess" "sinister"]
+       :tierced-per-fess            ["chief" "fess" "base"]
+       :tierced-per-pairle          ["chief" "dexter" "sinister"]
+       :tierced-per-pairle-reversed ["dexter" "sinister" "base"]}
       (get-in [type index])))
 
 ;; TODO: this doesn't work well with per-saltire, because the 2nd field should be on the left,

@@ -113,7 +113,7 @@
                             (.stopPropagation event))}
    [:i.fas.fa-search]])
 
-(defn component [path type title & content]
+(defn component [path type title title-prefix & content]
   (let [selected?      @(rf/subscribe [:get-in (conj path :ui :selected?)])
         flag-path      (conj path :ui :open?)
         content?       (seq content)
@@ -130,8 +130,11 @@
          (if open?
            [:i.fas.fa-chevron-circle-down]
            [:i.fas.fa-chevron-circle-right])])
-      [:h1 (util/combine " " [(when type
-                                (str (util/translate-cap-first type) ":")) title])]
+      [:h1 (util/combine " " [(when title-prefix
+                                (str (util/upper-case-first title-prefix) " >"))
+                              (when type
+                                (str (util/translate-cap-first type) ":"))
+                              title])]
       (when show-selector?
         [selector path])]
      (when (and open?
@@ -164,7 +167,7 @@
   (let [ordinary      @(rf/subscribe [:get-in path])
         ordinary-type (:type ordinary)]
     [component
-     path :ordinary (-> ordinary :type util/translate-cap-first)
+     path :ordinary (-> ordinary :type util/translate-cap-first) nil
      [:div.settings
       [select (conj path :type) "type" "Type" ordinary/options
        :on-change #(rf/dispatch [:set-ordinary-type path %])]
@@ -307,7 +310,7 @@
     (if (and charge-map
              charge-variant-data)
       [component path :charge (s/join " " [(-> charge :type util/translate-cap-first)
-                                           (-> charge :attitude util/translate)])
+                                           (-> charge :attitude util/translate)]) nil
        [:div.settings
         [:div.placeholders
          {:style {:width "50%"
@@ -337,7 +340,7 @@
        [form-for-field (conj path :field) :parent-field parent-field]]
       [:<>])))
 
-(defn form-for-field [path & {:keys [parent-field]}]
+(defn form-for-field [path & {:keys [parent-field title-prefix]}]
   (let [division-type   @(rf/subscribe [:get-division-type path])
         field           @(rf/subscribe [:get-in path])
         counterchanged? (and @(rf/subscribe [:get-in (conj path :counterchanged?)])
@@ -346,7 +349,7 @@
     [component path :field (cond
                              (:counterchanged? field) "Counterchanged"
                              (= division-type :none)  (-> field :content :tincture util/translate-cap-first)
-                             :else                    (-> division-type util/translate-cap-first))
+                             :else                    (-> division-type util/translate-cap-first)) title-prefix
      [:div.settings
       (when (not root-field?)
         [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"])
@@ -376,13 +379,14 @@
                mandatory-part-count (division/mandatory-part-count division-type)]
            (for [[idx part] (map-indexed vector content)]
              (let [part-path (conj path :division :fields idx)
+                   part-name (division/part-name division-type idx)
                    ref       (:ref part)]
                ^{:key idx}
                [:li
                 [:div
                  (if ref
-                   [component part-path :ref (str "Same as " (inc ref))]
-                   [form-for-field part-path])]
+                   [component part-path :ref (str "Same as " (division/part-name division-type ref)) part-name]
+                   [form-for-field part-path :title-prefix part-name])]
                 [:div {:style {:padding-left "10px"}}
                  (if ref
                    [:a {:on-click #(rf/dispatch [:set-in part-path
@@ -391,7 +395,9 @@
                     [:i.far.fa-edit]]
                    (when (>= idx mandatory-part-count)
                      [:a {:on-click #(rf/dispatch [:set-in (conj part-path :ref)
-                                                   (mod idx mandatory-part-count)])}
+                                                   (-> (division/default-fields division-type)
+                                                       (get idx)
+                                                       :ref)])}
                       [:i.far.fa-times-circle]]))]])))]])
      [:div {:style {:margin-bottom "0.5em"}}
       [:button {:on-click #(rf/dispatch [:add-component path (-> config/default-ordinary
@@ -430,7 +436,7 @@
                 [:i.far.fa-trash-alt]]]])))]]]))
 
 (defn form-options []
-  [component [:options] nil "Options"
+  [component [:options] nil "Options" nil
    [select [:coat-of-arms :escutcheon] "escutcheon" "Escutcheon" escutcheon/options]
    (let [path [:options :mode]]
      [radio-select path "mode" [["Colours" :colours]
