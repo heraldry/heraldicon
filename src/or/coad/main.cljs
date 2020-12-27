@@ -131,14 +131,10 @@
                                                      hints)))
          (update-in path dissoc :content)
          (cond->
-          (not (division/counterchangable? new-type)) (update-in (conj path :ordinaries) (fn [ordinaries]
-                                                                                           (->> ordinaries
+          (not (division/counterchangable? new-type)) (update-in (conj path :components) (fn [components]
+                                                                                           (->> components
                                                                                                 (map #(update % :field dissoc :counterchanged?))
-                                                                                                vec)))
-          (not (division/counterchangable? new-type)) (update-in (conj path :charges) (fn [charges]
-                                                                                        (->> charges
-                                                                                             (map #(update % :field dissoc :counterchanged?))
-                                                                                             vec))))))))
+                                                                                                vec))))))))
 
 (rf/reg-event-db
  :set-ordinary-type
@@ -166,7 +162,7 @@
 (rf/reg-event-db
  :add-ordinary
  (fn [db [_ path value]]
-   (update-in db (conj path :ordinaries) #(-> %
+   (update-in db (conj path :components) #(-> %
                                               (conj value)
                                               vec))))
 (rf/reg-event-db
@@ -181,9 +177,9 @@
 (rf/reg-event-db
  :add-charge
  (fn [db [_ path charge]]
-   (update-in db (conj path :charges) #(-> %
-                                           (conj charge)
-                                           vec))))
+   (update-in db (conj path :components) #(-> %
+                                              (conj charge)
+                                              vec))))
 (rf/reg-event-db
  :remove-charge
  (fn [db [_ path]]
@@ -269,14 +265,6 @@
         [:circle {:cx spacing
                   :cy spacing
                   :r size}]]])]))
-
-(defn render-coat-of-arms [data]
-  (let [division (:division data)
-        ordinaries (:ordinaries data)]
-    [:<>
-     [division/render division]
-     (for [[idx ordinary] (map-indexed vector ordinaries)]
-       ^{:key idx} [ordinary/render ordinary])]))
 
 (defn render-shield [coat-of-arms options & {:keys [db-path]}]
   (let [shield (escutcheon/field (:escutcheon coat-of-arms))
