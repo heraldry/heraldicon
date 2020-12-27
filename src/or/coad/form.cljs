@@ -366,31 +366,33 @@
               (when (-> diagonal-options count (> 0))
                 [select (conj path :division :hints :diagonal-mode) "diagonal" "Diagonal"
                  diagonal-options :default (division/diagonal-default division-type)]))
-            [select (conj path :division :line :style) "line" "Line" line/options]
-            [:h2 "Parts"]
-            [:div.parts
-             (let [content @(rf/subscribe [:get-in (conj path :division :fields)])
-                   mandatory-part-count (division/mandatory-part-count division-type)]
-               (for [[idx part] (map-indexed vector content)]
-                 (let [part-path (conj path :division :fields idx)
-                       ref (:ref part)]
-                   ^{:key idx}
-                   [:div
-                    (if ref
-                      [:<>
-                       [:a.change {:on-click #(rf/dispatch [:set-in part-path
-                                                            (-> (get content ref)
-                                                                (assoc-in [:ui :open?] true))])}
-                        [:i.far.fa-edit]]
-                       [component part-path :ref (str "Same as " (inc ref))]]
-                      [:<>
-                       (when (>= idx mandatory-part-count)
-                         [:a.remove {:on-click #(rf/dispatch [:set-in (conj part-path :ref)
-                                                              (mod idx mandatory-part-count)])}
-                          [:i.far.fa-times-circle]])
-                       [form-for-field part-path]])])))]])
+            [select (conj path :division :line :style) "line" "Line" line/options]])
          (when (= division-type :none)
            [form-for-content (conj path :content)])])]
+     (when (not counterchanged?)
+       [:div.parts.components
+        [:ul
+         (let [content @(rf/subscribe [:get-in (conj path :division :fields)])
+               mandatory-part-count (division/mandatory-part-count division-type)]
+           (for [[idx part] (map-indexed vector content)]
+             (let [part-path (conj path :division :fields idx)
+                   ref (:ref part)]
+               ^{:key idx}
+               [:li
+                [:div
+                 (if ref
+                   [component part-path :ref (str "Same as " (inc ref))]
+                   [form-for-field part-path])]
+                [:div {:style {:padding-left "10px"}}
+                 (if ref
+                   [:a {:on-click #(rf/dispatch [:set-in part-path
+                                                 (-> (get content ref)
+                                                     (assoc-in [:ui :open?] true))])}
+                    [:i.far.fa-edit]]
+                   (when (>= idx mandatory-part-count)
+                     [:a {:on-click #(rf/dispatch [:set-in (conj part-path :ref)
+                                                   (mod idx mandatory-part-count)])}
+                      [:i.far.fa-times-circle]]))]])))]])
      [:div {:style {:margin-bottom "0.5em"}}
       [:button {:on-click #(rf/dispatch [:add-component path (-> config/default-ordinary
                                                                  (assoc-in [:ui :open?] true)

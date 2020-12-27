@@ -37,17 +37,6 @@ mask path.overlap {
   stroke: #fff;
 }
 
-.parts {
-  position: relative;
-  padding-left: 2em;
-  margin-top: 0.5em;
-}
-
-.change {
-  position: absolute;
-  left: 0;
-}
-
 .settings {
   margin-bottom: 0.5em;
 }
@@ -107,12 +96,11 @@ mask path.overlap {
 }
 
 .component h1 {
-  position: absolute;
-  left: 1.5em;
   display: inline-block;
   font-weight: 600;
   font-size: 1em;
   margin: 0;
+  margin-left: 0.5em;
 }
 
 .component h2 {
