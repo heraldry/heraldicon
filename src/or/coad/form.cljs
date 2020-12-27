@@ -80,7 +80,7 @@
                :max max-value
                :step step
                :value value
-               :on-change #(let [value (-> % .-target .-value)]
+               :on-change #(let [value (-> % .-target .-value js/parseFloat)]
                              (if on-change
                                (on-change value)
                                (rf/dispatch [:set-in path value])))}]
@@ -146,28 +146,32 @@
 
 (declare form-for-field)
 
+(defn submenu [path title link-name & content]
+  (let [submenu-path [:ui :open-submenu path]
+        submenu-open? @(rf/subscribe [:get-in submenu-path])]
+    [:div {:style {:display "inline-block"}}
+     [:a {:on-click #(rf/dispatch [:set-in submenu-path true])}
+      link-name]
+     (when submenu-open?
+       [:div.component.submenu
+        [:div.header [:a {:on-click #(rf/dispatch [:set-in submenu-path false])}
+                      [:i.far.fa-times-circle]]
+         " " title]
+        (into [:div.content]
+              content)])]))
+
 (defn form-for-line [path]
   (let [line @(rf/subscribe [:get-in path])
         style-names (->> line/options
                          (map (comp vec reverse))
-                         (into {}))
-        submenu-path [:ui :open-submenu path]
-        submenu-open? @(rf/subscribe [:get-in submenu-path])]
+                         (into {}))]
     [:div.setting
-     [:label "Line"] [:div {:style {:display "inline-block"}}
-                      [:a {:on-click #(rf/dispatch [:set-in submenu-path true])}
-                       (get style-names (:style line))]
-                      (when submenu-open?
-                        [:div.component.submenu
-                         [:div.header [:a {:on-click #(rf/dispatch [:set-in submenu-path false])}
-                                       [:i.far.fa-times-circle]]
-                          " " "Line"]
-                         [:div.content
-                          [select (conj path :style) "Line" line/options]
-                          [range-input (conj path :eccentricity) "Eccentricity" 0.5 2 :step 0.01]
-                          [range-input (conj path :width) "Width" 2 100
-                           :display-function #(str % "%")]
-                          [range-input (conj path :offset) "Offset" -1 1 :step 0.01]]])]]))
+     [:label "Line"] [submenu path "Line" (get style-names (:style line))
+                      [select (conj path :style) "Line" line/options]
+                      [range-input (conj path :eccentricity) "Eccentricity" 0.5 2 :step 0.01]
+                      [range-input (conj path :width) "Width" 2 100
+                       :display-function #(str % "%")]
+                      [range-input (conj path :offset) "Offset" -1 1 :step 0.01]]]))
 
 (defn form-for-tincture [path label]
   [:div.tincture
