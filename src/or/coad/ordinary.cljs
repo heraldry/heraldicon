@@ -253,11 +253,78 @@
         diagonal-end (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
         angle (division/angle-to-point diagonal-start diagonal-end)
         line-length (v/abs (v/- diagonal-end diagonal-start))
+        offset -40
         row1 (- (/ band-height 2))
         row2 (+ row1 band-height)
-        first-left (v/v 0 row1)
+        first-left (v/v offset row1)
         first-right (v/v line-length row1)
-        second-left (v/v 0 row2)
+        second-left (v/v offset row2)
+        second-right (v/v line-length row2)
+        line-style (or (:style line) :straight)
+        {line :line} (line/create line-style
+                                  line-length
+                                  :options options)
+        {line-reversed :line
+         line-reversed-length :length} (line/create line-style
+                                                    line-length
+                                                    :reversed? true
+                                                    :flipped? true
+                                                    :angle 180
+                                                    :options options)
+        second-right-adjusted (v/extend second-left second-right line-reversed-length)
+        parts [[["M" first-left
+                 (line/stitch line)
+                 (infinity/path :clockwise
+                                [:right :right]
+                                [first-right second-right-adjusted])
+                 (line/stitch line-reversed)
+                 (infinity/path :clockwise
+                                [:left :left]
+                                [second-left first-left])
+                 "z"]
+                [first-right second-left]]]
+        field (if (charge/counterchangable? field parent)
+                (assoc (charge/counterchange-field parent) :counterchanged? true)
+                field)]
+    [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
+                         "rotate(" angle ")")}
+     [division/make-division
+      :ordinary-fess [field] parts
+      [:all]
+      (when (:outline? options)
+        [:g.outline
+         [:path {:d (svg/make-path
+                     ["M" first-left
+                      (line/stitch line)])}]
+         [:path {:d (svg/make-path
+                     ["M" second-right-adjusted
+                      (line/stitch line-reversed)])}]])
+      environment ordinary top-level-render options :db-path db-path]]))
+
+(defn bend-sinister [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  (let [points (:points environment)
+        left (:left points)
+        right (:right points)
+        fess (:fess points)
+        height (:height environment)
+        thickness (or (:thickness hints)
+                      (thickness-default type))
+        band-height (-> height
+                        (* thickness)
+                        (/ 100))
+        diagonal-mode (or (:diagonal-mode hints)
+                          (diagonal-default type))
+        direction (division/direction diagonal-mode points)
+        diagonal-start (v/project-x fess (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-end (v/project-x fess (v/dot direction (v/v 1 -1)) (:x right))
+        angle (division/angle-to-point diagonal-start diagonal-end)
+        line-length (v/abs (v/- diagonal-end diagonal-start))
+        row1 (- (/ band-height 2))
+        row2 (+ row1 band-height)
+        offset -40
+        first-left (v/v offset row1)
+        first-right (v/v line-length row1)
+        second-left (v/v offset row2)
         second-right (v/v line-length row2)
         line-style (or (:style line) :straight)
         {line :line} (line/create line-style
@@ -306,7 +373,7 @@
    ["Chief" :chief chief]
    ["Base" :base base]
    ["Bend" :bend bend]
-   ;; ["Bend Sinister" :bend-right bend-right]
+   ["Bend Sinister" :bend-sinister bend-sinister]
    ;; ["Cross" :cross cross]
    ;; ["Saltire" :saltire saltire]
    ;; ["Chevron" :chevron chevron]
