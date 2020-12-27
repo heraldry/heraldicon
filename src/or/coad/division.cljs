@@ -1,20 +1,23 @@
 (ns or.coad.division
-  (:require [or.coad.field-environment :as field-environment]
+  (:require [or.coad.config :as config]
+            [or.coad.field-environment :as field-environment]
             [or.coad.infinity :as infinity]
             [or.coad.line :as line]
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
 (defn default-fields [type]
-  (into [{:content {:tincture :none}}
-         {:content {:tincture :azure}}]
+  (into [config/default-field
+         (-> config/default-field
+             (assoc-in [:content :tincture] :azure))]
         (cond
           (#{:per-saltire :quarterly} type)      [{:ref 0} {:ref 1}]
           (= :gyronny type)                      [{:ref 0} {:ref 1} {:ref 0} {:ref 1} {:ref 0} {:ref 1}]
           (#{:tierced-per-pale
              :tierced-per-fess
              :tierced-per-pairle
-             :tierced-per-pairle-reversed} type) [{:content {:tincture :gules}}])))
+             :tierced-per-pairle-reversed} type) [(-> config/default-field
+                                                      (assoc-in [:content :tincture] :gules))])))
 
 (defn diagonal-default [type]
   (or (get {:per-bend-sinister           :top-right-fess
