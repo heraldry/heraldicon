@@ -56,21 +56,20 @@
         first-bottom (v/v col1 (:y bottom))
         second-top (v/v col2 (:y top))
         second-bottom (v/v col2 (:y bottom))
-        line-style (or (:style line) :straight)
-        {line :line} (line/create line-style
-                                  (:y (v/- bottom top))
-                                  :flipped? true
-                                  :angle 90
-                                  :options options)
+        {line-one :line} (line/create line
+                                      (:y (v/- bottom top))
+                                      :flipped? true
+                                      :angle 90
+                                      :options options)
         {line-reversed :line
-         line-reversed-length :length} (line/create line-style
+         line-reversed-length :length} (line/create line
                                                     (:y (v/- bottom top))
                                                     :angle -90
                                                     :reversed? true
                                                     :options options)
         second-bottom-adjusted (v/extend second-top second-bottom line-reversed-length)
         parts [[["M" first-top
-                 (line/stitch line)
+                 (line/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:bottom :bottom]
                                 [first-bottom second-bottom-adjusted])
@@ -113,12 +112,11 @@
         first-right (v/v (:x right) row1)
         second-left (v/v (:x left) row2)
         second-right (v/v (:x right) row2)
-        line-style (or (:style line) :straight)
-        {line :line} (line/create line-style
-                                  (:x (v/- right left))
-                                  :options options)
+        {line-one :line} (line/create line
+                                      (:x (v/- right left))
+                                      :options options)
         {line-reversed :line
-         line-reversed-length :length} (line/create line-style
+         line-reversed-length :length} (line/create line
                                                     (:x (v/- right left))
                                                     :reversed? true
                                                     :flipped? true
@@ -126,7 +124,7 @@
                                                     :options options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
         parts [[["M" first-left
-                 (line/stitch line)
+                 (line/stitch line-one)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [first-right second-right-adjusted])
@@ -167,9 +165,8 @@
         row (+ (:y top) band-height)
         row-left (v/v (:x left) row)
         row-right (v/v (:x right) row)
-        line-style (or (:style line) :straight)
         {line-reversed :line
-         line-reversed-length :length} (line/create line-style
+         line-reversed-length :length} (line/create line
                                                     (:x (v/- right left))
                                                     :reversed? true
                                                     :flipped? true
@@ -211,8 +208,7 @@
         row (- (:y bottom) band-height)
         row-left (v/v (:x left) row)
         row-right (v/v (:x right) row)
-        line-style (or (:style line) :straight)
-        {line :line} (line/create line-style
+        {line :line} (line/create line
                                   (:x (v/- right left))
                                   :options options)
         parts [[["M" row-left
@@ -260,12 +256,11 @@
         first-right (v/v line-length row1)
         second-left (v/v offset row2)
         second-right (v/v line-length row2)
-        line-style (or (:style line) :straight)
-        {line :line} (line/create line-style
-                                  line-length
-                                  :options options)
+        {line-one :line} (line/create line
+                                      line-length
+                                      :options options)
         {line-reversed :line
-         line-reversed-length :length} (line/create line-style
+         line-reversed-length :length} (line/create line
                                                     line-length
                                                     :reversed? true
                                                     :flipped? true
@@ -273,7 +268,7 @@
                                                     :options options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
         parts [[["M" first-left
-                 (line/stitch line)
+                 (line/stitch line-one)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [first-right second-right-adjusted])
@@ -326,12 +321,11 @@
         first-right (v/v line-length row1)
         second-left (v/v offset row2)
         second-right (v/v line-length row2)
-        line-style (or (:style line) :straight)
-        {line :line} (line/create line-style
-                                  line-length
-                                  :options options)
+        {line-one :line} (line/create line
+                                      line-length
+                                      :options options)
         {line-reversed :line
-         line-reversed-length :length} (line/create line-style
+         line-reversed-length :length} (line/create line
                                                     line-length
                                                     :reversed? true
                                                     :flipped? true
@@ -339,7 +333,7 @@
                                                     :options options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
         parts [[["M" first-left
-                 (line/stitch line)
+                 (line/stitch line-one)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [first-right second-right-adjusted])
