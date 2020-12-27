@@ -20,15 +20,14 @@
 
 ;; components
 
-(defn checkbox [path name label & {:keys [on-change disabled?]}]
-  (let [component-id (id name)
+(defn checkbox [path label & {:keys [on-change disabled?]}]
+  (let [component-id (id "checkbox")
         checked? (-> @(rf/subscribe [:get-in path])
                      boolean
                      (and (not disabled?)))]
     [:div.setting
      [:input {:type "checkbox"
               :id component-id
-              :name name
               :checked checked?
               :disabled disabled?
               :on-change #(let [new-checked? (-> % .-target .-checked)]
@@ -37,16 +36,15 @@
                               (rf/dispatch [:set-in path new-checked?])))}]
      [:label {:for component-id} label]]))
 
-(defn select [path name label options & {:keys [grouped? value on-change default]}]
-  (let [component-id (id name)]
+(defn select [path label options & {:keys [grouped? value on-change default]}]
+  (let [component-id (id "select")]
     [:div.setting
      [:label {:for component-id} label]
-     [:select {:name name
-               :id component-id
-               :value (clojure.core/name (or value
-                                             @(rf/subscribe [:get-in path])
-                                             default
-                                             :none))
+     [:select {:id component-id
+               :value (name (or value
+                                @(rf/subscribe [:get-in path])
+                                default
+                                :none))
                :on-change #(let [checked (keyword (-> % .-target .-value))]
                              (if on-change
                                (on-change checked)
@@ -67,8 +65,8 @@
           ^{:key key}
           [:option {:value (clojure.core/name key)} display-name]))]]))
 
-(defn range-input [path name label min-value max-value & {:keys [value on-change default display-function]}]
-  (let [component-id (id name)
+(defn range-input [path label min-value max-value & {:keys [value on-change default display-function]}]
+  (let [component-id (id "range")
         value (or value
                   @(rf/subscribe [:get-in path])
                   default
@@ -76,8 +74,7 @@
     [:div.setting
      [:label {:for component-id} label]
      [:div.slider
-      [:input {:name name
-               :type "range"
+      [:input {:type "range"
                :id component-id
                :min min-value
                :max max-value
@@ -88,18 +85,17 @@
                                (rf/dispatch [:set-in path value])))}]
       [:span {:style {:margin-left "1em"}} (display-function value)]]]))
 
-(defn radio-select [path name options & {:keys [on-change default]}]
+(defn radio-select [path options & {:keys [on-change default]}]
   [:div.setting
    (let [current-value (or @(rf/subscribe [:get-in path])
                            default)]
      (for [[display-name key] options]
-       (let [component-id (id name)]
+       (let [component-id (id "radio")]
          ^{:key key}
          [:<>
           [:input {:id component-id
                    :type "radio"
-                   :name "mode"
-                   :value (clojure.core/name key)
+                   :value (name key)
                    :checked (= key current-value)
                    :on-change #(let [value (keyword (-> % .-target .-value))]
                                  (if on-change
@@ -150,7 +146,7 @@
 
 (defn form-for-tincture [path label]
   [:div.tincture
-   [select path "tincture" label (into [["None" :none]] tincture/options) :grouped? true]])
+   [select path label (into [["None" :none]] tincture/options) :grouped? true]])
 
 (defn form-for-content [path]
   [:div.form-content
@@ -171,18 +167,18 @@
     [component
      path :ordinary (-> ordinary :type util/translate-cap-first) nil
      [:div.settings
-      [select (conj path :type) "type" "Type" ordinary/options
+      [select (conj path :type) "Type" ordinary/options
        :on-change #(rf/dispatch [:set-ordinary-type path %])]
       (let [diagonal-options (ordinary/diagonal-options ordinary-type)]
         (when (-> diagonal-options count (> 0))
-          [select (conj path :hints :diagonal-mode) "diagonal" "Diagonal"
+          [select (conj path :hints :diagonal-mode) "Diagonal"
            diagonal-options :default (ordinary/diagonal-default ordinary-type)]))
       (let [[min-value max-value] (ordinary/thickness-options ordinary-type)]
         (when min-value
-          [range-input (conj path :hints :thickness) "thickness" "Thickness" min-value max-value
+          [range-input (conj path :hints :thickness) "Thickness" min-value max-value
            :display-function #(str % "%")
            :default (ordinary/thickness-default ordinary-type)]))
-      [select (conj path :line :style) "line" "Line" line/options]]
+      [select (conj path :line :style) "Line" line/options]]
      [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn tree-for-charge-map [{:keys [key type name groups charges attitudes variants]}
@@ -328,11 +324,11 @@
          (when eyes-and-teeth-support
            [checkbox
             (conj path :tincture :eyes-and-teeth)
-            "eyes-and-teeth" "White eyes and teeth"
+            "White eyes and teeth"
             :on-change #(rf/dispatch [:set-in
                                       (conj path :tincture :eyes-and-teeth)
                                       (if % :argent nil)])])
-         [checkbox (conj path :hints :outline?) "outline" "Draw outline"]]
+         [checkbox (conj path :hints :outline?) "Draw outline"]]
         [:div.spacer]]
        [:div.tree
         [tree-for-charge-map charge-map [] path charge
@@ -354,14 +350,14 @@
                              :else (-> division-type util/translate-cap-first)) title-prefix
      [:div.settings
       (when (not root-field?)
-        [checkbox (conj path :inherit-environment?) "inherit-environment" "Inherit environment (dimidiation)"])
+        [checkbox (conj path :inherit-environment?) "Inherit environment (dimidiation)"])
       (when (and (not= path [:coat-of-arms :field])
                  parent-field)
-        [checkbox (conj path :counterchanged?) "counterchanged" "Counterchange"
+        [checkbox (conj path :counterchanged?) "Counterchange"
          :disabled? (not (division/counterchangable? (-> parent-field :division :type)))])
       (when (not counterchanged?)
         [:<>
-         [select path "division-type" "Division"
+         [select path "Division"
           (into [["None" :none]] division/options)
           :value division-type
           :on-change #(rf/dispatch [:set-division-type path %])]
@@ -369,9 +365,9 @@
            [:<>
             (let [diagonal-options (division/diagonal-options division-type)]
               (when (-> diagonal-options count (> 0))
-                [select (conj path :division :hints :diagonal-mode) "diagonal" "Diagonal"
+                [select (conj path :division :hints :diagonal-mode) "Diagonal"
                  diagonal-options :default (division/diagonal-default division-type)]))
-            [select (conj path :division :line :style) "line" "Line" line/options]])
+            [select (conj path :division :line :style) "Line" line/options]])
          (when (= division-type :none)
            [form-for-content (conj path :content)])])]
      (when (not counterchanged?)
@@ -439,10 +435,10 @@
 
 (defn form-options []
   [component [:options] nil "Options" nil
-   [select [:coat-of-arms :escutcheon] "escutcheon" "Escutcheon" escutcheon/options]
+   [select [:coat-of-arms :escutcheon] "Escutcheon" escutcheon/options]
    (let [path [:options :mode]]
-     [radio-select path "mode" [["Colours" :colours]
-                                ["Hatching" :hatching]]
+     [radio-select path [["Colours" :colours]
+                         ["Hatching" :hatching]]
       :default :colours
       :on-change #(let [new-mode %]
                     (rf/dispatch [:set-in [:options :mode] new-mode])
@@ -450,8 +446,8 @@
                       :hatching (rf/dispatch [:set :options :outline? true])
                       :colours (rf/dispatch [:set :options :outline? false])))])
 
-   [checkbox [:options :outline?] "outline" "Draw outline"]
-   [checkbox [:options :squiggly?] "squiggly" "Squiggly lines (experimental)"]
+   [checkbox [:options :outline?] "Draw outline"]
+   [checkbox [:options :squiggly?] "Squiggly lines (experimental)"]
    [:div.setting
     [:button {:on-click #(rf/dispatch-sync [:set :coat-of-arms config/default-coat-of-arms])}
      "Clear shield"]]])
