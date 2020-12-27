@@ -14,7 +14,30 @@
   (get {:pale  [20 50]
         :fess  [20 50]
         :chief [10 40]
-        :base  [10 40]} type))
+        :base  [10 40]
+        :bend  [10 40]} type))
+
+(defn diagonal-options [type]
+  (let [options {:forty-five-degrees "45°"
+                 :top-left-fess      "Top-left to fess"
+                 :top-right-fess     "Top-right to fess"
+                 :bottom-left-fess   "Bottom-left to fess"
+                 :bottom-right-fess  "Bottom-right to fess"}]
+    (->> type
+         (get {:bend          [:forty-five-degrees
+                               :top-left-fess]
+               :bend-sinister [:forty-five-degrees
+                               :top-right-fess]
+               :chevron       [:forty-five-degrees
+                               :bottom-left-fess
+                               :bottom-right-fess]})
+         (map (fn [key]
+                [(get options key) key])))))
+
+(defn diagonal-default [type]
+  (or (get {:bend-sinister :top-right-fess
+            :chevron       :forty-five-degrees} type)
+      :top-left-fess))
 
 (defn pale [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points                         (:points environment)
@@ -212,30 +235,77 @@
                      (line/stitch line)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn bend [{:keys [type field line hints] :as ordinary} field top-level-render & {:keys [db-path]}]
-  [:<>])
-
-(defn bend-right [{:keys [type field line hints] :as ordinary} field top-level-render & {:keys [db-path]}]
-  [:<>])
-
-(defn cross [{:keys [type field line hints] :as ordinary} field top-level-render & {:keys [db-path]}]
-  [:<>])
-
-(defn saltire [{:keys [type field line hints] :as ordinary} field top-level-render & {:keys [db-path]}]
-  [:<>])
-
-(defn chevron [{:keys [type field line hints] :as ordinary} field top-level-render & {:keys [db-path]}]
-  [:<>])
-
-(defn pall [{:keys [type field line hints] :as ordinary} field top-level-render & {:keys [db-path]}]
-  [:<>])
+(defn bend [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  (let [points                         (:points environment)
+        left                           (:left points)
+        right                          (:right points)
+        fess                           (:fess points)
+        height                         (:height environment)
+        thickness                      (or (:thickness hints)
+                                           (thickness-default type))
+        band-height                    (-> height
+                                           (* thickness)
+                                           (/ 100))
+        diagonal-mode                  (or (:diagonal-mode hints)
+                                           (diagonal-default type))
+        direction                      (division/direction diagonal-mode points)
+        diagonal-start                 (v/project-x fess (v/dot direction (v/v -1 -1)) (:x left))
+        diagonal-end                   (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
+        angle                          (division/angle-to-point diagonal-start diagonal-end)
+        line-length                    (v/abs (v/- diagonal-end diagonal-start))
+        row1                           (- (/ band-height 2))
+        row2                           (+ row1 band-height)
+        first-left                     (v/v 0 row1)
+        first-right                    (v/v line-length row1)
+        second-left                    (v/v 0 row2)
+        second-right                   (v/v line-length row2)
+        line-style                     (or (:style line) :straight)
+        {line :line}                   (line/create line-style
+                                                    line-length
+                                                    :options options)
+        {line-reversed        :line
+         line-reversed-length :length} (line/create line-style
+                                                    line-length
+                                                    :reversed? true
+                                                    :flipped? true
+                                                    :angle 180
+                                                    :options options)
+        second-right-adjusted          (v/extend second-left second-right line-reversed-length)
+        parts                          [[["M" first-left
+                                          (line/stitch line)
+                                          (infinity/path :clockwise
+                                                         [:right :right]
+                                                         [first-right second-right-adjusted])
+                                          (line/stitch line-reversed)
+                                          (infinity/path :clockwise
+                                                         [:left :left]
+                                                         [second-left first-left])
+                                          "z"]
+                                         [first-right second-left]]]
+        field                          (if (charge/counterchangable? field parent)
+                                         (assoc (charge/counterchange-field parent) :counterchanged? true)
+                                         field)]
+    [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
+                         "rotate(" angle ")")}
+     [division/make-division
+      :ordinary-fess [field] parts
+      [:all]
+      (when (:outline? options)
+        [:g.outline
+         [:path {:d (svg/make-path
+                     ["M" first-left
+                      (line/stitch line)])}]
+         [:path {:d (svg/make-path
+                     ["M" second-right-adjusted
+                      (line/stitch line-reversed)])}]])
+      environment ordinary top-level-render options :db-path db-path]]))
 
 (def kinds
   [["Pale" :pale pale]
    ["Fess" :fess fess]
    ["Chief" :chief chief]
    ["Base" :base base]
-   ;; ["Bend" :bend bend]
+   ["Bend" :bend bend]
    ;; ["Bend Sinister" :bend-right bend-right]
    ;; ["Cross" :cross cross]
    ;; ["Saltire" :saltire saltire]
