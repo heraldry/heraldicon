@@ -37,7 +37,13 @@
                                                             (cond
                                                               (< index
                                                                  mandatory-part-count) (encode-field part)
-                                                              (not (:ref part)) (util/combine " " [(division/part-name type index) (encode-field part)])))
+                                                              (not (:ref part)) (util/combine
+                                                                                 " "
+                                                                                 [(when (-> fields
+                                                                                            count
+                                                                                            (> 3))
+                                                                                    (division/part-name type index))
+                                                                                  (encode-field part)])))
                                                           (sort-by #(division/part-position type (first %))
                                                                    (map-indexed vector fields))))])))
           ordinaries-description (util/combine ", " (map encode-ordinary ordinaries))
