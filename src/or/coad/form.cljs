@@ -394,27 +394,23 @@
          (when (= division-type :none)
            [form-for-content (conj path :content)])])]
      [:div.ordinaries-component
-      [:h2
-       "Ordinaries"
-       [:a.add {:on-click #(rf/dispatch [:add-ordinary path (-> config/default-ordinary
-                                                                (assoc-in [:ui :open?] true)
-                                                                (assoc-in [:field :ui :open?] true))])} [:i.fas.fa-plus]]]
+      [:a.add {:on-click #(rf/dispatch [:add-ordinary path (-> config/default-ordinary
+                                                               (assoc-in [:ui :open?] true)
+                                                               (assoc-in [:field :ui :open?] true))])} [:i.fas.fa-plus]
+       "ordinary"]
+      [:a.add {:on-click #(rf/dispatch [:add-charge path (-> config/default-charge
+                                                             (assoc-in [:ui :open?] true)
+                                                             (assoc-in [:field :ui :open?] true))])} [:i.fas.fa-plus]
+       "charge"]
       [:div.ordinaries
-       (let [ordinaries @(rf/subscribe [:get-in (conj path :ordinaries)])]
-         (for [[idx _] (map-indexed vector ordinaries)]
-           ^{:key idx}
-           [form-for-ordinary (conj path :ordinaries idx) :parent-field field]))]]
-     [:div.charges-component
-      [:h2
-       "Charges"
-       [:a.add {:on-click #(rf/dispatch [:add-charge path (-> config/default-charge
-                                                              (assoc-in [:ui :open?] true)
-                                                              (assoc-in [:field :ui :open?] true))])} [:i.fas.fa-plus]]]
-      [:div.charges
-       (let [charges @(rf/subscribe [:get-in (conj path :charges)])]
-         (for [[idx _] (map-indexed vector charges)]
-           ^{:key idx}
-           [form-for-charge (conj path :charges idx) :parent-field field]))]]]))
+       (let [components @(rf/subscribe [:get-in (conj path :components)])]
+         (for [[idx element] (map-indexed vector components)]
+           [:div.element
+            (if (-> element :component (= :ordinary))
+              ^{:key idx}
+              [form-for-ordinary (conj path :components idx) :parent-field field]
+              ^{:key idx}
+              [form-for-charge (conj path :components idx) :parent-field field])]))]]]))
 
 (defn form-options []
   [component [:options] nil "Options"

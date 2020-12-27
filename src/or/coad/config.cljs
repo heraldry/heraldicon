@@ -15,19 +15,22 @@
   {:tincture :none})
 
 (def default-field
-  {:content default-content})
+  {:component :field
+   :content   default-content})
 
 (def default-ordinary
-  {:type  :pale
-   :line  {:style :straight}
-   :field default-field})
+  {:component :ordinary
+   :type      :pale
+   :line      {:style :straight}
+   :field     default-field})
 
 (def default-charge
-  {:type    :roundel
-   :variant :default
-   :field   (-> default-field
-                (assoc :inherit-environment? true))
-   :hints   {:outline? true}})
+  {:component :charge
+   :type      :roundel
+   :variant   :default
+   :field     (-> default-field
+                  (assoc :inherit-environment? true))
+   :hints     {:outline? true}})
 
 (def default-coat-of-arms
   {:escutcheon :heater
