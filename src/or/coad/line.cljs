@@ -16,12 +16,13 @@
                       offset 0}} length _]
   (let [radius-x (/ width 2)
         radius-y (* radius-x eccentricity)
+        offset-length (* offset width)
         repetitions (-> length
+                        (- offset-length)
                         (/ width)
                         Math/ceil
                         int
-                        inc)
-        offset-length (* offset width)]
+                        inc)]
     {:line (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
                (into (->> ["a" radius-x radius-y 0 0 1 [width 0]]
                           (repeat repetitions)))
@@ -37,12 +38,13 @@
                        offset 0}} length _]
   (let [radius-x (/ width 2)
         radius-y (* radius-x eccentricity)
+        offset-length (* offset width)
         repetitions (-> length
+                        (- offset-length)
                         (/ width)
                         Math/ceil
                         int
-                        inc)
-        offset-length (* offset width)]
+                        inc)]
     {:line (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
                (into (->> ["a" radius-x radius-y 0 0 0 [radius-x (- radius-y)]
                            "a" radius-x radius-y 0 0 0 [radius-x radius-y]]
@@ -59,12 +61,13 @@
   (let [half-width (/ width 2)
         quarter-width (/ width 4)
         height (* eccentricity half-width)
+        offset-length (* offset width)
         repetitions (-> length
+                        (- offset-length)
                         (/ width)
                         Math/ceil
                         int
-                        inc)
-        offset-length (* offset width)]
+                        inc)]
     {:line (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
                (into (->> ["l"
                            [quarter-width 0]
@@ -84,12 +87,13 @@
                       offset 0}} length _]
   (let [half-width (/ width 2)
         height (* eccentricity half-width)
+        offset-length (* offset width)
         repetitions (-> length
+                        (- offset-length)
                         (/ width)
                         Math/ceil
                         int
-                        inc)
-        offset-length (* offset width)]
+                        inc)]
     {:line (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
                (into (->>
                       [["l"
@@ -109,12 +113,13 @@
         quarter-width (/ width 4)
         half-height (* quarter-width eccentricity)
         height (* half-height 2)
+        offset-length (* offset width)
         repetitions (-> length
+                        (- offset-length)
                         (/ width)
                         Math/ceil
                         int
-                        inc)
-        offset-length (* offset width)]
+                        inc)]
     {:line (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
                (into (->> ["l"
                            [quarter-width (- half-height)]
@@ -132,12 +137,13 @@
                   offset 0}} length reversed?]
   (let [half-width (/ width 2)
         height (* width eccentricity)
+        offset-length (* offset width)
         repetitions (-> length
+                        (- offset-length)
                         (/ width)
                         Math/ceil
                         int
-                        inc)
-        offset-length (* offset width)]
+                        inc)]
     {:line (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
                (into (->> ["a" half-width height 0 0 (if reversed? 0 1) [half-width 0]
                            "a" half-width height 0 0 (if reversed? 1 0) [half-width 0]]
@@ -155,12 +161,13 @@
         third-width (/ width 3)
         sixth-width (/ width 6)
         height (* half-width eccentricity)
+        offset-length (* offset width)
         repetitions (-> length
+                        (- offset-length)
                         (/ width)
                         Math/ceil
                         int
-                        inc)
-        offset-length (* offset width)]
+                        inc)]
     {:line (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
                (into (->> ["l"
                            [third-width 0]
@@ -182,12 +189,13 @@
   (let [half-width (/ width 2)
         quarter-width (/ width 4)
         height (* half-width eccentricity)
+        offset-length (* offset width)
         repetitions (-> length
+                        (- offset-length)
                         (/ width)
                         Math/ceil
                         int
-                        inc)
-        offset-length (* offset width)]
+                        inc)]
     {:line (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
                (into (->> (if reversed?
                             ["l"
@@ -215,12 +223,13 @@
   (let [quarter-width (/ width 4)
         height (* quarter-width eccentricity)
         half-height (/ height 2)
+        offset-length (* offset width)
         repetitions (-> length
+                        (- offset-length)
                         (/ width)
                         Math/ceil
                         int
-                        inc)
-        offset-length (* offset width)]
+                        inc)]
     {:line (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
                (into (->> (if reversed?
                             ["l"
