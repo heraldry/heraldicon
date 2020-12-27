@@ -215,10 +215,10 @@
           [:mask {:id mask-inverted-id}
            mask-inverted]
           [:clipPath {:id clip-path-id}
-           [:rect {:x      (:x position)
-                   :y      (:y position)
-                   :width  charge-width
-                   :height charge-height
+           [:rect {:x      (-> position :x (- 5))
+                   :y      (-> position :y (- 5))
+                   :width  (+ charge-width 10)
+                   :height (+ charge-height 10)
                    :fill   "#fff"}]]]
          [:g {:clip-path (str "url(#" clip-path-id ")")}
           [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
