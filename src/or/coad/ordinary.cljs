@@ -65,6 +65,7 @@
          line-reversed-length :length} (line/create line
                                                     (:y (v/- bottom top))
                                                     :angle -90
+                                                    :flipped? true
                                                     :reversed? true
                                                     :options options)
         second-bottom-adjusted (v/extend second-top second-bottom line-reversed-length)
@@ -119,7 +120,6 @@
          line-reversed-length :length} (line/create line
                                                     (:x (v/- right left))
                                                     :reversed? true
-                                                    :flipped? true
                                                     :angle 180
                                                     :options options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
@@ -169,7 +169,6 @@
          line-reversed-length :length} (line/create line
                                                     (:x (v/- right left))
                                                     :reversed? true
-                                                    :flipped? true
                                                     :angle 180
                                                     :options options)
         row-right-adjusted (v/extend row-left row-right line-reversed-length)
@@ -263,7 +262,6 @@
          line-reversed-length :length} (line/create line
                                                     line-length
                                                     :reversed? true
-                                                    :flipped? true
                                                     :angle 180
                                                     :options options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
@@ -328,7 +326,6 @@
          line-reversed-length :length} (line/create line
                                                     line-length
                                                     :reversed? true
-                                                    :flipped? true
                                                     :angle 180
                                                     :options options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
