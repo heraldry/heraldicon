@@ -77,37 +77,40 @@
      outline]))
 
 (defn per-pale [{:keys [type fields line] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [points       (:points environment)
-        top-left     (:top-left points)
-        top          (:top points)
-        bottom       (:bottom points)
-        bottom-right (:bottom-right points)
-        {line :line} (line/create line
-                                  (:y (v/- bottom top))
-                                  :angle -90
-                                  :options options)
-        parts        [[["M" bottom
-                        (line/stitch line)
-                        (infinity/path :counter-clockwise
-                                       [:top :bottom]
-                                       [top bottom])
-                        "z"]
-                       [top-left bottom]]
+  (let [points                     (:points environment)
+        top-left                   (:top-left points)
+        top                        (:top points)
+        bottom                     (:bottom points)
+        bottom-right               (:bottom-right points)
+        {line        :line
+         line-length :line-length} (line/create line
+                                                (:y (v/- bottom top))
+                                                :angle 90
+                                                :reversed? true
+                                                :options options)
+        bottom-adjusted            (v/extend top bottom line-length)
+        parts                      [[["M" bottom-adjusted
+                                      (line/stitch line)
+                                      (infinity/path :clockwise
+                                                     [:bottom :top]
+                                                     [bottom-adjusted top])
+                                      "z"]
+                                     [top-left bottom]]
 
-                      [["M" bottom
-                        (line/stitch line)
-                        (infinity/path :clockwise
-                                       [:top :bottom]
-                                       [top bottom])
-                        "z"]
-                       [top bottom-right]]]]
+                                    [["M" bottom-adjusted
+                                      (line/stitch line)
+                                      (infinity/path :counter-clockwise
+                                                     [:bottom :top]
+                                                     [bottom-adjusted top])
+                                      "z"]
+                                     [top bottom-right]]]]
     [make-division
      (division-context-key type) fields parts
      [:all nil]
      (when (:outline? options)
        [:g.outline
         [:path {:d (svg/make-path
-                    ["M" bottom
+                    ["M" bottom-adjusted
                      (line/stitch line)])}]])
      environment field top-level-render options :db-path db-path]))
 
@@ -229,6 +232,7 @@
          line-length :length} (line/create line
                                            (v/abs (v/- diagonal-end diagonal-start))
                                            :angle (+ angle 180)
+                                           :reversed? true
                                            :options options)
         diagonal-end-adjusted (v/extend
                                   diagonal-start
@@ -274,10 +278,13 @@
         diagonal-bottom-right         (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
         angle-bottom-left             (angle-to-point fess diagonal-bottom-left)
         angle-bottom-right            (angle-to-point fess diagonal-bottom-right)
+        line                          (-> line
+                                          (update :offset max 0))
         {line-left        :line
          line-left-length :length}    (line/create line
                                                    (v/abs (v/- diagonal-bottom-left fess))
                                                    :angle (+ angle-bottom-left 180)
+                                                   :reversed? true
                                                    :options options)
         {line-right :line}            (line/create line
                                                    (v/abs (v/- diagonal-bottom-right fess))
@@ -336,6 +343,8 @@
         angle-top-right                    (angle-to-point fess diagonal-top-right)
         angle-bottom-left                  (angle-to-point fess diagonal-bottom-left)
         angle-bottom-right                 (angle-to-point fess diagonal-bottom-right)
+        line                               (-> line
+                                               (update :offset max 0))
         {line-top-left        :line
          line-top-left-length :length}     (line/create line
                                                         (v/abs (v/- diagonal-top-left fess))
@@ -443,6 +452,8 @@
         left                         (:left points)
         right                        (:right points)
         fess                         (:fess points)
+        line                         (-> line
+                                         (update :offset max 0))
         {line-top        :line
          line-top-length :length}    (line/create line
                                                   (v/abs (v/- top fess))
@@ -505,7 +516,6 @@
                                                        [right bottom])
                                         "z"]
                                        [fess bottom-right]]]]
-
     [make-division
      (division-context-key type) fields parts
      [:all
@@ -550,6 +560,8 @@
         angle-top-right              (angle-to-point fess diagonal-top-right)
         angle-bottom-left            (angle-to-point fess diagonal-bottom-left)
         angle-bottom-right           (angle-to-point fess diagonal-bottom-right)
+        line                         (-> line
+                                         (update :offset max 0))
         {line-top        :line
          line-top-length :length}    (line/create line
                                                   (v/abs (v/- top fess))
@@ -882,6 +894,8 @@
         diagonal-top-right                    (v/project-x fess (v/dot direction (v/v 1 -1)) (:x right))
         angle-top-left                        (angle-to-point fess diagonal-top-left)
         angle-top-right                       (angle-to-point fess diagonal-top-right)
+        line                                  (-> line
+                                                  (update :offset max 0))
         {line-top-left        :line
          line-top-left-length :length}        (line/create line
                                                            (v/abs (v/- diagonal-top-left fess))
@@ -978,6 +992,8 @@
         diagonal-bottom-right              (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
         angle-bottom-left                  (angle-to-point fess diagonal-bottom-left)
         angle-bottom-right                 (angle-to-point fess diagonal-bottom-right)
+        line                               (-> line
+                                               (update :offset max 0))
         {line-bottom-right        :line
          line-bottom-right-length :length} (line/create line
                                                         (v/abs (v/- diagonal-bottom-right fess))

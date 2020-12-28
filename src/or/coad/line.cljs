@@ -10,249 +10,182 @@
    :start  0
    :length length})
 
-(defn invected [{:keys [eccentricity width offset]
-                 :or   {eccentricity 1
-                        width        10
-                        offset       0}} length _]
-  (let [radius-x      (/ width 2)
-        radius-y      (* radius-x eccentricity)
-        offset-length (* offset width)
+(defn line-with-offset [length offset pattern-width pattern]
+  (let [offset-length (* offset pattern-width)
         repetitions   (-> length
                           (- offset-length)
-                          (/ width)
+                          (/ pattern-width)
                           Math/ceil
                           int
                           inc)]
     {:line   (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
-                 (into (->> ["a" radius-x radius-y 0 0 1 [width 0]]
+                 (into (->> pattern
                             (repeat repetitions)))
                  (->> (apply merge))
+                 (cond->
+                     (> offset-length 0) (conj ["l" offset-length 0]))
                  vec)
      :offset (min 0 offset-length)
-     :length (+ offset-length
-                (* repetitions width))}))
+     :length (-> (* repetitions pattern-width)
+                 (+ (* offset-length 2)))}))
+
+(defn invected [{:keys [eccentricity width offset]
+                 :or   {eccentricity 1
+                        width        10
+                        offset       0}} length _]
+  (let [radius-x (/ width 2)
+        radius-y (* radius-x eccentricity)]
+    (line-with-offset
+     length offset width
+     ["a" radius-x radius-y 0 0 1 [width 0]])))
 
 (defn engrailed [{:keys [eccentricity width offset]
                   :or   {eccentricity 1
                          width        10
                          offset       0}} length _]
-  (let [radius-x      (/ width 2)
-        radius-y      (* radius-x eccentricity)
-        offset-length (* offset width)
-        repetitions   (-> length
-                          (- offset-length)
-                          (/ width)
-                          Math/ceil
-                          int
-                          inc)]
-    {:line   (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
-                 (into (->> ["a" radius-x radius-y 0 0 0 [radius-x (- radius-y)]
-                             "a" radius-x radius-y 0 0 0 [radius-x radius-y]]
-                            (repeat repetitions)))
-                 (->> (apply concat))
-                 vec)
-     :offset (min 0 offset-length)
-     :length (* repetitions width)}))
+  (let [radius-x (/ width 2)
+        radius-y (* radius-x eccentricity)]
+    (line-with-offset
+     length offset width
+     ["a" radius-x radius-y 0 0 0 [radius-x (- radius-y)]
+      "a" radius-x radius-y 0 0 0 [radius-x radius-y]])))
 
 (defn embattled [{:keys [eccentricity width offset]
                   :or   {eccentricity 1
                          width        10
-                         offset       0}} length _]
-  (let [half-width    (/ width 2)
-        quarter-width (/ width 4)
-        height        (* eccentricity half-width)
-        offset-length (* offset width)
-        repetitions   (-> length
-                          (- offset-length)
-                          (/ width)
-                          Math/ceil
-                          int
-                          inc)]
-    {:line   (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
-                 (into (->> ["l"
-                             [quarter-width 0]
-                             [0 (- height)]
-                             [half-width 0]
-                             [0 height]
-                             [quarter-width 0]]
-                            (repeat repetitions)))
-                 (->> (apply concat))
-                 vec)
-     :offset (min 0 offset-length)
-     :length (* repetitions width)}))
+                         offset       0}} length {:keys [reversed?]}]
+  (let [half-width (/ width 2)
+        height     (* eccentricity half-width)]
+    (line-with-offset
+     length offset width
+     (if reversed?
+       ["l"
+        [half-width 0
+         [0 (- height)]
+         [half-width 0]
+         [0 height]]]
+       ["l"
+        [0 (- height)]
+        [half-width 0]
+        [0 height]
+        [half-width 0]]))))
 
 (defn indented [{:keys [eccentricity width offset]
                  :or   {eccentricity 1
                         width        10
                         offset       0}} length _]
-  (let [half-width    (/ width 2)
-        height        (* eccentricity half-width)
-        offset-length (* offset width)
-        repetitions   (-> length
-                          (- offset-length)
-                          (/ width)
-                          Math/ceil
-                          int
-                          inc)]
-    {:line   (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
-                 (into (->>
-                        [["l"
-                          [half-width (- height)]
-                          [half-width height]]]
-                        (repeat repetitions)))
-                 (->> (apply concat))
-                 vec)
-     :offset (min 0 offset-length)
-     :length (* repetitions width)}))
+  (let [half-width (/ width 2)
+        height     (* eccentricity half-width)]
+    (line-with-offset
+     length offset width
+     ["l"
+      [half-width (- height)]
+      [half-width height]])))
 
 (defn dancetty [{:keys [eccentricity width offset]
                  :or   {eccentricity 1
                         width        20
-                        offset       0}} length _]
+                        offset       0}} length {:keys [reversed?]}]
   (let [half-width    (/ width 2)
         quarter-width (/ width 4)
         half-height   (* quarter-width eccentricity)
-        height        (* half-height 2)
-        offset-length (* offset width)
-        repetitions   (-> length
-                          (- offset-length)
-                          (/ width)
-                          Math/ceil
-                          int
-                          inc)]
-    {:line   (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
-                 (into (->> ["l"
-                             [quarter-width (- half-height)]
-                             [half-width height]
-                             [quarter-width (- half-height)]]
-                            (repeat repetitions)))
-                 (->> (apply concat))
-                 vec)
-     :offset (min 0 offset-length)
-     :length (* repetitions width)}))
+        height        (* half-height 2)]
+    (line-with-offset
+     length offset width
+     (if reversed?
+       ["l"
+        [quarter-width half-height]
+        [half-width (- height)]
+        [quarter-width half-height]]
+       ["l"
+        [quarter-width (- half-height)]
+        [half-width height]
+        [quarter-width (- half-height)]]))))
 
 (defn wavy [{:keys [eccentricity width offset]
              :or   {eccentricity 1
                     width        20
-                    offset       0}} length reversed?]
-  (let [half-width    (/ width 2)
-        height        (* width eccentricity)
-        offset-length (* offset width)
-        repetitions   (-> length
-                          (- offset-length)
-                          (/ width)
-                          Math/ceil
-                          int
-                          inc)]
-    {:line   (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
-                 (into (->> ["a" half-width height 0 0 (if reversed? 0 1) [half-width 0]
-                             "a" half-width height 0 0 (if reversed? 1 0) [half-width 0]]
-                            (repeat repetitions)))
-                 (->> (apply concat))
-                 vec)
-     :offset (min 0 offset-length)
-     :length (* repetitions width)}))
+                    offset       0}} length  {:keys [reversed?]}]
+  (let [half-width (/ width 2)
+        height     (* width eccentricity)]
+    (line-with-offset
+     length offset width
+     ["a" half-width height 0 0 (if reversed? 0 1) [half-width 0]
+      "a" half-width height 0 0 (if reversed? 1 0) [half-width 0]])))
 
 (defn dovetailed [{:keys [eccentricity width offset]
                    :or   {eccentricity 1
                           width        10
-                          offset       0}} length _]
-  (let [half-width    (/ width 2)
-        third-width   (/ width 3)
-        sixth-width   (/ width 6)
-        height        (* half-width eccentricity)
-        offset-length (* offset width)
-        repetitions   (-> length
-                          (- offset-length)
-                          (/ width)
-                          Math/ceil
-                          int
-                          inc)]
-    {:line   (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
-                 (into (->> ["l"
-                             [third-width 0]
-                             [(- sixth-width) (- height)]
-                             [third-width 0]
-                             [third-width 0]
-                             [(- sixth-width) height]
-                             [third-width 0]]
-                            (repeat repetitions)))
-                 (->> (apply concat))
-                 vec)
-     :offset (min 0 offset-length)
-     :length (* repetitions width)}))
+                          offset       0}} length {:keys [reversed?]}]
+  (let [half-width  (/ width 2)
+        third-width (/ width 3)
+        sixth-width (/ width 6)
+        height      (* half-width eccentricity)]
+    (line-with-offset
+     length offset width
+     (if reversed?
+       ["l"
+        [(* third-width 2) 0]
+        [(- sixth-width) (- height)]
+        [third-width 0]
+        [third-width 0]
+        [(- sixth-width) height]]
+       ["l"
+        [(- sixth-width) (- height)]
+        [third-width 0]
+        [third-width 0]
+        [(- sixth-width) height]
+        [(* third-width 2) 0]]))))
 
 (defn raguly [{:keys [eccentricity width offset]
                :or   {eccentricity 1
                       width        10
-                      offset       0}} length reversed?]
+                      offset       0}} length  {:keys [reversed?]}]
   (let [half-width    (/ width 2)
         quarter-width (/ width 4)
-        height        (* half-width eccentricity)
-        offset-length (* offset width)
-        repetitions   (-> length
-                          (- offset-length)
-                          (/ width)
-                          Math/ceil
-                          int
-                          inc)]
-    {:line   (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
-                 (into (->> (if reversed?
-                              ["l"
-                               [quarter-width 0]
-                               [quarter-width (- height)]
-                               [half-width 0]
-                               [(- quarter-width) height]
-                               [quarter-width 0]]
-                              ["l"
-                               [quarter-width 0]
-                               [(- quarter-width) (- height)]
-                               [half-width 0]
-                               [quarter-width height]
-                               [quarter-width 0]])
-                            (repeat repetitions)))
-                 (->> (apply concat))
-                 vec)
-     :offset (min 0 offset-length)
-     :length (* repetitions width)}))
+        height        (* half-width eccentricity)]
+    (line-with-offset
+     length offset width
+     (if reversed?
+       ["l"
+        [quarter-width 0]
+        [quarter-width (- height)]
+        [half-width 0]
+        [(- quarter-width) height]
+        [quarter-width 0]]
+       ["l"
+        [quarter-width 0]
+        [(- quarter-width) (- height)]
+        [half-width 0]
+        [quarter-width height]
+        [quarter-width 0]]))))
 
 (defn urdy [{:keys [eccentricity width offset]
              :or   {eccentricity 1
                     width        10
-                    offset       0}} length reversed?]
+                    offset       0}} length  {:keys [reversed?]}]
   (let [quarter-width (/ width 4)
         height        (* quarter-width eccentricity)
-        half-height   (/ height 2)
-        offset-length (* offset width)
-        repetitions   (-> length
-                          (- offset-length)
-                          (/ width)
-                          Math/ceil
-                          int
-                          inc)]
-    {:line   (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
-                 (into (->> (if reversed?
-                              ["l"
-                               [0 half-height]
-                               [quarter-width height]
-                               [quarter-width (- height)]
-                               [0 (- height)]
-                               [quarter-width (- height)]
-                               [quarter-width height]
-                               [0 half-height]]
-                              ["l"
-                               [0 half-height]
-                               [quarter-width height]
-                               [quarter-width (- height)]
-                               [0 (- height)]
-                               [quarter-width (- height)]
-                               [quarter-width height]
-                               [0 half-height]])
-                            (repeat repetitions)))
-                 (->> (apply concat))
-                 vec)
-     :offset (min 0 offset-length)
-     :length (* repetitions width)}))
+        half-height   (/ height 2)]
+    (line-with-offset
+     length offset width
+     (if reversed?
+       ["l"
+        [0 half-height]
+        [quarter-width height]
+        [quarter-width (- height)]
+        [0 (- height)]
+        [quarter-width (- height)]
+        [quarter-width height]
+        [0 half-height]]
+       ["l"
+        [0 (- half-height)]
+        [quarter-width (- height)]
+        [quarter-width height]
+        [0 height]
+        [quarter-width height]
+        [quarter-width (- height)]
+        [0 (- half-height)]]))))
 
 (def kinds
   [["Straight" :straight straight]
@@ -302,11 +235,11 @@
         new-path (catmullrom/curve->svg-path-relative curve)]
     new-path))
 
-(defn create [line length & {:keys [angle reversed? flipped? extra options] :or {extra 50}}]
+(defn create [line length & {:keys [angle reversed? flipped? extra options] :or {extra 50} :as line-options}]
   (let [style         (or (:style line) :straight)
         line-data     ((get kinds-function-map style)
                        line
-                       (+ length extra) reversed?)
+                       (+ length extra) line-options)
         adjusted-path (-> (:line line-data)
                           svg/make-path
                           (->>
