@@ -5,12 +5,15 @@
   (str (s/upper-case (or (first s) "")) (s/join (rest s))))
 
 (defn translate [keyword]
+  (when keyword
+    (-> keyword
+        name
+        (s/replace "-" " "))))
+
+(defn translate-tincture [keyword]
   (case keyword
     :none "[no tincture]"
-    (when keyword
-      (-> keyword
-          name
-          (s/replace "-" " ")))))
+    (translate keyword)))
 
 (defn translate-line [{:keys [style]}]
   (when (not= style :straight)
