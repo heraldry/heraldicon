@@ -171,7 +171,7 @@
      [:label (str title ":")]
      " "
      [submenu path "Line" (get style-names (:style line))
-      [select (conj path :style) "Line" line/options]
+      [select (conj path :style) "Type" line/options]
       [range-input (conj path :eccentricity) "Eccentricity" 0.5 2 :step 0.01]
       [range-input (conj path :width) "Width" 2 100
        :display-function #(str % "%")]
@@ -393,7 +393,7 @@
          [:div.setting
           [:label "Division:"] " "
           [submenu (conj path :division) "Division" (-> division-type util/translate-cap-first)
-           [select path "Division"
+           [select path "Type"
             (into [["None" :none]] division/options)
             :value division-type
             :on-change #(rf/dispatch [:set-division-type path %])]
