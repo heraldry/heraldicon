@@ -375,7 +375,7 @@
         root-field?     (= path [:coat-of-arms :field])]
     [component path :field (cond
                              (:counterchanged? field) "Counterchanged"
-                             (= division-type :none)  (-> field :content :tincture util/translate-cap-first)
+                             (= division-type :none)  (-> field :content :tincture util/translate-tincture util/upper-case-first)
                              :else                    (-> division-type util/translate-cap-first)) title-prefix
      [:div.settings
       (when (not root-field?)

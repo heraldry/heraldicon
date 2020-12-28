@@ -29,7 +29,7 @@
     "counterchanged"
     (let [tincture               (get-in  field [:content :tincture])
           field-description      (cond
-                                   tincture (util/translate tincture)
+                                   tincture (util/translate-tincture tincture)
                                    division (let [{:keys [type line fields]} division
                                                   mandatory-part-count       (division/mandatory-part-count type)]
                                               (util/combine
