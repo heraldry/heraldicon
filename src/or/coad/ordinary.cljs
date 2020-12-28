@@ -11,11 +11,12 @@
       30))
 
 (defn thickness-options [type]
-  (get {:pale  [20 50]
-        :fess  [20 50]
-        :chief [10 40]
-        :base  [10 40]
-        :bend  [10 40]} type))
+  (get {:pale          [20 50]
+        :fess          [20 50]
+        :chief         [10 40]
+        :base          [10 40]
+        :bend          [10 40]
+        :bend-sinister [10 40]} type))
 
 (defn diagonal-options [type]
   (let [options {:forty-five-degrees "45°"
