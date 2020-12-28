@@ -18,12 +18,11 @@
                         Math/ceil
                         int
                         inc)]
-    {:line (-> [[(if (pos? offset-length) "l" "m") offset-length 0]]
+    {:line (-> [["l" offset-length 0]]
                (into (->> pattern
                           (repeat repetitions)))
                (->> (apply merge))
-               (cond->
-                (> offset-length 0) (conj ["l" offset-length 0]))
+               (conj ["l" offset-length 0])
                vec)
      :offset (min 0 offset-length)
      :length (-> (* repetitions pattern-width)
