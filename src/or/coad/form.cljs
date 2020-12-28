@@ -39,7 +39,7 @@
 (defn select [path label options & {:keys [grouped? value on-change default]}]
   (let [component-id (id "select")]
     [:div.setting
-     [:label {:for component-id} label]
+     [:label {:for component-id} (str label ":")]
      [:select {:id component-id
                :value (name (or value
                                 @(rf/subscribe [:get-in path])
@@ -150,7 +150,7 @@
 (defn submenu [path title link-name & content]
   (let [submenu-path [:ui :open-submenu path]
         submenu-open? @(rf/subscribe [:get-in submenu-path])]
-    [:div {:style {:display "inline-block"}}
+    [:div.submenu-setting {:style {:display "inline-block"}}
      [:a {:on-click #(rf/dispatch [:set-in submenu-path true])}
       link-name]
      (when submenu-open?
@@ -396,15 +396,14 @@
            [select path "Type"
             (into [["None" :none]] division/options)
             :value division-type
-            :on-change #(rf/dispatch [:set-division-type path %])]
-           (when (not= division-type :none)
-             [:<>
-              (let [diagonal-options (division/diagonal-options division-type)]
-                (when (-> diagonal-options count (> 0))
-                  [select (conj path :division :hints :diagonal-mode) "Diagonal"
-                   diagonal-options :default (division/diagonal-default division-type)]))])]]
+            :on-change #(rf/dispatch [:set-division-type path %])]]]
          (when (not= division-type :none)
            [form-for-line (conj path :division :line)])
+         (when (not= division-type :none)
+           (let [diagonal-options (division/diagonal-options division-type)]
+             (when (-> diagonal-options count (> 0))
+               [select (conj path :division :hints :diagonal-mode) "Diagonal"
+                diagonal-options :default (division/diagonal-default division-type)])))
          (when (= division-type :none)
            [form-for-content (conj path :content)])])]
      (when (not counterchanged?)
