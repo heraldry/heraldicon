@@ -121,7 +121,8 @@
         show-selector? (and (not= path [:options])
                             (= type :field))]
     [:div.component
-     {:class (util/combine " " [(when selected? "selected")
+     {:class (util/combine " " [(when type (name type))
+                                (when selected? "selected")
                                 (when (not open?) "closed")])}
      [:div.header.clickable {:on-click #(rf/dispatch [:toggle-in flag-path])}
       [:a.arrow {:style {:opacity (if content? 1 0)}}
@@ -470,7 +471,7 @@
                 [:i.far.fa-trash-alt]]]])))]]]))
 
 (defn form-options []
-  [component [:options] nil "Options" nil
+  [component [:options] :options "Options" nil
    [select [:coat-of-arms :escutcheon] "Escutcheon" escutcheon/options]
    (let [path [:options :mode]]
      [radio-select path [["Colours" :colours]

@@ -301,10 +301,13 @@
         [:path.outline {:d (:shape environment)}])]]))
 
 (defn forms []
-  [:div {:style {:display "inline-block"}}
-   [form/form-options]
-   [:div.title "Coat of Arms"]
-   [form/form-for-field [:coat-of-arms :field]]])
+  [:<>
+   [:div {:style {:display "inline-block"}}
+    [form/form-options]]
+   [:br]
+   [:div {:style {:display "inline-block"}}
+    [:div.title "Coat of Arms"]
+    [form/form-for-field [:coat-of-arms :field]]]])
 
 (defn app []
   (fn []
