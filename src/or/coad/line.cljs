@@ -234,7 +234,7 @@
         new-path (catmullrom/curve->svg-path-relative curve)]
     new-path))
 
-(defn create [line length & {:keys [angle reversed? flipped? extra options] :or {extra 50} :as line-options}]
+(defn create [line length & {:keys [angle flipped? extra options] :or {extra 50} :as line-options}]
   (let [style         (or (:style line) :straight)
         line-data     ((get kinds-function-map style)
                        line

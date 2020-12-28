@@ -95,7 +95,7 @@
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" first-top
-                     (line/stitch line)])}]
+                     (line/stitch line-one)])}]
         [:path {:d (svg/make-path
                     ["M" second-bottom-adjusted
                      (line/stitch line-reversed)])}]])
@@ -149,7 +149,7 @@
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" first-left
-                     (line/stitch line)])}]
+                     (line/stitch line-one)])}]
         [:path {:d (svg/make-path
                     ["M" second-right-adjusted
                      (line/stitch line-reversed)])}]])
@@ -198,33 +198,33 @@
      environment ordinary top-level-render options :db-path db-path]))
 
 (defn base [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
-  (let [points       (:points environment)
-        bottom       (:bottom points)
-        bottom-right (:bottom-right points)
-        left         (:left points)
-        right        (:right points)
-        height       (:height environment)
-        thickness    (or (:thickness hints)
-                         (thickness-default type))
-        band-height  (-> height
-                         (* thickness)
-                         (/ 100))
-        row          (- (:y bottom) band-height)
-        row-left     (v/v (:x left) row)
-        row-right    (v/v  (:x right) row)
-        {line :line} (line/create line
-                                  (:x (v/- right left))
-                                  :options options)
-        parts        [[["M" row-left
-                        (line/stitch line)
-                        (infinity/path :clockwise
-                                       [:right :left]
-                                       [row-right row-left])
-                        "z"]
-                       [row-left bottom-right]]]
-        field        (if (charge/counterchangable? field parent)
-                       (charge/counterchange-field field parent)
-                       field)]
+  (let [points           (:points environment)
+        bottom           (:bottom points)
+        bottom-right     (:bottom-right points)
+        left             (:left points)
+        right            (:right points)
+        height           (:height environment)
+        thickness        (or (:thickness hints)
+                             (thickness-default type))
+        band-height      (-> height
+                             (* thickness)
+                             (/ 100))
+        row              (- (:y bottom) band-height)
+        row-left         (v/v (:x left) row)
+        row-right        (v/v  (:x right) row)
+        {line-one :line} (line/create line
+                                      (:x (v/- right left))
+                                      :options options)
+        parts            [[["M" row-left
+                            (line/stitch line-one)
+                            (infinity/path :clockwise
+                                           [:right :left]
+                                           [row-right row-left])
+                            "z"]
+                           [row-left bottom-right]]]
+        field            (if (charge/counterchangable? field parent)
+                           (charge/counterchange-field field parent)
+                           field)]
     [division/make-division
      :ordinary-base [field] parts
      [:all]
@@ -232,7 +232,7 @@
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" row-left
-                     (line/stitch line)])}]])
+                     (line/stitch line-one)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
 (defn bend [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
@@ -293,7 +293,7 @@
         [:g.outline
          [:path {:d (svg/make-path
                      ["M" first-left
-                      (line/stitch line)])}]
+                      (line/stitch line-one)])}]
          [:path {:d (svg/make-path
                      ["M" second-right-adjusted
                       (line/stitch line-reversed)])}]])
@@ -357,7 +357,7 @@
         [:g.outline
          [:path {:d (svg/make-path
                      ["M" first-left
-                      (line/stitch line)])}]
+                      (line/stitch line-one)])}]
          [:path {:d (svg/make-path
                      ["M" second-right-adjusted
                       (line/stitch line-reversed)])}]])
