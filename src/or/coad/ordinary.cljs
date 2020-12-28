@@ -15,7 +15,8 @@
         :fess [20 50]
         :chief [10 40]
         :base [10 40]
-        :bend [10 40]} type))
+        :bend [10 40]
+        :bend-sinister [10 40]} type))
 
 (defn diagonal-options [type]
   (let [options {:forty-five-degrees "45°"
