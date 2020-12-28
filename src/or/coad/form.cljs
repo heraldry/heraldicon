@@ -103,7 +103,8 @@
                                  (if on-change
                                    (on-change value)
                                    (rf/dispatch [:set-in path value])))}]
-          [:label {:for component-id} display-name]])))])
+          [:label {:for component-id
+                   :style {:margin-right "10px"}} display-name]])))])
 
 (defn selector [path]
   [:a.selector {:on-click (fn [event]
@@ -161,18 +162,20 @@
         (into [:div.content]
               content)])]))
 
-(defn form-for-line [path]
+(defn form-for-line [path & {:keys [title] :or {title "Line"}}]
   (let [line @(rf/subscribe [:get-in path])
         style-names (->> line/options
                          (map (comp vec reverse))
                          (into {}))]
     [:div.setting
-     [:label "Line"] [submenu path "Line" (get style-names (:style line))
-                      [select (conj path :style) "Line" line/options]
-                      [range-input (conj path :eccentricity) "Eccentricity" 0.5 2 :step 0.01]
-                      [range-input (conj path :width) "Width" 2 100
-                       :display-function #(str % "%")]
-                      [range-input (conj path :offset) "Offset" -1 1 :step 0.01]]]))
+     [:label (str title ":")]
+     " "
+     [submenu path "Line" (get style-names (:style line))
+      [select (conj path :style) "Line" line/options]
+      [range-input (conj path :eccentricity) "Eccentricity" 0.5 2 :step 0.01]
+      [range-input (conj path :width) "Width" 2 100
+       :display-function #(str % "%")]
+      [range-input (conj path :offset) "Offset" -1 3 :step 0.01]]]))
 
 (defn form-for-tincture [path label]
   [:div.tincture
@@ -387,17 +390,21 @@
          :disabled? (not (division/counterchangable? (-> parent-field :division :type)))])
       (when (not counterchanged?)
         [:<>
-         [select path "Division"
-          (into [["None" :none]] division/options)
-          :value division-type
-          :on-change #(rf/dispatch [:set-division-type path %])]
+         [:div.setting
+          [:label "Division:"] " "
+          [submenu (conj path :division) "Division" (-> division-type util/translate-cap-first)
+           [select path "Division"
+            (into [["None" :none]] division/options)
+            :value division-type
+            :on-change #(rf/dispatch [:set-division-type path %])]
+           (when (not= division-type :none)
+             [:<>
+              (let [diagonal-options (division/diagonal-options division-type)]
+                (when (-> diagonal-options count (> 0))
+                  [select (conj path :division :hints :diagonal-mode) "Diagonal"
+                   diagonal-options :default (division/diagonal-default division-type)]))])]]
          (when (not= division-type :none)
-           [:<>
-            (let [diagonal-options (division/diagonal-options division-type)]
-              (when (-> diagonal-options count (> 0))
-                [select (conj path :division :hints :diagonal-mode) "Diagonal"
-                 diagonal-options :default (division/diagonal-default division-type)]))
-            [form-for-line (conj path :division :line)]])
+           [form-for-line (conj path :division :line)])
          (when (= division-type :none)
            [form-for-content (conj path :content)])])]
      (when (not counterchanged?)
