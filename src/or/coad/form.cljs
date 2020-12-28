@@ -154,6 +154,7 @@
       link-name]
      (when submenu-open?
        [:div.component.submenu
+        {:on-mouse-leave #(rf/dispatch [:set-in submenu-path false])}
         [:div.header [:a {:on-click #(rf/dispatch [:set-in submenu-path false])}
                       [:i.far.fa-times-circle]]
          " " title]
