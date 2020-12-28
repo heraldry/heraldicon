@@ -305,7 +305,8 @@
    [:div {:style {:display "inline-block"}}
     [form/form-options]]
    [:br]
-   [:div {:style {:display "inline-block"}}
+   [:div {:style {:display        "inline-block"
+                  :padding-bottom "20px"}}
     [:div.title "Coat of Arms"]
     [form/form-for-field [:coat-of-arms :field]]]])
 
@@ -319,17 +320,16 @@
       (when coat-of-arms
         (js/history.replaceState nil nil (str "#" state-base64)))
       [:<>
-       [:div {:style    {:width          "100%"
-                         :height         "100vh"
-                         :position       "relative"
-                         :padding-bottom "1em"}
+       [:div {:style    {:width    "100%"
+                         :height   "calc(100vh - 4em)"
+                         :top      "4em"
+                         :position "relative"
+                         :padding  "10px"}
               :on-click #(rf/dispatch [:select-component nil])}
         [:svg {:id                  "svg"
                :style               {:width    "25em"
                                      :height   "32em"
-                                     :position "absolute"
-                                     :left     0
-                                     :top      0}
+                                     :position "absolute"}
                :viewBox             "0 0 520 1000"
                :preserveAspectRatio "xMidYMin slice"}
          defs
@@ -339,7 +339,7 @@
          [render-shield coat-of-arms options :db-path [:coat-of-arms]]]
         [:div.blazonry {:style {:position "absolute"
                                 :left     10
-                                :top      "32em"
+                                :top      "34em"
                                 :width    "calc(25em - 20px)"
                                 :padding  10
                                 :border   "1px solid #ddd"}}
@@ -348,10 +348,10 @@
           (blazon/encode-field (:field coat-of-arms) :root? true)]]
         [:div {:style {:position       "absolute"
                        :left           "27em"
-                       :top            0
                        :width          "calc(100vw - 27em)"
-                       :height         "100vh"
+                       :height         "calc(100vh - 4em)"
                        :overflow       "auto"
+                       :padding-top    "5px"
                        :padding-bottom "1em"}}
          [forms]]]
        [:div.credits
