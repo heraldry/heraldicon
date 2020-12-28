@@ -16,7 +16,11 @@
         :chief         [10 40]
         :base          [10 40]
         :bend          [10 40]
-        :bend-sinister [10 40]} type))
+        :bend-sinister [10 40]
+        :cross         [10 30]
+        :saltire       [10 30]
+        :chevron       [10 30]
+        :pall          [10 30]} type))
 
 (defn diagonal-options [type]
   (let [options {:forty-five-degrees "45°"
@@ -359,6 +363,143 @@
                       (line/stitch line-reversed)])}]])
       environment ordinary top-level-render options :db-path db-path]]))
 
+(defn cross [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  (let [points                                  (:points environment)
+        top                                     (:top points)
+        bottom                                  (:bottom points)
+        left                                    (:left points)
+        right                                   (:right points)
+        fess                                    (:fess points)
+        width                                   (:width environment)
+        thickness                               (or (:thickness hints)
+                                                    (thickness-default type))
+        band-width                              (-> width
+                                                    (* thickness)
+                                                    (/ 100))
+        col1                                    (- (:x fess) (/ band-width 2))
+        col2                                    (+ col1 band-width)
+        pale-top-left                           (v/v col1 (:y top))
+        pale-bottom-left                        (v/v col1 (:y bottom))
+        pale-top-right                          (v/v col2 (:y top))
+        pale-bottom-right                       (v/v col2 (:y bottom))
+        row1                                    (- (:y fess) (/ band-width 2))
+        row2                                    (+ row1 band-width)
+        fess-top-left                           (v/v (:x left) row1)
+        fess-top-right                          (v/v (:x right) row1)
+        fess-bottom-left                        (v/v (:x left) row2)
+        fess-bottom-right                       (v/v (:x right) row2)
+        corner-top-left                         (v/v col1 row1)
+        corner-top-right                        (v/v col2 row1)
+        corner-bottom-left                      (v/v col1 row2)
+        corner-bottom-right                     (v/v col2 row2)
+        line                                    (-> line
+                                                    (update :offset max 0))
+        {line-pale-top-left :line}              (line/create line
+                                                             (Math/abs (:y (v/- corner-top-left pale-top-left)))
+                                                             :angle                     -90
+                                                             :options                   options)
+        {line-pale-top-right        :line
+         line-pale-top-right-length :length}    (line/create line
+                                                             (Math/abs (:y (v/- corner-top-right pale-top-right)))
+                                                             :angle 90
+                                                             :reversed? true
+                                                             :options options)
+        {line-fess-top-right :line}             (line/create line
+                                                             (Math/abs (:y (v/- corner-top-right fess-top-right)))
+                                                             :options options)
+        {line-fess-bottom-right        :line
+         line-fess-bottom-right-length :length} (line/create line
+                                                             (Math/abs (:y (v/- corner-bottom-right fess-bottom-right)))
+                                                             :angle 180
+                                                             :reversed? true
+                                                             :options options)
+        {line-pale-bottom-right :line}          (line/create line
+                                                             (Math/abs (:y (v/- corner-bottom-right pale-bottom-right)))
+                                                             :angle 90
+                                                             :options options)
+        {line-pale-bottom-left        :line
+         line-pale-bottom-left-length :length}  (line/create line
+                                                             (Math/abs (:y (v/- corner-bottom-left pale-bottom-left)))
+                                                             :angle -90
+                                                             :reversed? true
+                                                             :options options)
+        {line-fess-bottom-left :line}           (line/create line
+                                                             (Math/abs (:y (v/- corner-bottom-left fess-bottom-left)))
+                                                             :angle 180
+                                                             :options options)
+        {line-fess-top-left        :line
+         line-fess-top-left-length :length}     (line/create line
+                                                             (Math/abs (:y (v/- corner-top-left fess-top-left)))
+                                                             :reversed? true
+                                                             :options options)
+        pale-top-right-adjusted                 (v/extend corner-top-right pale-top-right
+                                                          line-pale-top-right-length)
+        fess-bottom-right-adjusted              (v/extend corner-bottom-right fess-bottom-right
+                                                          line-fess-bottom-right-length)
+        pale-bottom-left-adjusted               (v/extend corner-bottom-left pale-bottom-left
+                                                          line-pale-bottom-left-length)
+        fess-top-left-adjusted                  (v/extend corner-top-left fess-top-left
+                                                          line-fess-top-left-length)
+        parts                                   [[["M" corner-top-left
+                                                   (line/stitch line-pale-top-left)
+                                                   (infinity/path :clockwise
+                                                                  [:top :top]
+                                                                  [pale-top-left pale-top-right-adjusted])
+                                                   (line/stitch line-pale-top-right)
+                                                   "L" corner-top-right
+                                                   (line/stitch line-fess-top-right)
+                                                   (infinity/path :clockwise
+                                                                  [:right :right]
+                                                                  [fess-top-right fess-bottom-right-adjusted])
+                                                   (line/stitch line-fess-bottom-right)
+                                                   "L" corner-bottom-right
+                                                   (line/stitch line-pale-bottom-right)
+                                                   (infinity/path :clockwise
+                                                                  [:bottom :bottom]
+                                                                  [pale-bottom-right pale-bottom-left-adjusted])
+                                                   (line/stitch line-pale-bottom-left)
+                                                   "L" corner-bottom-left
+                                                   (line/stitch line-fess-bottom-left)
+                                                   (infinity/path :clockwise
+                                                                  [:left :left]
+                                                                  [fess-bottom-left fess-top-left-adjusted])
+                                                   (line/stitch line-fess-top-left)
+                                                   "z"]
+                                                  [top bottom left right]]]]
+    field                          (if (charge/counterchangable? field parent)
+                                     (charge/counterchange-field field parent)
+                                     field)
+    [division/make-division
+     :ordinary-pale [field] parts
+     [:all]
+     (when (:outline? options)
+       [:g.outline
+        [:path {:d (svg/make-path
+                    ["M" corner-top-left
+                     (line/stitch line-pale-top-left)])}]
+        [:path {:d (svg/make-path
+                    ["M" pale-top-right-adjusted
+                     (line/stitch line-pale-top-right)])}]
+        [:path {:d (svg/make-path
+                    ["M" corner-top-right
+                     (line/stitch line-fess-top-right)])}]
+        [:path {:d (svg/make-path
+                    ["M" fess-bottom-right-adjusted
+                     (line/stitch line-fess-bottom-right)])}]
+        [:path {:d (svg/make-path
+                    ["M" corner-bottom-right
+                     (line/stitch line-pale-bottom-right)])}]
+        [:path {:d (svg/make-path
+                    ["M" pale-bottom-left-adjusted
+                     (line/stitch line-pale-bottom-left)])}]
+        [:path {:d (svg/make-path
+                    ["M" corner-bottom-left
+                     (line/stitch line-fess-bottom-left)])}]
+        [:path {:d (svg/make-path
+                    ["M" fess-top-left-adjusted
+                     (line/stitch line-fess-top-left)])}]])
+     environment ordinary top-level-render options :db-path db-path]))
+
 (def kinds
   [["Pale" :pale pale]
    ["Fess" :fess fess]
@@ -366,7 +507,7 @@
    ["Base" :base base]
    ["Bend" :bend bend]
    ["Bend Sinister" :bend-sinister bend-sinister]
-   ;; ["Cross" :cross cross]
+   ["Cross" :cross cross]
    ;; ["Saltire" :saltire saltire]
    ;; ["Chevron" :chevron chevron]
    ;; ["Pall" :pall pall]
