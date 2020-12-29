@@ -665,10 +665,10 @@
         left                                     (:left points)
         right                                    (:right points)
         fess                                     (:fess points)
-        width                                    (:width environment)
+        height                                   (:height environment)
         thickness                                (or (:thickness hints)
                                                      (thickness-default type))
-        band-width                               (-> width
+        band-width                               (-> height
                                                      (* thickness)
                                                      (/ 100))
         diagonal-mode                            (or (:diagonal-mode hints)
