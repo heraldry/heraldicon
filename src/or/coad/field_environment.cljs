@@ -27,7 +27,11 @@
         left (v/v min-x (:y fess))
         right (v/v max-x (:y fess))
         honour (v/avg top fess)
-        nombril (v/avg honour bottom)]
+        nombril (v/avg honour bottom)
+        chief (v/avg top honour)
+        base (v/avg bottom nombril)
+        dexter (v/avg left (v/avg left fess))
+        sinister (v/avg right (v/avg right fess))]
     (if override-environment
       (-> override-environment
           (assoc :shape shape)
@@ -47,6 +51,10 @@
           (assoc-in [:points :right] right)
           (assoc-in [:points :honour] honour)
           (assoc-in [:points :nombril] nombril)
+          (assoc-in [:points :chief] chief)
+          (assoc-in [:points :base] base)
+          (assoc-in [:points :dexter] dexter)
+          (assoc-in [:points :sinister] sinister)
           (assoc-in [:meta] meta)))))
 
 (defn transform-to-width [environment target-width]
