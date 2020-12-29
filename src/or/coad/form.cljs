@@ -21,9 +21,11 @@
 
 ;; components
 
-(defn checkbox [path label & {:keys [on-change disabled?]}]
+(defn checkbox [path label & {:keys [on-change disabled? checked?]}]
   (let [component-id (id "checkbox")
-        checked?     (-> @(rf/subscribe [:get-in path])
+        checked?     (-> (and path
+                              @(rf/subscribe [:get-in path]))
+                         (or checked?)
                          boolean
                          (and (not disabled?)))]
     [:div.setting
@@ -66,7 +68,8 @@
           ^{:key key}
           [:option {:value (name key)} display-name]))]]))
 
-(defn range-input [path label min-value max-value & {:keys [value on-change default display-function step]}]
+(defn range-input [path label min-value max-value & {:keys [value on-change default display-function step
+                                                            disabled?]}]
   (let [component-id (id "range")
         value        (or value
                          @(rf/subscribe [:get-in path])
@@ -81,6 +84,7 @@
                :max       max-value
                :step      step
                :value     value
+               :disabled  disabled?
                :on-change #(let [value (-> % .-target .-value js/parseFloat)]
                              (if on-change
                                (on-change value)
@@ -402,9 +406,23 @@
                                       (if % :argent nil)])])
          [checkbox (conj path :hints :outline?) "Draw outline"]]
         [:div.spacer]
-        [range-input (conj path :hints :size) "Size" 1 100
-         :display-function #(str % "%")
-         :default 50]
+        (let [size      (-> charge :hints :size)
+              size-path (conj path :hints :size)]
+          [:div.settings
+           [:div
+            {:style {:width "75%"
+                     :float "left"}}
+            [range-input size-path "Size" 1 100
+             :display-function #(str % "%")
+             :default 50
+             :disabled? (-> size some? not)]]
+           [:div
+            {:style {:width "25%"
+                     :float "right"}}
+            [checkbox nil "auto"
+             :checked? (-> size some? not)
+             :on-change #(rf/dispatch [:set-in size-path (if % nil 50)])]]])
+        [:div.spacer]
         [form-for-position (conj path :position)]]
        [form-for-field (conj path :field) :parent-field parent-field]]
       [:<>])))
