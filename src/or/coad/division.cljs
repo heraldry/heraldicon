@@ -1,5 +1,6 @@
 (ns or.coad.division
-  (:require [or.coad.config :as config]
+  (:require [clojure.string :as s]
+            [or.coad.config :as config]
             [or.coad.field-environment :as field-environment]
             [or.coad.infinity :as infinity]
             [or.coad.line :as line]
@@ -73,7 +74,9 @@
          (get-field fields idx)
          (get environments idx)
          options
-         :db-path (conj db-path :fields idx)]])
+         :db-path (if (-> type name (s/starts-with? "ordinary-")) ;; FIXME: bit of a hack
+                    (conj db-path :field)
+                    (conj db-path :fields idx))]])
      outline]))
 
 (defn per-pale [{:keys [type fields line] :as field} environment top-level-render options & {:keys [db-path]}]

@@ -21,11 +21,11 @@
                           :fill fill
                           :stroke fill}])
        division [division/render division environment render options :db-path (conj db-path :division)])
-     (for [[idx element] (map-indexed vector components)]
-       (if (-> element :component (= :ordinary))
-         ^{:key idx} [ordinary/render element field environment render options :db-path (conj db-path :components idx)]
-         ^{:key idx} [charge/render element field environment render options :db-path (conj db-path :components idx)]))
      (when (-> ui :selected?)
        [:path {:d (:shape environment)
                :style {:opacity 0.25}
-               :fill "url(#selected)"}])]))
+               :fill "url(#selected)"}])
+     (for [[idx element] (map-indexed vector components)]
+       (if (-> element :component (= :ordinary))
+         ^{:key idx} [ordinary/render element field environment render options :db-path (conj db-path :components idx)]
+         ^{:key idx} [charge/render element field environment render options :db-path (conj db-path :components idx)]))]))
