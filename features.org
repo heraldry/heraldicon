@@ -40,7 +40,7 @@ Here's a list of things already supported and things I'm working on.
 - [ ] add vair - might need to treat this as a paly division, because the number
       of elements can be specified
 - [ ] add other field *treatments*, some of which might have configurable colours
-- [ ] configure charge position and size
+- [X] configure charge position and size
 - [ ] configure charge number and arrangements
 - [ ] add *semy*
 - [ ] add configurable *paly divisions*
@@ -49,7 +49,7 @@ Here's a list of things already supported and things I'm working on.
 - [ ] add option to set a different line style on the other side of the ordinary
       and pick the right default one, e.g. wavy generally seems to have a
       "counter" wave, but others should be mirrored, embattled defaults to straight
-- [ ] add options to offset line styles and adjust their eccentricity and
+- [X] add options to offset line styles and adjust their eccentricity and
       pattern width
 - [ ] add more ordinaries
 - [ ] add more charges
