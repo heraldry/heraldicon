@@ -392,7 +392,8 @@
                                       (conj path :tincture :eyes-and-teeth)
                                       (if % :argent nil)])])
          [checkbox (conj path :hints :outline?) "Draw outline"]]
-        [:div.spacer]]
+        [:div.spacer]
+        [form-for-position (conj path :position)]]
        [:div.tree
         [tree-for-charge-map charge-map [] path charge
          (get-in charge-map
