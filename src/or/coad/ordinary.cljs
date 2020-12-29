@@ -3,6 +3,7 @@
             [or.coad.division :as division]
             [or.coad.infinity :as infinity]
             [or.coad.line :as line]
+            [or.coad.point :as point]
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
@@ -49,18 +50,18 @@
             :chevron       :forty-five-degrees} type)
       :top-left-fess))
 
-(defn pale [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn pale [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points                         (:points environment)
-        top                            (:top points)
-        bottom                         (:bottom points)
-        fess                           (:fess points)
+        origin-point                   (point/calculate origin environment :fess)
+        top                            (assoc (:top points) :x (:x origin-point))
+        bottom                         (assoc (:bottom points) :x (:x origin-point))
         width                          (:width environment)
         thickness                      (or (:thickness hints)
                                            (thickness-default type))
         band-width                     (-> width
                                            (* thickness)
                                            (/ 100))
-        col1                           (- (:x fess) (/ band-width 2))
+        col1                           (- (:x origin-point) (/ band-width 2))
         col2                           (+ col1 band-width)
         first-top                      (v/v col1 (:y top))
         first-bottom                   (v/v col1 (:y bottom))
@@ -106,18 +107,18 @@
                      (line/stitch line-reversed)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn fess [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn fess_ [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points                         (:points environment)
-        left                           (:left points)
-        right                          (:right points)
-        fess                           (:fess points)
+        origin-point                   (point/calculate origin environment :fess)
+        left                           (assoc (:left points) :y (:y origin-point))
+        right                          (assoc (:right points) :y (:y origin-point))
         height                         (:height environment)
         thickness                      (or (:thickness hints)
                                            (thickness-default type))
         band-height                    (-> height
                                            (* thickness)
                                            (/ 100))
-        row1                           (- (:y fess) (/ band-height 2))
+        row1                           (- (:y origin-point) (/ band-height 2))
         row2                           (+ row1 band-height)
         first-left                     (v/v (:x left) row1)
         first-right                    (v/v (:x right) row1)
@@ -240,11 +241,11 @@
                      (line/stitch line-one)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn bend [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn bend [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points                         (:points environment)
-        left                           (:left points)
-        right                          (:right points)
-        fess                           (:fess points)
+        origin-point                   (point/calculate origin environment :fess)
+        left                           (assoc (:left points) :y (:y origin-point))
+        right                          (assoc (:right points) :y (:y origin-point))
         height                         (:height environment)
         thickness                      (or (:thickness hints)
                                            (thickness-default type))
@@ -253,9 +254,9 @@
                                            (/ 100))
         diagonal-mode                  (or (:diagonal-mode hints)
                                            (diagonal-default type))
-        direction                      (division/direction diagonal-mode points)
-        diagonal-start                 (v/project-x fess (v/dot direction (v/v -1 -1)) (:x left))
-        diagonal-end                   (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
+        direction                      (division/direction diagonal-mode points origin-point)
+        diagonal-start                 (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
+        diagonal-end                   (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
         angle                          (division/angle-to-point diagonal-start diagonal-end)
         line-length                    (v/abs (v/- diagonal-end diagonal-start))
         offset                         -40
@@ -304,11 +305,11 @@
                       (line/stitch line-reversed)])}]])
       environment ordinary top-level-render options :db-path db-path]]))
 
-(defn bend-sinister [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn bend-sinister [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points                         (:points environment)
-        left                           (:left points)
-        right                          (:right points)
-        fess                           (:fess points)
+        origin-point                   (point/calculate origin environment :fess)
+        left                           (assoc (:left points) :y (:y origin-point))
+        right                          (assoc (:right points) :y (:y origin-point))
         height                         (:height environment)
         thickness                      (or (:thickness hints)
                                            (thickness-default type))
@@ -317,9 +318,9 @@
                                            (/ 100))
         diagonal-mode                  (or (:diagonal-mode hints)
                                            (diagonal-default type))
-        direction                      (division/direction diagonal-mode points)
-        diagonal-start                 (v/project-x fess (v/dot direction (v/v -1 1)) (:x left))
-        diagonal-end                   (v/project-x fess (v/dot direction (v/v 1 -1)) (:x right))
+        direction                      (division/direction diagonal-mode points origin-point)
+        diagonal-start                 (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-end                   (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
         angle                          (division/angle-to-point diagonal-start diagonal-end)
         line-length                    (v/abs (v/- diagonal-end diagonal-start))
         row1                           (- (/ band-height 2))
@@ -368,26 +369,26 @@
                       (line/stitch line-reversed)])}]])
       environment ordinary top-level-render options :db-path db-path]]))
 
-(defn cross [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn cross [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points                                  (:points environment)
-        top                                     (:top points)
-        bottom                                  (:bottom points)
-        left                                    (:left points)
-        right                                   (:right points)
-        fess                                    (:fess points)
+        origin-point                            (point/calculate origin environment :fess)
+        top                                     (assoc (:top points) :x (:x origin-point))
+        bottom                                  (assoc (:bottom points) :x (:x origin-point))
+        left                                    (assoc (:left points) :y (:y origin-point))
+        right                                   (assoc (:right points) :y (:y origin-point))
         width                                   (:width environment)
         thickness                               (or (:thickness hints)
                                                     (thickness-default type))
         band-width                              (-> width
                                                     (* thickness)
                                                     (/ 100))
-        col1                                    (- (:x fess) (/ band-width 2))
+        col1                                    (- (:x origin-point) (/ band-width 2))
         col2                                    (+ col1 band-width)
         pale-top-left                           (v/v col1 (:y top))
         pale-bottom-left                        (v/v col1 (:y bottom))
         pale-top-right                          (v/v col2 (:y top))
         pale-bottom-right                       (v/v col2 (:y bottom))
-        row1                                    (- (:y fess) (/ band-width 2))
+        row1                                    (- (:y origin-point) (/ band-width 2))
         row2                                    (+ row1 band-width)
         fess-top-left                           (v/v (:x left) row1)
         fess-top-right                          (v/v (:x right) row1)
@@ -505,13 +506,13 @@
                      (line/stitch line-fess-top-left)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn saltire [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn saltire [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points                                   (:points environment)
-        top                                      (:top points)
-        bottom                                   (:bottom points)
-        left                                     (:left points)
-        right                                    (:right points)
-        fess                                     (:fess points)
+        origin-point                             (point/calculate origin environment :fess)
+        top                                      (assoc (:top points) :x (:x origin-point))
+        bottom                                   (assoc (:bottom points) :x (:x origin-point))
+        left                                     (assoc (:left points) :y (:y origin-point))
+        right                                    (assoc (:right points) :y (:y origin-point))
         width                                    (:width environment)
         thickness                                (or (:thickness hints)
                                                      (thickness-default type))
@@ -520,15 +521,15 @@
                                                      (/ 100))
         diagonal-mode                            (or (:diagonal-mode hints)
                                                      (diagonal-default type))
-        direction                                (division/direction diagonal-mode points)
-        diagonal-top-left                        (v/project-x fess (v/dot direction (v/v -1 -1)) (:x left))
-        diagonal-top-right                       (v/project-x fess (v/dot direction (v/v 1 -1)) (:x right))
-        diagonal-bottom-left                     (v/project-x fess (v/dot direction (v/v -1 1)) (:x left))
-        diagonal-bottom-right                    (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
-        angle-top-left                           (division/angle-to-point fess diagonal-top-left)
-        angle-top-right                          (division/angle-to-point fess diagonal-top-right)
-        angle-bottom-left                        (division/angle-to-point fess diagonal-bottom-left)
-        angle-bottom-right                       (division/angle-to-point fess diagonal-bottom-right)
+        direction                                (division/direction diagonal-mode points origin-point)
+        diagonal-top-left                        (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
+        diagonal-top-right                       (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
+        diagonal-bottom-left                     (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-bottom-right                    (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
+        angle-top-left                           (division/angle-to-point origin-point diagonal-top-left)
+        angle-top-right                          (division/angle-to-point origin-point diagonal-top-right)
+        angle-bottom-left                        (division/angle-to-point origin-point diagonal-bottom-left)
+        angle-bottom-right                       (division/angle-to-point origin-point diagonal-bottom-right)
         angle                                    (-> angle-bottom-right (* Math/PI) (/ 180))
         dx                                       (/ band-width 2 (Math/sin angle))
         dy                                       (/ band-width 2 (Math/cos angle))
@@ -536,10 +537,10 @@
         offset-bottom                            (v/v 0 dy)
         offset-left                              (v/v (- dx) 0)
         offset-right                             (v/v dx 0)
-        corner-top                               (v/+ fess offset-top)
-        corner-bottom                            (v/+ fess offset-bottom)
-        corner-left                              (v/+ fess offset-left)
-        corner-right                             (v/+ fess offset-right)
+        corner-top                               (v/+ origin-point offset-top)
+        corner-bottom                            (v/+ origin-point offset-bottom)
+        corner-left                              (v/+ origin-point offset-left)
+        corner-right                             (v/+ origin-point offset-right)
         top-left-upper                           (v/+ diagonal-top-left offset-top)
         top-left-lower                           (v/+ diagonal-top-left offset-bottom)
         top-right-upper                          (v/+ diagonal-top-right offset-top)
@@ -658,13 +659,13 @@
                      (line/stitch line-bottom-left-upper)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn chevron [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn chevron [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points                                   (:points environment)
-        top                                      (:top points)
-        bottom                                   (:bottom points)
-        left                                     (:left points)
-        right                                    (:right points)
-        fess                                     (:fess points)
+        origin-point                             (point/calculate origin environment :fess)
+        top                                      (assoc (:top points) :x (:x origin-point))
+        bottom                                   (assoc (:bottom points) :x (:x origin-point))
+        left                                     (assoc (:left points) :y (:y origin-point))
+        right                                    (assoc (:right points) :y (:y origin-point))
         height                                   (:height environment)
         thickness                                (or (:thickness hints)
                                                      (thickness-default type))
@@ -673,17 +674,17 @@
                                                      (/ 100))
         diagonal-mode                            (or (:diagonal-mode hints)
                                                      (diagonal-default type))
-        direction                                (division/direction diagonal-mode points)
-        diagonal-bottom-left                     (v/project-x fess (v/dot direction (v/v -1 1)) (:x left))
-        diagonal-bottom-right                    (v/project-x fess (v/dot direction (v/v 1 1)) (:x right))
-        angle-bottom-left                        (division/angle-to-point fess diagonal-bottom-left)
-        angle-bottom-right                       (division/angle-to-point fess diagonal-bottom-right)
+        direction                                (division/direction diagonal-mode points origin-point)
+        diagonal-bottom-left                     (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-bottom-right                    (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
+        angle-bottom-left                        (division/angle-to-point origin-point diagonal-bottom-left)
+        angle-bottom-right                       (division/angle-to-point origin-point diagonal-bottom-right)
         angle                                    (-> angle-bottom-right (* Math/PI) (/ 180))
         dy                                       (/ band-width 2 (Math/cos angle))
         offset-top                               (v/v 0 (- dy))
         offset-bottom                            (v/v 0 dy)
-        corner-top                               (v/+ fess offset-top)
-        corner-bottom                            (v/+ fess offset-bottom)
+        corner-top                               (v/+ origin-point offset-top)
+        corner-bottom                            (v/+ origin-point offset-bottom)
         bottom-left-upper                        (v/+ diagonal-bottom-left offset-top)
         bottom-left-lower                        (v/+ diagonal-bottom-left offset-bottom)
         bottom-right-upper                       (v/+ diagonal-bottom-right offset-top)
@@ -752,16 +753,14 @@
 
 (def kinds
   [["Pale" :pale pale]
-   ["Fess" :fess fess]
+   ["Fess" :fess fess_]
    ["Chief" :chief chief]
    ["Base" :base base]
    ["Bend" :bend bend]
    ["Bend Sinister" :bend-sinister bend-sinister]
    ["Cross" :cross cross]
    ["Saltire" :saltire saltire]
-   ["Chevron" :chevron chevron]
-   ;; ["Pall" :pall pall]
-   ])
+   ["Chevron" :chevron chevron]])
 
 (def kinds-function-map
   (->> kinds
