@@ -161,6 +161,7 @@
             left                             (:left points)
             right                            (:right points)
             meta                             (get data 1)
+            size                             (:size hints)
             width                            (js/parseFloat (:width meta))
             height                           (js/parseFloat (:height meta))
             center-point                     (point/calculate position environment :fess)
@@ -168,8 +169,16 @@
                                                   (- (:x right) (:x center-point)))
             min-y-distance                   (min (- (:y center-point) (:y top))
                                                   (- (:y bottom) (:y center-point)))
-            target-width                     (* (* min-x-distance 2) 0.8)
-            target-height                    (* (* min-y-distance 2) 0.7)
+            target-width                     (if size
+                                               (-> size
+                                                   (* width)
+                                                   (/ 100))
+                                               (* (* min-x-distance 2) 0.8))
+            target-height                    (if size
+                                               (-> size
+                                                   (* height)
+                                                   (/ 100))
+                                               (* (* min-y-distance 2) 0.7))
             scale                            (min (/ target-width width)
                                                   (/ target-height height))
             position                         (-> (v/v width height)
