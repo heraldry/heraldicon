@@ -367,11 +367,20 @@
                                 :supported-tinctures
                                 set)
         sorted-supported-tinctures (filter supported-tinctures [:armed :langued :attired :unguled])
-        eyes-and-teeth-support (:eyes-and-teeth supported-tinctures)]
+        eyes-and-teeth-support (:eyes-and-teeth supported-tinctures)
+        title (s/join " " [(-> charge :type util/translate-cap-first)
+                           (-> charge :attitude util/translate)])]
     (if (and charge-map
              charge-variant-data)
-      [component path :charge (s/join " " [(-> charge :type util/translate-cap-first)
-                                           (-> charge :attitude util/translate)]) nil
+      [component path :charge title nil
+       [:div.setting
+        [:label "Charge:"] " "
+        [submenu path "Charge" title
+         [:div.tree
+          [tree-for-charge-map charge-map [] path charge
+           (get-in charge-map
+                   [:lookup (:type charge)])
+           :still-on-path? true]]]]
        [:div.settings
         [:div.placeholders
          {:style {:width "50%"
@@ -393,12 +402,10 @@
                                       (if % :argent nil)])])
          [checkbox (conj path :hints :outline?) "Draw outline"]]
         [:div.spacer]
+        [range-input (conj path :hints :size) "Size" 1 100
+         :display-function #(str % "%")
+         :default 50]
         [form-for-position (conj path :position)]]
-       [:div.tree
-        [tree-for-charge-map charge-map [] path charge
-         (get-in charge-map
-                 [:lookup (:type charge)])
-         :still-on-path? true]]
        [form-for-field (conj path :field) :parent-field parent-field]]
       [:<>])))
 
