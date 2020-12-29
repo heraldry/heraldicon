@@ -118,11 +118,11 @@ mask path.overlap {
   margin-bottom: 0.5em;
 }
 
-.component.selected .content {
+.component.selected > .content {
   background-color: #eef;
 }
 
-.component.selected .header {
+.component.selected > .header {
   background-color: #cce;
 }
 
