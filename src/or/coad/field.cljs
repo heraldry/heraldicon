@@ -15,10 +15,10 @@
                  :cursor "pointer"}}
      (cond
        tincture (let [fill (tincture/pick tincture options)]
-                  [:rect {:x -100
-                          :y -100
-                          :width 250
-                          :height 350
+                  [:rect {:x -500
+                          :y -500
+                          :width 1100
+                          :height 1100
                           :fill fill
                           :stroke fill}])
        division [division/render division environment render options :db-path (conj db-path :division)])

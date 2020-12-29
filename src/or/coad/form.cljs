@@ -6,6 +6,7 @@
             [or.coad.escutcheon :as escutcheon]
             [or.coad.line :as line]
             [or.coad.ordinary :as ordinary]
+            [or.coad.point :as point]
             [or.coad.tincture :as tincture]
             [or.coad.util :as util]
             [re-frame.core :as rf]))
@@ -178,6 +179,31 @@
        :display-function #(str % "%")]
       [range-input (conj path :offset) "Offset" -1 3 :step 0.01]]]))
 
+(defn form-for-position [path & {:keys [title] :or {title "Position"}}]
+  (let [point @(rf/subscribe [:get-in path])
+        point-path (conj path :point)
+        offset-x-path (conj path :offset-x)
+        offset-y-path (conj path :offset-y)]
+    [:div.setting
+     [:label (str title ":")]
+     " "
+     [submenu path "Point" (str (-> point
+                                    :point
+                                    (or :fess)
+                                    (util/translate-cap-first))
+                                " point" (when (or (-> point :offset-x (or 0) zero? not)
+                                                   (-> point :offset-y (or 0) zero? not))
+                                           " (adjusted)"))
+      [select point-path "Point" point/options
+       :on-change #(do
+                     (rf/dispatch [:set-in point-path %])
+                     (rf/dispatch [:set-in offset-x-path nil])
+                     (rf/dispatch [:set-in offset-y-path nil]))]
+      [range-input offset-x-path "Offset x" -50 50
+       :step 1 :displat-function #(str % "%") :default 0]
+      [range-input offset-y-path "Offset y" -50 50
+       :step 1 :displat-function #(str % "%") :default 0]]]))
+
 (defn form-for-tincture [path label]
   [:div.tincture
    [select path label (into [["None" :none]] tincture/options) :grouped? true]])
@@ -212,7 +238,10 @@
           [range-input (conj path :hints :thickness) "Thickness" min-value max-value
            :display-function #(str % "%")
            :default (ordinary/thickness-default ordinary-type)]))
-      [form-for-line (conj path :line)]]
+      [form-for-line (conj path :line)]
+      (when (not (get #{:chief :base} ordinary-type))
+        [form-for-position (conj path :origin)
+         :title "Origin"])]
      [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn tree-for-charge-map [{:keys [key type name groups charges attitudes variants]}
@@ -405,6 +434,9 @@
              (when (-> diagonal-options count (> 0))
                [select (conj path :division :hints :diagonal-mode) "Diagonal"
                 diagonal-options :default (division/diagonal-default division-type)])))
+         (when (not= division-type :none)
+           [form-for-position (conj path :division :origin)
+            :title "Origin"])
          (when (= division-type :none)
            [form-for-content (conj path :content)])])]
      (when (not counterchanged?)
