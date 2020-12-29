@@ -5,8 +5,9 @@
             [or.coad.tincture :as tincture]
             [re-frame.core :as rf]))
 
-(defn render [{:keys [division components ui] :as field} environment options & {:keys [db-path]}]
-  (let [tincture (get-in field [:content :tincture])]
+(defn render [{:keys [division components] :as field} environment options & {:keys [db-path]}]
+  (let [tincture (get-in field [:content :tincture])
+        selected? @(rf/subscribe [:component-selected? db-path])]
     [:g {:on-click (fn [event]
                      (rf/dispatch [:select-component db-path])
                      (.stopPropagation event))
@@ -21,7 +22,7 @@
                           :fill fill
                           :stroke fill}])
        division [division/render division environment render options :db-path (conj db-path :division)])
-     (when (-> ui :selected?)
+     (when selected?
        [:path {:d (:shape environment)
                :style {:opacity 0.25}
                :fill "url(#selected)"}])
