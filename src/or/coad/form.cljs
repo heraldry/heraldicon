@@ -119,7 +119,7 @@
         open? (and @(rf/subscribe [:get-in flag-path])
                    content?)
         show-selector? (and (not= path [:options])
-                            (= type :field))]
+                            (get #{:field :ref} type))]
     [:div.component
      {:class (util/combine " " [(when type (name type))
                                 (when selected? "selected")
