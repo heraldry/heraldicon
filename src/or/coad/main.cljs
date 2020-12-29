@@ -66,7 +66,22 @@
                                     (rf/dispatch [:set :loaded-data name parsed])))))
                            nil)))))
 
+(rf/reg-sub
+ :component-selected?
+ (fn [db [_ path]]
+   (or (get-in db (conj path :ui :selected?))
+       (when (get-in db (-> path
+                            (->> (drop-last 3))
+                            vec
+                            (conj :counterchanged?)))
+         (let [parent-field-path (-> path
+                                     (->> (drop-last 6))
+                                     vec
+                                     (conj :division :fields (last path)))]
+           (get-in db (conj parent-field-path :ui :selected?)))))))
+
 ;; events
+
 
 (rf/reg-event-db
  :initialize-db
@@ -216,8 +231,19 @@
    (-> db
        (remove-key-recursively :selected?)
        (cond->
-           path (assoc-in (conj path :ui :selected?) true)))))
-
+           path (as-> db
+                    (let [real-path (if (get-in
+                                         db
+                                         (-> path
+                                             (->> (drop-last 3))
+                                             vec
+                                             (conj :counterchanged?)))
+                                      (-> path
+                                          (->> (drop-last 6))
+                                          vec
+                                          (conj :division :fields (last path)))
+                                      path)]
+                      (assoc-in db (conj real-path :ui :selected?) true)))))))
 
 ;; views
 
