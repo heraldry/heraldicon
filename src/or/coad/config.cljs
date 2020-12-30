@@ -21,7 +21,7 @@
 (def default-ordinary
   {:component :ordinary
    :type      :pale
-   :line      {:style :straight}
+   :line      {:type :straight}
    :field     default-field})
 
 (def default-charge

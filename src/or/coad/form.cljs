@@ -169,15 +169,15 @@
               content)])]))
 
 (defn form-for-line [path & {:keys [title] :or {title "Line"}}]
-  (let [line        @(rf/subscribe [:get-in path])
-        style-names (->> line/choices
-                         (map (comp vec reverse))
-                         (into {}))]
+  (let [line       @(rf/subscribe [:get-in path])
+        type-names (->> line/choices
+                        (map (comp vec reverse))
+                        (into {}))]
     [:div.setting
      [:label (str title ":")]
      " "
-     [submenu path "Line" (get style-names (:style line))
-      [select (conj path :style) "Type" line/choices]
+     [submenu path "Line" (get type-names (:type line))
+      [select (conj path :type) "Type" line/choices]
       [range-input (conj path :eccentricity) "Eccentricity" 0.5 2 :step 0.01]
       [range-input (conj path :width) "Width" 2 100
        :display-function #(str % "%")]
