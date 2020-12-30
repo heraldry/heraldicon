@@ -6,11 +6,6 @@
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
-(defn straight [_ length _]
-  {:line   ["l" [length 0]]
-   :start  0
-   :length length})
-
 (defn line-with-offset [length offset pattern-width pattern]
   (let [offset-length (* offset pattern-width)
         repetitions   (-> length
@@ -29,20 +24,31 @@
      :length (-> (* repetitions pattern-width)
                  (+ (* offset-length 2)))}))
 
-(defn invected [{:keys [eccentricity width offset]
-                 :or   {eccentricity 1
-                        width        10
-                        offset       0}} length _]
+(defn straight
+  {:display-name "Straight"}
+  [_ length _]
+  {:line   ["l" [length 0]]
+   :start  0
+   :length length})
+
+(defn invected
+  {:display-name "Invected"}
+  [{:keys [eccentricity width offset]
+    :or   {eccentricity 1
+           width        10
+           offset       0}} length _]
   (let [radius-x (/ width 2)
         radius-y (* radius-x eccentricity)]
     (line-with-offset
      length offset width
      ["a" radius-x radius-y 0 0 1 [width 0]])))
 
-(defn engrailed [{:keys [eccentricity width offset]
-                  :or   {eccentricity 1
-                         width        10
-                         offset       0}} length _]
+(defn engrailed
+  {:display-name "Engrailed"}
+  [{:keys [eccentricity width offset]
+    :or   {eccentricity 1
+           width        10
+           offset       0}} length _]
   (let [radius-x (/ width 2)
         radius-y (* radius-x eccentricity)]
     (line-with-offset
@@ -50,10 +56,12 @@
      ["a" radius-x radius-y 0 0 0 [radius-x (- radius-y)]
       "a" radius-x radius-y 0 0 0 [radius-x radius-y]])))
 
-(defn embattled [{:keys [eccentricity width offset]
-                  :or   {eccentricity 1
-                         width        10
-                         offset       0}} length {:keys [reversed?]}]
+(defn embattled
+  {:display-name "Embattled"}
+  [{:keys [eccentricity width offset]
+    :or   {eccentricity 1
+           width        10
+           offset       0}} length {:keys [reversed?]}]
   (let [half-width (/ width 2)
         height     (* eccentricity half-width)]
     (line-with-offset
@@ -70,10 +78,12 @@
         [0 height]
         [half-width 0]]))))
 
-(defn indented [{:keys [eccentricity width offset]
-                 :or   {eccentricity 1
-                        width        10
-                        offset       0}} length _]
+(defn indented
+  {:display-name "Indented"}
+  [{:keys [eccentricity width offset]
+    :or   {eccentricity 1
+           width        10
+           offset       0}} length _]
   (let [half-width (/ width 2)
         height     (* eccentricity half-width)]
     (line-with-offset
@@ -82,10 +92,12 @@
       [half-width (- height)]
       [half-width height]])))
 
-(defn dancetty [{:keys [eccentricity width offset]
-                 :or   {eccentricity 1
-                        width        20
-                        offset       0}} length {:keys [reversed?]}]
+(defn dancetty
+  {:display-name "Dancetty"}
+  [{:keys [eccentricity width offset]
+    :or   {eccentricity 1
+           width        20
+           offset       0}} length {:keys [reversed?]}]
   (let [half-width    (/ width 2)
         quarter-width (/ width 4)
         half-height   (* quarter-width eccentricity)
@@ -102,10 +114,12 @@
         [half-width height]
         [quarter-width (- half-height)]]))))
 
-(defn wavy [{:keys [eccentricity width offset]
-             :or   {eccentricity 1
-                    width        20
-                    offset       0}} length  {:keys [reversed?]}]
+(defn wavy
+  {:display-name "Wavy / undy"}
+  [{:keys [eccentricity width offset]
+    :or   {eccentricity 1
+           width        20
+           offset       0}} length  {:keys [reversed?]}]
   (let [half-width (/ width 2)
         height     (* width eccentricity)]
     (line-with-offset
@@ -113,10 +127,12 @@
      ["a" half-width height 0 0 (if reversed? 0 1) [half-width 0]
       "a" half-width height 0 0 (if reversed? 1 0) [half-width 0]])))
 
-(defn dovetailed [{:keys [eccentricity width offset]
-                   :or   {eccentricity 1
-                          width        10
-                          offset       0}} length {:keys [reversed?]}]
+(defn dovetailed
+  {:display-name "Dovetailed"}
+  [{:keys [eccentricity width offset]
+    :or   {eccentricity 1
+           width        10
+           offset       0}} length {:keys [reversed?]}]
   (let [half-width  (/ width 2)
         third-width (/ width 3)
         sixth-width (/ width 6)
@@ -137,10 +153,12 @@
         [(- sixth-width) height]
         [(* third-width 2) 0]]))))
 
-(defn raguly [{:keys [eccentricity width offset]
-               :or   {eccentricity 1
-                      width        10
-                      offset       0}} length  {:keys [reversed?]}]
+(defn raguly
+  {:display-name "Raguly"}
+  [{:keys [eccentricity width offset]
+    :or   {eccentricity 1
+           width        10
+           offset       0}} length  {:keys [reversed?]}]
   (let [half-width    (/ width 2)
         quarter-width (/ width 4)
         height        (* half-width eccentricity)]
@@ -160,10 +178,12 @@
         [quarter-width height]
         [quarter-width 0]]))))
 
-(defn urdy [{:keys [eccentricity width offset]
-             :or   {eccentricity 1
-                    width        10
-                    offset       0}} length  {:keys [reversed?]}]
+(defn urdy
+  {:display-name "Urdy"}
+  [{:keys [eccentricity width offset]
+    :or   {eccentricity 1
+           width        10
+           offset       0}} length  {:keys [reversed?]}]
   (let [quarter-width (/ width 4)
         height        (* quarter-width eccentricity)
         half-height   (/ height 2)]
@@ -187,28 +207,28 @@
         [quarter-width (- height)]
         [0 (- half-height)]]))))
 
-(def kinds
-  [["Straight" :straight straight]
-   ["Invected" :invected invected]
-   ["Engrailed" :engrailed engrailed]
-   ["Embattled" :embattled embattled]
-   ["Indented" :indented indented]
-   ["Dancetty" :dancetty dancetty]
-   ["Wavy/undy" :wavy wavy]
-   ["Dovetailed" :dovetailed dovetailed]
-   ["Raguly" :raguly raguly]
-   ["Urdy" :urdy urdy]])
+(def lines
+  [#'straight
+   #'invected
+   #'engrailed
+   #'embattled
+   #'indented
+   #'dancetty
+   #'wavy
+   #'dovetailed
+   #'raguly
+   #'urdy])
 
 (def kinds-function-map
-  (->> kinds
-       (map (fn [[_ key function]]
-              [key function]))
+  (->> lines
+       (map (fn [function]
+              [(-> function meta :name keyword) function]))
        (into {})))
 
 (def options
-  (->> kinds
-       (map (fn [[name key _]]
-              [name key]))))
+  (->> lines
+       (map (fn [function]
+              [(-> function meta :display-name) (-> function meta :name keyword)]))))
 
 (defn jiggle [[previous
                {:keys [x y] :as current}
