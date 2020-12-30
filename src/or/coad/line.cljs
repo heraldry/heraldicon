@@ -2,6 +2,7 @@
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
             [or.coad.catmullrom :as catmullrom]
+            [or.coad.random :as random]
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
@@ -216,14 +217,15 @@
                  (v/- previous)
                  (v/abs))
         jiggle-radius (/ dist 4)
-        dx (- (* (rand) jiggle-radius)
+        dx (- (* (random/float) jiggle-radius)
               jiggle-radius)
-        dy (- (* (rand) jiggle-radius)
+        dy (- (* (random/float) jiggle-radius)
               jiggle-radius)]
     {:x (+ x dx)
      :y (+ y dy)}))
 
 (defn squiggly-path [path]
+  (random/seed path)
   (let [points (-> path
                    svg/new-path
                    (svg/points 100))
