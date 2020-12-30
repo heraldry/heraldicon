@@ -3,7 +3,7 @@
             [or.coad.division :as division]
             [or.coad.infinity :as infinity]
             [or.coad.line :as line]
-            [or.coad.point :as point]
+            [or.coad.position :as position]
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
@@ -54,7 +54,7 @@
   {:display-name "Pale"}
   [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
-        origin-point (point/calculate origin environment :fess)
+        origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
         bottom (assoc (:bottom points) :x (:x origin-point))
         width (:width environment)
@@ -113,7 +113,7 @@
   {:display-name "Fess"}
   [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
-        origin-point (point/calculate origin environment :fess)
+        origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
         right (assoc (:right points) :y (:y origin-point))
         height (:height environment)
@@ -253,7 +253,7 @@
   {:display-name "Bend"}
   [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
-        origin-point (point/calculate origin environment :fess)
+        origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
         right (assoc (:right points) :y (:y origin-point))
         height (:height environment)
@@ -319,7 +319,7 @@
   {:display-name "Bend sinister"}
   [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
-        origin-point (point/calculate origin environment :fess)
+        origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
         right (assoc (:right points) :y (:y origin-point))
         height (:height environment)
@@ -385,7 +385,7 @@
   {:display-name "Cross"}
   [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
-        origin-point (point/calculate origin environment :fess)
+        origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
         bottom (assoc (:bottom points) :x (:x origin-point))
         left (assoc (:left points) :y (:y origin-point))
@@ -524,7 +524,7 @@
   {:display-name "Saltire"}
   [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
-        origin-point (point/calculate origin environment :fess)
+        origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
         bottom (assoc (:bottom points) :x (:x origin-point))
         left (assoc (:left points) :y (:y origin-point))
@@ -679,7 +679,7 @@
   {:display-name "Chevron"}
   [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
-        origin-point (point/calculate origin environment :fess)
+        origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
         bottom (assoc (:bottom points) :x (:x origin-point))
         left (assoc (:left points) :y (:y origin-point))

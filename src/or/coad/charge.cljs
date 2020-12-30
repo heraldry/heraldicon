@@ -5,7 +5,7 @@
             [or.coad.division :as division]
             [or.coad.field-environment :as field-environment]
             [or.coad.line :as line]
-            [or.coad.point :as point]
+            [or.coad.position :as position]
             [or.coad.svg :as svg]
             [or.coad.tincture :as tincture]
             [or.coad.vector :as v]
@@ -164,7 +164,7 @@
             size (:size hints)
             width (js/parseFloat (:width meta))
             height (js/parseFloat (:height meta))
-            center-point (point/calculate position environment :fess)
+            center-point (position/calculate position environment :fess)
             min-x-distance (min (- (:x center-point) (:x left))
                                 (- (:x right) (:x center-point)))
             min-y-distance (min (- (:y center-point) (:y top))

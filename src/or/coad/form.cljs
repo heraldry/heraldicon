@@ -6,7 +6,7 @@
             [or.coad.escutcheon :as escutcheon]
             [or.coad.line :as line]
             [or.coad.ordinary :as ordinary]
-            [or.coad.point :as point]
+            [or.coad.position :as position]
             [or.coad.tincture :as tincture]
             [or.coad.util :as util]
             [re-frame.core :as rf]))
@@ -198,7 +198,7 @@
                                 " point" (when (or (-> point :offset-x (or 0) zero? not)
                                                    (-> point :offset-y (or 0) zero? not))
                                            " (adjusted)"))
-      [select point-path "Point" point/choices
+      [select point-path "Point" position/choices
        :on-change #(do
                      (rf/dispatch [:set-in point-path %])
                      (rf/dispatch [:set-in offset-x-path nil])
