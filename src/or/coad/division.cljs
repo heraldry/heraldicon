@@ -1162,7 +1162,7 @@
   ;; ordinaries and charges as well, but for now this check suffices
   (-> type mandatory-part-count (= 2)))
 
-(defn diagonal-options [type]
+(defn diagonal-mode-choices [type]
   (let [options {:forty-five-degrees "45°"
                  :top-left-fess      "Top-left to origin"
                  :top-right-fess     "Top-right to origin"
