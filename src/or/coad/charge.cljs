@@ -149,7 +149,7 @@
        (division/counterchangable? (-> parent :division :type))))
 
 (defn render [{:keys [type field tincture position hints] :as charge} parent
-              environment top-level-render options & {:keys [db-path]}]
+              environment top-level-render render-options & {:keys [db-path]}]
   (if-let [charge-data-path (-> charge
                                 get-charge-variant-data
                                 :path)]
@@ -190,15 +190,15 @@
                                                  fix-string-style-values
                                                  (cond->
                                                      (not (or (:outline? hints)
-                                                              (:outline? options))) remove-outlines
-                                                     (and (:squiggly? options)
+                                                              (:outline? render-options))) remove-outlines
+                                                     (and (:squiggly? render-options)
                                                           (get #{:roundel
                                                                  :fusil
                                                                  :billet} type)) squiggly-paths)
                                                  (assoc 0 :g))
             provided-placeholder-colours     (-> {}
                                                  (into (map (fn [[key value]]
-                                                              [key (tincture/pick value options)])
+                                                              [key (tincture/pick value render-options)])
                                                             (into {}
                                                                   (filter (fn [[_ v]]
                                                                             (not= v :none)) tincture))))
@@ -244,7 +244,7 @@
           [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
                :mask      (str "url(#" mask-inverted-id ")")}
            [:g {:transform (str "scale(" (/ 1 scale) "," (/ 1 scale) ") translate(" (- (:x position)) "," (- (:y position)) ")")}
-            [top-level-render field charge-environment options :db-path (conj db-path :field)]]]
+            [top-level-render field charge-environment render-options :db-path (conj db-path :field)]]]
           [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
                :mask      (str "url(#" mask-id ")")}
            coloured-charge]]])
