@@ -123,7 +123,7 @@
         content? (seq content)
         open? (and @(rf/subscribe [:get-in flag-path])
                    content?)
-        show-selector? (and (not= path [:options])
+        show-selector? (and (not= path [:render-options])
                             (get #{:field :ref} type))]
     [:div.component
      {:class (util/combine " " [(when type (name type))
@@ -528,21 +528,21 @@
                [:a {:on-click #(rf/dispatch [:remove-component component-path])}
                 [:i.far.fa-trash-alt]]]])))]]]))
 
-(defn form-options []
-  [component [:options] :options "Options" nil
+(defn form-render-options []
+  [component [:render-options] :render-options "Options" nil
    [select [:coat-of-arms :escutcheon] "Escutcheon" escutcheon/choices]
-   (let [path [:options :mode]]
+   (let [path [:render-options :mode]]
      [radio-select path [["Colours" :colours]
                          ["Hatching" :hatching]]
       :default :colours
       :on-change #(let [new-mode %]
-                    (rf/dispatch [:set-in [:options :mode] new-mode])
+                    (rf/dispatch [:set-in [:render-options :mode] new-mode])
                     (case new-mode
-                      :hatching (rf/dispatch [:set :options :outline? true])
-                      :colours (rf/dispatch [:set :options :outline? false])))])
+                      :hatching (rf/dispatch [:set :render-options :outline? true])
+                      :colours (rf/dispatch [:set :render-options :outline? false])))])
 
-   [checkbox [:options :outline?] "Draw outline"]
-   [checkbox [:options :squiggly?] "Squiggly lines (experimental)"]
+   [checkbox [:render-options :outline?] "Draw outline"]
+   [checkbox [:render-options :squiggly?] "Squiggly lines (experimental)"]
    [:div.setting
     [:button {:on-click #(rf/dispatch-sync [:set :coat-of-arms config/default-coat-of-arms])}
      "Clear shield"]]])

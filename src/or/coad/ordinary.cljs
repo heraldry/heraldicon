@@ -52,7 +52,7 @@
 
 (defn pale
   {:display-name "Pale"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -73,14 +73,14 @@
                                       (:y (v/- bottom top))
                                       :flipped? true
                                       :angle 90
-                                      :options options)
+                                      :render-options render-options)
         {line-reversed :line
          line-reversed-length :length} (line/create line
                                                     (:y (v/- bottom top))
                                                     :angle -90
                                                     :flipped? true
                                                     :reversed? true
-                                                    :options options)
+                                                    :render-options render-options)
         second-bottom-adjusted (v/extend second-top second-bottom line-reversed-length)
         parts [[["M" first-top
                  (line/stitch line-one)
@@ -99,7 +99,7 @@
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" first-top
@@ -107,11 +107,11 @@
         [:path {:d (svg/make-path
                     ["M" second-bottom-adjusted
                      (line/stitch line-reversed)])}]])
-     environment ordinary top-level-render options :db-path db-path]))
+     environment ordinary top-level-render render-options :db-path db-path]))
 
 (defn fess
   {:display-name "Fess"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -130,13 +130,13 @@
         second-right (v/v (:x right) row2)
         {line-one :line} (line/create line
                                       (:x (v/- right left))
-                                      :options options)
+                                      :render-options render-options)
         {line-reversed :line
          line-reversed-length :length} (line/create line
                                                     (:x (v/- right left))
                                                     :reversed? true
                                                     :angle 180
-                                                    :options options)
+                                                    :render-options render-options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
         parts [[["M" first-left
                  (line/stitch line-one)
@@ -155,7 +155,7 @@
     [division/make-division
      :ordinary-fess [field] parts
      [:all]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" first-left
@@ -163,11 +163,11 @@
         [:path {:d (svg/make-path
                     ["M" second-right-adjusted
                      (line/stitch line-reversed)])}]])
-     environment ordinary top-level-render options :db-path db-path]))
+     environment ordinary top-level-render render-options :db-path db-path]))
 
 (defn chief
   {:display-name "Chief"}
-  [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type field line hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         top (:top points)
         top-left (:top-left points)
@@ -187,7 +187,7 @@
                                                     (:x (v/- right left))
                                                     :reversed? true
                                                     :angle 180
-                                                    :options options)
+                                                    :render-options render-options)
         row-right-adjusted (v/extend row-left row-right line-reversed-length)
         parts [[["M" row-right-adjusted
                  (line/stitch line-reversed)
@@ -202,16 +202,16 @@
     [division/make-division
      :ordinary-chief [field] parts
      [:all]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" row-right-adjusted
                      (line/stitch line-reversed)])}]])
-     environment ordinary top-level-render options :db-path db-path]))
+     environment ordinary top-level-render render-options :db-path db-path]))
 
 (defn base
   {:display-name "Base"}
-  [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type field line hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         bottom (:bottom points)
         bottom-right (:bottom-right points)
@@ -228,7 +228,7 @@
         row-right (v/v (:x right) row)
         {line-one :line} (line/create line
                                       (:x (v/- right left))
-                                      :options options)
+                                      :render-options render-options)
         parts [[["M" row-left
                  (line/stitch line-one)
                  (infinity/path :clockwise
@@ -242,16 +242,16 @@
     [division/make-division
      :ordinary-base [field] parts
      [:all]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" row-left
                      (line/stitch line-one)])}]])
-     environment ordinary top-level-render options :db-path db-path]))
+     environment ordinary top-level-render render-options :db-path db-path]))
 
 (defn bend
   {:display-name "Bend"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -278,13 +278,13 @@
         second-right (v/v line-length row2)
         {line-one :line} (line/create line
                                       line-length
-                                      :options options)
+                                      :render-options render-options)
         {line-reversed :line
          line-reversed-length :length} (line/create line
                                                     line-length
                                                     :reversed? true
                                                     :angle 180
-                                                    :options options)
+                                                    :render-options render-options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
         parts [[["M" first-left
                  (line/stitch line-one)
@@ -305,7 +305,7 @@
      [division/make-division
       :ordinary-fess [field] parts
       [:all]
-      (when (:outline? options)
+      (when (:outline? render-options)
         [:g.outline
          [:path {:d (svg/make-path
                      ["M" first-left
@@ -313,11 +313,11 @@
          [:path {:d (svg/make-path
                      ["M" second-right-adjusted
                       (line/stitch line-reversed)])}]])
-      environment ordinary top-level-render options :db-path db-path]]))
+      environment ordinary top-level-render render-options :db-path db-path]]))
 
 (defn bend-sinister
   {:display-name "Bend sinister"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -344,13 +344,13 @@
         second-right (v/v line-length row2)
         {line-one :line} (line/create line
                                       line-length
-                                      :options options)
+                                      :render-options render-options)
         {line-reversed :line
          line-reversed-length :length} (line/create line
                                                     line-length
                                                     :reversed? true
                                                     :angle 180
-                                                    :options options)
+                                                    :render-options render-options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
         parts [[["M" first-left
                  (line/stitch line-one)
@@ -371,7 +371,7 @@
      [division/make-division
       :ordinary-fess [field] parts
       [:all]
-      (when (:outline? options)
+      (when (:outline? render-options)
         [:g.outline
          [:path {:d (svg/make-path
                      ["M" first-left
@@ -379,11 +379,11 @@
          [:path {:d (svg/make-path
                      ["M" second-right-adjusted
                       (line/stitch line-reversed)])}]])
-      environment ordinary top-level-render options :db-path db-path]]))
+      environment ordinary top-level-render render-options :db-path db-path]]))
 
 (defn cross
   {:display-name "Cross"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -418,40 +418,40 @@
                                                 (v/abs (v/- corner-top-left pale-top-left))
                                                 :angle -90
                                                 :reversed? true
-                                                :options options)
+                                                :render-options render-options)
         {line-pale-top-right :line
          line-pale-top-right-length :length} (line/create line
                                                           (v/abs (v/- corner-top-right pale-top-right))
                                                           :angle 90
-                                                          :options options)
+                                                          :render-options render-options)
         {line-fess-top-right :line} (line/create line
                                                  (v/abs (v/- corner-top-right fess-top-right))
                                                  :reversed? true
-                                                 :options options)
+                                                 :render-options render-options)
         {line-fess-bottom-right :line
          line-fess-bottom-right-length :length} (line/create line
                                                              (v/abs (v/- corner-bottom-right fess-bottom-right))
                                                              :angle 180
-                                                             :options options)
+                                                             :render-options render-options)
         {line-pale-bottom-right :line} (line/create line
                                                     (v/abs (v/- corner-bottom-right pale-bottom-right))
                                                     :angle 90
                                                     :reversed? true
-                                                    :options options)
+                                                    :render-options render-options)
         {line-pale-bottom-left :line
          line-pale-bottom-left-length :length} (line/create line
                                                             (v/abs (v/- corner-bottom-left pale-bottom-left))
                                                             :angle -90
-                                                            :options options)
+                                                            :render-options render-options)
         {line-fess-bottom-left :line} (line/create line
                                                    (v/abs (v/- corner-bottom-left fess-bottom-left))
                                                    :angle 180
                                                    :reversed? true
-                                                   :options options)
+                                                   :render-options render-options)
         {line-fess-top-left :line
          line-fess-top-left-length :length} (line/create line
                                                          (v/abs (v/- corner-top-left fess-top-left))
-                                                         :options options)
+                                                         :render-options render-options)
         pale-top-right-adjusted (v/extend corner-top-right pale-top-right
                                           line-pale-top-right-length)
         fess-bottom-right-adjusted (v/extend corner-bottom-right fess-bottom-right
@@ -492,7 +492,7 @@
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" corner-top-left
@@ -518,11 +518,11 @@
         [:path {:d (svg/make-path
                     ["M" fess-top-left-adjusted
                      (line/stitch line-fess-top-left)])}]])
-     environment ordinary top-level-render options :db-path db-path]))
+     environment ordinary top-level-render render-options :db-path db-path]))
 
 (defn saltire
   {:display-name "Saltire"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -571,42 +571,42 @@
                                                  (Math/abs (:y (v/- corner-left top-left-lower)))
                                                  :angle angle-top-left
                                                  :reversed? true
-                                                 :options options)
+                                                 :render-options render-options)
         {line-top-left-upper :line
          line-top-left-upper-length :length} (line/create line
                                                           (v/abs (v/- corner-top top-left-upper))
                                                           :angle (- angle-top-left 180)
-                                                          :options options)
+                                                          :render-options render-options)
         {line-top-right-upper :line} (line/create line
                                                   (v/abs (v/- corner-top top-right-upper))
                                                   :reversed? true
                                                   :angle angle-top-right
-                                                  :options options)
+                                                  :render-options render-options)
         {line-top-right-lower :line
          line-top-right-lower-length :length} (line/create line
                                                            (v/abs (v/- corner-right top-right-lower))
                                                            :angle (- angle-top-right 180)
-                                                           :options options)
+                                                           :render-options render-options)
         {line-bottom-right-upper :line} (line/create line
                                                      (v/abs (v/- corner-right bottom-right-upper))
                                                      :angle angle-bottom-right
                                                      :reversed? true
-                                                     :options options)
+                                                     :render-options render-options)
         {line-bottom-right-lower :line
          line-bottom-right-lower-length :length} (line/create line
                                                               (v/abs (v/- corner-bottom bottom-right-lower))
                                                               :angle (- angle-bottom-right 180)
-                                                              :options options)
+                                                              :render-options render-options)
         {line-bottom-left-lower :line} (line/create line
                                                     (v/abs (v/- corner-bottom bottom-left-lower))
                                                     :angle angle-bottom-left
                                                     :reversed? true
-                                                    :options options)
+                                                    :render-options render-options)
         {line-bottom-left-upper :line
          line-bottom-left-upper-length :length} (line/create line
                                                              (v/abs (v/- corner-left bottom-left-upper))
                                                              :angle (- angle-bottom-left 180)
-                                                             :options options)
+                                                             :render-options render-options)
         top-left-upper-adjusted (v/extend corner-top top-left-upper
                                           line-top-left-upper-length)
         top-right-lower-adjusted (v/extend corner-right top-right-lower
@@ -647,7 +647,7 @@
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" corner-left
@@ -673,11 +673,11 @@
         [:path {:d (svg/make-path
                     ["M" bottom-left-upper-adjusted
                      (line/stitch line-bottom-left-upper)])}]])
-     environment ordinary top-level-render options :db-path db-path]))
+     environment ordinary top-level-render render-options :db-path db-path]))
 
 (defn chevron
   {:display-name "Chevron"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -712,23 +712,23 @@
         {line-bottom-right-upper :line} (line/create line
                                                      (v/abs (v/- corner-top bottom-right-upper))
                                                      :angle angle-bottom-right
-                                                     :options options)
+                                                     :render-options render-options)
         {line-bottom-right-lower :line
          line-bottom-right-lower-length :length} (line/create line
                                                               (v/abs (v/- corner-bottom bottom-right-lower))
                                                               :angle (- angle-bottom-right 180)
                                                               :reversed? true
-                                                              :options options)
+                                                              :render-options render-options)
         {line-bottom-left-lower :line} (line/create line
                                                     (v/abs (v/- corner-bottom bottom-left-lower))
                                                     :angle angle-bottom-left
-                                                    :options options)
+                                                    :render-options render-options)
         {line-bottom-left-upper :line
          line-bottom-left-upper-length :length} (line/create line
                                                              (v/abs (v/- corner-top bottom-left-upper))
                                                              :angle (- angle-bottom-left 180)
                                                              :reversed? true
-                                                             :options options)
+                                                             :render-options render-options)
         bottom-right-lower-adjusted (v/extend corner-bottom bottom-right-lower
                                               line-bottom-right-lower-length)
         bottom-left-upper-adjusted (v/extend corner-top bottom-left-upper
@@ -753,7 +753,7 @@
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" corner-top
@@ -767,7 +767,7 @@
         [:path {:d (svg/make-path
                     ["M" bottom-left-upper-adjusted
                      (line/stitch line-bottom-left-upper)])}]])
-     environment ordinary top-level-render options :db-path db-path]))
+     environment ordinary top-level-render render-options :db-path db-path]))
 
 (def ordinaries
   [#'pale
@@ -791,6 +791,6 @@
        (map (fn [function]
               [(-> function meta :display-name) (-> function meta :name keyword)]))))
 
-(defn render [{:keys [type] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn render [{:keys [type] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [function (get kinds-function-map type)]
-    [function ordinary parent environment top-level-render options :db-path db-path]))
+    [function ordinary parent environment top-level-render render-options :db-path db-path]))

@@ -86,10 +86,10 @@
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:options {:mode :colours
-                     :outline? false
-                     :squiggly? false
-                     :ui {:open? true}}
+   (merge {:render-options {:mode :colours
+                            :outline? false
+                            :squiggly? false
+                            :ui {:open? true}}
            :coat-of-arms config/default-coat-of-arms} db)))
 
 (rf/reg-event-db
@@ -308,7 +308,7 @@
                   :cy spacing
                   :r size}]]])]))
 
-(defn render-shield [coat-of-arms options & {:keys [db-path]}]
+(defn render-shield [coat-of-arms render-options & {:keys [db-path]}]
   (let [shield (escutcheon/field (:escutcheon coat-of-arms))
         environment (field-environment/transform-to-width shield 100)
         field (:field coat-of-arms)]
@@ -322,14 +322,14 @@
       [:g {:clip-path "url(#mask-shield)"}
        [:path {:d (:shape environment)
                :fill "#f0f0f0"}]
-       [field/render field environment options :db-path (conj db-path :field)]]
-      (when (:outline? options)
+       [field/render field environment render-options :db-path (conj db-path :field)]]
+      (when (:outline? render-options)
         [:path.outline {:d (:shape environment)}])]]))
 
 (defn forms []
   [:<>
    [:div {:style {:display "inline-block"}}
-    [form/form-options]]
+    [form/form-render-options]]
    [:br]
    [:div {:style {:display "inline-block"
                   :padding-bottom "20px"}}
@@ -339,8 +339,8 @@
 (defn app []
   (fn []
     (let [coat-of-arms @(rf/subscribe [:get :coat-of-arms])
-          mode @(rf/subscribe [:get :options :mode])
-          options @(rf/subscribe [:get :options])
+          mode @(rf/subscribe [:get :render-options :mode])
+          render-options @(rf/subscribe [:get :render-options])
           stripped-coat-of-arms (remove-key-recursively coat-of-arms :ui)
           state-base64 (.encode base64 (prn-str stripped-coat-of-arms))]
       (when coat-of-arms
@@ -362,7 +362,7 @@
          (when (= mode :hatching)
            [:defs
             hatching/patterns])
-         [render-shield coat-of-arms options :db-path [:coat-of-arms]]]
+         [render-shield coat-of-arms render-options :db-path [:coat-of-arms]]]
         [:div.blazonry {:style {:position "absolute"
                                 :left 10
                                 :top "34em"
