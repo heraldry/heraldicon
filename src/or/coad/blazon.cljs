@@ -49,8 +49,7 @@
                                                                                                         (> 3))
                                                                                                 (division/part-name type index))
                                                                                               (encode-field part)])))
-                                                               (sort-by #(division/part-position type (first %))
-                                                                        (map-indexed vector fields))))])))
+                                                               (map-indexed vector fields)))])))
           components-description (util/combine ", " (map encode-component components))
           blazon                 (util/upper-case-first
                                   (util/combine ", " [field-description
