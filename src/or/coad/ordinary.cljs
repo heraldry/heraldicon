@@ -50,7 +50,9 @@
             :chevron :forty-five-degrees} type)
       :top-left-fess))
 
-(defn pale [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn pale
+  {:display-name "Pale"}
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (point/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -107,7 +109,9 @@
                      (line/stitch line-reversed)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn fess_ [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn fess
+  {:display-name "Fess"}
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (point/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -161,7 +165,9 @@
                      (line/stitch line-reversed)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn chief [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn chief
+  {:display-name "Chief"}
+  [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
         top (:top points)
         top-left (:top-left points)
@@ -203,7 +209,9 @@
                      (line/stitch line-reversed)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn base [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn base
+  {:display-name "Base"}
+  [{:keys [type field line hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
         bottom (:bottom points)
         bottom-right (:bottom-right points)
@@ -241,7 +249,9 @@
                      (line/stitch line-one)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn bend [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn bend
+  {:display-name "Bend"}
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (point/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -305,7 +315,9 @@
                       (line/stitch line-reversed)])}]])
       environment ordinary top-level-render options :db-path db-path]]))
 
-(defn bend-sinister [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn bend-sinister
+  {:display-name "Bend sinister"}
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (point/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -369,7 +381,9 @@
                       (line/stitch line-reversed)])}]])
       environment ordinary top-level-render options :db-path db-path]]))
 
-(defn cross [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn cross
+  {:display-name "Cross"}
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (point/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -506,7 +520,9 @@
                      (line/stitch line-fess-top-left)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn saltire [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn saltire
+  {:display-name "Saltire"}
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (point/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -659,7 +675,9 @@
                      (line/stitch line-bottom-left-upper)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(defn chevron [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
+(defn chevron
+  {:display-name "Chevron"}
+  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (point/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -751,27 +769,27 @@
                      (line/stitch line-bottom-left-upper)])}]])
      environment ordinary top-level-render options :db-path db-path]))
 
-(def kinds
-  [["Pale" :pale pale]
-   ["Fess" :fess fess_]
-   ["Chief" :chief chief]
-   ["Base" :base base]
-   ["Bend" :bend bend]
-   ["Bend Sinister" :bend-sinister bend-sinister]
-   ["Cross" :cross cross]
-   ["Saltire" :saltire saltire]
-   ["Chevron" :chevron chevron]])
+(def ordinaries
+  [#'pale
+   #'fess
+   #'chief
+   #'base
+   #'bend
+   #'bend-sinister
+   #'cross
+   #'saltire
+   #'chevron])
 
 (def kinds-function-map
-  (->> kinds
-       (map (fn [[_ key function]]
-              [key function]))
+  (->> ordinaries
+       (map (fn [function]
+              [(-> function meta :name keyword) function]))
        (into {})))
 
 (def options
-  (->> kinds
-       (map (fn [[name key _]]
-              [name key]))))
+  (->> ordinaries
+       (map (fn [function]
+              [(-> function meta :display-name) (-> function meta :name keyword)]))))
 
 (defn render [{:keys [type] :as ordinary} parent environment top-level-render options & {:keys [db-path]}]
   (let [function (get kinds-function-map type)]
