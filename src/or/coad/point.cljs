@@ -1,7 +1,7 @@
 (ns or.coad.point
   (:require [or.coad.vector :as v]))
 
-(def options
+(def choices
   [["Fess" :fess]
    ["Chief" :chief]
    ["Base" :base]

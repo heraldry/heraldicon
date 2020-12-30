@@ -82,7 +82,7 @@
    :erminois erminois
    :pean     pean})
 
-(def options
+(def choices
   [["Metal"
     ["Argent" :argent]
     ["Or" :or]]

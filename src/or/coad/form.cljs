@@ -170,14 +170,14 @@
 
 (defn form-for-line [path & {:keys [title] :or {title "Line"}}]
   (let [line        @(rf/subscribe [:get-in path])
-        style-names (->> line/options
+        style-names (->> line/choices
                          (map (comp vec reverse))
                          (into {}))]
     [:div.setting
      [:label (str title ":")]
      " "
      [submenu path "Line" (get style-names (:style line))
-      [select (conj path :style) "Type" line/options]
+      [select (conj path :style) "Type" line/choices]
       [range-input (conj path :eccentricity) "Eccentricity" 0.5 2 :step 0.01]
       [range-input (conj path :width) "Width" 2 100
        :display-function #(str % "%")]
@@ -198,7 +198,7 @@
                                 " point" (when (or (-> point :offset-x (or 0) zero? not)
                                                    (-> point :offset-y (or 0) zero? not))
                                            " (adjusted)"))
-      [select point-path "Point" point/options
+      [select point-path "Point" point/choices
        :on-change #(do
                      (rf/dispatch [:set-in point-path %])
                      (rf/dispatch [:set-in offset-x-path nil])
@@ -210,7 +210,7 @@
 
 (defn form-for-tincture [path label]
   [:div.tincture
-   [select path label (into [["None" :none]] tincture/options) :grouped? true]])
+   [select path label (into [["None" :none]] tincture/choices) :grouped? true]])
 
 (defn form-for-content [path]
   [:div.form-content
@@ -231,7 +231,7 @@
     [component
      path :ordinary (-> ordinary :type util/translate-cap-first) nil
      [:div.settings
-      [select (conj path :type) "Type" ordinary/options
+      [select (conj path :type) "Type" ordinary/choices
        :on-change #(rf/dispatch [:set-ordinary-type path %])]
       (let [diagonal-options (ordinary/diagonal-options ordinary-type)]
         (when (-> diagonal-options count (> 0))
@@ -450,7 +450,7 @@
           [:label "Division:"] " "
           [submenu (conj path :division) "Division" (-> division-type util/translate-cap-first)
            [select path "Type"
-            (into [["None" :none]] division/options)
+            (into [["None" :none]] division/choices)
             :value division-type
             :on-change #(rf/dispatch [:set-division-type path %])]]]
          (when (not= division-type :none)
@@ -530,7 +530,7 @@
 
 (defn form-options []
   [component [:options] :options "Options" nil
-   [select [:coat-of-arms :escutcheon] "Escutcheon" escutcheon/options]
+   [select [:coat-of-arms :escutcheon] "Escutcheon" escutcheon/choices]
    (let [path [:options :mode]]
      [radio-select path [["Colours" :colours]
                          ["Hatching" :hatching]]

@@ -167,7 +167,7 @@
               [key data]))
        (into {})))
 
-(def options
+(def choices
   (->> kinds
        (map (fn [[name key _]]
               [name key]))))
