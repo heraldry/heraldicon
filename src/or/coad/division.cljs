@@ -39,7 +39,7 @@
   (keyword (str "division-" (name key))))
 
 (defn make-division [type fields parts mask-overlaps outline parent-environment parent
-                     top-level-render options & {:keys [db-path]}]
+                     top-level-render render-options & {:keys [db-path]}]
   (let [mask-ids (->> (range (count fields))
                       (map #(svg/id (str (name type) "-" %))))
         environments (->> parts
@@ -74,7 +74,7 @@
         [top-level-render
          (get-field fields idx)
          (get environments idx)
-         options
+         render-options
          :db-path (if (-> type name (s/starts-with? "ordinary-")) ;; FIXME: bit of a hack
                     (conj db-path :field)
                     (conj db-path :fields idx))]])
@@ -83,7 +83,7 @@
 (defn per-pale
   {:display-name "Per pale"
    :parts ["dexter" "sinister"]}
-  [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type fields line origin] :as field} environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -95,7 +95,7 @@
                                                 (:y (v/- bottom top))
                                                 :angle 90
                                                 :reversed? true
-                                                :options options)
+                                                :render-options render-options)
         bottom-adjusted (v/extend top bottom line-length)
         parts [[["M" bottom-adjusted
                  (line/stitch line-one)
@@ -115,17 +115,17 @@
     [make-division
      (division-context-key type) fields parts
      [:all nil]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" bottom-adjusted
                      (line/stitch line-one)])}]])
-     environment field top-level-render options :db-path db-path]))
+     environment field top-level-render render-options :db-path db-path]))
 
 (defn per-fess
   {:display-name "Per fess"
    :parts ["chief" "base"]}
-  [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type fields line origin] :as field} environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -134,7 +134,7 @@
         bottom-right (:bottom-right points)
         {line-one :line} (line/create line
                                       (:x (v/- right left))
-                                      :options options)
+                                      :render-options render-options)
         parts [[["M" left
                  (line/stitch line-one)
                  (infinity/path :counter-clockwise
@@ -153,12 +153,12 @@
     [make-division
      (division-context-key type) fields parts
      [:all nil]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" left
                      (line/stitch line-one)])}]])
-     environment field top-level-render options :db-path db-path]))
+     environment field top-level-render render-options :db-path db-path]))
 
 (defn angle-to-point [p1 p2]
   (let [d (v/- p2 p1)
@@ -188,7 +188,7 @@
 (defn per-bend
   {:display-name "Per bend"
    :parts ["chief" "base"]}
-  [{:keys [type fields line hints origin] :as field} environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type fields line hints origin] :as field} environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -205,7 +205,7 @@
         {line-one :line} (line/create line
                                       (v/abs (v/- diagonal-end diagonal-start))
                                       :angle angle
-                                      :options options)
+                                      :render-options render-options)
         parts [[["M" diagonal-start
                  (line/stitch line-one)
                  (infinity/path :counter-clockwise
@@ -223,17 +223,17 @@
     [make-division
      (division-context-key type) fields parts
      [:all nil]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" top-left
                      (line/stitch line-one)])}]])
-     environment field top-level-render options :db-path db-path]))
+     environment field top-level-render render-options :db-path db-path]))
 
 (defn per-bend-sinister
   {:display-name "Per bend sinister"
    :parts ["chief" "base"]}
-  [{:keys [type fields line hints origin] :as field} environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type fields line hints origin] :as field} environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (:top points)
@@ -251,7 +251,7 @@
                                            (v/abs (v/- diagonal-end diagonal-start))
                                            :angle (+ angle 180)
                                            :reversed? true
-                                           :options options)
+                                           :render-options render-options)
         diagonal-end-adjusted (v/extend
                                diagonal-start
                                 diagonal-end
@@ -274,17 +274,17 @@
     [make-division
      (division-context-key type) fields parts
      [:all nil]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" diagonal-end-adjusted
                      (line/stitch line-one)])}]])
-     environment field top-level-render options :db-path db-path]))
+     environment field top-level-render render-options :db-path db-path]))
 
 (defn per-chevron
   {:display-name "Per chevron"
    :parts ["chief" "base"]}
-  [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type fields line origin hints] :as field} environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -306,11 +306,11 @@
                                                 (v/abs (v/- diagonal-bottom-left origin-point))
                                                 :angle (+ angle-bottom-left 180)
                                                 :reversed? true
-                                                :options options)
+                                                :render-options render-options)
         {line-right :line} (line/create line
                                         (v/abs (v/- diagonal-bottom-right origin-point))
                                         :angle angle-bottom-right
-                                        :options options)
+                                        :render-options render-options)
         diagonal-bottom-left-adjusted (v/extend origin-point diagonal-bottom-left line-left-length)
         parts [[["M" diagonal-bottom-left-adjusted
                  (line/stitch line-left)
@@ -335,19 +335,19 @@
     [make-division
      (division-context-key type) fields parts
      [:all nil]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" diagonal-bottom-left-adjusted
                      (line/stitch line-left)
                      "L" origin-point
                      (line/stitch line-right)])}]])
-     environment field top-level-render options :db-path db-path]))
+     environment field top-level-render render-options :db-path db-path]))
 
 (defn per-saltire
   {:display-name "Per saltire"
    :parts ["chief" "dexter" "sinister" "base"]}
-  [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type fields line origin hints] :as field} environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -374,23 +374,23 @@
                                                     (v/abs (v/- diagonal-top-left origin-point))
                                                     :angle (+ angle-top-left 180)
                                                     :reversed? true
-                                                    :options options)
+                                                    :render-options render-options)
         {line-top-right :line} (line/create line
                                             (v/abs (v/- diagonal-top-right origin-point))
                                             :angle angle-top-right
                                             :flipped? true
-                                            :options options)
+                                            :render-options render-options)
         {line-bottom-right :line
          line-bottom-right-length :length} (line/create line
                                                         (v/abs (v/- diagonal-bottom-right origin-point))
                                                         :angle (+ angle-bottom-right 180)
                                                         :reversed? true
-                                                        :options options)
+                                                        :render-options render-options)
         {line-bottom-left :line} (line/create line
                                               (v/abs (v/- diagonal-bottom-left origin-point))
                                               :angle angle-bottom-left
                                               :flipped? true
-                                              :options options)
+                                              :render-options render-options)
         diagonal-top-left-adjusted (v/extend
                                     origin-point
                                      diagonal-top-left
@@ -449,7 +449,7 @@
         ["M" diagonal-bottom-right-adjusted
          (line/stitch line-bottom-right)])]
       nil]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" diagonal-top-left-adjusted
@@ -463,12 +463,12 @@
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (line/stitch line-bottom-left)])}]])
-     environment field top-level-render options :db-path db-path]))
+     environment field top-level-render render-options :db-path db-path]))
 
 (defn quarterly
   {:display-name "Quarterly"
    :parts ["I" "II" "III" "IV"]}
-  [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type fields line origin] :as field} environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -486,22 +486,22 @@
                                                (v/abs (v/- top origin-point))
                                                :angle 90
                                                :reversed? true
-                                               :options options)
+                                               :render-options render-options)
         {line-right :line} (line/create line
                                         (v/abs (v/- right origin-point))
                                         :flipped? true
-                                        :options options)
+                                        :render-options render-options)
         {line-bottom :line
          line-bottom-length :length} (line/create line
                                                   (v/abs (v/- bottom origin-point))
                                                   :angle -90
                                                   :reversed? true
-                                                  :options options)
+                                                  :render-options render-options)
         {line-left :line} (line/create line
                                        (v/abs (v/- left origin-point))
                                        :angle -180
                                        :flipped? true
-                                       :options options)
+                                       :render-options render-options)
         top-adjusted (v/extend origin-point top line-top-length)
         bottom-adjusted (v/extend origin-point bottom line-bottom-length)
         parts [[["M" top-adjusted
@@ -553,7 +553,7 @@
         ["M" bottom-adjusted
          (line/stitch line-bottom)])]
       nil]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" top-adjusted
@@ -567,12 +567,12 @@
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (line/stitch line-left)])}]])
-     environment field top-level-render options :db-path db-path]))
+     environment field top-level-render render-options :db-path db-path]))
 
 (defn gyronny
   {:display-name "Gyronny"
    :parts ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"]}
-  [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type fields line origin hints] :as field} environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -597,24 +597,24 @@
                                                (v/abs (v/- top origin-point))
                                                :angle 90
                                                :reversed? true
-                                               :options options)
+                                               :render-options render-options)
         {line-right :line
          line-right-length :length} (line/create line
                                                  (v/abs (v/- right origin-point))
                                                  :reversed? true
                                                  :angle 180
-                                                 :options options)
+                                                 :render-options render-options)
         {line-bottom :line
          line-bottom-length :length} (line/create line
                                                   (v/abs (v/- bottom origin-point))
                                                   :angle -90
                                                   :reversed? true
-                                                  :options options)
+                                                  :render-options render-options)
         {line-left :line
          line-left-length :length} (line/create line
                                                 (v/abs (v/- left origin-point))
                                                 :reversed? true
-                                                :options options)
+                                                :render-options render-options)
         top-adjusted (v/extend origin-point top line-top-length)
         bottom-adjusted (v/extend origin-point bottom line-bottom-length)
         left-adjusted (v/extend origin-point left line-left-length)
@@ -623,22 +623,22 @@
                                            (v/abs (v/- diagonal-top-left origin-point))
                                            :flipped? true
                                            :angle angle-top-left
-                                           :options options)
+                                           :render-options render-options)
         {line-top-right :line} (line/create line
                                             (v/abs (v/- diagonal-top-right origin-point))
                                             :flipped? true
                                             :angle angle-top-right
-                                            :options options)
+                                            :render-options render-options)
         {line-bottom-right :line} (line/create line
                                                (v/abs (v/- diagonal-bottom-right origin-point))
                                                :flipped? true
                                                :angle angle-bottom-right
-                                               :options options)
+                                               :render-options render-options)
         {line-bottom-left :line} (line/create line
                                               (v/abs (v/- diagonal-bottom-left origin-point))
                                               :flipped? true
                                               :angle angle-bottom-left
-                                              :options options)
+                                              :render-options render-options)
         parts [[["M" top-adjusted
                  (line/stitch line-top)
                  "L" origin-point
@@ -742,7 +742,7 @@
         ["M" bottom-adjusted
          (line/stitch line-bottom)])]
       nil]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" origin-point
@@ -768,12 +768,12 @@
         [:path {:d (svg/make-path
                     ["M" left-adjusted
                      (line/stitch line-left)])}]])
-     environment field top-level-render options :db-path db-path]))
+     environment field top-level-render render-options :db-path db-path]))
 
 (defn tierced-per-pale
   {:display-name "Tierced per pale"
    :parts ["dexter" "fess" "sinister"]}
-  [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type fields line origin] :as field} environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -791,13 +791,13 @@
                                       (:y (v/- bottom top))
                                       :flipped? true
                                       :angle 90
-                                      :options options)
+                                      :render-options render-options)
         {line-reversed :line
          line-reversed-length :length} (line/create line
                                                     (:y (v/- bottom top))
                                                     :angle -90
                                                     :reversed? true
-                                                    :options options)
+                                                    :render-options render-options)
         second-bottom-adjusted (v/extend second-top second-bottom line-reversed-length)
         parts [[["M" first-top
                  (line/stitch line-one)
@@ -833,7 +833,7 @@
         ["M" second-bottom-adjusted
          (line/stitch line-reversed)])]
       nil]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" first-top
@@ -841,12 +841,12 @@
         [:path {:d (svg/make-path
                     ["M" second-bottom-adjusted
                      (line/stitch line-reversed)])}]])
-     environment field top-level-render options :db-path db-path]))
+     environment field top-level-render render-options :db-path db-path]))
 
 (defn tierced-per-fess
   {:display-name "Tierced per fess"
    :parts ["chief" "fess" "base"]}
-  [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type fields line origin] :as field} environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -862,14 +862,14 @@
         second-right (v/v (:x right) row2)
         {line-one :line} (line/create line
                                       (:x (v/- right left))
-                                      :options options)
+                                      :render-options render-options)
         {line-reversed :line
          line-reversed-length :length} (line/create line
                                                     (:x (v/- right left))
                                                     :reversed? true
                                                     :flipped? true
                                                     :angle 180
-                                                    :options options)
+                                                    :render-options render-options)
         second-right-adjusted (v/extend second-left second-right line-reversed-length)
         parts [[["M" first-left
                  (line/stitch line-one)
@@ -905,7 +905,7 @@
         ["M" second-right-adjusted
          (line/stitch line-reversed)])]
       nil]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" first-left
@@ -913,12 +913,12 @@
         [:path {:d (svg/make-path
                     ["M" second-right-adjusted
                      (line/stitch line-reversed)])}]])
-     environment field top-level-render options :db-path db-path]))
+     environment field top-level-render render-options :db-path db-path]))
 
 (defn tierced-per-pairle
   {:display-name "Tierced per pairle"
    :parts ["chief" "dexter" "sinister"]}
-  [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type fields line origin hints] :as field} environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         bottom (assoc (:bottom points) :x (:x origin-point))
@@ -940,23 +940,23 @@
                                                     (v/abs (v/- diagonal-top-left origin-point))
                                                     :angle (+ angle-top-left 180)
                                                     :reversed? true
-                                                    :options options)
+                                                    :render-options render-options)
         {line-top-right :line} (line/create line
                                             (v/abs (v/- diagonal-top-right origin-point))
                                             :angle angle-top-right
                                             :flipped? true
-                                            :options options)
+                                            :render-options render-options)
         {line-bottom :line} (line/create line
                                          (v/abs (v/- bottom origin-point))
                                          :flipped? true
                                          :angle 90
-                                         :options options)
+                                         :render-options render-options)
         {line-bottom-reversed :line
          line-bottom-reversed-length :length} (line/create line
                                                            (v/abs (v/- bottom origin-point))
                                                            :angle -90
                                                            :reversed? true
-                                                           :options options)
+                                                           :render-options render-options)
         diagonal-top-left-adjusted (v/extend
                                     origin-point
                                      diagonal-top-left
@@ -1001,7 +1001,7 @@
         ["M" bottom-adjusted
          (line/stitch line-bottom-reversed)])]
       nil]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" diagonal-top-left-adjusted
@@ -1012,12 +1012,12 @@
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (line/stitch line-bottom)])}]])
-     environment field top-level-render options :db-path db-path]))
+     environment field top-level-render render-options :db-path db-path]))
 
 (defn tierced-per-pairle-reversed
   {:display-name "Tierced per pairle reversed"
    :parts ["dexter" "sinister" "base"]}
-  [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
+  [{:keys [type fields line origin hints] :as field} environment top-level-render render-options & {:keys [db-path]}]
   (let [points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -1041,23 +1041,23 @@
                                                         (v/abs (v/- diagonal-bottom-right origin-point))
                                                         :angle (+ angle-bottom-right 180)
                                                         :reversed? true
-                                                        :options options)
+                                                        :render-options render-options)
         {line-bottom-left :line} (line/create line
                                               (v/abs (v/- diagonal-bottom-left origin-point))
                                               :angle angle-bottom-left
                                               :flipped? true
-                                              :options options)
+                                              :render-options render-options)
         {line-top :line} (line/create line
                                       (v/abs (v/- top origin-point))
                                       :flipped? true
                                       :angle -90
-                                      :options options)
+                                      :render-options render-options)
         {line-top-reversed :line
          line-top-reversed-length :length} (line/create line
                                                         (v/abs (v/- top origin-point))
                                                         :angle 90
                                                         :reversed? true
-                                                        :options options)
+                                                        :render-options render-options)
         diagonal-bottom-right-adjusted (v/extend
                                         origin-point
                                          diagonal-bottom-right
@@ -1102,7 +1102,7 @@
         ["M" diagonal-bottom-right-adjusted
          (line/stitch line-bottom-right)])]
       nil]
-     (when (:outline? options)
+     (when (:outline? render-options)
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" origin-point
@@ -1113,7 +1113,7 @@
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (line/stitch line-bottom-left)])}]])
-     environment field top-level-render options :db-path db-path]))
+     environment field top-level-render render-options :db-path db-path]))
 
 (def divisions
   [#'per-pale
@@ -1144,9 +1144,9 @@
   (let [function (get kinds-function-map type)]
     (-> function meta :parts (get index))))
 
-(defn render [{:keys [type] :as division} environment top-level-render options & {:keys [db-path]}]
+(defn render [{:keys [type] :as division} environment top-level-render render-options & {:keys [db-path]}]
   (let [function (get kinds-function-map type)]
-    [function division environment top-level-render options :db-path db-path]))
+    [function division environment top-level-render render-options :db-path db-path]))
 
 (defn mandatory-part-count [type]
   (case type
