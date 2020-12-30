@@ -137,7 +137,7 @@
                           :else current))))
          (update-in (conj path :division :hints) (fn [{:keys [diagonal-mode] :as hints}]
                                                    (if (-> new-type
-                                                           division/diagonal-options
+                                                           division/diagonal-mode-choices
                                                            (->> (map second))
                                                            set
                                                            (get diagonal-mode)
@@ -168,7 +168,7 @@
                                                                   (max min-value)))
                                            (not min-value) (dissoc hints :thickness)
                                            (-> new-type
-                                               ordinary/diagonal-options
+                                               ordinary/diagonal-mode-choices
                                                (->> (map second))
                                                set
                                                (get diagonal-mode)
