@@ -116,7 +116,7 @@
          (update-in (conj path :content) #(or % {:tincture :none})))
      (-> db
          (assoc-in (conj path :division :type) new-type)
-         (update-in (conj path :division :line :style) #(or % :straight))
+         (update-in (conj path :division :line :type) #(or % :straight))
          (update-in (conj path :division :fields)
                     (fn [current-value]
                       (let [current (or current-value [])
