@@ -1135,7 +1135,7 @@
               [(-> function meta :name keyword) function]))
        (into {})))
 
-(def options
+(def choices
   (->> divisions
        (map (fn [function]
               [(-> function meta :display-name) (-> function meta :name keyword)]))))
