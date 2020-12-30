@@ -23,7 +23,7 @@
         :chevron [10 30]
         :pall [10 30]} type))
 
-(defn diagonal-options [type]
+(defn diagonal-mode-choices [type]
   (let [options {:forty-five-degrees "45°"
                  :top-left-fess "Top-left to fess"
                  :top-right-fess "Top-right to fess"

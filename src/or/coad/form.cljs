@@ -39,7 +39,7 @@
                               (rf/dispatch [:set-in path new-checked?])))}]
      [:label {:for component-id} label]]))
 
-(defn select [path label options & {:keys [grouped? value on-change default]}]
+(defn select [path label choices & {:keys [grouped? value on-change default]}]
   (let [component-id (id "select")]
     [:div.setting
      [:label {:for component-id} (str label ":")]
@@ -53,18 +53,18 @@
                                (on-change checked)
                                (rf/dispatch [:set-in path checked])))}
       (if grouped?
-        (for [[group-name & group-options] options]
-          (if (and (-> group-options count (= 1))
-                   (-> group-options first keyword?))
-            (let [key (-> group-options first)]
+        (for [[group-name & group-choices] choices]
+          (if (and (-> group-choices count (= 1))
+                   (-> group-choices first keyword?))
+            (let [key (-> group-choices first)]
               ^{:key key}
               [:option {:value (name key)} group-name])
             ^{:key group-name}
             [:optgroup {:label group-name}
-             (for [[display-name key] group-options]
+             (for [[display-name key] group-choices]
                ^{:key key}
                [:option {:value (name key)} display-name])]))
-        (for [[display-name key] options]
+        (for [[display-name key] choices]
           ^{:key key}
           [:option {:value (name key)} display-name]))]]))
 
@@ -92,11 +92,11 @@
       [:span {:style {:margin-left "1em"}} (cond-> value
                                              display-function display-function)]]]))
 
-(defn radio-select [path options & {:keys [on-change default]}]
+(defn radio-select [path choices & {:keys [on-change default]}]
   [:div.setting
    (let [current-value (or @(rf/subscribe [:get-in path])
                            default)]
-     (for [[display-name key] options]
+     (for [[display-name key] choices]
        (let [component-id (id "radio")]
          ^{:key key}
          [:<>
@@ -233,10 +233,10 @@
      [:div.settings
       [select (conj path :type) "Type" ordinary/choices
        :on-change #(rf/dispatch [:set-ordinary-type path %])]
-      (let [diagonal-options (ordinary/diagonal-options ordinary-type)]
-        (when (-> diagonal-options count (> 0))
+      (let [diagonal-mode-choices (ordinary/diagonal-mode-choices ordinary-type)]
+        (when (-> diagonal-mode-choices count (> 0))
           [select (conj path :hints :diagonal-mode) "Diagonal"
-           diagonal-options :default (ordinary/diagonal-default ordinary-type)]))
+           diagonal-mode-choices :default (ordinary/diagonal-default ordinary-type)]))
       (let [[min-value max-value] (ordinary/thickness-options ordinary-type)]
         (when min-value
           [range-input (conj path :hints :thickness) "Thickness" min-value max-value
@@ -456,10 +456,10 @@
          (when (not= division-type :none)
            [form-for-line (conj path :division :line)])
          (when (not= division-type :none)
-           (let [diagonal-options (division/diagonal-options division-type)]
-             (when (-> diagonal-options count (> 0))
+           (let [diagonal-mode-choices (division/diagonal-mode-choices division-type)]
+             (when (-> diagonal-mode-choices count (> 0))
                [select (conj path :division :hints :diagonal-mode) "Diagonal"
-                diagonal-options :default (division/diagonal-default division-type)])))
+                diagonal-mode-choices :default (division/diagonal-default division-type)])))
          (when (not= division-type :none)
            [form-for-position (conj path :division :origin)
             :title "Origin"])
