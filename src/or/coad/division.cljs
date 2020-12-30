@@ -87,7 +87,7 @@
         top                        (assoc (:top points) :x (:x origin-point))
         bottom                     (assoc (:bottom points) :x (:x origin-point))
         bottom-right               (:bottom-right points)
-        {line        :line
+        {line-one    :line
          line-length :line-length} (line/create line
                                                 (:y (v/- bottom top))
                                                 :angle 90
@@ -95,7 +95,7 @@
                                                 :options options)
         bottom-adjusted            (v/extend top bottom line-length)
         parts                      [[["M" bottom-adjusted
-                                      (line/stitch line)
+                                      (line/stitch line-one)
                                       (infinity/path :clockwise
                                                      [:bottom :top]
                                                      [bottom-adjusted top])
@@ -103,7 +103,7 @@
                                      [top-left bottom]]
 
                                     [["M" bottom-adjusted
-                                      (line/stitch line)
+                                      (line/stitch line-one)
                                       (infinity/path :counter-clockwise
                                                      [:bottom :top]
                                                      [bottom-adjusted top])
@@ -116,34 +116,34 @@
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" bottom-adjusted
-                     (line/stitch line)])}]])
+                     (line/stitch line-one)])}]])
      environment field top-level-render options :db-path db-path]))
 
 (defn per-fess [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [points       (:points environment)
-        origin-point (point/calculate origin environment :fess)
-        top-left     (:top-left points)
-        left         (assoc (:left points) :y (:y origin-point))
-        right        (assoc (:right points) :y (:y origin-point))
-        bottom-right (:bottom-right points)
-        {line :line} (line/create line
-                                  (:x (v/- right left))
-                                  :options options)
-        parts        [[["M" left
-                        (line/stitch line)
-                        (infinity/path :counter-clockwise
-                                       [:right :left]
-                                       [right left])
-                        "z"]
-                       [top-left right]]
+  (let [points           (:points environment)
+        origin-point     (point/calculate origin environment :fess)
+        top-left         (:top-left points)
+        left             (assoc (:left points) :y (:y origin-point))
+        right            (assoc (:right points) :y (:y origin-point))
+        bottom-right     (:bottom-right points)
+        {line-one :line} (line/create line
+                                      (:x (v/- right left))
+                                      :options options)
+        parts            [[["M" left
+                            (line/stitch line-one)
+                            (infinity/path :counter-clockwise
+                                           [:right :left]
+                                           [right left])
+                            "z"]
+                           [top-left right]]
 
-                      [["M" left
-                        (line/stitch line)
-                        (infinity/path :clockwise
-                                       [:right :left]
-                                       [right left])
-                        "z"]
-                       [left bottom-right]]]]
+                          [["M" left
+                            (line/stitch line-one)
+                            (infinity/path :clockwise
+                                           [:right :left]
+                                           [right left])
+                            "z"]
+                           [left bottom-right]]]]
     [make-division
      (division-context-key type) fields parts
      [:all nil]
@@ -151,7 +151,7 @@
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" left
-                     (line/stitch line)])}]])
+                     (line/stitch line-one)])}]])
      environment field top-level-render options :db-path db-path]))
 
 (defn angle-to-point [p1 p2]
@@ -180,37 +180,37 @@
          (-> dir :y Math/abs))))
 
 (defn per-bend [{:keys [type fields line hints origin] :as field} environment top-level-render options & {:keys [db-path]}]
-  (let [points         (:points environment)
-        origin-point   (point/calculate origin environment :fess)
-        top-left       (:top-left points)
-        top            (:top points)
-        bottom         (:bottom points)
-        left           (:left points)
-        right          (:right points)
-        diagonal-mode  (or (:diagonal-mode hints)
-                           (diagonal-default type))
-        direction      (direction diagonal-mode points origin-point)
-        diagonal-start (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
-        diagonal-end   (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
-        angle          (angle-to-point diagonal-start diagonal-end)
-        {line :line}   (line/create line
-                                    (v/abs (v/- diagonal-end diagonal-start))
-                                    :angle angle
-                                    :options options)
-        parts          [[["M" diagonal-start
-                          (line/stitch line)
-                          (infinity/path :counter-clockwise
-                                         [:right :top]
-                                         [diagonal-end diagonal-start])
-                          "z"]
-                         [diagonal-start top diagonal-end]]
-                        [["M" diagonal-start
-                          (line/stitch line)
-                          (infinity/path :clockwise
-                                         [:right :top]
-                                         [diagonal-end diagonal-start])
-                          "z"]
-                         [diagonal-start diagonal-end bottom]]]]
+  (let [points           (:points environment)
+        origin-point     (point/calculate origin environment :fess)
+        top-left         (:top-left points)
+        top              (:top points)
+        bottom           (:bottom points)
+        left             (:left points)
+        right            (:right points)
+        diagonal-mode    (or (:diagonal-mode hints)
+                             (diagonal-default type))
+        direction        (direction diagonal-mode points origin-point)
+        diagonal-start   (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
+        diagonal-end     (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
+        angle            (angle-to-point diagonal-start diagonal-end)
+        {line-one :line} (line/create line
+                                      (v/abs (v/- diagonal-end diagonal-start))
+                                      :angle angle
+                                      :options options)
+        parts            [[["M" diagonal-start
+                            (line/stitch line-one)
+                            (infinity/path :counter-clockwise
+                                           [:right :top]
+                                           [diagonal-end diagonal-start])
+                            "z"]
+                           [diagonal-start top diagonal-end]]
+                          [["M" diagonal-start
+                            (line/stitch line-one)
+                            (infinity/path :clockwise
+                                           [:right :top]
+                                           [diagonal-end diagonal-start])
+                            "z"]
+                           [diagonal-start diagonal-end bottom]]]]
     [make-division
      (division-context-key type) fields parts
      [:all nil]
@@ -218,7 +218,7 @@
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" top-left
-                     (line/stitch line)])}]])
+                     (line/stitch line-one)])}]])
      environment field top-level-render options :db-path db-path]))
 
 (defn per-bend-sinister [{:keys [type fields line hints origin] :as field} environment top-level-render options & {:keys [db-path]}]
@@ -234,7 +234,7 @@
         diagonal-start        (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
         diagonal-end          (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
         angle                 (angle-to-point diagonal-start diagonal-end)
-        {line        :line
+        {line-one    :line
          line-length :length} (line/create line
                                            (v/abs (v/- diagonal-end diagonal-start))
                                            :angle (+ angle 180)
@@ -245,7 +245,7 @@
                                 diagonal-end
                                 line-length)
         parts                 [[["M" diagonal-end-adjusted
-                                 (line/stitch line)
+                                 (line/stitch line-one)
                                  (infinity/path :counter-clockwise
                                                 [:top :left]
                                                 [diagonal-start diagonal-end])
@@ -253,7 +253,7 @@
                                 [diagonal-start top diagonal-end]]
 
                                [["M" diagonal-end-adjusted
-                                 (line/stitch line)
+                                 (line/stitch line-one)
                                  (infinity/path :clockwise
                                                 [:top :left]
                                                 [diagonal-start diagonal-end])
@@ -266,7 +266,7 @@
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" diagonal-end-adjusted
-                     (line/stitch line)])}]])
+                     (line/stitch line-one)])}]])
      environment field top-level-render options :db-path db-path]))
 
 (defn per-chevron [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
@@ -810,7 +810,7 @@
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" first-top
-                     (line/stitch line)])}]
+                     (line/stitch line-one)])}]
         [:path {:d (svg/make-path
                     ["M" second-bottom-adjusted
                      (line/stitch line-reversed)])}]])
@@ -879,7 +879,7 @@
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" first-left
-                     (line/stitch line)])}]
+                     (line/stitch line-one)])}]
         [:path {:d (svg/make-path
                     ["M" second-right-adjusted
                      (line/stitch line-reversed)])}]])
