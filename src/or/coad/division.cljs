@@ -80,7 +80,10 @@
                     (conj db-path :fields idx))]])
      outline]))
 
-(defn per-pale [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn per-pale
+  {:display-name "Per pale"
+   :parts        ["dexter" "sinister"]}
+  [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                     (:points environment)
         origin-point               (point/calculate origin environment :fess)
         top-left                   (:top-left points)
@@ -119,7 +122,10 @@
                      (line/stitch line-one)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn per-fess [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn per-fess
+  {:display-name "Per fess"
+   :parts        ["chief" "base"]}
+  [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points           (:points environment)
         origin-point     (point/calculate origin environment :fess)
         top-left         (:top-left points)
@@ -179,7 +185,10 @@
     (v/v (-> dir :x Math/abs)
          (-> dir :y Math/abs))))
 
-(defn per-bend [{:keys [type fields line hints origin] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn per-bend
+  {:display-name "Per bend"
+   :parts        ["chief" "base"]}
+  [{:keys [type fields line hints origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points           (:points environment)
         origin-point     (point/calculate origin environment :fess)
         top-left         (:top-left points)
@@ -221,7 +230,10 @@
                      (line/stitch line-one)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn per-bend-sinister [{:keys [type fields line hints origin] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn per-bend-sinister
+  {:display-name "Per bend sinister"
+   :parts        ["chief" "base"]}
+  [{:keys [type fields line hints origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                (:points environment)
         origin-point          (point/calculate origin environment :fess)
         top                   (:top points)
@@ -269,7 +281,10 @@
                      (line/stitch line-one)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn per-chevron [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn per-chevron
+  {:display-name "Per chevron"
+   :parts        ["chief" "base"]}
+  [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                        (:points environment)
         origin-point                  (point/calculate origin environment :fess)
         top-left                      (:top-left points)
@@ -329,7 +344,10 @@
                      (line/stitch line-right)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn per-saltire [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn per-saltire
+  {:display-name "Per saltire"
+   :parts        ["chief" "dexter" "sinister" "base"]}
+  [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                             (:points environment)
         origin-point                       (point/calculate origin environment :fess)
         top-left                           (:top-left points)
@@ -447,7 +465,10 @@
                      (line/stitch line-bottom-left)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn quarterly [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn quarterly
+  {:display-name "Quarterly"
+   :parts        ["I" "II" "III" "IV"]}
+  [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                       (:points environment)
         origin-point                 (point/calculate origin environment :fess)
         top                          (assoc (:top points) :x (:x origin-point))
@@ -548,7 +569,10 @@
                      (line/stitch line-left)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn gyronny [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn gyronny
+  {:display-name "Gyronny"
+   :parts        ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"]}
+  [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                       (:points environment)
         origin-point                 (point/calculate origin environment :fess)
         top                          (assoc (:top points) :x (:x origin-point))
@@ -746,7 +770,10 @@
                      (line/stitch line-left)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn tierced-per-pale [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn tierced-per-pale
+  {:display-name "Tierced per pale"
+   :parts        ["dexter" "fess" "sinister"]}
+  [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                         (:points environment)
         origin-point                   (point/calculate origin environment :fess)
         top                            (assoc (:top points) :x (:x origin-point))
@@ -816,7 +843,10 @@
                      (line/stitch line-reversed)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn tierced-per-fess [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn tierced-per-fess
+  {:display-name "Tierced per fess"
+   :parts        ["chief" "fess" "base"]}
+  [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                         (:points environment)
         origin-point                   (point/calculate origin environment :fess)
         top-left                       (:top-left points)
@@ -885,7 +915,10 @@
                      (line/stitch line-reversed)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn tierced-per-pairle [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn tierced-per-pairle
+  {:display-name "Tierced per pairle"
+   :parts        ["chief" "dexter" "sinister"]}
+  [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                                (:points environment)
         origin-point                          (point/calculate origin environment :fess)
         bottom                                (assoc (:bottom points) :x (:x origin-point))
@@ -981,7 +1014,10 @@
                      (line/stitch line-bottom)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn tierced-per-pairle-reversed [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
+(defn tierced-per-pairle-reversed
+  {:display-name "Tierced per pairle reversed"
+   :parts        ["dexter" "sinister" "base"]}
+  [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                             (:points environment)
         origin-point                       (point/calculate origin environment :fess)
         top                                (assoc (:top points) :x (:x origin-point))
@@ -1079,45 +1115,34 @@
                      (line/stitch line-bottom-left)])}]])
      environment field top-level-render options :db-path db-path]))
 
-(defn part-name [type index]
-  (-> {:per-pale                    ["dexter" "sinister"]
-       :per-fess                    ["chief" "base"]
-       :per-bend                    ["chief" "base"]
-       :per-bend-sinister           ["chief" "base"]
-       :per-saltire                 ["chief" "dexter" "sinister" "base"]
-       :per-chevron                 ["chief" "base"]
-       :quarterly                   ["I" "II" "III" "IV"]
-       :gyronny                     ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"]
-       :tierced-per-pale            ["dexter" "fess" "sinister"]
-       :tierced-per-fess            ["chief" "fess" "base"]
-       :tierced-per-pairle          ["chief" "dexter" "sinister"]
-       :tierced-per-pairle-reversed ["dexter" "sinister" "base"]}
-      (get-in [type index])))
-
-(def kinds
-  [["Per Pale" :per-pale per-pale]
-   ["Per Fess" :per-fess per-fess]
-   ["Per Bend" :per-bend per-bend]
-   ["Per Bend Sinister" :per-bend-sinister per-bend-sinister]
-   ["Per Chevron" :per-chevron per-chevron]
-   ["Per Saltire" :per-saltire per-saltire]
-   ["Quarterly" :quarterly quarterly]
-   ["Gyronny" :gyronny gyronny]
-   ["Tierced per Pale" :tierced-per-pale tierced-per-pale]
-   ["Tierced per Fess" :tierced-per-fess tierced-per-fess]
-   ["Tierced per Pairle" :tierced-per-pairle tierced-per-pairle]
-   ["Tierced per Pairle Reversed" :tierced-per-pairle-reversed tierced-per-pairle-reversed]])
+(def divisions
+  [#'per-pale
+   #'per-fess
+   #'per-bend
+   #'per-bend-sinister
+   #'per-chevron
+   #'per-saltire
+   #'quarterly
+   #'gyronny
+   #'tierced-per-pale
+   #'tierced-per-fess
+   #'tierced-per-pairle
+   #'tierced-per-pairle-reversed])
 
 (def kinds-function-map
-  (->> kinds
-       (map (fn [[_ key function]]
-              [key function]))
+  (->> divisions
+       (map (fn [function]
+              [(-> function meta :name keyword) function]))
        (into {})))
 
 (def options
-  (->> kinds
-       (map (fn [[name key _]]
-              [name key]))))
+  (->> divisions
+       (map (fn [function]
+              [(-> function meta :display-name) (-> function meta :name keyword)]))))
+
+(defn part-name [type index]
+  (let [function (get kinds-function-map type)]
+    (-> function meta :parts (get index))))
 
 (defn render [{:keys [type] :as division} environment top-level-render options & {:keys [db-path]}]
   (let [function (get kinds-function-map type)]
