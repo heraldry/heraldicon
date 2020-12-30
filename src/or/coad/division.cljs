@@ -4,7 +4,7 @@
             [or.coad.field-environment :as field-environment]
             [or.coad.infinity :as infinity]
             [or.coad.line :as line]
-            [or.coad.point :as point]
+            [or.coad.position :as position]
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
@@ -85,7 +85,7 @@
    :parts        ["dexter" "sinister"]}
   [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                     (:points environment)
-        origin-point               (point/calculate origin environment :fess)
+        origin-point               (position/calculate origin environment :fess)
         top-left                   (:top-left points)
         top                        (assoc (:top points) :x (:x origin-point))
         bottom                     (assoc (:bottom points) :x (:x origin-point))
@@ -127,7 +127,7 @@
    :parts        ["chief" "base"]}
   [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points           (:points environment)
-        origin-point     (point/calculate origin environment :fess)
+        origin-point     (position/calculate origin environment :fess)
         top-left         (:top-left points)
         left             (assoc (:left points) :y (:y origin-point))
         right            (assoc (:right points) :y (:y origin-point))
@@ -190,7 +190,7 @@
    :parts        ["chief" "base"]}
   [{:keys [type fields line hints origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points           (:points environment)
-        origin-point     (point/calculate origin environment :fess)
+        origin-point     (position/calculate origin environment :fess)
         top-left         (:top-left points)
         top              (:top points)
         bottom           (:bottom points)
@@ -235,7 +235,7 @@
    :parts        ["chief" "base"]}
   [{:keys [type fields line hints origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                (:points environment)
-        origin-point          (point/calculate origin environment :fess)
+        origin-point          (position/calculate origin environment :fess)
         top                   (:top points)
         bottom                (:bottom points)
         left                  (:left points)
@@ -286,7 +286,7 @@
    :parts        ["chief" "base"]}
   [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                        (:points environment)
-        origin-point                  (point/calculate origin environment :fess)
+        origin-point                  (position/calculate origin environment :fess)
         top-left                      (:top-left points)
         bottom-left                   (:bottom-left points)
         bottom-right                  (:bottom-right points)
@@ -349,7 +349,7 @@
    :parts        ["chief" "dexter" "sinister" "base"]}
   [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                             (:points environment)
-        origin-point                       (point/calculate origin environment :fess)
+        origin-point                       (position/calculate origin environment :fess)
         top-left                           (:top-left points)
         top-right                          (:top-right points)
         bottom-left                        (:bottom-left points)
@@ -470,7 +470,7 @@
    :parts        ["I" "II" "III" "IV"]}
   [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                       (:points environment)
-        origin-point                 (point/calculate origin environment :fess)
+        origin-point                 (position/calculate origin environment :fess)
         top                          (assoc (:top points) :x (:x origin-point))
         top-left                     (:top-left points)
         top-right                    (:top-right points)
@@ -574,7 +574,7 @@
    :parts        ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"]}
   [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                       (:points environment)
-        origin-point                 (point/calculate origin environment :fess)
+        origin-point                 (position/calculate origin environment :fess)
         top                          (assoc (:top points) :x (:x origin-point))
         bottom                       (assoc (:bottom points) :x (:x origin-point))
         left                         (assoc (:left points) :y (:y origin-point))
@@ -775,7 +775,7 @@
    :parts        ["dexter" "fess" "sinister"]}
   [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                         (:points environment)
-        origin-point                   (point/calculate origin environment :fess)
+        origin-point                   (position/calculate origin environment :fess)
         top                            (assoc (:top points) :x (:x origin-point))
         top-left                       (:top-left points)
         bottom                         (assoc (:bottom points) :x (:x origin-point))
@@ -848,7 +848,7 @@
    :parts        ["chief" "fess" "base"]}
   [{:keys [type fields line origin] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                         (:points environment)
-        origin-point                   (point/calculate origin environment :fess)
+        origin-point                   (position/calculate origin environment :fess)
         top-left                       (:top-left points)
         bottom-right                   (:bottom-right points)
         left                           (assoc (:left points) :y (:y origin-point))
@@ -920,7 +920,7 @@
    :parts        ["chief" "dexter" "sinister"]}
   [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                                (:points environment)
-        origin-point                          (point/calculate origin environment :fess)
+        origin-point                          (position/calculate origin environment :fess)
         bottom                                (assoc (:bottom points) :x (:x origin-point))
         bottom-left                           (:bottom-left points)
         bottom-right                          (:bottom-right points)
@@ -1019,7 +1019,7 @@
    :parts        ["dexter" "sinister" "base"]}
   [{:keys [type fields line origin hints] :as field} environment top-level-render options & {:keys [db-path]}]
   (let [points                             (:points environment)
-        origin-point                       (point/calculate origin environment :fess)
+        origin-point                       (position/calculate origin environment :fess)
         top                                (assoc (:top points) :x (:x origin-point))
         top-left                           (:top-left points)
         top-right                          (:top-right points)

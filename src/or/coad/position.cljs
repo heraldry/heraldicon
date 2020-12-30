@@ -1,4 +1,4 @@
-(ns or.coad.point
+(ns or.coad.position
   (:require [or.coad.vector :as v]))
 
 (def choices
