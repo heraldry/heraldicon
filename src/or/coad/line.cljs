@@ -23,16 +23,15 @@
             :max 3
             :default 0}})
 
-(defn options [type]
-  [(get {:dancetty {:width {:default 20}}
-         :wavy {:width {:default 20}}} type)
-   default-options])
-
-(defn new-options [line]
+(defn options [line]
   (options/merge
    default-options
-   (get {:dancetty {:width {:default 20}}
-         :wavy {:width {:default 20}}} (:type line))))
+   (get {:straight {:eccentricity nil
+                    :offset nil
+                    :width nil}
+         :dancetty {:width {:default 20}}
+         :wavy {:width {:default 20}}}
+        (:type line))))
 
 (defn line-with-offset [length offset pattern-width pattern]
   (let [offset-length (* offset pattern-width)
@@ -59,22 +58,18 @@
    :start 0
    :length length})
 
-(defn prepare-options [type values & {:keys [extra-options]}]
-  (let [type-options (-> [extra-options]
-                         (concat (options type)))]
-    (->> [:eccentricity
-          :offset
-          :width]
-         (map (fn [option]
-                [option (options/get-value [option] (get values option) type-options)]))
-         (into {}))))
+(defn prepare-options [line]
+  (let [line-options (options line)]
+    (into {}
+          (for [[k v] line-options]
+            [k (options/get-value (get line k) v)]))))
 
 (defn invected
   {:display-name "Invected"}
   [values length _]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options :invected values)
+                width]} (prepare-options values)
         radius-x (/ width 2)
         radius-y (* radius-x eccentricity)]
     (line-with-offset
@@ -86,7 +81,7 @@
   [values length _]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options :engrailed values)
+                width]} (prepare-options values)
         radius-x (/ width 2)
         radius-y (* radius-x eccentricity)]
     (line-with-offset
@@ -99,7 +94,7 @@
   [values length {:keys [reversed?]}]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options :embattled values)
+                width]} (prepare-options values)
         half-width (/ width 2)
         height (* eccentricity half-width)]
     (line-with-offset
@@ -121,7 +116,7 @@
   [values length _]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options :indented values)
+                width]} (prepare-options values)
         half-width (/ width 2)
         height (* eccentricity half-width)]
     (line-with-offset
@@ -135,7 +130,7 @@
   [values length {:keys [reversed?]}]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options :dancetty values)
+                width]} (prepare-options values)
         half-width (/ width 2)
         quarter-width (/ width 4)
         half-height (* quarter-width eccentricity)
@@ -157,7 +152,7 @@
   [values length {:keys [reversed?]}]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options :wavy values)
+                width]} (prepare-options values)
         half-width (/ width 2)
         height (* width eccentricity)]
     (line-with-offset
@@ -170,7 +165,7 @@
   [values length {:keys [reversed?]}]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options :dovetailed values)
+                width]} (prepare-options values)
         half-width (/ width 2)
         third-width (/ width 3)
         sixth-width (/ width 6)
@@ -196,7 +191,7 @@
   [values length {:keys [reversed?]}]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options :raguly values)
+                width]} (prepare-options values)
         half-width (/ width 2)
         quarter-width (/ width 4)
         height (* half-width eccentricity)]
@@ -221,7 +216,7 @@
   [values length {:keys [reversed?]}]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options :urdy values)
+                width]} (prepare-options values)
         quarter-width (/ width 4)
         height (* quarter-width eccentricity)
         half-height (/ height 2)]

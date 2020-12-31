@@ -9,7 +9,8 @@
             [or.coad.position :as position]
             [or.coad.tincture :as tincture]
             [or.coad.util :as util]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [or.coad.options :as options]))
 
 ;; helper
 
@@ -40,12 +41,13 @@
      [:label {:for component-id} label]]))
 
 (defn select [path label choices & {:keys [grouped? value on-change default]}]
-  (let [component-id (id "select")]
+  (let [component-id (id "select")
+        current-value @(rf/subscribe [:get-in path])]
     [:div.setting
      [:label {:for component-id} (str label ":")]
      [:select {:id component-id
                :value (name (or value
-                                @(rf/subscribe [:get-in path])
+                                current-value
                                 default
                                 :none))
                :on-change #(let [checked (keyword (-> % .-target .-value))]
@@ -71,20 +73,33 @@
 (defn range-input [path label min-value max-value & {:keys [value on-change default display-function step
                                                             disabled?]}]
   (let [component-id (id "range")
+        checkbox-id (id "checkbox")
+        current-value @(rf/subscribe [:get-in path])
         value (or value
-                  @(rf/subscribe [:get-in path])
+                  current-value
                   default
-                  min-value)]
+                  min-value)
+        using-default? (nil? current-value)
+        checked? (not using-default?)]
     [:div.setting
      [:label {:for component-id} label]
      [:div.slider
+      [:input {:type "checkbox"
+               :id checkbox-id
+               :checked checked?
+               :disabled? disabled?
+               :on-change #(let [new-checked? (-> % .-target .-checked)]
+                             (if new-checked?
+                               (rf/dispatch [:set-in path default])
+                               (rf/dispatch [:remove-in path])))}]
       [:input {:type "range"
                :id component-id
                :min min-value
                :max max-value
                :step step
                :value value
-               :disabled disabled?
+               :disabled (or disabled?
+                             using-default?)
                :on-change #(let [value (-> % .-target .-value js/parseFloat)]
                              (if on-change
                                (on-change value)
@@ -168,7 +183,7 @@
         (into [:div.content]
               content)])]))
 
-(defn form-for-line [path & {:keys [title] :or {title "Line"}}]
+(defn form-for-line [path & {:keys [title options] :or {title "Line"}}]
   (let [line @(rf/subscribe [:get-in path])
         type-names (->> line/choices
                         (map (comp vec reverse))
@@ -177,36 +192,59 @@
      [:label (str title ":")]
      " "
      [submenu path "Line" (get type-names (:type line))
-      [select (conj path :type) "Type" line/choices]
-      [range-input (conj path :eccentricity) "Eccentricity" 0.5 2 :step 0.01]
-      [range-input (conj path :width) "Width" 2 100
-       :display-function #(str % "%")]
-      [range-input (conj path :offset) "Offset" -1 3 :step 0.01]]]))
+      [select (conj path :type) "Type" (-> options :type :choices)
+       :default (options/get-value (:type line) (:type options))]
+      (when (:eccentricity options)
+        [range-input (conj path :eccentricity) "Eccentricity"
+         (-> options :eccentricity :min)
+         (-> options :eccentricity :max)
+         :step 0.01
+         :default (options/get-value (:eccentricity line) (:eccentricity options))])
+      (when (:width options)
+        [range-input (conj path :width) "Width"
+         (-> options :width :min)
+         (-> options :width :max)
+         :default (options/get-value (:width line) (:width options))
+         :display-function #(str % "%")])
+      (when (:offset options)
+        [range-input (conj path :offset) "Offset"
+         (-> options :offset :min)
+         (-> options :offset :max)
+         :step 0.01
+         :default (options/get-value (:offset line) (:offset options))])]]))
 
-(defn form-for-position [path & {:keys [title] :or {title "Position"}}]
-  (let [point @(rf/subscribe [:get-in path])
+(defn form-for-position [path & {:keys [title options] :or {title "Position"}}]
+  (let [position @(rf/subscribe [:get-in path])
         point-path (conj path :point)
         offset-x-path (conj path :offset-x)
         offset-y-path (conj path :offset-y)]
     [:div.setting
      [:label (str title ":")]
      " "
-     [submenu path "Point" (str (-> point
+     [submenu path "Point" (str (-> position
                                     :point
                                     (or :fess)
                                     (util/translate-cap-first))
-                                " point" (when (or (-> point :offset-x (or 0) zero? not)
-                                                   (-> point :offset-y (or 0) zero? not))
+                                " point" (when (or (-> position :offset-x (or 0) zero? not)
+                                                   (-> position :offset-y (or 0) zero? not))
                                            " (adjusted)"))
       [select point-path "Point" position/choices
        :on-change #(do
                      (rf/dispatch [:set-in point-path %])
                      (rf/dispatch [:set-in offset-x-path nil])
                      (rf/dispatch [:set-in offset-y-path nil]))]
-      [range-input offset-x-path "Offset x" -50 50
-       :step 1 :displat-function #(str % "%") :default 0]
-      [range-input offset-y-path "Offset y" -50 50
-       :step 1 :displat-function #(str % "%") :default 0]]]))
+      (when (:offset-x options)
+        [range-input offset-x-path "Offset x"
+         (-> options :offset-x :min)
+         (-> options :offset-x :max)
+         :default (options/get-value (:offset-x position) (:offset-x options))
+         :display-function #(str % "%")])
+      (when (:offset-y options)
+        [range-input offset-y-path "Offset y"
+         (-> options :offset-y :min)
+         (-> options :offset-y :max)
+         :default (options/get-value (:offset-y position) (:offset-y options))
+         :display-function #(str % "%")])]]))
 
 (defn form-for-tincture [path label]
   [:div.tincture
@@ -235,7 +273,7 @@
        :on-change #(rf/dispatch [:set-ordinary-type path %])]
       (let [diagonal-mode-choices (ordinary/diagonal-mode-choices ordinary-type)]
         (when (-> diagonal-mode-choices count (> 0))
-          [select (conj path :hints :diagonal-mode) "Diagonal"
+          [select (conj path :diagonal-mode) "Diagonal"
            diagonal-mode-choices :default (ordinary/diagonal-default ordinary-type)]))
       (let [[min-value max-value] (ordinary/thickness-options ordinary-type)]
         (when min-value
@@ -454,18 +492,20 @@
             :value division-type
             :on-change #(rf/dispatch [:set-division-type path %])]]]
          (let [division-options (division/options (:division field))]
-           (when (:line division-options)
-             [form-for-line (conj path :division :line) :options (:line division-options)])
-           (when (:diagonal-mode division-options)
-             (let [choices (-> division-options :diagonal-mode :choices)
-                   default (-> division-options :diagonal-mode :default)]
-               (when (-> choices count (> 0))
-                 [select (conj path :division :hints :diagonal-mode) "Diagonal"
-                  choices :default default])))
-           (when (:position division-options)
-             [form-for-position (conj path :division :origin)
-              :title "Origin"
-              :options (:position division-options)]))
+           [:<>
+            (when (:line division-options)
+              [form-for-line (conj path :division :line) :options (:line division-options)])
+            (when (:diagonal-mode division-options)
+              (let [choices (-> division-options :diagonal-mode :choices)
+                    default (-> division-options :diagonal-mode :default)]
+                (when (-> choices count (> 0))
+                  [select (conj path :division :diagonal-mode) "Diagonal"
+                   choices
+                   :default default])))
+            (when (:origin division-options)
+              [form-for-position (conj path :division :origin)
+               :title "Origin"
+               :options (:origin division-options)])])
          (when (= division-type :none)
            [form-for-content (conj path :content)])])]
      (when (not counterchanged?)
