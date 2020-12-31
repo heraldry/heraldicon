@@ -1,11 +1,12 @@
 (ns or.coad.options
   (:require [clojure.walk :as walk]))
 
-(def types #{:range :choice})
+(def types #{:range :choice :boolean})
 
 (defn get-value [value options]
   (let [value (or value (:default options))]
     (case (:type options)
+      :boolean (boolean value)
       :choice (let [choices (into #{}
                                   (map second (:choices options)))]
                 (if (contains? choices value)
@@ -22,6 +23,7 @@
   (if (nil? value)
     nil
     (case (:type options)
+      :boolean (boolean value)
       :choice (let [choices (into #{}
                                   (map second (:choices options)))]
                 (if (contains? choices value)

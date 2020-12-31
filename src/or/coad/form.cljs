@@ -622,7 +622,11 @@
               (-> charge-options :stretch :min)
               (-> charge-options :stretch :max)
               :step 0.01
-              :default (options/get-value (:stretch charge) (:stretch charge-options))])])]
+              :default (options/get-value (:stretch charge) (:stretch charge-options))])
+           (when (:mirrored? charge-options)
+             [checkbox (conj path :mirrored?) "Mirrored"])
+           (when (:reversed? charge-options)
+             [checkbox (conj path :reversed?) "Reversed"])])]
        [form-for-field (conj path :field) :parent-field parent-field]]
       [:<>])))
 
