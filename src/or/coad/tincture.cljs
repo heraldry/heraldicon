@@ -107,12 +107,12 @@
     (= tincture :none) "url(#void)"
     (get furs tincture) (let [[id _] (get furs tincture)]
                           (str "url(#" id ")"))
-    (= mode :colours) (or (get metals tincture)
-                          (get colours tincture)
-                          (get furs tincture))
     (= mode :hatching) (or
                         (hatching/get-for tincture)
-                        "#888")))
+                        "#888")
+    :else (or (get metals tincture)
+              (get colours tincture)
+              (get furs tincture))))
 
 (def patterns
   (into
