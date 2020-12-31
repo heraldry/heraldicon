@@ -616,7 +616,13 @@
               (-> charge-options :size :min)
               (-> charge-options :size :max)
               :default (options/get-value (:size charge) (:size charge-options))
-              :display-function #(str % "%")])])]
+              :display-function #(str % "%")])
+           (when (:stretch charge-options)
+             [range-input (conj path :stretch) "Stretch"
+              (-> charge-options :stretch :min)
+              (-> charge-options :stretch :max)
+              :step 0.01
+              :default (options/get-value (:stretch charge) (:stretch charge-options))])])]
        [form-for-field (conj path :field) :parent-field parent-field]]
       [:<>])))
 
