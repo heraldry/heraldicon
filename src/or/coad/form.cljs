@@ -224,6 +224,44 @@
         ^{:key key}
         [division-choice path key display-name])]]))
 
+(defn line-type-choice [path key display-name & {:keys [current]}]
+  (let [options (line/options {:type key})]
+    [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])}
+     [:svg {:style {:width "6.5em"
+                    :height "4.5em"}
+            :viewBox "0 0 120 80"
+            :preserveAspectRatio "xMidYMin slice"}
+      [:g {:filter "url(#shadow)"}
+       [:g {:transform "translate(10,10)"}
+        [render/coat-of-arms
+         {:escutcheon :flag
+          :field {:component :field
+                  :division {:type :per-fess
+                             :line {:type key
+                                    :width (* 2 (options/get-value nil (:width options)))}
+                             :fields [{:content {:tincture :argent}}
+                                      {:content {:tincture :argent}}]}}}
+         {:outline? true}
+         :width 100
+         :db-path [:ui :line-option]]]]]
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} display-name]
+      [:i]]]))
+
+(defn form-for-line-type [path & {:keys [options]}]
+  (let [line @(rf/subscribe [:get-in path])
+        value (options/get-value (:type line) (:type options))
+        type-names (->> line/choices
+                        (map (comp vec reverse))
+                        (into {}))]
+    [:div.setting
+     [:label "Type:"]
+     " "
+     [submenu (conj path :type) "Line Type" (get type-names value) {:min-width "21em"}
+      (for [[display-name key] (-> options :type :choices)]
+        ^{:key display-name}
+        [line-type-choice (conj path :type) key display-name :current value])]]))
+
 (defn form-for-line [path & {:keys [title options] :or {title "Line"}}]
   (let [line @(rf/subscribe [:get-in path])
         type-names (->> line/choices
@@ -233,8 +271,7 @@
      [:label (str title ":")]
      " "
      [submenu path "Line" (get type-names (:type line)) {}
-      [select (conj path :type) "Type" (-> options :type :choices)
-       :default (options/get-value (:type line) (:type options))]
+      [form-for-line-type path :options options]
       (when (:eccentricity options)
         [range-input (conj path :eccentricity) "Eccentricity"
          (-> options :eccentricity :min)
