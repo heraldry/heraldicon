@@ -296,15 +296,16 @@
                                      :border-radius "5px"}}
      [:svg {:style               {:width  "4em"
                                   :height "4.5em"}
-            :viewBox             "0 0 120 200"
+            :viewBox             "0 0 50 100"
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
-       [:g {:transform "translate(10,10)"}
+       [:g {:transform "translate(5,5)"}
         [render/coat-of-arms
          {:escutcheon :rectangle
           :field      {:component :field
                        :content   {:tincture key}}}
          {:outline? true}
+         :width 40
          :db-path [:ui :tincture-option]]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
