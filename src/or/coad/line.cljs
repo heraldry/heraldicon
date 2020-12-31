@@ -2,9 +2,37 @@
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
             [or.coad.catmullrom :as catmullrom]
+            [or.coad.options :as options]
             [or.coad.random :as random]
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
+
+(def default-options
+  {:type         {:type    :choice
+                  :default :straight}
+   :eccentricity {:type    :range
+                  :min     0.2
+                  :max     3
+                  :default 1}
+   :width        {:type    :range
+                  :min     2
+                  :max     100
+                  :default 10}
+   :offset       {:type    :range
+                  :min     -1
+                  :max     3
+                  :default 0}})
+
+(defn options [type]
+  [(get {:dancetty {:width {:default 20}}
+         :wavy     {:width {:default 20}}} type)
+   default-options])
+
+(defn new-options [line]
+  (options/merge
+   default-options
+   (get {:dancetty {:width {:default 20}}
+         :wavy     {:width {:default 20}}} (:type line))))
 
 (defn line-with-offset [length offset pattern-width pattern]
   (let [offset-length (* offset pattern-width)
@@ -31,26 +59,36 @@
    :start  0
    :length length})
 
+(defn prepare-options [type values & {:keys [extra-options]}]
+  (let [type-options (-> [extra-options]
+                         (concat (options type)))]
+    (->> [:eccentricity
+          :offset
+          :width]
+         (map (fn [option]
+                [option (options/get-value [option] (get values option) type-options)]))
+         (into {}))))
+
 (defn invected
   {:display-name "Invected"}
-  [{:keys [eccentricity width offset]
-    :or   {eccentricity 1
-           width        10
-           offset       0}} length _]
-  (let [radius-x (/ width 2)
-        radius-y (* radius-x eccentricity)]
+  [values length _]
+  (let [{:keys [eccentricity
+                offset
+                width]} (prepare-options :invected values)
+        radius-x        (/ width 2)
+        radius-y        (* radius-x eccentricity)]
     (line-with-offset
      length offset width
      ["a" radius-x radius-y 0 0 1 [width 0]])))
 
 (defn engrailed
   {:display-name "Engrailed"}
-  [{:keys [eccentricity width offset]
-    :or   {eccentricity 1
-           width        10
-           offset       0}} length _]
-  (let [radius-x (/ width 2)
-        radius-y (* radius-x eccentricity)]
+  [values length _]
+  (let [{:keys [eccentricity
+                offset
+                width]} (prepare-options :engrailed values)
+        radius-x        (/ width 2)
+        radius-y        (* radius-x eccentricity)]
     (line-with-offset
      length offset width
      ["a" radius-x radius-y 0 0 0 [radius-x (- radius-y)]
@@ -58,12 +96,12 @@
 
 (defn embattled
   {:display-name "Embattled"}
-  [{:keys [eccentricity width offset]
-    :or   {eccentricity 1
-           width        10
-           offset       0}} length {:keys [reversed?]}]
-  (let [half-width (/ width 2)
-        height     (* eccentricity half-width)]
+  [values length {:keys [reversed?]}]
+  (let [{:keys [eccentricity
+                offset
+                width]} (prepare-options :embattled values)
+        half-width      (/ width 2)
+        height          (* eccentricity half-width)]
     (line-with-offset
      length offset width
      (if reversed?
@@ -80,12 +118,12 @@
 
 (defn indented
   {:display-name "Indented"}
-  [{:keys [eccentricity width offset]
-    :or   {eccentricity 1
-           width        10
-           offset       0}} length _]
-  (let [half-width (/ width 2)
-        height     (* eccentricity half-width)]
+  [values length _]
+  (let [{:keys [eccentricity
+                offset
+                width]} (prepare-options :indented values)
+        half-width      (/ width 2)
+        height          (* eccentricity half-width)]
     (line-with-offset
      length offset width
      ["l"
@@ -94,14 +132,14 @@
 
 (defn dancetty
   {:display-name "Dancetty"}
-  [{:keys [eccentricity width offset]
-    :or   {eccentricity 1
-           width        20
-           offset       0}} length {:keys [reversed?]}]
-  (let [half-width    (/ width 2)
-        quarter-width (/ width 4)
-        half-height   (* quarter-width eccentricity)
-        height        (* half-height 2)]
+  [values length {:keys [reversed?]}]
+  (let [{:keys [eccentricity
+                offset
+                width]} (prepare-options :dancetty values)
+        half-width      (/ width 2)
+        quarter-width   (/ width 4)
+        half-height     (* quarter-width eccentricity)
+        height          (* half-height 2)]
     (line-with-offset
      length offset width
      (if reversed?
@@ -116,12 +154,12 @@
 
 (defn wavy
   {:display-name "Wavy / undy"}
-  [{:keys [eccentricity width offset]
-    :or   {eccentricity 1
-           width        20
-           offset       0}} length  {:keys [reversed?]}]
-  (let [half-width (/ width 2)
-        height     (* width eccentricity)]
+  [values length  {:keys [reversed?]}]
+  (let [{:keys [eccentricity
+                offset
+                width]} (prepare-options :wavy values)
+        half-width      (/ width 2)
+        height          (* width eccentricity)]
     (line-with-offset
      length offset width
      ["a" half-width height 0 0 (if reversed? 0 1) [half-width 0]
@@ -129,14 +167,14 @@
 
 (defn dovetailed
   {:display-name "Dovetailed"}
-  [{:keys [eccentricity width offset]
-    :or   {eccentricity 1
-           width        10
-           offset       0}} length {:keys [reversed?]}]
-  (let [half-width  (/ width 2)
-        third-width (/ width 3)
-        sixth-width (/ width 6)
-        height      (* half-width eccentricity)]
+  [values length {:keys [reversed?]}]
+  (let [{:keys [eccentricity
+                offset
+                width]} (prepare-options :dovetailed values)
+        half-width      (/ width 2)
+        third-width     (/ width 3)
+        sixth-width     (/ width 6)
+        height          (* half-width eccentricity)]
     (line-with-offset
      length offset width
      (if reversed?
@@ -155,13 +193,13 @@
 
 (defn raguly
   {:display-name "Raguly"}
-  [{:keys [eccentricity width offset]
-    :or   {eccentricity 1
-           width        10
-           offset       0}} length  {:keys [reversed?]}]
-  (let [half-width    (/ width 2)
-        quarter-width (/ width 4)
-        height        (* half-width eccentricity)]
+  [values length  {:keys [reversed?]}]
+  (let [{:keys [eccentricity
+                offset
+                width]} (prepare-options :raguly values)
+        half-width      (/ width 2)
+        quarter-width   (/ width 4)
+        height          (* half-width eccentricity)]
     (line-with-offset
      length offset width
      (if reversed?
@@ -180,13 +218,13 @@
 
 (defn urdy
   {:display-name "Urdy"}
-  [{:keys [eccentricity width offset]
-    :or   {eccentricity 1
-           width        10
-           offset       0}} length  {:keys [reversed?]}]
-  (let [quarter-width (/ width 4)
-        height        (* quarter-width eccentricity)
-        half-height   (/ height 2)]
+  [values length  {:keys [reversed?]}]
+  (let [{:keys [eccentricity
+                offset
+                width]} (prepare-options :urdy values)
+        quarter-width   (/ width 4)
+        height          (* quarter-width eccentricity)
+        half-height     (/ height 2)]
     (line-with-offset
      length offset width
      (if reversed?
