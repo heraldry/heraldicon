@@ -176,7 +176,7 @@
       link-name]
      (when submenu-open?
        [:div.component.submenu
-        {:on-mouse-leave #(rf/dispatch [:set-in submenu-path false])}
+        #_{:on-mouse-leave #(rf/dispatch [:set-in submenu-path false])}
         [:div.header [:a {:on-click #(rf/dispatch [:set-in submenu-path false])}
                       [:i.far.fa-times-circle]]
          " " title]
@@ -566,9 +566,41 @@
                [:a {:on-click #(rf/dispatch [:remove-component component-path])}
                 [:i.far.fa-trash-alt]]]])))]]]))
 
-(defn form-render-options []
+(defn escutcheon-choice [path key display-name render-shield]
+  [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])}
+   [:svg {:style               {:width  "4em"
+                                :height "5.5em"}
+          :viewBox             "0 0 120 200"
+          :preserveAspectRatio "xMidYMin slice"}
+    [:g {:filter "url(#shadow)"}
+     [:g {:transform "translate(10,10)"}
+      [render-shield
+       {:escutcheon key
+        :field      {:component :field
+                     :content   {:tincture :azure}}}
+       {:outline? true}
+       :db-path [:ui :escutcheon-option]]]]]
+   [:div.bottom
+    [:h3 {:style {:text-align "center"}} display-name]
+    [:i]]])
+
+(defn form-for-escutcheon [path render-shield]
+  (let [escutcheon @(rf/subscribe [:get-in path])
+        names      (->> escutcheon/choices
+                        (map (comp vec reverse))
+                        (into {}))]
+    [:div.setting
+     [:label "Escutcheon:"]
+     " "
+     [submenu path "Escutcheon" (get names escutcheon)
+      (for [[display-name key] escutcheon/choices]
+        ^{:key key}
+        [escutcheon-choice path key display-name render-shield])]
+     [:div.spacer]]))
+
+(defn form-render-options [render-shield]
   [component [:render-options] :render-options "Options" nil
-   [select [:coat-of-arms :escutcheon] "Escutcheon" escutcheon/choices]
+   [form-for-escutcheon [:coat-of-arms :escutcheon] render-shield]
    (let [path [:render-options :mode]]
      [radio-select path [["Colours" :colours]
                          ["Hatching" :hatching]]

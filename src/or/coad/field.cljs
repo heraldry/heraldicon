@@ -6,11 +6,14 @@
             [re-frame.core :as rf]))
 
 (defn render [{:keys [division components] :as field} environment render-options & {:keys [db-path]}]
-  (let [tincture  (get-in field [:content :tincture])
-        selected? @(rf/subscribe [:component-selected? db-path])]
-    [:g {:on-click (fn [event]
-                     (rf/dispatch [:select-component db-path])
-                     (.stopPropagation event))
+  (let [tincture           (get-in field [:content :tincture])
+        selectable-fields? (-> render-options :ui :selectable-fields?)
+        selected?          (and selectable-fields?
+                                @(rf/subscribe [:component-selected? db-path]))]
+    [:g {:on-click (when selectable-fields?
+                     (fn [event]
+                       (rf/dispatch [:select-component db-path])
+                       (.stopPropagation event)))
          :style    {:pointer-events "visiblePainted"
                     :cursor         "pointer"}}
      (cond

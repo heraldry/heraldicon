@@ -91,7 +91,8 @@
    (merge {:render-options {:mode      :colours
                             :outline?  false
                             :squiggly? false
-                            :ui        {:open? true}}
+                            :ui        {:open?              true
+                                        :selectable-fields? true}}
            :coat-of-arms   config/default-coat-of-arms} db)))
 
 (rf/reg-event-db
@@ -300,25 +301,26 @@
 (defn render-shield [coat-of-arms render-options & {:keys [db-path]}]
   (let [shield      (escutcheon/field (:escutcheon coat-of-arms))
         environment (field-environment/transform-to-width shield 100)
-        field       (:field coat-of-arms)]
-    [:g {:filter "url(#shadow)"}
-     [:g {:transform "translate(10,10) scale(5,5)"}
-      [:defs
-       [:clipPath#mask-shield
-        [:path {:d      (:shape environment)
-                :fill   "#fff"
-                :stroke "none"}]]]
-      [:g {:clip-path "url(#mask-shield)"}
-       [:path {:d    (:shape environment)
-               :fill "#f0f0f0"}]
-       [field/render field environment render-options :db-path (conj db-path :field)]]
-      (when (:outline? render-options)
-        [:path.outline {:d (:shape environment)}])]]))
+        field       (:field coat-of-arms)
+        mask-id     (id "mask")]
+    [:g
+     [:defs
+      [:clipPath
+       {:id mask-id}
+       [:path {:d      (:shape environment)
+               :fill   "#fff"
+               :stroke "none"}]]]
+     [:g {:clip-path (str "url(#" mask-id ")")}
+      [:path {:d    (:shape environment)
+              :fill "#f0f0f0"}]
+      [field/render field environment render-options :db-path (conj db-path :field)]]
+     (when (:outline? render-options)
+       [:path.outline {:d (:shape environment)}])]))
 
 (defn forms []
   [:<>
    [:div {:style {:display "inline-block"}}
-    [form/form-render-options]]
+    [form/form-render-options render-shield]]
    [:br]
    [:div {:style {:display        "inline-block"
                   :padding-bottom "20px"}}
@@ -351,7 +353,9 @@
          (when (= mode :hatching)
            [:defs
             hatching/patterns])
-         [render-shield coat-of-arms render-options :db-path [:coat-of-arms]]]
+         [:g {:filter "url(#shadow)"}
+          [:g {:transform "translate(10,10) scale(5,5)"}
+           [render-shield coat-of-arms render-options :db-path [:coat-of-arms]]]]]
         [:div.blazonry {:style {:position "absolute"
                                 :left     10
                                 :top      "34em"
