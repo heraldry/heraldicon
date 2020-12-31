@@ -9,8 +9,8 @@
             [or.coad.position :as position]
             [or.coad.svg :as svg]
             [or.coad.tincture :as tincture]
-            [or.coad.vector :as v]
             [or.coad.util :as util]
+            [or.coad.vector :as v]
             [re-frame.core :as rf]))
 
 (def placeholder-regex
@@ -155,7 +155,11 @@
    :size     {:type    :range
               :min     5
               :max     100
-              :default 50}})
+              :default 50}
+   :stretch  {:type    :range
+              :min     0.5
+              :max     2
+              :default 1}})
 
 (defn options [_charge]
   default-options)
@@ -166,7 +170,7 @@
                                 get-charge-variant-data
                                 :path)]
     (if-let [data @(rf/subscribe [:load-data charge-data-path])]
-      (let [{:keys [position size]}          (options/sanitize charge (options charge))
+      (let [{:keys [position size stretch]}  (options/sanitize charge (options charge))
             ;; since size now is filled with a default, check whether it was set at all,
             ;; if not, then use nil
             ;; TODO: this probably needs a better mechanism and form representation
@@ -192,13 +196,15 @@
                                                    (* width)
                                                    (/ 100))
                                                (* (* min-x-distance 2) 0.8))
-            target-height                    (if size
-                                               (-> size
-                                                   (* height)
-                                                   (/ 100))
-                                               (* (* min-y-distance 2) 0.7))
-            scale                            (min (/ target-width original-charge-width)
+            target-height                    (/ (if size
+                                                  (-> size
+                                                      (* height)
+                                                      (/ 100))
+                                                  (* (* min-y-distance 2) 0.7))
+                                                stretch)
+            scale-x                          (min (/ target-width original-charge-width)
                                                   (/ target-height original-charge-height))
+            scale-y                          (* scale-x stretch)
             adjusted-charge                  (-> data
                                                  fix-string-style-values
                                                  (cond->
@@ -222,8 +228,8 @@
                                               adjusted-charge
                                               provided-placeholder-colours)
             clip-path-id                     (util/id "clip-path")
-            charge-width                     (* original-charge-width scale)
-            charge-height                    (* original-charge-height scale)
+            charge-width                     (* original-charge-width scale-x)
+            charge-height                    (* original-charge-height scale-y)
             position                         (-> (v/v charge-width charge-height)
                                                  (v/-)
                                                  (v// 2)
@@ -258,11 +264,11 @@
                    :height (+ charge-height 10)
                    :fill   "#fff"}]]]
          [:g {:clip-path (str "url(#" clip-path-id ")")}
-          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
+          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale-x "," scale-y ")")
                :mask      (str "url(#" mask-inverted-id ")")}
-           [:g {:transform (str "scale(" (/ 1 scale) "," (/ 1 scale) ") translate(" (- (:x position)) "," (- (:y position)) ")")}
+           [:g {:transform (str "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ") translate(" (- (:x position)) "," (- (:y position)) ")")}
             [top-level-render field charge-environment render-options :db-path (conj db-path :field)]]]
-          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale "," scale ")")
+          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale-x "," scale-y ")")
                :mask      (str "url(#" mask-id ")")}
            coloured-charge]]])
       [:<>])
