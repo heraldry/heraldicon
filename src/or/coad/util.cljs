@@ -21,9 +21,9 @@
     :none "[no tincture]"
     (translate keyword)))
 
-(defn translate-line [{:keys [style]}]
-  (when (not= style :straight)
-    (translate style)))
+(defn translate-line [{:keys [type]}]
+  (when (not= type :straight)
+    (translate type)))
 
 (defn translate-cap-first [keyword]
   (-> keyword
