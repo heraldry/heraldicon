@@ -1,54 +1,20 @@
-(ns or.coad.options
-  (:require [clojure.walk :as walk]))
+(ns or.coad.options)
 
-(defn defaults [options-function type]
-  (->  type
-       options-function
-       (walk/postwalk #(or (:default %) %))))
+(def types #{:range :choice})
 
-(defn contains-in?
-  [m ks]
-  (not= ::absent (get-in m ks ::absent)))
-
-(defn get-options [path options]
-  (let [type    (->> options
-                     (filter #(contains-in? % path))
-                     (map #(get-in % (conj path :type)))
-                     first)
-        default (->> options
-                     (filter #(contains-in? % path))
-                     (map #(get-in % (conj path :default)))
-                     first)]
-    (-> {:type    type
-         :default default}
-        (cond->
-            (= type :choice) (->
-                              (assoc :choices (->> options
-                                                   (filter #(contains-in? % path))
-                                                   (map #(get-in % (conj path :choices)))
-                                                   first)))
-            (= type :range) (->
-                             (assoc :min (->> options
-                                              (filter #(contains-in? % path))
-                                              (map #(get-in % (conj path :min)))
-                                              (apply max)))
-                             (assoc :max (->> options
-                                              (filter #(contains-in? % path))
-                                              (map #(get-in % (conj path :max)))
-                                              (apply min))))))))
-
-(defn get-value [path value options]
-  (let [real-options (get-options path options)
-        value        (or value
-                         (:default real-options))]
-    (case (:type real-options)
-      :range (if (nil? value)
-               nil
-               (let [min-value (:min real-options)
-                     max-value (:max real-options)]
-                 (-> value
-                     (max min-value)
-                     (min max-value))))
+(defn get-value [value options]
+  (let [value (or value (:default options))]
+    (case (:type options)
+      :choice (let [choices (into #{}
+                                  (map second (:choices options)))]
+                (if (contains? choices value)
+                  value
+                  (-> options :choices first second)))
+      :range  (if (nil? value)
+                (:min options)
+                (-> value
+                    (max (:min options))
+                    (min (:max options))))
       value)))
 
 #_{:clj-kondo/ignore [:redefined-var]}
@@ -57,10 +23,16 @@
   (let [x (if (nil? x) {} x)]
     (into x
           (for [[key value] other]
-            (cond
-              (nil? value) [key nil]
-              (map? value) [key (merge (get x key) value)]
-              :else        [key value])))))
+            (let [other-value (get x key)]
+              (cond
+                (nil? value)             [key nil]
+                (and (contains? x key)
+                     (nil? other-value)) [key nil]
+                (map? value)             [key (merge other-value value)]
+                :else                    [key (cond
+                                                (= key :min) (max value other-value)
+                                                (= key :max) (min value other-value)
+                                                :else        value)]))))))
 
 #_(merge {:origin        {:point    {:type    :choice
                                      :choices [["Fess" :fess]
