@@ -623,6 +623,12 @@
               (-> charge-options :stretch :max)
               :step 0.01
               :default (options/get-value (:stretch charge) (:stretch charge-options))])
+           (when (:rotation charge-options)
+             [range-input (conj path :rotation) "Rotation"
+              (-> charge-options :rotation :min)
+              (-> charge-options :rotation :max)
+              :step 0.01
+              :default (options/get-value (:rotation charge) (:rotation charge-options))])
            (when (:mirrored? charge-options)
              [checkbox (conj path :mirrored?) "Mirrored"])
            (when (:reversed? charge-options)
