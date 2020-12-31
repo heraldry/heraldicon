@@ -21,7 +21,7 @@
              :tierced-per-fess
              :tierced-per-pairle
              :tierced-per-pairle-reversed} type) [(-> config/default-field
-                                                      (assoc-in [:content :tincture] :gules))])))
+                                                      (assoc-in [:content :tincture] :sable))])))
 
 (defn mandatory-part-count [type]
   (case type
