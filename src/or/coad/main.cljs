@@ -17,6 +17,7 @@
             [or.coad.hatching :as hatching]
             [or.coad.ordinary :as ordinary]
             [or.coad.tincture :as tincture]
+            [or.coad.util :as util]
             [re-frame.core :as rf]
             [reagent.dom :as r]))
 
@@ -101,6 +102,15 @@
  :set-in
  (fn [db [_ path value]]
    (assoc-in db path value)))
+
+(rf/reg-event-db
+ :remove-in
+ (fn [db [_ path]]
+   (let [parent-path (drop-last path)
+         value (last path)]
+     (if (util/contains-in? db parent-path)
+       (update-in db parent-path dissoc value)
+       db))))
 
 (rf/reg-event-db
  :toggle-in

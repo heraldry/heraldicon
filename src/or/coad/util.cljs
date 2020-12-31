@@ -26,3 +26,7 @@
 
 (defn combine [separator words]
   (s/join separator (filter #(> (count %) 0) words)))
+
+(defn contains-in?
+  [m ks]
+  (not= ::absent (get-in m ks ::absent)))
