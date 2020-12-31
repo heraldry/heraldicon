@@ -9,14 +9,12 @@
             [or.coad.blazon :as blazon]
             [or.coad.config :as config]
             [or.coad.division :as division]
-            [or.coad.escutcheon :as escutcheon]
-            [or.coad.field :as field]
-            [or.coad.field-environment :as field-environment]
             [or.coad.filter :as filter]
             [or.coad.form :as form]
             [or.coad.hatching :as hatching]
             [or.coad.options :as options]
             [or.coad.ordinary :as ordinary]
+            [or.coad.render :as render]
             [or.coad.tincture :as tincture]
             [or.coad.util :as util]
             [re-frame.core :as rf]
@@ -291,34 +289,15 @@
                   :cy spacing
                   :r size}]]])]))
 
-(defn render-shield [coat-of-arms render-options & {:keys [db-path]}]
-  (let [shield (escutcheon/field (:escutcheon coat-of-arms))
-        environment (field-environment/transform-to-width shield 100)
-        field (:field coat-of-arms)
-        mask-id (util/id "mask")]
-    [:g
-     [:defs
-      [:clipPath
-       {:id mask-id}
-       [:path {:d (:shape environment)
-               :fill "#fff"
-               :stroke "none"}]]]
-     [:g {:clip-path (str "url(#" mask-id ")")}
-      [:path {:d (:shape environment)
-              :fill "#f0f0f0"}]
-      [field/render field environment render-options :db-path (conj db-path :field)]]
-     (when (:outline? render-options)
-       [:path.outline {:d (:shape environment)}])]))
-
 (defn forms []
   [:<>
    [:div {:style {:display "inline-block"}}
-    [form/form-render-options :context {:render-shield render-shield}]]
+    [form/form-render-options]]
    [:br]
    [:div {:style {:display "inline-block"
                   :padding-bottom "20px"}}
     [:div.title "Coat of Arms"]
-    [form/form-for-field [:coat-of-arms :field] :context {:render-shield render-shield}]]])
+    [form/form-for-field [:coat-of-arms :field]]]])
 
 (defn app []
   (fn []
@@ -348,7 +327,7 @@
             hatching/patterns])
          [:g {:filter "url(#shadow)"}
           [:g {:transform "translate(10,10) scale(5,5)"}
-           [render-shield coat-of-arms render-options :db-path [:coat-of-arms]]]]]
+           [render/coat-of-arms coat-of-arms render-options :db-path [:coat-of-arms]]]]]
         [:div.blazonry {:style {:position "absolute"
                                 :left 10
                                 :top "34em"
