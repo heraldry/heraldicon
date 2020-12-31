@@ -324,11 +324,14 @@
      [:label (str label ":")]
      " "
      [submenu path "Tincture" (get names value) {:min-width "22em"}
-      [tincture-choice path :none "None"]
       (for [[group-name & group] tincture/choices]
         ^{:key group-name}
         [:<>
-         [:h4 group-name]
+         (if (= group-name "Metal")
+           [:<>
+            [:h4 {:style {:margin-left "4.5em"}} group-name]
+            [tincture-choice path :none "None"]]
+           [:h4 group-name])
          (for [[display-name key] group]
            ^{:key display-name}
            [tincture-choice path key display-name])])]]))
