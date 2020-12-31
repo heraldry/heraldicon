@@ -159,7 +159,11 @@
    :stretch {:type :range
              :min 0.5
              :max 2
-             :default 1}})
+             :default 1}
+   :mirrored? {:type :boolean
+               :default false}
+   :reversed? {:type :boolean
+               :default false}})
 
 (defn options [_charge]
   default-options)
@@ -170,7 +174,8 @@
                                 get-charge-variant-data
                                 :path)]
     (if-let [data @(rf/subscribe [:load-data charge-data-path])]
-      (let [{:keys [position size stretch]} (options/sanitize charge (options charge))
+      (let [{:keys [position size stretch
+                    mirrored? reversed?]} (options/sanitize charge (options charge))
             ;; since size now is filled with a default, check whether it was set at all,
             ;; if not, then use nil
             ;; TODO: this probably needs a better mechanism and form representation
@@ -202,9 +207,11 @@
                                    (/ 100))
                                (* (* min-y-distance 2) 0.7))
                              stretch)
-            scale-x (min (/ target-width original-charge-width)
-                         (/ target-height original-charge-height))
-            scale-y (* scale-x stretch)
+            scale-x (* (if mirrored? -1 1)
+                       (min (/ target-width original-charge-width)
+                            (/ target-height original-charge-height)))
+            scale-y (* (if reversed? -1 1)
+                       (* (Math/abs scale-x) stretch))
             adjusted-charge (-> data
                                 fix-string-style-values
                                 (cond->
@@ -228,12 +235,18 @@
                              adjusted-charge
                              provided-placeholder-colours)
             clip-path-id (util/id "clip-path")
-            charge-width (* original-charge-width scale-x)
-            charge-height (* original-charge-height scale-y)
+            charge-width (-> original-charge-width
+                             (* scale-x)
+                             Math/abs)
+            charge-height (-> original-charge-height
+                              (* scale-y)
+                              Math/abs)
             position (-> (v/v charge-width charge-height)
                          (v/-)
                          (v// 2)
                          (v/+ center-point))
+            shift (v/v (if mirrored? (- original-charge-width) 0)
+                       (if reversed? (- original-charge-height) 0))
             charge-environment (field-environment/create
                                 (svg/make-path ["M" position
                                                 "l" (v/v charge-width 0)
@@ -264,11 +277,11 @@
                    :height (+ charge-height 10)
                    :fill "#fff"}]]]
          [:g {:clip-path (str "url(#" clip-path-id ")")}
-          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale-x "," scale-y ")")
+          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale-x "," scale-y ") translate(" (-> shift :x) "," (-> shift :y) ")")
                :mask (str "url(#" mask-inverted-id ")")}
-           [:g {:transform (str "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ") translate(" (- (:x position)) "," (- (:y position)) ")")}
+           [:g {:transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ") scale(" (/ 1 scale-x) "," (/ 1 scale-y) ") translate(" (- (:x position)) "," (- (:y position)) ")")}
             [top-level-render field charge-environment render-options :db-path (conj db-path :field)]]]
-          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale-x "," scale-y ")")
+          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale-x "," scale-y ") translate(" (-> shift :x) "," (-> shift :y) ")")
                :mask (str "url(#" mask-id ")")}
            coloured-charge]]])
       [:<>])
