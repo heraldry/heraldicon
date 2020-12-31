@@ -290,7 +290,11 @@
 (defn tincture-choice [path key display-name & {:keys [context]}]
   (let [render-shield (:render-shield context)
         value @(rf/subscribe [:get-in path])]
-    [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])}
+    [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])
+                          :style {:border (if (= value key)
+                                            "1px solid #000"
+                                            "1px solid transparent")
+                                  :border-radius "5px"}}
      [:svg {:style {:width "4em"
                     :height "4.5em"}
             :viewBox "0 0 120 200"
