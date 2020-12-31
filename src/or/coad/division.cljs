@@ -7,7 +7,8 @@
             [or.coad.options :as options]
             [or.coad.position :as position]
             [or.coad.svg :as svg]
-            [or.coad.vector :as v]))
+            [or.coad.vector :as v]
+            [or.coad.util :as util]))
 
 (defn default-fields [type]
   (into [config/default-field
@@ -132,7 +133,7 @@
 (defn make-division [type fields parts mask-overlaps outline parent-environment parent
                      top-level-render render-options & {:keys [db-path]}]
   (let [mask-ids (->> (range (count fields))
-                      (map #(svg/id (str (name type) "-" %))))
+                      (map #(util/id (str (name type) "-" %))))
         environments (->> parts
                           (map-indexed (fn [idx [shape-path bounding-box]]
                                          (let [field (get-field fields idx)]

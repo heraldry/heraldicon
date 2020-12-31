@@ -237,13 +237,6 @@
 
 ;; views
 
-
-(def -current-id
-  (atom 0))
-
-(defn id [prefix]
-  (str prefix "_" (swap! -current-id inc)))
-
 (def defs
   (into
    [:defs
@@ -302,7 +295,7 @@
   (let [shield (escutcheon/field (:escutcheon coat-of-arms))
         environment (field-environment/transform-to-width shield 100)
         field (:field coat-of-arms)
-        mask-id (id "mask")]
+        mask-id (util/id "mask")]
     [:g
      [:defs
       [:clipPath
