@@ -310,7 +310,9 @@
 (defn form-for-tincture [path & {:keys [context]}]
   (let [value @(rf/subscribe [:get-in path])
         names (->> (into [["None" :none]]
-                         tincture/choices)
+                         (->> tincture/choices
+                              (map #(drop 1 %))
+                              (apply concat)))
                    (map (comp vec reverse))
                    (into {}))]
     [:div.setting
