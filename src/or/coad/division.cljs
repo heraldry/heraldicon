@@ -4,6 +4,7 @@
             [or.coad.field-environment :as field-environment]
             [or.coad.infinity :as infinity]
             [or.coad.line :as line]
+            [or.coad.options :as options]
             [or.coad.position :as position]
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
@@ -27,6 +28,93 @@
             :per-chevron :forty-five-degrees
             :tierced-per-pairle-reversed :forty-five-degrees} type)
       :top-left-fess))
+
+(defn mandatory-part-count [type]
+  (case type
+    nil 0
+    :tierced-per-pale 3
+    :tierced-per-fess 3
+    :tierced-per-pairle 3
+    :tierced-per-pairle-reversed 3
+    2))
+
+(defn diagonal-mode-choices [type]
+  (let [options {:forty-five-degrees "45°"
+                 :top-left-fess "Top-left to origin"
+                 :top-right-fess "Top-right to origin"
+                 :bottom-left-fess "Bottom-left to origin"
+                 :bottom-right-fess "Bottom-right to origin"}]
+    (->> type
+         (get {:per-bend [:forty-five-degrees
+                          :top-left-fess]
+               :per-bend-sinister [:forty-five-degrees
+                                   :top-right-fess]
+               :per-chevron [:forty-five-degrees
+                             :bottom-left-fess
+                             :bottom-right-fess]
+               :per-saltire [:forty-five-degrees
+                             :top-left-fess
+                             :top-right-fess
+                             :bottom-left-fess
+                             :bottom-right-fess]
+               :gyronny [:forty-five-degrees
+                         :top-left-fess
+                         :top-right-fess
+                         :bottom-left-fess
+                         :bottom-right-fess]
+               :tierced-per-pairle [:forty-five-degrees
+                                    :top-left-fess
+                                    :top-right-fess]
+               :tierced-per-pairle-reversed [:forty-five-degrees
+                                             :bottom-left-fess
+                                             :bottom-right-fess]})
+         (map (fn [key]
+                [(get options key) key])))))
+
+(defn counterchangable? [type]
+  ;; TODO: potentially also should look at the parts, maybe demand no
+  ;; ordinaries and charges as well, but for now this check suffices
+  (-> type mandatory-part-count (= 2)))
+
+(def default-options
+  {:origin position/default-options
+   :line {:style {:choices line/choices
+                  :default :straight}}})
+
+(defn options [division]
+  (when division
+    (options/merge
+     default-options
+     (->
+      (get {:per-pale {:origin {:offset-y nil}}
+            :per-fess {:origin {:offset-x nil}}
+            :chief {:origin nil}
+            :base {:origin nil}
+            :per-bend {:origin {:offset-x nil}
+                       :diagonal-mode {:choices (diagonal-mode-choices
+                                                 :per-bend)}}
+            :per-bend-sinister {:origin {:offset-x nil}
+                                :diagonal-mode {:choices (diagonal-mode-choices
+                                                          :per-bend-sinister)}}
+            :per-chevron {:diagonal-mode {:choices (diagonal-mode-choices
+                                                    :per-chevron)}
+                          :line {:offset {:min 0}}}
+            :per-saltire {:diagonal-mode {:choices (diagonal-mode-choices
+                                                    :per-saltire)}
+                          :line {:offset {:min 0}}}
+            :quarterly {:line {:offset {:min 0}}}
+            :gyronny {:diagonal-mode {:choices (diagonal-mode-choices
+                                                :gyronny)}
+                      :line {:offset {:min 0}}}
+            :tierced-per-pairle {:diagonal-mode {:choices (diagonal-mode-choices
+                                                           :tierced-per-pairle)}
+                                 :line {:offset {:min 0}}}
+            :tierced-per-pairle-reversed {:diagonal-mode {:choices (diagonal-mode-choices
+                                                                    :tierced-per-pairle-reversed)}
+                                          :line {:offset {:min 0}}}}
+           (:type division))
+      (update-in [:line] #(options/merge (line/new-options (get-in division [:line]))
+                                         %))))))
 
 (defn get-field [fields index]
   (let [part (get fields index)
@@ -1147,50 +1235,3 @@
 (defn render [{:keys [type] :as division} environment top-level-render render-options & {:keys [db-path]}]
   (let [function (get kinds-function-map type)]
     [function division environment top-level-render render-options :db-path db-path]))
-
-(defn mandatory-part-count [type]
-  (case type
-    nil 0
-    :tierced-per-pale 3
-    :tierced-per-fess 3
-    :tierced-per-pairle 3
-    :tierced-per-pairle-reversed 3
-    2))
-
-(defn counterchangable? [type]
-  ;; TODO: potentially also should look at the parts, maybe demand no
-  ;; ordinaries and charges as well, but for now this check suffices
-  (-> type mandatory-part-count (= 2)))
-
-(defn diagonal-mode-choices [type]
-  (let [options {:forty-five-degrees "45°"
-                 :top-left-fess "Top-left to origin"
-                 :top-right-fess "Top-right to origin"
-                 :bottom-left-fess "Bottom-left to origin"
-                 :bottom-right-fess "Bottom-right to origin"}]
-    (->> type
-         (get {:per-bend [:forty-five-degrees
-                          :top-left-fess]
-               :per-bend-sinister [:forty-five-degrees
-                                   :top-right-fess]
-               :per-chevron [:forty-five-degrees
-                             :bottom-left-fess
-                             :bottom-right-fess]
-               :per-saltire [:forty-five-degrees
-                             :top-left-fess
-                             :top-right-fess
-                             :bottom-left-fess
-                             :bottom-right-fess]
-               :gyronny [:forty-five-degrees
-                         :top-left-fess
-                         :top-right-fess
-                         :bottom-left-fess
-                         :bottom-right-fess]
-               :tierced-per-pairle [:forty-five-degrees
-                                    :top-left-fess
-                                    :top-right-fess]
-               :tierced-per-pairle-reversed [:forty-five-degrees
-                                             :bottom-left-fess
-                                             :bottom-right-fess]})
-         (map (fn [key]
-                [(get options key) key])))))
