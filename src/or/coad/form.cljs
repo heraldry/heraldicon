@@ -187,7 +187,7 @@
         value @(rf/subscribe [:get-division-type path])]
     [:div.choice.tooltip {:on-click #(rf/dispatch [:set-division-type path key])}
      [:svg {:style {:width "4em"
-                    :height "4.8em"}
+                    :height "4.5em"}
             :viewBox "0 0 120 200"
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
@@ -292,7 +292,7 @@
         value @(rf/subscribe [:get-in path])]
     [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])}
      [:svg {:style {:width "4em"
-                    :height "4.8em"}
+                    :height "4.5em"}
             :viewBox "0 0 120 200"
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
@@ -641,7 +641,7 @@
         render-shield (:render-shield context)]
     [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])}
      [:svg {:style {:width "4em"
-                    :height "5.5em"}
+                    :height "5em"}
             :viewBox "0 0 120 200"
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
