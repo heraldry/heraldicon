@@ -119,17 +119,6 @@
       (update-in [:line] #(options/merge (line/options (get-in division [:line]))
                                          %))))))
 
-(defn prepare-options [values & {:keys [given-options]}]
-  (let [relevant-options (or given-options
-                             (options values))]
-    (into {}
-          (for [[k v] relevant-options]
-            (cond
-              (and (map? v)
-                   (not (contains?
-                         options/types (:type v)))) [k (prepare-options (get values k) :given-options v)]
-              :else [k (options/get-value (get values k) v)])))))
-
 (defn get-field [fields index]
   (let [part (get fields index)
         ref (:ref part)]
@@ -186,7 +175,7 @@
   {:display-name "Per pale"
    :parts ["dexter" "sinister"]}
   [{:keys [type fields] :as division} environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin]} (prepare-options division)
+  (let [{:keys [line origin]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -229,7 +218,7 @@
   {:display-name "Per fess"
    :parts ["chief" "base"]}
   [{:keys [type fields] :as division} environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin]} (prepare-options division)
+  (let [{:keys [line origin]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -293,7 +282,7 @@
   {:display-name "Per bend"
    :parts ["chief" "base"]}
   [{:keys [type fields] :as division} environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode]} (prepare-options division)
+  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -337,7 +326,7 @@
   {:display-name "Per bend sinister"
    :parts ["chief" "base"]}
   [{:keys [type fields] :as division} environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode]} (prepare-options division)
+  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (:top points)
@@ -387,7 +376,7 @@
   {:display-name "Per chevron"
    :parts ["chief" "base"]}
   [{:keys [type fields] :as division} environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode]} (prepare-options division)
+  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -447,7 +436,7 @@
   {:display-name "Per saltire"
    :parts ["chief" "dexter" "sinister" "base"]}
   [{:keys [type fields] :as division} environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode]} (prepare-options division)
+  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -565,7 +554,7 @@
   {:display-name "Quarterly"
    :parts ["I" "II" "III" "IV"]}
   [{:keys [type fields] :as division} environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin]} (prepare-options division)
+  (let [{:keys [line origin]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -668,7 +657,7 @@
   {:display-name "Gyronny"
    :parts ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"]}
   [{:keys [type fields] :as division} environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode]} (prepare-options division)
+  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -866,7 +855,7 @@
   {:display-name "Tierced per pale"
    :parts ["dexter" "fess" "sinister"]}
   [{:keys [type fields] :as division} environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin]} (prepare-options division)
+  (let [{:keys [line origin]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -940,7 +929,7 @@
   {:display-name "Tierced per fess"
    :parts ["chief" "fess" "base"]}
   [{:keys [type fields] :as division} environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin]} (prepare-options division)
+  (let [{:keys [line origin]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -1013,7 +1002,7 @@
   {:display-name "Tierced per pairle"
    :parts ["chief" "dexter" "sinister"]}
   [{:keys [type fields] :as division} environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode]} (prepare-options division)
+  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         bottom (assoc (:bottom points) :x (:x origin-point))
@@ -1109,7 +1098,7 @@
   {:display-name "Tierced per pairle reversed"
    :parts ["dexter" "sinister" "base"]}
   [{:keys [type fields] :as division} environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode]} (prepare-options division)
+  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
