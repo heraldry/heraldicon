@@ -5,6 +5,7 @@
             [or.coad.division :as division]
             [or.coad.field-environment :as field-environment]
             [or.coad.line :as line]
+            [or.coad.options :as options]
             [or.coad.position :as position]
             [or.coad.svg :as svg]
             [or.coad.tincture :as tincture]
@@ -148,22 +149,38 @@
   (and (:counterchanged? field)
        (division/counterchangable? (-> parent :division :type))))
 
-(defn render [{:keys [type field tincture position hints] :as charge} parent
+(def default-options
+  {:position position/default-options
+   :size {:type :range
+          :min 5
+          :max 100
+          :default 50}})
+
+(defn options [_charge]
+  default-options)
+
+(defn render [{:keys [type field tincture hints] :as charge} parent
               environment top-level-render render-options & {:keys [db-path]}]
   (if-let [charge-data-path (-> charge
                                 get-charge-variant-data
                                 :path)]
     (if-let [data @(rf/subscribe [:load-data charge-data-path])]
-      (let [data (first data)
+      (let [{:keys [position size]} (options/sanitize charge (options charge))
+            ;; since size now is filled with a default, check whether it was set at all,
+            ;; if not, then use nil
+            ;; TODO: this probably needs a better mechanism and form representation
+            size (if (:size charge) size nil)
+            data (first data)
             points (:points environment)
             top (:top points)
             bottom (:bottom points)
             left (:left points)
             right (:right points)
             meta (get data 1)
-            size (:size hints)
-            width (js/parseFloat (:width meta))
-            height (js/parseFloat (:height meta))
+            original-charge-width (js/parseFloat (:width meta))
+            original-charge-height (js/parseFloat (:height meta))
+            width (:width environment)
+            height (:height environment)
             center-point (position/calculate position environment :fess)
             min-x-distance (min (- (:x center-point) (:x left))
                                 (- (:x right) (:x center-point)))
@@ -179,13 +196,8 @@
                                 (* height)
                                 (/ 100))
                             (* (* min-y-distance 2) 0.7))
-            scale (min (/ target-width width)
-                       (/ target-height height))
-            position (-> (v/v width height)
-                         (v/* scale)
-                         (v/-)
-                         (v// 2)
-                         (v/+ center-point))
+            scale (min (/ target-width original-charge-width)
+                       (/ target-height original-charge-height))
             adjusted-charge (-> data
                                 fix-string-style-values
                                 (cond->
@@ -209,8 +221,12 @@
                              adjusted-charge
                              provided-placeholder-colours)
             clip-path-id (svg/id "clip-path")
-            charge-width (* width scale)
-            charge-height (* height scale)
+            charge-width (* original-charge-width scale)
+            charge-height (* original-charge-height scale)
+            position (-> (v/v charge-width charge-height)
+                         (v/-)
+                         (v// 2)
+                         (v/+ center-point))
             charge-environment (field-environment/create
                                 (svg/make-path ["M" position
                                                 "l" (v/v charge-width 0)
