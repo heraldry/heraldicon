@@ -92,7 +92,7 @@
     ["Purpure" :purpure]
     ["Sable" :sable]
     ["Vert" :vert]]
-   ["Furs"
+   ["Fur"
     ["Ermine" :ermine]
     ["Ermines" :ermines]
     ["Erminois" :erminois]
