@@ -187,7 +187,7 @@
         value         @(rf/subscribe [:get-division-type path])]
     [:div.choice.tooltip {:on-click #(rf/dispatch [:set-division-type path key])}
      [:svg {:style               {:width  "4em"
-                                  :height "5.5em"}
+                                  :height "4.8em"}
             :viewBox             "0 0 120 200"
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
@@ -287,13 +287,48 @@
          :default (options/get-value (:offset-y position) (:offset-y options))
          :display-function #(str % "%")])]]))
 
-(defn form-for-tincture [path label & {:keys [context]}]
-  [:div.tincture
-   [select path label (into [["None" :none]] tincture/choices) :grouped? true]])
+(defn tincture-choice [path key display-name & {:keys [context]}]
+  (let [render-shield (:render-shield context)
+        value         @(rf/subscribe [:get-in path])]
+    [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])}
+     [:svg {:style               {:width  "4em"
+                                  :height "4.8em"}
+            :viewBox             "0 0 120 200"
+            :preserveAspectRatio "xMidYMin slice"}
+      [:g {:filter "url(#shadow)"}
+       [:g {:transform "translate(10,10)"}
+        [render-shield
+         {:escutcheon :rectangle
+          :field      {:component :field
+                       :content   {:tincture key}}}
+         {:outline? true}
+         :db-path [:ui :tincture-option]]]]]
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} display-name]
+      [:i]]]))
+
+(defn form-for-tincture [path & {:keys [context]}]
+  (let [value @(rf/subscribe [:get-in path])
+        names (->> (into [["None" :none]]
+                         tincture/choices)
+                   (map (comp vec reverse))
+                   (into {}))]
+    [:div.setting
+     [:label "Tincture:"]
+     " "
+     [submenu path "Tincture" (get names value)
+      [tincture-choice path :none "None" :context context]
+      (for [[group-name & group] tincture/choices]
+        ^{:key group-name}
+        [:<>
+         [:h4 group-name]
+         (for [[display-name key] group]
+           ^{:key display-name}
+           [tincture-choice path key display-name :context context])])]]))
 
 (defn form-for-content [path & {:keys [context]}]
   [:div.form-content
-   [form-for-tincture (conj path :tincture) "Tincture" :context context]])
+   [form-for-tincture (conj path :tincture) :context context]])
 
 (def node-icons
   {:group    {:closed "fa-plus-square"
