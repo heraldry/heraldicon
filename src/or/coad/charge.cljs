@@ -172,6 +172,15 @@
 (defn options [_charge]
   default-options)
 
+(defn rotate [v angle]
+  (let [rad (-> angle
+                (* Math/PI)
+                (/ 180))]
+    (v/v (- (* (:x v) (Math/cos rad))
+            (* (:y v) (Math/sin rad)))
+         (+ (* (:x v) (Math/sin rad))
+            (* (:y v) (Math/cos rad))))))
+
 (defn render [{:keys [type field tincture hints] :as charge} parent
               environment top-level-render render-options & {:keys [db-path]}]
   (if-let [charge-data-path (-> charge
@@ -240,75 +249,38 @@
                                               adjusted-charge
                                               provided-placeholder-colours)
             clip-path-id                     (util/id "clip-path")
-            charge-width                     (-> original-charge-width
-                                                 (* scale-x)
-                                                 Math/abs)
-            charge-height                    (-> original-charge-height
-                                                 (* scale-y)
-                                                 Math/abs)
-            position                         (-> (v/v charge-width charge-height)
-                                                 (v/-)
-                                                 (v// 2)
-                                                 (v/+ center-point))
             shift                            (-> (v/v original-charge-width original-charge-height)
                                                  (v// 2)
                                                  (v/-))
-            clip-1                           (v/v (- (* (:x shift)
-                                                        (Math/cos (-> rotation
-                                                                      (* Math/PI)
-                                                                      (/ 180))))
-                                                     (* (:y shift)
-                                                        (Math/sin (-> rotation
-                                                                      (* Math/PI)
-                                                                      (/ 180)))))
-                                                  (+ (* (:x shift)
-                                                        (Math/sin (-> rotation
-                                                                      (* Math/PI)
-                                                                      (/ 180))))
-                                                     (* (:y shift)
-                                                        (Math/cos (-> rotation
-                                                                      (* Math/PI)
-                                                                      (/ 180))))))
-            clip-2                           (v/v (- (* (:x shift)
-                                                        (Math/cos (-> rotation
-                                                                      (* Math/PI)
-                                                                      (/ 180))))
-                                                     (* (- (:y shift))
-                                                        (Math/sin (-> rotation
-                                                                      (* Math/PI)
-                                                                      (/ 180)))))
-                                                  (+ (* (:x shift)
-                                                        (Math/sin (-> rotation
-                                                                      (* Math/PI)
-                                                                      (/ 180))))
-                                                     (* (- (:y shift))
-                                                        (Math/cos (-> rotation
-                                                                      (* Math/PI)
-                                                                      (/ 180))))))
-            clip-size                        (v/v (* 2 (Math/abs scale-x)
-                                                     (max (-> clip-1 :x Math/abs)
-                                                          (-> clip-2 :y Math/abs)))
-                                                  (* 2 (Math/abs scale-y)
-                                                     (max (-> clip-1 :x Math/abs)
-                                                          (-> clip-2 :y Math/abs))))
+            clip-1                           (rotate (v/dot shift (v/v scale-x scale-y)) rotation)
+            clip-2                           (rotate (v/dot shift (v/v (- scale-x) scale-y)) rotation)
+            clip-3                           (rotate (v/dot shift (v/v scale-x (- scale-y))) rotation)
+            clip-4                           (rotate (v/dot shift (v/v (- scale-x) (- scale-y))) rotation)
+            clip-size                        (v/v (- (max (:x clip-1) (:x clip-2) (:x clip-3) (:x clip-4))
+                                                     (min (:x clip-1) (:x clip-2) (:x clip-3) (:x clip-4)))
+                                                  (- (max (:y clip-1) (:y clip-2) (:y clip-3) (:y clip-4))
+                                                     (min (:y clip-1) (:y clip-2) (:y clip-3) (:y clip-4))))
+            position                         (-> clip-size
+                                                 (v/-)
+                                                 (v// 2)
+                                                 (v/+ center-point))
             charge-environment               (field-environment/create
                                               (svg/make-path ["M" position
-                                                              "l" (v/v charge-width 0)
-                                                              "l" (v/v 0 charge-height)
-                                                              "l" (v/v (- charge-width) 0)
-                                                              "l" (v/v 0 (- charge-height))
+                                                              "l" (v/v (:x clip-size) 0)
+                                                              "l" (v/v 0 (:y clip-size))
+                                                              "l" (v/v (- (:x clip-size)) 0)
+                                                              "l" (v/v 0 (- (:y clip-size)))
                                                               "z"])
                                               {:parent               field
                                                :context              [:charge]
                                                :bounding-box         (svg/bounding-box
                                                                       [position (v/+ position
-                                                                                     (v/v charge-width charge-height))])
+                                                                                     clip-size)])
                                                :override-environment (when (or (:inherit-environment? field)
                                                                                (counterchangable? field parent)) environment)})
             field                            (if (counterchangable? field parent)
                                                (counterchange-field field parent)
                                                field)]
-        (println "shift" shift)
         [:<>
          [:defs
           [:mask {:id mask-id}
@@ -316,14 +288,13 @@
           [:mask {:id mask-inverted-id}
            mask-inverted]
           [:clipPath {:id clip-path-id}
-           [:rect {:x      (-> center-point :x (- (-> clip-size :x (/ 2))) (- 5))
-                   :y      (-> center-point :y (- (-> clip-size :y (/ 2))) (- 5))
+           [:rect {:x      (-> position :x  (- 5))
+                   :y      (-> position :y  (- 5))
                    :width  (-> clip-size :x (+ 10))
                    :height (-> clip-size :y (+ 10))
                    :fill   "#fff"}]]]
          [:g {:clip-path (str "url(#" clip-path-id ")")}
-          [:g {:transform (str "translate(" (:x position) "," (:y position) ")"
-                               "translate(" (-> shift :x - (* (Math/abs scale-x))) "," (-> shift :y - (* (Math/abs scale-y))) ")"
+          [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
                                "rotate(" rotation ")"
                                "scale(" scale-x "," scale-y ")"
                                "translate(" (-> shift :x) "," (-> shift :y) ")")
@@ -331,11 +302,9 @@
            [:g {:transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ")"
                                 "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
                                 "rotate(" (- rotation) ")"
-                                "translate(" (-> shift :x (* (Math/abs scale-x))) "," (-> shift :y (* (Math/abs scale-y))) ")"
-                                "translate(" (- (:x position)) "," (- (:y position)) ")")}
+                                "translate(" (- (:x center-point)) "," (- (:y center-point)) ")")}
             [top-level-render field charge-environment render-options :db-path (conj db-path :field)]]]
-          [:g {:transform (str "translate(" (:x position) "," (:y position) ")"
-                               "translate(" (-> shift :x - (* (Math/abs scale-x))) "," (-> shift :y - (* (Math/abs scale-y))) ")"
+          [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
                                "rotate(" rotation ")"
                                "scale(" scale-x "," scale-y ")"
                                "translate(" (-> shift :x) "," (-> shift :y) ")")
