@@ -567,22 +567,23 @@
                 [:i.far.fa-trash-alt]]]])))]]]))
 
 (defn escutcheon-choice [path key display-name render-shield]
-  [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])}
-   [:svg {:style {:width "4em"
-                  :height "5.5em"}
-          :viewBox "0 0 120 200"
-          :preserveAspectRatio "xMidYMin slice"}
-    [:g {:filter "url(#shadow)"}
-     [:g {:transform "translate(10,10)"}
-      [render-shield
-       {:escutcheon key
-        :field {:component :field
-                :content {:tincture :azure}}}
-       {:outline? true}
-       :db-path [:ui :escutcheon-option]]]]]
-   [:div.bottom
-    [:h3 {:style {:text-align "center"}} display-name]
-    [:i]]])
+  (let [value @(rf/subscribe [:get-in path])]
+    [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])}
+     [:svg {:style {:width "4em"
+                    :height "5.5em"}
+            :viewBox "0 0 120 200"
+            :preserveAspectRatio "xMidYMin slice"}
+      [:g {:filter "url(#shadow)"}
+       [:g {:transform "translate(10,10)"}
+        [render-shield
+         {:escutcheon key
+          :field {:component :field
+                  :content {:tincture (if (= value key) :or :azure)}}}
+         {:outline? true}
+         :db-path [:ui :escutcheon-option]]]]]
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} display-name]
+      [:i]]]))
 
 (defn form-for-escutcheon [path render-shield]
   (let [escutcheon @(rf/subscribe [:get-in path])
