@@ -1,7 +1,9 @@
 (ns or.coad.escutcheon
   (:require [or.coad.field-environment :as field-environment]))
 
-(def heater
+(def
+  ^{:display-name "Heater"}
+  heater
   ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
   (field-environment/create
    (str "m 0,0"
@@ -14,7 +16,9 @@
    {:context      :root
     :bounding-box [-3 3 0 (+ 2 5.196152422706632)]}))
 
-(def square-french
+(def
+  ^{:display-name "Square French"}
+  square-french
   (field-environment/create
    (str "m 0,0"
         "v 15.7"
@@ -25,7 +29,9 @@
    {:context      :root
     :bounding-box [0 (* 2 12) 0 (+ 15.7 13)]}))
 
-(def square-iberian
+(def
+  ^{:display-name "Square Iberian"}
+  square-iberian
   (field-environment/create
    (str "m 0,0"
         "h 5"
@@ -36,7 +42,9 @@
    {:context      :root
     :bounding-box [-5 5 0 (+ 7 5)]}))
 
-(def french-modern
+(def
+  ^{:display-name "French modern"}
+  french-modern
   (field-environment/create
    (str "m 0,0"
         "h 7"
@@ -53,7 +61,9 @@
    {:context      :root
     :bounding-box [-7 7 0 (* 2 8)]}))
 
-(def lozenge
+(def
+  ^{:display-name "Lozenge"}
+  lozenge
   (field-environment/create
    (str "m 0,0"
         "L 5,6.5"
@@ -64,7 +74,9 @@
     :bounding-box [-5 5 0 13]
     :points       {:fess {:x 0 :y 6.5}}}))
 
-(def oval
+(def
+  ^{:display-name "Oval"}
+  oval
   (field-environment/create
    (str "m 0,0"
         "A 5 6.8 0 0 1 5,6.5"
@@ -76,7 +88,9 @@
     :bounding-box [-5 5 0 13]
     :points       {:fess {:x 0 :y 6.5}}}))
 
-(def swiss
+(def
+  ^{:display-name "Swiss"}
+  swiss
   ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
   (field-environment/create
    (str "m 0,0"
@@ -90,7 +104,9 @@
    {:context      :root
     :bounding-box [-3 3 0 (+ 2 5.196152422706632)]}))
 
-(def english
+(def
+  ^{:display-name "English"}
+  english
   (field-environment/create
    (str "m 0,0"
         "h 8"
@@ -109,7 +125,9 @@
    {:context      :root
     :bounding-box [-8 8 0 (* 2 8)]}))
 
-(def polish
+(def
+  ^{:display-name "Polish"}
+  polish
   (field-environment/create
    (str "m 43.402145,5e-7 "
         "c -8.662508,0 -14.063932,7.322064 -27.53457,9.380727 0.01086,7.9371285 -3.321499,15.7448405 -7.7644202,20.8881635 0,0 8.6550412,4.035941 8.6550412,12.967045 0,13.48538 -14.3402146,13.50873 -14.3402146,13.50873 0,0 -2.4179809,4.962539 -2.4179809,15.009696 0,22.996861 15.7236635,40.377428 27.6621895,45.737558 11.938525,5.36013 18.80961,7.63894 22.359194,12.50808 3.549585,-4.86914 10.377904,-7.14795 22.316426,-12.50808 11.938526,-5.36013 27.662185,-22.742701 27.662185,-45.737557 0,-10.047158 -2.41798,-15.009697 -2.41798,-15.009697 0,0 -14.340209,-0.02335 -14.340209,-13.50873 0,-8.931104 8.655042,-12.967045 8.655042,-12.967045 "
@@ -120,7 +138,9 @@
     :bounding-box [0 100 0 130]
     :points       {:fess {:x 50 :y 60}}}))
 
-(def polish-19th-century
+(def
+  ^{:display-name "Polish 19th century"}
+  polish-19th-century
   (field-environment/create
    (str
     "M 9.5919374,7.6420451e-7 6.7196191e-7,9.9320533 "
@@ -132,7 +152,9 @@
     :bounding-box [0 100 0 120]
     :points       {:fess {:x 50 :y 60}}}))
 
-(def renaissance
+(def
+  ^{:display-name "Renaissance"}
+  renaissance
   (field-environment/create
    (str
     "M 43.672061,112.35743 "
@@ -148,29 +170,29 @@
     :bounding-box [0 100 0 117]
     :points       {:fess {:x 50 :y 55}}}))
 
-(def kinds
-  [["Heater" :heater heater]
-   ["Square French" :square-french square-french]
-   ["Square Iberian" :square-iberian square-iberian]
-   ["French Modern" :french-modern french-modern]
-   ["Lozenge" :lozenge lozenge]
-   ["Oval" :oval oval]
-   ["Renaissance" :renaissance renaissance]
-   ["Swiss" :swiss swiss]
-   ["English" :english english]
-   ["Polish" :polish polish]
-   ["Polish (19th century)" :polish-19th-century polish-19th-century]])
+(def escutcheons
+  [#'heater
+   #'square-french
+   #'square-iberian
+   #'french-modern
+   #'lozenge
+   #'oval
+   #'renaissance
+   #'swiss
+   #'english
+   #'polish
+   #'polish-19th-century])
 
 (def kinds-map
-  (->> kinds
-       (map (fn [[_ key data]]
-              [key data]))
+  (->> escutcheons
+       (map (fn [v]
+              [(-> v meta :name keyword) (deref v)]))
        (into {})))
 
 (def choices
-  (->> kinds
-       (map (fn [[name key _]]
-              [name key]))))
+  (->> escutcheons
+       (map (fn [v]
+              [(-> v meta :display-name) (-> v meta :name keyword)]))))
 
 (defn field [type]
   (get kinds-map type))
