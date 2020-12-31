@@ -1,4 +1,5 @@
-(ns or.coad.options)
+(ns or.coad.options
+  (:require [clojure.walk :as walk]))
 
 (def types #{:range :choice})
 
@@ -59,11 +60,18 @@
                        types (:type v)))) [k (sanitize (get values k) v)]
             :else                         [k (get-value (get values k) v)]))))
 
+(defn remove-nil-values [m]
+  (walk/postwalk #(if (map? %)
+                    (into {} (filter (fn [[_ v]] (some? v)) %))
+                    %)
+                 m))
+
 (defn sanitize-or-nil [values given-options]
-  (into {}
-        (for [[k v] given-options]
-          (cond
-            (and (map? v)
-                 (not (contains?
-                       types (:type v)))) [k (sanitize-or-nil (get values k) v)]
-            :else                         [k (get-sanitized-value-or-nil (get values k) v)]))))
+  (-> {}
+      (into (for [[k v] given-options]
+              (cond
+                (and (map? v)
+                     (not (contains?
+                           types (:type v)))) [k (sanitize-or-nil (get values k) v)]
+                :else                         [k (get-sanitized-value-or-nil (get values k) v)])))
+      remove-nil-values))
