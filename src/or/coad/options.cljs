@@ -34,28 +34,11 @@
                              (= key :max) (min value other-value)
                              :else value)]))))))
 
-#_(merge {:origin {:point {:type :choice
-                           :choices [["Fess" :fess]
-                                     ["Chief" :chief]]
-                           :default :fess}
-                   :offset-x {:type :range
-                              :min -45
-                              :max 45
-                              :default 0}
-                   :offset-y {:type :range
-                              :min -45
-                              :max 45
-                              :default 0}}
-          :diagonal-mode {:type :choice
-                          :choices [["foo" :foo]]}
-          :line {:style {:choices [["Straight" :straight]
-                                   ["Invected" :invected]]
-                         :default :straight}
-                 :eccentricity {:type :range
-                                :min 10
-                                :max 20}}}
-         {:origin {:offset-x nil}
-          :diagonal-mode nil
-          :line {:eccentricity {:max 4}}
-          :new-option {:type :range
-                       :min 5}})
+(defn sanitize [values given-options]
+  (into {}
+        (for [[k v] given-options]
+          (cond
+            (and (map? v)
+                 (not (contains?
+                       types (:type v)))) [k (sanitize (get values k) v)]
+            :else [k (get-value (get values k) v)]))))
