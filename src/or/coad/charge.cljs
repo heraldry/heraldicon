@@ -163,7 +163,11 @@
    :mirrored? {:type :boolean
                :default false}
    :reversed? {:type :boolean
-               :default false}})
+               :default false}
+   :rotation {:type :range
+              :min -180
+              :max 180
+              :default 0}})
 
 (defn options [_charge]
   default-options)
@@ -175,7 +179,8 @@
                                 :path)]
     (if-let [data @(rf/subscribe [:load-data charge-data-path])]
       (let [{:keys [position size stretch
-                    mirrored? reversed?]} (options/sanitize charge (options charge))
+                    mirrored? reversed?
+                    rotation]} (options/sanitize charge (options charge))
             ;; since size now is filled with a default, check whether it was set at all,
             ;; if not, then use nil
             ;; TODO: this probably needs a better mechanism and form representation
@@ -245,8 +250,47 @@
                          (v/-)
                          (v// 2)
                          (v/+ center-point))
-            shift (v/v (if mirrored? (- original-charge-width) 0)
-                       (if reversed? (- original-charge-height) 0))
+            shift (-> (v/v original-charge-width original-charge-height)
+                      (v// 2)
+                      (v/-))
+            clip-1 (v/v (- (* (:x shift)
+                              (Math/cos (-> rotation
+                                            (* Math/PI)
+                                            (/ 180))))
+                           (* (:y shift)
+                              (Math/sin (-> rotation
+                                            (* Math/PI)
+                                            (/ 180)))))
+                        (+ (* (:x shift)
+                              (Math/sin (-> rotation
+                                            (* Math/PI)
+                                            (/ 180))))
+                           (* (:y shift)
+                              (Math/cos (-> rotation
+                                            (* Math/PI)
+                                            (/ 180))))))
+            clip-2 (v/v (- (* (:x shift)
+                              (Math/cos (-> rotation
+                                            (* Math/PI)
+                                            (/ 180))))
+                           (* (- (:y shift))
+                              (Math/sin (-> rotation
+                                            (* Math/PI)
+                                            (/ 180)))))
+                        (+ (* (:x shift)
+                              (Math/sin (-> rotation
+                                            (* Math/PI)
+                                            (/ 180))))
+                           (* (- (:y shift))
+                              (Math/cos (-> rotation
+                                            (* Math/PI)
+                                            (/ 180))))))
+            clip-size (v/v (* 2 (Math/abs scale-x)
+                              (max (-> clip-1 :x Math/abs)
+                                   (-> clip-2 :y Math/abs)))
+                           (* 2 (Math/abs scale-y)
+                              (max (-> clip-1 :x Math/abs)
+                                   (-> clip-2 :y Math/abs))))
             charge-environment (field-environment/create
                                 (svg/make-path ["M" position
                                                 "l" (v/v charge-width 0)
@@ -264,6 +308,7 @@
             field (if (counterchangable? field parent)
                     (counterchange-field field parent)
                     field)]
+        (println "shift" shift)
         [:<>
          [:defs
           [:mask {:id mask-id}
@@ -271,17 +316,29 @@
           [:mask {:id mask-inverted-id}
            mask-inverted]
           [:clipPath {:id clip-path-id}
-           [:rect {:x (-> position :x (- 5))
-                   :y (-> position :y (- 5))
-                   :width (+ charge-width 10)
-                   :height (+ charge-height 10)
+           [:rect {:x (-> center-point :x (- (-> clip-size :x (/ 2))) (- 5))
+                   :y (-> center-point :y (- (-> clip-size :y (/ 2))) (- 5))
+                   :width (-> clip-size :x (+ 10))
+                   :height (-> clip-size :y (+ 10))
                    :fill "#fff"}]]]
          [:g {:clip-path (str "url(#" clip-path-id ")")}
-          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale-x "," scale-y ") translate(" (-> shift :x) "," (-> shift :y) ")")
+          [:g {:transform (str "translate(" (:x position) "," (:y position) ")"
+                               "translate(" (-> shift :x - (* (Math/abs scale-x))) "," (-> shift :y - (* (Math/abs scale-y))) ")"
+                               "rotate(" rotation ")"
+                               "scale(" scale-x "," scale-y ")"
+                               "translate(" (-> shift :x) "," (-> shift :y) ")")
                :mask (str "url(#" mask-inverted-id ")")}
-           [:g {:transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ") scale(" (/ 1 scale-x) "," (/ 1 scale-y) ") translate(" (- (:x position)) "," (- (:y position)) ")")}
+           [:g {:transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ")"
+                                "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
+                                "rotate(" (- rotation) ")"
+                                "translate(" (-> shift :x (* (Math/abs scale-x))) "," (-> shift :y (* (Math/abs scale-y))) ")"
+                                "translate(" (- (:x position)) "," (- (:y position)) ")")}
             [top-level-render field charge-environment render-options :db-path (conj db-path :field)]]]
-          [:g {:transform (str "translate(" (:x position) "," (:y position) ") scale(" scale-x "," scale-y ") translate(" (-> shift :x) "," (-> shift :y) ")")
+          [:g {:transform (str "translate(" (:x position) "," (:y position) ")"
+                               "translate(" (-> shift :x - (* (Math/abs scale-x))) "," (-> shift :y - (* (Math/abs scale-y))) ")"
+                               "rotate(" rotation ")"
+                               "scale(" scale-x "," scale-y ")"
+                               "translate(" (-> shift :x) "," (-> shift :y) ")")
                :mask (str "url(#" mask-id ")")}
            coloured-charge]]])
       [:<>])
