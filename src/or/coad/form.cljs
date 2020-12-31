@@ -453,16 +453,19 @@
             (into [["None" :none]] division/choices)
             :value division-type
             :on-change #(rf/dispatch [:set-division-type path %])]]]
-         (when (not= division-type :none)
-           [form-for-line (conj path :division :line)])
-         (when (not= division-type :none)
-           (let [diagonal-mode-choices (division/diagonal-mode-choices division-type)]
-             (when (-> diagonal-mode-choices count (> 0))
-               [select (conj path :division :hints :diagonal-mode) "Diagonal"
-                diagonal-mode-choices :default (division/diagonal-default division-type)])))
-         (when (not= division-type :none)
-           [form-for-position (conj path :division :origin)
-            :title "Origin"])
+         (let [division-options (division/options (:division field))]
+           (when (:line division-options)
+             [form-for-line (conj path :division :line) :options (:line division-options)])
+           (when (:diagonal-mode division-options)
+             (let [choices (-> division-options :diagonal-mode :choices)
+                   default (-> division-options :diagonal-mode :default)]
+               (when (-> choices count (> 0))
+                 [select (conj path :division :hints :diagonal-mode) "Diagonal"
+                  choices :default default])))
+           (when (:position division-options)
+             [form-for-position (conj path :division :origin)
+              :title "Origin"
+              :options (:position division-options)]))
          (when (= division-type :none)
            [form-for-content (conj path :content)])])]
      (when (not counterchanged?)
