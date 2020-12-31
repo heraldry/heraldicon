@@ -15,6 +15,7 @@
             [or.coad.filter :as filter]
             [or.coad.form :as form]
             [or.coad.hatching :as hatching]
+            [or.coad.options :as options]
             [or.coad.ordinary :as ordinary]
             [or.coad.tincture :as tincture]
             [or.coad.util :as util]
@@ -145,15 +146,8 @@
                           (< (count current) (count default)) (into current (subvec default (count current)))
                           (> (count current) (count default)) (subvec current 0 (count default))
                           :else current))))
-         (update-in (conj path :division) (fn [{:keys [diagonal-mode] :as division}]
-                                            (if (-> new-type
-                                                    division/diagonal-mode-choices
-                                                    (->> (map second))
-                                                    set
-                                                    (get diagonal-mode)
-                                                    not)
-                                              (dissoc division :diagonal-mode)
-                                              division)))
+         (update-in (conj path :division) #(merge %
+                                                  (options/sanitize % (division/options %))))
          (update-in path dissoc :content)
          (cond->
           (not (division/counterchangable? new-type)) (update-in (conj path :components) (fn [components]
