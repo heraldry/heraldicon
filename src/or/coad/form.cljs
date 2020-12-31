@@ -9,6 +9,7 @@
             [or.coad.options :as options]
             [or.coad.ordinary :as ordinary]
             [or.coad.position :as position]
+            [or.coad.render :as render]
             [or.coad.tincture :as tincture]
             [or.coad.util :as util]
             [re-frame.core :as rf]))
@@ -182,9 +183,8 @@
                     %)
                  data))
 
-(defn division-choice [path key display-name & {:keys [context]}]
-  (let [render-shield (:render-shield context)
-        value         @(rf/subscribe [:get-division-type path])]
+(defn division-choice [path key display-name]
+  (let [value @(rf/subscribe [:get-division-type path])]
     [:div.choice.tooltip {:on-click #(rf/dispatch [:set-division-type path key])}
      [:svg {:style               {:width  "4em"
                                   :height "4.5em"}
@@ -192,7 +192,7 @@
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(10,10)"}
-        [render-shield
+        [render/coat-of-arms
          {:escutcheon :rectangle
           :field      (if (= key :none)
                         {:component :field
@@ -209,7 +209,7 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn form-for-division [path & {:keys [context]}]
+(defn form-for-division [path]
   (let [division-type @(rf/subscribe [:get-division-type path])
         names         (->> (into [["None" :none]]
                                  division/choices)
@@ -222,7 +222,7 @@
       (for [[display-name key] (into [["None" :none]]
                                      division/choices)]
         ^{:key key}
-        [division-choice path key display-name :context context])]]))
+        [division-choice path key display-name])]]))
 
 (defn form-for-line [path & {:keys [title options] :or {title "Line"}}]
   (let [line       @(rf/subscribe [:get-in path])
@@ -287,9 +287,8 @@
          :default (options/get-value (:offset-y position) (:offset-y options))
          :display-function #(str % "%")])]]))
 
-(defn tincture-choice [path key display-name & {:keys [context]}]
-  (let [render-shield (:render-shield context)
-        value         @(rf/subscribe [:get-in path])]
+(defn tincture-choice [path key display-name]
+  (let [value @(rf/subscribe [:get-in path])]
     [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])
                           :style    {:border        (if (= value key)
                                                       "1px solid #000"
@@ -301,7 +300,7 @@
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(10,10)"}
-        [render-shield
+        [render/coat-of-arms
          {:escutcheon :rectangle
           :field      {:component :field
                        :content   {:tincture key}}}
@@ -311,7 +310,7 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn form-for-tincture [path & {:keys [context label] :or {label "Tincture"}}]
+(defn form-for-tincture [path & {:keys [label] :or {label "Tincture"}}]
   (let [value (or @(rf/subscribe [:get-in path])
                   :none)
         names (->> (into [["None" :none]]
@@ -324,18 +323,18 @@
      [:label (str label ":")]
      " "
      [submenu path "Tincture" (get names value)
-      [tincture-choice path :none "None" :context context]
+      [tincture-choice path :none "None"]
       (for [[group-name & group] tincture/choices]
         ^{:key group-name}
         [:<>
          [:h4 group-name]
          (for [[display-name key] group]
            ^{:key display-name}
-           [tincture-choice path key display-name :context context])])]]))
+           [tincture-choice path key display-name])])]]))
 
-(defn form-for-content [path & {:keys [context]}]
+(defn form-for-content [path]
   [:div.form-content
-   [form-for-tincture (conj path :tincture) :context context]])
+   [form-for-tincture (conj path :tincture)]])
 
 (def node-icons
   {:group    {:closed "fa-plus-square"
@@ -346,7 +345,7 @@
               :open   "fa-minus-square"}
    :variant  {:normal "fa-image"}})
 
-(defn form-for-ordinary [path & {:keys [parent-field context]}]
+(defn form-for-ordinary [path & {:keys [parent-field]}]
   (let [ordinary @(rf/subscribe [:get-in path])]
     [component
      path :ordinary (-> ordinary :type util/translate-cap-first) nil
@@ -356,7 +355,7 @@
       (let [ordinary-options (ordinary/options ordinary)]
         [:<>
          (when (:line ordinary-options)
-           [form-for-line (conj path :line) :options (:line ordinary-options) :context context])
+           [form-for-line (conj path :line) :options (:line ordinary-options)])
          (when (:diagonal-mode ordinary-options)
            [select (conj path :diagonal-mode) "Diagonal"
             (-> ordinary-options :diagonal-mode :choices)
@@ -371,7 +370,7 @@
             (-> ordinary-options :size :max)
             :default (options/get-value (:size ordinary) (:size ordinary-options))
             :display-function #(str % "%")])])]
-     [form-for-field (conj path :field) :parent-field parent-field :context context]]))
+     [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn tree-for-charge-map [{:keys [key type name groups charges attitudes variants]}
                            tree-path db-path
@@ -488,7 +487,7 @@
                                    :charge-attitude charge-attitude
                                    :still-on-path? following-path?]]))]))))
 
-(defn form-for-charge [path & {:keys [parent-field context]}]
+(defn form-for-charge [path & {:keys [parent-field]}]
   (let [charge                     @(rf/subscribe [:get-in path])
         charge-variant-data        (charge/get-charge-variant-data charge)
         charge-map                 (charge/get-charge-map)
@@ -518,7 +517,7 @@
            ^{:key t}
            [form-for-tincture
             (conj path :tincture t)
-            :label (util/translate-cap-first t) :context context])]
+            :label (util/translate-cap-first t)])]
         [:div
          {:style {:width "50%"
                   :float "left"}}
@@ -543,10 +542,10 @@
               (-> charge-options :size :max)
               :default (options/get-value (:size charge) (:size charge-options))
               :display-function #(str % "%")])])]
-       [form-for-field (conj path :field) :parent-field parent-field :context context]]
+       [form-for-field (conj path :field) :parent-field parent-field]]
       [:<>])))
 
-(defn form-for-field [path & {:keys [parent-field title-prefix context]}]
+(defn form-for-field [path & {:keys [parent-field title-prefix]}]
   (let [division-type   @(rf/subscribe [:get-division-type path])
         field           @(rf/subscribe [:get-in path])
         counterchanged? (and @(rf/subscribe [:get-in (conj path :counterchanged?)])
@@ -565,7 +564,7 @@
          :disabled? (not (division/counterchangable? (-> parent-field :division :type)))])
       (when (not counterchanged?)
         [:<>
-         [form-for-division path :context context]
+         [form-for-division path]
          (let [division-options (division/options (:division field))]
            [:<>
             (when (:line division-options)
@@ -579,7 +578,7 @@
                :title "Origin"
                :options (:origin division-options)])])
          (when (= division-type :none)
-           [form-for-content (conj path :content) :context context])])]
+           [form-for-content (conj path :content)])])]
      (when (not counterchanged?)
        [:div.parts.components
         [:ul
@@ -594,7 +593,7 @@
                 [:div
                  (if ref
                    [component part-path :ref (str "Same as " (division/part-name division-type ref)) part-name]
-                   [form-for-field part-path :title-prefix part-name :context context])]
+                   [form-for-field part-path :title-prefix part-name])]
                 [:div {:style {:padding-left "10px"}}
                  (if ref
                    [:a {:on-click #(rf/dispatch [:set-in part-path
@@ -637,15 +636,14 @@
                 [:i.fas.fa-chevron-up]]]
               [:div
                (if (-> component :component (= :ordinary))
-                 [form-for-ordinary component-path :parent-field field :context context]
-                 [form-for-charge component-path :parent-field field :context context])]
+                 [form-for-ordinary component-path :parent-field field]
+                 [form-for-charge component-path :parent-field field])]
               [:div {:style {:padding-left "10px"}}
                [:a {:on-click #(rf/dispatch [:remove-component component-path])}
                 [:i.far.fa-trash-alt]]]])))]]]))
 
-(defn escutcheon-choice [path key display-name & {:keys [context]}]
-  (let [value         @(rf/subscribe [:get-in path])
-        render-shield (:render-shield context)]
+(defn escutcheon-choice [path key display-name]
+  (let [value @(rf/subscribe [:get-in path])]
     [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])}
      [:svg {:style               {:width  "4em"
                                   :height "5em"}
@@ -653,7 +651,7 @@
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(10,10)"}
-        [render-shield
+        [render/coat-of-arms
          {:escutcheon key
           :field      {:component :field
                        :content   {:tincture (if (= value key) :or :azure)}}}
@@ -663,7 +661,7 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn form-for-escutcheon [path & {:keys [context]}]
+(defn form-for-escutcheon [path]
   (let [escutcheon @(rf/subscribe [:get-in path])
         names      (->> escutcheon/choices
                         (map (comp vec reverse))
@@ -674,12 +672,12 @@
      [submenu path "Escutcheon" (get names escutcheon)
       (for [[display-name key] escutcheon/choices]
         ^{:key key}
-        [escutcheon-choice path key display-name :context context])]
+        [escutcheon-choice path key display-name])]
      [:div.spacer]]))
 
-(defn form-render-options [& {:keys [context]}]
+(defn form-render-options []
   [component [:render-options] :render-options "Options" nil
-   [form-for-escutcheon [:coat-of-arms :escutcheon] :context context]
+   [form-for-escutcheon [:coat-of-arms :escutcheon]]
    (let [path [:render-options :mode]]
      [radio-select path [["Colours" :colours]
                          ["Hatching" :hatching]]
