@@ -58,18 +58,12 @@
    :start  0
    :length length})
 
-(defn prepare-options [line]
-  (let [line-options (options line)]
-    (into {}
-          (for [[k v] line-options]
-            [k (options/get-value (get line k) v)]))))
-
 (defn invected
   {:display-name "Invected"}
   [values length _]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options values)
+                width]} (options/sanitize values (options values))
         radius-x        (/ width 2)
         radius-y        (* radius-x eccentricity)]
     (line-with-offset
@@ -81,7 +75,7 @@
   [values length _]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options values)
+                width]} (options/sanitize values (options values))
         radius-x        (/ width 2)
         radius-y        (* radius-x eccentricity)]
     (line-with-offset
@@ -94,7 +88,7 @@
   [values length {:keys [reversed?]}]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options values)
+                width]} (options/sanitize values (options values))
         half-width      (/ width 2)
         height          (* eccentricity half-width)]
     (line-with-offset
@@ -116,7 +110,7 @@
   [values length _]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options values)
+                width]} (options/sanitize values (options values))
         half-width      (/ width 2)
         height          (* eccentricity half-width)]
     (line-with-offset
@@ -130,7 +124,7 @@
   [values length {:keys [reversed?]}]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options values)
+                width]} (options/sanitize values (options values))
         half-width      (/ width 2)
         quarter-width   (/ width 4)
         half-height     (* quarter-width eccentricity)
@@ -152,7 +146,7 @@
   [values length  {:keys [reversed?]}]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options values)
+                width]} (options/sanitize values (options values))
         half-width      (/ width 2)
         height          (* width eccentricity)]
     (line-with-offset
@@ -165,7 +159,7 @@
   [values length {:keys [reversed?]}]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options values)
+                width]} (options/sanitize values (options values))
         half-width      (/ width 2)
         third-width     (/ width 3)
         sixth-width     (/ width 6)
@@ -191,7 +185,7 @@
   [values length  {:keys [reversed?]}]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options values)
+                width]} (options/sanitize values (options values))
         half-width      (/ width 2)
         quarter-width   (/ width 4)
         height          (* half-width eccentricity)]
@@ -216,7 +210,7 @@
   [values length  {:keys [reversed?]}]
   (let [{:keys [eccentricity
                 offset
-                width]} (prepare-options values)
+                width]} (options/sanitize values (options values))
         quarter-width   (/ width 4)
         height          (* quarter-width eccentricity)
         half-height     (/ height 2)]
