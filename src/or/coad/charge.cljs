@@ -10,6 +10,7 @@
             [or.coad.svg :as svg]
             [or.coad.tincture :as tincture]
             [or.coad.vector :as v]
+            [or.coad.util :as util]
             [re-frame.core :as rf]))
 
 (def placeholder-regex
@@ -115,8 +116,8 @@
                  data))
 
 (defn make-mask [data provided-placeholder-colours]
-  (let [mask-id (svg/id "mask")
-        mask-inverted-id (svg/id "mask")
+  (let [mask-id (util/id "mask")
+        mask-inverted-id (util/id "mask")
         unwanted-placeholder-colours (-> provided-placeholder-colours
                                          (dissoc :primary)
                                          (->>
@@ -220,7 +221,7 @@
             coloured-charge (replace-placeholder-colours-everywhere
                              adjusted-charge
                              provided-placeholder-colours)
-            clip-path-id (svg/id "clip-path")
+            clip-path-id (util/id "clip-path")
             charge-width (* original-charge-width scale)
             charge-height (* original-charge-height scale)
             position (-> (v/v charge-width charge-height)

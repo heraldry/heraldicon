@@ -13,18 +13,10 @@
             [or.coad.util :as util]
             [re-frame.core :as rf]))
 
-;; helper
-
-(def -current-id
-  (atom 0))
-
-(defn id [prefix]
-  (str prefix "_" (swap! -current-id inc)))
-
 ;; components
 
 (defn checkbox [path label & {:keys [on-change disabled? checked?]}]
-  (let [component-id (id "checkbox")
+  (let [component-id (util/id "checkbox")
         checked? (-> (and path
                           @(rf/subscribe [:get-in path]))
                      (or checked?)
@@ -42,7 +34,7 @@
      [:label {:for component-id} label]]))
 
 (defn select [path label choices & {:keys [grouped? value on-change default]}]
-  (let [component-id (id "select")
+  (let [component-id (util/id "select")
         current-value @(rf/subscribe [:get-in path])]
     [:div.setting
      [:label {:for component-id} (str label ":")]
@@ -73,8 +65,8 @@
 
 (defn range-input [path label min-value max-value & {:keys [value on-change default display-function step
                                                             disabled?]}]
-  (let [component-id (id "range")
-        checkbox-id (id "checkbox")
+  (let [component-id (util/id "range")
+        checkbox-id (util/id "checkbox")
         current-value @(rf/subscribe [:get-in path])
         value (or value
                   current-value
@@ -113,7 +105,7 @@
    (let [current-value (or @(rf/subscribe [:get-in path])
                            default)]
      (for [[display-name key] choices]
-       (let [component-id (id "radio")]
+       (let [component-id (util/id "radio")]
          ^{:key key}
          [:<>
           [:input {:id component-id
