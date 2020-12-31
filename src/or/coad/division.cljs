@@ -23,12 +23,6 @@
              :tierced-per-pairle-reversed} type) [(-> config/default-field
                                                       (assoc-in [:content :tincture] :gules))])))
 
-(defn diagonal-default [type]
-  (or (get {:per-bend-sinister :top-right-fess
-            :per-chevron :forty-five-degrees
-            :tierced-per-pairle-reversed :forty-five-degrees} type)
-      :top-left-fess))
-
 (defn mandatory-part-count [type]
   (case type
     nil 0
@@ -78,42 +72,52 @@
 
 (def default-options
   {:origin position/default-options
-   :diagonal-mode {:type :choice}
-   :line (-> line/default-options
-             (assoc-in [:type :choices] line/choices))})
+   :diagonal-mode {:type :choice
+                   :default :top-left-fess}
+   :line line/default-options})
 
 (defn options [division]
   (when division
     (options/merge
      default-options
      (->
-      (get {:per-pale {:origin {:offset-y nil}}
-            :per-fess {:origin {:offset-x nil}}
-            :chief {:origin nil}
-            :base {:origin nil}
+      (get {:per-pale {:origin {:offset-y nil}
+                       :diagonal-mode nil}
+            :per-fess {:origin {:offset-x nil}
+                       :diagonal-mode nil}
+            :chief {:origin nil
+                    :diagonal-mode nil}
+            :base {:origin nil
+                   :diagonal-mode nil}
             :per-bend {:origin {:offset-x nil}
                        :diagonal-mode {:choices (diagonal-mode-choices
                                                  :per-bend)}}
             :per-bend-sinister {:origin {:offset-x nil}
                                 :diagonal-mode {:choices (diagonal-mode-choices
-                                                          :per-bend-sinister)}}
+                                                          :per-bend-sinister)
+                                                :default :top-right-fess}}
             :per-chevron {:diagonal-mode {:choices (diagonal-mode-choices
-                                                    :per-chevron)}
+                                                    :per-chevron)
+                                          :default :forty-five-degrees}
                           :line {:offset {:min 0}}}
             :per-saltire {:diagonal-mode {:choices (diagonal-mode-choices
                                                     :per-saltire)}
                           :line {:offset {:min 0}}}
-            :quarterly {:line {:offset {:min 0}}}
+            :quarterly {:diagonal-mode nil
+                        :line {:offset {:min 0}}}
             :gyronny {:diagonal-mode {:choices (diagonal-mode-choices
                                                 :gyronny)}
                       :line {:offset {:min 0}}}
-            :tierced-per-pale {:origin {:offset-y nil}}
-            :tierced-per-fess {:origin {:offset-x nil}}
+            :tierced-per-pale {:origin {:offset-y nil}
+                               :diagonal-mode nil}
+            :tierced-per-fess {:origin {:offset-x nil}
+                               :diagonal-mode nil}
             :tierced-per-pairle {:diagonal-mode {:choices (diagonal-mode-choices
                                                            :tierced-per-pairle)}
                                  :line {:offset {:min 0}}}
             :tierced-per-pairle-reversed {:diagonal-mode {:choices (diagonal-mode-choices
-                                                                    :tierced-per-pairle-reversed)}
+                                                                    :tierced-per-pairle-reversed)
+                                                          :default :forty-five-degrees}
                                           :line {:offset {:min 0}}}}
            (:type division))
       (update-in [:line] #(options/merge (line/options (get-in division [:line]))
