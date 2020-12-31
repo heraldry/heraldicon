@@ -85,10 +85,6 @@
                                           :diagonal-mode nil}
             :per-fess                    {:origin        {:offset-x nil}
                                           :diagonal-mode nil}
-            :chief                       {:origin        nil
-                                          :diagonal-mode nil}
-            :base                        {:origin        nil
-                                          :diagonal-mode nil}
             :per-bend                    {:origin        {:offset-x nil}
                                           :diagonal-mode {:choices (diagonal-mode-choices
                                                                     :per-bend)}}
