@@ -17,6 +17,22 @@
                    (min (:max options))))
       value)))
 
+(defn get-sanitized-value-or-nil [value options]
+  (if (nil? value)
+    nil
+    (case (:type options)
+      :choice (let [choices (into #{}
+                                  (map second (:choices options)))]
+                (if (contains? choices value)
+                  value
+                  nil))
+      :range (if (nil? value)
+               nil
+               (-> value
+                   (max (:min options))
+                   (min (:max options))))
+      value)))
+
 #_{:clj-kondo/ignore [:redefined-var]}
 (defn merge
   [x other]
@@ -42,3 +58,12 @@
                  (not (contains?
                        types (:type v)))) [k (sanitize (get values k) v)]
             :else [k (get-value (get values k) v)]))))
+
+(defn sanitize-or-nil [values given-options]
+  (into {}
+        (for [[k v] given-options]
+          (cond
+            (and (map? v)
+                 (not (contains?
+                       types (:type v)))) [k (sanitize-or-nil (get values k) v)]
+            :else [k (get-sanitized-value-or-nil (get values k) v)]))))
