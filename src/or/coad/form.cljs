@@ -1,16 +1,17 @@
 (ns or.coad.form
   (:require [clojure.string :as s]
+            [clojure.walk :as walk]
             [or.coad.charge :as charge]
             [or.coad.config :as config]
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
             [or.coad.line :as line]
+            [or.coad.options :as options]
             [or.coad.ordinary :as ordinary]
             [or.coad.position :as position]
             [or.coad.tincture :as tincture]
             [or.coad.util :as util]
-            [re-frame.core :as rf]
-            [or.coad.options :as options]))
+            [re-frame.core :as rf]))
 
 ;; helper
 
@@ -183,6 +184,54 @@
         (into [:div.content]
               content)])]))
 
+(defn replace-recursively [data value replacement]
+  (walk/postwalk #(if (= % value)
+                    replacement
+                    %)
+                 data))
+
+(defn division-choice [path key display-name & {:keys [context]}]
+  (let [render-shield (:render-shield context)
+        value @(rf/subscribe [:get-division-type path])]
+    [:div.choice.tooltip {:on-click #(rf/dispatch [:set-division-type path key])}
+     [:svg {:style {:width "4em"
+                    :height "5.5em"}
+            :viewBox "0 0 120 200"
+            :preserveAspectRatio "xMidYMin slice"}
+      [:g {:filter "url(#shadow)"}
+       [:g {:transform "translate(10,10)"}
+        [render-shield
+         {:escutcheon :rectangle
+          :field (if (= key :none)
+                   {:component :field
+                    :content {:tincture (if (= value key) :or :azure)}}
+                   {:component :field
+                    :division {:type key
+                               :fields (-> (division/default-fields key)
+                                           (replace-recursively :none :argent)
+                                           (cond->
+                                            (= value key) (replace-recursively :azure :or)))}})}
+         {:outline? true}
+         :db-path [:ui :division-option]]]]]
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} display-name]
+      [:i]]]))
+
+(defn form-for-division [path & {:keys [context]}]
+  (let [division-type @(rf/subscribe [:get-division-type path])
+        names (->> (into [["None" :none]]
+                         division/choices)
+                   (map (comp vec reverse))
+                   (into {}))]
+    [:div.setting
+     [:label "Division:"]
+     " "
+     [submenu path "Division" (get names division-type)
+      (for [[display-name key] (into [["None" :none]]
+                                     division/choices)]
+        ^{:key key}
+        [division-choice path key display-name :context context])]]))
+
 (defn form-for-line [path & {:keys [title options] :or {title "Line"}}]
   (let [line @(rf/subscribe [:get-in path])
         type-names (->> line/choices
@@ -246,13 +295,13 @@
          :default (options/get-value (:offset-y position) (:offset-y options))
          :display-function #(str % "%")])]]))
 
-(defn form-for-tincture [path label]
+(defn form-for-tincture [path label & {:keys [context]}]
   [:div.tincture
    [select path label (into [["None" :none]] tincture/choices) :grouped? true]])
 
-(defn form-for-content [path]
+(defn form-for-content [path & {:keys [context]}]
   [:div.form-content
-   [form-for-tincture (conj path :tincture) "Tincture"]])
+   [form-for-tincture (conj path :tincture) "Tincture" :context context]])
 
 (def node-icons
   {:group {:closed "fa-plus-square"
@@ -263,7 +312,7 @@
             :open "fa-minus-square"}
    :variant {:normal "fa-image"}})
 
-(defn form-for-ordinary [path & {:keys [parent-field]}]
+(defn form-for-ordinary [path & {:keys [parent-field context]}]
   (let [ordinary @(rf/subscribe [:get-in path])]
     [component
      path :ordinary (-> ordinary :type util/translate-cap-first) nil
@@ -273,7 +322,7 @@
       (let [ordinary-options (ordinary/options ordinary)]
         [:<>
          (when (:line ordinary-options)
-           [form-for-line (conj path :line) :options (:line ordinary-options)])
+           [form-for-line (conj path :line) :options (:line ordinary-options) :context context])
          (when (:diagonal-mode ordinary-options)
            [select (conj path :diagonal-mode) "Diagonal"
             (-> ordinary-options :diagonal-mode :choices)
@@ -288,7 +337,7 @@
             (-> ordinary-options :size :max)
             :default (options/get-value (:size ordinary) (:size ordinary-options))
             :display-function #(str % "%")])])]
-     [form-for-field (conj path :field) :parent-field parent-field]]))
+     [form-for-field (conj path :field) :parent-field parent-field :context context]]))
 
 (defn tree-for-charge-map [{:keys [key type name groups charges attitudes variants]}
                            tree-path db-path
@@ -405,7 +454,7 @@
                                   :charge-attitude charge-attitude
                                   :still-on-path? following-path?]]))]))))
 
-(defn form-for-charge [path & {:keys [parent-field]}]
+(defn form-for-charge [path & {:keys [parent-field context]}]
   (let [charge @(rf/subscribe [:get-in path])
         charge-variant-data (charge/get-charge-variant-data charge)
         charge-map (charge/get-charge-map)
@@ -435,7 +484,7 @@
            ^{:key t}
            [form-for-tincture
             (conj path :tincture t)
-            (util/translate-cap-first t)])]
+            (util/translate-cap-first t) :context context])]
         [:div
          {:style {:width "50%"
                   :float "left"}}
@@ -460,10 +509,10 @@
               (-> charge-options :size :max)
               :default (options/get-value (:size charge) (:size charge-options))
               :display-function #(str % "%")])])]
-       [form-for-field (conj path :field) :parent-field parent-field]]
+       [form-for-field (conj path :field) :parent-field parent-field :context context]]
       [:<>])))
 
-(defn form-for-field [path & {:keys [parent-field title-prefix]}]
+(defn form-for-field [path & {:keys [parent-field title-prefix context]}]
   (let [division-type @(rf/subscribe [:get-division-type path])
         field @(rf/subscribe [:get-in path])
         counterchanged? (and @(rf/subscribe [:get-in (conj path :counterchanged?)])
@@ -482,13 +531,7 @@
          :disabled? (not (division/counterchangable? (-> parent-field :division :type)))])
       (when (not counterchanged?)
         [:<>
-         [:div.setting
-          [:label "Division:"] " "
-          [submenu (conj path :division) "Division" (-> division-type util/translate-cap-first)
-           [select path "Type"
-            (into [["None" :none]] division/choices)
-            :value division-type
-            :on-change #(rf/dispatch [:set-division-type path %])]]]
+         [form-for-division path :context context]
          (let [division-options (division/options (:division field))]
            [:<>
             (when (:line division-options)
@@ -502,7 +545,7 @@
                :title "Origin"
                :options (:origin division-options)])])
          (when (= division-type :none)
-           [form-for-content (conj path :content)])])]
+           [form-for-content (conj path :content) :context context])])]
      (when (not counterchanged?)
        [:div.parts.components
         [:ul
@@ -517,7 +560,7 @@
                 [:div
                  (if ref
                    [component part-path :ref (str "Same as " (division/part-name division-type ref)) part-name]
-                   [form-for-field part-path :title-prefix part-name])]
+                   [form-for-field part-path :title-prefix part-name :context context])]
                 [:div {:style {:padding-left "10px"}}
                  (if ref
                    [:a {:on-click #(rf/dispatch [:set-in part-path
@@ -560,8 +603,8 @@
                 [:i.fas.fa-chevron-up]]]
               [:div
                (if (-> component :component (= :ordinary))
-                 [form-for-ordinary component-path :parent-field field]
-                 [form-for-charge component-path :parent-field field])]
+                 [form-for-ordinary component-path :parent-field field :context context]
+                 [form-for-charge component-path :parent-field field :context context])]
               [:div {:style {:padding-left "10px"}}
                [:a {:on-click #(rf/dispatch [:remove-component component-path])}
                 [:i.far.fa-trash-alt]]]])))]]]))
