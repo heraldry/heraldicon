@@ -57,12 +57,6 @@
     (sequential? v) (s/join " " (map make-path v))
     :else (str v)))
 
-(def -current-id
-  (atom 0))
-
-(defn id [prefix]
-  (str prefix "_" (swap! -current-id inc)))
-
 (defn translate [[x y] [dx dy]]
   [(+ x dx)
    (+ y dy)])
