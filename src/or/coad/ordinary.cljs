@@ -322,7 +322,7 @@
                                 [:left :left]
                                 [second-left first-left])
                  "z"]
-                [first-right second-left]]]
+                [(v/v 0 row1) (v/v line-length row2)]]]
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)]
@@ -385,7 +385,7 @@
                                 [:left :left]
                                 [second-left first-left])
                  "z"]
-                [first-right second-left]]]
+                [(v/v 0 row1) (v/v line-length row2)]]]
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)]
