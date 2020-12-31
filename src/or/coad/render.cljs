@@ -4,9 +4,9 @@
             [or.coad.field-environment :as field-environment]
             [or.coad.util :as util]))
 
-(defn coat-of-arms [coat-of-arms render-options & {:keys [db-path]}]
+(defn coat-of-arms [coat-of-arms render-options & {:keys [db-path width] :or {width 100}}]
   (let [shield (escutcheon/field (:escutcheon coat-of-arms))
-        environment (field-environment/transform-to-width shield 100)
+        environment (field-environment/transform-to-width shield width)
         field (:field coat-of-arms)
         mask-id (util/id "mask")]
     [:g
