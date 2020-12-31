@@ -147,7 +147,7 @@
                           (> (count current) (count default)) (subvec current 0 (count default))
                           :else current))))
          (update-in (conj path :division) #(merge %
-                                                  (options/sanitize % (division/options %))))
+                                                  (options/sanitize-or-nil % (division/options %))))
          (update-in path dissoc :content)
          (cond->
           (not (division/counterchangable? new-type)) (update-in (conj path :components) (fn [components]
@@ -161,7 +161,7 @@
    (-> db
        (assoc-in (conj path :type) new-type)
        (update-in path #(merge %
-                               (options/sanitize % (ordinary/options %)))))))
+                               (options/sanitize-or-nil % (ordinary/options %)))))))
 
 (rf/reg-event-db
  :add-component
