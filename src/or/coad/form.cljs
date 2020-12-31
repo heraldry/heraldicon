@@ -345,13 +345,47 @@
             :open "fa-minus-square"}
    :variant {:normal "fa-image"}})
 
+(defn ordinary-type-choice [path key display-name]
+  (let [value @(rf/subscribe [:get-in (conj path :ordinary)])]
+    [:div.choice.tooltip {:on-click #(rf/dispatch [:set-ordinary-type path key])}
+     [:svg {:style {:width "4em"
+                    :height "4.5em"}
+            :viewBox "0 0 120 200"
+            :preserveAspectRatio "xMidYMin slice"}
+      [:g {:filter "url(#shadow)"}
+       [:g {:transform "translate(10,10)"}
+        [render/coat-of-arms
+         {:escutcheon :rectangle
+          :field {:component :field
+                  :content {:tincture :argent}
+                  :components [{:component :ordinary
+                                :type key
+                                :field {:content {:tincture (if (= value key) :or :azure)}}}]}}
+         {:outline? true}
+         :db-path [:ui :ordinary-option]]]]]
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} display-name]
+      [:i]]]))
+
+(defn form-for-ordinary-type [path]
+  (let [ordinary-type @(rf/subscribe [:get-in (conj path :type)])
+        names (->> ordinary/choices
+                   (map (comp vec reverse))
+                   (into {}))]
+    [:div.setting
+     [:label "Type:"]
+     " "
+     [submenu path "Division" (get names ordinary-type)
+      (for [[display-name key] ordinary/choices]
+        ^{:key key}
+        [ordinary-type-choice path key display-name])]]))
+
 (defn form-for-ordinary [path & {:keys [parent-field]}]
   (let [ordinary @(rf/subscribe [:get-in path])]
     [component
      path :ordinary (-> ordinary :type util/translate-cap-first) nil
      [:div.settings
-      [select (conj path :type) "Type" ordinary/choices
-       :on-change #(rf/dispatch [:set-ordinary-type path %])]
+      [form-for-ordinary-type path]
       (let [ordinary-options (ordinary/options ordinary)]
         [:<>
          (when (:line ordinary-options)
