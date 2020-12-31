@@ -311,8 +311,9 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn form-for-tincture [path & {:keys [context]}]
-  (let [value @(rf/subscribe [:get-in path])
+(defn form-for-tincture [path & {:keys [context label] :or {label "Tincture"}}]
+  (let [value (or @(rf/subscribe [:get-in path])
+                  :none)
         names (->> (into [["None" :none]]
                          (->> tincture/choices
                               (map #(drop 1 %))
@@ -320,7 +321,7 @@
                    (map (comp vec reverse))
                    (into {}))]
     [:div.setting
-     [:label "Tincture:"]
+     [:label (str label ":")]
      " "
      [submenu path "Tincture" (get names value)
       [tincture-choice path :none "None" :context context]
@@ -517,7 +518,7 @@
            ^{:key t}
            [form-for-tincture
             (conj path :tincture t)
-            (util/translate-cap-first t) :context context])]
+            :label (util/translate-cap-first t) :context context])]
         [:div
          {:style {:width "50%"
                   :float "left"}}
