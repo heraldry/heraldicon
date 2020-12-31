@@ -566,8 +566,9 @@
                [:a {:on-click #(rf/dispatch [:remove-component component-path])}
                 [:i.far.fa-trash-alt]]]])))]]]))
 
-(defn escutcheon-choice [path key display-name render-shield]
-  (let [value @(rf/subscribe [:get-in path])]
+(defn escutcheon-choice [path key display-name & {:keys [context]}]
+  (let [value @(rf/subscribe [:get-in path])
+        render-shield (:render-shield context)]
     [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])}
      [:svg {:style {:width "4em"
                     :height "5.5em"}
@@ -585,7 +586,7 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn form-for-escutcheon [path render-shield]
+(defn form-for-escutcheon [path & {:keys [context]}]
   (let [escutcheon @(rf/subscribe [:get-in path])
         names (->> escutcheon/choices
                    (map (comp vec reverse))
@@ -596,12 +597,12 @@
      [submenu path "Escutcheon" (get names escutcheon)
       (for [[display-name key] escutcheon/choices]
         ^{:key key}
-        [escutcheon-choice path key display-name render-shield])]
+        [escutcheon-choice path key display-name :context context])]
      [:div.spacer]]))
 
-(defn form-render-options [render-shield]
+(defn form-render-options [& {:keys [context]}]
   [component [:render-options] :render-options "Options" nil
-   [form-for-escutcheon [:coat-of-arms :escutcheon] render-shield]
+   [form-for-escutcheon [:coat-of-arms :escutcheon] :context context]
    (let [path [:render-options :mode]]
      [radio-select path [["Colours" :colours]
                          ["Hatching" :hatching]]

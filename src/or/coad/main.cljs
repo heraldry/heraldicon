@@ -320,12 +320,12 @@
 (defn forms []
   [:<>
    [:div {:style {:display "inline-block"}}
-    [form/form-render-options render-shield]]
+    [form/form-render-options :context {:render-shield render-shield}]]
    [:br]
    [:div {:style {:display "inline-block"
                   :padding-bottom "20px"}}
     [:div.title "Coat of Arms"]
-    [form/form-for-field [:coat-of-arms :field]]]])
+    [form/form-for-field [:coat-of-arms :field] :context {:render-shield render-shield}]]])
 
 (defn app []
   (fn []
