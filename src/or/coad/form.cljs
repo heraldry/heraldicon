@@ -162,14 +162,14 @@
 
 (declare form-for-field)
 
-(defn submenu [path title link-name & content]
+(defn submenu [path title link-name styles & content]
   (let [submenu-path  [:ui :open-submenu path]
         submenu-open? @(rf/subscribe [:get-in submenu-path])]
     [:div.submenu-setting {:style {:display "inline-block"}}
      [:a {:on-click #(rf/dispatch [:set-in submenu-path true])}
       link-name]
      (when submenu-open?
-       [:div.component.submenu
+       [:div.component.submenu {:style styles}
         #_{:on-mouse-leave #(rf/dispatch [:set-in submenu-path false])}
         [:div.header [:a {:on-click #(rf/dispatch [:set-in submenu-path false])}
                       [:i.far.fa-times-circle]]
@@ -218,7 +218,7 @@
     [:div.setting
      [:label "Division:"]
      " "
-     [submenu path "Division" (get names division-type)
+     [submenu path "Division" (get names division-type) {:min-width "17.5em"}
       (for [[display-name key] (into [["None" :none]]
                                      division/choices)]
         ^{:key key}
@@ -232,7 +232,7 @@
     [:div.setting
      [:label (str title ":")]
      " "
-     [submenu path "Line" (get type-names (:type line))
+     [submenu path "Line" (get type-names (:type line)) {}
       [select (conj path :type) "Type" (-> options :type :choices)
        :default (options/get-value (:type line) (:type options))]
       (when (:eccentricity options)
@@ -268,7 +268,7 @@
                                     (util/translate-cap-first))
                                 " point" (when (or (-> position :offset-x (or 0) zero? not)
                                                    (-> position :offset-y (or 0) zero? not))
-                                           " (adjusted)"))
+                                           " (adjusted)")) {}
       [select point-path "Point" position/choices
        :on-change #(do
                      (rf/dispatch [:set-in point-path %])
@@ -323,7 +323,7 @@
     [:div.setting
      [:label (str label ":")]
      " "
-     [submenu path "Tincture" (get names value)
+     [submenu path "Tincture" (get names value) {:min-width "22em"}
       [tincture-choice path :none "None"]
       (for [[group-name & group] tincture/choices]
         ^{:key group-name}
@@ -376,7 +376,7 @@
     [:div.setting
      [:label "Type:"]
      " "
-     [submenu path "Division" (get names ordinary-type)
+     [submenu path "Ordinary" (get names ordinary-type) {:min-width "17.5em"}
       (for [[display-name key] ordinary/choices]
         ^{:key key}
         [ordinary-type-choice path key display-name])]]))
@@ -538,7 +538,7 @@
       [component path :charge title nil
        [:div.setting
         [:label "Charge:"] " "
-        [submenu path "Charge" title
+        [submenu path "Charge" title {}
          [:div.tree
           [tree-for-charge-map charge-map [] path charge
            (get-in charge-map
@@ -704,7 +704,7 @@
     [:div.setting
      [:label "Escutcheon:"]
      " "
-     [submenu path "Escutcheon" (get names escutcheon)
+     [submenu path "Escutcheon" (get names escutcheon) {:min-width "17.5em"}
       (for [[display-name key] escutcheon/choices]
         ^{:key key}
         [escutcheon-choice path key display-name])]
