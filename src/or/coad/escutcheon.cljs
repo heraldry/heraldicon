@@ -169,6 +169,7 @@
    {:context      :root
     :bounding-box [0 100 0 117]
     :points       {:fess {:x 50 :y 55}}}))
+
 (def
   ^{:display-name "Rectangle"}
   rectangle
@@ -183,6 +184,20 @@
     :bounding-box [0 10 0 12]
     :points       {:fess {:x 5 :y 6}}}))
 
+(def
+  ^{:display-name "Flag"}
+  flag
+  (field-environment/create
+   (str
+    "M 0,0"
+    "h 15"
+    "v 10"
+    "h -15"
+    "z")
+   {:context      :root
+    :bounding-box [0 15 0 10]
+    :points       {:fess {:x 7.5 :y 5}}}))
+
 (def escutcheons
   [#'heater
    #'square-french
@@ -195,7 +210,8 @@
    #'english
    #'polish
    #'polish-19th-century
-   #'rectangle])
+   #'rectangle
+   #'flag])
 
 (def kinds-map
   (->> escutcheons
