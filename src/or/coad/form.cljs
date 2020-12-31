@@ -496,12 +496,9 @@
             (when (:line division-options)
               [form-for-line (conj path :division :line) :options (:line division-options)])
             (when (:diagonal-mode division-options)
-              (let [choices (-> division-options :diagonal-mode :choices)
-                    default (-> division-options :diagonal-mode :default)]
-                (when (-> choices count (> 0))
-                  [select (conj path :division :diagonal-mode) "Diagonal"
-                   choices
-                   :default default])))
+              [select (conj path :division :diagonal-mode) "Diagonal"
+               (-> division-options :diagonal-mode :choices)
+               :default (-> division-options :diagonal-mode :default)])
             (when (:origin division-options)
               [form-for-position (conj path :division :origin)
                :title "Origin"

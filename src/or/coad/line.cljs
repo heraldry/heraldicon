@@ -7,31 +7,7 @@
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
 
-(def default-options
-  {:type {:type :choice
-          :default :straight}
-   :eccentricity {:type :range
-                  :min 0.2
-                  :max 3
-                  :default 1}
-   :width {:type :range
-           :min 2
-           :max 100
-           :default 10}
-   :offset {:type :range
-            :min -1
-            :max 3
-            :default 0}})
-
-(defn options [line]
-  (options/merge
-   default-options
-   (get {:straight {:eccentricity nil
-                    :offset nil
-                    :width nil}
-         :dancetty {:width {:default 20}}
-         :wavy {:width {:default 20}}}
-        (:type line))))
+(declare options)
 
 (defn line-with-offset [length offset pattern-width pattern]
   (let [offset-length (* offset pattern-width)
@@ -256,6 +232,33 @@
   (->> lines
        (map (fn [function]
               [(-> function meta :display-name) (-> function meta :name keyword)]))))
+
+(def default-options
+  {:type {:type :choice
+          :choices choices
+          :default :straight}
+   :eccentricity {:type :range
+                  :min 0.2
+                  :max 3
+                  :default 1}
+   :width {:type :range
+           :min 2
+           :max 100
+           :default 10}
+   :offset {:type :range
+            :min -1
+            :max 3
+            :default 0}})
+
+(defn options [line]
+  (options/merge
+   default-options
+   (get {:straight {:eccentricity nil
+                    :offset nil
+                    :width nil}
+         :dancetty {:width {:default 20}}
+         :wavy {:width {:default 20}}}
+        (:type line))))
 
 (defn jiggle [[previous
                {:keys [x y] :as current}
