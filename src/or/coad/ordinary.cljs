@@ -3,25 +3,10 @@
             [or.coad.division :as division]
             [or.coad.infinity :as infinity]
             [or.coad.line :as line]
+            [or.coad.options :as options]
             [or.coad.position :as position]
             [or.coad.svg :as svg]
             [or.coad.vector :as v]))
-
-(defn thickness-default [type]
-  (or (get {} type)
-      30))
-
-(defn thickness-options [type]
-  (get {:pale          [20 50]
-        :fess          [20 50]
-        :chief         [10 40]
-        :base          [10 40]
-        :bend          [10 40]
-        :bend-sinister [10 40]
-        :cross         [10 30]
-        :saltire       [10 30]
-        :chevron       [10 30]
-        :pall          [10 30]} type))
 
 (defn diagonal-mode-choices [type]
   (let [options {:forty-five-degrees "45°"
@@ -50,18 +35,65 @@
             :chevron       :forty-five-degrees} type)
       :top-left-fess))
 
+(def default-options
+  {:origin        position/default-options
+   :diagonal-mode {:type    :choice
+                   :default :top-left-fess}
+   :line          line/default-options
+   :size          {:type    :range
+                   :min     10
+                   :max     40
+                   :default 25}})
+
+(defn options [ordinary]
+  (when ordinary
+    (options/merge
+     default-options
+     (->
+      (get {:pale          {:origin        {:offset-y nil}
+                            :diagonal-mode nil
+                            :size          {:max 50}}
+            :fess          {:origin        {:offset-x nil}
+                            :diagonal-mode nil
+                            :size          {:max 50}}
+            :chief         {:origin        nil
+                            :diagonal-mode nil}
+            :base          {:origin        nil
+                            :diagonal-mode nil}
+            :bend          {:origin        {:offset-x nil}
+                            :diagonal-mode {:choices (diagonal-mode-choices
+                                                      :bend)}}
+            :bend-sinister {:origin        {:offset-x nil}
+                            :diagonal-mode {:choices (diagonal-mode-choices
+                                                      :bend-sinister)
+                                            :default :top-right-fess}}
+            :chevron       {:diagonal-mode {:choices (diagonal-mode-choices
+                                                      :chevron)
+                                            :default :forty-five-degrees}
+                            :line          {:offset {:min 0}}
+                            :size          {:max 30}}
+            :saltire       {:diagonal-mode {:choices (diagonal-mode-choices
+                                                      :saltire)}
+                            :line          {:offset {:min 0}}
+                            :size          {:max 30}}
+            :cross         {:diagonal-mode nil
+                            :line          {:offset {:min 0}}
+                            :size          {:max 30}}}
+           (:type ordinary))
+      (update-in [:line] #(options/merge (line/options (get-in ordinary [:line]))
+                                         %))))))
+
 (defn pale
   {:display-name "Pale"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [points                         (:points environment)
+  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [line origin size]}     (options/sanitize ordinary (options ordinary))
+        points                         (:points environment)
         origin-point                   (position/calculate origin environment :fess)
         top                            (assoc (:top points) :x (:x origin-point))
         bottom                         (assoc (:bottom points) :x (:x origin-point))
         width                          (:width environment)
-        thickness                      (or (:thickness hints)
-                                           (thickness-default type))
         band-width                     (-> width
-                                           (* thickness)
+                                           (* size)
                                            (/ 100))
         col1                           (- (:x origin-point) (/ band-width 2))
         col2                           (+ col1 band-width)
@@ -111,16 +143,15 @@
 
 (defn fess
   {:display-name "Fess"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [points                         (:points environment)
+  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [line origin size]}     (options/sanitize ordinary (options ordinary))
+        points                         (:points environment)
         origin-point                   (position/calculate origin environment :fess)
         left                           (assoc (:left points) :y (:y origin-point))
         right                          (assoc (:right points) :y (:y origin-point))
         height                         (:height environment)
-        thickness                      (or (:thickness hints)
-                                           (thickness-default type))
         band-height                    (-> height
-                                           (* thickness)
+                                           (* size)
                                            (/ 100))
         row1                           (- (:y origin-point) (/ band-height 2))
         row2                           (+ row1 band-height)
@@ -167,17 +198,16 @@
 
 (defn chief
   {:display-name "Chief"}
-  [{:keys [type field line hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [points                         (:points environment)
+  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [line size]}            (options/sanitize ordinary (options ordinary))
+        points                         (:points environment)
         top                            (:top points)
         top-left                       (:top-left points)
         left                           (:left points)
         right                          (:right points)
         height                         (:height environment)
-        thickness                      (or (:thickness hints)
-                                           (thickness-default type))
         band-height                    (-> height
-                                           (* thickness)
+                                           (* size)
                                            (/ 100))
         row                            (+ (:y top) band-height)
         row-left                       (v/v (:x left) row)
@@ -211,34 +241,33 @@
 
 (defn base
   {:display-name "Base"}
-  [{:keys [type field line hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [points           (:points environment)
-        bottom           (:bottom points)
-        bottom-right     (:bottom-right points)
-        left             (:left points)
-        right            (:right points)
-        height           (:height environment)
-        thickness        (or (:thickness hints)
-                             (thickness-default type))
-        band-height      (-> height
-                             (* thickness)
-                             (/ 100))
-        row              (- (:y bottom) band-height)
-        row-left         (v/v (:x left) row)
-        row-right        (v/v  (:x right) row)
-        {line-one :line} (line/create line
-                                      (:x (v/- right left))
-                                      :render-options render-options)
-        parts            [[["M" row-left
-                            (line/stitch line-one)
-                            (infinity/path :clockwise
-                                           [:right :left]
-                                           [row-right row-left])
-                            "z"]
-                           [row-left bottom-right]]]
-        field            (if (charge/counterchangable? field parent)
-                           (charge/counterchange-field field parent)
-                           field)]
+  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [line size]} (options/sanitize ordinary (options ordinary))
+        points              (:points environment)
+        bottom              (:bottom points)
+        bottom-right        (:bottom-right points)
+        left                (:left points)
+        right               (:right points)
+        height              (:height environment)
+        band-height         (-> height
+                                (* size)
+                                (/ 100))
+        row                 (- (:y bottom) band-height)
+        row-left            (v/v (:x left) row)
+        row-right           (v/v  (:x right) row)
+        {line-one :line}    (line/create line
+                                         (:x (v/- right left))
+                                         :render-options render-options)
+        parts               [[["M" row-left
+                               (line/stitch line-one)
+                               (infinity/path :clockwise
+                                              [:right :left]
+                                              [row-right row-left])
+                               "z"]
+                              [row-left bottom-right]]]
+        field               (if (charge/counterchangable? field parent)
+                              (charge/counterchange-field field parent)
+                              field)]
     [division/make-division
      :ordinary-base [field] parts
      [:all]
@@ -251,55 +280,52 @@
 
 (defn bend
   {:display-name "Bend"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [points                         (:points environment)
-        origin-point                   (position/calculate origin environment :fess)
-        left                           (assoc (:left points) :y (:y origin-point))
-        right                          (assoc (:right points) :y (:y origin-point))
-        height                         (:height environment)
-        thickness                      (or (:thickness hints)
-                                           (thickness-default type))
-        band-height                    (-> height
-                                           (* thickness)
-                                           (/ 100))
-        diagonal-mode                  (or (:diagonal-mode hints)
-                                           (diagonal-default type))
-        direction                      (division/direction diagonal-mode points origin-point)
-        diagonal-start                 (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
-        diagonal-end                   (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
-        angle                          (division/angle-to-point diagonal-start diagonal-end)
-        line-length                    (v/abs (v/- diagonal-end diagonal-start))
-        offset                         -40
-        row1                           (- (/ band-height 2))
-        row2                           (+ row1 band-height)
-        first-left                     (v/v offset row1)
-        first-right                    (v/v line-length row1)
-        second-left                    (v/v offset row2)
-        second-right                   (v/v line-length row2)
-        {line-one :line}               (line/create line
-                                                    line-length
-                                                    :render-options render-options)
+  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
+        points                                   (:points environment)
+        origin-point                             (position/calculate origin environment :fess)
+        left                                     (assoc (:left points) :y (:y origin-point))
+        right                                    (assoc (:right points) :y (:y origin-point))
+        height                                   (:height environment)
+        band-height                              (-> height
+                                                     (* size)
+                                                     (/ 100))
+        direction                                (division/direction diagonal-mode points origin-point)
+        diagonal-start                           (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
+        diagonal-end                             (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
+        angle                                    (division/angle-to-point diagonal-start diagonal-end)
+        line-length                              (v/abs (v/- diagonal-end diagonal-start))
+        offset                                   -40
+        row1                                     (- (/ band-height 2))
+        row2                                     (+ row1 band-height)
+        first-left                               (v/v offset row1)
+        first-right                              (v/v line-length row1)
+        second-left                              (v/v offset row2)
+        second-right                             (v/v line-length row2)
+        {line-one :line}                         (line/create line
+                                                              line-length
+                                                              :render-options render-options)
         {line-reversed        :line
-         line-reversed-length :length} (line/create line
-                                                    line-length
-                                                    :reversed? true
-                                                    :angle 180
-                                                    :render-options render-options)
-        second-right-adjusted          (v/extend second-left second-right line-reversed-length)
-        parts                          [[["M" first-left
-                                          (line/stitch line-one)
-                                          (infinity/path :clockwise
-                                                         [:right :right]
-                                                         [first-right second-right-adjusted])
-                                          (line/stitch line-reversed)
-                                          (infinity/path :clockwise
-                                                         [:left :left]
-                                                         [second-left first-left])
-                                          "z"]
-                                         [first-right second-left]]]
-        field                          (if (charge/counterchangable? field parent)
-                                         (charge/counterchange-field field parent)
-                                         field)]
+         line-reversed-length :length}           (line/create line
+                                                              line-length
+                                                              :reversed? true
+                                                              :angle 180
+                                                              :render-options render-options)
+        second-right-adjusted                    (v/extend second-left second-right line-reversed-length)
+        parts                                    [[["M" first-left
+                                                    (line/stitch line-one)
+                                                    (infinity/path :clockwise
+                                                                   [:right :right]
+                                                                   [first-right second-right-adjusted])
+                                                    (line/stitch line-reversed)
+                                                    (infinity/path :clockwise
+                                                                   [:left :left]
+                                                                   [second-left first-left])
+                                                    "z"]
+                                                   [first-right second-left]]]
+        field                                    (if (charge/counterchangable? field parent)
+                                                   (charge/counterchange-field field parent)
+                                                   field)]
     [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
                          "rotate(" angle ")")}
      [division/make-division
@@ -317,55 +343,52 @@
 
 (defn bend-sinister
   {:display-name "Bend sinister"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [points                         (:points environment)
-        origin-point                   (position/calculate origin environment :fess)
-        left                           (assoc (:left points) :y (:y origin-point))
-        right                          (assoc (:right points) :y (:y origin-point))
-        height                         (:height environment)
-        thickness                      (or (:thickness hints)
-                                           (thickness-default type))
-        band-height                    (-> height
-                                           (* thickness)
-                                           (/ 100))
-        diagonal-mode                  (or (:diagonal-mode hints)
-                                           (diagonal-default type))
-        direction                      (division/direction diagonal-mode points origin-point)
-        diagonal-start                 (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
-        diagonal-end                   (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
-        angle                          (division/angle-to-point diagonal-start diagonal-end)
-        line-length                    (v/abs (v/- diagonal-end diagonal-start))
-        row1                           (- (/ band-height 2))
-        row2                           (+ row1 band-height)
-        offset                         -40
-        first-left                     (v/v offset row1)
-        first-right                    (v/v line-length row1)
-        second-left                    (v/v offset row2)
-        second-right                   (v/v line-length row2)
-        {line-one :line}               (line/create line
-                                                    line-length
-                                                    :render-options render-options)
+  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
+        points                                   (:points environment)
+        origin-point                             (position/calculate origin environment :fess)
+        left                                     (assoc (:left points) :y (:y origin-point))
+        right                                    (assoc (:right points) :y (:y origin-point))
+        height                                   (:height environment)
+        band-height                              (-> height
+                                                     (* size)
+                                                     (/ 100))
+        direction                                (division/direction diagonal-mode points origin-point)
+        diagonal-start                           (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-end                             (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
+        angle                                    (division/angle-to-point diagonal-start diagonal-end)
+        line-length                              (v/abs (v/- diagonal-end diagonal-start))
+        row1                                     (- (/ band-height 2))
+        row2                                     (+ row1 band-height)
+        offset                                   -40
+        first-left                               (v/v offset row1)
+        first-right                              (v/v line-length row1)
+        second-left                              (v/v offset row2)
+        second-right                             (v/v line-length row2)
+        {line-one :line}                         (line/create line
+                                                              line-length
+                                                              :render-options render-options)
         {line-reversed        :line
-         line-reversed-length :length} (line/create line
-                                                    line-length
-                                                    :reversed? true
-                                                    :angle 180
-                                                    :render-options render-options)
-        second-right-adjusted          (v/extend second-left second-right line-reversed-length)
-        parts                          [[["M" first-left
-                                          (line/stitch line-one)
-                                          (infinity/path :clockwise
-                                                         [:right :right]
-                                                         [first-right second-right-adjusted])
-                                          (line/stitch line-reversed)
-                                          (infinity/path :clockwise
-                                                         [:left :left]
-                                                         [second-left first-left])
-                                          "z"]
-                                         [first-right second-left]]]
-        field                          (if (charge/counterchangable? field parent)
-                                         (charge/counterchange-field field parent)
-                                         field)]
+         line-reversed-length :length}           (line/create line
+                                                              line-length
+                                                              :reversed? true
+                                                              :angle 180
+                                                              :render-options render-options)
+        second-right-adjusted                    (v/extend second-left second-right line-reversed-length)
+        parts                                    [[["M" first-left
+                                                    (line/stitch line-one)
+                                                    (infinity/path :clockwise
+                                                                   [:right :right]
+                                                                   [first-right second-right-adjusted])
+                                                    (line/stitch line-reversed)
+                                                    (infinity/path :clockwise
+                                                                   [:left :left]
+                                                                   [second-left first-left])
+                                                    "z"]
+                                                   [first-right second-left]]]
+        field                                    (if (charge/counterchangable? field parent)
+                                                   (charge/counterchange-field field parent)
+                                                   field)]
     [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
                          "rotate(" angle ")")}
      [division/make-division
@@ -383,18 +406,17 @@
 
 (defn cross
   {:display-name "Cross"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [points                                  (:points environment)
+  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [line origin size]}              (options/sanitize ordinary (options ordinary))
+        points                                  (:points environment)
         origin-point                            (position/calculate origin environment :fess)
         top                                     (assoc (:top points) :x (:x origin-point))
         bottom                                  (assoc (:bottom points) :x (:x origin-point))
         left                                    (assoc (:left points) :y (:y origin-point))
         right                                   (assoc (:right points) :y (:y origin-point))
         width                                   (:width environment)
-        thickness                               (or (:thickness hints)
-                                                    (thickness-default type))
         band-width                              (-> width
-                                                    (* thickness)
+                                                    (* size)
                                                     (/ 100))
         col1                                    (- (:x origin-point) (/ band-width 2))
         col2                                    (+ col1 band-width)
@@ -522,21 +544,18 @@
 
 (defn saltire
   {:display-name "Saltire"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [points                                   (:points environment)
+  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
+        points                                   (:points environment)
         origin-point                             (position/calculate origin environment :fess)
         top                                      (assoc (:top points) :x (:x origin-point))
         bottom                                   (assoc (:bottom points) :x (:x origin-point))
         left                                     (assoc (:left points) :y (:y origin-point))
         right                                    (assoc (:right points) :y (:y origin-point))
         width                                    (:width environment)
-        thickness                                (or (:thickness hints)
-                                                     (thickness-default type))
         band-width                               (-> width
-                                                     (* thickness)
+                                                     (* size)
                                                      (/ 100))
-        diagonal-mode                            (or (:diagonal-mode hints)
-                                                     (diagonal-default type))
         direction                                (division/direction diagonal-mode points origin-point)
         diagonal-top-left                        (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
         diagonal-top-right                       (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
@@ -677,21 +696,18 @@
 
 (defn chevron
   {:display-name "Chevron"}
-  [{:keys [type field line origin hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [points                                   (:points environment)
+  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
+        points                                   (:points environment)
         origin-point                             (position/calculate origin environment :fess)
         top                                      (assoc (:top points) :x (:x origin-point))
         bottom                                   (assoc (:bottom points) :x (:x origin-point))
         left                                     (assoc (:left points) :y (:y origin-point))
         right                                    (assoc (:right points) :y (:y origin-point))
         height                                   (:height environment)
-        thickness                                (or (:thickness hints)
-                                                     (thickness-default type))
         band-width                               (-> height
-                                                     (* thickness)
+                                                     (* size)
                                                      (/ 100))
-        diagonal-mode                            (or (:diagonal-mode hints)
-                                                     (diagonal-default type))
         direction                                (division/direction diagonal-mode points origin-point)
         diagonal-bottom-left                     (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
         diagonal-bottom-right                    (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))

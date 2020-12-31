@@ -264,26 +264,30 @@
    :variant  {:normal "fa-image"}})
 
 (defn form-for-ordinary [path & {:keys [parent-field]}]
-  (let [ordinary      @(rf/subscribe [:get-in path])
-        ordinary-type (:type ordinary)]
+  (let [ordinary @(rf/subscribe [:get-in path])]
     [component
      path :ordinary (-> ordinary :type util/translate-cap-first) nil
      [:div.settings
       [select (conj path :type) "Type" ordinary/choices
        :on-change #(rf/dispatch [:set-ordinary-type path %])]
-      (let [diagonal-mode-choices (ordinary/diagonal-mode-choices ordinary-type)]
-        (when (-> diagonal-mode-choices count (> 0))
-          [select (conj path :diagonal-mode) "Diagonal"
-           diagonal-mode-choices :default (ordinary/diagonal-default ordinary-type)]))
-      (let [[min-value max-value] (ordinary/thickness-options ordinary-type)]
-        (when min-value
-          [range-input (conj path :hints :thickness) "Thickness" min-value max-value
-           :display-function #(str % "%")
-           :default (ordinary/thickness-default ordinary-type)]))
-      [form-for-line (conj path :line)]
-      (when (not (get #{:chief :base} ordinary-type))
-        [form-for-position (conj path :origin)
-         :title "Origin"])]
+      (let [ordinary-options (ordinary/options ordinary)]
+        [:<>
+         (when (:line ordinary-options)
+           [form-for-line (conj path :line) :options (:line ordinary-options)])
+         (when (:diagonal-mode ordinary-options)
+           [select (conj path :diagonal-mode) "Diagonal"
+            (-> ordinary-options :diagonal-mode :choices)
+            :default (-> ordinary-options :diagonal-mode :default)])
+         (when (:origin ordinary-options)
+           [form-for-position (conj path :origin)
+            :title "Origin"
+            :options (:origin ordinary-options)])
+         (when (:size ordinary-options)
+           [range-input (conj path :size) "Size"
+            (-> ordinary-options :size :min)
+            (-> ordinary-options :size :max)
+            :default (options/get-value (:size ordinary) (:size ordinary-options))
+            :display-function #(str % "%")])])]
      [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn tree-for-charge-map [{:keys [key type name groups charges attitudes variants]}
