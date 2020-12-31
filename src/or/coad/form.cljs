@@ -448,24 +448,18 @@
                                       (if % :argent nil)])])
          [checkbox (conj path :hints :outline?) "Draw outline"]]
         [:div.spacer]
-        (let [size (-> charge :hints :size)
-              size-path (conj path :hints :size)]
-          [:div.settings
-           [:div
-            {:style {:width "75%"
-                     :float "left"}}
-            [range-input size-path "Size" 1 100
-             :display-function #(str % "%")
-             :default 50
-             :disabled? (-> size some? not)]]
-           [:div
-            {:style {:width "25%"
-                     :float "right"}}
-            [checkbox nil "auto"
-             :checked? (-> size some? not)
-             :on-change #(rf/dispatch [:set-in size-path (if % nil 50)])]]])
-        [:div.spacer]
-        [form-for-position (conj path :position)]]
+        (let [charge-options (charge/options charge)]
+          [:<>
+           (when (:position charge-options)
+             [form-for-position (conj path :position)
+              :title "Position"
+              :options (:position charge-options)])
+           (when (:size charge-options)
+             [range-input (conj path :size) "Size"
+              (-> charge-options :size :min)
+              (-> charge-options :size :max)
+              :default (options/get-value (:size charge) (:size charge-options))
+              :display-function #(str % "%")])])]
        [form-for-field (conj path :field) :parent-field parent-field]]
       [:<>])))
 
