@@ -790,7 +790,7 @@
                       :colours  (rf/dispatch [:set :render-options :outline? false])))])
 
    [checkbox [:render-options :outline?] "Draw outline"]
-   [checkbox [:render-options :squiggly?] "Squiggly lines (experimental)"]
+   [checkbox [:render-options :squiggly?] "Squiggly lines (can be slow)"]
    [:div.setting
     [:button {:on-click #(rf/dispatch-sync [:set :coat-of-arms config/default-coat-of-arms])}
      "Clear shield"]]])
