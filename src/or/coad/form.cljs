@@ -325,11 +325,16 @@
          :display-function #(str % "%")])]]))
 
 (defn form-for-geometry [path options & {:keys [current]}]
-  (let [changes         (filter some? [(when (:size current) "resized")
-                                       (when (:stretch current) "stretched")
-                                       (when (:rotation current) "rotated")
-                                       (when (:mirrored? current) "mirrored")
-                                       (when (:reversed? current) "reversed")])
+  (let [changes         (filter some? [(when (and (:size current)
+                                                  (:size options)) "resized")
+                                       (when (and (:stretch current)
+                                                  (:stretch options)) "stretched")
+                                       (when (and (:rotation current)
+                                                  (:rotation options)) "rotated")
+                                       (when (and (:mirrored? current)
+                                                  (:mirrored? options)) "mirrored")
+                                       (when (and (:reversed? current)
+                                                  (:reversed? options)) "reversed")])
         current-display (if (-> changes count (> 0))
                           (util/combine ", " changes)
                           "default")]
@@ -437,7 +442,7 @@
                      :content    {:tincture :argent}
                      :components [{:component  :ordinary
                                    :type       key
-                                   :size       (if (ordinary/mobile? key) 75 nil)
+                                   :geometry   {:size (if (ordinary/mobile? key) 75 nil)}
                                    :escutcheon (if (= key :escutcheon) :heater nil)
                                    :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
        {:outline? true}
@@ -517,12 +522,10 @@
            [form-for-position (conj path :origin)
             :title "Origin"
             :options (:origin ordinary-options)])
-         (when (:size ordinary-options)
-           [range-input (conj path :size) "Size"
-            (-> ordinary-options :size :min)
-            (-> ordinary-options :size :max)
-            :default (options/get-value (:size ordinary) (:size ordinary-options))
-            :display-function #(str % "%")])])
+         (when (:geometry ordinary-options)
+           [form-for-geometry (conj path :geometry)
+            (:geometry ordinary-options)
+            :current (:geometry ordinary)])])
       [checkbox (conj path :hints :outline?) "Outline"]]
      [form-for-field (conj path :field) :parent-field parent-field]]))
 

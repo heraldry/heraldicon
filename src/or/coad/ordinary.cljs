@@ -1,8 +1,10 @@
 (ns or.coad.ordinary
-  (:require [or.coad.charge :as charge]
+  (:require ["svgpath" :as svgpath]
+            [or.coad.charge :as charge]
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
             [or.coad.field-environment :as field-environment]
+            [or.coad.geometry :as geometry]
             [or.coad.infinity :as infinity]
             [or.coad.line :as line]
             [or.coad.options :as options]
@@ -42,10 +44,9 @@
    :diagonal-mode {:type    :choice
                    :default :top-left-fess}
    :line          line/default-options
-   :size          {:type    :range
-                   :min     10
-                   :max     50
-                   :default 25}
+   :geometry      (-> geometry/default-options
+                      (assoc-in [:size :min] 10)
+                      (assoc-in [:size :default] 25))
    :escutcheon    {:type    :choice
                    :choices escutcheon/choices
                    :default :heater}})
@@ -60,40 +61,84 @@
         (->
          (get {:pale          {:origin        {:offset-y nil}
                                :diagonal-mode nil
-                               :size          {:max 50}}
+                               :geometry      {:size      {:max 50}
+                                               :mirrored? nil
+                                               :reversed? nil
+                                               :stretch   nil
+                                               :rotation  nil}}
                :fess          {:origin        {:offset-x nil}
                                :diagonal-mode nil
-                               :size          {:max 50}}
+                               :geometry      {:size      {:max 50}
+                                               :mirrored? nil
+                                               :reversed? nil
+                                               :stretch   nil
+                                               :rotation  nil}}
                :chief         {:origin        nil
-                               :diagonal-mode nil}
+                               :diagonal-mode nil
+                               :geometry      {:size      {:max 50}
+                                               :mirrored? nil
+                                               :reversed? nil
+                                               :stretch   nil
+                                               :rotation  nil}}
                :base          {:origin        nil
-                               :diagonal-mode nil}
+                               :diagonal-mode nil
+                               :geometry      {:size      {:max 50}
+                                               :mirrored? nil
+                                               :reversed? nil
+                                               :stretch   nil
+                                               :rotation  nil}}
                :bend          {:origin        {:offset-x nil}
                                :diagonal-mode {:choices (diagonal-mode-choices
-                                                         :bend)}}
+                                                         :bend)}
+                               :geometry      {:size      {:max 50}
+                                               :mirrored? nil
+                                               :reversed? nil
+                                               :stretch   nil
+                                               :rotation  nil}}
                :bend-sinister {:origin        {:offset-x nil}
                                :diagonal-mode {:choices (diagonal-mode-choices
                                                          :bend-sinister)
-                                               :default :top-right-fess}}
+                                               :default :top-right-fess}
+                               :geometry      {:size      {:max 50}
+                                               :mirrored? nil
+                                               :reversed? nil
+                                               :stretch   nil
+                                               :rotation  nil}}
                :chevron       {:diagonal-mode {:choices (diagonal-mode-choices
                                                          :chevron)
                                                :default :forty-five-degrees}
                                :line          {:offset {:min 0}}
-                               :size          {:max 30}}
+                               :geometry      {:size      {:max 30}
+                                               :mirrored? nil
+                                               :reversed? nil
+                                               :stretch   nil
+                                               :rotation  nil}}
                :saltire       {:diagonal-mode {:choices (diagonal-mode-choices
                                                          :saltire)}
                                :line          {:offset {:min 0}}
-                               :size          {:max 30}}
+                               :geometry      {:size      {:max 30}
+                                               :mirrored? nil
+                                               :reversed? nil
+                                               :stretch   nil
+                                               :rotation  nil}}
                :cross         {:diagonal-mode nil
                                :line          {:offset {:min 0}}
-                               :size          {:max 30}}
+                               :geometry      {:size      {:max 30}
+                                               :mirrored? nil
+                                               :reversed? nil
+                                               :stretch   nil
+                                               :rotation  nil}}
                :escutcheon    {:diagonal-mode nil
                                :line          nil
-                               :size          {:max     50
-                                               :default 30}}
+                               :geometry      {:size      {:max     50
+                                                           :default 30}
+                                               :mirrored? nil
+                                               :reversed? nil}}
                :roundel       {:diagonal-mode nil
                                :line          nil
-                               :size          {:max 50}}}
+                               :geometry      {:size      {:max 50}
+                                               :mirrored? nil
+                                               :reversed? nil}}}
               type)
          (cond->
              (not= type :escutcheon) (assoc :escutcheon nil))))))))
@@ -101,7 +146,8 @@
 (defn pale
   {:display-name "Pale"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin size]}     (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                 geometry
         points                         (:points environment)
         origin-point                   (position/calculate origin environment :fess)
         top                            (assoc (:top points) :x (:x origin-point))
@@ -160,7 +206,8 @@
 (defn fess
   {:display-name "Fess"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin size]}     (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                 geometry
         points                         (:points environment)
         origin-point                   (position/calculate origin environment :fess)
         left                           (assoc (:left points) :y (:y origin-point))
@@ -216,7 +263,8 @@
 (defn chief
   {:display-name "Chief"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line size]}            (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line geometry]}        (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                 geometry
         points                         (:points environment)
         top                            (:top points)
         top-left                       (:top-left points)
@@ -260,32 +308,33 @@
 (defn base
   {:display-name "Base"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line size]} (options/sanitize ordinary (options ordinary))
-        points              (:points environment)
-        bottom              (:bottom points)
-        bottom-right        (:bottom-right points)
-        left                (:left points)
-        right               (:right points)
-        height              (:height environment)
-        band-height         (-> height
-                                (* size)
-                                (/ 100))
-        row                 (- (:y bottom) band-height)
-        row-left            (v/v (:x left) row)
-        row-right           (v/v  (:x right) row)
-        {line-one :line}    (line/create line
-                                         (:x (v/- right left))
-                                         :render-options render-options)
-        parts               [[["M" row-left
-                               (line/stitch line-one)
-                               (infinity/path :clockwise
-                                              [:right :left]
-                                              [row-right row-left])
-                               "z"]
-                              [row-left bottom-right]]]
-        field               (if (charge/counterchangable? field parent)
-                              (charge/counterchange-field field parent)
-                              field)]
+  (let [{:keys [line geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]}          geometry
+        points                  (:points environment)
+        bottom                  (:bottom points)
+        bottom-right            (:bottom-right points)
+        left                    (:left points)
+        right                   (:right points)
+        height                  (:height environment)
+        band-height             (-> height
+                                    (* size)
+                                    (/ 100))
+        row                     (- (:y bottom) band-height)
+        row-left                (v/v (:x left) row)
+        row-right               (v/v  (:x right) row)
+        {line-one :line}        (line/create line
+                                             (:x (v/- right left))
+                                             :render-options render-options)
+        parts                   [[["M" row-left
+                                   (line/stitch line-one)
+                                   (infinity/path :clockwise
+                                                  [:right :left]
+                                                  [row-right row-left])
+                                   "z"]
+                                  [row-left bottom-right]]]
+        field                   (if (charge/counterchangable? field parent)
+                                  (charge/counterchange-field field parent)
+                                  field)]
     [division/make-division
      :ordinary-base [field] parts
      [:all]
@@ -300,51 +349,52 @@
 (defn bend
   {:display-name "Bend"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
-        points                                   (:points environment)
-        origin-point                             (position/calculate origin environment :fess)
-        left                                     (assoc (:left points) :y (:y origin-point))
-        right                                    (assoc (:right points) :y (:y origin-point))
-        height                                   (:height environment)
-        band-height                              (-> height
-                                                     (* size)
-                                                     (/ 100))
-        direction                                (division/direction diagonal-mode points origin-point)
-        diagonal-start                           (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
-        diagonal-end                             (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
-        angle                                    (division/angle-to-point diagonal-start diagonal-end)
-        line-length                              (v/abs (v/- diagonal-end diagonal-start))
-        offset                                   -40
-        row1                                     (- (/ band-height 2))
-        row2                                     (+ row1 band-height)
-        first-left                               (v/v offset row1)
-        first-right                              (v/v line-length row1)
-        second-left                              (v/v offset row2)
-        second-right                             (v/v line-length row2)
-        {line-one :line}                         (line/create line
-                                                              line-length
-                                                              :render-options render-options)
+  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                               geometry
+        points                                       (:points environment)
+        origin-point                                 (position/calculate origin environment :fess)
+        left                                         (assoc (:left points) :y (:y origin-point))
+        right                                        (assoc (:right points) :y (:y origin-point))
+        height                                       (:height environment)
+        band-height                                  (-> height
+                                                         (* size)
+                                                         (/ 100))
+        direction                                    (division/direction diagonal-mode points origin-point)
+        diagonal-start                               (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
+        diagonal-end                                 (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
+        angle                                        (division/angle-to-point diagonal-start diagonal-end)
+        line-length                                  (v/abs (v/- diagonal-end diagonal-start))
+        offset                                       -40
+        row1                                         (- (/ band-height 2))
+        row2                                         (+ row1 band-height)
+        first-left                                   (v/v offset row1)
+        first-right                                  (v/v line-length row1)
+        second-left                                  (v/v offset row2)
+        second-right                                 (v/v line-length row2)
+        {line-one :line}                             (line/create line
+                                                                  line-length
+                                                                  :render-options render-options)
         {line-reversed        :line
-         line-reversed-length :length}           (line/create line
-                                                              line-length
-                                                              :reversed? true
-                                                              :angle 180
-                                                              :render-options render-options)
-        second-right-adjusted                    (v/extend second-left second-right line-reversed-length)
-        parts                                    [[["M" first-left
-                                                    (line/stitch line-one)
-                                                    (infinity/path :clockwise
-                                                                   [:right :right]
-                                                                   [first-right second-right-adjusted])
-                                                    (line/stitch line-reversed)
-                                                    (infinity/path :clockwise
-                                                                   [:left :left]
-                                                                   [second-left first-left])
-                                                    "z"]
-                                                   [(v/v 0 row1) (v/v line-length row2)]]]
-        field                                    (if (charge/counterchangable? field parent)
-                                                   (charge/counterchange-field field parent)
-                                                   field)]
+         line-reversed-length :length}               (line/create line
+                                                                  line-length
+                                                                  :reversed? true
+                                                                  :angle 180
+                                                                  :render-options render-options)
+        second-right-adjusted                        (v/extend second-left second-right line-reversed-length)
+        parts                                        [[["M" first-left
+                                                        (line/stitch line-one)
+                                                        (infinity/path :clockwise
+                                                                       [:right :right]
+                                                                       [first-right second-right-adjusted])
+                                                        (line/stitch line-reversed)
+                                                        (infinity/path :clockwise
+                                                                       [:left :left]
+                                                                       [second-left first-left])
+                                                        "z"]
+                                                       [(v/v 0 row1) (v/v line-length row2)]]]
+        field                                        (if (charge/counterchangable? field parent)
+                                                       (charge/counterchange-field field parent)
+                                                       field)]
     [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
                          "rotate(" angle ")")}
      [division/make-division
@@ -364,51 +414,52 @@
 (defn bend-sinister
   {:display-name "Bend sinister"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
-        points                                   (:points environment)
-        origin-point                             (position/calculate origin environment :fess)
-        left                                     (assoc (:left points) :y (:y origin-point))
-        right                                    (assoc (:right points) :y (:y origin-point))
-        height                                   (:height environment)
-        band-height                              (-> height
-                                                     (* size)
-                                                     (/ 100))
-        direction                                (division/direction diagonal-mode points origin-point)
-        diagonal-start                           (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
-        diagonal-end                             (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
-        angle                                    (division/angle-to-point diagonal-start diagonal-end)
-        line-length                              (v/abs (v/- diagonal-end diagonal-start))
-        row1                                     (- (/ band-height 2))
-        row2                                     (+ row1 band-height)
-        offset                                   -40
-        first-left                               (v/v offset row1)
-        first-right                              (v/v line-length row1)
-        second-left                              (v/v offset row2)
-        second-right                             (v/v line-length row2)
-        {line-one :line}                         (line/create line
-                                                              line-length
-                                                              :render-options render-options)
+  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                               geometry
+        points                                       (:points environment)
+        origin-point                                 (position/calculate origin environment :fess)
+        left                                         (assoc (:left points) :y (:y origin-point))
+        right                                        (assoc (:right points) :y (:y origin-point))
+        height                                       (:height environment)
+        band-height                                  (-> height
+                                                         (* size)
+                                                         (/ 100))
+        direction                                    (division/direction diagonal-mode points origin-point)
+        diagonal-start                               (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-end                                 (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
+        angle                                        (division/angle-to-point diagonal-start diagonal-end)
+        line-length                                  (v/abs (v/- diagonal-end diagonal-start))
+        row1                                         (- (/ band-height 2))
+        row2                                         (+ row1 band-height)
+        offset                                       -40
+        first-left                                   (v/v offset row1)
+        first-right                                  (v/v line-length row1)
+        second-left                                  (v/v offset row2)
+        second-right                                 (v/v line-length row2)
+        {line-one :line}                             (line/create line
+                                                                  line-length
+                                                                  :render-options render-options)
         {line-reversed        :line
-         line-reversed-length :length}           (line/create line
-                                                              line-length
-                                                              :reversed? true
-                                                              :angle 180
-                                                              :render-options render-options)
-        second-right-adjusted                    (v/extend second-left second-right line-reversed-length)
-        parts                                    [[["M" first-left
-                                                    (line/stitch line-one)
-                                                    (infinity/path :clockwise
-                                                                   [:right :right]
-                                                                   [first-right second-right-adjusted])
-                                                    (line/stitch line-reversed)
-                                                    (infinity/path :clockwise
-                                                                   [:left :left]
-                                                                   [second-left first-left])
-                                                    "z"]
-                                                   [(v/v 0 row1) (v/v line-length row2)]]]
-        field                                    (if (charge/counterchangable? field parent)
-                                                   (charge/counterchange-field field parent)
-                                                   field)]
+         line-reversed-length :length}               (line/create line
+                                                                  line-length
+                                                                  :reversed? true
+                                                                  :angle 180
+                                                                  :render-options render-options)
+        second-right-adjusted                        (v/extend second-left second-right line-reversed-length)
+        parts                                        [[["M" first-left
+                                                        (line/stitch line-one)
+                                                        (infinity/path :clockwise
+                                                                       [:right :right]
+                                                                       [first-right second-right-adjusted])
+                                                        (line/stitch line-reversed)
+                                                        (infinity/path :clockwise
+                                                                       [:left :left]
+                                                                       [second-left first-left])
+                                                        "z"]
+                                                       [(v/v 0 row1) (v/v line-length row2)]]]
+        field                                        (if (charge/counterchangable? field parent)
+                                                       (charge/counterchange-field field parent)
+                                                       field)]
     [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
                          "rotate(" angle ")")}
      [division/make-division
@@ -428,7 +479,8 @@
 (defn cross
   {:display-name "Cross"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin size]}              (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin geometry]}          (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                          geometry
         points                                  (:points environment)
         origin-point                            (position/calculate origin environment :fess)
         top                                     (assoc (:top points) :x (:x origin-point))
@@ -567,121 +619,122 @@
 (defn saltire
   {:display-name "Saltire"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
-        points                                   (:points environment)
-        origin-point                             (position/calculate origin environment :fess)
-        top                                      (assoc (:top points) :x (:x origin-point))
-        bottom                                   (assoc (:bottom points) :x (:x origin-point))
-        left                                     (assoc (:left points) :y (:y origin-point))
-        right                                    (assoc (:right points) :y (:y origin-point))
-        width                                    (:width environment)
-        band-width                               (-> width
-                                                     (* size)
-                                                     (/ 100))
-        direction                                (division/direction diagonal-mode points origin-point)
-        diagonal-top-left                        (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
-        diagonal-top-right                       (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
-        diagonal-bottom-left                     (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
-        diagonal-bottom-right                    (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
-        angle-top-left                           (division/angle-to-point origin-point diagonal-top-left)
-        angle-top-right                          (division/angle-to-point origin-point diagonal-top-right)
-        angle-bottom-left                        (division/angle-to-point origin-point diagonal-bottom-left)
-        angle-bottom-right                       (division/angle-to-point origin-point diagonal-bottom-right)
-        angle                                    (-> angle-bottom-right (* Math/PI) (/ 180))
-        dx                                       (/ band-width 2 (Math/sin angle))
-        dy                                       (/ band-width 2 (Math/cos angle))
-        offset-top                               (v/v 0 (- dy))
-        offset-bottom                            (v/v 0 dy)
-        offset-left                              (v/v (- dx) 0)
-        offset-right                             (v/v dx 0)
-        corner-top                               (v/+ origin-point offset-top)
-        corner-bottom                            (v/+ origin-point offset-bottom)
-        corner-left                              (v/+ origin-point offset-left)
-        corner-right                             (v/+ origin-point offset-right)
-        top-left-upper                           (v/+ diagonal-top-left offset-top)
-        top-left-lower                           (v/+ diagonal-top-left offset-bottom)
-        top-right-upper                          (v/+ diagonal-top-right offset-top)
-        top-right-lower                          (v/+ diagonal-top-right offset-bottom)
-        bottom-left-upper                        (v/+ diagonal-bottom-left offset-top)
-        bottom-left-lower                        (v/+ diagonal-bottom-left offset-bottom)
-        bottom-right-upper                       (v/+ diagonal-bottom-right offset-top)
-        bottom-right-lower                       (v/+ diagonal-bottom-right offset-bottom)
-        line                                     (-> line
-                                                     (update :offset max 0))
-        {line-top-left-lower :line}              (line/create line
-                                                              (Math/abs (:y (v/- corner-left top-left-lower)))
-                                                              :angle  angle-top-left
-                                                              :reversed? true
-                                                              :render-options   render-options)
+  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                               geometry
+        points                                       (:points environment)
+        origin-point                                 (position/calculate origin environment :fess)
+        top                                          (assoc (:top points) :x (:x origin-point))
+        bottom                                       (assoc (:bottom points) :x (:x origin-point))
+        left                                         (assoc (:left points) :y (:y origin-point))
+        right                                        (assoc (:right points) :y (:y origin-point))
+        width                                        (:width environment)
+        band-width                                   (-> width
+                                                         (* size)
+                                                         (/ 100))
+        direction                                    (division/direction diagonal-mode points origin-point)
+        diagonal-top-left                            (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
+        diagonal-top-right                           (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
+        diagonal-bottom-left                         (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-bottom-right                        (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
+        angle-top-left                               (division/angle-to-point origin-point diagonal-top-left)
+        angle-top-right                              (division/angle-to-point origin-point diagonal-top-right)
+        angle-bottom-left                            (division/angle-to-point origin-point diagonal-bottom-left)
+        angle-bottom-right                           (division/angle-to-point origin-point diagonal-bottom-right)
+        angle                                        (-> angle-bottom-right (* Math/PI) (/ 180))
+        dx                                           (/ band-width 2 (Math/sin angle))
+        dy                                           (/ band-width 2 (Math/cos angle))
+        offset-top                                   (v/v 0 (- dy))
+        offset-bottom                                (v/v 0 dy)
+        offset-left                                  (v/v (- dx) 0)
+        offset-right                                 (v/v dx 0)
+        corner-top                                   (v/+ origin-point offset-top)
+        corner-bottom                                (v/+ origin-point offset-bottom)
+        corner-left                                  (v/+ origin-point offset-left)
+        corner-right                                 (v/+ origin-point offset-right)
+        top-left-upper                               (v/+ diagonal-top-left offset-top)
+        top-left-lower                               (v/+ diagonal-top-left offset-bottom)
+        top-right-upper                              (v/+ diagonal-top-right offset-top)
+        top-right-lower                              (v/+ diagonal-top-right offset-bottom)
+        bottom-left-upper                            (v/+ diagonal-bottom-left offset-top)
+        bottom-left-lower                            (v/+ diagonal-bottom-left offset-bottom)
+        bottom-right-upper                           (v/+ diagonal-bottom-right offset-top)
+        bottom-right-lower                           (v/+ diagonal-bottom-right offset-bottom)
+        line                                         (-> line
+                                                         (update :offset max 0))
+        {line-top-left-lower :line}                  (line/create line
+                                                                  (Math/abs (:y (v/- corner-left top-left-lower)))
+                                                                  :angle  angle-top-left
+                                                                  :reversed? true
+                                                                  :render-options   render-options)
         {line-top-left-upper        :line
-         line-top-left-upper-length :length}     (line/create line
-                                                              (v/abs (v/- corner-top top-left-upper))
-                                                              :angle     (- angle-top-left 180)
-                                                              :render-options render-options)
-        {line-top-right-upper :line}             (line/create line
-                                                              (v/abs (v/- corner-top top-right-upper))
-                                                              :reversed? true
-                                                              :angle angle-top-right
-                                                              :render-options render-options)
+         line-top-left-upper-length :length}         (line/create line
+                                                                  (v/abs (v/- corner-top top-left-upper))
+                                                                  :angle     (- angle-top-left 180)
+                                                                  :render-options render-options)
+        {line-top-right-upper :line}                 (line/create line
+                                                                  (v/abs (v/- corner-top top-right-upper))
+                                                                  :reversed? true
+                                                                  :angle angle-top-right
+                                                                  :render-options render-options)
         {line-top-right-lower        :line
-         line-top-right-lower-length :length}    (line/create line
-                                                              (v/abs (v/- corner-right top-right-lower))
-                                                              :angle (- angle-top-right 180)
-                                                              :render-options render-options)
-        {line-bottom-right-upper :line}          (line/create line
-                                                              (v/abs (v/- corner-right bottom-right-upper))
-                                                              :angle angle-bottom-right
-                                                              :reversed? true
-                                                              :render-options render-options)
+         line-top-right-lower-length :length}        (line/create line
+                                                                  (v/abs (v/- corner-right top-right-lower))
+                                                                  :angle (- angle-top-right 180)
+                                                                  :render-options render-options)
+        {line-bottom-right-upper :line}              (line/create line
+                                                                  (v/abs (v/- corner-right bottom-right-upper))
+                                                                  :angle angle-bottom-right
+                                                                  :reversed? true
+                                                                  :render-options render-options)
         {line-bottom-right-lower        :line
-         line-bottom-right-lower-length :length} (line/create line
-                                                              (v/abs (v/- corner-bottom bottom-right-lower))
-                                                              :angle (- angle-bottom-right 180)
-                                                              :render-options render-options)
-        {line-bottom-left-lower :line}           (line/create line
-                                                              (v/abs (v/- corner-bottom bottom-left-lower))
-                                                              :angle angle-bottom-left
-                                                              :reversed? true
-                                                              :render-options render-options)
+         line-bottom-right-lower-length :length}     (line/create line
+                                                                  (v/abs (v/- corner-bottom bottom-right-lower))
+                                                                  :angle (- angle-bottom-right 180)
+                                                                  :render-options render-options)
+        {line-bottom-left-lower :line}               (line/create line
+                                                                  (v/abs (v/- corner-bottom bottom-left-lower))
+                                                                  :angle angle-bottom-left
+                                                                  :reversed? true
+                                                                  :render-options render-options)
         {line-bottom-left-upper        :line
-         line-bottom-left-upper-length :length}  (line/create line
-                                                              (v/abs (v/- corner-left bottom-left-upper))
-                                                              :angle (- angle-bottom-left 180)
-                                                              :render-options render-options)
-        top-left-upper-adjusted                  (v/extend corner-top top-left-upper
-                                                           line-top-left-upper-length)
-        top-right-lower-adjusted                 (v/extend corner-right top-right-lower
-                                                           line-top-right-lower-length)
-        bottom-right-lower-adjusted              (v/extend corner-bottom bottom-right-lower
-                                                           line-bottom-right-lower-length)
-        bottom-left-upper-adjusted               (v/extend corner-left bottom-left-upper
-                                                           line-bottom-left-upper-length)
-        parts                                    [[["M" corner-left
-                                                    (line/stitch line-top-left-lower)
-                                                    (infinity/path :clockwise
-                                                                   [:left :left]
-                                                                   [top-left-lower top-left-upper-adjusted])
-                                                    (line/stitch line-top-left-upper)
-                                                    "L" corner-top
-                                                    (line/stitch line-top-right-upper)
-                                                    (infinity/path :clockwise
-                                                                   [:right :right]
-                                                                   [top-right-upper top-right-lower-adjusted])
-                                                    (line/stitch line-top-right-lower)
-                                                    "L" corner-right
-                                                    (line/stitch line-bottom-right-upper)
-                                                    (infinity/path :clockwise
-                                                                   [:right :right]
-                                                                   [bottom-right-upper bottom-right-lower-adjusted])
-                                                    (line/stitch line-bottom-right-lower)
-                                                    "L" corner-bottom
-                                                    (line/stitch line-bottom-left-lower)
-                                                    (infinity/path :clockwise
-                                                                   [:left :left]
-                                                                   [bottom-left-lower bottom-left-upper-adjusted])
-                                                    (line/stitch line-bottom-left-upper)
-                                                    "z"]
-                                                   [top bottom left right]]]]
+         line-bottom-left-upper-length :length}      (line/create line
+                                                                  (v/abs (v/- corner-left bottom-left-upper))
+                                                                  :angle (- angle-bottom-left 180)
+                                                                  :render-options render-options)
+        top-left-upper-adjusted                      (v/extend corner-top top-left-upper
+                                                               line-top-left-upper-length)
+        top-right-lower-adjusted                     (v/extend corner-right top-right-lower
+                                                               line-top-right-lower-length)
+        bottom-right-lower-adjusted                  (v/extend corner-bottom bottom-right-lower
+                                                               line-bottom-right-lower-length)
+        bottom-left-upper-adjusted                   (v/extend corner-left bottom-left-upper
+                                                               line-bottom-left-upper-length)
+        parts                                        [[["M" corner-left
+                                                        (line/stitch line-top-left-lower)
+                                                        (infinity/path :clockwise
+                                                                       [:left :left]
+                                                                       [top-left-lower top-left-upper-adjusted])
+                                                        (line/stitch line-top-left-upper)
+                                                        "L" corner-top
+                                                        (line/stitch line-top-right-upper)
+                                                        (infinity/path :clockwise
+                                                                       [:right :right]
+                                                                       [top-right-upper top-right-lower-adjusted])
+                                                        (line/stitch line-top-right-lower)
+                                                        "L" corner-right
+                                                        (line/stitch line-bottom-right-upper)
+                                                        (infinity/path :clockwise
+                                                                       [:right :right]
+                                                                       [bottom-right-upper bottom-right-lower-adjusted])
+                                                        (line/stitch line-bottom-right-lower)
+                                                        "L" corner-bottom
+                                                        (line/stitch line-bottom-left-lower)
+                                                        (infinity/path :clockwise
+                                                                       [:left :left]
+                                                                       [bottom-left-lower bottom-left-upper-adjusted])
+                                                        (line/stitch line-bottom-left-upper)
+                                                        "z"]
+                                                       [top bottom left right]]]]
     field                          (if (charge/counterchangable? field parent)
                                      (charge/counterchange-field field parent)
                                      field)
@@ -720,72 +773,73 @@
 (defn chevron
   {:display-name "Chevron"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
-        points                                   (:points environment)
-        origin-point                             (position/calculate origin environment :fess)
-        top                                      (assoc (:top points) :x (:x origin-point))
-        bottom                                   (assoc (:bottom points) :x (:x origin-point))
-        left                                     (assoc (:left points) :y (:y origin-point))
-        right                                    (assoc (:right points) :y (:y origin-point))
-        height                                   (:height environment)
-        band-width                               (-> height
-                                                     (* size)
-                                                     (/ 100))
-        direction                                (division/direction diagonal-mode points origin-point)
-        diagonal-bottom-left                     (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
-        diagonal-bottom-right                    (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
-        angle-bottom-left                        (division/angle-to-point origin-point diagonal-bottom-left)
-        angle-bottom-right                       (division/angle-to-point origin-point diagonal-bottom-right)
-        angle                                    (-> angle-bottom-right (* Math/PI) (/ 180))
-        dy                                       (/ band-width 2 (Math/cos angle))
-        offset-top                               (v/v 0 (- dy))
-        offset-bottom                            (v/v 0 dy)
-        corner-top                               (v/+ origin-point offset-top)
-        corner-bottom                            (v/+ origin-point offset-bottom)
-        bottom-left-upper                        (v/+ diagonal-bottom-left offset-top)
-        bottom-left-lower                        (v/+ diagonal-bottom-left offset-bottom)
-        bottom-right-upper                       (v/+ diagonal-bottom-right offset-top)
-        bottom-right-lower                       (v/+ diagonal-bottom-right offset-bottom)
-        line                                     (-> line
-                                                     (update :offset max 0))
-        {line-bottom-right-upper :line}          (line/create line
-                                                              (v/abs (v/- corner-top bottom-right-upper))
-                                                              :angle angle-bottom-right
-                                                              :render-options render-options)
+  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                               geometry
+        points                                       (:points environment)
+        origin-point                                 (position/calculate origin environment :fess)
+        top                                          (assoc (:top points) :x (:x origin-point))
+        bottom                                       (assoc (:bottom points) :x (:x origin-point))
+        left                                         (assoc (:left points) :y (:y origin-point))
+        right                                        (assoc (:right points) :y (:y origin-point))
+        height                                       (:height environment)
+        band-width                                   (-> height
+                                                         (* size)
+                                                         (/ 100))
+        direction                                    (division/direction diagonal-mode points origin-point)
+        diagonal-bottom-left                         (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-bottom-right                        (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
+        angle-bottom-left                            (division/angle-to-point origin-point diagonal-bottom-left)
+        angle-bottom-right                           (division/angle-to-point origin-point diagonal-bottom-right)
+        angle                                        (-> angle-bottom-right (* Math/PI) (/ 180))
+        dy                                           (/ band-width 2 (Math/cos angle))
+        offset-top                                   (v/v 0 (- dy))
+        offset-bottom                                (v/v 0 dy)
+        corner-top                                   (v/+ origin-point offset-top)
+        corner-bottom                                (v/+ origin-point offset-bottom)
+        bottom-left-upper                            (v/+ diagonal-bottom-left offset-top)
+        bottom-left-lower                            (v/+ diagonal-bottom-left offset-bottom)
+        bottom-right-upper                           (v/+ diagonal-bottom-right offset-top)
+        bottom-right-lower                           (v/+ diagonal-bottom-right offset-bottom)
+        line                                         (-> line
+                                                         (update :offset max 0))
+        {line-bottom-right-upper :line}              (line/create line
+                                                                  (v/abs (v/- corner-top bottom-right-upper))
+                                                                  :angle angle-bottom-right
+                                                                  :render-options render-options)
         {line-bottom-right-lower        :line
-         line-bottom-right-lower-length :length} (line/create line
-                                                              (v/abs (v/- corner-bottom bottom-right-lower))
-                                                              :angle (- angle-bottom-right 180)
-                                                              :reversed? true
-                                                              :render-options render-options)
-        {line-bottom-left-lower :line}           (line/create line
-                                                              (v/abs (v/- corner-bottom bottom-left-lower))
-                                                              :angle angle-bottom-left
-                                                              :render-options render-options)
+         line-bottom-right-lower-length :length}     (line/create line
+                                                                  (v/abs (v/- corner-bottom bottom-right-lower))
+                                                                  :angle (- angle-bottom-right 180)
+                                                                  :reversed? true
+                                                                  :render-options render-options)
+        {line-bottom-left-lower :line}               (line/create line
+                                                                  (v/abs (v/- corner-bottom bottom-left-lower))
+                                                                  :angle angle-bottom-left
+                                                                  :render-options render-options)
         {line-bottom-left-upper        :line
-         line-bottom-left-upper-length :length}  (line/create line
-                                                              (v/abs (v/- corner-top bottom-left-upper))
-                                                              :angle (- angle-bottom-left 180)
-                                                              :reversed? true
-                                                              :render-options render-options)
-        bottom-right-lower-adjusted              (v/extend corner-bottom bottom-right-lower
-                                                           line-bottom-right-lower-length)
-        bottom-left-upper-adjusted               (v/extend corner-top bottom-left-upper
-                                                           line-bottom-left-upper-length)
-        parts                                    [[["M" corner-top
-                                                    (line/stitch line-bottom-right-upper)
-                                                    (infinity/path :clockwise
-                                                                   [:right :right]
-                                                                   [bottom-right-upper bottom-right-lower-adjusted])
-                                                    (line/stitch line-bottom-right-lower)
-                                                    "L" corner-bottom
-                                                    (line/stitch line-bottom-left-lower)
-                                                    (infinity/path :clockwise
-                                                                   [:left :left]
-                                                                   [bottom-left-lower bottom-left-upper-adjusted])
-                                                    (line/stitch line-bottom-left-upper)
-                                                    "z"]
-                                                   [top bottom left right]]]]
+         line-bottom-left-upper-length :length}      (line/create line
+                                                                  (v/abs (v/- corner-top bottom-left-upper))
+                                                                  :angle (- angle-bottom-left 180)
+                                                                  :reversed? true
+                                                                  :render-options render-options)
+        bottom-right-lower-adjusted                  (v/extend corner-bottom bottom-right-lower
+                                                               line-bottom-right-lower-length)
+        bottom-left-upper-adjusted                   (v/extend corner-top bottom-left-upper
+                                                               line-bottom-left-upper-length)
+        parts                                        [[["M" corner-top
+                                                        (line/stitch line-bottom-right-upper)
+                                                        (infinity/path :clockwise
+                                                                       [:right :right]
+                                                                       [bottom-right-upper bottom-right-lower-adjusted])
+                                                        (line/stitch line-bottom-right-lower)
+                                                        "L" corner-bottom
+                                                        (line/stitch line-bottom-left-lower)
+                                                        (infinity/path :clockwise
+                                                                       [:left :left]
+                                                                       [bottom-left-lower bottom-left-upper-adjusted])
+                                                        (line/stitch line-bottom-left-upper)
+                                                        "z"]
+                                                       [top bottom left right]]]]
     field                          (if (charge/counterchangable? field parent)
                                      (charge/counterchange-field field parent)
                                      field)
@@ -813,29 +867,45 @@
   {:display-name "Escutcheon"
    :mobile?      true}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [origin size escutcheon]} (options/sanitize ordinary (options ordinary))
-        origin-point                     (position/calculate origin environment :fess)
-        width                            (:width environment)
-        ordinary-width                   (-> width
-                                             (* size)
-                                             (/ 100))
-        env                              (field-environment/transform-to-width
-                                          (escutcheon/field escutcheon) ordinary-width)
-        env-fess                         (v/- (-> env :points :fess)
-                                              (-> env :points :top-left))
-        translation                      (v/- origin-point env-fess)
-        env-shape                        (-> (line/translate (:shape env)
-                                                             (:x translation) (:y translation))
-                                             (cond->
-                                                 (:squiggly? render-options) line/squiggly-path))
-        parts                            [[env-shape
-                                           [(v/+ (-> env :points :top-left)
-                                                 translation)
-                                            (v/+ (-> env :points :bottom-right)
-                                                 translation)]]]
-        field                            (if (charge/counterchangable? field parent)
-                                           (charge/counterchange-field field parent)
-                                           field)]
+  (let [{:keys [origin geometry escutcheon]} (options/sanitize ordinary (options ordinary))
+        {:keys [size stretch rotation]}      geometry
+        origin-point                         (position/calculate origin environment :fess)
+        width                                (:width environment)
+        ordinary-width                       (-> width
+                                                 (* size)
+                                                 (/ 100))
+        env                                  (field-environment/transform-to-width
+                                              (escutcheon/field escutcheon) ordinary-width)
+        env-fess                             (-> env :points :fess)
+        [min-x max-x min-y max-y]            (svg/rotated-bounding-box (-> env :points :top-left)
+                                                                       (-> env :points :bottom-right)
+                                                                       rotation
+                                                                       :middle env-fess
+                                                                       :scale (v/v 1 stretch))
+        box-size                             (v/v (- max-x min-x)
+                                                  (- max-y min-y))
+        env-shape                            (-> (line/translate (:shape env)
+                                                                 (-> env-fess :x -)
+                                                                 (-> env-fess :y -))
+                                                 (cond->
+                                                     (not= stretch 1) (->
+                                                                       (svgpath)
+                                                                       (.scale 1 stretch)
+                                                                       (.toString))
+                                                     (not= rotation 0)           (->
+                                                                                  (svgpath)
+                                                                                  (.rotate rotation)
+                                                                                  (.toString))
+                                                     (:squiggly? render-options) line/squiggly-path)
+                                                 (line/translate (:x origin-point) (:y origin-point)))
+        parts                                [[env-shape
+                                               [(v/- origin-point
+                                                     (v// box-size 2))
+                                                (v/+ origin-point
+                                                     (v// box-size 2))]]]
+        field                                (if (charge/counterchangable? field parent)
+                                               (charge/counterchange-field field parent)
+                                               field)]
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
@@ -849,32 +919,50 @@
   {:display-name "Roundel"
    :mobile?      true}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [origin size]} (options/sanitize ordinary (options ordinary))
-        origin-point          (position/calculate origin environment :fess)
-        width                 (:width environment)
-        ordinary-width        (-> width
-                                  (* size)
-                                  (/ 100))
-        ordinary-width-half   (/ ordinary-width 2)
-        ordinary-shape        (-> ["M" (v/+ origin-point (v/v ordinary-width-half 0))
-                                   ["A" ordinary-width-half ordinary-width-half
-                                    0 0 0 (v/- origin-point (v/v ordinary-width-half 0))]
-                                   ["A" ordinary-width-half ordinary-width-half
-                                    0 0 0 (v/+ origin-point (v/v ordinary-width-half 0))]
-                                   "z"]
-                                  svg/make-path
-                                  (cond->
-                                      (:squiggly? render-options) line/squiggly-path))
-        parts                 [[ordinary-shape
-                                [(v/- origin-point
-                                      (v/v ordinary-width-half
-                                           ordinary-width-half))
-                                 (v/+ origin-point
-                                      (v/v ordinary-width-half
-                                           ordinary-width-half))]]]
-        field                 (if (charge/counterchangable? field parent)
-                                (charge/counterchange-field field parent)
-                                field)]
+  (let [{:keys [origin geometry]}       (options/sanitize ordinary (options ordinary))
+        {:keys [size stretch rotation]} geometry
+        origin-point                    (position/calculate origin environment :fess)
+        width                           (:width environment)
+        ordinary-width                  (-> width
+                                            (* size)
+                                            (/ 100))
+        ordinary-width-half             (/ ordinary-width 2)
+        ordinary-shape                  (-> ["m" (v/v ordinary-width-half 0)
+                                             ["a" ordinary-width-half ordinary-width-half
+                                              0 0 0 (v/v (- ordinary-width) 0)]
+                                             ["a" ordinary-width-half ordinary-width-half
+                                              0 0 0 ordinary-width 0]
+                                             "z"]
+                                            svg/make-path
+                                            (cond->
+                                                (not= stretch 1) (->
+                                                                  (svgpath)
+                                                                  (.scale 1 stretch)
+                                                                  (.toString))
+                                                (not= rotation 0)           (->
+                                                                             (svgpath)
+                                                                             (.rotate rotation)
+                                                                             (.toString))
+                                                (:squiggly? render-options) line/squiggly-path)
+                                            (line/translate (:x origin-point) (:y origin-point)))
+        [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
+                                                                   (v/v ordinary-width-half
+                                                                        ordinary-width-half))
+                                                                  (v/-
+                                                                   (v/v ordinary-width-half
+                                                                        ordinary-width-half))
+                                                                  rotation
+                                                                  :scale (v/v 1 stretch))
+        box-size                        (v/v (- max-x min-x)
+                                             (- max-y min-y))
+        parts                           [[ordinary-shape
+                                          [(v/- origin-point
+                                                (v// box-size 2))
+                                           (v/+ origin-point
+                                                (v// box-size 2))]]]
+        field                           (if (charge/counterchangable? field parent)
+                                          (charge/counterchange-field field parent)
+                                          field)]
     [division/make-division
      :ordinary-pale [field] parts
      [:all]

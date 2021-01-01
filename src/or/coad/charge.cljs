@@ -222,9 +222,11 @@
             shift                            (-> (v/v original-charge-width original-charge-height)
                                                  (v// 2)
                                                  (v/-))
-            [min-x max-x min-y max-y]        (svg/rotated-bounding-box (v/dot shift (v/- (v/v scale-x scale-y)))
-                                                                       (v/dot shift (v/v scale-x scale-y))
-                                                                       rotation)
+            [min-x max-x min-y max-y]        (svg/rotated-bounding-box
+                                              shift
+                                              (v/dot shift (v/v -1 -1))
+                                              rotation
+                                              :scale (v/v scale-x scale-y))
             clip-size                        (v/v (- max-x min-x) (- max-y min-y))
             position                         (-> clip-size
                                                  (v/-)
