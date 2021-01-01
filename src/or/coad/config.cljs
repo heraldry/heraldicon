@@ -28,8 +28,7 @@
   {:component :charge
    :type      :roundel
    :variant   :default
-   :field     (-> default-field
-                  (assoc :inherit-environment? true))
+   :field     default-field
    :hints     {:outline? true}})
 
 (def default-coat-of-arms
