@@ -66,3 +66,12 @@
     (-> direction
         (* l)
         (+ from))))
+
+(defn rotate [{:keys [x y]} angle]
+  (let [rad (-> angle
+                (clojure.core/* Math/PI)
+                (clojure.core// 180))]
+    (v (clojure.core/- (clojure.core/* x (Math/cos rad))
+                       (clojure.core/* y (Math/sin rad)))
+       (clojure.core/+ (clojure.core/* x (Math/sin rad))
+                       (clojure.core/* y (Math/cos rad))))))
