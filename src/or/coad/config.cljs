@@ -26,7 +26,8 @@
 
 (def default-charge
   {:component :charge
-   :type      :roundel
+   :type      :lion
+   :attitude  :rampant
    :variant   :default
    :field     default-field
    :hints     {:outline? true}})
