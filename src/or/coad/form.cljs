@@ -446,8 +446,8 @@
       [:i]]]))
 
 (defn form-for-escutcheon [path]
-  (let [escutcheon (:or @(rf/subscribe [:get-in path])
-                        :heater)
+  (let [escutcheon (or @(rf/subscribe [:get-in path])
+                       :heater)
         names      (->> escutcheon/choices
                         (map (comp vec reverse))
                         (into {}))]
