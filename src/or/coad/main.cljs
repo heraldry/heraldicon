@@ -40,6 +40,12 @@
    (get-in db path)))
 
 (rf/reg-sub
+ :get-open-component-flag
+ (fn [db [_ path]]
+   (let [flag-path (conj path :ui :open?)]
+     (get-in db flag-path))))
+
+(rf/reg-sub
  :get-division-type
  (fn [db [_ path]]
    (let [division (get-in db (conj path :division :type))]
@@ -116,6 +122,35 @@
  :toggle-in
  (fn [db [_ path]]
    (update-in db path not)))
+
+(rf/reg-event-db
+ :open-component
+ (fn [db [_ path]]
+   (-> (loop [db   db
+              rest path]
+         (if (empty? rest)
+           db
+           (recur
+            (if (get-in db (conj rest :component))
+              (assoc-in db (conj rest :ui :open?) true)
+              db)
+            (-> rest drop-last vec)))))))
+
+(rf/reg-event-db
+ :close-component
+ (fn [db [_ path]]
+   (update-in db path (fn [sub-db] (walk/postwalk #(if (:component %)
+                                                     (assoc-in % [:ui :open?] false)
+                                                     %) sub-db)))))
+
+(rf/reg-event-fx
+ :toggle-open-component-flag
+ (fn [{:keys [db]} [_ path]]
+   (let [flag-path (conj path :ui :open?)
+         open?     (get-in db flag-path)]
+     (if open?
+       {:fx [[:dispatch [:close-component path]]]}
+       {:fx [[:dispatch [:open-component path]]]}))))
 
 (rf/reg-event-db
  :set-division-type
@@ -218,27 +253,31 @@
  (fn [db [_ path changes]]
    (update-in db path merge changes)))
 
-(rf/reg-event-db
+(rf/reg-event-fx
  :select-component
- (fn [db [_ path]]
-   (-> db
-       (remove-key-recursively :selected?)
-       (cond->
-           path (as-> db
-                    (let [real-path (if (get-in
-                                         db
-                                         (-> path
-                                             (->> (drop-last 3))
-                                             vec
-                                             (conj :counterchanged?)))
-                                      (-> path
-                                          (->> (drop-last 6))
-                                          vec
-                                          (conj :division :fields (last path)))
-                                      path)]
-                      (assoc-in db (conj real-path :ui :selected?) true)))))))
+ (fn [{:keys [db]} [_ path]]
+   (let [real-path (if (get-in
+                        db
+                        (-> path
+                            (->> (drop-last 3))
+                            vec
+                            (conj :counterchanged?)))
+                     (-> path
+                         (->> (drop-last 6))
+                         vec
+                         (conj :division :fields (last path)))
+                     path)]
+     (if path
+       {:db (-> db
+                (remove-key-recursively :selected?)
+                (cond->
+                    path (as-> db
+                             (assoc-in db (conj real-path :ui :selected?) true))))
+        :fx [[:dispatch [:open-component real-path]]]}
+       {:db db}))))
 
 ;; views
+
 
 (def defs
   (into
