@@ -1,8 +1,10 @@
 (ns or.coad.ordinary
-  (:require [or.coad.charge :as charge]
+  (:require ["svgpath" :as svgpath]
+            [or.coad.charge :as charge]
             [or.coad.division :as division]
             [or.coad.escutcheon :as escutcheon]
             [or.coad.field-environment :as field-environment]
+            [or.coad.geometry :as geometry]
             [or.coad.infinity :as infinity]
             [or.coad.line :as line]
             [or.coad.options :as options]
@@ -42,10 +44,9 @@
    :diagonal-mode {:type :choice
                    :default :top-left-fess}
    :line line/default-options
-   :size {:type :range
-          :min 10
-          :max 50
-          :default 25}
+   :geometry (-> geometry/default-options
+                 (assoc-in [:size :min] 10)
+                 (assoc-in [:size :default] 25))
    :escutcheon {:type :choice
                 :choices escutcheon/choices
                 :default :heater}})
@@ -60,40 +61,84 @@
         (->
          (get {:pale {:origin {:offset-y nil}
                       :diagonal-mode nil
-                      :size {:max 50}}
+                      :geometry {:size {:max 50}
+                                 :mirrored? nil
+                                 :reversed? nil
+                                 :stretch nil
+                                 :rotation nil}}
                :fess {:origin {:offset-x nil}
                       :diagonal-mode nil
-                      :size {:max 50}}
+                      :geometry {:size {:max 50}
+                                 :mirrored? nil
+                                 :reversed? nil
+                                 :stretch nil
+                                 :rotation nil}}
                :chief {:origin nil
-                       :diagonal-mode nil}
+                       :diagonal-mode nil
+                       :geometry {:size {:max 50}
+                                  :mirrored? nil
+                                  :reversed? nil
+                                  :stretch nil
+                                  :rotation nil}}
                :base {:origin nil
-                      :diagonal-mode nil}
+                      :diagonal-mode nil
+                      :geometry {:size {:max 50}
+                                 :mirrored? nil
+                                 :reversed? nil
+                                 :stretch nil
+                                 :rotation nil}}
                :bend {:origin {:offset-x nil}
                       :diagonal-mode {:choices (diagonal-mode-choices
-                                                :bend)}}
+                                                :bend)}
+                      :geometry {:size {:max 50}
+                                 :mirrored? nil
+                                 :reversed? nil
+                                 :stretch nil
+                                 :rotation nil}}
                :bend-sinister {:origin {:offset-x nil}
                                :diagonal-mode {:choices (diagonal-mode-choices
                                                          :bend-sinister)
-                                               :default :top-right-fess}}
+                                               :default :top-right-fess}
+                               :geometry {:size {:max 50}
+                                          :mirrored? nil
+                                          :reversed? nil
+                                          :stretch nil
+                                          :rotation nil}}
                :chevron {:diagonal-mode {:choices (diagonal-mode-choices
                                                    :chevron)
                                          :default :forty-five-degrees}
                          :line {:offset {:min 0}}
-                         :size {:max 30}}
+                         :geometry {:size {:max 30}
+                                    :mirrored? nil
+                                    :reversed? nil
+                                    :stretch nil
+                                    :rotation nil}}
                :saltire {:diagonal-mode {:choices (diagonal-mode-choices
                                                    :saltire)}
                          :line {:offset {:min 0}}
-                         :size {:max 30}}
+                         :geometry {:size {:max 30}
+                                    :mirrored? nil
+                                    :reversed? nil
+                                    :stretch nil
+                                    :rotation nil}}
                :cross {:diagonal-mode nil
                        :line {:offset {:min 0}}
-                       :size {:max 30}}
+                       :geometry {:size {:max 30}
+                                  :mirrored? nil
+                                  :reversed? nil
+                                  :stretch nil
+                                  :rotation nil}}
                :escutcheon {:diagonal-mode nil
                             :line nil
-                            :size {:max 50
-                                   :default 30}}
+                            :geometry {:size {:max 50
+                                              :default 30}
+                                       :mirrored? nil
+                                       :reversed? nil}}
                :roundel {:diagonal-mode nil
                          :line nil
-                         :size {:max 50}}}
+                         :geometry {:size {:max 50}
+                                    :mirrored? nil
+                                    :reversed? nil}}}
               type)
          (cond->
           (not= type :escutcheon) (assoc :escutcheon nil))))))))
@@ -101,7 +146,8 @@
 (defn pale
   {:display-name "Pale"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin size]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]} geometry
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -160,7 +206,8 @@
 (defn fess
   {:display-name "Fess"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin size]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]} geometry
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -216,7 +263,8 @@
 (defn chief
   {:display-name "Chief"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line size]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]} geometry
         points (:points environment)
         top (:top points)
         top-left (:top-left points)
@@ -260,7 +308,8 @@
 (defn base
   {:display-name "Base"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line size]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]} geometry
         points (:points environment)
         bottom (:bottom points)
         bottom-right (:bottom-right points)
@@ -300,7 +349,8 @@
 (defn bend
   {:display-name "Bend"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]} geometry
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -364,7 +414,8 @@
 (defn bend-sinister
   {:display-name "Bend sinister"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]} geometry
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -428,7 +479,8 @@
 (defn cross
   {:display-name "Cross"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin size]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]} geometry
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -567,7 +619,8 @@
 (defn saltire
   {:display-name "Saltire"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]} geometry
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -720,7 +773,8 @@
 (defn chevron
   {:display-name "Chevron"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size]} geometry
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -813,7 +867,8 @@
   {:display-name "Escutcheon"
    :mobile? true}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [origin size escutcheon]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [origin geometry escutcheon]} (options/sanitize ordinary (options ordinary))
+        {:keys [size stretch rotation]} geometry
         origin-point (position/calculate origin environment :fess)
         width (:width environment)
         ordinary-width (-> width
@@ -821,18 +876,33 @@
                            (/ 100))
         env (field-environment/transform-to-width
              (escutcheon/field escutcheon) ordinary-width)
-        env-fess (v/- (-> env :points :fess)
-                      (-> env :points :top-left))
-        translation (v/- origin-point env-fess)
+        env-fess (-> env :points :fess)
+        [min-x max-x min-y max-y] (svg/rotated-bounding-box (-> env :points :top-left)
+                                                            (-> env :points :bottom-right)
+                                                            rotation
+                                                            :middle env-fess
+                                                            :scale (v/v 1 stretch))
+        box-size (v/v (- max-x min-x)
+                      (- max-y min-y))
         env-shape (-> (line/translate (:shape env)
-                                      (:x translation) (:y translation))
+                                      (-> env-fess :x -)
+                                      (-> env-fess :y -))
                       (cond->
-                       (:squiggly? render-options) line/squiggly-path))
+                       (not= stretch 1) (->
+                                         (svgpath)
+                                         (.scale 1 stretch)
+                                         (.toString))
+                       (not= rotation 0) (->
+                                          (svgpath)
+                                          (.rotate rotation)
+                                          (.toString))
+                       (:squiggly? render-options) line/squiggly-path)
+                      (line/translate (:x origin-point) (:y origin-point)))
         parts [[env-shape
-                [(v/+ (-> env :points :top-left)
-                      translation)
-                 (v/+ (-> env :points :bottom-right)
-                      translation)]]]
+                [(v/- origin-point
+                      (v// box-size 2))
+                 (v/+ origin-point
+                      (v// box-size 2))]]]
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)]
@@ -849,29 +919,47 @@
   {:display-name "Roundel"
    :mobile? true}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [origin size]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [origin geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size stretch rotation]} geometry
         origin-point (position/calculate origin environment :fess)
         width (:width environment)
         ordinary-width (-> width
                            (* size)
                            (/ 100))
         ordinary-width-half (/ ordinary-width 2)
-        ordinary-shape (-> ["M" (v/+ origin-point (v/v ordinary-width-half 0))
-                            ["A" ordinary-width-half ordinary-width-half
-                             0 0 0 (v/- origin-point (v/v ordinary-width-half 0))]
-                            ["A" ordinary-width-half ordinary-width-half
-                             0 0 0 (v/+ origin-point (v/v ordinary-width-half 0))]
+        ordinary-shape (-> ["m" (v/v ordinary-width-half 0)
+                            ["a" ordinary-width-half ordinary-width-half
+                             0 0 0 (v/v (- ordinary-width) 0)]
+                            ["a" ordinary-width-half ordinary-width-half
+                             0 0 0 ordinary-width 0]
                             "z"]
                            svg/make-path
                            (cond->
-                            (:squiggly? render-options) line/squiggly-path))
+                            (not= stretch 1) (->
+                                              (svgpath)
+                                              (.scale 1 stretch)
+                                              (.toString))
+                            (not= rotation 0) (->
+                                               (svgpath)
+                                               (.rotate rotation)
+                                               (.toString))
+                            (:squiggly? render-options) line/squiggly-path)
+                           (line/translate (:x origin-point) (:y origin-point)))
+        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
+                                                             (v/v ordinary-width-half
+                                                                  ordinary-width-half))
+                                                            (v/-
+                                                             (v/v ordinary-width-half
+                                                                  ordinary-width-half))
+                                                            rotation
+                                                            :scale (v/v 1 stretch))
+        box-size (v/v (- max-x min-x)
+                      (- max-y min-y))
         parts [[ordinary-shape
                 [(v/- origin-point
-                      (v/v ordinary-width-half
-                           ordinary-width-half))
+                      (v// box-size 2))
                  (v/+ origin-point
-                      (v/v ordinary-width-half
-                           ordinary-width-half))]]]
+                      (v// box-size 2))]]]
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)]
