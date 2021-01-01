@@ -402,7 +402,7 @@
                        :content    {:tincture :argent}
                        :components [{:component  :ordinary
                                      :type       key
-                                     :escutcheon (if (= key :inescutcheon) base-escutcheon nil)
+                                     :escutcheon (if (= key :escutcheon) base-escutcheon nil)
                                      :field      {:content {:tincture (if (= value key) :or :azure)}}}]}}
          {:outline? true}
          :db-path [:ui :ordinary-option]]]]]
