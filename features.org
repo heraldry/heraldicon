@@ -41,6 +41,7 @@ Here's a list of things already supported and things I'm working on.
       of elements can be specified
 - [ ] add other field *treatments*, some of which might have configurable colours
 - [X] configure charge position and size
+- [X] configure charge mirroring, reversing, and rotation
 - [ ] configure charge number and arrangements
 - [ ] add *semy*
 - [ ] add configurable *paly divisions*
@@ -63,6 +64,7 @@ Here's a list of things already supported and things I'm working on.
 - [ ] write blazonry parser
 
 ** Technical issues
+- [X] refactor option system to provide defaults and value ranges for the interface
 - [ ] solidify spec for EDN representation
 - [ ] version EDN representation with migration functions, so old links continue
       working
