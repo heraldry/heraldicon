@@ -153,6 +153,11 @@
        {:fx [[:dispatch [:open-component path]]]}))))
 
 (rf/reg-event-db
+ :close-submenus
+ (fn [db _]
+   (update-in db [:ui] dissoc :open-submenu)))
+
+(rf/reg-event-db
  :set-division-type
  (fn [db [_ path new-type]]
    (if (= new-type :none)
@@ -267,14 +272,12 @@
                          vec
                          (conj :division :fields (last path)))
                      path)]
-     (if path
-       {:db (-> db
-                (remove-key-recursively :selected?)
-                (cond->
-                    path (as-> db
-                             (assoc-in db (conj real-path :ui :selected?) true))))
-        :fx [[:dispatch [:open-component real-path]]]}
-       {:db db}))))
+     {:db (-> db
+              (remove-key-recursively :selected?)
+              (cond->
+                  path (as-> db
+                           (assoc-in db (conj real-path :ui :selected?) true))))
+      :fx [[:dispatch [:open-component real-path]]]})))
 
 ;; views
 
@@ -358,7 +361,9 @@
                          :top      "4em"
                          :position "relative"
                          :padding  "10px"}
-              :on-click #(rf/dispatch [:select-component nil])}
+              :on-click #(do (rf/dispatch [:select-component nil])
+                             (rf/dispatch [:close-submenus])
+                             (.stopPropagation %))}
         [:svg {:id                  "svg"
                :style               {:width    "25em"
                                      :height   "32em"
