@@ -135,9 +135,10 @@
 (defn make-division [type fields parts mask-overlaps outline parent-environment parent
                      top-level-render render-options & {:keys [db-path]}]
   (let [mask-ids     (->> (range (count fields))
-                          (map #(util/id (str (name type) "-" %))))
+                          (map (fn [idx] [(util/id (str (name type) "-" idx))
+                                          (util/id (str (name type) "-" idx))])))
         environments (->> parts
-                          (map-indexed (fn [idx [shape-path bounding-box]]
+                          (map-indexed (fn [idx [shape-path bounding-box & extra]]
                                          (let [field (get-field fields idx)]
                                            (field-environment/create
                                             (svg/make-path shape-path)
@@ -146,32 +147,45 @@
                                              :bounding-box         (svg/bounding-box bounding-box)
                                              :override-environment (when (or (:inherit-environment? field)
                                                                              (:counterchanged? field))
-                                                                     parent-environment)}))))
+                                                                     parent-environment)
+                                             :mask                 (first extra)}))))
                           vec)]
     [:<>
      [:defs
-      (for [[idx mask-id] (map-indexed vector mask-ids)]
-        (let [environment-shape (:shape (get environments idx))
+      (for [[idx [clip-path-id mask-id]] (map-indexed vector mask-ids)]
+        (let [env               (get environments idx)
+              environment-shape (:shape env)
               overlap-paths     (get mask-overlaps idx)]
           ^{:key idx}
-          [:clipPath {:id mask-id}
-           [:path {:d    environment-shape
-                   :fill "#fff"}]
-           (cond
-             (= overlap-paths :all) [:path.overlap {:d environment-shape}]
-             overlap-paths          (for [[idx shape] (map-indexed vector overlap-paths)]
-                                      ^{:key idx}
-                                      [:path.overlap {:d shape}]))]))]
-     (for [[idx mask-id] (map-indexed vector mask-ids)]
-       ^{:key idx}
-       [:g {:clip-path (str "url(#" mask-id ")")}
-        [top-level-render
-         (get-field fields idx)
-         (get environments idx)
-         render-options
-         :db-path (if (-> type name (s/starts-with? "ordinary-")) ;; FIXME: bit of a hack
-                    (conj db-path :field)
-                    (conj db-path :fields idx))]])
+          [:<>
+           [:clipPath {:id clip-path-id}
+            [:path {:d    environment-shape
+                    :fill "#fff"}]
+            (cond
+              (= overlap-paths :all) [:path.overlap {:d environment-shape}]
+              overlap-paths          (for [[idx shape] (map-indexed vector overlap-paths)]
+                                       ^{:key idx}
+                                       [:path.overlap {:d shape}]))]
+           (if-let [mask-shape (-> env :meta :mask)]
+             [:mask {:id mask-id}
+              [:path {:d    environment-shape
+                      :fill "#fff"}]
+              [:path {:d    mask-shape
+                      :fill "#000"}]])]))]
+
+     (for [[idx [clip-path-id mask-id]] (map-indexed vector mask-ids)]
+       (let [env (get environments idx)]
+         ^{:key idx}
+         [:g {:clip-path (str "url(#" clip-path-id ")")
+              :mask      (when (-> env :meta :mask)
+                           (str "url(#" mask-id ")"))}
+          [top-level-render
+           (get-field fields idx)
+           (get environments idx)
+           render-options
+           :db-path (if (-> type name (s/starts-with? "ordinary-")) ;; FIXME: bit of a hack
+                      (conj db-path :field)
+                      (conj db-path :fields idx))]]))
      outline]))
 
 (defn per-pale
