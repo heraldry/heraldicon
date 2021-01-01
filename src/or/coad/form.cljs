@@ -240,7 +240,7 @@
                              :line {:type key
                                     :width (* 2 (options/get-value nil (:width options)))}
                              :fields [{:content {:tincture :argent}}
-                                      {:content {:tincture :argent}}]}}}
+                                      {:content {:tincture (if (= key current) :or :azure)}}]}}}
          {:outline? true}
          :width 100
          :db-path [:ui :line-option]]]]]
