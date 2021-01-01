@@ -164,12 +164,12 @@
 (defn submenu [path title link-name styles & content]
   (let [submenu-path  [:ui :open-submenu path]
         submenu-open? @(rf/subscribe [:get-in submenu-path])]
-    [:div.submenu-setting {:style {:display "inline-block"}}
+    [:div.submenu-setting {:style    {:display "inline-block"}
+                           :on-click #(.stopPropagation %)}
      [:a {:on-click #(util/dispatch % [:set-in submenu-path true])}
       link-name]
      (when submenu-open?
        [:div.component.submenu {:style styles}
-        #_{:on-mouse-leave #(util/dispatch % [:set-in submenu-path false])}
         [:div.header [:a {:on-click #(util/dispatch % [:set-in submenu-path false])}
                       [:i.far.fa-times-circle]]
          " " title]
