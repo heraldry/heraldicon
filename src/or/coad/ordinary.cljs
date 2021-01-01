@@ -90,7 +90,10 @@
                :escutcheon    {:diagonal-mode nil
                                :line          nil
                                :size          {:max     50
-                                               :default 30}}}
+                                               :default 30}}
+               :roundel       {:diagonal-mode nil
+                               :line          nil
+                               :size          {:max 50}}}
               type)
          (cond->
              (not= type :escutcheon) (assoc :escutcheon nil))))))))
@@ -813,11 +816,11 @@
   (let [{:keys [origin size escutcheon]} (options/sanitize ordinary (options ordinary))
         origin-point                     (position/calculate origin environment :fess)
         width                            (:width environment)
-        escutcheon-width                 (-> width
+        ordinary-width                   (-> width
                                              (* size)
                                              (/ 100))
         env                              (field-environment/transform-to-width
-                                          (escutcheon/field escutcheon) escutcheon-width)
+                                          (escutcheon/field escutcheon) ordinary-width)
         env-fess                         (v/- (-> env :points :fess)
                                               (-> env :points :top-left))
         translation                      (v/- origin-point env-fess)
@@ -842,6 +845,45 @@
         [:path {:d env-shape}]])
      environment ordinary top-level-render render-options :db-path db-path]))
 
+(defn roundel
+  {:display-name "Roundel"
+   :mobile?      true}
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [origin size]} (options/sanitize ordinary (options ordinary))
+        origin-point          (position/calculate origin environment :fess)
+        width                 (:width environment)
+        ordinary-width        (-> width
+                                  (* size)
+                                  (/ 100))
+        ordinary-width-half   (/ ordinary-width 2)
+        ordinary-shape        (-> ["M" (v/+ origin-point (v/v ordinary-width-half 0))
+                                   ["A" ordinary-width-half ordinary-width-half
+                                    0 0 0 (v/- origin-point (v/v ordinary-width-half 0))]
+                                   ["A" ordinary-width-half ordinary-width-half
+                                    0 0 0 (v/+ origin-point (v/v ordinary-width-half 0))]
+                                   "z"]
+                                  svg/make-path
+                                  (cond->
+                                      (:squiggly? render-options) line/squiggly-path))
+        parts                 [[ordinary-shape
+                                [(v/- origin-point
+                                      (v/v ordinary-width-half
+                                           ordinary-width-half))
+                                 (v/+ origin-point
+                                      (v/v ordinary-width-half
+                                           ordinary-width-half))]]]
+        field                 (if (charge/counterchangable? field parent)
+                                (charge/counterchange-field field parent)
+                                field)]
+    [division/make-division
+     :ordinary-pale [field] parts
+     [:all]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g.outline
+        [:path {:d ordinary-shape}]])
+     environment ordinary top-level-render render-options :db-path db-path]))
+
 (def ordinaries
   [#'pale
    #'fess
@@ -852,7 +894,8 @@
    #'cross
    #'saltire
    #'chevron
-   #'escutcheon])
+   #'escutcheon
+   #'roundel])
 
 (def kinds-function-map
   (->> ordinaries
