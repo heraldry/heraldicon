@@ -5,9 +5,13 @@
 (declare encode-field)
 
 (defn encode-ordinary [{:keys [type field line]}]
-  (util/combine " " ["a" (util/translate type)
-                     (util/translate-line line)
-                     (encode-field field)]))
+  (let [rest    (util/combine " " [(util/translate type)
+                                   (util/translate-line line)
+                                   (encode-field field)])
+        article (if (re-matches #"(?i)^[aeiouh].*" rest)
+                  "an"
+                  "a")]
+    (util/combine " " [article rest])))
 
 (defn encode-charge [{:keys [type attitude field tincture]}]
   (util/combine " " ["a" (util/translate type)
