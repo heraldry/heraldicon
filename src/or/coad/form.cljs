@@ -386,9 +386,8 @@
               :open   "fa-minus-square"}
    :variant  {:normal "fa-image"}})
 
-(defn ordinary-type-choice [path key display-name]
-  (let [value           @(rf/subscribe [:get-in (conj path :ordinary)])
-        base-escutcheon @(rf/subscribe [:get-in [:coat-of-arms :escutcheon]])]
+(defn ordinary-type-choice [path key display-name & {:keys [current]}]
+  (let [base-escutcheon @(rf/subscribe [:get-in [:coat-of-arms :escutcheon]])]
     [:div.choice.tooltip {:on-click #(rf/dispatch [:set-ordinary-type path key])}
      [:svg {:style               {:width  "4em"
                                   :height "4.5em"}
@@ -403,7 +402,7 @@
                        :components [{:component  :ordinary
                                      :type       key
                                      :escutcheon (if (= key :escutcheon) base-escutcheon nil)
-                                     :field      {:content {:tincture (if (= value key) :or :azure)}}}]}}
+                                     :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
          {:outline? true}
          :db-path [:ui :ordinary-option]]]]]
      [:div.bottom
@@ -421,11 +420,11 @@
      [submenu path "Ordinary" (get names ordinary-type) {:min-width "17.5em"}
       (for [[display-name key] (filter #(-> % second ordinary/mobile? not) ordinary/choices)]
         ^{:key key}
-        [ordinary-type-choice path key display-name])
+        [ordinary-type-choice path key display-name :current ordinary-type])
       [:h4  "Subordinaries (mobile)"]
       (for [[display-name key] (filter #(-> % second ordinary/mobile?) ordinary/choices)]
         ^{:key key}
-        [ordinary-type-choice path key display-name])]]))
+        [ordinary-type-choice path key display-name :current ordinary-type])]]))
 
 (defn escutcheon-choice [path key display-name]
   (let [value @(rf/subscribe [:get-in path])]
