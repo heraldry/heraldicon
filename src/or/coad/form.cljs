@@ -419,7 +419,11 @@
      [:label "Type:"]
      " "
      [submenu path "Ordinary" (get names ordinary-type) {:min-width "17.5em"}
-      (for [[display-name key] ordinary/choices]
+      (for [[display-name key] (filter #(-> % second ordinary/mobile? not) ordinary/choices)]
+        ^{:key key}
+        [ordinary-type-choice path key display-name])
+      [:h4 "Subordinaries (mobile)"]
+      (for [[display-name key] (filter #(-> % second ordinary/mobile?) ordinary/choices)]
         ^{:key key}
         [ordinary-type-choice path key display-name])]]))
 
