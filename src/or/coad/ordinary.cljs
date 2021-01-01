@@ -148,6 +148,26 @@
                         :line nil
                         :geometry {:size {:max 50}
                                    :mirrored? nil
+                                   :reversed? nil}}
+               :lozenge {:diagonal-mode nil
+                         :line nil
+                         :geometry {:size {:max 50}
+                                    :mirrored? nil
+                                    :reversed? nil}}
+               :fusil {:diagonal-mode nil
+                       :line nil
+                       :geometry {:size {:max 50}
+                                  :mirrored? nil
+                                  :reversed? nil}}
+               :mascle {:diagonal-mode nil
+                        :line nil
+                        :geometry {:size {:max 50}
+                                   :mirrored? nil
+                                   :reversed? nil}}
+               :rustre {:diagonal-mode nil
+                        :line nil
+                        :geometry {:size {:max 50}
+                                   :mirrored? nil
                                    :reversed? nil}}}
               type)
          (cond->
@@ -1119,6 +1139,283 @@
         [:path {:d ordinary-shape}]])
      environment ordinary top-level-render render-options :db-path db-path]))
 
+(defn lozenge
+  {:display-name "Lozenge"
+   :mobile? true}
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [origin geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size stretch rotation]} geometry
+        origin-point (position/calculate origin environment :fess)
+        height (:height environment)
+        ordinary-height (-> height
+                            (* size)
+                            (/ 100))
+        ordinary-width (/ ordinary-height 1.3)
+        ordinary-width-half (/ ordinary-width 2)
+        ordinary-height-half (/ ordinary-height 2)
+        ordinary-shape (-> ["m" (v/v 0 (- ordinary-height-half))
+                            "l" (v/v ordinary-width-half ordinary-height-half)
+                            "l " (v/v (- ordinary-width-half) ordinary-height-half)
+                            "l" (v/v (- ordinary-width-half) (- ordinary-height-half))
+                            "z"]
+                           svg/make-path
+                           (cond->
+                            (not= stretch 1) (->
+                                              (svgpath)
+                                              (.scale 1 stretch)
+                                              (.toString))
+                            (not= rotation 0) (->
+                                               (svgpath)
+                                               (.rotate rotation)
+                                               (.toString))
+                            (:squiggly? render-options) line/squiggly-path)
+                           (line/translate (:x origin-point) (:y origin-point)))
+        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
+                                                             (v/v ordinary-width-half
+                                                                  ordinary-width-half))
+                                                            (v/-
+                                                             (v/v ordinary-width-half
+                                                                  ordinary-width-half))
+                                                            rotation
+                                                            :scale (v/v 1 stretch))
+        box-size (v/v (- max-x min-x)
+                      (- max-y min-y))
+        parts [[ordinary-shape
+                [(v/- origin-point
+                      (v// box-size 2))
+                 (v/+ origin-point
+                      (v// box-size 2))]]]
+        field (if (charge/counterchangable? field parent)
+                (charge/counterchange-field field parent)
+                field)]
+    [division/make-division
+     :ordinary-pale [field] parts
+     [:all]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g.outline
+        [:path {:d ordinary-shape}]])
+     environment ordinary top-level-render render-options :db-path db-path]))
+
+(defn fusil
+  {:display-name "Fusil"
+   :mobile? true}
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [origin geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size stretch rotation]} geometry
+        origin-point (position/calculate origin environment :fess)
+        height (:height environment)
+        ordinary-height (-> height
+                            (* size)
+                            (/ 100))
+        ordinary-width (/ ordinary-height 2)
+        ordinary-width-half (/ ordinary-width 2)
+        ordinary-height-half (/ ordinary-height 2)
+        ordinary-shape (-> ["m" (v/v 0 (- ordinary-height-half))
+                            "l" (v/v ordinary-width-half ordinary-height-half)
+                            "l " (v/v (- ordinary-width-half) ordinary-height-half)
+                            "l" (v/v (- ordinary-width-half) (- ordinary-height-half))
+                            "z"]
+                           svg/make-path
+                           (cond->
+                            (not= stretch 1) (->
+                                              (svgpath)
+                                              (.scale 1 stretch)
+                                              (.toString))
+                            (not= rotation 0) (->
+                                               (svgpath)
+                                               (.rotate rotation)
+                                               (.toString))
+                            (:squiggly? render-options) line/squiggly-path)
+                           (line/translate (:x origin-point) (:y origin-point)))
+        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
+                                                             (v/v ordinary-width-half
+                                                                  ordinary-width-half))
+                                                            (v/-
+                                                             (v/v ordinary-width-half
+                                                                  ordinary-width-half))
+                                                            rotation
+                                                            :scale (v/v 1 stretch))
+        box-size (v/v (- max-x min-x)
+                      (- max-y min-y))
+        parts [[ordinary-shape
+                [(v/- origin-point
+                      (v// box-size 2))
+                 (v/+ origin-point
+                      (v// box-size 2))]]]
+        field (if (charge/counterchangable? field parent)
+                (charge/counterchange-field field parent)
+                field)]
+    [division/make-division
+     :ordinary-pale [field] parts
+     [:all]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g.outline
+        [:path {:d ordinary-shape}]])
+     environment ordinary top-level-render render-options :db-path db-path]))
+
+(defn mascle
+  {:display-name "Mascle"
+   :mobile? true}
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [origin geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size stretch rotation]} geometry
+        origin-point (position/calculate origin environment :fess)
+        height (:height environment)
+        ordinary-height (-> height
+                            (* size)
+                            (/ 100))
+        ordinary-width (/ ordinary-height 1.3)
+        ordinary-width-half (/ ordinary-width 2)
+        ordinary-height-half (/ ordinary-height 2)
+        ordinary-shape (-> ["m" (v/v 0 (- ordinary-height-half))
+                            "l" (v/v ordinary-width-half ordinary-height-half)
+                            "l " (v/v (- ordinary-width-half) ordinary-height-half)
+                            "l" (v/v (- ordinary-width-half) (- ordinary-height-half))
+                            "z"]
+                           svg/make-path
+                           (cond->
+                            (not= stretch 1) (->
+                                              (svgpath)
+                                              (.scale 1 stretch)
+                                              (.toString))
+                            (not= rotation 0) (->
+                                               (svgpath)
+                                               (.rotate rotation)
+                                               (.toString))
+                            (:squiggly? render-options) line/squiggly-path)
+                           (line/translate (:x origin-point) (:y origin-point)))
+        hole-width (* ordinary-width 0.55)
+        hole-height (* ordinary-height 0.55)
+        hole-width-half (/ hole-width 2)
+        hole-height-half (/ hole-height 2)
+        hole-shape (-> ["m" (v/v 0 (- hole-height-half))
+                        "l" (v/v hole-width-half hole-height-half)
+                        "l " (v/v (- hole-width-half) hole-height-half)
+                        "l" (v/v (- hole-width-half) (- hole-height-half))
+                        "z"]
+                       svg/make-path
+                       (cond->
+                        (not= stretch 1) (->
+                                          (svgpath)
+                                          (.scale 1 stretch)
+                                          (.toString))
+                        (not= rotation 0) (->
+                                           (svgpath)
+                                           (.rotate rotation)
+                                           (.toString))
+                        (:squiggly? render-options) line/squiggly-path)
+                       (line/translate (:x origin-point) (:y origin-point)))
+        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
+                                                             (v/v ordinary-width-half
+                                                                  ordinary-width-half))
+                                                            (v/-
+                                                             (v/v ordinary-width-half
+                                                                  ordinary-width-half))
+                                                            rotation
+                                                            :scale (v/v 1 stretch))
+        box-size (v/v (- max-x min-x)
+                      (- max-y min-y))
+        parts [[ordinary-shape
+                [(v/- origin-point
+                      (v// box-size 2))
+                 (v/+ origin-point
+                      (v// box-size 2))]
+                hole-shape]]
+        field (if (charge/counterchangable? field parent)
+                (charge/counterchange-field field parent)
+                field)]
+    [division/make-division
+     :ordinary-pale [field] parts
+     [:all]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g.outline
+        [:path {:d ordinary-shape}]
+        [:path {:d hole-shape}]])
+     environment ordinary top-level-render render-options :db-path db-path]))
+
+(defn rustre
+  {:display-name "Rustre"
+   :mobile? true}
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [origin geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size stretch rotation]} geometry
+        origin-point (position/calculate origin environment :fess)
+        height (:height environment)
+        ordinary-height (-> height
+                            (* size)
+                            (/ 100))
+        ordinary-width (/ ordinary-height 1.3)
+        ordinary-width-half (/ ordinary-width 2)
+        ordinary-height-half (/ ordinary-height 2)
+        ordinary-shape (-> ["m" (v/v 0 (- ordinary-height-half))
+                            "l" (v/v ordinary-width-half ordinary-height-half)
+                            "l " (v/v (- ordinary-width-half) ordinary-height-half)
+                            "l" (v/v (- ordinary-width-half) (- ordinary-height-half))
+                            "z"]
+                           svg/make-path
+                           (cond->
+                            (not= stretch 1) (->
+                                              (svgpath)
+                                              (.scale 1 stretch)
+                                              (.toString))
+                            (not= rotation 0) (->
+                                               (svgpath)
+                                               (.rotate rotation)
+                                               (.toString))
+                            (:squiggly? render-options) line/squiggly-path)
+                           (line/translate (:x origin-point) (:y origin-point)))
+        hole-width (* ordinary-width 0.5)
+        hole-width-half (/ hole-width 2)
+        hole-shape (-> ["m" (v/v hole-width-half 0)
+                        ["a" hole-width-half hole-width-half
+                         0 0 0 (v/v (- hole-width) 0)]
+                        ["a" hole-width-half hole-width-half
+                         0 0 0 hole-width 0]
+                        "z"]
+                       svg/make-path
+                       (cond->
+                        (not= stretch 1) (->
+                                          (svgpath)
+                                          (.scale 1 stretch)
+                                          (.toString))
+                        (not= rotation 0) (->
+                                           (svgpath)
+                                           (.rotate rotation)
+                                           (.toString))
+                        (:squiggly? render-options) line/squiggly-path)
+                       (line/translate (:x origin-point) (:y origin-point)))
+        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
+                                                             (v/v ordinary-width-half
+                                                                  ordinary-width-half))
+                                                            (v/-
+                                                             (v/v ordinary-width-half
+                                                                  ordinary-width-half))
+                                                            rotation
+                                                            :scale (v/v 1 stretch))
+        box-size (v/v (- max-x min-x)
+                      (- max-y min-y))
+        parts [[ordinary-shape
+                [(v/- origin-point
+                      (v// box-size 2))
+                 (v/+ origin-point
+                      (v// box-size 2))]
+                hole-shape]]
+        field (if (charge/counterchangable? field parent)
+                (charge/counterchange-field field parent)
+                field)]
+    [division/make-division
+     :ordinary-pale [field] parts
+     [:all]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g.outline
+        [:path {:d ordinary-shape}]
+        [:path {:d hole-shape}]])
+     environment ordinary top-level-render render-options :db-path db-path]))
+
 (def ordinaries
   [#'pale
    #'fess
@@ -1132,7 +1429,11 @@
    #'escutcheon
    #'roundel
    #'annulet
-   #'billet])
+   #'billet
+   #'lozenge
+   #'fusil
+   #'mascle
+   #'rustre])
 
 (def kinds-function-map
   (->> ordinaries
