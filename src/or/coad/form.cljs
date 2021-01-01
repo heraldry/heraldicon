@@ -387,7 +387,8 @@
    :variant {:normal "fa-image"}})
 
 (defn ordinary-type-choice [path key display-name]
-  (let [value @(rf/subscribe [:get-in (conj path :ordinary)])]
+  (let [value @(rf/subscribe [:get-in (conj path :ordinary)])
+        base-escutcheon @(rf/subscribe [:get-in [:coat-of-arms :escutcheon]])]
     [:div.choice.tooltip {:on-click #(rf/dispatch [:set-ordinary-type path key])}
      [:svg {:style {:width "4em"
                     :height "4.5em"}
@@ -401,6 +402,7 @@
                   :content {:tincture :argent}
                   :components [{:component :ordinary
                                 :type key
+                                :escutcheon (if (= key :inescutcheon) base-escutcheon nil)
                                 :field {:content {:tincture (if (= value key) :or :azure)}}}]}}
          {:outline? true}
          :db-path [:ui :ordinary-option]]]]]
@@ -421,6 +423,40 @@
         ^{:key key}
         [ordinary-type-choice path key display-name])]]))
 
+(defn escutcheon-choice [path key display-name]
+  (let [value @(rf/subscribe [:get-in path])]
+    [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])}
+     [:svg {:style {:width "4em"
+                    :height "5em"}
+            :viewBox "0 0 120 200"
+            :preserveAspectRatio "xMidYMin slice"}
+      [:g {:filter "url(#shadow)"}
+       [:g {:transform "translate(10,10)"}
+        [render/coat-of-arms
+         {:escutcheon key
+          :field {:component :field
+                  :content {:tincture (if (= value key) :or :azure)}}}
+         {:outline? true}
+         :db-path [:ui :escutcheon-option]]]]]
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} display-name]
+      [:i]]]))
+
+(defn form-for-escutcheon [path]
+  (let [escutcheon (:or @(rf/subscribe [:get-in path])
+                        :heater)
+        names (->> escutcheon/choices
+                   (map (comp vec reverse))
+                   (into {}))]
+    [:div.setting
+     [:label "Escutcheon:"]
+     " "
+     [submenu path "Escutcheon" (get names escutcheon) {:min-width "17.5em"}
+      (for [[display-name key] escutcheon/choices]
+        ^{:key key}
+        [escutcheon-choice path key display-name])]
+     [:div.spacer]]))
+
 (defn form-for-ordinary [path & {:keys [parent-field]}]
   (let [ordinary @(rf/subscribe [:get-in path])]
     [component
@@ -429,6 +465,8 @@
       [form-for-ordinary-type path]
       (let [ordinary-options (ordinary/options ordinary)]
         [:<>
+         (when (:escutcheon ordinary-options)
+           [form-for-escutcheon (conj path :escutcheon)])
          (when (:line ordinary-options)
            [form-for-line (conj path :line) :options (:line ordinary-options)])
          (when (:diagonal-mode ordinary-options)
@@ -732,39 +770,6 @@
               [:div {:style {:padding-left "10px"}}
                [:a {:on-click #(rf/dispatch [:remove-component component-path])}
                 [:i.far.fa-trash-alt]]]])))]]]))
-
-(defn escutcheon-choice [path key display-name]
-  (let [value @(rf/subscribe [:get-in path])]
-    [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])}
-     [:svg {:style {:width "4em"
-                    :height "5em"}
-            :viewBox "0 0 120 200"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g {:filter "url(#shadow)"}
-       [:g {:transform "translate(10,10)"}
-        [render/coat-of-arms
-         {:escutcheon key
-          :field {:component :field
-                  :content {:tincture (if (= value key) :or :azure)}}}
-         {:outline? true}
-         :db-path [:ui :escutcheon-option]]]]]
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} display-name]
-      [:i]]]))
-
-(defn form-for-escutcheon [path]
-  (let [escutcheon @(rf/subscribe [:get-in path])
-        names (->> escutcheon/choices
-                   (map (comp vec reverse))
-                   (into {}))]
-    [:div.setting
-     [:label "Escutcheon:"]
-     " "
-     [submenu path "Escutcheon" (get names escutcheon) {:min-width "17.5em"}
-      (for [[display-name key] escutcheon/choices]
-        ^{:key key}
-        [escutcheon-choice path key display-name])]
-     [:div.spacer]]))
 
 (defn form-render-options []
   [component [:render-options] :render-options "Options" nil

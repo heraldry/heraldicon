@@ -1,6 +1,8 @@
 (ns or.coad.ordinary
   (:require [or.coad.charge :as charge]
             [or.coad.division :as division]
+            [or.coad.escutcheon :as escutcheon]
+            [or.coad.field-environment :as field-environment]
             [or.coad.infinity :as infinity]
             [or.coad.line :as line]
             [or.coad.options :as options]
@@ -42,46 +44,58 @@
    :line line/default-options
    :size {:type :range
           :min 10
-          :max 40
-          :default 25}})
+          :max 50
+          :default 25}
+   :escutcheon {:type :choice
+                :choices escutcheon/choices
+                :default :heater}})
 
 (defn options [ordinary]
   (when ordinary
-    (options/merge
-     default-options
-     (->
-      (get {:pale {:origin {:offset-y nil}
-                   :diagonal-mode nil
-                   :size {:max 50}}
-            :fess {:origin {:offset-x nil}
-                   :diagonal-mode nil
-                   :size {:max 50}}
-            :chief {:origin nil
-                    :diagonal-mode nil}
-            :base {:origin nil
-                   :diagonal-mode nil}
-            :bend {:origin {:offset-x nil}
-                   :diagonal-mode {:choices (diagonal-mode-choices
-                                             :bend)}}
-            :bend-sinister {:origin {:offset-x nil}
-                            :diagonal-mode {:choices (diagonal-mode-choices
-                                                      :bend-sinister)
-                                            :default :top-right-fess}}
-            :chevron {:diagonal-mode {:choices (diagonal-mode-choices
-                                                :chevron)
-                                      :default :forty-five-degrees}
+    (let [type (:type ordinary)]
+      (options/merge
+       default-options
+       (->
+        (get {:pale {:origin {:offset-y nil}
+                     :diagonal-mode nil
+                     :size {:max 50}}
+              :fess {:origin {:offset-x nil}
+                     :diagonal-mode nil
+                     :size {:max 50}}
+              :chief {:origin nil
+                      :diagonal-mode nil}
+              :base {:origin nil
+                     :diagonal-mode nil}
+              :bend {:origin {:offset-x nil}
+                     :diagonal-mode {:choices (diagonal-mode-choices
+                                               :bend)}}
+              :bend-sinister {:origin {:offset-x nil}
+                              :diagonal-mode {:choices (diagonal-mode-choices
+                                                        :bend-sinister)
+                                              :default :top-right-fess}}
+              :chevron {:diagonal-mode {:choices (diagonal-mode-choices
+                                                  :chevron)
+                                        :default :forty-five-degrees}
+                        :line {:offset {:min 0}}
+                        :size {:max 30}}
+              :saltire {:diagonal-mode {:choices (diagonal-mode-choices
+                                                  :saltire)}
+                        :line {:offset {:min 0}}
+                        :size {:max 30}}
+              :cross {:diagonal-mode nil
                       :line {:offset {:min 0}}
                       :size {:max 30}}
-            :saltire {:diagonal-mode {:choices (diagonal-mode-choices
-                                                :saltire)}
-                      :line {:offset {:min 0}}
-                      :size {:max 30}}
-            :cross {:diagonal-mode nil
-                    :line {:offset {:min 0}}
-                    :size {:max 30}}}
-           (:type ordinary))
-      (update-in [:line] #(options/merge (line/options (get-in ordinary [:line]))
-                                         %))))))
+              :inescutcheon {:diagonal-mode nil
+                             :line nil
+                             :size {:max 50
+                                    :default 30}}}
+             type)
+        (cond->
+         (not= type :inescutcheon) (assoc :escutcheon nil))
+        (update-in [:line] #(if (some? %)
+                              (options/merge (line/options (get-in ordinary [:line]))
+                                             %)
+                              %)))))))
 
 (defn pale
   {:display-name "Pale"}
@@ -785,6 +799,40 @@
                      (line/stitch line-bottom-left-upper)])}]])
      environment ordinary top-level-render render-options :db-path db-path]))
 
+(defn inescutcheon
+  {:display-name "Inescutcheon"}
+  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [origin size escutcheon]} (options/sanitize ordinary (options ordinary))
+        origin-point (position/calculate origin environment :fess)
+        width (:width environment)
+        escutcheon-width (-> width
+                             (* size)
+                             (/ 100))
+        env (field-environment/transform-to-width
+             (escutcheon/field escutcheon) escutcheon-width)
+        env-fess (v/- (-> env :points :fess)
+                      (-> env :points :top-left))
+        translation (v/- origin-point env-fess)
+        env-shape (-> (line/translate (:shape env)
+                                      (:x translation) (:y translation))
+                      (cond->
+                       (:squiggly? render-options) line/squiggly-path))
+        parts [[env-shape
+                [(v/- (-> env :points :top-left)
+                      translation)
+                 (v/- (-> env :points :bottom-right)
+                      translation)]]]
+        field (if (charge/counterchangable? field parent)
+                (charge/counterchange-field field parent)
+                field)]
+    [division/make-division
+     :ordinary-pale [field] parts
+     [:all]
+     (when (:outline? render-options)
+       [:g.outline
+        [:path {:d env-shape}]])
+     environment ordinary top-level-render render-options :db-path db-path]))
+
 (def ordinaries
   [#'pale
    #'fess
@@ -794,7 +842,8 @@
    #'bend-sinister
    #'cross
    #'saltire
-   #'chevron])
+   #'chevron
+   #'inescutcheon])
 
 (def kinds-function-map
   (->> ordinaries
