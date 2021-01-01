@@ -45,9 +45,6 @@
         center (avg-x-y points)]
     center))
 
-(defn s [[x y]]
-  (str x "," y))
-
 (defn make-path [v]
   (cond
     (string? v) v
@@ -57,10 +54,9 @@
     (sequential? v) (s/join " " (map make-path v))
     :else (str v)))
 
-(defn translate [[x y] [dx dy]]
-  [(+ x dx)
-   (+ y dy)])
-
-(defn scale [[x y] f]
-  [(* x f)
-   (* y f)])
+(defn rotated-bounding-box [{x1 :x y1 :y} {x2 :x y2 :y} rotation]
+  (let [points [(v/rotate (v/v x1 y1) rotation)
+                (v/rotate (v/v x2 y1) rotation)
+                (v/rotate (v/v x1 y2) rotation)
+                (v/rotate (v/v x2 y2) rotation)]]
+    (bounding-box points)))
