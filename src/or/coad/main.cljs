@@ -4,7 +4,6 @@
             [cljs-http.client :as http]
             [cljs.core.async :refer [<!]]
             [cljs.reader :as reader]
-            [clojure.walk :as walk]
             [goog.string.format]  ;; required for release build
             [or.coad.blazon :as blazon]
             [or.coad.config :as config]
@@ -20,14 +19,7 @@
             [re-frame.core :as rf]
             [reagent.dom :as r]))
 
-;; helper
-
-(defn remove-key-recursively [data key]
-  (walk/postwalk #(cond-> %
-                    (map? %) (dissoc key))
-                 data))
 ;; subs
-
 
 (rf/reg-sub
  :get
@@ -38,12 +30,6 @@
  :get-in
  (fn [db [_ path]]
    (get-in db path)))
-
-(rf/reg-sub
- :get-open-component-flag
- (fn [db [_ path]]
-   (let [flag-path (conj path :ui :open?)]
-     (get-in db flag-path))))
 
 (rf/reg-sub
  :get-division-type
@@ -72,31 +58,18 @@
                           (rf/dispatch [:set :loaded-data name parsed])))))
                nil)))))
 
-(rf/reg-sub
- :component-selected?
- (fn [db [_ path]]
-   (or (get-in db (conj path :ui :selected?))
-       (when (get-in db (-> path
-                            (->> (drop-last 3))
-                            vec
-                            (conj :counterchanged?)))
-         (let [parent-field-path (-> path
-                                     (->> (drop-last 6))
-                                     vec
-                                     (conj :division :fields (last path)))]
-           (get-in db (conj parent-field-path :ui :selected?)))))))
-
 ;; events
 
 
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:render-options {:mode :colours
+   (merge {:render-options {:component :render-options
+                            :mode :colours
                             :outline? false
                             :squiggly? false
-                            :ui {:open? true
-                                 :selectable-fields? true}}
+                            :ui {:selectable-fields? true}}
+           :ui {:component-open? {[:render-options] true}}
            :coat-of-arms config/default-coat-of-arms} db)))
 
 (rf/reg-event-db
@@ -122,40 +95,6 @@
  :toggle-in
  (fn [db [_ path]]
    (update-in db path not)))
-
-(rf/reg-event-db
- :open-component
- (fn [db [_ path]]
-   (-> (loop [db db
-              rest path]
-         (if (empty? rest)
-           db
-           (recur
-            (if (get-in db (conj rest :component))
-              (assoc-in db (conj rest :ui :open?) true)
-              db)
-            (-> rest drop-last vec)))))))
-
-(rf/reg-event-db
- :close-component
- (fn [db [_ path]]
-   (update-in db path (fn [sub-db] (walk/postwalk #(if (:component %)
-                                                     (assoc-in % [:ui :open?] false)
-                                                     %) sub-db)))))
-
-(rf/reg-event-fx
- :toggle-open-component-flag
- (fn [{:keys [db]} [_ path]]
-   (let [flag-path (conj path :ui :open?)
-         open? (get-in db flag-path)]
-     (if open?
-       {:fx [[:dispatch [:close-component path]]]}
-       {:fx [[:dispatch [:open-component path]]]}))))
-
-(rf/reg-event-db
- :close-submenus
- (fn [db _]
-   (update-in db [:ui] dissoc :open-submenu)))
 
 (rf/reg-event-db
  :set-division-type
@@ -203,16 +142,19 @@
        (update-in path #(merge %
                                (options/sanitize-or-nil % (ordinary/options %)))))))
 
-(rf/reg-event-db
+(rf/reg-event-fx
  :add-component
- (fn [db [_ path value]]
+ (fn [{:keys [db]} [_ path value]]
    (let [components-path (conj path :components)
          index (count (get-in db components-path))]
-     (-> db
-         (update-in components-path #(-> %
-                                         (conj value)
-                                         vec))
-         (assoc-in [:ui :open-submenu (conj components-path index)] true)))))
+     {:db (update-in db components-path #(-> %
+                                             (conj value)
+                                             vec))
+      :fx [[:dispatch [:ui-submenu-open (conj components-path index (case (:component value)
+                                                                      :ordinary "Select Ordinary"
+                                                                      :charge "Select Charge"))]]
+           [:dispatch [:ui-component-open (conj components-path index)]]
+           [:dispatch [:ui-component-open (conj components-path index :field)]]]})))
 
 (rf/reg-event-db
  :remove-component
@@ -258,27 +200,6 @@
  :update-charge
  (fn [db [_ path changes]]
    (update-in db path merge changes)))
-
-(rf/reg-event-fx
- :select-component
- (fn [{:keys [db]} [_ path]]
-   (let [real-path (if (get-in
-                        db
-                        (-> path
-                            (->> (drop-last 3))
-                            vec
-                            (conj :counterchanged?)))
-                     (-> path
-                         (->> (drop-last 6))
-                         vec
-                         (conj :division :fields (last path)))
-                     path)]
-     {:db (-> db
-              (remove-key-recursively :selected?)
-              (cond->
-               path (as-> db
-                          (assoc-in db (conj real-path :ui :selected?) true))))
-      :fx [[:dispatch [:open-component real-path]]]})))
 
 ;; views
 
@@ -352,8 +273,7 @@
     (let [coat-of-arms @(rf/subscribe [:get :coat-of-arms])
           mode @(rf/subscribe [:get :render-options :mode])
           render-options @(rf/subscribe [:get :render-options])
-          stripped-coat-of-arms (remove-key-recursively coat-of-arms :ui)
-          state-base64 (.encode base64 (prn-str stripped-coat-of-arms))]
+          state-base64 (.encode base64 (prn-str coat-of-arms))]
       (when coat-of-arms
         (js/history.replaceState nil nil (str "#" state-base64)))
       [:<>
@@ -362,8 +282,8 @@
                       :top "4em"
                       :position "relative"
                       :padding "10px"}
-              :on-click #(do (rf/dispatch [:select-component nil])
-                             (rf/dispatch [:close-submenus])
+              :on-click #(do (rf/dispatch [:ui-component-deselect-all])
+                             (rf/dispatch [:ui-submenu-close-all])
                              (.stopPropagation %))}
         [:svg {:id "svg"
                :style {:width "25em"

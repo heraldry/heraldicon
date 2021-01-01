@@ -14,6 +14,108 @@
             [or.coad.util :as util]
             [re-frame.core :as rf]))
 
+;; subs
+
+(rf/reg-sub
+ :ui-component-open?
+ (fn [db [_ path]]
+   (get-in db [:ui :component-open? path])))
+
+(rf/reg-sub
+ :ui-submenu-open?
+ (fn [db [_ path]]
+   (get-in db [:ui :submenu-open? path])))
+
+(rf/reg-sub
+ :ui-component-selected?
+ (fn [db [_ path]]
+   (or (get-in db [:ui :component-selected? path])
+       (when (get-in db (-> path
+                            (->> (drop-last 3))
+                            vec
+                            (conj :counterchanged?)))
+         (let [parent-field-path (-> path
+                                     (->> (drop-last 6))
+                                     vec
+                                     (conj :division :fields (last path)))]
+           (get-in db [:ui :component-selected? parent-field-path]))))))
+
+;; events
+
+(rf/reg-event-db
+ :ui-component-open
+ (fn [db [_ path]]
+   (-> (loop [db db
+              rest path]
+         (if (empty? rest)
+           db
+           (recur
+            (if (get-in db (conj rest :component))
+              (assoc-in db [:ui :component-open? rest] true)
+              db)
+            (-> rest drop-last vec)))))))
+
+(rf/reg-event-db
+ :ui-component-close
+ (fn [db [_ path]]
+
+   (update-in db [:ui :component-open?]
+              #(into {}
+                     (->> %
+                          (filter (fn [[k _]]
+                                    (not (and (-> k count (>= (count path)))
+                                              (= (subvec k 0 (count path))
+                                                 path))))))))))
+
+(rf/reg-event-fx
+ :ui-component-open-toggle
+ (fn [{:keys [db]} [_ path]]
+   (let [open? (get-in db [:ui :component-open? path])]
+     (if open?
+       {:fx [[:dispatch [:ui-component-close path]]]}
+       {:fx [[:dispatch [:ui-component-open path]]]}))))
+
+(rf/reg-event-db
+ :ui-component-deselect-all
+ (fn [db _]
+   (update-in db [:ui] dissoc :component-selected?)))
+
+(rf/reg-event-db
+ :ui-submenu-close-all
+ (fn [db _]
+   (update-in db [:ui] dissoc :submenu-open?)))
+
+(rf/reg-event-db
+ :ui-submenu-open
+ (fn [db [_ path]]
+   (assoc-in db [:ui :submenu-open? path] true)))
+
+(rf/reg-event-db
+ :ui-submenu-close
+ (fn [db [_ path]]
+   (assoc-in db [:ui :submenu-open? path] false)))
+
+(rf/reg-event-fx
+ :ui-component-select
+ (fn [{:keys [db]} [_ path]]
+   (let [real-path (if (get-in
+                        db
+                        (-> path
+                            (->> (drop-last 3))
+                            vec
+                            (conj :counterchanged?)))
+                     (-> path
+                         (->> (drop-last 6))
+                         vec
+                         (conj :division :fields (last path)))
+                     path)]
+     {:db (-> db
+              (update-in [:ui] dissoc :component-selected?)
+              (cond->
+               path (as-> db
+                          (assoc-in db [:ui :component-selected? real-path] true))))
+      :fx [[:dispatch [:ui-component-open real-path]]]})))
+
 ;; components
 
 (defn checkbox [path label & {:keys [on-change disabled? checked?]}]
@@ -121,15 +223,13 @@
                    :style {:margin-right "10px"}} display-name]])))])
 
 (defn selector [path]
-  [:a.selector {:on-click (fn [event]
-                            (rf/dispatch [:select-component path])
-                            (.stopPropagation event))}
+  [:a.selector {:on-click #(util/dispatch % [:ui-component-select path])}
    [:i.fas.fa-search]])
 
 (defn component [path type title title-prefix & content]
-  (let [selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])
+  (let [selected? @(rf/subscribe [:ui-component-selected? path])
         content? (seq content)
-        open? (and @(rf/subscribe [:get-open-component-flag path])
+        open? (and @(rf/subscribe [:ui-component-open? path])
                    content?)
         show-selector? (and (not= path [:render-options])
                             (get #{:field :ref} type))]
@@ -137,7 +237,7 @@
      {:class (util/combine " " [(when type (name type))
                                 (when selected? "selected")
                                 (when (not open?) "closed")])}
-     [:div.header.clickable {:on-click #(util/dispatch % [:toggle-open-component-flag path])}
+     [:div.header.clickable {:on-click #(util/dispatch % [:ui-component-open-toggle path])}
       [:a.arrow {:style {:opacity (if content? 1 0)}}
        (if open?
          [:i.fas.fa-chevron-circle-down]
@@ -162,15 +262,15 @@
 (declare form-for-field)
 
 (defn submenu [path title link-name styles & content]
-  (let [submenu-path [:ui :open-submenu path]
-        submenu-open? @(rf/subscribe [:get-in submenu-path])]
+  (let [submenu-id (conj path title)
+        submenu-open? @(rf/subscribe [:ui-submenu-open? submenu-id])]
     [:div.submenu-setting {:style {:display "inline-block"}
                            :on-click #(.stopPropagation %)}
-     [:a {:on-click #(util/dispatch % [:set-in submenu-path true])}
+     [:a {:on-click #(util/dispatch % [:ui-submenu-open submenu-id])}
       link-name]
      (when submenu-open?
        [:div.component.submenu {:style styles}
-        [:div.header [:a {:on-click #(util/dispatch % [:set-in submenu-path false])}
+        [:div.header [:a {:on-click #(util/dispatch % [:ui-submenu-close submenu-id])}
                       [:i.far.fa-times-circle]]
          " " title]
         (into [:div.content]
@@ -202,8 +302,7 @@
                                            (replace-recursively :none :argent)
                                            (cond->
                                             (= value key) (replace-recursively :azure :or)))}})}
-         {:outline? true}
-         :db-path [:ui :division-option]]]]]
+         {:outline? true}]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -241,8 +340,7 @@
                              :fields [{:content {:tincture :argent}}
                                       {:content {:tincture (if (= key current) :or :azure)}}]}}}
          {:outline? true}
-         :width 100
-         :db-path [:ui :line-option]]]]]
+         :width 100]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -383,8 +481,7 @@
           :field {:component :field
                   :content {:tincture key}}}
          {:outline? true}
-         :width 40
-         :db-path [:ui :tincture-option]]]]]
+         :width 40]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -444,8 +541,7 @@
                               :geometry {:size (if (ordinary/mobile? key) 75 nil)}
                               :escutcheon (if (= key :escutcheon) :heater nil)
                               :field {:content {:tincture (if (= current key) :or :azure)}}}]}}
-       {:outline? true}
-       :db-path [:ui :ordinary-option]]]]]
+       {:outline? true}]]]]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])
@@ -480,8 +576,7 @@
          {:escutcheon key
           :field {:component :field
                   :content {:tincture (if (= value key) :or :azure)}}}
-         {:outline? true}
-         :db-path [:ui :escutcheon-option]]]]]
+         {:outline? true}]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -751,9 +846,8 @@
                    [form-for-field part-path :title-prefix part-name])]
                 [:div {:style {:padding-left "10px"}}
                  (if ref
-                   [:a {:on-click #(util/dispatch % [:set-in part-path
-                                                     (-> (get content ref)
-                                                         (assoc-in [:ui :open?] true))])}
+                   [:a {:on-click #(do (util/dispatch % [:set-in part-path (get content ref)])
+                                       (util/dispatch % [:ui-component-open part-path]))}
                     [:i.far.fa-edit]]
                    (when (>= idx mandatory-part-count)
                      [:a {:on-click #(util/dispatch % [:set-in (conj part-path :ref)
@@ -762,14 +856,10 @@
                                                            :ref)])}
                       [:i.far.fa-times-circle]]))]])))]])
      [:div {:style {:margin-bottom "0.5em"}}
-      [:button {:on-click #(util/dispatch % [:add-component path (-> config/default-ordinary
-                                                                     (assoc-in [:ui :open?] true)
-                                                                     (assoc-in [:field :ui :open?] true))])}
+      [:button {:on-click #(util/dispatch % [:add-component path config/default-ordinary])}
        [:i.fas.fa-plus] " Add ordinary"]
       " "
-      [:button {:on-click #(util/dispatch % [:add-component path (-> config/default-charge
-                                                                     (assoc-in [:ui :open?] true)
-                                                                     (assoc-in [:field :ui :open?] true))])}
+      [:button {:on-click #(util/dispatch % [:add-component path config/default-charge])}
        [:i.fas.fa-plus] " Add charge"]]
      [:div.components
       [:ul
