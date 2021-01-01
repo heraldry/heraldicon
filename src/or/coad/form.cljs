@@ -387,27 +387,27 @@
    :variant  {:normal "fa-image"}})
 
 (defn ordinary-type-choice [path key display-name & {:keys [current]}]
-  (let [base-escutcheon @(rf/subscribe [:get-in [:coat-of-arms :escutcheon]])]
-    [:div.choice.tooltip {:on-click #(rf/dispatch [:set-ordinary-type path key])}
-     [:svg {:style               {:width  "4em"
-                                  :height "4.5em"}
-            :viewBox             "0 0 120 200"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g {:filter "url(#shadow)"}
-       [:g {:transform "translate(10,10)"}
-        [render/coat-of-arms
-         {:escutcheon :rectangle
-          :field      {:component  :field
-                       :content    {:tincture :argent}
-                       :components [{:component  :ordinary
-                                     :type       key
-                                     :escutcheon (if (= key :escutcheon) base-escutcheon nil)
-                                     :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
-         {:outline? true}
-         :db-path [:ui :ordinary-option]]]]]
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} display-name]
-      [:i]]]))
+  [:div.choice.tooltip {:on-click #(rf/dispatch [:set-ordinary-type path key])}
+   [:svg {:style               {:width  "4em"
+                                :height "4.5em"}
+          :viewBox             "0 0 120 200"
+          :preserveAspectRatio "xMidYMin slice"}
+    [:g {:filter "url(#shadow)"}
+     [:g {:transform "translate(10,10)"}
+      [render/coat-of-arms
+       {:escutcheon :rectangle
+        :field      {:component  :field
+                     :content    {:tincture :argent}
+                     :components [{:component  :ordinary
+                                   :type       key
+                                   :size       (if (ordinary/mobile? key) 75 nil)
+                                   :escutcheon (if (= key :escutcheon) :heater nil)
+                                   :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
+       {:outline? true}
+       :db-path [:ui :ordinary-option]]]]]
+   [:div.bottom
+    [:h3 {:style {:text-align "center"}} display-name]
+    [:i]]])
 
 (defn form-for-ordinary-type [path]
   (let [ordinary-type @(rf/subscribe [:get-in (conj path :type)])
