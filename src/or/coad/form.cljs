@@ -486,7 +486,8 @@
             (-> ordinary-options :size :min)
             (-> ordinary-options :size :max)
             :default (options/get-value (:size ordinary) (:size ordinary-options))
-            :display-function #(str % "%")])])]
+            :display-function #(str % "%")])])
+      [checkbox (conj path :hints :outline?) "Outline"]]
      [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn tree-for-charge-map [{:keys [key type name groups charges attitudes variants]}
@@ -644,8 +645,7 @@
             "White eyes and teeth"
             :on-change #(rf/dispatch [:set-in
                                       (conj path :tincture :eyes-and-teeth)
-                                      (if % :argent nil)])])
-         [checkbox (conj path :hints :outline?) "Draw outline"]]
+                                      (if % :argent nil)])])]
         [:div.spacer]
         (let [charge-options (charge/options charge)]
           [:<>
@@ -674,7 +674,8 @@
            (when (:mirrored? charge-options)
              [checkbox (conj path :mirrored?) "Mirrored"])
            (when (:reversed? charge-options)
-             [checkbox (conj path :reversed?) "Reversed"])])]
+             [checkbox (conj path :reversed?) "Reversed"])])
+        [checkbox (conj path :hints :outline?) "Outline"]]
        [form-for-field (conj path :field) :parent-field parent-field]]
       [:<>])))
 
@@ -710,8 +711,9 @@
               [form-for-position (conj path :division :origin)
                :title "Origin"
                :options (:origin division-options)])])
-         (when (= division-type :none)
-           [form-for-content (conj path :content)])])]
+         (if (= division-type :none)
+           [form-for-content (conj path :content)]
+           [checkbox (conj path :division :hints :outline?) "Outline"])])]
      (when (not counterchanged?)
        [:div.parts.components
         [:ul
