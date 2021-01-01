@@ -128,9 +128,8 @@
 
 (defn component [path type title title-prefix & content]
   (let [selected? @(rf/subscribe [:get-in (conj path :ui :selected?)])
-        flag-path (conj path :ui :open?)
         content? (seq content)
-        open? (and @(rf/subscribe [:get-in flag-path])
+        open? (and @(rf/subscribe [:get-open-component-flag path])
                    content?)
         show-selector? (and (not= path [:render-options])
                             (get #{:field :ref} type))]
@@ -138,7 +137,7 @@
      {:class (util/combine " " [(when type (name type))
                                 (when selected? "selected")
                                 (when (not open?) "closed")])}
-     [:div.header.clickable {:on-click #(rf/dispatch [:toggle-in flag-path])}
+     [:div.header.clickable {:on-click #(rf/dispatch [:toggle-open-component-flag path])}
       [:a.arrow {:style {:opacity (if content? 1 0)}}
        (if open?
          [:i.fas.fa-chevron-circle-down]
