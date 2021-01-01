@@ -294,50 +294,7 @@
                                                                                          :supported-tinctures [:armed
                                                                                                                :eyes-and-teeth
                                                                                                                :langued
-                                                                                                               :primary]}}}}}}}
-
-          :simple {:type :group
-                   :key :simple
-                   :name "simple"
-                   :charges {:annulet {:type :charge
-                                       :key :annulet
-                                       :name "annulet"
-                                       :variants {:default {:key :default
-                                                            :type :variant
-                                                            :name "default"
-                                                            :path "data/charges/group-simple/charge-annulet/variant-annulet-default.edn"
-                                                            :supported-tinctures [:primary]}}}
-
-                             :billet {:type :charge
-                                      :key :billet
-                                      :name "billet"
-                                      :variants {:default {:key :default
-                                                           :type :variant
-                                                           :name "default"
-                                                           :path "data/charges/group-simple/charge-billet/variant-billet-default.edn"
-                                                           :supported-tinctures [:primary]}}}
-
-                             :fusil {:type :charge
-                                     :key :fusil
-                                     :name "fusil"
-                                     :variants {:default {:key :default
-                                                          :type :variant
-                                                          :name "default"
-                                                          :path "data/charges/group-simple/charge-fusil/variant-fusil-default.edn"
-                                                          :supported-tinctures [:primary]}}}
-
-                             :roundel {:type :charge
-                                       :key :roundel
-                                       :name "roundel"
-                                       :variants {:default {:key :default
-                                                            :type :variant
-                                                            :name "default"
-                                                            :path "data/charges/group-simple/charge-roundel/variant-roundel-default.edn"
-                                                            :supported-tinctures [:primary]}}}}}}
+                                                                                                               :primary]}}}}}}}}
 
  :lookup {:wolf [:animal]
-          :lion [:animal]
-          :fusil [:simple]
-          :annulet [:simple]
-          :roundel [:simple]
-          :billet [:simple]}}
+          :lion [:animal]}}
