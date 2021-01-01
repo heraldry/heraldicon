@@ -254,27 +254,25 @@
           [:mask {:id mask-inverted-id}
            mask-inverted]
           [:clipPath {:id clip-path-id}
-           [:rect {:x (-> position :x (- 5))
-                   :y (-> position :y (- 5))
-                   :width (-> clip-size :x (+ 10))
-                   :height (-> clip-size :y (+ 10))
+           [:rect {:x 0
+                   :y 0
+                   :width original-charge-width
+                   :height original-charge-height
                    :fill "#fff"}]]]
-         [:g {:clip-path (str "url(#" clip-path-id ")")}
-          [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
-                               "rotate(" rotation ")"
-                               "scale(" scale-x "," scale-y ")"
-                               "translate(" (-> shift :x) "," (-> shift :y) ")")
-               :mask (str "url(#" mask-inverted-id ")")}
-           [:g {:transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ")"
-                                "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
-                                "rotate(" (- rotation) ")"
-                                "translate(" (- (:x center-point)) "," (- (:y center-point)) ")")}
-            [top-level-render field charge-environment render-options :db-path (conj db-path :field)]]]
-          [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
-                               "rotate(" rotation ")"
-                               "scale(" scale-x "," scale-y ")"
-                               "translate(" (-> shift :x) "," (-> shift :y) ")")
-               :mask (str "url(#" mask-id ")")}
-           coloured-charge]]])
+         (let [transform (str "translate(" (:x center-point) "," (:y center-point) ")"
+                              "rotate(" rotation ")"
+                              "scale(" scale-x "," scale-y ")"
+                              "translate(" (-> shift :x) "," (-> shift :y) ")")
+               reverse-transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ")"
+                                      "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
+                                      "rotate(" (- rotation) ")"
+                                      "translate(" (- (:x center-point)) "," (- (:y center-point)) ")")]
+           [:g {:transform transform
+                :clip-path (str "url(#" clip-path-id ")")}
+            [:g {:mask (str "url(#" mask-inverted-id ")")}
+             [:g {:transform reverse-transform}
+              [top-level-render field charge-environment render-options :db-path (conj db-path :field)]]]
+            [:g {:mask (str "url(#" mask-id ")")}
+             coloured-charge]])])
       [:<>])
     [:<>]))
