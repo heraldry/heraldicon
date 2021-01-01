@@ -9,10 +9,10 @@
   (let [tincture (get-in field [:content :tincture])
         selectable-fields? (-> render-options :ui :selectable-fields?)
         selected? (and selectable-fields?
-                       @(rf/subscribe [:component-selected? db-path]))]
+                       @(rf/subscribe [:ui-component-selected? db-path]))]
     [:g {:on-click (when selectable-fields?
                      (fn [event]
-                       (rf/dispatch [:select-component db-path])
+                       (rf/dispatch [:ui-component-select db-path])
                        (.stopPropagation event)))
          :style {:pointer-events "visiblePainted"
                  :cursor "pointer"}}
