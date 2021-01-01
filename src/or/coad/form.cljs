@@ -324,6 +324,43 @@
          :default (options/get-value (:offset-y position) (:offset-y options))
          :display-function #(str % "%")])]]))
 
+(defn form-for-geometry [path options & {:keys [current]}]
+  (let [changes (filter some? [(when (:size current) "resized")
+                               (when (:stretch current) "stretched")
+                               (when (:rotation current) "rotated")
+                               (when (:mirrored? current) "mirrored")
+                               (when (:reversed? current) "reversed")])
+        current-display (if (-> changes count (> 0))
+                          (util/combine ", " changes)
+                          "default")]
+    [:div.setting
+     [:label "Geometry:"]
+     " "
+     [submenu path "Geometry" current-display {}
+      [:div.settings
+       (when (:size options)
+         [range-input (conj path :size) "Size"
+          (-> options :size :min)
+          (-> options :size :max)
+          :default (options/get-value (:size current) (:size options))
+          :display-function #(str % "%")])
+       (when (:stretch options)
+         [range-input (conj path :stretch) "Stretch"
+          (-> options :stretch :min)
+          (-> options :stretch :max)
+          :step 0.01
+          :default (options/get-value (:stretch current) (:stretch options))])
+       (when (:rotation options)
+         [range-input (conj path :rotation) "Rotation"
+          (-> options :rotation :min)
+          (-> options :rotation :max)
+          :step 0.01
+          :default (options/get-value (:rotation current) (:rotation options))])
+       (when (:mirrored? options)
+         [checkbox (conj path :mirrored?) "Mirrored"])
+       (when (:reversed? options)
+         [checkbox (conj path :reversed?) "Reversed"])]]]))
+
 (defn tincture-choice [path key display-name]
   (let [value @(rf/subscribe [:get-in path])]
     [:div.choice.tooltip {:on-click #(rf/dispatch [:set-in path key])
@@ -652,28 +689,10 @@
              [form-for-position (conj path :position)
               :title "Position"
               :options (:position charge-options)])
-           (when (:size charge-options)
-             [range-input (conj path :size) "Size"
-              (-> charge-options :size :min)
-              (-> charge-options :size :max)
-              :default (options/get-value (:size charge) (:size charge-options))
-              :display-function #(str % "%")])
-           (when (:stretch charge-options)
-             [range-input (conj path :stretch) "Stretch"
-              (-> charge-options :stretch :min)
-              (-> charge-options :stretch :max)
-              :step 0.01
-              :default (options/get-value (:stretch charge) (:stretch charge-options))])
-           (when (:rotation charge-options)
-             [range-input (conj path :rotation) "Rotation"
-              (-> charge-options :rotation :min)
-              (-> charge-options :rotation :max)
-              :step 0.01
-              :default (options/get-value (:rotation charge) (:rotation charge-options))])
-           (when (:mirrored? charge-options)
-             [checkbox (conj path :mirrored?) "Mirrored"])
-           (when (:reversed? charge-options)
-             [checkbox (conj path :reversed?) "Reversed"])])
+           (when (:geometry charge-options)
+             [form-for-geometry (conj path :geometry)
+              (:geometry charge-options)
+              :current (:geometry charge)])])
         [checkbox (conj path :hints :outline?) "Outline"]]
        [form-for-field (conj path :field) :parent-field parent-field]]
       [:<>])))

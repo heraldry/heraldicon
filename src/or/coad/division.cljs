@@ -7,8 +7,8 @@
             [or.coad.options :as options]
             [or.coad.position :as position]
             [or.coad.svg :as svg]
-            [or.coad.vector :as v]
-            [or.coad.util :as util]))
+            [or.coad.util :as util]
+            [or.coad.vector :as v]))
 
 (defn default-fields [type]
   (into [config/default-field

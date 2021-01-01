@@ -4,6 +4,7 @@
             [or.coad.config :as config]
             [or.coad.division :as division]
             [or.coad.field-environment :as field-environment]
+            [or.coad.geometry :as geometry]
             [or.coad.line :as line]
             [or.coad.options :as options]
             [or.coad.position :as position]
@@ -144,22 +145,7 @@
 
 (def default-options
   {:position position/default-options
-   :size {:type :range
-          :min 5
-          :max 100
-          :default 50}
-   :stretch {:type :range
-             :min 0.33
-             :max 3
-             :default 1}
-   :mirrored? {:type :boolean
-               :default false}
-   :reversed? {:type :boolean
-               :default false}
-   :rotation {:type :range
-              :min -180
-              :max 180
-              :default 0}})
+   :geometry geometry/default-options})
 
 (defn options [_charge]
   default-options)
@@ -170,13 +156,14 @@
                                 get-charge-variant-data
                                 :path)]
     (if-let [data @(rf/subscribe [:load-data charge-data-path])]
-      (let [{:keys [position size stretch
+      (let [{:keys [position geometry]} (options/sanitize charge (options charge))
+            {:keys [size stretch
                     mirrored? reversed?
-                    rotation]} (options/sanitize charge (options charge))
+                    rotation]} geometry
             ;; since size now is filled with a default, check whether it was set at all,
             ;; if not, then use nil
             ;; TODO: this probably needs a better mechanism and form representation
-            size (if (:size charge) size nil)
+            size (if (-> charge :geometry :size) size nil)
             data (first data)
             points (:points environment)
             top (:top points)
