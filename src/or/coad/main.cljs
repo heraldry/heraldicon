@@ -189,10 +189,11 @@
                                                   (options/sanitize-or-nil % (division/options %))))
          (update-in path dissoc :content)
          (cond->
-          (not (division/counterchangable? new-type)) (update-in (conj path :components) (fn [components]
-                                                                                           (->> components
-                                                                                                (map #(update % :field dissoc :counterchanged?))
-                                                                                                vec))))))))
+          (not (division/counterchangable? {:type new-type})) (update-in (conj path :components)
+                                                                         (fn [components]
+                                                                           (->> components
+                                                                                (map #(update % :field dissoc :counterchanged?))
+                                                                                vec))))))))
 
 (rf/reg-event-db
  :set-ordinary-type
