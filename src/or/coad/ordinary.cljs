@@ -97,7 +97,7 @@
 
 (defn pale
   {:display-name "Pale"}
-  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin size]} (options/sanitize ordinary (options ordinary))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -143,7 +143,8 @@
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
-     (when (:outline? render-options)
+     (when (or (:outline? render-options)
+               (:outline? hints))
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" first-top
@@ -155,7 +156,7 @@
 
 (defn fess
   {:display-name "Fess"}
-  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin size]} (options/sanitize ordinary (options ordinary))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -198,7 +199,8 @@
     [division/make-division
      :ordinary-fess [field] parts
      [:all]
-     (when (:outline? render-options)
+     (when (or (:outline? render-options)
+               (:outline? hints))
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" first-left
@@ -210,7 +212,7 @@
 
 (defn chief
   {:display-name "Chief"}
-  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line size]} (options/sanitize ordinary (options ordinary))
         points (:points environment)
         top (:top points)
@@ -244,7 +246,8 @@
     [division/make-division
      :ordinary-chief [field] parts
      [:all]
-     (when (:outline? render-options)
+     (when (or (:outline? render-options)
+               (:outline? hints))
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" row-right-adjusted
@@ -253,7 +256,7 @@
 
 (defn base
   {:display-name "Base"}
-  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line size]} (options/sanitize ordinary (options ordinary))
         points (:points environment)
         bottom (:bottom points)
@@ -283,7 +286,8 @@
     [division/make-division
      :ordinary-base [field] parts
      [:all]
-     (when (:outline? render-options)
+     (when (or (:outline? render-options)
+               (:outline? hints))
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" row-left
@@ -292,7 +296,7 @@
 
 (defn bend
   {:display-name "Bend"}
-  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -343,7 +347,8 @@
      [division/make-division
       :ordinary-fess [field] parts
       [:all]
-      (when (:outline? render-options)
+      (when (or (:outline? render-options)
+                (:outline? hints))
         [:g.outline
          [:path {:d (svg/make-path
                      ["M" first-left
@@ -355,7 +360,7 @@
 
 (defn bend-sinister
   {:display-name "Bend sinister"}
-  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -406,7 +411,8 @@
      [division/make-division
       :ordinary-fess [field] parts
       [:all]
-      (when (:outline? render-options)
+      (when (or (:outline? render-options)
+                (:outline? hints))
         [:g.outline
          [:path {:d (svg/make-path
                      ["M" first-left
@@ -418,7 +424,7 @@
 
 (defn cross
   {:display-name "Cross"}
-  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin size]} (options/sanitize ordinary (options ordinary))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -526,7 +532,8 @@
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
-     (when (:outline? render-options)
+     (when (or (:outline? render-options)
+               (:outline? hints))
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" corner-top-left
@@ -556,7 +563,7 @@
 
 (defn saltire
   {:display-name "Saltire"}
-  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -678,7 +685,8 @@
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
-     (when (:outline? render-options)
+     (when (or (:outline? render-options)
+               (:outline? hints))
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" corner-left
@@ -708,7 +716,7 @@
 
 (defn chevron
   {:display-name "Chevron"}
-  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin diagonal-mode size]} (options/sanitize ordinary (options ordinary))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -781,7 +789,8 @@
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
-     (when (:outline? render-options)
+     (when (or (:outline? render-options)
+               (:outline? hints))
        [:g.outline
         [:path {:d (svg/make-path
                     ["M" corner-top
@@ -800,7 +809,7 @@
 (defn escutcheon
   {:display-name "Escutcheon"
    :mobile? true}
-  [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [origin size escutcheon]} (options/sanitize ordinary (options ordinary))
         origin-point (position/calculate origin environment :fess)
         width (:width environment)
@@ -827,7 +836,8 @@
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
-     (when (:outline? render-options)
+     (when (or (:outline? render-options)
+               (:outline? hints))
        [:g.outline
         [:path {:d env-shape}]])
      environment ordinary top-level-render render-options :db-path db-path]))
