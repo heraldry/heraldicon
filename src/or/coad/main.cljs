@@ -165,9 +165,14 @@
 (rf/reg-event-db
  :add-component
  (fn [db [_ path value]]
-   (update-in db (conj path :components) #(-> %
-                                              (conj value)
-                                              vec))))
+   (let [components-path (conj path :components)
+         index           (count (get-in db components-path))]
+     (-> db
+         (update-in components-path #(-> %
+                                         (conj value)
+                                         vec))
+         (assoc-in [:ui :open-submenu (conj components-path index)] true)))))
+
 (rf/reg-event-db
  :remove-component
  (fn [db [_ path]]

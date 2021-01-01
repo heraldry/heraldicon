@@ -218,7 +218,7 @@
     [:div.setting
      [:label "Division:"]
      " "
-     [submenu path "Division" (get names division-type) {:min-width "17.5em"}
+     [submenu path "Select Division" (get names division-type) {:min-width "17.5em"}
       (for [[display-name key] (into [["None" :none]]
                                      division/choices)]
         ^{:key key}
@@ -257,7 +257,7 @@
     [:div.setting
      [:label "Type:"]
      " "
-     [submenu (conj path :type) "Line Type" (get type-names value) {:min-width "21em"}
+     [submenu (conj path :type) "Select Line Type" (get type-names value) {:min-width "21em"}
       (for [[display-name key] (-> options :type :choices)]
         ^{:key display-name}
         [line-type-choice (conj path :type) key display-name :current value])]]))
@@ -299,13 +299,13 @@
     [:div.setting
      [:label (str title ":")]
      " "
-     [submenu path "Point" (str (-> position
-                                    :point
-                                    (or :fess)
-                                    (util/translate-cap-first))
-                                " point" (when (or (-> position :offset-x (or 0) zero? not)
-                                                   (-> position :offset-y (or 0) zero? not))
-                                           " (adjusted)")) {}
+     [submenu path title (str (-> position
+                                  :point
+                                  (or :fess)
+                                  (util/translate-cap-first))
+                              " point" (when (or (-> position :offset-x (or 0) zero? not)
+                                                 (-> position :offset-y (or 0) zero? not))
+                                         " (adjusted)")) {}
       [select point-path "Point" position/choices
        :on-change #(do
                      (rf/dispatch [:set-in point-path %])
@@ -360,7 +360,7 @@
     [:div.setting
      [:label (str label ":")]
      " "
-     [submenu path "Tincture" (get names value) {:min-width "22em"}
+     [submenu path "Select Tincture" (get names value) {:min-width "22em"}
       (for [[group-name & group] tincture/choices]
         ^{:key group-name}
         [:<>
@@ -417,7 +417,7 @@
     [:div.setting
      [:label "Type:"]
      " "
-     [submenu path "Ordinary" (get names ordinary-type) {:min-width "17.5em"}
+     [submenu path "Select Ordinary" (get names ordinary-type) {:min-width "17.5em"}
       (for [[display-name key] (filter #(-> % second ordinary/mobile? not) ordinary/choices)]
         ^{:key key}
         [ordinary-type-choice path key display-name :current ordinary-type])
@@ -454,7 +454,7 @@
     [:div.setting
      [:label "Escutcheon:"]
      " "
-     [submenu path "Escutcheon" (get names escutcheon) {:min-width "17.5em"}
+     [submenu path "Select Escutcheon" (get names escutcheon) {:min-width "17.5em"}
       (for [[display-name key] escutcheon/choices]
         ^{:key key}
         [escutcheon-choice path key display-name])]
@@ -620,7 +620,7 @@
       [component path :charge title nil
        [:div.setting
         [:label "Charge:"] " "
-        [submenu path "Charge" title {}
+        [submenu path "Select Charge" title {}
          [:div.tree
           [tree-for-charge-map charge-map [] path charge
            (get-in charge-map
