@@ -34,8 +34,8 @@
         sinister                  (v/avg right (v/avg right fess))]
     (if override-environment
       (-> override-environment
-          (assoc  :shape shape)
-          (assoc  :meta meta))
+          (assoc :shape shape)
+          (assoc :meta meta))
       (-> {}
           (assoc-in [:shape] shape)
           (assoc-in [:width] width)

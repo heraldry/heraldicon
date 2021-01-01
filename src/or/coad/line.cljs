@@ -1,6 +1,7 @@
 (ns or.coad.line
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
+            [clojure.walk :as walk]
             [or.coad.catmullrom :as catmullrom]
             [or.coad.options :as options]
             [or.coad.random :as random]
@@ -285,6 +286,14 @@
         curve    (catmullrom/catmullrom points)
         new-path (catmullrom/curve->svg-path-relative curve)]
     new-path))
+
+(defn squiggly-paths [data]
+  (walk/postwalk #(cond-> %
+                    (vector? %) ((fn [v]
+                                   (if (= (first v) :d)
+                                     [:d (squiggly-path (second v))]
+                                     v))))
+                 data))
 
 (defn create [{:keys [type] :or {type :straight} :as line} length & {:keys [angle flipped? extra render-options] :or {extra 50} :as line-options}]
   (let [line-data     ((get kinds-function-map type)
