@@ -107,14 +107,6 @@
                     %)
                  data))
 
-(defn squiggly-paths [data]
-  (walk/postwalk #(cond-> %
-                    (vector? %) ((fn [v]
-                                   (if (= (first v) :d)
-                                     [:d (line/squiggly-path (second v))]
-                                     v))))
-                 data))
-
 (defn make-mask [data provided-placeholder-colours]
   (let [mask-id (util/id "mask")
         mask-inverted-id (util/id "mask")
@@ -225,7 +217,7 @@
                                  (and (:squiggly? render-options)
                                       (get #{:roundel
                                              :fusil
-                                             :billet} type)) squiggly-paths)
+                                             :billet} type)) line/squiggly-paths)
                                 (assoc 0 :g))
             provided-placeholder-colours (-> {}
                                              (into (map (fn [[key value]]
