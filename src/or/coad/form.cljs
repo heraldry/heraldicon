@@ -358,7 +358,7 @@
          [range-input (conj path :rotation) "Rotation"
           (-> options :rotation :min)
           (-> options :rotation :max)
-          :step 0.01
+          :step 5
           :default (options/get-value (:rotation current) (:rotation options))])
        (when (:mirrored? options)
          [checkbox (conj path :mirrored?) "Mirrored"])
