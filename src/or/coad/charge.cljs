@@ -172,15 +172,6 @@
 (defn options [_charge]
   default-options)
 
-(defn rotate [v angle]
-  (let [rad (-> angle
-                (* Math/PI)
-                (/ 180))]
-    (v/v (- (* (:x v) (Math/cos rad))
-            (* (:y v) (Math/sin rad)))
-         (+ (* (:x v) (Math/sin rad))
-            (* (:y v) (Math/cos rad))))))
-
 (defn render [{:keys [type field tincture hints] :as charge} parent
               environment top-level-render render-options & {:keys [db-path]}]
   (if-let [charge-data-path (-> charge
@@ -252,10 +243,10 @@
             shift                            (-> (v/v original-charge-width original-charge-height)
                                                  (v// 2)
                                                  (v/-))
-            clip-1                           (rotate (v/dot shift (v/v scale-x scale-y)) rotation)
-            clip-2                           (rotate (v/dot shift (v/v (- scale-x) scale-y)) rotation)
-            clip-3                           (rotate (v/dot shift (v/v scale-x (- scale-y))) rotation)
-            clip-4                           (rotate (v/dot shift (v/v (- scale-x) (- scale-y))) rotation)
+            clip-1                           (v/rotate (v/dot shift (v/v scale-x scale-y)) rotation)
+            clip-2                           (v/rotate (v/dot shift (v/v (- scale-x) scale-y)) rotation)
+            clip-3                           (v/rotate (v/dot shift (v/v scale-x (- scale-y))) rotation)
+            clip-4                           (v/rotate (v/dot shift (v/v (- scale-x) (- scale-y))) rotation)
             clip-size                        (v/v (- (max (:x clip-1) (:x clip-2) (:x clip-3) (:x clip-4))
                                                      (min (:x clip-1) (:x clip-2) (:x clip-3) (:x clip-4)))
                                                   (- (max (:y clip-1) (:y clip-2) (:y clip-3) (:y clip-4))
