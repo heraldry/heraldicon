@@ -922,11 +922,11 @@
                                                                        (svgpath)
                                                                        (.scale 1 stretch)
                                                                        (.toString))
+                                                     (:squiggly? render-options) line/squiggly-path
                                                      (not= rotation 0)           (->
                                                                                   (svgpath)
                                                                                   (.rotate rotation)
-                                                                                  (.toString))
-                                                     (:squiggly? render-options) line/squiggly-path)
+                                                                                  (.toString)))
                                                  (line/translate (:x origin-point) (:y origin-point)))
         parts                                [[env-shape
                                                [(v/- origin-point
@@ -969,11 +969,11 @@
                                                                   (svgpath)
                                                                   (.scale 1 stretch)
                                                                   (.toString))
+                                                (:squiggly? render-options) line/squiggly-path
                                                 (not= rotation 0)           (->
                                                                              (svgpath)
                                                                              (.rotate rotation)
-                                                                             (.toString))
-                                                (:squiggly? render-options) line/squiggly-path)
+                                                                             (.toString)))
                                             (line/translate (:x origin-point) (:y origin-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
@@ -1026,11 +1026,11 @@
                                                                   (svgpath)
                                                                   (.scale 1 stretch)
                                                                   (.toString))
+                                                (:squiggly? render-options) line/squiggly-path
                                                 (not= rotation 0)           (->
                                                                              (svgpath)
                                                                              (.rotate rotation)
-                                                                             (.toString))
-                                                (:squiggly? render-options) line/squiggly-path)
+                                                                             (.toString)))
                                             (line/translate (:x origin-point) (:y origin-point)))
         hole-width                      (* ordinary-width 0.6)
         hole-width-half                 (/ hole-width 2)
@@ -1046,11 +1046,11 @@
                                                                   (svgpath)
                                                                   (.scale 1 stretch)
                                                                   (.toString))
+                                                (:squiggly? render-options) line/squiggly-path
                                                 (not= rotation 0)           (->
                                                                              (svgpath)
                                                                              (.rotate rotation)
-                                                                             (.toString))
-                                                (:squiggly? render-options) line/squiggly-path)
+                                                                             (.toString)))
                                             (line/translate (:x origin-point) (:y origin-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
@@ -1106,11 +1106,11 @@
                                                                   (svgpath)
                                                                   (.scale 1 stretch)
                                                                   (.toString))
+                                                (:squiggly? render-options) line/squiggly-path
                                                 (not= rotation 0)           (->
                                                                              (svgpath)
                                                                              (.rotate rotation)
-                                                                             (.toString))
-                                                (:squiggly? render-options) line/squiggly-path)
+                                                                             (.toString)))
                                             (line/translate (:x origin-point) (:y origin-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
@@ -1164,11 +1164,11 @@
                                                                   (svgpath)
                                                                   (.scale 1 stretch)
                                                                   (.toString))
+                                                (:squiggly? render-options) line/squiggly-path
                                                 (not= rotation 0)           (->
                                                                              (svgpath)
                                                                              (.rotate rotation)
-                                                                             (.toString))
-                                                (:squiggly? render-options) line/squiggly-path)
+                                                                             (.toString)))
                                             (line/translate (:x origin-point) (:y origin-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
@@ -1222,11 +1222,11 @@
                                                                   (svgpath)
                                                                   (.scale 1 stretch)
                                                                   (.toString))
+                                                (:squiggly? render-options) line/squiggly-path
                                                 (not= rotation 0)           (->
                                                                              (svgpath)
                                                                              (.rotate rotation)
-                                                                             (.toString))
-                                                (:squiggly? render-options) line/squiggly-path)
+                                                                             (.toString)))
                                             (line/translate (:x origin-point) (:y origin-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
@@ -1280,11 +1280,11 @@
                                                                   (svgpath)
                                                                   (.scale 1 stretch)
                                                                   (.toString))
+                                                (:squiggly? render-options) line/squiggly-path
                                                 (not= rotation 0)           (->
                                                                              (svgpath)
                                                                              (.rotate rotation)
-                                                                             (.toString))
-                                                (:squiggly? render-options) line/squiggly-path)
+                                                                             (.toString)))
                                             (line/translate (:x origin-point) (:y origin-point)))
         hole-width                      (* ordinary-width 0.55)
         hole-height                     (* ordinary-height 0.55)
@@ -1301,11 +1301,11 @@
                                                                   (svgpath)
                                                                   (.scale 1 stretch)
                                                                   (.toString))
+                                                (:squiggly? render-options) line/squiggly-path
                                                 (not= rotation 0)           (->
                                                                              (svgpath)
                                                                              (.rotate rotation)
-                                                                             (.toString))
-                                                (:squiggly? render-options) line/squiggly-path)
+                                                                             (.toString)))
                                             (line/translate (:x origin-point) (:y origin-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
@@ -1361,11 +1361,11 @@
                                                                   (svgpath)
                                                                   (.scale 1 stretch)
                                                                   (.toString))
+                                                (:squiggly? render-options) line/squiggly-path
                                                 (not= rotation 0)           (->
                                                                              (svgpath)
                                                                              (.rotate rotation)
-                                                                             (.toString))
-                                                (:squiggly? render-options) line/squiggly-path)
+                                                                             (.toString)))
                                             (line/translate (:x origin-point) (:y origin-point)))
         hole-width                      (* ordinary-width 0.5)
         hole-width-half                 (/ hole-width 2)
@@ -1381,11 +1381,11 @@
                                                                   (svgpath)
                                                                   (.scale 1 stretch)
                                                                   (.toString))
+                                                (:squiggly? render-options) line/squiggly-path
                                                 (not= rotation 0)           (->
                                                                              (svgpath)
                                                                              (.rotate rotation)
-                                                                             (.toString))
-                                                (:squiggly? render-options) line/squiggly-path)
+                                                                             (.toString)))
                                             (line/translate (:x origin-point) (:y origin-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
