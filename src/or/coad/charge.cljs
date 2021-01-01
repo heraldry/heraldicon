@@ -141,7 +141,7 @@
 
 (defn counterchangable? [field parent]
   (and (:counterchanged? field)
-       (division/counterchangable? (-> parent :division :type))))
+       (division/counterchangable? (-> parent :division))))
 
 (def default-options
   {:position position/default-options
