@@ -34,5 +34,4 @@
 
 (def default-coat-of-arms
   {:escutcheon :heater
-   :field (-> default-field
-              (assoc-in [:ui :open?] true))})
+   :field default-field})
