@@ -829,9 +829,9 @@
                       (cond->
                        (:squiggly? render-options) line/squiggly-path))
         parts [[env-shape
-                [(v/- (-> env :points :top-left)
+                [(v/+ (-> env :points :top-left)
                       translation)
-                 (v/- (-> env :points :bottom-right)
+                 (v/+ (-> env :points :bottom-right)
                       translation)]]]
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
