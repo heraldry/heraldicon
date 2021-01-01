@@ -800,7 +800,8 @@
      environment ordinary top-level-render render-options :db-path db-path]))
 
 (defn escutcheon
-  {:display-name "Escutcheon"}
+  {:display-name "Escutcheon"
+   :mobile?      true}
   [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [origin size escutcheon]} (options/sanitize ordinary (options ordinary))
         origin-point                     (position/calculate origin environment :fess)
@@ -850,6 +851,10 @@
        (map (fn [function]
               [(-> function meta :name keyword) function]))
        (into {})))
+
+(defn mobile? [type]
+  (let [function (get kinds-function-map type)]
+    (-> function meta :mobile?)))
 
 (def choices
   (->> ordinaries
