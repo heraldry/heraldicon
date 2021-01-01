@@ -66,10 +66,12 @@
          (map (fn [key]
                 [(get options key) key])))))
 
-(defn counterchangable? [type]
+(defn counterchangable? [division]
   ;; TODO: potentially also should look at the parts, maybe demand no
   ;; ordinaries and charges as well, but for now this check suffices
-  (-> type mandatory-part-count (= 2)))
+  (and (-> division :type mandatory-part-count (= 2))
+       (-> division :fields (get 0) :division :type not)
+       (-> division :fields (get 1) :division :type not)))
 
 (def default-options
   {:origin        position/default-options

@@ -703,7 +703,7 @@
   (let [division-type   @(rf/subscribe [:get-division-type path])
         field           @(rf/subscribe [:get-in path])
         counterchanged? (and @(rf/subscribe [:get-in (conj path :counterchanged?)])
-                             (division/counterchangable? (-> parent-field :division :type)))
+                             (division/counterchangable? (-> parent-field :division)))
         root-field?     (= path [:coat-of-arms :field])]
     [component path :field (cond
                              (:counterchanged? field) "Counterchanged"
@@ -715,7 +715,7 @@
       (when (and (not= path [:coat-of-arms :field])
                  parent-field)
         [checkbox (conj path :counterchanged?) "Counterchange"
-         :disabled? (not (division/counterchangable? (-> parent-field :division :type)))])
+         :disabled? (not (division/counterchangable? (-> parent-field :division)))])
       (when (not counterchanged?)
         [:<>
          [form-for-division path]
