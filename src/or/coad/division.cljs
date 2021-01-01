@@ -126,7 +126,7 @@
   (let [part (get fields index)
         ref  (:ref part)]
     (if ref
-      (assoc (get fields ref) :ui (:ui part))
+      (get fields ref)
       part)))
 
 (defn division-context-key [key]

@@ -1,5 +1,6 @@
 (ns or.coad.util
   (:require [clojure.string :as s]
+            [clojure.walk :as walk]
             [re-frame.core :as rf]))
 
 (def -current-id
@@ -45,3 +46,8 @@
 (defn dispatch-sync [event effect]
   (rf/dispatch-sync effect)
   (.stopPropagation event))
+
+(defn remove-key-recursively [data key]
+  (walk/postwalk #(cond-> %
+                    (map? %) (dissoc key))
+                 data))
