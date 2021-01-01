@@ -54,9 +54,25 @@
     (sequential? v) (s/join " " (map make-path v))
     :else (str v)))
 
-(defn rotated-bounding-box [{x1 :x y1 :y} {x2 :x y2 :y} rotation]
-  (let [points [(v/rotate (v/v x1 y1) rotation)
-                (v/rotate (v/v x2 y1) rotation)
-                (v/rotate (v/v x1 y2) rotation)
-                (v/rotate (v/v x2 y2) rotation)]]
+(defn rotated-bounding-box [{x1 :x y1 :y :as p1} {x2 :x y2 :y :as p2} rotation & {:keys [middle scale]}]
+  (let [middle (or middle
+                   (v/avg p1 p2))
+        scale (or scale
+                  (v/v 1 1))
+        points [(v/+ middle
+                     (v/rotate (v/dot (v/- (v/v x1 y1)
+                                           middle)
+                                      scale) rotation))
+                (v/+ middle
+                     (v/rotate (v/dot (v/- (v/v x2 y1)
+                                           middle)
+                                      scale) rotation))
+                (v/+ middle
+                     (v/rotate (v/dot (v/- (v/v x1 y2)
+                                           middle)
+                                      scale) rotation))
+                (v/+ middle
+                     (v/rotate (v/dot (v/- (v/v x2 y2)
+                                           middle)
+                                      scale) rotation))]]
     (bounding-box points)))
