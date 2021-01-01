@@ -53,49 +53,47 @@
 (defn options [ordinary]
   (when ordinary
     (let [type (:type ordinary)]
-      (options/merge
+      (->
        default-options
-       (->
-        (get {:pale {:origin {:offset-y nil}
-                     :diagonal-mode nil
-                     :size {:max 50}}
-              :fess {:origin {:offset-x nil}
-                     :diagonal-mode nil
-                     :size {:max 50}}
-              :chief {:origin nil
+       (options/merge {:line (line/options (get-in ordinary [:line]))})
+       (options/merge
+        (->
+         (get {:pale {:origin {:offset-y nil}
+                      :diagonal-mode nil
+                      :size {:max 50}}
+               :fess {:origin {:offset-x nil}
+                      :diagonal-mode nil
+                      :size {:max 50}}
+               :chief {:origin nil
+                       :diagonal-mode nil}
+               :base {:origin nil
                       :diagonal-mode nil}
-              :base {:origin nil
-                     :diagonal-mode nil}
-              :bend {:origin {:offset-x nil}
-                     :diagonal-mode {:choices (diagonal-mode-choices
-                                               :bend)}}
-              :bend-sinister {:origin {:offset-x nil}
-                              :diagonal-mode {:choices (diagonal-mode-choices
-                                                        :bend-sinister)
-                                              :default :top-right-fess}}
-              :chevron {:diagonal-mode {:choices (diagonal-mode-choices
-                                                  :chevron)
-                                        :default :forty-five-degrees}
-                        :line {:offset {:min 0}}
-                        :size {:max 30}}
-              :saltire {:diagonal-mode {:choices (diagonal-mode-choices
-                                                  :saltire)}
-                        :line {:offset {:min 0}}
-                        :size {:max 30}}
-              :cross {:diagonal-mode nil
-                      :line {:offset {:min 0}}
-                      :size {:max 30}}
-              :escutcheon {:diagonal-mode nil
-                           :line nil
-                           :size {:max 50
-                                  :default 30}}}
-             type)
-        (cond->
-         (not= type :escutcheon) (assoc :escutcheon nil))
-        (update-in [:line] #(if (some? %)
-                              (options/merge (line/options (get-in ordinary [:line]))
-                                             %)
-                              %)))))))
+               :bend {:origin {:offset-x nil}
+                      :diagonal-mode {:choices (diagonal-mode-choices
+                                                :bend)}}
+               :bend-sinister {:origin {:offset-x nil}
+                               :diagonal-mode {:choices (diagonal-mode-choices
+                                                         :bend-sinister)
+                                               :default :top-right-fess}}
+               :chevron {:diagonal-mode {:choices (diagonal-mode-choices
+                                                   :chevron)
+                                         :default :forty-five-degrees}
+                         :line {:offset {:min 0}}
+                         :size {:max 30}}
+               :saltire {:diagonal-mode {:choices (diagonal-mode-choices
+                                                   :saltire)}
+                         :line {:offset {:min 0}}
+                         :size {:max 30}}
+               :cross {:diagonal-mode nil
+                       :line {:offset {:min 0}}
+                       :size {:max 30}}
+               :escutcheon {:diagonal-mode nil
+                            :line nil
+                            :size {:max 50
+                                   :default 30}}}
+              type)
+         (cond->
+          (not= type :escutcheon) (assoc :escutcheon nil))))))))
 
 (defn pale
   {:display-name "Pale"}
