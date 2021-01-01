@@ -1,5 +1,6 @@
 (ns or.coad.util
-  (:require [clojure.string :as s]))
+  (:require [clojure.string :as s]
+            [re-frame.core :as rf]))
 
 (def -current-id
   (atom 0))
@@ -36,3 +37,11 @@
 (defn contains-in?
   [m ks]
   (not= ::absent (get-in m ks ::absent)))
+
+(defn dispatch [event effect]
+  (rf/dispatch effect)
+  (.stopPropagation event))
+
+(defn dispatch-sync [event effect]
+  (rf/dispatch-sync effect)
+  (.stopPropagation event))
