@@ -85,13 +85,13 @@
               :cross {:diagonal-mode nil
                       :line {:offset {:min 0}}
                       :size {:max 30}}
-              :inescutcheon {:diagonal-mode nil
-                             :line nil
-                             :size {:max 50
-                                    :default 30}}}
+              :escutcheon {:diagonal-mode nil
+                           :line nil
+                           :size {:max 50
+                                  :default 30}}}
              type)
         (cond->
-         (not= type :inescutcheon) (assoc :escutcheon nil))
+         (not= type :escutcheon) (assoc :escutcheon nil))
         (update-in [:line] #(if (some? %)
                               (options/merge (line/options (get-in ordinary [:line]))
                                              %)
@@ -799,8 +799,8 @@
                      (line/stitch line-bottom-left-upper)])}]])
      environment ordinary top-level-render render-options :db-path db-path]))
 
-(defn inescutcheon
-  {:display-name "Inescutcheon"}
+(defn escutcheon
+  {:display-name "Escutcheon"}
   [{:keys [field] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [origin size escutcheon]} (options/sanitize ordinary (options ordinary))
         origin-point (position/calculate origin environment :fess)
@@ -843,7 +843,7 @@
    #'cross
    #'saltire
    #'chevron
-   #'inescutcheon])
+   #'escutcheon])
 
 (def kinds-function-map
   (->> ordinaries
