@@ -7,6 +7,7 @@
             [or.coad.options :as options]
             [or.coad.position :as position]
             [or.coad.svg :as svg]
+            [or.coad.util :as util]
             [or.coad.vector :as v]))
 
 (defn diagonal-mode-choices [type]
@@ -341,7 +342,8 @@
                                                                        [second-left first-left])
                                                         "z"]
                                                        [(v/v 0 row1) (v/v line-length row2)]]]
-        field                                        (if (charge/counterchangable? field parent)
+        counterchanged?                              (charge/counterchangable? field parent)
+        field                                        (if counterchanged?
                                                        (charge/counterchange-field field parent)
                                                        field)]
     [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
@@ -358,7 +360,13 @@
          [:path {:d (svg/make-path
                      ["M" second-right-adjusted
                       (line/stitch line-reversed)])}]])
-      environment ordinary top-level-render render-options :db-path db-path]]))
+      environment ordinary top-level-render render-options
+      :db-path db-path
+      :transform (when (or counterchanged?
+                           (:inherit-environment? field))
+                   (str
+                    "rotate(" (- angle) ") "
+                    "translate(" (-> diagonal-start :x -) "," (-> diagonal-start :y -) ")"))]]))
 
 (defn bend-sinister
   {:display-name "Bend sinister"}
@@ -406,7 +414,8 @@
                                                                        [second-left first-left])
                                                         "z"]
                                                        [(v/v 0 row1) (v/v line-length row2)]]]
-        field                                        (if (charge/counterchangable? field parent)
+        counterchanged?                              (charge/counterchangable? field parent)
+        field                                        (if counterchanged?
                                                        (charge/counterchange-field field parent)
                                                        field)]
     [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
@@ -423,7 +432,13 @@
          [:path {:d (svg/make-path
                      ["M" second-right-adjusted
                       (line/stitch line-reversed)])}]])
-      environment ordinary top-level-render render-options :db-path db-path]]))
+      environment ordinary top-level-render render-options
+      :db-path db-path
+      :transform (when (or counterchanged?
+                           (:inherit-environment? field))
+                   (str
+                    "rotate(" (- angle) ") "
+                    "translate(" (-> diagonal-start :x -) "," (-> diagonal-start :y -) ")"))]]))
 
 (defn cross
   {:display-name "Cross"}

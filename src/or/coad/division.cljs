@@ -133,7 +133,7 @@
   (keyword (str "division-" (name key))))
 
 (defn make-division [type fields parts mask-overlaps outline parent-environment parent
-                     top-level-render render-options & {:keys [db-path]}]
+                     top-level-render render-options & {:keys [db-path transform]}]
   (let [mask-ids     (->> (range (count fields))
                           (map (fn [idx] [(util/id (str (name type) "-" idx))
                                           (util/id (str (name type) "-" idx))])))
@@ -179,13 +179,14 @@
          [:g {:clip-path (str "url(#" clip-path-id ")")
               :mask      (when (-> env :meta :mask)
                            (str "url(#" mask-id ")"))}
-          [top-level-render
-           (get-field fields idx)
-           (get environments idx)
-           render-options
-           :db-path (if (-> type name (s/starts-with? "ordinary-")) ;; FIXME: bit of a hack
-                      (conj db-path :field)
-                      (conj db-path :fields idx))]]))
+          [:g {:transform transform}
+           [top-level-render
+            (get-field fields idx)
+            (get environments idx)
+            render-options
+            :db-path (if (-> type name (s/starts-with? "ordinary-")) ;; FIXME: bit of a hack
+                       (conj db-path :field)
+                       (conj db-path :fields idx))]]]))
      outline]))
 
 (defn per-pale
