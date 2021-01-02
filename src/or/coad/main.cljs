@@ -6,6 +6,7 @@
             [cljs.reader :as reader]
             [goog.string.format]  ;; required for release build
             [or.coad.blazon :as blazon]
+            [or.coad.charge :as charge]
             [or.coad.config :as config]
             [or.coad.division :as division]
             [or.coad.filter :as filter]
@@ -141,6 +142,13 @@
        (assoc-in (conj path :type) new-type)
        (update-in path #(merge %
                                (options/sanitize-or-nil % (ordinary/options %)))))))
+(rf/reg-event-db
+ :set-charge-type
+ (fn [db [_ path new-type]]
+   (-> db
+       (assoc-in (conj path :type) new-type)
+       (update-in path #(merge %
+                               (options/sanitize-or-nil % (charge/options %)))))))
 
 (rf/reg-event-fx
  :add-component
