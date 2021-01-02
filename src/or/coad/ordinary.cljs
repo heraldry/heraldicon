@@ -7,7 +7,6 @@
             [or.coad.options :as options]
             [or.coad.position :as position]
             [or.coad.svg :as svg]
-            [or.coad.util :as util]
             [or.coad.vector :as v]))
 
 (defn diagonal-mode-choices [type]
@@ -42,6 +41,7 @@
    :diagonal-mode {:type :choice
                    :default :top-left-fess}
    :line line/default-options
+   :opposite-line line/default-options
    :geometry (-> geometry/default-options
                  (assoc-in [:size :min] 10)
                  (assoc-in [:size :default] 25)
@@ -56,6 +56,7 @@
       (->
        default-options
        (options/merge {:line (line/options (get-in ordinary [:line]))})
+       (options/merge {:opposite-line (line/options (get-in ordinary [:opposite-line]))})
        (options/merge
         (->
          (get {:pale {:origin {:offset-y nil}
@@ -66,8 +67,10 @@
                       :geometry {:size {:max 50}}}
                :chief {:origin nil
                        :diagonal-mode nil
+                       :opposite-line nil
                        :geometry {:size {:max 50}}}
                :base {:origin nil
+                      :opposite-line nil
                       :diagonal-mode nil
                       :geometry {:size {:max 50}}}
                :bend {:origin {:offset-x nil}
@@ -83,13 +86,16 @@
                                                    :chevron)
                                          :default :forty-five-degrees}
                          :line {:offset {:min 0}}
+                         :opposite-line {:offset {:min 0}}
                          :geometry {:size {:max 30}}}
                :saltire {:diagonal-mode {:choices (diagonal-mode-choices
                                                    :saltire)}
                          :line {:offset {:min 0}}
+                         :opposite-line nil
                          :geometry {:size {:max 30}}}
                :cross {:diagonal-mode nil
                        :line {:offset {:min 0}}
+                       :opposite-line nil
                        :geometry {:size {:max 30}}}}
               type)))))))
 
@@ -97,6 +103,11 @@
   {:display-name "Pale"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
+        opposite-line (options/sanitize
+                       (merge line
+                              (into {}
+                                    (filter (fn [[_ v]]
+                                              (some? v)) (:opposite-line ordinary)))) (-> ordinary options :opposite-line))
         {:keys [size]} geometry
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -118,7 +129,7 @@
                                       :angle 90
                                       :render-options render-options)
         {line-reversed :line
-         line-reversed-length :length} (line/create line
+         line-reversed-length :length} (line/create opposite-line
                                                     (:y (v/- bottom top))
                                                     :angle -90
                                                     :flipped? true
@@ -158,6 +169,11 @@
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]} geometry
+        opposite-line (options/sanitize
+                       (merge line
+                              (into {}
+                                    (filter (fn [[_ v]]
+                                              (some? v)) (:opposite-line ordinary)))) (-> ordinary options :opposite-line))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -176,7 +192,7 @@
                                       (:x (v/- right left))
                                       :render-options render-options)
         {line-reversed :line
-         line-reversed-length :length} (line/create line
+         line-reversed-length :length} (line/create opposite-line
                                                     (:x (v/- right left))
                                                     :reversed? true
                                                     :angle 180
@@ -301,6 +317,11 @@
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]} geometry
+        opposite-line (options/sanitize
+                       (merge line
+                              (into {}
+                                    (filter (fn [[_ v]]
+                                              (some? v)) (:opposite-line ordinary)))) (-> ordinary options :opposite-line))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -325,7 +346,7 @@
                                       line-length
                                       :render-options render-options)
         {line-reversed :line
-         line-reversed-length :length} (line/create line
+         line-reversed-length :length} (line/create opposite-line
                                                     line-length
                                                     :reversed? true
                                                     :angle 180
@@ -373,6 +394,11 @@
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]} geometry
+        opposite-line (options/sanitize
+                       (merge line
+                              (into {}
+                                    (filter (fn [[_ v]]
+                                              (some? v)) (:opposite-line ordinary)))) (-> ordinary options :opposite-line))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -397,7 +423,7 @@
                                       line-length
                                       :render-options render-options)
         {line-reversed :line
-         line-reversed-length :length} (line/create line
+         line-reversed-length :length} (line/create opposite-line
                                                     line-length
                                                     :reversed? true
                                                     :angle 180
@@ -471,8 +497,6 @@
         corner-top-right (v/v col2 row1)
         corner-bottom-left (v/v col1 row2)
         corner-bottom-right (v/v col2 row2)
-        line (-> line
-                 (update :offset max 0))
         {line-pale-top-left :line} (line/create line
                                                 (v/abs (v/- corner-top-left pale-top-left))
                                                 :angle -90
@@ -623,8 +647,6 @@
         bottom-left-lower (v/+ diagonal-bottom-left offset-bottom)
         bottom-right-upper (v/+ diagonal-bottom-right offset-top)
         bottom-right-lower (v/+ diagonal-bottom-right offset-bottom)
-        line (-> line
-                 (update :offset max 0))
         {line-top-left-lower :line} (line/create line
                                                  (Math/abs (:y (v/- corner-left top-left-lower)))
                                                  :angle angle-top-left
@@ -739,6 +761,11 @@
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]} geometry
+        opposite-line (options/sanitize
+                       (merge line
+                              (into {}
+                                    (filter (fn [[_ v]]
+                                              (some? v)) (:opposite-line ordinary)))) (-> ordinary options :opposite-line))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -764,19 +791,17 @@
         bottom-left-lower (v/+ diagonal-bottom-left offset-bottom)
         bottom-right-upper (v/+ diagonal-bottom-right offset-top)
         bottom-right-lower (v/+ diagonal-bottom-right offset-bottom)
-        line (-> line
-                 (update :offset max 0))
         {line-bottom-right-upper :line} (line/create line
                                                      (v/abs (v/- corner-top bottom-right-upper))
                                                      :angle angle-bottom-right
                                                      :render-options render-options)
         {line-bottom-right-lower :line
-         line-bottom-right-lower-length :length} (line/create line
+         line-bottom-right-lower-length :length} (line/create opposite-line
                                                               (v/abs (v/- corner-bottom bottom-right-lower))
                                                               :angle (- angle-bottom-right 180)
                                                               :reversed? true
                                                               :render-options render-options)
-        {line-bottom-left-lower :line} (line/create line
+        {line-bottom-left-lower :line} (line/create opposite-line
                                                     (v/abs (v/- corner-bottom bottom-left-lower))
                                                     :angle angle-bottom-left
                                                     :render-options render-options)
