@@ -160,8 +160,7 @@
        (options/merge
         (->
          (get {:escutcheon {:geometry {:size {:default 30}
-                                       :mirrored? nil
-                                       :reversed? nil}}
+                                       :mirrored? nil}}
                :roundel {:geometry {:mirrored? nil
                                     :reversed? nil}}
                :annulet {:geometry {:mirrored? nil
@@ -181,591 +180,267 @@
          (cond->
           (not= type :escutcheon) (assoc :escutcheon nil))))))))
 
-(defn escutcheon
-  {:display-name "Escutcheon"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [position geometry escutcheon]} (options/sanitize ordinary (options ordinary))
-        {:keys [size stretch rotation]} geometry
+(defn make-charge
+  [{:keys [field hints] :as charge} parent environment top-level-render render-options db-path arg function]
+  (let [{:keys [position geometry]} (options/sanitize charge (options charge))
+        {:keys [size stretch rotation
+                mirrored? reversed?]} geometry
         position-point (position/calculate position environment :fess)
-        width (:width environment)
-        ordinary-width (-> width
-                           (* size)
-                           (/ 100))
-        env (field-environment/transform-to-width
-             (escutcheon/field escutcheon) ordinary-width)
-        env-fess (-> env :points :fess)
-        [min-x max-x min-y max-y] (svg/rotated-bounding-box (-> env :points :top-left)
-                                                            (-> env :points :bottom-right)
+        arg-value (get environment arg)
+        target-arg-value (-> arg-value
+                             (* size)
+                             (/ 100))
+        scale-x (if mirrored? -1 1)
+        scale-y (* (if reversed? -1 1) stretch)
+        {:keys [shape
+                mask
+                charge-width
+                charge-height]} (function target-arg-value)
+        charge-shape (-> shape
+                         svg/make-path
+                         (->
+                          (svgpath)
+                          (.scale scale-x scale-y)
+                          (.toString))
+                         (cond->
+                          (:squiggly? render-options) line/squiggly-path
+                          (not= rotation 0) (->
+                                             (svgpath)
+                                             (.rotate rotation)
+                                             (.toString)))
+                         (line/translate (:x position-point) (:y position-point)))
+        mask-shape (when mask
+                     (-> mask
+                         svg/make-path
+                         (->
+                          (svgpath)
+                          (.scale scale-x scale-y)
+                          (.toString))
+                         (cond->
+                          (:squiggly? render-options) line/squiggly-path
+                          (not= rotation 0) (->
+                                             (svgpath)
+                                             (.rotate rotation)
+                                             (.toString)))
+                         (line/translate (:x position-point) (:y position-point))))
+        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v//
+                                                             (v/v charge-width
+                                                                  charge-height)
+                                                             -2)
+                                                            (v//
+                                                             (v/v charge-width
+                                                                  charge-height)
+                                                             -2)
                                                             rotation
-                                                            :middle env-fess
-                                                            :scale (v/v 1 stretch))
+                                                            :scale (v/v scale-x scale-y))
         box-size (v/v (- max-x min-x)
                       (- max-y min-y))
-        env-shape (-> (line/translate (:shape env)
-                                      (-> env-fess :x -)
-                                      (-> env-fess :y -))
-                      (cond->
-                       (not= stretch 1) (->
-                                         (svgpath)
-                                         (.scale 1 stretch)
-                                         (.toString))
-                       (:squiggly? render-options) line/squiggly-path
-                       (not= rotation 0) (->
-                                          (svgpath)
-                                          (.rotate rotation)
-                                          (.toString)))
-                      (line/translate (:x position-point) (:y position-point)))
-        parts [[env-shape
+        parts [[charge-shape
                 [(v/- position-point
                       (v// box-size 2))
                  (v/+ position-point
-                      (v// box-size 2))]]]
+                      (v// box-size 2))]
+                mask-shape]]
         field (if (counterchangable? field parent)
                 (counterchange-field field parent)
                 field)]
     [division/make-division
-     :ordinary-pale [field] parts
+     :charge-pale [field] parts
      [:all]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g.outline
-        [:path {:d env-shape}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+        [:path {:d charge-shape}]
+        (when mask-shape
+          [:path {:d mask-shape}])])
+     environment charge top-level-render render-options :db-path db-path]))
+
+(defn escutcheon
+  {:display-name "Escutcheon"}
+  [charge parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [escutcheon]} (options/sanitize charge (options charge))]
+    (make-charge charge parent environment top-level-render render-options db-path
+                 :width
+                 (fn [width]
+                   (let [env (field-environment/transform-to-width
+                              (escutcheon/field escutcheon) width)
+                         env-fess (-> env :points :fess)]
+                     {:shape (line/translate (:shape env)
+                                             (-> env-fess :x -)
+                                             (-> env-fess :y -))
+                      :charge-width width
+                      :charge-height width})))))
 
 (defn roundel
   {:display-name "Roundel"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [position geometry]} (options/sanitize ordinary (options ordinary))
-        {:keys [size stretch rotation]} geometry
-        position-point (position/calculate position environment :fess)
-        width (:width environment)
-        ordinary-width (-> width
-                           (* size)
-                           (/ 100))
-        ordinary-width-half (/ ordinary-width 2)
-        ordinary-shape (-> ["m" (v/v ordinary-width-half 0)
-                            ["a" ordinary-width-half ordinary-width-half
-                             0 0 0 (v/v (- ordinary-width) 0)]
-                            ["a" ordinary-width-half ordinary-width-half
-                             0 0 0 ordinary-width 0]
+  [charge parent environment top-level-render render-options & {:keys [db-path]}]
+  (make-charge charge parent environment top-level-render render-options db-path
+               :width
+               (fn [width]
+                 (let [radius (/ width 2)]
+                   {:shape ["m" (v/v radius 0)
+                            ["a" radius radius
+                             0 0 0 (v/v (- width) 0)]
+                            ["a" radius radius
+                             0 0 0 width 0]
                             "z"]
-                           svg/make-path
-                           (cond->
-                            (not= stretch 1) (->
-                                              (svgpath)
-                                              (.scale 1 stretch)
-                                              (.toString))
-                            (:squiggly? render-options) line/squiggly-path
-                            (not= rotation 0) (->
-                                               (svgpath)
-                                               (.rotate rotation)
-                                               (.toString)))
-                           (line/translate (:x position-point) (:y position-point)))
-        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            rotation
-                                                            :scale (v/v 1 stretch))
-        box-size (v/v (- max-x min-x)
-                      (- max-y min-y))
-        parts [[ordinary-shape
-                [(v/- position-point
-                      (v// box-size 2))
-                 (v/+ position-point
-                      (v// box-size 2))]]]
-        field (if (counterchangable? field parent)
-                (counterchange-field field parent)
-                field)]
-    [division/make-division
-     :ordinary-pale [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g.outline
-        [:path {:d ordinary-shape}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+                    :charge-width width
+                    :charge-height width}))))
 
 (defn annulet
   {:display-name "Annulet"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [position geometry]} (options/sanitize ordinary (options ordinary))
-        {:keys [size stretch rotation]} geometry
-        position-point (position/calculate position environment :fess)
-        width (:width environment)
-        ordinary-width (-> width
-                           (* size)
-                           (/ 100))
-        ordinary-width-half (/ ordinary-width 2)
-        ordinary-shape (-> ["m" (v/v ordinary-width-half 0)
-                            ["a" ordinary-width-half ordinary-width-half
-                             0 0 0 (v/v (- ordinary-width) 0)]
-                            ["a" ordinary-width-half ordinary-width-half
-                             0 0 0 ordinary-width 0]
+  [charge parent environment top-level-render render-options & {:keys [db-path]}]
+  (make-charge charge parent environment top-level-render render-options db-path
+               :width
+               (fn [width]
+                 (let [radius (/ width 2)
+                       hole-radius (* radius 0.6)]
+                   {:shape ["m" (v/v radius 0)
+                            ["a" radius radius
+                             0 0 0 (v/v (- width) 0)]
+                            ["a" radius radius
+                             0 0 0 width 0]
                             "z"]
-                           svg/make-path
-                           (cond->
-                            (not= stretch 1) (->
-                                              (svgpath)
-                                              (.scale 1 stretch)
-                                              (.toString))
-                            (:squiggly? render-options) line/squiggly-path
-                            (not= rotation 0) (->
-                                               (svgpath)
-                                               (.rotate rotation)
-                                               (.toString)))
-                           (line/translate (:x position-point) (:y position-point)))
-        hole-width (* ordinary-width 0.6)
-        hole-width-half (/ hole-width 2)
-        hole-shape (-> ["m" (v/v hole-width-half 0)
-                        ["a" hole-width-half hole-width-half
-                         0 0 0 (v/v (- hole-width) 0)]
-                        ["a" hole-width-half hole-width-half
-                         0 0 0 hole-width 0]
-                        "z"]
-                       svg/make-path
-                       (cond->
-                        (not= stretch 1) (->
-                                          (svgpath)
-                                          (.scale 1 stretch)
-                                          (.toString))
-                        (:squiggly? render-options) line/squiggly-path
-                        (not= rotation 0) (->
-                                           (svgpath)
-                                           (.rotate rotation)
-                                           (.toString)))
-                       (line/translate (:x position-point) (:y position-point)))
-        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            rotation
-                                                            :scale (v/v 1 stretch))
-        box-size (v/v (- max-x min-x)
-                      (- max-y min-y))
-        parts [[ordinary-shape
-                [(v/- position-point
-                      (v// box-size 2))
-                 (v/+ position-point
-                      (v// box-size 2))]
-                hole-shape]]
-        field (if (counterchangable? field parent)
-                (counterchange-field field parent)
-                field)]
-    [division/make-division
-     :ordinary-pale [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g.outline
-        [:path {:d ordinary-shape}]
-        [:path {:d hole-shape}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+                    :mask ["m" (v/v hole-radius 0)
+                           ["a" hole-radius hole-radius
+                            0 0 0 (v/v (* hole-radius -2) 0)]
+                           ["a" hole-radius hole-radius
+                            0 0 0 (* hole-radius 2) 0]
+                           "z"]
+                    :charge-width width
+                    :charge-height width}))))
 
 (defn billet
   {:display-name "Billet"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [position geometry]} (options/sanitize ordinary (options ordinary))
-        {:keys [size stretch rotation]} geometry
-        position-point (position/calculate position environment :fess)
-        height (:height environment)
-        ordinary-height (-> height
-                            (* size)
-                            (/ 100))
-        ordinary-width (/ ordinary-height 2)
-        ordinary-width-half (/ ordinary-width 2)
-        ordinary-height-half (/ ordinary-height 2)
-        ordinary-shape (-> ["m" (v/v (- ordinary-width-half) (- ordinary-height-half))
-                            "h" ordinary-width
-                            "v" ordinary-height
-                            "h" (- ordinary-width)
+  [charge parent environment top-level-render render-options & {:keys [db-path]}]
+  (make-charge charge parent environment top-level-render render-options db-path
+               :height
+               (fn [height]
+                 (let [width (/ height 2)
+                       width-half (/ width 2)
+                       height-half (/ height 2)]
+                   {:shape ["m" (v/v (- width-half) (- height-half))
+                            "h" width
+                            "v" height
+                            "h" (- width)
                             "z"]
-                           svg/make-path
-                           (cond->
-                            (not= stretch 1) (->
-                                              (svgpath)
-                                              (.scale 1 stretch)
-                                              (.toString))
-                            (:squiggly? render-options) line/squiggly-path
-                            (not= rotation 0) (->
-                                               (svgpath)
-                                               (.rotate rotation)
-                                               (.toString)))
-                           (line/translate (:x position-point) (:y position-point)))
-        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            rotation
-                                                            :scale (v/v 1 stretch))
-        box-size (v/v (- max-x min-x)
-                      (- max-y min-y))
-        parts [[ordinary-shape
-                [(v/- position-point
-                      (v// box-size 2))
-                 (v/+ position-point
-                      (v// box-size 2))]]]
-        field (if (counterchangable? field parent)
-                (counterchange-field field parent)
-                field)]
-    [division/make-division
-     :ordinary-pale [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g.outline
-        [:path {:d ordinary-shape}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+                    :charge-width width
+                    :charge-height height}))))
 
 (defn lozenge
   {:display-name "Lozenge"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [position geometry]} (options/sanitize ordinary (options ordinary))
-        {:keys [size stretch rotation]} geometry
-        position-point (position/calculate position environment :fess)
-        height (:height environment)
-        ordinary-height (-> height
-                            (* size)
-                            (/ 100))
-        ordinary-width (/ ordinary-height 1.3)
-        ordinary-width-half (/ ordinary-width 2)
-        ordinary-height-half (/ ordinary-height 2)
-        ordinary-shape (-> ["m" (v/v 0 (- ordinary-height-half))
-                            "l" (v/v ordinary-width-half ordinary-height-half)
-                            "l " (v/v (- ordinary-width-half) ordinary-height-half)
-                            "l" (v/v (- ordinary-width-half) (- ordinary-height-half))
+  [charge parent environment top-level-render render-options & {:keys [db-path]}]
+  (make-charge charge parent environment top-level-render render-options db-path
+               :height
+               (fn [height]
+                 (let [width (/ height 1.3)
+                       width-half (/ width 2)
+                       height-half (/ height 2)]
+                   {:shape ["m" (v/v 0 (- height-half))
+                            "l" (v/v width-half height-half)
+                            "l " (v/v (- width-half) height-half)
+                            "l" (v/v (- width-half) (- height-half))
                             "z"]
-                           svg/make-path
-                           (cond->
-                            (not= stretch 1) (->
-                                              (svgpath)
-                                              (.scale 1 stretch)
-                                              (.toString))
-                            (:squiggly? render-options) line/squiggly-path
-                            (not= rotation 0) (->
-                                               (svgpath)
-                                               (.rotate rotation)
-                                               (.toString)))
-                           (line/translate (:x position-point) (:y position-point)))
-        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            rotation
-                                                            :scale (v/v 1 stretch))
-        box-size (v/v (- max-x min-x)
-                      (- max-y min-y))
-        parts [[ordinary-shape
-                [(v/- position-point
-                      (v// box-size 2))
-                 (v/+ position-point
-                      (v// box-size 2))]]]
-        field (if (counterchangable? field parent)
-                (counterchange-field field parent)
-                field)]
-    [division/make-division
-     :ordinary-pale [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g.outline
-        [:path {:d ordinary-shape}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+                    :charge-width width
+                    :charge-height height}))))
 
 (defn fusil
   {:display-name "Fusil"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [position geometry]} (options/sanitize ordinary (options ordinary))
-        {:keys [size stretch rotation]} geometry
-        position-point (position/calculate position environment :fess)
-        height (:height environment)
-        ordinary-height (-> height
-                            (* size)
-                            (/ 100))
-        ordinary-width (/ ordinary-height 2)
-        ordinary-width-half (/ ordinary-width 2)
-        ordinary-height-half (/ ordinary-height 2)
-        ordinary-shape (-> ["m" (v/v 0 (- ordinary-height-half))
-                            "l" (v/v ordinary-width-half ordinary-height-half)
-                            "l " (v/v (- ordinary-width-half) ordinary-height-half)
-                            "l" (v/v (- ordinary-width-half) (- ordinary-height-half))
+  [charge parent environment top-level-render render-options & {:keys [db-path]}]
+  (make-charge charge parent environment top-level-render render-options db-path
+               :height
+               (fn [height]
+                 (let [width (/ height 2)
+                       width-half (/ width 2)
+                       height-half (/ height 2)]
+                   {:shape ["m" (v/v 0 (- height-half))
+                            "l" (v/v width-half height-half)
+                            "l " (v/v (- width-half) height-half)
+                            "l" (v/v (- width-half) (- height-half))
                             "z"]
-                           svg/make-path
-                           (cond->
-                            (not= stretch 1) (->
-                                              (svgpath)
-                                              (.scale 1 stretch)
-                                              (.toString))
-                            (:squiggly? render-options) line/squiggly-path
-                            (not= rotation 0) (->
-                                               (svgpath)
-                                               (.rotate rotation)
-                                               (.toString)))
-                           (line/translate (:x position-point) (:y position-point)))
-        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            rotation
-                                                            :scale (v/v 1 stretch))
-        box-size (v/v (- max-x min-x)
-                      (- max-y min-y))
-        parts [[ordinary-shape
-                [(v/- position-point
-                      (v// box-size 2))
-                 (v/+ position-point
-                      (v// box-size 2))]]]
-        field (if (counterchangable? field parent)
-                (counterchange-field field parent)
-                field)]
-    [division/make-division
-     :ordinary-pale [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g.outline
-        [:path {:d ordinary-shape}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+                    :charge-width width
+                    :charge-height height}))))
 
 (defn mascle
   {:display-name "Mascle"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [position geometry]} (options/sanitize ordinary (options ordinary))
-        {:keys [size stretch rotation]} geometry
-        position-point (position/calculate position environment :fess)
-        height (:height environment)
-        ordinary-height (-> height
-                            (* size)
-                            (/ 100))
-        ordinary-width (/ ordinary-height 1.3)
-        ordinary-width-half (/ ordinary-width 2)
-        ordinary-height-half (/ ordinary-height 2)
-        ordinary-shape (-> ["m" (v/v 0 (- ordinary-height-half))
-                            "l" (v/v ordinary-width-half ordinary-height-half)
-                            "l " (v/v (- ordinary-width-half) ordinary-height-half)
-                            "l" (v/v (- ordinary-width-half) (- ordinary-height-half))
+  [charge parent environment top-level-render render-options & {:keys [db-path]}]
+  (make-charge charge parent environment top-level-render render-options db-path
+               :height
+               (fn [height]
+                 (let [width (/ height 1.3)
+                       width-half (/ width 2)
+                       height-half (/ height 2)
+                       hole-width (* width 0.55)
+                       hole-height (* height 0.55)
+                       hole-width-half (/ hole-width 2)
+                       hole-height-half (/ hole-height 2)]
+                   {:shape ["m" (v/v 0 (- height-half))
+                            "l" (v/v width-half height-half)
+                            "l " (v/v (- width-half) height-half)
+                            "l" (v/v (- width-half) (- height-half))
                             "z"]
-                           svg/make-path
-                           (cond->
-                            (not= stretch 1) (->
-                                              (svgpath)
-                                              (.scale 1 stretch)
-                                              (.toString))
-                            (:squiggly? render-options) line/squiggly-path
-                            (not= rotation 0) (->
-                                               (svgpath)
-                                               (.rotate rotation)
-                                               (.toString)))
-                           (line/translate (:x position-point) (:y position-point)))
-        hole-width (* ordinary-width 0.55)
-        hole-height (* ordinary-height 0.55)
-        hole-width-half (/ hole-width 2)
-        hole-height-half (/ hole-height 2)
-        hole-shape (-> ["m" (v/v 0 (- hole-height-half))
-                        "l" (v/v hole-width-half hole-height-half)
-                        "l " (v/v (- hole-width-half) hole-height-half)
-                        "l" (v/v (- hole-width-half) (- hole-height-half))
-                        "z"]
-                       svg/make-path
-                       (cond->
-                        (not= stretch 1) (->
-                                          (svgpath)
-                                          (.scale 1 stretch)
-                                          (.toString))
-                        (:squiggly? render-options) line/squiggly-path
-                        (not= rotation 0) (->
-                                           (svgpath)
-                                           (.rotate rotation)
-                                           (.toString)))
-                       (line/translate (:x position-point) (:y position-point)))
-        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            rotation
-                                                            :scale (v/v 1 stretch))
-        box-size (v/v (- max-x min-x)
-                      (- max-y min-y))
-        parts [[ordinary-shape
-                [(v/- position-point
-                      (v// box-size 2))
-                 (v/+ position-point
-                      (v// box-size 2))]
-                hole-shape]]
-        field (if (counterchangable? field parent)
-                (counterchange-field field parent)
-                field)]
-    [division/make-division
-     :ordinary-pale [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g.outline
-        [:path {:d ordinary-shape}]
-        [:path {:d hole-shape}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+                    :mask ["m" (v/v 0 (- hole-height-half))
+                           "l" (v/v hole-width-half hole-height-half)
+                           "l " (v/v (- hole-width-half) hole-height-half)
+                           "l" (v/v (- hole-width-half) (- hole-height-half))
+                           "z"]
+                    :charge-width width
+                    :charge-height height}))))
 
 (defn rustre
   {:display-name "Rustre"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [position geometry]} (options/sanitize ordinary (options ordinary))
-        {:keys [size stretch rotation]} geometry
-        position-point (position/calculate position environment :fess)
-        height (:height environment)
-        ordinary-height (-> height
-                            (* size)
-                            (/ 100))
-        ordinary-width (/ ordinary-height 1.3)
-        ordinary-width-half (/ ordinary-width 2)
-        ordinary-height-half (/ ordinary-height 2)
-        ordinary-shape (-> ["m" (v/v 0 (- ordinary-height-half))
-                            "l" (v/v ordinary-width-half ordinary-height-half)
-                            "l " (v/v (- ordinary-width-half) ordinary-height-half)
-                            "l" (v/v (- ordinary-width-half) (- ordinary-height-half))
+  [charge parent environment top-level-render render-options & {:keys [db-path]}]
+  (make-charge charge parent environment top-level-render render-options db-path
+               :height
+               (fn [height]
+                 (let [width (/ height 1.3)
+                       width-half (/ width 2)
+                       height-half (/ height 2)
+                       hole-radius (/ width 4)]
+                   {:shape ["m" (v/v 0 (- height-half))
+                            "l" (v/v width-half height-half)
+                            "l " (v/v (- width-half) height-half)
+                            "l" (v/v (- width-half) (- height-half))
                             "z"]
-                           svg/make-path
-                           (cond->
-                            (not= stretch 1) (->
-                                              (svgpath)
-                                              (.scale 1 stretch)
-                                              (.toString))
-                            (:squiggly? render-options) line/squiggly-path
-                            (not= rotation 0) (->
-                                               (svgpath)
-                                               (.rotate rotation)
-                                               (.toString)))
-                           (line/translate (:x position-point) (:y position-point)))
-        hole-width (* ordinary-width 0.5)
-        hole-width-half (/ hole-width 2)
-        hole-shape (-> ["m" (v/v hole-width-half 0)
-                        ["a" hole-width-half hole-width-half
-                         0 0 0 (v/v (- hole-width) 0)]
-                        ["a" hole-width-half hole-width-half
-                         0 0 0 hole-width 0]
-                        "z"]
-                       svg/make-path
-                       (cond->
-                        (not= stretch 1) (->
-                                          (svgpath)
-                                          (.scale 1 stretch)
-                                          (.toString))
-                        (:squiggly? render-options) line/squiggly-path
-                        (not= rotation 0) (->
-                                           (svgpath)
-                                           (.rotate rotation)
-                                           (.toString)))
-                       (line/translate (:x position-point) (:y position-point)))
-        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            rotation
-                                                            :scale (v/v 1 stretch))
-        box-size (v/v (- max-x min-x)
-                      (- max-y min-y))
-        parts [[ordinary-shape
-                [(v/- position-point
-                      (v// box-size 2))
-                 (v/+ position-point
-                      (v// box-size 2))]
-                hole-shape]]
-        field (if (counterchangable? field parent)
-                (counterchange-field field parent)
-                field)]
-    [division/make-division
-     :ordinary-pale [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g.outline
-        [:path {:d ordinary-shape}]
-        [:path {:d hole-shape}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+                    :mask ["m" (v/v hole-radius 0)
+                           ["a" hole-radius hole-radius
+                            0 0 0 (v/v (* hole-radius -2) 0)]
+                           ["a" hole-radius hole-radius
+                            0 0 0 (* hole-radius 2) 0]
+                           "z"]
+                    :charge-width width
+                    :charge-height height}))))
 
 (defn crescent
   {:display-name "Crescent"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [position geometry]} (options/sanitize ordinary (options ordinary))
-        {:keys [size stretch rotation]} geometry
-        position-point (position/calculate position environment :fess)
-        width (:width environment)
-        ordinary-width (-> width
-                           (* size)
-                           (/ 100))
-        ordinary-width-half (/ ordinary-width 2)
-        inner-radius (* ordinary-width-half
-                        0.75)
-        horn-angle -45
-        horn-point-x (* ordinary-width-half
-                        (-> horn-angle
-                            (* Math/PI)
-                            (/ 180)
-                            Math/cos))
-        horn-point-y (* ordinary-width-half
-                        (-> horn-angle
-                            (* Math/PI)
-                            (/ 180)
-                            Math/sin))
-        horn-point-1 (v/v horn-point-x horn-point-y)
-        horn-point-2 (v/v (- horn-point-x) horn-point-y)
-        ordinary-shape (-> ["m" horn-point-1
-                            ["a" ordinary-width-half ordinary-width-half
+  [charge parent environment top-level-render render-options & {:keys [db-path]}]
+  (make-charge charge parent environment top-level-render render-options db-path
+               :width
+               (fn [width]
+                 (let [radius (/ width 2)
+                       inner-radius (* radius
+                                       0.75)
+                       horn-angle -45
+                       horn-point-x (* radius
+                                       (-> horn-angle
+                                           (* Math/PI)
+                                           (/ 180)
+                                           Math/cos))
+                       horn-point-y (* radius
+                                       (-> horn-angle
+                                           (* Math/PI)
+                                           (/ 180)
+                                           Math/sin))
+                       horn-point-1 (v/v horn-point-x horn-point-y)
+                       horn-point-2 (v/v (- horn-point-x) horn-point-y)]
+                   {:shape ["m" horn-point-1
+                            ["a" radius radius
                              0 1 1 (v/- horn-point-2 horn-point-1)]
                             ["a" inner-radius inner-radius
                              0 1 0 (v/- horn-point-1 horn-point-2)]
                             "z"]
-                           svg/make-path
-                           (cond->
-                            (not= stretch 1) (->
-                                              (svgpath)
-                                              (.scale 1 stretch)
-                                              (.toString))
-                            (:squiggly? render-options) line/squiggly-path
-                            (not= rotation 0) (->
-                                               (svgpath)
-                                               (.rotate rotation)
-                                               (.toString)))
-                           (line/translate (:x position-point) (:y position-point)))
-        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            (v/-
-                                                             (v/v ordinary-width-half
-                                                                  ordinary-width-half))
-                                                            rotation
-                                                            :scale (v/v 1 stretch))
-        box-size (v/v (- max-x min-x)
-                      (- max-y min-y))
-        parts [[ordinary-shape
-                [(v/- position-point
-                      (v// box-size 2))
-                 (v/+ position-point
-                      (v// box-size 2))]]]
-        field (if (counterchangable? field parent)
-                (counterchange-field field parent)
-                field)]
-    [division/make-division
-     :ordinary-pale [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g.outline
-        [:path {:d ordinary-shape}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+                    :charge-width width
+                    :charge-height width}))))
 
 (def charges
   [#'roundel
@@ -918,8 +593,8 @@
       [:<>])
     [:<>]))
 
-(defn render [{:keys [type] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+(defn render [{:keys [type] :as charge} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [function (get kinds-function-map type)]
     (if function
-      [function ordinary parent environment top-level-render render-options :db-path db-path]
-      [render-other-charge ordinary parent environment top-level-render render-options :db-path db-path])))
+      [function charge parent environment top-level-render render-options :db-path db-path]
+      [render-other-charge charge parent environment top-level-render render-options :db-path db-path])))
