@@ -175,7 +175,8 @@
                :mascle {:geometry {:mirrored? nil
                                    :reversed? nil}}
                :rustre {:geometry {:mirrored? nil
-                                   :reversed? nil}}}
+                                   :reversed? nil}}
+               :crescent {:geometry {:mirrored? nil}}}
               type)
          (cond->
           (not= type :escutcheon) (assoc :escutcheon nil))))))))
@@ -695,6 +696,77 @@
         [:path {:d hole-shape}]])
      environment ordinary top-level-render render-options :db-path db-path]))
 
+(defn crescent
+  {:display-name "Crescent"}
+  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  (let [{:keys [position geometry]} (options/sanitize ordinary (options ordinary))
+        {:keys [size stretch rotation]} geometry
+        position-point (position/calculate position environment :fess)
+        width (:width environment)
+        ordinary-width (-> width
+                           (* size)
+                           (/ 100))
+        ordinary-width-half (/ ordinary-width 2)
+        inner-radius (* ordinary-width-half
+                        0.75)
+        horn-angle -45
+        horn-point-x (* ordinary-width-half
+                        (-> horn-angle
+                            (* Math/PI)
+                            (/ 180)
+                            Math/cos))
+        horn-point-y (* ordinary-width-half
+                        (-> horn-angle
+                            (* Math/PI)
+                            (/ 180)
+                            Math/sin))
+        horn-point-1 (v/v horn-point-x horn-point-y)
+        horn-point-2 (v/v (- horn-point-x) horn-point-y)
+        ordinary-shape (-> ["m" horn-point-1
+                            ["a" ordinary-width-half ordinary-width-half
+                             0 1 1 (v/- horn-point-2 horn-point-1)]
+                            ["a" inner-radius inner-radius
+                             0 1 0 (v/- horn-point-1 horn-point-2)]
+                            "z"]
+                           svg/make-path
+                           (cond->
+                            (not= stretch 1) (->
+                                              (svgpath)
+                                              (.scale 1 stretch)
+                                              (.toString))
+                            (:squiggly? render-options) line/squiggly-path
+                            (not= rotation 0) (->
+                                               (svgpath)
+                                               (.rotate rotation)
+                                               (.toString)))
+                           (line/translate (:x position-point) (:y position-point)))
+        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v/-
+                                                             (v/v ordinary-width-half
+                                                                  ordinary-width-half))
+                                                            (v/-
+                                                             (v/v ordinary-width-half
+                                                                  ordinary-width-half))
+                                                            rotation
+                                                            :scale (v/v 1 stretch))
+        box-size (v/v (- max-x min-x)
+                      (- max-y min-y))
+        parts [[ordinary-shape
+                [(v/- position-point
+                      (v// box-size 2))
+                 (v/+ position-point
+                      (v// box-size 2))]]]
+        field (if (counterchangable? field parent)
+                (counterchange-field field parent)
+                field)]
+    [division/make-division
+     :ordinary-pale [field] parts
+     [:all]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g.outline
+        [:path {:d ordinary-shape}]])
+     environment ordinary top-level-render render-options :db-path db-path]))
+
 (def charges
   [#'roundel
    #'annulet
@@ -703,7 +775,8 @@
    #'lozenge
    #'fusil
    #'mascle
-   #'rustre])
+   #'rustre
+   #'crescent])
 
 (def kinds-function-map
   (->> charges
