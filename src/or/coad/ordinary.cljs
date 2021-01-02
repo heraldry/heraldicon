@@ -529,10 +529,10 @@
                                 [fess-bottom-left fess-top-left-adjusted])
                  (line/stitch line-fess-top-left)
                  "z"]
-                [top bottom left right]]]]
-    field (if (charge/counterchangable? field parent)
-            (charge/counterchange-field field parent)
-            field)
+                [top bottom left right]]]
+        field (if (charge/counterchangable? field parent)
+                (charge/counterchange-field field parent)
+                field)]
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
@@ -683,10 +683,10 @@
                                 [bottom-left-lower bottom-left-upper-adjusted])
                  (line/stitch line-bottom-left-upper)
                  "z"]
-                [top bottom left right]]]]
-    field (if (charge/counterchangable? field parent)
-            (charge/counterchange-field field parent)
-            field)
+                [top bottom left right]]]
+        field (if (charge/counterchangable? field parent)
+                (charge/counterchange-field field parent)
+                field)]
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
@@ -788,10 +788,10 @@
                                 [bottom-left-lower bottom-left-upper-adjusted])
                  (line/stitch line-bottom-left-upper)
                  "z"]
-                [top bottom left right]]]]
-    field (if (charge/counterchangable? field parent)
-            (charge/counterchange-field field parent)
-            field)
+                [top bottom left right]]]
+        field (if (charge/counterchangable? field parent)
+                (charge/counterchange-field field parent)
+                field)]
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
