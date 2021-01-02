@@ -159,30 +159,22 @@
        default-options
        (options/merge
         (->
-         (get {:escutcheon {:geometry {:size      {:max     50
-                                                   :default 30}
+         (get {:escutcheon {:geometry {:size      {:default 30}
                                        :mirrored? nil
                                        :reversed? nil}}
-               :roundel    {:geometry {:size      {:max 50}
-                                       :mirrored? nil
+               :roundel    {:geometry {:mirrored? nil
                                        :reversed? nil}}
-               :annulet    {:geometry {:size      {:max 50}
-                                       :mirrored? nil
+               :annulet    {:geometry {:mirrored? nil
                                        :reversed? nil}}
-               :billet     {:geometry {:size      {:max 50}
-                                       :mirrored? nil
+               :billet     {:geometry {:mirrored? nil
                                        :reversed? nil}}
-               :lozenge    {:geometry {:size      {:max 50}
-                                       :mirrored? nil
+               :lozenge    {:geometry {:mirrored? nil
                                        :reversed? nil}}
-               :fusil      {:geometry {:size      {:max 50}
-                                       :mirrored? nil
+               :fusil      {:geometry {:mirrored? nil
                                        :reversed? nil}}
-               :mascle     {:geometry {:size      {:max 50}
-                                       :mirrored? nil
+               :mascle     {:geometry {:mirrored? nil
                                        :reversed? nil}}
-               :rustre     {:geometry {:size      {:max 50}
-                                       :mirrored? nil
+               :rustre     {:geometry {:mirrored? nil
                                        :reversed? nil}}}
               type)
          (cond->
