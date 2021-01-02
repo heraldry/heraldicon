@@ -47,9 +47,10 @@ Here's a list of things already supported and things I'm working on.
 - [ ] add configurable *paly divisions*
 - [ ] add configurable *chequered divisions*
 - [ ] add undo functionality in the form
-- [ ] add option to set a different line style on the other side of the ordinary
+- [X] add option to set a different line style on the other side of the ordinary
       and pick the right default one, e.g. wavy generally seems to have a
-      "counter" wave, but others should be mirrored, embattled defaults to straight
+      "counter" wave, but others should be mirrored - for now didn't try to pick
+      defaults
 - [X] add options to offset line styles and adjust their eccentricity and
       pattern width
 - [ ] add more ordinaries

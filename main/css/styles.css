@@ -48,14 +48,11 @@ mask path.overlap {
 }
 
 .setting > select,
-.setting > .slider {
+.setting > .submenu-setting,
+.setting > .slider,
+.setting > .other {
   position: absolute;
-  left: 6.5em;
-}
-
-.setting > .submenu-setting {
-  position: absolute;
-  left: 5.5em;
+  left: 6em;
 }
 
 .setting input[type="checkbox"],
@@ -64,9 +61,9 @@ mask path.overlap {
   margin-right: 5px;
 }
 
-.slider {
+.slider,
+.other {
   display: inline-block;
-  margin-left: -1em;
 }
 
 .component {
