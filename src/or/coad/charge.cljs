@@ -191,45 +191,45 @@
 (defn escutcheon
   {:display-name "Escutcheon"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [origin geometry escutcheon]} (options/sanitize ordinary (options ordinary))
-        {:keys [size stretch rotation]}      geometry
-        origin-point                         (position/calculate origin environment :fess)
-        width                                (:width environment)
-        ordinary-width                       (-> width
-                                                 (* size)
-                                                 (/ 100))
-        env                                  (field-environment/transform-to-width
-                                              (escutcheon/field escutcheon) ordinary-width)
-        env-fess                             (-> env :points :fess)
-        [min-x max-x min-y max-y]            (svg/rotated-bounding-box (-> env :points :top-left)
-                                                                       (-> env :points :bottom-right)
-                                                                       rotation
-                                                                       :middle env-fess
-                                                                       :scale (v/v 1 stretch))
-        box-size                             (v/v (- max-x min-x)
-                                                  (- max-y min-y))
-        env-shape                            (-> (line/translate (:shape env)
-                                                                 (-> env-fess :x -)
-                                                                 (-> env-fess :y -))
-                                                 (cond->
-                                                     (not= stretch 1) (->
-                                                                       (svgpath)
-                                                                       (.scale 1 stretch)
-                                                                       (.toString))
-                                                     (:squiggly? render-options) line/squiggly-path
-                                                     (not= rotation 0)           (->
-                                                                                  (svgpath)
-                                                                                  (.rotate rotation)
-                                                                                  (.toString)))
-                                                 (line/translate (:x origin-point) (:y origin-point)))
-        parts                                [[env-shape
-                                               [(v/- origin-point
-                                                     (v// box-size 2))
-                                                (v/+ origin-point
-                                                     (v// box-size 2))]]]
-        field                                (if (counterchangable? field parent)
-                                               (counterchange-field field parent)
-                                               field)]
+  (let [{:keys [position geometry escutcheon]} (options/sanitize ordinary (options ordinary))
+        {:keys [size stretch rotation]}        geometry
+        position-point                         (position/calculate position environment :fess)
+        width                                  (:width environment)
+        ordinary-width                         (-> width
+                                                   (* size)
+                                                   (/ 100))
+        env                                    (field-environment/transform-to-width
+                                                (escutcheon/field escutcheon) ordinary-width)
+        env-fess                               (-> env :points :fess)
+        [min-x max-x min-y max-y]              (svg/rotated-bounding-box (-> env :points :top-left)
+                                                                         (-> env :points :bottom-right)
+                                                                         rotation
+                                                                         :middle env-fess
+                                                                         :scale (v/v 1 stretch))
+        box-size                               (v/v (- max-x min-x)
+                                                    (- max-y min-y))
+        env-shape                              (-> (line/translate (:shape env)
+                                                                   (-> env-fess :x -)
+                                                                   (-> env-fess :y -))
+                                                   (cond->
+                                                       (not= stretch 1) (->
+                                                                         (svgpath)
+                                                                         (.scale 1 stretch)
+                                                                         (.toString))
+                                                       (:squiggly? render-options) line/squiggly-path
+                                                       (not= rotation 0)           (->
+                                                                                    (svgpath)
+                                                                                    (.rotate rotation)
+                                                                                    (.toString)))
+                                                   (line/translate (:x position-point) (:y position-point)))
+        parts                                  [[env-shape
+                                                 [(v/- position-point
+                                                       (v// box-size 2))
+                                                  (v/+ position-point
+                                                       (v// box-size 2))]]]
+        field                                  (if (counterchangable? field parent)
+                                                 (counterchange-field field parent)
+                                                 field)]
     [division/make-division
      :ordinary-pale [field] parts
      [:all]
@@ -242,9 +242,9 @@
 (defn roundel
   {:display-name "Roundel"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [origin geometry]}       (options/sanitize ordinary (options ordinary))
+  (let [{:keys [position geometry]}     (options/sanitize ordinary (options ordinary))
         {:keys [size stretch rotation]} geometry
-        origin-point                    (position/calculate origin environment :fess)
+        position-point                  (position/calculate position environment :fess)
         width                           (:width environment)
         ordinary-width                  (-> width
                                             (* size)
@@ -267,7 +267,7 @@
                                                                              (svgpath)
                                                                              (.rotate rotation)
                                                                              (.toString)))
-                                            (line/translate (:x origin-point) (:y origin-point)))
+                                            (line/translate (:x position-point) (:y position-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
                                                                         ordinary-width-half))
@@ -279,9 +279,9 @@
         box-size                        (v/v (- max-x min-x)
                                              (- max-y min-y))
         parts                           [[ordinary-shape
-                                          [(v/- origin-point
+                                          [(v/- position-point
                                                 (v// box-size 2))
-                                           (v/+ origin-point
+                                           (v/+ position-point
                                                 (v// box-size 2))]]]
         field                           (if (counterchangable? field parent)
                                           (counterchange-field field parent)
@@ -298,9 +298,9 @@
 (defn annulet
   {:display-name "Annulet"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [origin geometry]}       (options/sanitize ordinary (options ordinary))
+  (let [{:keys [position geometry]}     (options/sanitize ordinary (options ordinary))
         {:keys [size stretch rotation]} geometry
-        origin-point                    (position/calculate origin environment :fess)
+        position-point                  (position/calculate position environment :fess)
         width                           (:width environment)
         ordinary-width                  (-> width
                                             (* size)
@@ -323,7 +323,7 @@
                                                                              (svgpath)
                                                                              (.rotate rotation)
                                                                              (.toString)))
-                                            (line/translate (:x origin-point) (:y origin-point)))
+                                            (line/translate (:x position-point) (:y position-point)))
         hole-width                      (* ordinary-width 0.6)
         hole-width-half                 (/ hole-width 2)
         hole-shape                      (-> ["m" (v/v hole-width-half 0)
@@ -343,7 +343,7 @@
                                                                              (svgpath)
                                                                              (.rotate rotation)
                                                                              (.toString)))
-                                            (line/translate (:x origin-point) (:y origin-point)))
+                                            (line/translate (:x position-point) (:y position-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
                                                                         ordinary-width-half))
@@ -355,9 +355,9 @@
         box-size                        (v/v (- max-x min-x)
                                              (- max-y min-y))
         parts                           [[ordinary-shape
-                                          [(v/- origin-point
+                                          [(v/- position-point
                                                 (v// box-size 2))
-                                           (v/+ origin-point
+                                           (v/+ position-point
                                                 (v// box-size 2))]
                                           hole-shape]]
         field                           (if (counterchangable? field parent)
@@ -376,9 +376,9 @@
 (defn billet
   {:display-name "Billet"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [origin geometry]}       (options/sanitize ordinary (options ordinary))
+  (let [{:keys [position geometry]}     (options/sanitize ordinary (options ordinary))
         {:keys [size stretch rotation]} geometry
-        origin-point                    (position/calculate origin environment :fess)
+        position-point                  (position/calculate position environment :fess)
         height                          (:height environment)
         ordinary-height                 (-> height
                                             (* size)
@@ -402,7 +402,7 @@
                                                                              (svgpath)
                                                                              (.rotate rotation)
                                                                              (.toString)))
-                                            (line/translate (:x origin-point) (:y origin-point)))
+                                            (line/translate (:x position-point) (:y position-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
                                                                         ordinary-width-half))
@@ -414,9 +414,9 @@
         box-size                        (v/v (- max-x min-x)
                                              (- max-y min-y))
         parts                           [[ordinary-shape
-                                          [(v/- origin-point
+                                          [(v/- position-point
                                                 (v// box-size 2))
-                                           (v/+ origin-point
+                                           (v/+ position-point
                                                 (v// box-size 2))]]]
         field                           (if (counterchangable? field parent)
                                           (counterchange-field field parent)
@@ -433,9 +433,9 @@
 (defn lozenge
   {:display-name "Lozenge"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [origin geometry]}       (options/sanitize ordinary (options ordinary))
+  (let [{:keys [position geometry]}     (options/sanitize ordinary (options ordinary))
         {:keys [size stretch rotation]} geometry
-        origin-point                    (position/calculate origin environment :fess)
+        position-point                  (position/calculate position environment :fess)
         height                          (:height environment)
         ordinary-height                 (-> height
                                             (* size)
@@ -459,7 +459,7 @@
                                                                              (svgpath)
                                                                              (.rotate rotation)
                                                                              (.toString)))
-                                            (line/translate (:x origin-point) (:y origin-point)))
+                                            (line/translate (:x position-point) (:y position-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
                                                                         ordinary-width-half))
@@ -471,9 +471,9 @@
         box-size                        (v/v (- max-x min-x)
                                              (- max-y min-y))
         parts                           [[ordinary-shape
-                                          [(v/- origin-point
+                                          [(v/- position-point
                                                 (v// box-size 2))
-                                           (v/+ origin-point
+                                           (v/+ position-point
                                                 (v// box-size 2))]]]
         field                           (if (counterchangable? field parent)
                                           (counterchange-field field parent)
@@ -490,9 +490,9 @@
 (defn fusil
   {:display-name "Fusil"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [origin geometry]}       (options/sanitize ordinary (options ordinary))
+  (let [{:keys [position geometry]}     (options/sanitize ordinary (options ordinary))
         {:keys [size stretch rotation]} geometry
-        origin-point                    (position/calculate origin environment :fess)
+        position-point                  (position/calculate position environment :fess)
         height                          (:height environment)
         ordinary-height                 (-> height
                                             (* size)
@@ -516,7 +516,7 @@
                                                                              (svgpath)
                                                                              (.rotate rotation)
                                                                              (.toString)))
-                                            (line/translate (:x origin-point) (:y origin-point)))
+                                            (line/translate (:x position-point) (:y position-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
                                                                         ordinary-width-half))
@@ -528,9 +528,9 @@
         box-size                        (v/v (- max-x min-x)
                                              (- max-y min-y))
         parts                           [[ordinary-shape
-                                          [(v/- origin-point
+                                          [(v/- position-point
                                                 (v// box-size 2))
-                                           (v/+ origin-point
+                                           (v/+ position-point
                                                 (v// box-size 2))]]]
         field                           (if (counterchangable? field parent)
                                           (counterchange-field field parent)
@@ -547,9 +547,9 @@
 (defn mascle
   {:display-name "Mascle"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [origin geometry]}       (options/sanitize ordinary (options ordinary))
+  (let [{:keys [position geometry]}     (options/sanitize ordinary (options ordinary))
         {:keys [size stretch rotation]} geometry
-        origin-point                    (position/calculate origin environment :fess)
+        position-point                  (position/calculate position environment :fess)
         height                          (:height environment)
         ordinary-height                 (-> height
                                             (* size)
@@ -573,7 +573,7 @@
                                                                              (svgpath)
                                                                              (.rotate rotation)
                                                                              (.toString)))
-                                            (line/translate (:x origin-point) (:y origin-point)))
+                                            (line/translate (:x position-point) (:y position-point)))
         hole-width                      (* ordinary-width 0.55)
         hole-height                     (* ordinary-height 0.55)
         hole-width-half                 (/ hole-width 2)
@@ -594,7 +594,7 @@
                                                                              (svgpath)
                                                                              (.rotate rotation)
                                                                              (.toString)))
-                                            (line/translate (:x origin-point) (:y origin-point)))
+                                            (line/translate (:x position-point) (:y position-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
                                                                         ordinary-width-half))
@@ -606,9 +606,9 @@
         box-size                        (v/v (- max-x min-x)
                                              (- max-y min-y))
         parts                           [[ordinary-shape
-                                          [(v/- origin-point
+                                          [(v/- position-point
                                                 (v// box-size 2))
-                                           (v/+ origin-point
+                                           (v/+ position-point
                                                 (v// box-size 2))]
                                           hole-shape]]
         field                           (if (counterchangable? field parent)
@@ -627,9 +627,9 @@
 (defn rustre
   {:display-name "Rustre"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
-  (let [{:keys [origin geometry]}       (options/sanitize ordinary (options ordinary))
+  (let [{:keys [position geometry]}     (options/sanitize ordinary (options ordinary))
         {:keys [size stretch rotation]} geometry
-        origin-point                    (position/calculate origin environment :fess)
+        position-point                  (position/calculate position environment :fess)
         height                          (:height environment)
         ordinary-height                 (-> height
                                             (* size)
@@ -653,7 +653,7 @@
                                                                              (svgpath)
                                                                              (.rotate rotation)
                                                                              (.toString)))
-                                            (line/translate (:x origin-point) (:y origin-point)))
+                                            (line/translate (:x position-point) (:y position-point)))
         hole-width                      (* ordinary-width 0.5)
         hole-width-half                 (/ hole-width 2)
         hole-shape                      (-> ["m" (v/v hole-width-half 0)
@@ -673,7 +673,7 @@
                                                                              (svgpath)
                                                                              (.rotate rotation)
                                                                              (.toString)))
-                                            (line/translate (:x origin-point) (:y origin-point)))
+                                            (line/translate (:x position-point) (:y position-point)))
         [min-x max-x min-y max-y]       (svg/rotated-bounding-box (v/-
                                                                    (v/v ordinary-width-half
                                                                         ordinary-width-half))
@@ -685,9 +685,9 @@
         box-size                        (v/v (- max-x min-x)
                                              (- max-y min-y))
         parts                           [[ordinary-shape
-                                          [(v/- origin-point
+                                          [(v/- position-point
                                                 (v// box-size 2))
-                                           (v/+ origin-point
+                                           (v/+ position-point
                                                 (v// box-size 2))]
                                           hole-shape]]
         field                           (if (counterchangable? field parent)
@@ -745,8 +745,8 @@
             left                             (:left points)
             right                            (:right points)
             meta                             (get data 1)
-            original-charge-width            (js/parseFloat (:width meta))
-            original-charge-height           (js/parseFloat (:height meta))
+            positional-charge-width          (js/parseFloat (:width meta))
+            positional-charge-height         (js/parseFloat (:height meta))
             width                            (:width environment)
             height                           (:height environment)
             center-point                     (position/calculate position environment :fess)
@@ -766,8 +766,8 @@
                                                   (* (* min-y-distance 2) 0.7))
                                                 stretch)
             scale-x                          (* (if mirrored? -1 1)
-                                                (min (/ target-width original-charge-width)
-                                                     (/ target-height original-charge-height)))
+                                                (min (/ target-width positional-charge-width)
+                                                     (/ target-height positional-charge-height)))
             scale-y                          (* (if reversed? -1 1)
                                                 (* (Math/abs scale-x) stretch))
             adjusted-charge                  (-> data
@@ -793,7 +793,7 @@
                                               adjusted-charge
                                               provided-placeholder-colours)
             clip-path-id                     (util/id "clip-path")
-            shift                            (-> (v/v original-charge-width original-charge-height)
+            shift                            (-> (v/v positional-charge-width positional-charge-height)
                                                  (v// 2)
                                                  (v/-))
             [min-x max-x min-y max-y]        (svg/rotated-bounding-box
@@ -832,8 +832,8 @@
           [:clipPath {:id clip-path-id}
            [:rect {:x      0
                    :y      0
-                   :width  original-charge-width
-                   :height original-charge-height
+                   :width  positional-charge-width
+                   :height positional-charge-height
                    :fill   "#fff"}]]]
          (let [transform         (str "translate(" (:x center-point) "," (:y center-point) ")"
                                       "rotate(" rotation ")"
