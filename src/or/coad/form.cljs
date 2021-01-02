@@ -538,7 +538,6 @@
                 :content {:tincture :argent}
                 :components [{:component :ordinary
                               :type key
-                              :geometry {:size (if (ordinary/mobile? key) 75 nil)}
                               :escutcheon (if (= key :escutcheon) :heater nil)
                               :field {:content {:tincture (if (= current key) :or :azure)}}}]}}
        {:outline? true}]]]]
@@ -555,73 +554,9 @@
      [:label "Type:"]
      " "
      [submenu path "Select Ordinary" (get names ordinary-type) {:min-width "17.5em"}
-      (for [[display-name key] (filter #(-> % second ordinary/mobile? not) ordinary/choices)]
-        ^{:key key}
-        [ordinary-type-choice path key display-name :current ordinary-type])
-      [:h4 "Subordinaries (mobile)"]
-      (for [[display-name key] (filter #(-> % second ordinary/mobile?) ordinary/choices)]
+      (for [[display-name key] ordinary/choices]
         ^{:key key}
         [ordinary-type-choice path key display-name :current ordinary-type])]]))
-
-(defn escutcheon-choice [path key display-name]
-  (let [value @(rf/subscribe [:get-in path])]
-    [:div.choice.tooltip {:on-click #(util/dispatch % [:set-in path key])}
-     [:svg {:style {:width "4em"
-                    :height "5em"}
-            :viewBox "0 0 120 200"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g {:filter "url(#shadow)"}
-       [:g {:transform "translate(10,10)"}
-        [render/coat-of-arms
-         {:escutcheon key
-          :field {:component :field
-                  :content {:tincture (if (= value key) :or :azure)}}}
-         {:outline? true}]]]]
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} display-name]
-      [:i]]]))
-
-(defn form-for-escutcheon [path]
-  (let [escutcheon (or @(rf/subscribe [:get-in path])
-                       :heater)
-        names (->> escutcheon/choices
-                   (map (comp vec reverse))
-                   (into {}))]
-    [:div.setting
-     [:label "Escutcheon:"]
-     " "
-     [submenu path "Select Escutcheon" (get names escutcheon) {:min-width "17.5em"}
-      (for [[display-name key] escutcheon/choices]
-        ^{:key key}
-        [escutcheon-choice path key display-name])]
-     [:div.spacer]]))
-
-(defn form-for-ordinary [path & {:keys [parent-field]}]
-  (let [ordinary @(rf/subscribe [:get-in path])]
-    [component
-     path :ordinary (-> ordinary :type util/translate-cap-first) nil
-     [:div.settings
-      [form-for-ordinary-type path]
-      (let [ordinary-options (ordinary/options ordinary)]
-        [:<>
-         (when (:escutcheon ordinary-options)
-           [form-for-escutcheon (conj path :escutcheon)])
-         (when (:line ordinary-options)
-           [form-for-line (conj path :line) :options (:line ordinary-options)])
-         (when (:diagonal-mode ordinary-options)
-           [select (conj path :diagonal-mode) "Diagonal"
-            (-> ordinary-options :diagonal-mode :choices)
-            :default (-> ordinary-options :diagonal-mode :default)])
-         (when (:origin ordinary-options)
-           [form-for-position (conj path :origin)
-            :title "Origin"
-            :options (:origin ordinary-options)])
-         (when (:geometry ordinary-options)
-           [form-for-geometry (conj path :geometry)
-            (:geometry ordinary-options)
-            :current (:geometry ordinary)])])
-      [checkbox (conj path :hints :outline?) "Outline"]]
-     [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn tree-for-charge-map [{:keys [key type name groups charges attitudes variants]}
                            tree-path db-path
@@ -738,10 +673,119 @@
                                   :charge-attitude charge-attitude
                                   :still-on-path? following-path?]]))]))))
 
+(defn charge-type-choice [path key display-name & {:keys [current]}]
+  [:div.choice.tooltip {:on-click #(util/dispatch % [:update-charge path {:type key
+                                                                          :attitude nil
+                                                                          :variant nil}])}
+   [:svg {:style {:width "4em"
+                  :height "4.5em"}
+          :viewBox "0 0 120 200"
+          :preserveAspectRatio "xMidYMin slice"}
+    [:g {:filter "url(#shadow)"}
+     [:g {:transform "translate(10,10)"}
+      [render/coat-of-arms
+       {:escutcheon :rectangle
+        :field {:component :field
+                :content {:tincture :argent}
+                :components [{:component :charge
+                              :type key
+                              :geometry {:size 75}
+                              :escutcheon (if (= key :escutcheon) :heater nil)
+                              :field {:content {:tincture (if (= current key) :or :azure)}}}]}}
+       {:outline? true}]]]]
+   [:div.bottom
+    [:h3 {:style {:text-align "center"}} display-name]
+    [:i]]])
+
+(defn form-for-charge-type [path]
+  (let [charge @(rf/subscribe [:get-in path])
+        charge-type (:type charge)
+        names (->> charge/choices
+                   (map (comp vec reverse))
+                   (into {}))
+        title (util/combine " " [(or (get names charge-type)
+                                     (-> charge :type util/translate-cap-first))
+                                 (-> charge :attitude util/translate)])]
+    [:div.setting
+     [:label "Type:"]
+     " "
+     [submenu path "Select Charge" title {:min-width "17.5em"}
+      (for [[display-name key] charge/choices]
+        ^{:key key}
+        [charge-type-choice path key display-name :current charge-type])
+      [submenu path "Select Other Charge" "Other" {}
+       [:div.tree
+        (let [charge-map (charge/get-charge-map)]
+          (if charge-map
+            [tree-for-charge-map charge-map [] path charge
+             (get-in charge-map
+                     [:lookup (:type charge)])
+             :still-on-path? true]
+            [:div "loading..."]))]]]]))
+
+(defn escutcheon-choice [path key display-name]
+  (let [value @(rf/subscribe [:get-in path])]
+    [:div.choice.tooltip {:on-click #(util/dispatch % [:set-in path key])}
+     [:svg {:style {:width "4em"
+                    :height "5em"}
+            :viewBox "0 0 120 200"
+            :preserveAspectRatio "xMidYMin slice"}
+      [:g {:filter "url(#shadow)"}
+       [:g {:transform "translate(10,10)"}
+        [render/coat-of-arms
+         {:escutcheon key
+          :field {:component :field
+                  :content {:tincture (if (= value key) :or :azure)}}}
+         {:outline? true}]]]]
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} display-name]
+      [:i]]]))
+
+(defn form-for-escutcheon [path]
+  (let [escutcheon (or @(rf/subscribe [:get-in path])
+                       :heater)
+        names (->> escutcheon/choices
+                   (map (comp vec reverse))
+                   (into {}))]
+    [:div.setting
+     [:label "Escutcheon:"]
+     " "
+     [submenu path "Select Escutcheon" (get names escutcheon) {:min-width "17.5em"}
+      (for [[display-name key] escutcheon/choices]
+        ^{:key key}
+        [escutcheon-choice path key display-name])]
+     [:div.spacer]]))
+
+(defn form-for-ordinary [path & {:keys [parent-field]}]
+  (let [ordinary @(rf/subscribe [:get-in path])]
+    [component
+     path :ordinary (-> ordinary :type util/translate-cap-first) nil
+     [:div.settings
+      [form-for-ordinary-type path]
+      (let [ordinary-options (ordinary/options ordinary)]
+        [:<>
+         (when (:escutcheon ordinary-options)
+           [form-for-escutcheon (conj path :escutcheon)])
+         (when (:line ordinary-options)
+           [form-for-line (conj path :line) :options (:line ordinary-options)])
+         (when (:diagonal-mode ordinary-options)
+           [select (conj path :diagonal-mode) "Diagonal"
+            (-> ordinary-options :diagonal-mode :choices)
+            :default (-> ordinary-options :diagonal-mode :default)])
+         (when (:origin ordinary-options)
+           [form-for-position (conj path :origin)
+            :title "Origin"
+            :options (:origin ordinary-options)])
+         (when (:geometry ordinary-options)
+           [form-for-geometry (conj path :geometry)
+            (:geometry ordinary-options)
+            :current (:geometry ordinary)])])
+      [checkbox (conj path :hints :outline?) "Outline"]]
+     [form-for-field (conj path :field) :parent-field parent-field]]))
+
 (defn form-for-charge [path & {:keys [parent-field]}]
   (let [charge @(rf/subscribe [:get-in path])
         charge-variant-data (charge/get-charge-variant-data charge)
-        charge-map (charge/get-charge-map)
         supported-tinctures (-> charge-variant-data
                                 :supported-tinctures
                                 set)
@@ -749,18 +793,10 @@
         eyes-and-teeth-support (:eyes-and-teeth supported-tinctures)
         title (s/join " " [(-> charge :type util/translate-cap-first)
                            (-> charge :attitude util/translate)])]
-    (if (and charge-map
-             charge-variant-data)
-      [component path :charge title nil
-       [:div.setting
-        [:label "Charge:"] " "
-        [submenu path "Select Charge" title {}
-         [:div.tree
-          [tree-for-charge-map charge-map [] path charge
-           (get-in charge-map
-                   [:lookup (:type charge)])
-           :still-on-path? true]]]]
-       [:div.settings
+    [component path :charge title nil
+     [:div.settings
+      [form-for-charge-type path]
+      (when sorted-supported-tinctures
         [:div.placeholders
          {:style {:width "50%"
                   :float "left"}}
@@ -768,31 +804,30 @@
            ^{:key t}
            [form-for-tincture
             (conj path :tincture t)
-            :label (util/translate-cap-first t)])]
-        [:div
-         {:style {:width "50%"
-                  :float "left"}}
-         (when eyes-and-teeth-support
-           [checkbox
-            (conj path :tincture :eyes-and-teeth)
-            "White eyes and teeth"
-            :on-change #(util/dispatch % [:set-in
-                                          (conj path :tincture :eyes-and-teeth)
-                                          (if % :argent nil)])])]
-        [:div.spacer]
-        (let [charge-options (charge/options charge)]
-          [:<>
-           (when (:position charge-options)
-             [form-for-position (conj path :position)
-              :title "Position"
-              :options (:position charge-options)])
-           (when (:geometry charge-options)
-             [form-for-geometry (conj path :geometry)
-              (:geometry charge-options)
-              :current (:geometry charge)])])
-        [checkbox (conj path :hints :outline?) "Outline"]]
-       [form-for-field (conj path :field) :parent-field parent-field]]
-      [:<>])))
+            :label (util/translate-cap-first t)])])
+      [:div
+       {:style {:width "50%"
+                :float "left"}}
+       (when eyes-and-teeth-support
+         [checkbox
+          (conj path :tincture :eyes-and-teeth)
+          "White eyes and teeth"
+          :on-change #(util/dispatch % [:set-in
+                                        (conj path :tincture :eyes-and-teeth)
+                                        (if % :argent nil)])])]
+      [:div.spacer]
+      (let [charge-options (charge/options charge)]
+        [:<>
+         (when (:position charge-options)
+           [form-for-position (conj path :position)
+            :title "Position"
+            :options (:position charge-options)])
+         (when (:geometry charge-options)
+           [form-for-geometry (conj path :geometry)
+            (:geometry charge-options)
+            :current (:geometry charge)])])
+      [checkbox (conj path :hints :outline?) "Outline"]]
+     [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn form-for-field [path & {:keys [parent-field title-prefix]}]
   (let [division-type @(rf/subscribe [:get-division-type path])
