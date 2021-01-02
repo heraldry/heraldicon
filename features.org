@@ -53,6 +53,8 @@ Here's a list of things already supported and things I'm working on.
       defaults
 - [X] add options to offset line styles and adjust their eccentricity and
       pattern width
+- [ ] add *nowy* intersections
+- [ ] add *fimbriation*
 - [ ] add more ordinaries
 - [ ] add more charges
 - [ ] add more divisions
