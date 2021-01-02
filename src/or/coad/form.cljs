@@ -697,6 +697,69 @@
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])
 
+(defn charge-type-selected-choice [key attitude variant display-name & {:keys [current]}]
+  [:div.choice.tooltip
+   [:svg {:style {:width "4em"
+                  :height "4.5em"}
+          :viewBox "0 0 120 200"
+          :preserveAspectRatio "xMidYMin slice"}
+    [:g {:filter "url(#shadow)"}
+     [:g {:transform "translate(10,10)"}
+      [render/coat-of-arms
+       {:escutcheon :rectangle
+        :field {:component :field
+                :content {:tincture :argent}
+                :components [{:component :charge
+                              :type key
+                              :attitude attitude
+                              :variant variant
+                              :field {:content {:tincture (if (= current key) :or :azure)}}}]}}
+       {:outline? true}]]]]
+   [:div.bottom
+    [:h3 {:style {:text-align "center"}} display-name]
+    [:i]]])
+
+(defn charge-type-more-choice [path charge]
+  [submenu path "Select Other Charge"
+   [:div.choice.tooltip
+    [:svg {:style {:width "4em"
+                   :height "4.5em"}
+           :viewBox "0 0 120 200"
+           :preserveAspectRatio "xMidYMin slice"}
+     [:g {:filter "url(#shadow)"}
+      [:g {:transform "translate(10,10)"}
+       [render/coat-of-arms
+        {:escutcheon :rectangle
+         :field {:component :field
+                 :content {:tincture :argent}
+                 :components [{:component :charge
+                               :type :roundel
+                               :geometry {:size 10}
+                               :field {:content {:tincture :azure}}}
+                              {:component :charge
+                               :type :roundel
+                               :geometry {:size 10}
+                               :position {:offset-x -15}
+                               :field {:content {:tincture :azure}}}
+                              {:component :charge
+                               :type :roundel
+                               :geometry {:size 10}
+                               :position {:offset-x 15}
+                               :field {:content {:tincture :azure}}}]}}
+        {:outline? true}]]]]
+    [:div.bottom
+     [:h3 {:style {:text-align "center"}} "more"]
+     [:i]]]
+   {}
+   [:div.tree
+    (let [charge-map (charge/get-charge-map)]
+      (if charge-map
+        [tree-for-charge-map charge-map [] path charge
+         (get-in charge-map
+                 [:lookup (:type charge)])
+         :still-on-path? true]
+        [:div "loading..."]))]])
+
 (defn form-for-charge-type [path]
   (let [charge @(rf/subscribe [:get-in path])
         charge-type (:type charge)
@@ -713,15 +776,9 @@
       (for [[display-name key] charge/choices]
         ^{:key key}
         [charge-type-choice path key display-name :current charge-type])
-      [submenu path "Select Other Charge" "Other" {}
-       [:div.tree
-        (let [charge-map (charge/get-charge-map)]
-          (if charge-map
-            [tree-for-charge-map charge-map [] path charge
-             (get-in charge-map
-                     [:lookup (:type charge)])
-             :still-on-path? true]
-            [:div "loading..."]))]]]]))
+      (when (-> names (contains? charge-type) not)
+        [charge-type-selected-choice charge-type (:attitude charge) (:variant charge) title :current charge-type])
+      [charge-type-more-choice path charge]]]))
 
 (defn escutcheon-choice [path key display-name]
   (let [value @(rf/subscribe [:get-in path])]
