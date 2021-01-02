@@ -458,9 +458,10 @@
                                           (:mirrored? options)) "mirrored")
                                (when (and (:reversed? current)
                                           (:reversed? options)) "reversed")])
-        current-display (if (-> changes count (> 0))
-                          (util/combine ", " changes)
-                          "default")]
+        current-display (-> (if (-> changes count (> 0))
+                              (util/combine ", " changes)
+                              "default")
+                            util/upper-case-first)]
     [:div.setting
      [:label "Geometry:"]
      " "
