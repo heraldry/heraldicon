@@ -345,48 +345,74 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn form-for-line-type [path & {:keys [options]}]
+(defn form-for-line-type [path & {:keys [options can-disable? default value]}]
   (let [line       @(rf/subscribe [:get-in path])
-        value      (options/get-value (:type line) (:type options))
+        value      (or value
+                       (options/get-value (:type line) (:type options)))
         type-names (->> line/choices
                         (map (comp vec reverse))
                         (into {}))]
     [:div.setting
      [:label "Type:"]
-     " "
-     [submenu (conj path :type) "Select Line Type" (get type-names value) {:min-width "21em"}
-      (for [[display-name key] (-> options :type :choices)]
-        ^{:key display-name}
-        [line-type-choice (conj path :type) key display-name :current value])]]))
+     [:div.other {:style {:display "inline-block"}}
+      (when can-disable?
+        [:input {:type      "checkbox"
+                 :checked   (some? (:type line))
+                 :on-change #(let [new-checked? (-> % .-target .-checked)]
+                               (if new-checked?
+                                 (rf/dispatch [:set-in (conj path :type) default])
+                                 (rf/dispatch [:remove-in (conj path :type)])))}])
+      (if (some? (:type line))
+        [submenu (conj path :type) "Select Line Type" (get type-names value) {:min-width "21em"}
+         (for [[display-name key] (-> options :type :choices)]
+           ^{:key display-name}
+           [line-type-choice (conj path :type) key display-name :current value])]
+        (when can-disable?
+          [:span {:style {:color "#ccc"}} (get type-names value)
+           " (inherited)"]))]]))
 
-(defn form-for-line [path & {:keys [title options] :or {title "Line"}}]
-  (let [line       @(rf/subscribe [:get-in path])
-        type-names (->> line/choices
-                        (map (comp vec reverse))
-                        (into {}))]
+(defn form-for-line [path & {:keys [title options defaults] :or {title "Line"}}]
+  (let [line              @(rf/subscribe [:get-in path])
+        type-names        (->> line/choices
+                               (map (comp vec reverse))
+                               (into {}))
+        line-type         (or (:type line)
+                              (:type defaults))
+        line-eccentricity (or (:eccentricity line)
+                              (:eccentricity defaults))
+        line-width        (or (:width line)
+                              (:width defaults))
+        line-offset       (or (:offset line)
+                              (:offset defaults))]
     [:div.setting
-     [:label (str title ":")]
+     [:label title]
      " "
-     [submenu path "Line" (get type-names (:type line)) {}
-      [form-for-line-type path :options options]
+     [submenu path title (get type-names line-type) {}
+      [form-for-line-type path :options options
+       :can-disable? (some? defaults)
+       :value line-type
+       :default (:type defaults)]
       (when (:eccentricity options)
         [range-input (conj path :eccentricity) "Eccentricity"
          (-> options :eccentricity :min)
          (-> options :eccentricity :max)
          :step 0.01
-         :default (options/get-value (:eccentricity line) (:eccentricity options))])
+         :default (or (:eccentricity defaults)
+                      (options/get-value line-eccentricity (:eccentricity options)))])
       (when (:width options)
         [range-input (conj path :width) "Width"
          (-> options :width :min)
          (-> options :width :max)
-         :default (options/get-value (:width line) (:width options))
+         :default (or (:width defaults)
+                      (options/get-value line-width (:width options)))
          :display-function #(str % "%")])
       (when (:offset options)
         [range-input (conj path :offset) "Offset"
          (-> options :offset :min)
          (-> options :offset :max)
          :step 0.01
-         :default (options/get-value (:offset line) (:offset options))])]]))
+         :default (or (:offset defaults)
+                      (options/get-value line-offset (:offset options)))])]]))
 
 (defn form-for-position [path & {:keys [title options] :or {title "Position"}}]
   (let [position      @(rf/subscribe [:get-in path])
@@ -825,6 +851,11 @@
            [form-for-escutcheon (conj path :escutcheon)])
          (when (:line ordinary-options)
            [form-for-line (conj path :line) :options (:line ordinary-options)])
+         (when (:opposite-line ordinary-options)
+           [form-for-line (conj path :opposite-line)
+            :options (:opposite-line ordinary-options)
+            :defaults (options/sanitize (:line ordinary) (:line ordinary-options))
+            :title "Opposite Line"])
          (when (:diagonal-mode ordinary-options)
            [select (conj path :diagonal-mode) "Diagonal"
             (-> ordinary-options :diagonal-mode :choices)
