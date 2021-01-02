@@ -22,7 +22,8 @@
   {:component :ordinary
    :type :pale
    :line {:type :straight}
-   :field default-field})
+   :field default-field
+   :hints {:outline? true}})
 
 (def default-charge
   {:component :charge
