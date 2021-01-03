@@ -903,9 +903,9 @@
          [checkbox
           (conj path :tincture :eyes-and-teeth)
           "White eyes and teeth"
-          :on-change #(util/dispatch % [:set-in
-                                        (conj path :tincture :eyes-and-teeth)
-                                        (if % :argent nil)])])]
+          :on-change #(rf/dispatch [:set-in
+                                    (conj path :tincture :eyes-and-teeth)
+                                    (if % :argent nil)])])]
       [:div.spacer]
       (let [charge-options (charge/options charge)]
         [:<>
