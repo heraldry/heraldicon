@@ -89,6 +89,18 @@
     :points       {:fess {:x 0 :y 6.5}}}))
 
 (def
+  ^{:display-name "Roundel"}
+  roundel
+  (field-environment/create
+   (str "m 0,0"
+        "a 5 5 0 0 1 0,10"
+        "a 5 5 0 0 1 0,-10"
+        "z")
+   {:context      :root
+    :bounding-box [-5 5 0 10]
+    :points       {:fess {:x 0 :y 5}}}))
+
+(def
   ^{:display-name "Swiss"}
   swiss
   ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
@@ -204,6 +216,7 @@
    #'square-iberian
    #'french-modern
    #'lozenge
+   #'roundel
    #'oval
    #'renaissance
    #'swiss
