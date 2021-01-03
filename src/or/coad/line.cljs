@@ -249,14 +249,17 @@
    :offset       {:type    :range
                   :min     -1
                   :max     3
-                  :default 0}})
+                  :default 0}
+   :flipped?     {:type    :boolean
+                  :default false}})
 
 (defn options [line]
   (options/merge
    default-options
    (get {:straight {:eccentricity nil
                     :offset       nil
-                    :width        nil}
+                    :width        nil
+                    :flipped?     nil}
          :dancetty {:width {:default 20}}
          :wavy     {:width {:default 20}}}
         (:type line))))
@@ -296,20 +299,23 @@
                  data))
 
 (defn create [{:keys [type] :or {type :straight} :as line} length & {:keys [angle flipped? extra render-options] :or {extra 50} :as line-options}]
-  (let [line-data     ((get kinds-function-map type)
-                       line
-                       (+ length extra) line-options)
-        adjusted-path (-> (:line line-data)
-                          svg/make-path
-                          (->>
-                           (str "M 0,0 "))
-                          (cond->
-                              (:squiggly? render-options) squiggly-path))]
+  (let [line-data           ((get kinds-function-map type)
+                             line
+                             (+ length extra) line-options)
+        line-options-values (options/sanitize line (options line))
+        line-flipped?       (:flipped? line-options-values)
+        adjusted-path       (-> (:line line-data)
+                                svg/make-path
+                                (->>
+                                 (str "M 0,0 "))
+                                (cond->
+                                    (:squiggly? render-options) squiggly-path))]
     (assoc line-data :line
            (-> adjusted-path
                svgpath
                (cond->
-                   flipped? (.scale 1 -1))
+                   (or (and flipped? (not line-flipped?))
+                       (and (not flipped?) line-flipped?)) (.scale 1 -1))
                (.rotate angle)
                .toString))))
 
