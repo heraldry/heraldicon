@@ -1,4 +1,4 @@
-#+TITLE: Coat of Arms Editor
+#+TITLE: Coat of Arms Generator
 
 TL;DR: https://coat-of-arms.org and [[./features.org][features]]
 
