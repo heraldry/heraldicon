@@ -19,8 +19,9 @@
                      (encode-field field)
                      (util/combine " and " (map (fn [colour-key]
                                                   (when-let [t (get tincture colour-key)]
-                                                    (util/combine " " [(util/translate colour-key)
-                                                                       (util/translate t)])))
+                                                    (when (not= t :none)
+                                                      (util/combine " " [(util/translate colour-key)
+                                                                         (util/translate t)]))))
                                                 [:armed :langued :attired :unguled]))]))
 
 (defn encode-component [component]
