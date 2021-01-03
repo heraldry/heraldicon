@@ -55,6 +55,10 @@ mask path.overlap {
   left: 6em;
 }
 
+.setting > select {
+  left: 7.2em;
+}
+
 .setting input[type="checkbox"],
 .setting input[type="radio"] {
   margin-left: 0px;
