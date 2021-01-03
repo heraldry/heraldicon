@@ -99,15 +99,23 @@
                                :geometry      {:size {:max 30}}}}
               type)))))))
 
+(defn sanitize-opposite-line [ordinary line]
+  (-> (options/sanitize
+       (merge line
+              (into {}
+                    (filter (fn [[_ v]]
+                              (some? v))
+                            (:opposite-line ordinary))))
+       (-> ordinary options :opposite-line))
+      (assoc :flipped? (if (-> ordinary :opposite-line :flipped?)
+                         (not (:flipped? line))
+                         (:flipped? line)))))
+
 (defn pale
   {:display-name "Pale"}
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
-        opposite-line                  (options/sanitize
-                                        (merge line
-                                               (into {}
-                                                     (filter (fn [[_ v]]
-                                                               (some? v)) (:opposite-line ordinary)))) (-> ordinary options :opposite-line))
+        opposite-line                  (sanitize-opposite-line ordinary line)
         {:keys [size]}                 geometry
         points                         (:points environment)
         origin-point                   (position/calculate origin environment :fess)
@@ -169,11 +177,7 @@
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]}                 geometry
-        opposite-line                  (options/sanitize
-                                        (merge line
-                                               (into {}
-                                                     (filter (fn [[_ v]]
-                                                               (some? v)) (:opposite-line ordinary)))) (-> ordinary options :opposite-line))
+        opposite-line                  (sanitize-opposite-line ordinary line)
         points                         (:points environment)
         origin-point                   (position/calculate origin environment :fess)
         left                           (assoc (:left points) :y (:y origin-point))
@@ -317,11 +321,7 @@
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]}                               geometry
-        opposite-line                                (options/sanitize
-                                                      (merge line
-                                                             (into {}
-                                                                   (filter (fn [[_ v]]
-                                                                             (some? v)) (:opposite-line ordinary)))) (-> ordinary options :opposite-line))
+        opposite-line                                (sanitize-opposite-line ordinary line)
         points                                       (:points environment)
         origin-point                                 (position/calculate origin environment :fess)
         left                                         (assoc (:left points) :y (:y origin-point))
@@ -394,11 +394,7 @@
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]}                               geometry
-        opposite-line                                (options/sanitize
-                                                      (merge line
-                                                             (into {}
-                                                                   (filter (fn [[_ v]]
-                                                                             (some? v)) (:opposite-line ordinary)))) (-> ordinary options :opposite-line))
+        opposite-line                                (sanitize-opposite-line ordinary line)
         points                                       (:points environment)
         origin-point                                 (position/calculate origin environment :fess)
         left                                         (assoc (:left points) :y (:y origin-point))
@@ -761,11 +757,7 @@
   [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
   (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]}                               geometry
-        opposite-line                                (options/sanitize
-                                                      (merge line
-                                                             (into {}
-                                                                   (filter (fn [[_ v]]
-                                                                             (some? v)) (:opposite-line ordinary)))) (-> ordinary options :opposite-line))
+        opposite-line                                (sanitize-opposite-line ordinary line)
         points                                       (:points environment)
         origin-point                                 (position/calculate origin environment :fess)
         top                                          (assoc (:top points) :x (:x origin-point))

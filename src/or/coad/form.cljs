@@ -414,19 +414,7 @@
          :default (or (:offset defaults)
                       (options/get-value line-offset (:offset options)))])
       (when (:flipped? options)
-        [select (conj path :flipped?) "Flipped" (-> (if defaults
-                                                      [["Inherit" :inherit]]
-                                                      [])
-                                                    (into [["On" :on]
-                                                           ["Off" :off]]))
-         :value (case @(rf/subscribe [:get-in (conj path :flipped?)])
-                  nil   (if defaults :inherit :off)
-                  true  :on
-                  false :off)
-         :on-change #(rf/dispatch [:set-in (conj path :flipped?) (case %
-                                                                   :inherit nil
-                                                                   :on      true
-                                                                   :off     false)])])]]))
+        [checkbox (conj path :flipped?) "Flipped"])]]))
 
 (defn form-for-position [path & {:keys [title options] :or {title "Position"}}]
   (let [position      @(rf/subscribe [:get-in path])
