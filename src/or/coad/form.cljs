@@ -431,7 +431,7 @@
                               " point" (when (or (-> position :offset-x (or 0) zero? not)
                                                  (-> position :offset-y (or 0) zero? not))
                                          " (adjusted)")) {}
-      [select point-path "Point" position/choices
+      [select point-path "Point" (-> options :point :choices)
        :on-change #(do
                      (rf/dispatch [:set-in point-path %])
                      (rf/dispatch [:set-in offset-x-path nil])
