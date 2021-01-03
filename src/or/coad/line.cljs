@@ -249,14 +249,17 @@
    :offset {:type :range
             :min -1
             :max 3
-            :default 0}})
+            :default 0}
+   :flipped? {:type :boolean
+              :default false}})
 
 (defn options [line]
   (options/merge
    default-options
    (get {:straight {:eccentricity nil
                     :offset nil
-                    :width nil}
+                    :width nil
+                    :flipped? nil}
          :dancetty {:width {:default 20}}
          :wavy {:width {:default 20}}}
         (:type line))))
@@ -299,6 +302,8 @@
   (let [line-data ((get kinds-function-map type)
                    line
                    (+ length extra) line-options)
+        line-options-values (options/sanitize line (options line))
+        line-flipped? (:flipped? line-options-values)
         adjusted-path (-> (:line line-data)
                           svg/make-path
                           (->>
@@ -309,7 +314,8 @@
            (-> adjusted-path
                svgpath
                (cond->
-                flipped? (.scale 1 -1))
+                (or (and flipped? (not line-flipped?))
+                    (and (not flipped?) line-flipped?)) (.scale 1 -1))
                (.rotate angle)
                .toString))))
 
