@@ -59,8 +59,8 @@
    :sable "#373737"
    :purpure "#8f3f6a"
    ;; stains
-   :murrey "#8f3f6a"
-   :sanguine "#b93535"
+   :murrey "#6b2f4f"
+   :sanguine "#8a2727"
    :tenne "#725a44"
    ;; untraditional
    :carnation "#e9bea1"
@@ -98,8 +98,8 @@
     ["Erminois" :erminois]
     ["Pean" :pean]]
    ["Stain"
-    ["Murrey" :murrey]
     ["Sanguine" :sanguine]
+    ["Murrey" :murrey]
     ["Tenné" :tenne]]])
 
 (defn pick [tincture {:keys [mode]}]
