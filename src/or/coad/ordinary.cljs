@@ -73,11 +73,19 @@
                                :opposite-line nil
                                :diagonal-mode nil
                                :geometry      {:size {:max 50}}}
-               :bend          {:origin        {:offset-x nil}
+               :bend          {:origin        {:offset-x nil
+                                               :point    {:choices (->> (-> position/default-options :point :choices)
+                                                                        (filter (fn [[_ k]]
+                                                                                  (not= k :dexter)))
+                                                                        vec)}}
                                :diagonal-mode {:choices (diagonal-mode-choices
                                                          :bend)}
                                :geometry      {:size {:max 50}}}
-               :bend-sinister {:origin        {:offset-x nil}
+               :bend-sinister {:origin        {:offset-x nil
+                                               :point    {:choices (->> (-> position/default-options :point :choices)
+                                                                        (filter (fn [[_ k]]
+                                                                                  (not= k :sinister)))
+                                                                        vec)}}
                                :diagonal-mode {:choices (diagonal-mode-choices
                                                          :bend-sinister)
                                                :default :top-right-fess}
