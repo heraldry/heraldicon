@@ -140,7 +140,7 @@
   (let [component-id  (util/id "select")
         current-value @(rf/subscribe [:get-in path])]
     [:div.setting
-     [:label {:for component-id} (str label ":")]
+     [:label {:for component-id} label]
      [:select {:id        component-id
                :value     (name (or value
                                     current-value
@@ -314,7 +314,7 @@
                            (map (comp vec reverse))
                            (into {}))]
     [:div.setting
-     [:label "Division:"]
+     [:label "Division"]
      " "
      [submenu path "Select Division" (get names division-type) {:min-width "17.5em"}
       (for [[display-name key] (into [["None" :none]]
@@ -353,7 +353,7 @@
                         (map (comp vec reverse))
                         (into {}))]
     [:div.setting
-     [:label "Type:"]
+     [:label "Type"]
      [:div.other {:style {:display "inline-block"}}
       (when can-disable?
         [:input {:type      "checkbox"
@@ -434,7 +434,7 @@
         offset-x-path (conj path :offset-x)
         offset-y-path (conj path :offset-y)]
     [:div.setting
-     [:label (str title ":")]
+     [:label title]
      " "
      [submenu path title (str (-> position
                                   :point
@@ -477,7 +477,7 @@
                               "default")
                             util/upper-case-first)]
     [:div.setting
-     [:label "Geometry:"]
+     [:label "Geometry"]
      " "
      [submenu path "Geometry" current-display {}
       [:div.settings
@@ -537,7 +537,7 @@
                    (map (comp vec reverse))
                    (into {}))]
     [:div.setting
-     [:label (str label ":")]
+     [:label label]
      " "
      [submenu path "Select Tincture" (get names value) {:min-width "22em"}
       (for [[group-name & group] tincture/choices]
@@ -592,7 +592,7 @@
                            (map (comp vec reverse))
                            (into {}))]
     [:div.setting
-     [:label "Type:"]
+     [:label "Type"]
      " "
      [submenu path "Select Ordinary" (get names ordinary-type) {:min-width "17.5em"}
       (for [[display-name key] ordinary/choices]
@@ -811,7 +811,7 @@
                                            (-> charge :type util/translate-cap-first))
                                        (-> charge :attitude util/translate)])]
     [:div.setting
-     [:label "Type:"]
+     [:label "Type"]
      " "
      [submenu path "Select Charge" title {:min-width "17.5em"}
       (for [[display-name key] charge/choices]
@@ -846,7 +846,7 @@
                         (map (comp vec reverse))
                         (into {}))]
     [:div.setting
-     [:label "Escutcheon:"]
+     [:label "Escutcheon"]
      " "
      [submenu path "Select Escutcheon" (get names escutcheon) {:min-width "17.5em"}
       (for [[display-name key] escutcheon/choices]
