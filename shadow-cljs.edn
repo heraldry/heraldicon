@@ -13,18 +13,20 @@
  :nrepl {:middleware [cider.piggieback/wrap-cljs-repl
                       refactor-nrepl.middleware/wrap-refactor]}
 
- :builds {:main {:target           :browser
-                 :modules          {:main {:entries [or.coad.main]}}
-                 :output-dir       "main/js/generated"
-                 :asset-path       "js/generated"
-                 :devtools         {:before-load or.coad.main/stop
-                                    :after-load  or.coad.main/start
-                                    :http-root   "main"
-                                    :http-port   8081
-                                    :preloads    [devtools.preload
-                                                  day8.re-frame-10x.preload]
-                                    :repl-pprint true}
-                 :compiler-options {:closure-defines    {re-frame.trace.trace-enabled?       true
-                                                         re_frame.trace.trace_enabled_QMARK_ true}
-                                    :warnings           {:redef false}
-                                    :output-feature-set :es8}}}}
+ :builds {:client-coat-of-arms
+          {:target           :browser
+           :modules          {:client {:entries [heraldry.coat-of-arms.client]}}
+           :output-dir       "./client-coat-of-arms/assets/js/generated"
+           :asset-path       "js/generated"
+           :js-options       {:js-package-dirs ["./client-coat-of-arms/node_modules"]}
+           :devtools         {:before-load heraldry.coat-of-arms.client/stop
+                              :after-load  heraldry.coat-of-arms.client/start
+                              :http-root   "./client-coat-of-arms/assets"
+                              :http-port   8081
+                              :preloads    [devtools.preload
+                                            day8.re-frame-10x.preload]
+                              :repl-pprint true}
+           :compiler-options {:closure-defines    {re-frame.trace.trace-enabled?       true
+                                                   re_frame.trace.trace_enabled_QMARK_ true}
+                              :warnings           {:redef false}
+                              :output-feature-set :es8}}}}

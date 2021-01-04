@@ -1,4 +1,4 @@
-(ns or.coad.geometry)
+(ns heraldry.coat-of-arms.geometry)
 
 (def default-options
   {:size      {:type    :range

@@ -1,19 +1,19 @@
-(ns or.coad.charge
+(ns heraldry.coat-of-arms.charge
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
             [clojure.walk :as walk]
-            [or.coad.config :as config]
-            [or.coad.division :as division]
-            [or.coad.escutcheon :as escutcheon]
-            [or.coad.field-environment :as field-environment]
-            [or.coad.geometry :as geometry]
-            [or.coad.line :as line]
-            [or.coad.options :as options]
-            [or.coad.position :as position]
-            [or.coad.svg :as svg]
-            [or.coad.tincture :as tincture]
-            [or.coad.util :as util]
-            [or.coad.vector :as v]
+            [heraldry.coat-of-arms.config :as config]
+            [heraldry.coat-of-arms.division :as division]
+            [heraldry.coat-of-arms.escutcheon :as escutcheon]
+            [heraldry.coat-of-arms.field-environment :as field-environment]
+            [heraldry.coat-of-arms.geometry :as geometry]
+            [heraldry.coat-of-arms.line :as line]
+            [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.coat-of-arms.tincture :as tincture]
+            [heraldry.coat-of-arms.util :as util]
+            [heraldry.coat-of-arms.vector :as v]
             [re-frame.core :as rf]))
 
 (def placeholder-regex

@@ -1,4 +1,4 @@
-(ns or.coad.catmullrom
+(ns heraldry.coat-of-arms.catmullrom
   (:require [clojure.string :as string]))
 
 ;; catmullrom

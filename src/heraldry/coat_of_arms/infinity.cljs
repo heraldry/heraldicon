@@ -1,4 +1,4 @@
-(ns or.coad.infinity)
+(ns heraldry.coat-of-arms.infinity)
 
 (defn top [& [point]]
   (-> point

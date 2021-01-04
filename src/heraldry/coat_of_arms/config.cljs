@@ -1,4 +1,4 @@
-(ns or.coad.config)
+(ns heraldry.coat-of-arms.config)
 
 (def placeholder-colours
   {:primary        "#214263"

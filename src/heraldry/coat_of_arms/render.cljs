@@ -1,8 +1,8 @@
-(ns or.coad.render
-  (:require [or.coad.escutcheon :as escutcheon]
-            [or.coad.field :as field]
-            [or.coad.field-environment :as field-environment]
-            [or.coad.util :as util]))
+(ns heraldry.coat-of-arms.render
+  (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
+            [heraldry.coat-of-arms.field :as field]
+            [heraldry.coat-of-arms.field-environment :as field-environment]
+            [heraldry.coat-of-arms.util :as util]))
 
 (defn coat-of-arms [coat-of-arms render-options & {:keys [db-path width] :or {width 100}}]
   (let [shield      (escutcheon/field (:escutcheon coat-of-arms))

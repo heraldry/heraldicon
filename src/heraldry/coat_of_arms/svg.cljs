@@ -1,6 +1,6 @@
-(ns or.coad.svg
+(ns heraldry.coat-of-arms.svg
   (:require [clojure.string :as s]
-            [or.coad.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]))
 
 (defn new-path [d]
   (let [p (js/document.createElementNS "http://www.w3.org/2000/svg" "path")]

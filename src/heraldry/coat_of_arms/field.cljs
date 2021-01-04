@@ -1,8 +1,8 @@
-(ns or.coad.field
-  (:require [or.coad.charge :as charge]
-            [or.coad.division :as division]
-            [or.coad.ordinary :as ordinary]
-            [or.coad.tincture :as tincture]
+(ns heraldry.coat-of-arms.field
+  (:require [heraldry.coat-of-arms.charge :as charge]
+            [heraldry.coat-of-arms.division :as division]
+            [heraldry.coat-of-arms.ordinary :as ordinary]
+            [heraldry.coat-of-arms.tincture :as tincture]
             [re-frame.core :as rf]))
 
 (defn render [{:keys [division components] :as field} environment render-options & {:keys [db-path]}]
