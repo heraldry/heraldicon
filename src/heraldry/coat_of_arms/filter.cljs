@@ -1,4 +1,4 @@
-(ns or.coad.filter)
+(ns heraldry.coat-of-arms.filter)
 
 (def shadow
   [:filter#shadow {:x "-20%"

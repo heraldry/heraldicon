@@ -1,22 +1,22 @@
-(ns or.coad.main
+(ns heraldry.coat-of-arms.client
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require ["js-base64" :as base64]
             [cljs-http.client :as http]
             [cljs.core.async :refer [<!]]
             [cljs.reader :as reader]
             [goog.string.format]  ;; required for release build
-            [or.coad.blazon :as blazon]
-            [or.coad.charge :as charge]
-            [or.coad.config :as config]
-            [or.coad.division :as division]
-            [or.coad.filter :as filter]
-            [or.coad.form :as form]
-            [or.coad.hatching :as hatching]
-            [or.coad.options :as options]
-            [or.coad.ordinary :as ordinary]
-            [or.coad.render :as render]
-            [or.coad.tincture :as tincture]
-            [or.coad.util :as util]
+            [heraldry.coat-of-arms.blazon :as blazon]
+            [heraldry.coat-of-arms.charge :as charge]
+            [heraldry.coat-of-arms.config :as config]
+            [heraldry.coat-of-arms.division :as division]
+            [heraldry.coat-of-arms.filter :as filter]
+            [heraldry.coat-of-arms.form :as form]
+            [heraldry.coat-of-arms.hatching :as hatching]
+            [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.ordinary :as ordinary]
+            [heraldry.coat-of-arms.render :as render]
+            [heraldry.coat-of-arms.tincture :as tincture]
+            [heraldry.coat-of-arms.util :as util]
             [re-frame.core :as rf]
             [reagent.dom :as r]))
 

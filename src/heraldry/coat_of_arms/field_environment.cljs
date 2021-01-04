@@ -1,7 +1,7 @@
-(ns or.coad.field-environment
+(ns heraldry.coat-of-arms.field-environment
   (:require ["svgpath" :as svgpath]
-            [or.coad.svg :as svg]
-            [or.coad.vector :as v]))
+            [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.coat-of-arms.vector :as v]))
 
 (defn create [shape {:keys [bounding-box context] :as meta}]
   (let [override-environment (:override-environment meta)
