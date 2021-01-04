@@ -1,4 +1,4 @@
-(ns or.coad.hatching)
+(ns heraldry.coat-of-arms.hatching)
 
 (def spacing 2.5)
 (def line-thickness 0.2)

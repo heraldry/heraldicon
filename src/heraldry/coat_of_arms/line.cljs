@@ -1,12 +1,12 @@
-(ns or.coad.line
+(ns heraldry.coat-of-arms.line
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
             [clojure.walk :as walk]
-            [or.coad.catmullrom :as catmullrom]
-            [or.coad.options :as options]
-            [or.coad.random :as random]
-            [or.coad.svg :as svg]
-            [or.coad.vector :as v]))
+            [heraldry.coat-of-arms.catmullrom :as catmullrom]
+            [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.random :as random]
+            [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.coat-of-arms.vector :as v]))
 
 (declare options)
 

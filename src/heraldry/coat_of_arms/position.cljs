@@ -1,5 +1,5 @@
-(ns or.coad.position
-  (:require [or.coad.vector :as v]))
+(ns heraldry.coat-of-arms.position
+  (:require [heraldry.coat-of-arms.vector :as v]))
 
 (def choices
   [["Fess" :fess]

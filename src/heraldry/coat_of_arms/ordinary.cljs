@@ -1,13 +1,13 @@
-(ns or.coad.ordinary
-  (:require [or.coad.charge :as charge]
-            [or.coad.division :as division]
-            [or.coad.geometry :as geometry]
-            [or.coad.infinity :as infinity]
-            [or.coad.line :as line]
-            [or.coad.options :as options]
-            [or.coad.position :as position]
-            [or.coad.svg :as svg]
-            [or.coad.vector :as v]))
+(ns heraldry.coat-of-arms.ordinary
+  (:require [heraldry.coat-of-arms.charge :as charge]
+            [heraldry.coat-of-arms.division :as division]
+            [heraldry.coat-of-arms.geometry :as geometry]
+            [heraldry.coat-of-arms.infinity :as infinity]
+            [heraldry.coat-of-arms.line :as line]
+            [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.coat-of-arms.vector :as v]))
 
 (defn diagonal-mode-choices [type]
   (let [options {:forty-five-degrees "45°"

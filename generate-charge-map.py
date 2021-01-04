@@ -105,7 +105,9 @@ def traverse(directory, data_path, nodes):
 
 def read_config():
     global placeholder_colours_map
-    config = edn_format.loads("[" + open("src/or/coad/config.cljs").read() + "]")
+    config = edn_format.loads(
+        "[" + open("src/heraldry/coat_of_arms/config.cljs").read() + "]"
+    )
     for form in config:
         if len(form) > 1 and form[0:2] == (
             Symbol("def"),

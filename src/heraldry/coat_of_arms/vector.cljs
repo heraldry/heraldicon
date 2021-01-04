@@ -1,4 +1,4 @@
-(ns or.coad.vector)
+(ns heraldry.coat-of-arms.vector)
 
 (defn v [x y]
   {:x x

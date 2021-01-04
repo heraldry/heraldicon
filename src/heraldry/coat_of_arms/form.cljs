@@ -1,17 +1,17 @@
-(ns or.coad.form
+(ns heraldry.coat-of-arms.form
   (:require [clojure.string :as s]
             [clojure.walk :as walk]
-            [or.coad.charge :as charge]
-            [or.coad.config :as config]
-            [or.coad.division :as division]
-            [or.coad.escutcheon :as escutcheon]
-            [or.coad.line :as line]
-            [or.coad.options :as options]
-            [or.coad.ordinary :as ordinary]
-            [or.coad.position :as position]
-            [or.coad.render :as render]
-            [or.coad.tincture :as tincture]
-            [or.coad.util :as util]
+            [heraldry.coat-of-arms.charge :as charge]
+            [heraldry.coat-of-arms.config :as config]
+            [heraldry.coat-of-arms.division :as division]
+            [heraldry.coat-of-arms.escutcheon :as escutcheon]
+            [heraldry.coat-of-arms.line :as line]
+            [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.ordinary :as ordinary]
+            [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.render :as render]
+            [heraldry.coat-of-arms.tincture :as tincture]
+            [heraldry.coat-of-arms.util :as util]
             [re-frame.core :as rf]))
 
 ;; subs
