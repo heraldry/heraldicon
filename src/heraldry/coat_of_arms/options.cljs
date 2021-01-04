@@ -1,4 +1,4 @@
-(ns or.coad.options
+(ns heraldry.coat-of-arms.options
   (:require [clojure.walk :as walk]))
 
 (def types #{:range :choice :boolean})

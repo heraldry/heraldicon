@@ -1,5 +1,5 @@
-(ns or.coad.tincture
-  (:require [or.coad.hatching :as hatching]))
+(ns heraldry.coat-of-arms.tincture
+  (:require [heraldry.coat-of-arms.hatching :as hatching]))
 
 (def ermine-shape
   [100 160

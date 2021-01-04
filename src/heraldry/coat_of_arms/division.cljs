@@ -1,14 +1,14 @@
-(ns or.coad.division
+(ns heraldry.coat-of-arms.division
   (:require [clojure.string :as s]
-            [or.coad.config :as config]
-            [or.coad.field-environment :as field-environment]
-            [or.coad.infinity :as infinity]
-            [or.coad.line :as line]
-            [or.coad.options :as options]
-            [or.coad.position :as position]
-            [or.coad.svg :as svg]
-            [or.coad.util :as util]
-            [or.coad.vector :as v]))
+            [heraldry.coat-of-arms.config :as config]
+            [heraldry.coat-of-arms.field-environment :as field-environment]
+            [heraldry.coat-of-arms.infinity :as infinity]
+            [heraldry.coat-of-arms.line :as line]
+            [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.coat-of-arms.util :as util]
+            [heraldry.coat-of-arms.vector :as v]))
 
 (defn default-fields [type]
   (into [config/default-field
