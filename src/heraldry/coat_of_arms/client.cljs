@@ -324,8 +324,8 @@
                        :padding-bottom "1em"}}
          [forms]]]
        [:div.credits
-        [:a {:href   "https://github.com/or/coad/"
-             :target "_blank"} "Code and resource attribution on " [:i.fab.fa-github] " github:or/coad"]]])))
+        [:a {:href   "https://github.com/heraldry/armory/"
+             :target "_blank"} "Code and resource attribution on " [:i.fab.fa-github] " github:heraldry/armory"]]])))
 
 (defn stop []
   (println "Stopping..."))
