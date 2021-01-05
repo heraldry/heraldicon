@@ -12,7 +12,8 @@
                 [mhuebert/shadow-env "0.1.6"]
                 [com.wsscode/async "1.0.10"]
                 [cljs-http "0.1.46"]
-                [aero "1.1.6"]]
+                [aero "1.1.6"]
+                [hickory "0.7.1"]]
 
  :nrepl {:middleware [cider.piggieback/wrap-cljs-repl
                       refactor-nrepl.middleware/wrap-refactor]}
