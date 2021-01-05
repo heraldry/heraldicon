@@ -8,9 +8,9 @@ dev:
 
 release:
 	rm -rf release/coad 2> /dev/null || true
-	cp -r main/ release/coad
+	cp -r client-coat-of-arms/assets/ release/coad
 	rm -rf release/coad/js/generated 2> /dev/null || true
-	npx shadow-cljs release main --config-merge '{:output-dir "release/coad/js/generated"}'
+	npx shadow-cljs release client-coat-of-arms --config-merge '{:output-dir "release/coad/js/generated"}'
 
 generate-svg-clj:
 	./optimize-svgs.sh
