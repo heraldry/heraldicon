@@ -4,3 +4,49 @@ body {
   padding: 0;
   height: 100%;
 }
+
+.setting {
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.setting > select,
+.setting > input,
+.setting > .other {
+  position: absolute;
+  left: 6em;
+}
+
+.setting > select {
+  left: 7.2em;
+}
+
+.form {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20em;
+  height: calc(100vh - 20px);
+}
+
+.preview {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border: 1px solid #ddd;
+  width: 30em;
+  height: 30em;
+  padding: 10px;
+}
+
+.preview > svg {
+  width: calc(100% - 20px);
+}
+
+.buttons {
+  margin-top: 2em;
+}
+
+.buttons button {
+  margin-right: 1em;
+}
