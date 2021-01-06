@@ -73,20 +73,26 @@
           first
           hickory/as-hiccup
           (as-> parsed
-              (rf/dispatch [:set-in [:charge :data] parsed])))
+              (let [svg-data (-> parsed
+                                 (assoc 0 :g)
+                                 (assoc 1 {}))
+                    width    (-> parsed
+                                 (get-in [1 :width]))
+                    height   (-> parsed
+                                 (get-in [1 :height]))]
+                (rf/dispatch [:set-in [:charge] {:width  width
+                                                 :height height
+                                                 :data   svg-data}]))))
       (catch :default e
         (println "error:" e)))))
 
 (defn preview []
   [:div.preview
-   (when-let [data @(rf/subscribe [:get-in [:charge :data]])]
-     (let [width  (-> data second :width)
-           height (-> data second :height)
-           data   (-> data
-                      (update-in [1] dissoc :width :height)
-                      (assoc-in [1 :viewBox] (str "0 0 " width " " height))
-                      (assoc-in [1 :preserveAspectRatio] "xMidYMid meet"))]
-       data))])
+   (let [{:keys [width height data]} @(rf/subscribe [:get-in [:charge]])]
+     (when data
+       [:svg {:viewBox             (str "0 0 " width " " height)
+              :preserveAspectRatio "xMidYMid meet"}
+        data]))])
 
 (defn upload-file [event]
   (let [file (-> event .-target .-files (.item 0))]
