@@ -1,8 +1,8 @@
-(ns heraldry.charge-library.config
+(ns heraldry.config
   (:refer-clojure :exclude [get])
-  (:require [shadow-env.core :as env]
-            [aero.core :as aero]
-            [clojure.java.io :as io]))
+  (:require [aero.core :as aero]
+            [clojure.java.io :as io]
+            [shadow-env.core :as env]))
 
 (defn read-env [_build-state]
   (let [aero-config {:profile (or (keyword (System/getenv "STAGE")) :local)}
