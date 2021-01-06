@@ -5,6 +5,10 @@ body {
   height: 100%;
 }
 
+p {
+  margin: 0;
+}
+
 .field {
   position: relative;
   margin-bottom: 5px;
@@ -14,11 +18,7 @@ body {
 .field > input,
 .field > .other {
   position: absolute;
-  left: 6em;
-}
-
-.field > select {
-  left: 7.2em;
+  left: 9em;
 }
 
 .form {
@@ -53,13 +53,42 @@ body {
   background-color: #fdd;
   color: #b44;
   padding: 5px;
-  margin-left: 9em;
   width: 60%;
   min-width: 20em;
 }
 
 .form .error p.error-message {
   color: #b44;
-  margin-left: 9em;
   margin-top: 0.2em;
+}
+
+.form.login {
+  display: block;
+  width: 20em;
+  border: 1px solid #ddd;
+  padding: 0.5em;
+  position: absolute;
+  left: 50%;
+  top: 25%;
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+}
+
+a,
+a:hover,
+a:focus,
+a:active,
+a:visited {
+  text-decoration: none;
+  color: inherit;
+}
+
+a,
+a:hover,
+a:visited {
+  color: #1b6690;
+}
+
+a:hover {
+  cursor: pointer;
 }
