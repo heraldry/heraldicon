@@ -5,19 +5,19 @@ body {
   height: 100%;
 }
 
-.setting {
+.field {
   position: relative;
   margin-bottom: 5px;
 }
 
-.setting > select,
-.setting > input,
-.setting > .other {
+.field > select,
+.field > input,
+.field > .other {
   position: absolute;
   left: 6em;
 }
 
-.setting > select {
+.field > select {
   left: 7.2em;
 }
 
@@ -46,4 +46,20 @@ body {
 
 .buttons button {
   margin-right: 1em;
+}
+
+.form .error-top p.error-message {
+  border: 1px solid #b44;
+  background-color: #fdd;
+  color: #b44;
+  padding: 5px;
+  margin-left: 9em;
+  width: 60%;
+  min-width: 20em;
+}
+
+.form .error p.error-message {
+  color: #b44;
+  margin-left: 9em;
+  margin-top: 0.2em;
 }
