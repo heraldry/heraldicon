@@ -13,7 +13,8 @@
                 [com.wsscode/async "1.0.10"]
                 [cljs-http "0.1.46"]
                 [aero "1.1.6"]
-                [hickory "0.7.1"]]
+                [hickory "0.7.1"]
+                [funcool/hodgepodge "0.1.4"]]
 
  :nrepl {:middleware [cider.piggieback/wrap-cljs-repl
                       refactor-nrepl.middleware/wrap-refactor]}
