@@ -8,8 +8,13 @@
             [heraldry.charge-library.api.request :as api-request]
             [heraldry.user.auth :as auth]
             [hickory.core :as hickory]
+            [hodgepodge.core :refer [local-storage get-item
+                                     set-item]]
             [re-frame.core :as rf]
             [reagent.dom :as r]))
+
+(def local-storage-token-name
+  "cl-jwt-token")
 
 ;; subs
 
@@ -214,10 +219,12 @@
                 :on-success (fn [result]
                               (println "login success" result)
                               (rf/dispatch [:clear-form form-id])
-                              (rf/dispatch [:set [:user-data] {:jwt-token  (-> result
-                                                                               .getAccessToken
-                                                                               .getJwtToken)
-                                                               :logged-in? true}]))
+                              (let [jwt-token (-> result
+                                                  .getAccessToken
+                                                  .getJwtToken)]
+                                (set-item local-storage local-storage-token-name jwt-token)
+                                (rf/dispatch [:set [:user-data] {:jwt-token  jwt-token
+                                                                 :logged-in? true}])))
                 :on-failure (fn [error]
                               (println "login failure" error)
                               (rf/dispatch [:set-form-error-message form-id (:message error)])))))
@@ -381,6 +388,9 @@
 
 (defn start []
   (rf/dispatch-sync [:initialize-db])
+  (when-let [jwt-token (get-item local-storage local-storage-token-name)]
+    (rf/dispatch-sync [:set [:user-data] {:jwt-token  jwt-token
+                                          :logged-in? true}]))
   (r/render
    [app]
    (.getElementById js/document "app")))
