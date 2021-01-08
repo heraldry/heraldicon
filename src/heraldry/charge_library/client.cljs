@@ -149,8 +149,12 @@
         user-data @(rf/subscribe [:get [:user-data]])]
     (go
       (try
-        (let [response (<! (api-request/call :save-charge payload user-data))]
-          (println "save charge response" response))
+        (let [response  (<! (api-request/call :save-charge payload user-data))
+              error     (:error response)
+              charge-id (-> response :charge-id)]
+          (println "save charge response" response)
+          (when-not error
+            (rf/dispatch [:set-form-data-key form-id :id charge-id])))
         (catch :default e
           (println "save-form error:" e))))))
 
@@ -158,12 +162,12 @@
   (let [error-message @(rf/subscribe [:get-form-error-message form-id])
         charge-data   @(rf/subscribe [:get-form-data form-id])]
     [:div
-     [preview (:charge/data charge-data)]
+     [preview (:data charge-data)]
      [:div.form
       (when error-message
         [:div.error-top
          [:p.error-message error-message]])
-      [form-field form-id :charge/key
+      [form-field form-id :key
        (fn [& {:keys [value on-change]}]
          [:<>
           [:label {:for "key"} "Charge Key"]
@@ -171,7 +175,7 @@
                    :value     value
                    :on-change on-change
                    :type      "text"}]])]
-      [form-field form-id :charge/name
+      [form-field form-id :name
        (fn [& {:keys [value on-change]}]
          [:<>
           [:label {:for "name"} "Name"]
@@ -179,7 +183,7 @@
                    :value     value
                    :on-change on-change
                    :type      "text"}]])]
-      [form-field form-id :charge/attitude
+      [form-field form-id :attitude
        (fn [& {:keys [value on-change]}]
          [:<>
           [:label {:for "attitude"} "Attitude"]
@@ -187,7 +191,7 @@
                    :value     value
                    :on-change on-change
                    :type      "text"}]])]
-      [form-field form-id :charge/data
+      [form-field form-id :data
        (fn [& _]
          [:<>
           [:label {:for   "upload"
@@ -195,7 +199,7 @@
           [:input {:type      "file"
                    :accept    "image/svg+xml"
                    :id        "upload"
-                   :on-change #(upload-file % form-id :charge/data)}]])]
+                   :on-change #(upload-file % form-id :data)}]])]
       [:div.buttons
        [:button.save {:on-click #(save-charge-form form-id)} "Save"]]
       [:div.buttons
