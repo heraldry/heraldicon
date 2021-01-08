@@ -18,6 +18,7 @@
     :stage                       (or (:STAGE env) (heraldry.config/get-static :stage))
     :table-charges               (:TABLE_CHARGES env)
     :table-users                 (:TABLE_USERS env)
+    :table-sessions              (:TABLE_SESSIONS env)
     :charge-library-api-endpoint (heraldry.config/get-static :charge-library-api-endpoint)
     :dynamodb-endpoint           (:DYNAMODB_ENDPOINT env)
     nil))
