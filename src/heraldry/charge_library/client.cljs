@@ -130,11 +130,11 @@
 
 (defn preview [charge-data]
   [:div.preview
-   (let [{:keys [width height data]} charge-data]
-     (when data
+   (let [{:keys [width height edn-data]} charge-data]
+     (when edn-data
        [:svg {:viewBox (str "0 0 " width " " height)
               :preserveAspectRatio "xMidYMid meet"}
-        data]))])
+        edn-data]))])
 
 (defn upload-file [event form-id key]
   (let [file (-> event .-target .-files (.item 0))]
