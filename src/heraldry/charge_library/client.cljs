@@ -145,10 +145,12 @@
         (.readAsText reader file)))))
 
 (defn save-charge-form [form-id]
-  (let [payload @(rf/subscribe [:get-form-data form-id])]
+  (let [payload @(rf/subscribe [:get-form-data form-id])
+        user-data @(rf/subscribe [:get [:user-data]])]
     (go
       (try
-        (let [response (<! (api-request/call :save-charge payload))])
+        (let [response (<! (api-request/call :save-charge payload user-data))]
+          (println "save charge response" response))
         (catch :default e
           (println "save-form error:" e))))))
 
@@ -218,9 +220,7 @@
 
 (defn start []
   (rf/dispatch-sync [:initialize-db])
-  (when-let [jwt-token (user/load-session)]
-    (rf/dispatch-sync [:set [:user-data] {:jwt-token jwt-token
-                                          :logged-in? true}]))
+  (rf/dispatch-sync [:set [:user-data] (user/load-session-user-data)])
   (r/render
    [app]
    (.getElementById js/document "app")))

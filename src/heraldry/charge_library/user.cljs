@@ -1,10 +1,15 @@
 (ns heraldry.charge-library.user
-  (:require [heraldry.user.auth :as auth]
+  (:require [cljs.core.async :refer [<! go]]
+            [heraldry.charge-library.api.request :as api-request]
+            [heraldry.user.auth :as auth]
             [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
             [re-frame.core :as rf]))
 
-(def local-storage-token-name
-  "cl-jwt-token")
+(def local-storage-session-id-name
+  "cl-session-id")
+
+(def local-storage-username-name
+  "cl-username")
 
 (defn form-field [form-id key function]
   (let [{value key} @(rf/subscribe [:get-form-data form-id])
@@ -22,13 +27,27 @@
     (auth/login username password
                 :on-success (fn [result]
                               (println "login success" result)
-                              (rf/dispatch [:clear-form form-id])
                               (let [jwt-token (-> result
                                                   .getAccessToken
                                                   .getJwtToken)]
-                                (set-item local-storage local-storage-token-name jwt-token)
-                                (rf/dispatch [:set [:user-data] {:jwt-token jwt-token
-                                                                 :logged-in? true}])))
+                                (go
+                                  (-> (api-request/call :login {:jwt-token jwt-token} nil)
+                                      <!
+                                      :body
+                                      (as-> body
+                                            (if-let [error (:error body)]
+                                              (do
+                                                (println "error:" error)
+                                                (rf/dispatch [:set-form-error-message form-id error]))
+                                              (let [username (-> body :success :username)
+                                                    session-id (-> body :success :session-id)]
+                                                (set-item local-storage local-storage-session-id-name session-id)
+                                                (set-item local-storage local-storage-username-name username)
+                                                (rf/dispatch [:set [:user-data] {:session-id session-id
+                                                                                 :username username
+                                                                                 :logged-in? true}])
+                                                (rf/dispatch [:clear-form form-id]))))))))
+
                 :on-failure (fn [error]
                               (println "login failure" error)
                               (rf/dispatch [:set-form-error-message form-id (:message error)])))))
@@ -174,8 +193,16 @@
       [:button.confirm {:on-click #(confirm-clicked form-id)} "Confirm"]]]))
 
 (defn logout []
-  (remove-item local-storage local-storage-token-name)
+  ;; TODO: logout via API
+  (remove-item local-storage local-storage-session-id-name)
+  (remove-item local-storage local-storage-username-name)
   (rf/dispatch [:remove [:user-data]]))
 
-(defn load-session []
-  (get-item local-storage local-storage-token-name))
+(defn load-session-user-data []
+  (let [session-id (get-item local-storage local-storage-session-id-name)
+        username (get-item local-storage local-storage-username-name)]
+    (if (and session-id username)
+      {:username username
+       :session-id session-id
+       :logged-in? true}
+      nil)))
