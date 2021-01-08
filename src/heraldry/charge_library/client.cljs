@@ -114,16 +114,17 @@
           first
           hickory/as-hiccup
           (as-> parsed
-              (let [svg-data (-> parsed
+              (let [edn-data (-> parsed
                                  (assoc 0 :g)
                                  (assoc 1 {}))
                     width    (-> parsed
                                  (get-in [1 :width]))
                     height   (-> parsed
                                  (get-in [1 :height]))]
-                (rf/dispatch [:set-form-data-key form-id key {:width  width
-                                                              :height height
-                                                              :data   svg-data}]))))
+                (rf/dispatch [:set-form-data-key form-id key {:width    width
+                                                              :height   height
+                                                              :edn-data edn-data
+                                                              :svg-data data}]))))
       (catch :default e
         (println "error:" e)))))
 
