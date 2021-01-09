@@ -4,8 +4,8 @@
                                                   AuthenticationDetails]]))
 
 (def user-pool
-  (new CognitoUserPool (clj->js {:UserPoolId "eu-central-1_jUhhO2lNn"
-                                 :ClientId "7ho46t4kkf3toohlhtjksk2iq1"})))
+  (new CognitoUserPool (clj->js {:UserPoolId "eu-central-1_2V31wcCCt"
+                                 :ClientId "23nbkmboar365k4rfn2o6qrs0c"})))
 
 (defn login [username password & {:keys [on-success on-failure on-new-password-required]}]
   (let [user (new CognitoUser (clj->js {:Username username
