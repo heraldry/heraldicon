@@ -1,7 +1,7 @@
 (ns heraldry.charge-library.user
   (:require [cljs.core.async :refer [<! go]]
             [heraldry.charge-library.api.request :as api-request]
-            [heraldry.user.auth :as auth]
+            [heraldry.aws.cognito :as cognito]
             [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
             [re-frame.core :as rf]))
 
@@ -27,30 +27,30 @@
 (defn login-clicked [form-id]
   (let [{:keys [username password]} @(rf/subscribe [:get-form-data form-id])]
     (rf/dispatch [:clear-form-errors])
-    (auth/login username password
-                :on-success (fn [result]
-                              (println "login success" result)
-                              (let [jwt-token (-> result
-                                                  .getAccessToken
-                                                  .getJwtToken)]
-                                (go
-                                  (-> (api-request/call :login {:jwt-token jwt-token} nil)
-                                      <!
-                                      (as-> response
-                                            (if-let [error (:error response)]
-                                              (do
-                                                (println "error:" error)
-                                                (rf/dispatch [:set-form-error-message form-id error]))
-                                              (let [{:keys [session-id username user-id]} response]
-                                                (set-item local-storage local-storage-session-id-name session-id)
-                                                (set-item local-storage local-storage-username-name username)
-                                                (set-item local-storage local-storage-user-id-name user-id)
-                                                (rf/dispatch [:set [:user-data] (assoc response :logged-in? true)])
-                                                (rf/dispatch [:clear-form form-id]))))))))
+    (cognito/login username password
+                   :on-success (fn [result]
+                                 (println "login success" result)
+                                 (let [jwt-token (-> result
+                                                     .getAccessToken
+                                                     .getJwtToken)]
+                                   (go
+                                     (-> (api-request/call :login {:jwt-token jwt-token} nil)
+                                         <!
+                                         (as-> response
+                                               (if-let [error (:error response)]
+                                                 (do
+                                                   (println "error:" error)
+                                                   (rf/dispatch [:set-form-error-message form-id error]))
+                                                 (let [{:keys [session-id username user-id]} response]
+                                                   (set-item local-storage local-storage-session-id-name session-id)
+                                                   (set-item local-storage local-storage-username-name username)
+                                                   (set-item local-storage local-storage-user-id-name user-id)
+                                                   (rf/dispatch [:set [:user-data] (assoc response :logged-in? true)])
+                                                   (rf/dispatch [:clear-form form-id]))))))))
 
-                :on-failure (fn [error]
-                              (println "login failure" error)
-                              (rf/dispatch [:set-form-error-message form-id (:message error)])))))
+                   :on-failure (fn [error]
+                                 (println "login failure" error)
+                                 (rf/dispatch [:set-form-error-message form-id (:message error)])))))
 
 (defn login-form []
   (let [form-id :login-form
@@ -87,25 +87,25 @@
     (rf/dispatch [:clear-form-errors])
     (if (not= password password-again)
       (rf/dispatch [:set-form-error-key form-id :password-again "Passwords don't match."])
-      (auth/sign-up username password email
-                    :on-success (fn [result]
-                                  ;; data:
-                                  ;; {:user #object[CognitoUser [object Object]]
-                                  ;; :userConfirmed false
-                                  ;; :userSub <uuid>
-                                  ;; :codeDeliveryDetails {:AttributeName email,
-                                  ;; :DeliveryMedium EMAIL,
-                                  ;; :Destination <masked-email>}}
-                                  (println "sign-up success" result)
-                                  (rf/dispatch [:clear-form form-id])
-                                  (rf/dispatch [:set [:user-data] {:user (:user result)
-                                                                   :confirmation-needed? true
-                                                                   :confirmation-email (-> result
-                                                                                           :codeDeliveryDetails
-                                                                                           :Destination)}]))
-                    :on-failure (fn [error]
-                                  (println "sign-up failure" error)
-                                  (rf/dispatch [:set-form-error-message form-id (:message error)]))))))
+      (cognito/sign-up username password email
+                       :on-success (fn [result]
+                                     ;; data:
+                                     ;; {:user #object[CognitoUser [object Object]]
+                                     ;; :userConfirmed false
+                                     ;; :userSub <uuid>
+                                     ;; :codeDeliveryDetails {:AttributeName email,
+                                     ;; :DeliveryMedium EMAIL,
+                                     ;; :Destination <masked-email>}}
+                                     (println "sign-up success" result)
+                                     (rf/dispatch [:clear-form form-id])
+                                     (rf/dispatch [:set [:user-data] {:user (:user result)
+                                                                      :confirmation-needed? true
+                                                                      :confirmation-email (-> result
+                                                                                              :codeDeliveryDetails
+                                                                                              :Destination)}]))
+                       :on-failure (fn [error]
+                                     (println "sign-up failure" error)
+                                     (rf/dispatch [:set-form-error-message form-id (:message error)]))))))
 
 (defn sign-up-form []
   (let [form-id :sign-up-form
@@ -158,16 +158,16 @@
         user-data @(rf/subscribe [:get [:user-data]])
         user (:user user-data)]
     (rf/dispatch [:clear-form-errors form-id])
-    (auth/confirm user code
-                  :on-success (fn [result]
-                                (println "confirm success" result)
-                                (rf/dispatch [:clear-form form-id])
-                                (rf/dispatch [:set [:sign-up?] false])
-                                (rf/dispatch [:set [:user-data] {:user user
-                                                                 :logged-in? true}]))
-                  :on-failure (fn [error]
-                                (println "confirm error" error)
-                                (rf/dispatch [:set-form-error-message form-id (:message error)])))))
+    (cognito/confirm user code
+                     :on-success (fn [result]
+                                   (println "confirm success" result)
+                                   (rf/dispatch [:clear-form form-id])
+                                   (rf/dispatch [:set [:sign-up?] false])
+                                   (rf/dispatch [:set [:user-data] {:user user
+                                                                    :logged-in? true}]))
+                     :on-failure (fn [error]
+                                   (println "confirm error" error)
+                                   (rf/dispatch [:set-form-error-message form-id (:message error)])))))
 
 (defn confirmation-form []
   (let [form-id :confirmation-form
