@@ -1,4 +1,4 @@
-(ns heraldry.charge-library.user
+(ns heraldry.frontend.user
   (:require [cljs.core.async :refer [<! go]]
             [heraldry.charge-library.api.request :as api-request]
             [heraldry.aws.cognito :as cognito]

@@ -2,11 +2,9 @@
   (:require ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
             [cljs.core.async :refer [go <!]]
             [cljs.core.async.interop :refer-macros [<p!]]
-            [clojure.string :as s]
-            [clojure.walk :as walk]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.charge-library.api.request :as api-request]
-            [heraldry.charge-library.user :as user :refer [form-field]]
+            [heraldry.frontend.user :as user :refer [form-field]]
             [hickory.core :as hickory]
             [re-frame.core :as rf]
             [reagent.dom :as r]))
