@@ -1,6 +1,6 @@
 (ns heraldry.frontend.user
   (:require [cljs.core.async :refer [<! go]]
-            [heraldry.charge-library.api.request :as api-request]
+            [heraldry.api.request :as api-request]
             [heraldry.aws.cognito :as cognito]
             [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
             [re-frame.core :as rf]))
