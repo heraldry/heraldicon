@@ -1,5 +1,7 @@
 (ns heraldry.util
-  (:require [clojure.pprint :refer [pprint]]))
+  (:require [cljs-time.core :as time]
+            [cljs-time.format :as format]
+            [clojure.pprint :refer [pprint]]))
 
 (defn promise
   [resolver]
@@ -30,3 +32,7 @@
             (map-keys f v)
             v))
         (vals m))))
+
+(defn iso-now []
+  (->> (time/time-now)
+       (format/unparse (:date-time format/formatters))))
