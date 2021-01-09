@@ -145,7 +145,7 @@
                                        (load-svg-file form-id key raw-data))))
         (.readAsText reader file)))))
 
-(defn save-charge-form [form-id]
+(defn save-charge-clicked [form-id]
   (let [payload @(rf/subscribe [:get-form-data form-id])
         user-data @(rf/subscribe [:get [:user-data]])]
     (go
@@ -202,7 +202,7 @@
                    :id "upload"
                    :on-change #(upload-file % form-id :data)}]])]
       [:div.buttons
-       [:button.save {:on-click #(save-charge-form form-id)} "Save"]]
+       [:button.save {:on-click #(save-charge-clicked form-id)} "Save"]]
       [:div.buttons
        [:button.logout {:on-click #(user/logout)} "Logout"]]]]))
 
