@@ -12,14 +12,17 @@
   "Returns current env vars as a Clojure map."
   (-js->clj+ (.-env js/process)))
 
+(def stage
+  (or (:STAGE env) (heraldry.config/get-static :stage)))
+
 (defn get [setting]
   (case setting
     :region              (:REGION env)
-    :stage               (or (:STAGE env) (heraldry.config/get-static :stage))
+    :stage               stage
     :table-charges       (:TABLE_CHARGES env)
     :table-users         (:TABLE_USERS env)
     :table-sessions      (:TABLE_SESSIONS env)
     :bucket-charges      (:BUCKET_CHARGES env)
     :armory-api-endpoint (heraldry.config/get-static :armory-api-endpoint)
-    :dynamodb-endpoint   (:DYNAMODB_ENDPOINT env)
+    :dynamodb-endpoint   (when (= stage "local") "http://localhost:8100")
     nil))
