@@ -118,19 +118,21 @@
                                  (assoc 0 :g)
                                  (assoc 1 {}))
                     width    (-> parsed
-                                 (get-in [1 :width]))
+                                 (get-in [1 :width])
+                                 js/parseFloat)
                     height   (-> parsed
-                                 (get-in [1 :height]))]
-                (rf/dispatch [:set-form-data-key form-id key {:width    width
-                                                              :height   height
-                                                              :edn-data edn-data
+                                 (get-in [1 :height])
+                                 js/parseFloat)]
+                (rf/dispatch [:set-form-data-key form-id :width width])
+                (rf/dispatch [:set-form-data-key form-id :height height])
+                (rf/dispatch [:set-form-data-key form-id key {:edn-data edn-data
                                                               :svg-data data}]))))
       (catch :default e
         (println "error:" e)))))
 
-(defn preview [charge-data]
+(defn preview [width height charge-data]
   [:div.preview
-   (let [{:keys [width height edn-data]} charge-data]
+   (let [{:keys [edn-data]} charge-data]
      (when edn-data
        [:svg {:viewBox             (str "0 0 " width " " height)
               :preserveAspectRatio "xMidYMid meet"}
@@ -160,10 +162,10 @@
           (println "save-form error:" e))))))
 
 (defn charge-form [form-id]
-  (let [error-message @(rf/subscribe [:get-form-error-message form-id])
-        charge-data   @(rf/subscribe [:get-form-data form-id])]
+  (let [error-message               @(rf/subscribe [:get-form-error-message form-id])
+        {:keys [width height data]} @(rf/subscribe [:get-form-data form-id])]
     [:div
-     [preview (:data charge-data)]
+     [preview width height data]
      [:div.form
       (when error-message
         [:div.error-top
