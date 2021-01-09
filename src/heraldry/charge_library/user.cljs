@@ -8,6 +8,9 @@
 (def local-storage-session-id-name
   "cl-session-id")
 
+(def local-storage-user-id-name
+  "cl-user-id")
+
 (def local-storage-username-name
   "cl-username")
 
@@ -38,13 +41,11 @@
                                               (do
                                                 (println "error:" error)
                                                 (rf/dispatch [:set-form-error-message form-id error]))
-                                              (let [username (-> response :username)
-                                                    session-id (-> response :session-id)]
+                                              (let [{:keys [session-id username user-id]} response]
                                                 (set-item local-storage local-storage-session-id-name session-id)
                                                 (set-item local-storage local-storage-username-name username)
-                                                (rf/dispatch [:set [:user-data] {:session-id session-id
-                                                                                 :username username
-                                                                                 :logged-in? true}])
+                                                (set-item local-storage local-storage-user-id-name user-id)
+                                                (rf/dispatch [:set [:user-data] (assoc response :logged-in? true)])
                                                 (rf/dispatch [:clear-form form-id]))))))))
 
                 :on-failure (fn [error]
@@ -194,14 +195,17 @@
 (defn logout []
   ;; TODO: logout via API
   (remove-item local-storage local-storage-session-id-name)
+  (remove-item local-storage local-storage-user-id-name)
   (remove-item local-storage local-storage-username-name)
   (rf/dispatch [:remove [:user-data]]))
 
 (defn load-session-user-data []
   (let [session-id (get-item local-storage local-storage-session-id-name)
+        user-id (get-item local-storage local-storage-user-id-name)
         username (get-item local-storage local-storage-username-name)]
-    (if (and session-id username)
+    (if (and session-id username user-id)
       {:username username
        :session-id session-id
+       :user-id user-id
        :logged-in? true}
       nil)))
