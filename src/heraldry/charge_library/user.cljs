@@ -33,14 +33,13 @@
                                 (go
                                   (-> (api-request/call :login {:jwt-token jwt-token} nil)
                                       <!
-                                      :body
-                                      (as-> body
-                                            (if-let [error (:error body)]
+                                      (as-> response
+                                            (if-let [error (:error response)]
                                               (do
                                                 (println "error:" error)
                                                 (rf/dispatch [:set-form-error-message form-id error]))
-                                              (let [username (-> body :success :username)
-                                                    session-id (-> body :success :session-id)]
+                                              (let [username (-> response :username)
+                                                    session-id (-> response :session-id)]
                                                 (set-item local-storage local-storage-session-id-name session-id)
                                                 (set-item local-storage local-storage-username-name username)
                                                 (rf/dispatch [:set [:user-data] {:session-id session-id
