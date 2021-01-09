@@ -24,5 +24,4 @@
     :table-sessions (:TABLE_SESSIONS env)
     :bucket-charges (:BUCKET_CHARGES env)
     :armory-api-endpoint (heraldry.config/get-static :armory-api-endpoint)
-    :dynamodb-endpoint (when (= stage "local") "http://localhost:8100")
     nil))
