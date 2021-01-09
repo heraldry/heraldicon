@@ -40,12 +40,12 @@
 
           :client-charge-library
           {:target           :browser
-           :modules          {:client {:entries [heraldry.charge-library.client]}}
+           :modules          {:client {:entries [heraldry.frontend.charge-library]}}
            :output-dir       "./client-charge-library/assets/js/generated"
            :asset-path       "js/generated"
            :js-options       {:js-package-dirs ["./client-charge-library/node_modules"]}
-           :devtools         {:before-load heraldry.charge-library.client/stop
-                              :after-load  heraldry.charge-library.client/start
+           :devtools         {:before-load heraldry.frontend.charge-library/stop
+                              :after-load  heraldry.frontend.charge-library/start
                               :http-root   "./client-charge-library/assets"
                               :http-port   8181
                               :preloads    [devtools.preload

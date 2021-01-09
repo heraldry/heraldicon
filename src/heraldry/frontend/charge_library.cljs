@@ -1,4 +1,4 @@
-(ns heraldry.charge-library.client
+(ns heraldry.frontend.charge-library
   (:require ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
             [cljs.core.async :refer [go <!]]
             [cljs.core.async.interop :refer-macros [<p!]]
