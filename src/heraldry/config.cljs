@@ -14,12 +14,12 @@
 
 (defn get [setting]
   (case setting
-    :region                      (:REGION env)
-    :stage                       (or (:STAGE env) (heraldry.config/get-static :stage))
-    :table-charges               (:TABLE_CHARGES env)
-    :table-users                 (:TABLE_USERS env)
-    :table-sessions              (:TABLE_SESSIONS env)
-    :bucket-charge-library       (:BUCKET_CHARGE_LIBRARY env)
-    :charge-library-api-endpoint (heraldry.config/get-static :charge-library-api-endpoint)
-    :dynamodb-endpoint           (:DYNAMODB_ENDPOINT env)
+    :region              (:REGION env)
+    :stage               (or (:STAGE env) (heraldry.config/get-static :stage))
+    :table-charges       (:TABLE_CHARGES env)
+    :table-users         (:TABLE_USERS env)
+    :table-sessions      (:TABLE_SESSIONS env)
+    :bucket-charges      (:BUCKET_CHARGES env)
+    :armory-api-endpoint (heraldry.config/get-static :armory-api-endpoint)
+    :dynamodb-endpoint   (:DYNAMODB_ENDPOINT env)
     nil))
