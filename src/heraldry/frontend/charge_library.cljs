@@ -3,7 +3,7 @@
             [cljs.core.async :refer [go <!]]
             [cljs.core.async.interop :refer-macros [<p!]]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
-            [heraldry.charge-library.api.request :as api-request]
+            [heraldry.api.request :as api-request]
             [heraldry.frontend.user :as user :refer [form-field]]
             [hickory.core :as hickory]
             [re-frame.core :as rf]
