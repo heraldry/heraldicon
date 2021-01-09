@@ -33,6 +33,26 @@
  (fn [db [_ form-id key]]
    (get-in db [:form-errors form-id key])))
 
+(rf/reg-sub
+ :api-fetch-charges-by-user
+ (fn [db [_ user-id]]
+   (let [data (get-in db [:charges-by-user user-id])
+         user-data (get-in db [:user-data])]
+     (cond
+       (= data :loading) nil
+       data data
+       :else (do
+               (rf/dispatch-sync [:set [:charges-by-user user-id] :loading])
+               (go
+                 (-> (api-request/call :list-charges {:user-id user-id} user-data)
+                     <!
+                     (as-> response
+                           (let [error (:error response)]
+                             (if error
+                               (println ":fetch-charges-by-user error:" error)
+                               (rf/dispatch-sync [:set [:charges-by-user user-id] (:charges response)]))))))
+               nil)))))
+
 ;; events
 
 (rf/reg-event-db
@@ -208,6 +228,16 @@
       [:div.buttons
        [:button.logout {:on-click #(user/logout)} "Logout"]]]]))
 
+(defn list-charges-for-user [user-data]
+  (let [charge-list @(rf/subscribe [:api-fetch-charges-by-user (:user-id user-data)])]
+    (if charge-list
+      [:ul.charge-list
+       (for [charge charge-list]
+         ^{:key (:id charge)}
+         [:li.charge
+          [:a {:on-click nil} (:name charge)]])]
+      [:<>])))
+
 (defn not-logged-in []
   (let [confirmation-needed? @(rf/subscribe [:get [:user-data :confirmation-needed?]])
         sign-up? @(rf/subscribe [:get [:sign-up?]])]
@@ -219,7 +249,7 @@
 (defn app []
   (let [user-data @(rf/subscribe [:get [:user-data]])]
     (if (:logged-in? user-data)
-      [charge-form :charge-form]
+      [list-charges-for-user user-data]
       [not-logged-in])))
 
 (defn stop []
