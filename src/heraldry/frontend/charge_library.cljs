@@ -6,10 +6,10 @@
             [heraldry.api.request :as api-request]
             [heraldry.frontend.user :as user :refer [form-field]]
             [hickory.core :as hickory]
-            [re-frame.core :as rf]
-            [reagent.dom :as r]))
+            [re-frame.core :as rf]))
 
 ;; subs
+
 
 (rf/reg-sub
  :api-fetch-charges-by-user
@@ -170,28 +170,10 @@
       [:<>])))
 
 (defn not-logged-in []
-  (let [confirmation-needed? @(rf/subscribe [:get [:user-data :confirmation-needed?]])
-        sign-up?             @(rf/subscribe [:get [:sign-up?]])]
-    (cond
-      confirmation-needed? [user/confirmation-form]
-      sign-up?             [user/sign-up-form]
-      :else                [user/login-form])))
+  [:div "You need to be logged in."])
 
-(defn app []
-  (let [user-data @(rf/subscribe [:get [:user-data]])]
+(defn main []
+  (let [user-data (user/data)]
     (if (:logged-in? user-data)
       [list-charges-for-user user-data]
       [not-logged-in])))
-
-(defn stop []
-  (println "Stopping..."))
-
-(defn start []
-  (rf/dispatch-sync [:initialize-db])
-  (rf/dispatch-sync [:set [:user-data] (user/load-session-user-data)])
-  (r/render
-   [app]
-   (.getElementById js/document "app")))
-
-(defn ^:export init []
-  (start))
