@@ -37,6 +37,7 @@ a {
   background-color: #fff;
   z-index: 1001;
   border-radius: 10px;
+  box-shadow: 3px 3px 10px 5px #555;
 }
 
 .modal > .header {
@@ -60,11 +61,21 @@ form > .error-message {
   background-color: #fdd;
   color: #b44;
   padding: 5px;
-  width: 60%;
-  min-width: 20em;
 }
 
-.form .error .error-message {
+form .error .error-message {
   color: #b44;
-  margin-top: 0.2em;
+}
+
+form .error input {
+  border: 1px solid #b44 !important;
+  color: #b44;
+}
+
+form .error label {
+  color: #b44;
+}
+
+.spacer {
+  display: inline-block;
 }

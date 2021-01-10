@@ -31,22 +31,22 @@
          [:li.pure-menu-item {:class (when (= path selected)
                                        "pure-menu-selected")}
           [:a.pure-menu-link {:href path} name]])
-       [:li.pure-menu-item.pure-menu-has-children.pure-menu-allow-hover
-        (if (:logged-in? user-data)
+       [:span.spacer {:style {:width "5em"}}]
+       (if (:logged-in? user-data)
+         [:li.pure-menu-item.pure-menu-has-children.pure-menu-allow-hover
           [:<>
            [:a.pure-menu-link {} "User"]
            [:ul.pure-menu-children
             [:li.pure-menu-item
              [:a.pure-menu-link {} "Settings"]]
             [:li.pure-menu-item
-             [:a.pure-menu-link {:on-click #(user/logout)} "Logout"]]]]
+             [:a.pure-menu-link {:on-click #(user/logout)} "Logout"]]]]]
+         [:<>
           [:<>
-           [:a.pure-menu-link {} "User"]
-           [:ul.pure-menu-children
-            [:li.pure-menu-item
-             [:a.pure-menu-link {:on-click #(user/login-modal)} "Login"]]
-            [:li.pure-menu-item
-             [:a.pure-menu-link {} "Sign-up"]]]])]]]]))
+           [:li.pure-menu-item
+            [:a.pure-menu-link {:on-click #(user/login-modal)} "Login"]]
+           [:li.pure-menu-item
+            [:a.pure-menu-link {:on-click #(user/sign-up-modal)} "Register"]]]])]]]))
 
 (defn app []
   [:div
