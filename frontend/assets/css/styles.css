@@ -16,6 +16,15 @@ a {
   }
 }
 
+.home-menu {
+  border: 1px solid #ddd;
+}
+
+.pure-menu-children {
+  border: 1px solid #ddd;
+  border-top: 0;
+}
+
 .modal-background {
   position: fixed;
   top: 0;
