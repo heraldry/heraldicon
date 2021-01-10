@@ -10,9 +10,7 @@
 
 (def env
   "Returns current env vars as a Clojure map."
-  (-js->clj+ (if js/process
-               (.-env js/process)
-               {})))
+  (-js->clj+ (.-env js/process)))
 
 (def stage
   (or (:STAGE env) (heraldry.config/get-static :stage)))
