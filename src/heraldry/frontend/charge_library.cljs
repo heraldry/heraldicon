@@ -15,7 +15,7 @@
  :api-fetch-charges-by-user
  (fn [db [_ user-id]]
    (let [data      (get-in db [:charges-by-user user-id])
-         user-data (get-in db [:user-data])]
+         user-data (user/data)]
      (cond
        (= data :loading) nil
        data              data
@@ -100,7 +100,7 @@
 
 (defn save-charge-clicked [form-id]
   (let [payload   @(rf/subscribe [:get-form-data form-id])
-        user-data @(rf/subscribe [:get [:user-data]])]
+        user-data (user/data)]
     (go
       (try
         (let [response  (<! (api-request/call :save-charge payload user-data))
