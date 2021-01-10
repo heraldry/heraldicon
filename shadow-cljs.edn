@@ -42,7 +42,7 @@
           {:target           :browser
            :modules          {:main {:entries [heraldry.frontend.main]}}
            :output-dir       "./frontend/assets/js/generated"
-           :asset-path       "js/generated"
+           :asset-path       "/js/generated"
            :js-options       {:js-package-dirs ["./frontend/node_modules"]}
            :devtools         {:before-load heraldry.frontend.main/stop
                               :after-load  heraldry.frontend.main/start

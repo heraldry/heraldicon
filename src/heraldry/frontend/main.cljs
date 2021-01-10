@@ -1,14 +1,36 @@
 (ns heraldry.frontend.main
-  (:require [re-frame.core :as rf]
+  (:require [heraldry.frontend.subs]
+            [re-frame.core :as rf]
             [reagent.dom :as r]))
 
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {} db)))
+   (merge {:site {:menu {:items [["Home" "/"]
+                                 ["Armory" "/armory/"]
+                                 ["Charge Library" "/charges/"]]}}} db)))
+
+(defn header [title]
+  (let [menu        @(rf/subscribe [:get [:site :menu]])
+        items       (:items menu)
+        known-paths (set (map second items))
+        path        js/location.pathname
+        selected    (if (get known-paths path)
+                      path
+                      "/")]
+    [:div.header
+     [:div.home-menu.pure-menu.pure-menu-horizontal.pure-menu-fixed
+      [:a.pure-menu-heading.pure-float-right {} "Heraldry"]
+      [:span title]
+      [:ul.pure-menu-list
+       (for [[name path] items]
+         ^{:key path}
+         [:li.pure-menu-item {:class (when (= path selected)
+                                       "pure-menu-selected")}
+          [:a.pure-menu-link {:href path} name]])]]]))
 
 (defn app []
-  [:div])
+  [:div [header ""]])
 
 (defn stop []
   (println "Stopping..."))
