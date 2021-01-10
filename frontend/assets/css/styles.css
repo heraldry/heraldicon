@@ -20,6 +20,11 @@ a {
   border: 1px solid #ddd;
 }
 
+.main-content {
+  padding: 0.5em;
+  margin-top: 2.5em;
+}
+
 .pure-menu-children {
   border: 1px solid #ddd;
   border-top: 0;

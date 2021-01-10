@@ -64,3 +64,15 @@
        (update :form-data dissoc form-id)
        (update :form-error-message dissoc form-id)
        (update :form-errors dissoc form-id))))
+
+;; other
+
+(defn path []
+  @(rf/subscribe [:get [:path]]))
+
+(defn set-path [path]
+  (rf/dispatch-sync [:set [:path] path]))
+
+(defn goto [path]
+  (set-path path)
+  (js/window.history.pushState {} nil path))
