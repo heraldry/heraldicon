@@ -15,3 +15,56 @@ a {
     float: right;
   }
 }
+
+.modal-background {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000;
+  opacity: 0.5;
+  z-index: 1000;
+}
+
+.modal {
+  position: absolute;
+  left: 50%;
+  top: 25%;
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  border: 1px solid #ddd;
+  background-color: #fff;
+  z-index: 1001;
+  border-radius: 10px;
+}
+
+.modal > .header {
+  font-size: 1.1em;
+  background-color: #eee;
+  border-bottom: 1px solid #ddd;
+  border-radius: 10px 10px 0 0;
+  padding: 5px 10px;
+}
+
+.modal > .content {
+  padding: 10px 10px 0 10px;
+}
+
+button {
+  border-radius: 5px;
+}
+
+form > .error-message {
+  border: 1px solid #b44;
+  background-color: #fdd;
+  color: #b44;
+  padding: 5px;
+  width: 60%;
+  min-width: 20em;
+}
+
+.form .error .error-message {
+  color: #b44;
+  margin-top: 0.2em;
+}

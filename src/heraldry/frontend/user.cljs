@@ -2,6 +2,7 @@
   (:require [cljs.core.async :refer [<! go]]
             [heraldry.api.request :as api-request]
             [heraldry.aws.cognito :as cognito]
+            [heraldry.frontend.modal :as modal]
             [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
             [re-frame.core :as rf]))
 
@@ -27,7 +28,8 @@
 (defn login-clicked [form-id]
   (let [{:keys [username password]} @(rf/subscribe [:get-form-data form-id])]
     (rf/dispatch [:clear-form-errors])
-    (cognito/login username password
+    (cognito/login username
+                   password
                    :on-success (fn [result]
                                  (println "login success" result)
                                  (let [jwt-token (-> result
@@ -46,7 +48,8 @@
                                                    (set-item local-storage local-storage-username-name username)
                                                    (set-item local-storage local-storage-user-id-name user-id)
                                                    (rf/dispatch [:set [:user-data] (assoc response :logged-in? true)])
-                                                   (rf/dispatch [:clear-form form-id]))))))))
+                                                   (rf/dispatch [:clear-form form-id])
+                                                   (modal/clear))))))))
 
                    :on-failure (fn [error]
                                  (println "login failure" error)
@@ -54,33 +57,44 @@
 
 (defn login-form []
   (let [form-id :login-form
-        error-message @(rf/subscribe [:get-form-error-message form-id])]
-    [:div.form.login
-     [:h4 {:style {:margin 0
-                   :margin-bottom "0.5em"}} "Login"]
+        error-message @(rf/subscribe [:get-form-error-message form-id])
+        on-submit (fn [event]
+                    (.preventDefault event)
+                    (.stopPropagation event)
+                    (login-clicked form-id))]
+    [:form.pure-form.pure-form-stacked
+     {:on-key-press (fn [event]
+                      (when (-> event .-code (= "Enter"))
+                        (on-submit event)))
+      :on-submit on-submit}
      (when error-message
-       [:div.error-top
-        [:p.error-message error-message]])
-     [form-field form-id :username
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "username"} "Username"]
-         [:input {:id "username"
-                  :value value
-                  :on-change on-change
-                  :type "text"}]])]
-     [form-field form-id :password
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "password"} "Password:"]
-         [:input {:id "password"
-                  :value value
-                  :on-change on-change
-                  :type "password"}]])]
-     [:div.buttons
-      [:button.login {:on-click #(login-clicked form-id)} "Login"]]
-     [:span {:style {:text-align "center"}}
-      [:a {:on-click #(rf/dispatch [:set [:sign-up?] true])} "Sign up"]]]))
+       [:div.error-message error-message])
+     [:fieldset
+      [form-field form-id :username
+       (fn [& {:keys [value on-change]}]
+         [:div.pure-control-group
+          [:input {:id "username"
+                   :value value
+                   :on-change on-change
+                   :placeholder "Username"
+                   :type "text"}]])]
+      [form-field form-id :password
+       (fn [& {:keys [value on-change]}]
+         [:div.pure-control-group
+          [:input {:id "password"
+                   :value value
+                   :on-change on-change
+                   :placeholder "Password"
+                   :type "password"}]])]
+      [:div.pure-control-group {:style {:text-align "right"
+                                        :margin-top "10px"}}
+       [:button.pure-button.pure-align-right {:style {:margin-right "5px"}
+                                              :on-click #(do
+                                                           (rf/dispatch [:clear-form form-id])
+                                                           (modal/clear))}
+        "Cancel"]
+       [:button.pure-button.pure-button-primary {:type "submit"}
+        "Login"]]]]))
 
 (defn sign-up-clicked [form-id]
   (let [{:keys [username email password password-again]} @(rf/subscribe [:get-form-data form-id])]
@@ -203,9 +217,16 @@
   (let [session-id (get-item local-storage local-storage-session-id-name)
         user-id (get-item local-storage local-storage-user-id-name)
         username (get-item local-storage local-storage-username-name)]
-    (if (and session-id username user-id)
-      {:username username
-       :session-id session-id
-       :user-id user-id
-       :logged-in? true}
-      nil)))
+    (rf/dispatch-sync [:set [:user-data]
+                       (if (and session-id username user-id)
+                         {:username username
+                          :session-id session-id
+                          :user-id user-id
+                          :logged-in? true}
+                         nil)])))
+
+(defn data []
+  @(rf/subscribe [:get [:user-data]]))
+
+(defn login-modal []
+  (modal/create "Login" [login-form]))
