@@ -1,0 +1,1 @@
+(ns heraldry.frontend.events)
