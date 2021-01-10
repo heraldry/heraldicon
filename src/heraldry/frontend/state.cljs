@@ -1,5 +1,6 @@
 (ns heraldry.frontend.state
-  (:require [re-frame.core :as rf]))
+  (:require [clojure.string :as s]
+            [re-frame.core :as rf]))
 
 ;; subs
 
@@ -38,6 +39,11 @@
      (-> path count (> 1)) (update-in (drop-last path) dissoc (last path)))))
 
 (rf/reg-event-db
+ :set-form-data
+ (fn [db [_ form-id data]]
+   (assoc-in db [:form-data form-id] data)))
+
+(rf/reg-event-db
  :set-form-data-key
  (fn [db [_ form-id key value]]
    (assoc-in db [:form-data form-id key] value)))
@@ -70,8 +76,20 @@
 (defn path []
   @(rf/subscribe [:get [:path]]))
 
-(defn set-path [path]
-  (rf/dispatch-sync [:set [:path] path]))
+(defn path-extra []
+  (let [path-extra @(rf/subscribe [:get [:path-extra]])]
+    (when (-> path-extra count (> 0))
+      path-extra)))
+
+(defn set-path [path & [hash]]
+  (let [path (if hash
+               (str path hash)
+               path)
+        chunks (s/split path #"#" 2)
+        path (first chunks)
+        path-extra (second chunks)]
+    (rf/dispatch-sync [:set [:path] path])
+    (rf/dispatch-sync [:set [:path-extra] path-extra])))
 
 (defn goto [path]
   (set-path path)

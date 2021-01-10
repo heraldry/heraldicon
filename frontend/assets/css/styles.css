@@ -1,4 +1,11 @@
-a {
+a,
+a:hover,
+a:focus,
+a:active,
+a:visited {
+  text-decoration: none;
+  color: #1b6690 !important;
+  color: inherit;
   cursor: pointer;
 }
 
@@ -21,7 +28,7 @@ a {
 }
 
 .main-content {
-  padding: 0.5em;
+  padding: 0.5em 1em;
   margin-top: 2.5em;
 }
 
