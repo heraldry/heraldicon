@@ -2,8 +2,10 @@
   (:require ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
             [cljs.core.async :refer [go <!]]
             [cljs.core.async.interop :refer-macros [<p!]]
+            [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user :refer [form-field]]
             [hickory.core :as hickory]
             [re-frame.core :as rf]))
@@ -29,6 +31,28 @@
                                        (if error
                                          (println ":fetch-charges-by-user error:" error)
                                          (rf/dispatch-sync [:set [:charges-by-user user-id] (:charges response)]))))))
+                           nil)))))
+
+(rf/reg-sub
+ :api-fetch-charge-by-id-to-form
+ (fn [db [_ charge-id form-id]]
+   (let [data      (get-in db [:charge-by-id charge-id])
+         user-data (user/data)]
+     (cond
+       (= data :loading) nil
+       data              data
+       :else             (do
+                           (rf/dispatch-sync [:set [:charge-by-id charge-id] :loading])
+                           (go
+                             (-> (api-request/call :fetch-charge {:id charge-id} user-data)
+                                 <!
+                                 (as-> response
+                                     (if-let [error (:error response)]
+                                       (println ":fetch-charge-by-id error:" error)
+                                       (do
+                                         (rf/dispatch-sync [:set-form-data form-id response])
+                                         (rf/dispatch-sync [:set [:charge-by-id charge-id]
+                                                            response]))))))
                            nil)))))
 
 ;; functions
@@ -112,9 +136,11 @@
         (catch :default e
           (println "save-form error:" e))))))
 
-(defn charge-form [form-id]
-  (let [error-message               @(rf/subscribe [:get-form-error-message form-id])
-        {:keys [width height data]} @(rf/subscribe [:get-form-data form-id])]
+(defn charge-form [charge-id]
+  (let [form-id                     :charge-form
+        error-message               @(rf/subscribe [:get-form-error-message form-id])
+        {:keys [width height data]} @(rf/subscribe [:get-form-data form-id])
+        _charge-data                @(rf/subscribe [:api-fetch-charge-by-id-to-form charge-id form-id])]
     [:div
      [preview width height data]
      [:div.form
@@ -155,19 +181,33 @@
                    :id        "upload"
                    :on-change #(upload-file % form-id :data)}]])]
       [:div.buttons
-       [:button.save {:on-click #(save-charge-clicked form-id)} "Save"]]
-      [:div.buttons
-       [:button.logout {:on-click #(user/logout)} "Logout"]]]]))
+       [:button.save {:on-click #(save-charge-clicked form-id)} "Save"]]]]))
 
-(defn list-charges-for-user [user-data]
-  (let [charge-list @(rf/subscribe [:api-fetch-charges-by-user (:user-id user-data)])]
-    (if charge-list
-      [:ul.charge-list
-       (for [charge charge-list]
-         ^{:key (:id charge)}
-         [:li.charge
-          [:a {:on-click nil} (:name charge)]])]
-      [:<>])))
+(defn list-charges-for-user []
+  (let [user-data   (user/data)
+        charge-list @(rf/subscribe [:api-fetch-charges-by-user (:user-id user-data)])]
+    [:div
+     [:h4 "My charges"]
+     (if charge-list
+       [:ul.charge-list
+        (doall
+         (for [charge charge-list]
+           ^{:key (:id charge)}
+           [:li.charge
+            (let [href (str (state/path) "#" (:id charge))]
+              [:a {:href     href
+                   :on-click #(do
+                                (.preventDefault %)
+                                (state/goto href))}
+               (:name charge) " "
+               [:i.far.fa-edit]])]))]
+       [:<>])]))
+
+(defn logged-in []
+  (let [charge-id (state/path-extra)]
+    (if charge-id
+      [charge-form charge-id]
+      [list-charges-for-user])))
 
 (defn not-logged-in []
   [:div "You need to be logged in."])
@@ -175,5 +215,5 @@
 (defn main []
   (let [user-data (user/data)]
     (if (:logged-in? user-data)
-      [list-charges-for-user user-data]
+      [logged-in]
       [not-logged-in])))

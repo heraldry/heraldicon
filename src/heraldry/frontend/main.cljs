@@ -64,7 +64,7 @@
 (defn start []
   (rf/dispatch-sync [:initialize-db])
   (user/load-session-user-data)
-  (state/set-path js/location.pathname)
+  (state/set-path js/location.pathname js/location.hash)
   (r/render
    [app]
    (.getElementById js/document "app")))
