@@ -217,6 +217,16 @@
                                    (println "confirm error" error)
                                    (rf/dispatch [:set-form-error-message form-id (:message error)])))))
 
+(defn resend-code-clicked [form-id]
+  (let [user-data @(rf/subscribe [:get db-path])
+        user (:user user-data)]
+    (cognito/resend-code user
+                         :on-success (fn []
+                                       (js/alert "Code was sent to your email address."))
+                         :on-failure (fn [error]
+                                       (println "resend code error" error)
+                                       (rf/dispatch [:set-form-error-message form-id (:message error)])))))
+
 (defn confirmation-form []
   (let [form-id :confirmation-form
         error-message @(rf/subscribe [:get-form-error-message form-id])
@@ -243,6 +253,11 @@
                    :type "text"}]])]
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
+       [:button.pure-button
+        {:style {:margin-right "5px"}
+         :type "button"
+         :on-click #(resend-code-clicked form-id)}
+        "Resend code"]
        [:button.pure-button.pure-button-primary {:type "submit"} "Confirm"]]]]))
 
 (defn logout []
