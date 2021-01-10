@@ -6,6 +6,8 @@
             [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
             [re-frame.core :as rf]))
 
+(def db-path [:user-data])
+
 (def local-storage-session-id-name
   "cl-session-id")
 
@@ -15,42 +17,63 @@
 (def local-storage-username-name
   "cl-username")
 
+(declare login-modal)
+(declare confirmation-modal)
+
 (defn form-field [form-id key function]
   (let [{value key} @(rf/subscribe [:get-form-data form-id])
         error       @(rf/subscribe [:get-form-error form-id key])]
-    (-> [:div.field {:class (when error "error")}]
+    (-> [:div {:class (when error "error")}]
         (cond->
-            error (conj [:p.error-message error]))
+            error (conj [:div.error-message error]))
         (conj (function :value value
                         :on-change #(let [new-value (-> % .-target .-value)]
                                       (rf/dispatch [:set-form-data-key form-id key new-value])))))))
+
+(defn read-session-data []
+  (let [session-id (get-item local-storage local-storage-session-id-name)
+        user-id    (get-item local-storage local-storage-user-id-name)
+        username   (get-item local-storage local-storage-username-name)]
+    (rf/dispatch-sync [:set db-path
+                       (if (and session-id username user-id)
+                         {:username   username
+                          :session-id session-id
+                          :user-id    user-id
+                          :logged-in? true}
+                         nil)])))
+
+(defn complete-login [form-id jwt-token]
+  (go
+    (-> (api-request/call :login {:jwt-token jwt-token} nil)
+        <!
+        (as-> response
+            (if-let [error (:error response)]
+              (do
+                (println "error:" error)
+                (rf/dispatch [:set-form-error-message form-id error]))
+              (let [{:keys [session-id username user-id]} response]
+                (set-item local-storage local-storage-session-id-name session-id)
+                (set-item local-storage local-storage-username-name username)
+                (set-item local-storage local-storage-user-id-name user-id)
+                (read-session-data)
+                (rf/dispatch [:clear-form form-id])
+                (modal/clear)))))))
 
 (defn login-clicked [form-id]
   (let [{:keys [username password]} @(rf/subscribe [:get-form-data form-id])]
     (rf/dispatch [:clear-form-errors])
     (cognito/login username
                    password
-                   :on-success (fn [result]
-                                 (println "login success" result)
-                                 (let [jwt-token (-> result
-                                                     .getAccessToken
-                                                     .getJwtToken)]
-                                   (go
-                                     (-> (api-request/call :login {:jwt-token jwt-token} nil)
-                                         <!
-                                         (as-> response
-                                             (if-let [error (:error response)]
-                                               (do
-                                                 (println "error:" error)
-                                                 (rf/dispatch [:set-form-error-message form-id error]))
-                                               (let [{:keys [session-id username user-id]} response]
-                                                 (set-item local-storage local-storage-session-id-name session-id)
-                                                 (set-item local-storage local-storage-username-name username)
-                                                 (set-item local-storage local-storage-user-id-name user-id)
-                                                 (rf/dispatch [:set [:user-data] (assoc response :logged-in? true)])
-                                                 (rf/dispatch [:clear-form form-id])
-                                                 (modal/clear))))))))
-
+                   :on-success (fn [user]
+                                 (println "login success" user)
+                                 (complete-login form-id (-> user
+                                                             .getAccessToken
+                                                             .getJwtToken)))
+                   :on-confirmation-needed (fn [user]
+                                             (rf/dispatch [:clear-form form-id])
+                                             (rf/dispatch [:set db-path
+                                                           {:user user}])
+                                             (confirmation-modal))
                    :on-failure (fn [error]
                                  (println "login failure" error)
                                  (rf/dispatch [:set-form-error-message form-id (:message error)])))))
@@ -88,10 +111,12 @@
                    :type        "password"}]])]
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
-       [:button.pure-button.pure-align-right {:style    {:margin-right "5px"}
-                                              :on-click #(do
-                                                           (rf/dispatch [:clear-form form-id])
-                                                           (modal/clear))}
+       [:button.pure-button
+        {:style    {:margin-right "5px"}
+         :type     "reset"
+         :on-click #(do
+                      (rf/dispatch [:clear-form form-id])
+                      (modal/clear))}
         "Cancel"]
        [:button.pure-button.pure-button-primary {:type "submit"}
         "Login"]]]]))
@@ -102,131 +127,143 @@
     (if (not= password password-again)
       (rf/dispatch [:set-form-error-key form-id :password-again "Passwords don't match."])
       (cognito/sign-up username password email
-                       :on-success (fn [result]
-                                     ;; data:
-                                     ;; {:user #object[CognitoUser [object Object]]
-                                     ;;  :userConfirmed false
-                                     ;;  :userSub <uuid>
-                                     ;;  :codeDeliveryDetails {:AttributeName email,
-                                     ;;                        :DeliveryMedium EMAIL,
-                                     ;;                        :Destination <masked-email>}}
-                                     (println "sign-up success" result)
+                       :on-success (fn [user]
+                                     (println "sign-up success" user)
                                      (rf/dispatch [:clear-form form-id])
-                                     (rf/dispatch [:set [:user-data] {:user                 (:user result)
-                                                                      :confirmation-needed? true
-                                                                      :confirmation-email   (-> result
-                                                                                                :codeDeliveryDetails
-                                                                                                :Destination)}]))
+                                     (login-modal "Registration completed"))
+                       :on-confirmation-needed (fn [user]
+                                                 (println "sign-up success, confirmation needed" user)
+                                                 (rf/dispatch [:clear-form form-id])
+                                                 (rf/dispatch [:set db-path {:user user}])
+                                                 (confirmation-modal))
                        :on-failure (fn [error]
                                      (println "sign-up failure" error)
                                      (rf/dispatch [:set-form-error-message form-id (:message error)]))))))
 
 (defn sign-up-form []
   (let [form-id       :sign-up-form
-        error-message @(rf/subscribe [:get-form-error-message form-id])]
-    [:div.form.login
-     [:h4 {:style {:margin        0
-                   :margin-bottom "0.5em"}} "Sign-up"]
+        error-message @(rf/subscribe [:get-form-error-message form-id])
+        on-submit     (fn [event]
+                        (.preventDefault event)
+                        (.stopPropagation event)
+                        (sign-up-clicked form-id))]
+    [:form.pure-form.pure-form-aligned
+     {:on-key-press (fn [event]
+                      (when (-> event .-code (= "Enter"))
+                        (on-submit event)))
+      :on-submit    on-submit}
      (when error-message
-       [:div.error-top
-        [:p.error-message error-message]])
-     [form-field form-id :username
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "username"} "Username"]
-         [:input {:id        "username"
-                  :value     value
-                  :on-change on-change
-                  :type      "text"}]])]
-     [form-field form-id :email
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "email"} "Email"]
-         [:input {:id        "email"
-                  :value     value
-                  :on-change on-change
-                  :type      "text"}]])]
-     [form-field form-id :password
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "password"} "Password:"]
-         [:input {:id        "password"
-                  :value     value
-                  :on-change on-change
-                  :type      "password"}]])]
-     [form-field form-id :password-again
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "password-again"} "Password again:"]
-         [:input {:id        "password-again"
-                  :value     value
-                  :on-change on-change
-                  :type      "password"}]])]
-     [:div.buttons
-      [:button.sign-up {:on-click #(sign-up-clicked form-id)} "Sign-up"]]
-     [:span {:style {:text-align "center"}}
-      [:a {:on-click #(rf/dispatch [:set [:sign-up?] false])} "Back to login-clicked"]]]))
+       [:div.error-message error-message])
+     [:fieldset
+      [form-field form-id :username
+       (fn [& {:keys [value on-change]}]
+         [:div.pure-control-group
+          [:label {:for "username"} "Username"]
+          [:input {:id          "username"
+                   :value       value
+                   :on-change   on-change
+                   :placeholder "Username"
+                   :type        "text"}]])]
+      [form-field form-id :email
+       (fn [& {:keys [value on-change]}]
+         [:div.pure-control-group
+          [:label {:for "email"} "Email"]
+          [:input {:id          "email"
+                   :value       value
+                   :on-change   on-change
+                   :placeholder "Email"
+                   :type        "text"}]])]
+      [form-field form-id :password
+       (fn [& {:keys [value on-change]}]
+         [:div.pure-control-group
+          [:label {:for "password"} "Password:"]
+          [:input {:id          "password"
+                   :value       value
+                   :on-change   on-change
+                   :placeholder "Password"
+                   :type        "password"}]])]
+      [form-field form-id :password-again
+       (fn [& {:keys [value on-change]}]
+         [:div.pure-control-group
+          [:label {:for "password-again"} "Password again:"]
+          [:input {:id          "password-again"
+                   :value       value
+                   :on-change   on-change
+                   :placeholder "Password again"
+                   :type        "password"}]])]
+      [:div.pure-control-group {:style {:text-align "right"
+                                        :margin-top "10px"}}
+       [:button.pure-button
+        {:style    {:margin-right "5px"}
+         :type     "reset"
+         :on-click #(do
+                      (rf/dispatch [:clear-form form-id])
+                      (modal/clear))}
+        "Cancel"]
+       [:button.pure-button.pure-button-primary {:type "submit"}
+        "Register"]]]]))
 
 (defn confirm-clicked [form-id]
   (let [{:keys [code]} @(rf/subscribe [:get-form-data form-id])
-        user-data      @(rf/subscribe [:get [:user-data]])
+        user-data      @(rf/subscribe [:get db-path])
         user           (:user user-data)]
     (rf/dispatch [:clear-form-errors form-id])
     (cognito/confirm user code
-                     :on-success (fn [result]
-                                   (println "confirm success" result)
+                     :on-success (fn [user]
+                                   (println "confirm success" user)
                                    (rf/dispatch [:clear-form form-id])
-                                   (rf/dispatch [:set [:sign-up?] false])
-                                   (rf/dispatch [:set [:user-data] {:user       user
-                                                                    :logged-in? true}]))
+                                   (login-modal "Registration completed"))
                      :on-failure (fn [error]
                                    (println "confirm error" error)
                                    (rf/dispatch [:set-form-error-message form-id (:message error)])))))
 
 (defn confirmation-form []
   (let [form-id       :confirmation-form
-        user-data     @(rf/subscribe [:get [:user-data]])
-        error-message @(rf/subscribe [:get-form-error-message form-id])]
-    [:div.form.login
-     [:h4 {:style {:margin        0
-                   :margin-bottom "0.5em"}} "Confirmation"]
-     "A confirmation code was sent to your email address: " (:confirmation-email user-data)
+        error-message @(rf/subscribe [:get-form-error-message form-id])
+        on-submit     (fn [event]
+                        (.preventDefault event)
+                        (.stopPropagation event)
+                        (confirm-clicked form-id))]
+    [:form.pure-form.pure-form-stacked
+     {:on-key-press (fn [event]
+                      (when (-> event .-code (= "Enter"))
+                        (on-submit event)))
+      :on-submit    on-submit}
+     "A confirmation code was sent to your email address."
      (when error-message
-       [:div.error-top
-        [:p.error-message error-message]])
-     [form-field form-id :code
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "code"} "Confirmation code"]
-         [:input {:id        "code"
-                  :value     value
-                  :on-change on-change
-                  :type      "text"}]])]
-
-     [:div.buttons
-      [:button.confirm {:on-click #(confirm-clicked form-id)} "Confirm"]]]))
+       [:div.error-message error-message])
+     [:fieldset
+      [form-field form-id :code
+       (fn [& {:keys [value on-change]}]
+         [:div.pure-control-group
+          [:input {:id          "code"
+                   :value       value
+                   :on-change   on-change
+                   :placeholder "Confirmation code"
+                   :type        "text"}]])]
+      [:div.pure-control-group {:style {:text-align "right"
+                                        :margin-top "10px"}}
+       [:button.pure-button.pure-button-primary {:type "submit"} "Confirm"]]]]))
 
 (defn logout []
   ;; TODO: logout via API
   (remove-item local-storage local-storage-session-id-name)
   (remove-item local-storage local-storage-user-id-name)
   (remove-item local-storage local-storage-username-name)
-  (rf/dispatch [:remove [:user-data]]))
+  (rf/dispatch [:remove db-path]))
 
 (defn load-session-user-data []
-  (let [session-id (get-item local-storage local-storage-session-id-name)
-        user-id    (get-item local-storage local-storage-user-id-name)
-        username   (get-item local-storage local-storage-username-name)]
-    (rf/dispatch-sync [:set [:user-data]
-                       (if (and session-id username user-id)
-                         {:username   username
-                          :session-id session-id
-                          :user-id    user-id
-                          :logged-in? true}
-                         nil)])))
+  (when (not @(rf/subscribe [:get db-path]))
+    (read-session-data)))
 
 (defn data []
-  @(rf/subscribe [:get [:user-data]]))
+  @(rf/subscribe [:get db-path]))
 
-(defn login-modal []
-  (modal/create "Login" [login-form]))
+(defn login-modal [& [title]]
+  (modal/create (or title "Login") [login-form]))
+
+(defn sign-up-modal []
+  (modal/create "Register" [sign-up-form]))
+
+(defn confirmation-modal []
+  (modal/create "Register Confirmation" [confirmation-form]))
