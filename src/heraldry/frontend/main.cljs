@@ -34,19 +34,19 @@
        [:span.spacer {:style {:width "5em"}}]
        (if (:logged-in? user-data)
          [:li.pure-menu-item.pure-menu-has-children.pure-menu-allow-hover
+          {:style {:min-width "6em"}}
           [:<>
-           [:a.pure-menu-link {} "User"]
+           [:a.pure-menu-link {} (str "@" (:username user-data))]
            [:ul.pure-menu-children
             [:li.pure-menu-item
              [:a.pure-menu-link {} "Settings"]]
             [:li.pure-menu-item
              [:a.pure-menu-link {:on-click #(user/logout)} "Logout"]]]]]
          [:<>
-          [:<>
-           [:li.pure-menu-item
-            [:a.pure-menu-link {:on-click #(user/login-modal)} "Login"]]
-           [:li.pure-menu-item
-            [:a.pure-menu-link {:on-click #(user/sign-up-modal)} "Register"]]]])]]]))
+          [:li.pure-menu-item
+           [:a.pure-menu-link {:on-click #(user/login-modal)} "Login"]]
+          [:li.pure-menu-item
+           [:a.pure-menu-link {:on-click #(user/sign-up-modal)} "Register"]]])]]]))
 
 (defn app []
   [:div
