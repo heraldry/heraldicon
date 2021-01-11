@@ -49,6 +49,11 @@
    (assoc-in db [:form-data form-id key] value)))
 
 (rf/reg-event-db
+ :set-form-data-path
+ (fn [db [_ form-id path value]]
+   (assoc-in db (concat [:form-data form-id] path) value)))
+
+(rf/reg-event-db
  :set-form-error-message
  (fn [db [_ form-id message]]
    (assoc-in db [:form-error-message form-id] message)))
