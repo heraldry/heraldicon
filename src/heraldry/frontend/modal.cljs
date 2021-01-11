@@ -4,10 +4,13 @@
 (def db-path
   [:modal])
 
-(defn create [title content]
+(defn create [title content & {:keys [on-cancel]}]
   (rf/dispatch [:set db-path {:title title
-                              :content content}]))
+                              :content content
+                              :on-cancel on-cancel}]))
 (defn clear []
+  (when-let [on-cancel @(rf/subscribe [:get (conj db-path :on-cancel)])]
+    (on-cancel))
   (rf/dispatch [:remove db-path]))
 
 (defn render []
