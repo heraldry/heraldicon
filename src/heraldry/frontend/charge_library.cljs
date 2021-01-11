@@ -106,12 +106,11 @@
         (println "error:" e)))))
 
 (defn preview [width height charge-data]
-  [:div.preview
-   (let [{:keys [edn-data]} charge-data]
-     (when edn-data
-       [:svg {:viewBox             (str "0 0 " width " " height)
-              :preserveAspectRatio "xMidYMid meet"}
-        edn-data]))])
+  (let [{:keys [edn-data]} charge-data]
+    (when edn-data
+      [:svg {:viewBox             (str "0 0 " width " " height)
+             :preserveAspectRatio "xMidYMid meet"}
+       edn-data])))
 
 (defn upload-file [event form-id key]
   (let [file (-> event .-target .-files (.item 0))]
@@ -141,47 +140,49 @@
         error-message               @(rf/subscribe [:get-form-error-message form-id])
         {:keys [width height data]} @(rf/subscribe [:get-form-data form-id])
         _charge-data                @(rf/subscribe [:api-fetch-charge-by-id-to-form charge-id form-id])]
-    [:div
-     [preview width height data]
-     [:div.form
-      (when error-message
-        [:div.error-top
-         [:p.error-message error-message]])
-      [form-field form-id :key
-       (fn [& {:keys [value on-change]}]
-         [:<>
-          [:label {:for "key"} "Charge Key"]
-          [:input {:id        "key"
-                   :value     value
-                   :on-change on-change
-                   :type      "text"}]])]
-      [form-field form-id :name
-       (fn [& {:keys [value on-change]}]
-         [:<>
-          [:label {:for "name"} "Name"]
-          [:input {:id        "name"
-                   :value     value
-                   :on-change on-change
-                   :type      "text"}]])]
-      [form-field form-id :attitude
-       (fn [& {:keys [value on-change]}]
-         [:<>
-          [:label {:for "attitude"} "Attitude"]
-          [:input {:id        "attitude"
-                   :value     value
-                   :on-change on-change
-                   :type      "text"}]])]
-      [form-field form-id :data
-       (fn [& _]
-         [:<>
-          [:label {:for   "upload"
-                   :style {:cursor "pointer"}} "Upload"]
-          [:input {:type      "file"
-                   :accept    "image/svg+xml"
-                   :id        "upload"
-                   :on-change #(upload-file % form-id :data)}]])]
-      [:div.buttons
-       [:button.save {:on-click #(save-charge-clicked form-id)} "Save"]]]]))
+    [:div.pure-g
+     [:div.pure-u-1-2
+      [preview width height data]]
+     [:div.pure-u-1-2
+      [:form.pure-form.pure-form-aligned {:style {:display "inline-block"}}
+       (when error-message
+         [:div.error-message error-message])
+       [:fieldset
+        [form-field form-id :key
+         (fn [& {:keys [value on-change]}]
+           [:div.pure-control-group
+            [:label {:for "key"} "Charge Key"]
+            [:input {:id        "key"
+                     :value     value
+                     :on-change on-change
+                     :type      "text"}]])]
+        [form-field form-id :name
+         (fn [& {:keys [value on-change]}]
+           [:div.pure-control-group
+            [:label {:for "name"} "Name"]
+            [:input {:id        "name"
+                     :value     value
+                     :on-change on-change
+                     :type      "text"}]])]
+        [form-field form-id :attitude
+         (fn [& {:keys [value on-change]}]
+           [:div.pure-control-group
+            [:label {:for "attitude"} "Attitude"]
+            [:input {:id        "attitude"
+                     :value     value
+                     :on-change on-change
+                     :type      "text"}]])]
+        [form-field form-id :data
+         (fn [& _]
+           [:div.pure-control-group
+            [:label {:for "upload"} "Upload"]
+            [:input {:type      "file"
+                     :accept    "image/svg+xml"
+                     :id        "upload"
+                     :on-change #(upload-file % form-id :data)}]])]]
+       [:div.pure-control-group {:style {:text-align "right"
+                                         :margin-top "10px"}}
+        [:button.pure-button.pure-button-primary {:on-click #(save-charge-clicked form-id)} "Save"]]]]]))
 
 (defn list-charges-for-user []
   (let [user-data   (user/data)
