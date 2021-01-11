@@ -7,8 +7,9 @@
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
+            [heraldry.frontend.form :as form]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.user :as user :refer [form-field]]
+            [heraldry.frontend.user :as user]
             [hickory.core :as hickory]
             [re-frame.core :as rf]))
 
@@ -37,15 +38,15 @@
 
 (rf/reg-sub
  :api-fetch-charge-by-id-to-form
- (fn [db [_ charge-id form-id]]
-   (let [db-path   [:charge-by-id charge-id]
-         data      (get-in db db-path)
-         user-data (user/data)]
+ (fn [db [_ charge-id db-path]]
+   (let [charge-db-path [:charge-by-id charge-id]
+         data           (get-in db charge-db-path)
+         user-data      (user/data)]
      (cond
        (= data :loading) nil
        data              data
        :else             (do
-                           (rf/dispatch-sync [:set db-path :loading])
+                           (rf/dispatch-sync [:set charge-db-path :loading])
                            (go
                              (-> (api-request/call :fetch-charge {:id charge-id} user-data)
                                  <!
@@ -53,23 +54,23 @@
                                      (if-let [error (:error response)]
                                        (println ":fetch-charge-by-id error:" error)
                                        (do
-                                         (rf/dispatch-sync [:set-form-data form-id response])
+                                         (rf/dispatch-sync [:set charge-db-path response])
                                          (rf/dispatch-sync [:set db-path response])
                                          ;; TODO: this is not very good, using a subscription like that
-                                         @(rf/subscribe [:fetch-url-data-to-form-path form-id [:data :edn-data] (:edn-data-url response) reader/read-string])
-                                         @(rf/subscribe [:fetch-url-data-to-form-path form-id [:data :svg-data] (:svg-data-url response) nil]))))))
+                                         @(rf/subscribe [:fetch-url-data-to-path (conj db-path :data :edn-data) (:edn-data-url response) reader/read-string])
+                                         @(rf/subscribe [:fetch-url-data-to-path (conj db-path :data :svg-data) (:svg-data-url response) nil]))))))
                            nil)))))
 
 (rf/reg-sub
- :fetch-url-data-to-form-path
- (fn [db [_ form-id path url function]]
-   (let [db-path [:url-data url]
-         data    (get-in db db-path)]
+ :fetch-url-data-to-path
+ (fn [db [_ db-path url function]]
+   (let [url-db-path [:url-data url]
+         data        (get-in db url-db-path)]
      (cond
        (= data :loading) nil
        data              data
        :else             (do
-                           (rf/dispatch-sync [:set db-path :loading])
+                           (rf/dispatch-sync [:set url-db-path :loading])
                            (go
                              (-> (http/get url)
                                  <!
@@ -79,10 +80,10 @@
                                        (if (= status 200)
                                          (do
                                            (println "retrieved" url)
-                                           (rf/dispatch-sync [:set-form-data-path form-id path (if function
-                                                                                                 (function body)
-                                                                                                 body)])
-                                           (rf/dispatch-sync [:set db-path body]))
+                                           (rf/dispatch-sync [:set url-db-path body])
+                                           (rf/dispatch-sync [:set db-path (if function
+                                                                             (function body)
+                                                                             body)]))
                                          (println "error fetching" url))))))
                            nil)))))
 
@@ -112,7 +113,7 @@
 ;; views
 
 
-(defn load-svg-file [form-id key data]
+(defn load-svg-file [db-path data]
   (go
     (try
       (-> data
@@ -131,10 +132,10 @@
                     height   (-> parsed
                                  (get-in [1 :height])
                                  js/parseFloat)]
-                (rf/dispatch [:set-form-data-key form-id :width width])
-                (rf/dispatch [:set-form-data-key form-id :height height])
-                (rf/dispatch [:set-form-data-key form-id key {:edn-data edn-data
-                                                              :svg-data data}]))))
+                (rf/dispatch [:set (conj db-path :width) width])
+                (rf/dispatch [:set (conj db-path :height) height])
+                (rf/dispatch [:set (conj db-path :data) {:edn-data edn-data
+                                                         :svg-data data}]))))
       (catch :default e
         (println "error:" e)))))
 
@@ -145,17 +146,17 @@
              :preserveAspectRatio "xMidYMid meet"}
        edn-data])))
 
-(defn upload-file [event form-id key]
+(defn upload-file [event db-path]
   (let [file (-> event .-target .-files (.item 0))]
     (when file
       (let [reader (js/FileReader.)]
         (set! (.-onloadend reader) (fn []
                                      (let [raw-data (.-result reader)]
-                                       (load-svg-file form-id key raw-data))))
+                                       (load-svg-file db-path raw-data))))
         (.readAsText reader file)))))
 
-(defn save-charge-clicked [form-id]
-  (let [payload   @(rf/subscribe [:get-form-data form-id])
+(defn save-charge-clicked [db-path]
+  (let [payload   @(rf/subscribe [:get db-path])
         user-data (user/data)]
     (go
       (try
@@ -164,20 +165,20 @@
               charge-id (-> response :charge-id)]
           (println "save charge response" response)
           (when-not error
-            (rf/dispatch [:set-form-data-key form-id :id charge-id])
+            (rf/dispatch [:set (conj db-path :id) charge-id])
             (state/goto (charge-path charge-id))))
         (catch :default e
           (println "save-form error:" e))))))
 
 (defn charge-form [charge-id]
-  (let [form-id                     :charge-form
-        error-message               @(rf/subscribe [:get-form-error-message form-id])
-        {:keys [width height data]} @(rf/subscribe [:get-form-data form-id])
-        _charge-data                @(rf/subscribe [:api-fetch-charge-by-id-to-form charge-id form-id])
+  (let [db-path                     [:charge-form]
+        error-message               @(rf/subscribe [:get-form-error db-path])
+        {:keys [width height data]} @(rf/subscribe [:get db-path])
+        _charge-data                @(rf/subscribe [:api-fetch-charge-by-id-to-form charge-id db-path])
         on-submit                   (fn [event]
                                       (.preventDefault event)
                                       (.stopPropagation event)
-                                      (save-charge-clicked form-id))]
+                                      (save-charge-clicked db-path))]
     [:div.pure-g
      [:div.pure-u-1-2
       [preview width height data]]
@@ -190,7 +191,7 @@
        (when error-message
          [:div.error-message error-message])
        [:fieldset
-        [form-field form-id :key
+        [form/field (conj db-path :key)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
             [:label {:for "key"} "Charge Key"]
@@ -198,7 +199,7 @@
                      :value     value
                      :on-change on-change
                      :type      "text"}]])]
-        [form-field form-id :name
+        [form/field (conj db-path :name)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
             [:label {:for "name"} "Name"]
@@ -206,7 +207,7 @@
                      :value     value
                      :on-change on-change
                      :type      "text"}]])]
-        [form-field form-id :attitude
+        [form/field (conj db-path :attitude)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
             [:label {:for "attitude"} "Attitude"]
@@ -214,14 +215,14 @@
                      :value     value
                      :on-change on-change
                      :type      "text"}]])]
-        [form-field form-id :data
+        [form/field (conj db-path :data)
          (fn [& _]
            [:div.pure-control-group
             [:label {:for "upload"} "Upload"]
             [:input {:type      "file"
                      :accept    "image/svg+xml"
                      :id        "upload"
-                     :on-change #(upload-file % form-id :data)}]])]]
+                     :on-change #(upload-file % db-path)}]])]]
        [:div.pure-control-group {:style {:text-align "right"
                                          :margin-top "10px"}}
         [:button.pure-button.pure-button-primary {:type "submit"}
