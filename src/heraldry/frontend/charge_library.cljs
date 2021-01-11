@@ -1,7 +1,9 @@
 (ns heraldry.frontend.charge-library
   (:require ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
+            [cljs-http.client :as http]
             [cljs.core.async :refer [go <!]]
             [cljs.core.async.interop :refer-macros [<p!]]
+            [cljs.reader :as reader]
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
@@ -12,17 +14,17 @@
 
 ;; subs
 
-
 (rf/reg-sub
  :api-fetch-charges-by-user
  (fn [db [_ user-id]]
-   (let [data (get-in db [:charges-by-user user-id])
+   (let [db-path [:charges-by-user user-id]
+         data (get-in db [:charges-by-user user-id])
          user-data (user/data)]
      (cond
        (= data :loading) nil
        data data
        :else (do
-               (rf/dispatch-sync [:set [:charges-by-user user-id] :loading])
+               (rf/dispatch-sync [:set db-path :loading])
                (go
                  (-> (api-request/call :list-charges {:user-id user-id} user-data)
                      <!
@@ -30,19 +32,20 @@
                            (let [error (:error response)]
                              (if error
                                (println ":fetch-charges-by-user error:" error)
-                               (rf/dispatch-sync [:set [:charges-by-user user-id] (:charges response)]))))))
+                               (rf/dispatch-sync [:set db-path (:charges response)]))))))
                nil)))))
 
 (rf/reg-sub
  :api-fetch-charge-by-id-to-form
  (fn [db [_ charge-id form-id]]
-   (let [data (get-in db [:charge-by-id charge-id])
+   (let [db-path [:charge-by-id charge-id]
+         data (get-in db db-path)
          user-data (user/data)]
      (cond
        (= data :loading) nil
        data data
        :else (do
-               (rf/dispatch-sync [:set [:charge-by-id charge-id] :loading])
+               (rf/dispatch-sync [:set db-path :loading])
                (go
                  (-> (api-request/call :fetch-charge {:id charge-id} user-data)
                      <!
@@ -51,12 +54,42 @@
                              (println ":fetch-charge-by-id error:" error)
                              (do
                                (rf/dispatch-sync [:set-form-data form-id response])
-                               (rf/dispatch-sync [:set [:charge-by-id charge-id]
-                                                  response]))))))
+                               (rf/dispatch-sync [:set db-path response])
+                                         ;; TODO: this is not very good, using a subscription like that
+                               @(rf/subscribe [:fetch-url-data-to-form-path form-id [:data :edn-data] (:edn-data-url response) reader/read-string])
+                               @(rf/subscribe [:fetch-url-data-to-form-path form-id [:data :svg-data] (:svg-data-url response) nil]))))))
+               nil)))))
+
+(rf/reg-sub
+ :fetch-url-data-to-form-path
+ (fn [db [_ form-id path url function]]
+   (let [db-path [:url-data url]
+         data (get-in db db-path)]
+     (cond
+       (= data :loading) nil
+       data data
+       :else (do
+               (rf/dispatch-sync [:set db-path :loading])
+               (go
+                 (-> (http/get url)
+                     <!
+                     (as-> response
+                           (let [status (:status response)
+                                 body (:body response)]
+                             (if (= status 200)
+                               (do
+                                 (println "retrieved" url)
+                                 (rf/dispatch-sync [:set-form-data-path form-id path (if function
+                                                                                       (function body)
+                                                                                       body)])
+                                 (rf/dispatch-sync [:set db-path body]))
+                               (println "error fetching" url))))))
                nil)))))
 
 ;; functions
 
+(defn charge-path [charge-id]
+  (str "/charges/#" charge-id))
 
 #_(defn strip-svg [data]
     (walk/postwalk (fn [x]
@@ -131,7 +164,8 @@
               charge-id (-> response :charge-id)]
           (println "save charge response" response)
           (when-not error
-            (rf/dispatch [:set-form-data-key form-id :id charge-id])))
+            (rf/dispatch [:set-form-data-key form-id :id charge-id])
+            (state/goto (charge-path charge-id))))
         (catch :default e
           (println "save-form error:" e))))))
 
@@ -139,12 +173,20 @@
   (let [form-id :charge-form
         error-message @(rf/subscribe [:get-form-error-message form-id])
         {:keys [width height data]} @(rf/subscribe [:get-form-data form-id])
-        _charge-data @(rf/subscribe [:api-fetch-charge-by-id-to-form charge-id form-id])]
+        _charge-data @(rf/subscribe [:api-fetch-charge-by-id-to-form charge-id form-id])
+        on-submit (fn [event]
+                    (.preventDefault event)
+                    (.stopPropagation event)
+                    (save-charge-clicked form-id))]
     [:div.pure-g
      [:div.pure-u-1-2
       [preview width height data]]
      [:div.pure-u-1-2
-      [:form.pure-form.pure-form-aligned {:style {:display "inline-block"}}
+      [:form.pure-form.pure-form-aligned {:style {:display "inline-block"}
+                                          :on-key-press (fn [event]
+                                                          (when (-> event .-code (= "Enter"))
+                                                            (on-submit event)))
+                                          :on-submit on-submit}
        (when error-message
          [:div.error-message error-message])
        [:fieldset
@@ -182,7 +224,8 @@
                      :on-change #(upload-file % form-id :data)}]])]]
        [:div.pure-control-group {:style {:text-align "right"
                                          :margin-top "10px"}}
-        [:button.pure-button.pure-button-primary {:on-click #(save-charge-clicked form-id)} "Save"]]]]]))
+        [:button.pure-button.pure-button-primary {:type "submit"}
+         "Save"]]]]]))
 
 (defn list-charges-for-user []
   (let [user-data (user/data)
