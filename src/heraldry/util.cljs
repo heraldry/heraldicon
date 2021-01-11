@@ -1,5 +1,6 @@
 (ns heraldry.util
-  (:require [cljs-time.core :as time]
+  (:require ["crypto" :as crypto]
+            [cljs-time.core :as time]
             [cljs-time.format :as format]
             [clojure.pprint :refer [pprint]]))
 
@@ -36,3 +37,9 @@
 (defn iso-now []
   (->> (time/time-now)
        (format/unparse (:date-time format/formatters))))
+
+(defn sha1 [data]
+  (-> crypto
+      (.createHash "sha1")
+      (.update data)
+      (.digest "hex")))
