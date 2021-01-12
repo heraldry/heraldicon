@@ -170,11 +170,10 @@
         (catch :default e
           (println "save-form error:" e))))))
 
-(defn charge-form [charge-id]
+(defn charge-form []
   (let [db-path [:charge-form]
         error-message @(rf/subscribe [:get-form-error db-path])
         {:keys [width height data]} @(rf/subscribe [:get db-path])
-        _charge-data @(rf/subscribe [:api-fetch-charge-by-id-to-form charge-id db-path])
         on-submit (fn [event]
                     (.preventDefault event)
                     (.stopPropagation event)
@@ -233,6 +232,8 @@
         charge-list @(rf/subscribe [:api-fetch-charges-by-user (:user-id user-data)])]
     [:div
      [:h4 "My charges"]
+     [:button.pure-button.pure-button-primary {:on-click #(rf/dispatch [:set [:charge-form] {}])}
+      "Create"]
      (if charge-list
        [:ul.charge-list
         (doall
@@ -249,9 +250,9 @@
        [:<>])]))
 
 (defn logged-in []
-  (let [charge-id (state/path-extra)]
-    (if charge-id
-      [charge-form charge-id]
+  (let [charge-form-data @(rf/subscribe [:get [:charge-form]])]
+    (if charge-form-data
+      [charge-form]
       [list-charges-for-user])))
 
 (defn not-logged-in []
