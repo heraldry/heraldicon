@@ -67,4 +67,4 @@
 
 (defn goto [path]
   (set-path path)
-  (js/window.history.pushState {} nil path))
+  (js/window.history.pushState "" nil path))
