@@ -160,14 +160,6 @@
        (when error-message
          [:div.error-message error-message])
        [:fieldset
-        [form/field (conj db-path :key)
-         (fn [& {:keys [value on-change]}]
-           [:div.pure-control-group
-            [:label {:for "key"} "Charge Key"]
-            [:input {:id "key"
-                     :value value
-                     :on-change on-change
-                     :type "text"}]])]
         [form/field (conj db-path :name)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
@@ -176,17 +168,41 @@
                      :value value
                      :on-change on-change
                      :type "text"}]])]
-        [form/field (conj db-path :attitude)
+        [form/field (conj db-path :key)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
-            [:label {:for "attitude"} "Attitude"]
-            [:input {:id "attitude"
+            [:label {:for "key"} "Charge Key"]
+            [:input {:id "key"
                      :value value
                      :on-change on-change
                      :type "text"}]])]
+        [form/select (conj db-path :attitude) "Attitude" [["None" :none]
+                                                          ["Couchant" :couchant]
+                                                          ["Courant" :courant]
+                                                          ["Dormant" :dormant]
+                                                          ["Pascuant" :pascuant]
+                                                          ["Passant" :passant]
+                                                          ["Rampant" :rampant]
+                                                          ["Salient" :salient]
+                                                          ["Sejant" :sejant]
+                                                          ["Statant" :statant]]]
+        [form/select (conj db-path :facing) "Facing" [["None" :none]
+                                                      ["To dexter" :to-dexter]
+                                                      ["To sinister" :to-sinister]
+                                                      ["Affronté" :affronte]
+                                                      ["En arrière" :en-arriere]
+                                                      ["Guardant" :guardant]
+                                                      ["Reguardant" :reguardant]
+                                                      ["Salient" :salient]
+                                                      ["In trian aspect" :in-trian-aspect]]]
+        [:div.pure-control-group
+         [:h4 {:style {:margin "0.5em"}} "Attributes"]
+         [form/checkbox (conj db-path :attributes :coward) "Coward"]
+         [form/checkbox (conj db-path :attributes :pierced) "Pierced"]
+         [form/checkbox (conj db-path :attributes :voided) "Voided"]]
         [form/field (conj db-path :data)
          (fn [& _]
-           [:div.pure-control-group
+           [:div.pure-control-group {:style {:margin-top "3em"}}
             [:label {:for "upload"} "Upload"]
             [:input {:type "file"
                      :accept "image/svg+xml"
