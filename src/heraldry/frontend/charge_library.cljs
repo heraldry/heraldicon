@@ -4,7 +4,6 @@
             [cljs.core.async :refer [go <!]]
             [cljs.core.async.interop :refer-macros [<p!]]
             [cljs.reader :as reader]
-            [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
             [heraldry.frontend.form :as form]
@@ -13,81 +12,52 @@
             [hickory.core :as hickory]
             [re-frame.core :as rf]))
 
-;; subs
-
-(rf/reg-sub
- :api-fetch-charges-by-user
- (fn [db [_ user-id]]
-   (let [db-path [:charges-by-user user-id]
-         data (get-in db [:charges-by-user user-id])
-         user-data (user/data)]
-     (cond
-       (= data :loading) nil
-       data data
-       :else (do
-               (rf/dispatch-sync [:set db-path :loading])
-               (go
-                 (-> (api-request/call :list-charges {:user-id user-id} user-data)
-                     <!
-                     (as-> response
-                           (let [error (:error response)]
-                             (if error
-                               (println ":fetch-charges-by-user error:" error)
-                               (rf/dispatch-sync [:set db-path (:charges response)]))))))
-               nil)))))
-
-(rf/reg-sub
- :api-fetch-charge-by-id-to-form
- (fn [db [_ charge-id db-path]]
-   (let [charge-db-path [:charge-by-id charge-id]
-         data (get-in db charge-db-path)
-         user-data (user/data)]
-     (cond
-       (= data :loading) nil
-       data data
-       :else (do
-               (rf/dispatch-sync [:set charge-db-path :loading])
-               (go
-                 (-> (api-request/call :fetch-charge {:id charge-id} user-data)
-                     <!
-                     (as-> response
-                           (if-let [error (:error response)]
-                             (println ":fetch-charge-by-id error:" error)
-                             (do
-                               (rf/dispatch-sync [:set charge-db-path response])
-                               (rf/dispatch-sync [:set db-path response])
-                                         ;; TODO: this is not very good, using a subscription like that
-                               @(rf/subscribe [:fetch-url-data-to-path (conj db-path :data :edn-data) (:edn-data-url response) reader/read-string])
-                               @(rf/subscribe [:fetch-url-data-to-path (conj db-path :data :svg-data) (:svg-data-url response) nil]))))))
-               nil)))))
-
-(rf/reg-sub
- :fetch-url-data-to-path
- (fn [db [_ db-path url function]]
-   (let [url-db-path [:url-data url]
-         data (get-in db url-db-path)]
-     (cond
-       (= data :loading) nil
-       data data
-       :else (do
-               (rf/dispatch-sync [:set url-db-path :loading])
-               (go
-                 (-> (http/get url)
-                     <!
-                     (as-> response
-                           (let [status (:status response)
-                                 body (:body response)]
-                             (if (= status 200)
-                               (do
-                                 (println "retrieved" url)
-                                 (rf/dispatch-sync [:set url-db-path body])
-                                 (rf/dispatch-sync [:set db-path (if function
-                                                                   (function body)
-                                                                   body)]))
-                               (println "error fetching" url))))))
-               nil)))))
-
 ;; functions
+
+(defn fetch-charge-list-by-user [user-id]
+  (go
+    (let [db-path [:charge-list]
+          user-data (user/data)]
+      (rf/dispatch-sync [:set db-path :loading])
+      (-> (api-request/call :list-charges {:user-id user-id} user-data)
+          <!
+          (as-> response
+                (let [error (:error response)]
+                  (if error
+                    (println "fetch-charges-by-user error:" error)
+                    (rf/dispatch-sync [:set db-path (:charges response)]))))))))
+
+(defn fetch-url-data-to-path [db-path url function]
+  (go
+    (-> (http/get url)
+        <!
+        (as-> response
+              (let [status (:status response)
+                    body (:body response)]
+                (if (= status 200)
+                  (do
+                    (println "retrieved" url)
+                    (rf/dispatch [:set db-path (if function
+                                                 (function body)
+                                                 body)]))
+                  (println "error fetching" url)))))))
+
+(defn fetch-charge-and-fill-form [charge-id]
+  (go
+    (let [form-db-path [:charge-form]
+          user-data (user/data)]
+      (rf/dispatch-sync [:set form-db-path :loading])
+      (-> (api-request/call :fetch-charge {:id charge-id} user-data)
+          <!
+          (as-> response
+                (if-let [error (:error response)]
+                  (println ":fetch-charge-by-id error:" error)
+                  (do
+                    (rf/dispatch [:set form-db-path response])
+                    (fetch-url-data-to-path (conj form-db-path :data :edn-data)
+                                            (:edn-data-url response) reader/read-string)
+                    (fetch-url-data-to-path (conj form-db-path :data :svg-data)
+                                            (:svg-data-url response) nil))))))))
 
 (defn charge-path [charge-id]
   (str "/charges/#" charge-id))
@@ -229,31 +199,40 @@
 
 (defn list-charges-for-user []
   (let [user-data (user/data)
-        charge-list @(rf/subscribe [:api-fetch-charges-by-user (:user-id user-data)])]
+        charge-list @(rf/subscribe [:get [:charge-list]])]
     [:div
      [:h4 "My charges"]
      [:button.pure-button.pure-button-primary {:on-click #(rf/dispatch [:set [:charge-form] {}])}
       "Create"]
-     (if charge-list
-       [:ul.charge-list
-        (doall
-         (for [charge charge-list]
-           ^{:key (:id charge)}
-           [:li.charge
-            (let [href (str (state/path) "#" (:id charge))]
-              [:a {:href href
-                   :on-click #(do
-                                (.preventDefault %)
-                                (state/goto href))}
-               (:name charge) " "
-               [:i.far.fa-edit]])]))]
-       [:<>])]))
+     (cond
+       (nil? charge-list) (do
+                            (fetch-charge-list-by-user (:user-id user-data))
+                            [:<>])
+       (= charge-list :loading) [:<>]
+       :else [:ul.charge-list
+              (doall
+               (for [charge charge-list]
+                 ^{:key (:id charge)}
+                 [:li.charge
+                  (let [href (str (state/path) "#" (:id charge))]
+                    [:a {:href href
+                         :on-click #(do
+                                      (.preventDefault %)
+                                      (state/goto href))}
+                     (:name charge) " "
+                     [:i.far.fa-edit]])]))])]))
 
 (defn logged-in []
-  (let [charge-form-data @(rf/subscribe [:get [:charge-form]])]
-    (if charge-form-data
-      [charge-form]
-      [list-charges-for-user])))
+  (let [charge-form-data @(rf/subscribe [:get [:charge-form]])
+        path-extra (state/path-extra)]
+    (cond
+      (and path-extra
+           (nil? charge-form-data)) (do
+                                      (fetch-charge-and-fill-form path-extra)
+                                      [:<>])
+      (= charge-form-data :loading) [:<>]
+      charge-form-data [charge-form]
+      :else [list-charges-for-user])))
 
 (defn not-logged-in []
   [:div "You need to be logged in."])
