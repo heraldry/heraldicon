@@ -44,16 +44,29 @@
    {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]
          [:dispatch [:remove db-path]]]}))
 
+(rf/reg-event-db
+ :set-location
+ (fn [db [_ path path-extra]]
+   (let [path-extra (when (-> path-extra count (> 0))
+                      path-extra)]
+     (-> db
+         (assoc-in [:location :path] path)
+         (assoc-in [:location :path-extra] path-extra)
+         (cond->
+             ;; TODO: also not so pretty, there ought to be a better way for this
+             (and (= path "/charges/")
+                  path-extra) (assoc-in [:charges-by-user] nil)
+             (and (= path "/charges/")
+                  (not path-extra)) (assoc-in [:charge-form] nil))))))
+
 ;; other
 
 
 (defn path []
-  @(rf/subscribe [:get [:path]]))
+  (or @(rf/subscribe [:get [:location :path]]) ""))
 
 (defn path-extra []
-  (let [path-extra @(rf/subscribe [:get [:path-extra]])]
-    (when (-> path-extra count (> 0))
-      path-extra)))
+  @(rf/subscribe [:get [:location :path-extra]]))
 
 (defn set-path [path & [hash]]
   (let [path       (if hash
@@ -62,8 +75,7 @@
         chunks     (s/split path #"#" 2)
         path       (first chunks)
         path-extra (second chunks)]
-    (rf/dispatch-sync [:set [:path] path])
-    (rf/dispatch-sync [:set [:path-extra] path-extra])))
+    (rf/dispatch-sync [:set-location path path-extra])))
 
 (defn goto [path]
   (set-path path)
