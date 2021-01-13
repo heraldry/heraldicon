@@ -6,7 +6,11 @@
             [cljs.reader :as reader]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
-            [heraldry.frontend.form :as form]
+            [heraldry.coat-of-arms.filter :as filter]
+            [heraldry.coat-of-arms.tincture :as tincture]
+            [heraldry.coat-of-arms.render :as render]
+            [heraldry.frontend.form.core :as form]
+            [heraldry.frontend.form.component :as component]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [hickory.core :as hickory]
@@ -104,17 +108,36 @@
                                  js/parseFloat)]
                   (rf/dispatch [:set (conj db-path :width) width])
                   (rf/dispatch [:set (conj db-path :height) height])
-                  (rf/dispatch [:set (conj db-path :data) {:edn-data edn-data
+                  (rf/dispatch [:set (conj db-path :data) {:edn-data {:data edn-data
+                                                                      :width width
+                                                                      :height height}
                                                            :svg-data data}]))))
       (catch :default e
         (println "error:" e)))))
 
 (defn preview [width height charge-data]
-  (let [{:keys [edn-data]} charge-data]
-    (when edn-data
-      [:svg {:viewBox (str "0 0 " width " " height)
-             :preserveAspectRatio "xMidYMid meet"}
-       edn-data])))
+  (let [{:keys [edn-data]} charge-data
+        render-options @(rf/subscribe [:get [:render-options]])
+        escutcheon (or @(rf/subscribe [:get [:coat-of-arms :escutcheon]])
+                       :rectangle)]
+    [:svg {:viewBox (str "0 0 520 700")
+           :preserveAspectRatio "xMidYMid meet"
+           :style {:width "95%"}}
+     [:defs
+      filter/shadow
+      filter/shiny
+      filter/glow
+      tincture/patterns]
+     [:g {:transform "translate(10,10) scale(5,5)"}
+      [render/coat-of-arms
+       {:escutcheon escutcheon
+        :field {:component :field
+                :content {:tincture :argent}
+                :components [{:component :charge
+                              :type edn-data
+                              :field {:tincture :or}}]}}
+       render-options
+       :width 100]]]))
 
 (defn upload-file [event db-path]
   (let [file (-> event .-target .-files (.item 0))]
@@ -211,7 +234,8 @@
        [:div.pure-control-group {:style {:text-align "right"
                                          :margin-top "10px"}}
         [:button.pure-button.pure-button-primary {:type "submit"}
-         "Save"]]]]]))
+         "Save"]]]
+      [component/form-render-options]]]))
 
 (defn list-charges-for-user []
   (let [user-data (user/data)
