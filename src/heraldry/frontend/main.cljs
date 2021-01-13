@@ -10,7 +10,13 @@
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:site {:menu {:items [["Home" "/"]
+   (merge {:render-options {:component :render-options
+                            :mode :colours
+                            :outline? false
+                            :squiggly? false
+                            :ui {:selectable-fields? true}}
+           :ui {:component-open? {[:render-options] true}}
+           :site {:menu {:items [["Home" "/"]
                                  ["Armory" "/armory/"]
                                  ["Charge Library" "/charges/"]]}}} db)))
 

@@ -2,7 +2,10 @@
   (:require ["crypto" :as crypto]
             [cljs-time.core :as time]
             [cljs-time.format :as format]
-            [clojure.pprint :refer [pprint]]))
+            [clojure.string :as s]
+            [clojure.walk :as walk]
+            [clojure.pprint :refer [pprint]]
+            [re-frame.core :as rf]))
 
 (defn promise
   [resolver]
@@ -43,3 +46,47 @@
       (.createHash "sha1")
       (.update data)
       (.digest "hex")))
+
+(defn dispatch [event effect]
+  (rf/dispatch effect)
+  (.stopPropagation event))
+
+(defn dispatch-sync [event effect]
+  (rf/dispatch-sync effect)
+  (.stopPropagation event))
+
+(def -current-id
+  (atom 0))
+
+(defn id [prefix]
+  (str prefix "_" (swap! -current-id inc)))
+
+(defn upper-case-first [s]
+  (str (s/upper-case (or (first s) "")) (s/join (rest s))))
+
+(defn translate [keyword]
+  (when keyword
+    (-> keyword
+        name
+        (s/replace "-" " "))))
+
+(defn translate-tincture [keyword]
+  (case keyword
+    :none "[no tincture]"
+    (translate keyword)))
+
+(defn translate-line [{:keys [type]}]
+  (when (not= type :straight)
+    (translate type)))
+
+(defn translate-cap-first [keyword]
+  (-> keyword
+      translate
+      upper-case-first))
+
+(defn combine [separator words]
+  (s/join separator (filter #(> (count %) 0) words)))
+
+(defn contains-in?
+  [m ks]
+  (not= ::absent (get-in m ks ::absent)))

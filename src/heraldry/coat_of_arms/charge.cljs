@@ -466,10 +466,14 @@
 
 (defn render-other-charge [{:keys [type field tincture hints] :as charge} parent
                            environment top-level-render render-options & {:keys [db-path]}]
-  (if-let [charge-data-path (-> charge
-                                get-charge-variant-data
-                                :path)]
-    (if-let [data @(rf/subscribe [:load-data charge-data-path])]
+  (if-let [charge-data-path (if (not (keyword? type))
+                              :type
+                              (-> charge
+                                  get-charge-variant-data
+                                  :path))]
+    (if-let [data (if (= charge-data-path :type)
+                    type
+                    @(rf/subscribe [:load-data charge-data-path]))]
       (let [{:keys [position geometry]} (options/sanitize charge (options charge))
             {:keys [size stretch
                     mirrored? reversed?
@@ -478,15 +482,13 @@
             ;; if not, then use nil
             ;; TODO: this probably needs a better mechanism and form representation
             size (if (-> charge :geometry :size) size nil)
-            data (first data)
             points (:points environment)
             top (:top points)
             bottom (:bottom points)
             left (:left points)
             right (:right points)
-            meta (get data 1)
-            positional-charge-width (js/parseFloat (:width meta))
-            positional-charge-height (js/parseFloat (:height meta))
+            positional-charge-width (js/parseFloat (:width data))
+            positional-charge-height (js/parseFloat (:height data))
             width (:width environment)
             height (:height environment)
             center-point (position/calculate position environment :fess)
@@ -511,6 +513,7 @@
             scale-y (* (if reversed? -1 1)
                        (* (Math/abs scale-x) stretch))
             adjusted-charge (-> data
+                                :data
                                 fix-string-style-values
                                 (cond->
                                  (not (or (:outline? hints)
@@ -518,8 +521,7 @@
                                  (and (:squiggly? render-options)
                                       (get #{:roundel
                                              :fusil
-                                             :billet} type)) line/squiggly-paths)
-                                (assoc 0 :g))
+                                             :billet} type)) line/squiggly-paths))
             provided-placeholder-colours (-> {}
                                              (into (map (fn [[key value]]
                                                           [key (tincture/pick value render-options)])

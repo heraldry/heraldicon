@@ -2,7 +2,7 @@
   (:require [cljs.core.async :refer [<! go]]
             [heraldry.api.request :as api-request]
             [heraldry.aws.cognito :as cognito]
-            [heraldry.frontend.form :as form]
+            [heraldry.frontend.form.core :as form]
             [heraldry.frontend.modal :as modal]
             [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
             [re-frame.core :as rf]))
