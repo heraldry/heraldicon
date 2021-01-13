@@ -17,6 +17,26 @@
 ;; events
 
 (rf/reg-event-db
+ :initialize-db
+ (fn [db [_]]
+   (merge {:render-options {:component :render-options
+                            :mode      :colours
+                            :outline?  false
+                            :squiggly? false
+                            :ui        {:selectable-fields? true}}
+           :example-coa    {:component  :field
+                            :content    {:tincture :argent}
+                            :components [{:component :charge
+                                          :variant   :default
+                                          :field     {:component :field
+                                                      :content   {:tincture :azure}}}]}
+           :coat-of-arms   {:escutcheon :rectangle}
+           :ui             {:component-open? {[:render-options] true}}
+           :site           {:menu {:items [["Home" "/"]
+                                           ["Armory" "/armory/"]
+                                           ["Charge Library" "/charges/"]]}}} db)))
+
+(rf/reg-event-db
  :set
  (fn [db [_ path value]]
    (assoc-in db path value)))

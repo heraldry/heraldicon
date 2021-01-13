@@ -115,11 +115,11 @@
       (catch :default e
         (println "error:" e)))))
 
-(defn preview [width height charge-data]
+(defn preview [charge-data]
   (let [{:keys [edn-data]} charge-data
         render-options     @(rf/subscribe [:get [:render-options]])
-        escutcheon         (or @(rf/subscribe [:get [:coat-of-arms :escutcheon]])
-                               :rectangle)]
+        escutcheon         @(rf/subscribe [:get [:coat-of-arms :escutcheon]])
+        example-coa        @(rf/subscribe [:get [:example-coa]])]
     [:svg {:viewBox             (str "0 0 520 700")
            :preserveAspectRatio "xMidYMid meet"
            :style               {:width "95%"}}
@@ -131,11 +131,8 @@
      [:g {:transform "translate(10,10) scale(5,5)"}
       [render/coat-of-arms
        {:escutcheon escutcheon
-        :field      {:component  :field
-                     :content    {:tincture :argent}
-                     :components [{:component :charge
-                                   :type      edn-data
-                                   :field     {:tincture :or}}]}}
+        :field      (-> example-coa
+                        (assoc-in [:components 0 :type] edn-data))}
        render-options
        :width 100]]]))
 
@@ -164,16 +161,16 @@
           (println "save-form error:" e))))))
 
 (defn charge-form []
-  (let [db-path                     [:charge-form]
-        error-message               @(rf/subscribe [:get-form-error db-path])
-        {:keys [width height data]} @(rf/subscribe [:get db-path])
-        on-submit                   (fn [event]
-                                      (.preventDefault event)
-                                      (.stopPropagation event)
-                                      (save-charge-clicked db-path))]
+  (let [db-path        [:charge-form]
+        error-message  @(rf/subscribe [:get-form-error db-path])
+        {:keys [data]} @(rf/subscribe [:get db-path])
+        on-submit      (fn [event]
+                         (.preventDefault event)
+                         (.stopPropagation event)
+                         (save-charge-clicked db-path))]
     [:div.pure-g
      [:div.pure-u-1-2
-      [preview width height data]]
+      [preview data]]
      [:div.pure-u-1-2
       [:form.pure-form.pure-form-aligned {:style        {:display "inline-block"}
                                           :on-key-press (fn [event]
@@ -235,6 +232,7 @@
                                          :margin-top "10px"}}
         [:button.pure-button.pure-button-primary {:type "submit"}
          "Save"]]]
+      [component/form-for-field [:example-coa]]
       [component/form-render-options]]]))
 
 (defn list-charges-for-user []
