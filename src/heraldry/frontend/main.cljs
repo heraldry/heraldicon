@@ -7,19 +7,6 @@
             [re-frame.core :as rf]
             [reagent.dom :as r]))
 
-(rf/reg-event-db
- :initialize-db
- (fn [db [_]]
-   (merge {:render-options {:component :render-options
-                            :mode :colours
-                            :outline? false
-                            :squiggly? false
-                            :ui {:selectable-fields? true}}
-           :ui {:component-open? {[:render-options] true}}
-           :site {:menu {:items [["Home" "/"]
-                                 ["Armory" "/armory/"]
-                                 ["Charge Library" "/charges/"]]}}} db)))
-
 (defn header []
   (let [user-data (user/data)
         menu @(rf/subscribe [:get [:site :menu]])

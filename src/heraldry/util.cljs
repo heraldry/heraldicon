@@ -90,3 +90,9 @@
 (defn contains-in?
   [m ks]
   (not= ::absent (get-in m ks ::absent)))
+
+(defn replace-recursively [data value replacement]
+  (walk/postwalk #(if (= % value)
+                    replacement
+                    %)
+                 data))
