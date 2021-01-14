@@ -101,3 +101,15 @@ form .error label {
 .spacer {
   display: inline-block;
 }
+
+label div {
+  vertical-align: middle;
+}
+
+.colour-preview {
+  display: inline-block;
+  border: 1px solid #ddd;
+  width: 1.5em;
+  height: 1.5em;
+  margin-left: 1em;
+}
