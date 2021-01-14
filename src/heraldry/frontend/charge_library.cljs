@@ -7,16 +7,30 @@
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.filter :as filter]
-            [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.coat-of-arms.render :as render]
-            [heraldry.frontend.form.core :as form]
+            [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.frontend.form.component :as component]
+            [heraldry.frontend.form.core :as form]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [hickory.core :as hickory]
             [re-frame.core :as rf]))
 
+(defn find-colours [data]
+  (->> data
+       (tree-seq #(or (map? %)
+                      (vector? %)
+                      (seq? %)) seq)
+       (filter #(and (vector? %)
+                     (-> % count (= 2))
+                     (#{:fill :stroke} (first %))))
+       (map second)
+       (filter #(and (string? %)
+                     (not= % "none")))
+       set))
+
 ;; functions
+
 
 (defn fetch-charge-list-by-user [user-id]
   (go
@@ -66,14 +80,6 @@
 (defn charge-path [charge-id]
   (str "/charges/#" charge-id))
 
-#_(defn strip-svg [data]
-    (walk/postwalk (fn [x]
-                     (cond->> x
-                       (map? x) (into {}
-                                      (filter (fn [[k _]]
-                                                (or (-> k keyword? not)
-                                                    (->> k name (s/split ":") count (= 1)))))))) data))
-
 (defn optimize-svg [data]
   (go-catch
    (-> {:removeUnknownsAndDefaults false}
@@ -105,12 +111,17 @@
                                  js/parseFloat)
                     height   (-> parsed
                                  (get-in [1 :height])
-                                 js/parseFloat)]
+                                 js/parseFloat)
+                    colours  (into {}
+                                   (map (fn [c]
+                                          [c :keep]) (find-colours
+                                                      edn-data)))]
                 (rf/dispatch [:set (conj db-path :width) width])
                 (rf/dispatch [:set (conj db-path :height) height])
-                (rf/dispatch [:set (conj db-path :data) {:edn-data {:data   edn-data
-                                                                    :width  width
-                                                                    :height height}
+                (rf/dispatch [:set (conj db-path :data) {:edn-data {:data    edn-data
+                                                                    :width   width
+                                                                    :height  height
+                                                                    :colours colours}
                                                          :svg-data data}]))))
       (catch :default e
         (println "error:" e)))))
@@ -220,6 +231,22 @@
          [form/checkbox (conj db-path :attributes :coward) "Coward"]
          [form/checkbox (conj db-path :attributes :pierced) "Pierced"]
          [form/checkbox (conj db-path :attributes :voided) "Voided"]]
+        [:div
+         [:h4 {:style {:margin "0.5em"}} "Colours"]
+         (let [colours-path   (conj db-path :data :edn-data :colours)
+               colours        @(rf/subscribe [:get colours-path])
+               colour-options [["Keep" :keep]
+                               ["Primary" :primary]
+                               ["Outline" :outline]
+                               ["Armed" :armed]
+                               ["Langued" :langued]
+                               ["Attired" :attired]
+                               ["Unguled" :unguled]
+                               ["Beaked" :beaked]]]
+           (for [[k _] colours]
+             ^{:key k}
+             [form/select (conj colours-path k) k colour-options
+              :label-extra [:div.colour-preview {:style {:background-color k}}]]))]
         [form/field (conj db-path :data)
          (fn [& _]
            [:div.pure-control-group {:style {:margin-top "3em"}}

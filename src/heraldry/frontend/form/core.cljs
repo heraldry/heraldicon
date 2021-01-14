@@ -27,11 +27,11 @@
                             (rf/dispatch [:set path new-checked?]))}]
      (str " " label)]))
 
-(defn select [path label choices & {:keys [grouped? value on-change default]}]
+(defn select [path label choices & {:keys [grouped? value on-change default label-extra]}]
   (let [component-id  (util/id "select")
         current-value @(rf/subscribe [:get path])]
     [:div.pure-control-group
-     [:label {:for component-id} label]
+     [:label {:for component-id} label label-extra]
      [:select {:id        component-id
                :value     (name (or value
                                     current-value
