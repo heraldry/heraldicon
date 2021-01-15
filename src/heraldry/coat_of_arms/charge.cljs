@@ -43,27 +43,6 @@
                                 (:variants charge-data))]
       (get variants variant))))
 
-(defn pick-placeholder-tincture [match {:keys [primary] :as tincture}]
-  (let [lower-case-match (s/lower-case match)
-        reverse-lookup   (into {} (map (fn [[key value]]
-                                         [(s/lower-case value) key])
-                                       config/placeholder-colours))
-        kind             (get reverse-lookup lower-case-match)]
-    (or (get tincture kind)
-        primary)))
-
-(defn replace-placeholder-colours [string tincture]
-  (s/replace string placeholder-regex
-             (fn [[_ match]]
-               (pick-placeholder-tincture match tincture))))
-
-(defn replace-non-placeholder-colour [current colour unwanted-placeholder-colours]
-  (let [match (s/lower-case current)]
-    (if (and (get config/placeholder-colours-set match)
-             (not (get unwanted-placeholder-colours match)))
-      current
-      colour)))
-
 (defn split-style-value [value]
   (-> value
       (s/split #";")
@@ -84,24 +63,6 @@
                     %)
                  data))
 
-(defn replace-placeholder-colours-everywhere [data tincture]
-  (walk/postwalk #(if (string? %)
-                    (replace-placeholder-colours % tincture)
-                    %)
-                 data))
-
-(defn replace-non-placeholder-colours-everywhere [data colour unwanted-placeholder-colours]
-  (walk/postwalk #(if (and (vector? %)
-                           (-> % second string?)
-                           (->> % first (get #{:stroke :fill}))
-                           (-> % second (not= "none")))
-                    [(first %) (replace-non-placeholder-colour
-                                (second %)
-                                colour
-                                unwanted-placeholder-colours)]
-                    %)
-                 data))
-
 (defn remove-outlines [data]
   (walk/postwalk #(if (and (vector? %)
                            (->> % first (get #{:stroke :fill}))
@@ -110,25 +71,47 @@
                     %)
                  data))
 
-(defn make-mask [data provided-placeholder-colours]
-  (let [mask-id                      (util/id "mask")
-        mask-inverted-id             (util/id "mask")
-        unwanted-placeholder-colours (-> provided-placeholder-colours
-                                         (dissoc :primary)
-                                         (->>
-                                          (filter second)
-                                          (map (fn [[k _]]
-                                                 (get config/placeholder-colours k)))
-                                          set))
-        mask                         (-> data
-                                         (replace-non-placeholder-colours-everywhere
-                                          "#fff" unwanted-placeholder-colours)
-                                         (replace-placeholder-colours-everywhere {:primary "#000"}))
-        mask-inverted                (-> data
-                                         remove-outlines
-                                         (replace-non-placeholder-colours-everywhere
-                                          "#000" unwanted-placeholder-colours)
-                                         (replace-placeholder-colours-everywhere {:primary "#fff"}))]
+(defn replace-colours [data function]
+  (walk/postwalk #(if (and (vector? %)
+                           (-> % second string?)
+                           (->> % first (get #{:stroke :fill}))
+                           (-> % second (not= "none")))
+                    [(first %) (function (second %))]
+                    %)
+                 data))
+
+(defn get-replacement [kind provided-placeholder-colours]
+  (let [replacement (get provided-placeholder-colours kind)]
+    (if (or (nil? replacement)
+            (= replacement :none))
+      nil
+      replacement)))
+
+(defn make-mask [data placeholder-colours provided-placeholder-colours]
+  (let [mask-id          (util/id "mask")
+        mask-inverted-id (util/id "mask")
+        mask             (replace-colours
+                          data
+                          (fn [colour]
+                            (let [colour-lower (s/lower-case colour)
+                                  kind         (get placeholder-colours colour-lower)
+                                  replacement  (get-replacement kind provided-placeholder-colours)]
+                              (if (or (= kind :keep)
+                                      (= kind :outline)
+                                      replacement)
+                                "#fff"
+                                "#000"))))
+        mask-inverted    (replace-colours
+                          data
+                          (fn [colour]
+                            (let [colour-lower (s/lower-case colour)
+                                  kind         (get placeholder-colours colour-lower)
+                                  replacement  (get-replacement kind provided-placeholder-colours)]
+                              (if (or (= kind :keep)
+                                      (= kind :outline)
+                                      replacement)
+                                "#000"
+                                "#fff"))))]
     [mask-id mask mask-inverted-id mask-inverted]))
 
 (defn counterchange-field [field {:keys [division]}]
@@ -522,18 +505,20 @@
                                                           (get #{:roundel
                                                                  :fusil
                                                                  :billet} type)) line/squiggly-paths))
-            provided-placeholder-colours     (-> {}
-                                                 (into (map (fn [[key value]]
-                                                              [key (tincture/pick value render-options)])
-                                                            (into {}
-                                                                  (filter (fn [[_ v]]
-                                                                            (not= v :none)) tincture))))
-                                                 (assoc :primary "none"))
+            placeholder-colours              (:colours data)
             [mask-id mask
-             mask-inverted-id mask-inverted] (make-mask adjusted-charge provided-placeholder-colours)
-            coloured-charge                  (replace-placeholder-colours-everywhere
+             mask-inverted-id mask-inverted] (make-mask adjusted-charge
+                                                        placeholder-colours
+                                                        tincture)
+            coloured-charge                  (replace-colours
                                               adjusted-charge
-                                              provided-placeholder-colours)
+                                              (fn [colour]
+                                                (let [colour-lower (s/lower-case colour)
+                                                      kind         (get placeholder-colours colour-lower)
+                                                      replacement  (get-replacement kind tincture)]
+                                                  (if replacement
+                                                    (tincture/pick replacement render-options)
+                                                    colour))))
             clip-path-id                     (util/id "clip-path")
             shift                            (-> (v/v positional-charge-width positional-charge-height)
                                                  (v// 2)
