@@ -238,6 +238,7 @@
                colour-options [["Keep" :keep]
                                ["Primary" :primary]
                                ["Outline" :outline]
+                               ["Eyes and Teeth" :eyes-and-teeth]
                                ["Armed" :armed]
                                ["Langued" :langued]
                                ["Attired" :attired]

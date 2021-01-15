@@ -662,13 +662,12 @@
 
 (defn form-for-charge [path & {:keys [parent-field]}]
   (let [charge                     @(rf/subscribe [:get path])
-        supported-tinctures        (-> charge
-                                       ;; TODO: hardcoded to always expect local charge data
-                                       :type
-                                       :supported-tinctures
-                                       set)
-        sorted-supported-tinctures (filter supported-tinctures [:armed :langued :attired :unguled])
-        eyes-and-teeth-support     (:eyes-and-teeth supported-tinctures)
+        supported-tinctures        #{:armed :langued :attired :unguled
+                                     :beaked}
+        sorted-supported-tinctures (filter supported-tinctures
+                                           [:armed :langued :attired :unguled
+                                            :beaked])
+        eyes-and-teeth-support     true
         title                      (s/join " " [(-> charge :type util/translate-cap-first)
                                                 (-> charge :attitude util/translate)])]
     [component path :charge title nil
@@ -676,26 +675,30 @@
       (when (and (:type charge)
                  (-> charge :type :map? not))
         [form-for-charge-type path])
-      (when sorted-supported-tinctures
-        [:div.placeholders
+      [:div.setting
+       [:label "Tinctures"]
+       " "
+       [submenu (conj path :tincture) "Tinctures" "Change" {}
+        (when sorted-supported-tinctures
+          [:div.placeholders
+           {:style {:width "50%"
+                    :float "left"}}
+           (for [t sorted-supported-tinctures]
+             ^{:key t}
+             [form-for-tincture
+              (conj path :tincture t)
+              :label (util/translate-cap-first t)])])
+        [:div
          {:style {:width "50%"
                   :float "left"}}
-         (for [t sorted-supported-tinctures]
-           ^{:key t}
-           [form-for-tincture
-            (conj path :tincture t)
-            :label (util/translate-cap-first t)])])
-      [:div
-       {:style {:width "50%"
-                :float "left"}}
-       (when eyes-and-teeth-support
-         [checkbox
-          (conj path :tincture :eyes-and-teeth)
-          "White eyes and teeth"
-          :on-change #(rf/dispatch [:set
-                                    (conj path :tincture :eyes-and-teeth)
-                                    (if % :argent nil)])])]
-      [:div.spacer]
+         (when eyes-and-teeth-support
+           [checkbox
+            (conj path :tincture :eyes-and-teeth)
+            "White eyes and teeth"
+            :on-change #(rf/dispatch [:set
+                                      (conj path :tincture :eyes-and-teeth)
+                                      (if % :argent nil)])])]
+        [:div.spacer]]]
       (let [charge-options (charge/options charge)]
         [:<>
          (when (:position charge-options)
