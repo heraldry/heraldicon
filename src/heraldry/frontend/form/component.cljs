@@ -9,7 +9,7 @@
             [heraldry.coat-of-arms.ordinary :as ordinary]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.tincture :as tincture]
-            [heraldry.util :as util]
+            [heraldry.frontend.util :as util]
             [re-frame.core :as rf]))
 
 ;; subs
