@@ -1036,5 +1036,7 @@
                  [form-for-ordinary component-path :parent-field field]
                  [form-for-charge component-path :parent-field field])]
               [:div {:style {:padding-left "10px"}}
-               [:a {:on-click #(util/dispatch % [:remove-component component-path])}
-                [:i.far.fa-trash-alt]]]])))]]]))
+               (when (not (and (-> component :component (= :charge))
+                               (-> component :type keyword? not)))
+                 [:a {:on-click #(util/dispatch % [:remove-component component-path])}
+                  [:i.far.fa-trash-alt]])]])))]]]))
