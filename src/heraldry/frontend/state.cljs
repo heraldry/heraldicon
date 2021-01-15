@@ -29,7 +29,13 @@
                          :components [{:component :charge
                                        :variant :default
                                        :field {:component :field
-                                               :content {:tincture :azure}}}]}
+                                               :content {:tincture :azure}}
+                                       :tincture {:eyes-and-teeth :argent
+                                                  :armed :or
+                                                  :langued :gules
+                                                  :attired :argent
+                                                  :unguled :vert
+                                                  :beaked :or}}]}
            :coat-of-arms {:escutcheon :rectangle}
            :ui {:component-open? {[:render-options] true}}
            :site {:menu {:items [["Home" "/"]

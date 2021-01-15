@@ -668,6 +668,23 @@
                                            [:armed :langued :attired :unguled
                                             :beaked])
         eyes-and-teeth-support true
+        tinctures-set (-> charge
+                          :tincture
+                          (->> (filter (fn [[_ v]]
+                                         (and (some? v)
+                                              (not= v :none))))
+                               (map first)
+                               set)
+                          (filter
+                           [:armed :langued :attired :unguled
+                            :beaked :eyes-and-teeth])
+                          (->> (map util/translate-cap-first)))
+        tinctures-title (if (-> tinctures-set count pos?)
+                          (util/combine ", " tinctures-set)
+                          "Set")
+        tinctures-title (if (-> tinctures-title count (> 30))
+                          (str (subs tinctures-title 0 27) "...")
+                          tinctures-title)
         title (s/join " " [(-> charge :type util/translate-cap-first)
                            (-> charge :attitude util/translate)])]
     [component path :charge title nil
@@ -678,7 +695,7 @@
       [:div.setting
        [:label "Tinctures"]
        " "
-       [submenu (conj path :tincture) "Tinctures" "Change" {}
+       [submenu (conj path :tincture) "Tinctures" tinctures-title {}
         (when sorted-supported-tinctures
           [:div.placeholders
            {:style {:width "50%"
