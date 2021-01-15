@@ -4,6 +4,7 @@
             [cljs.core.async :refer [go <!]]
             [cljs.core.async.interop :refer-macros [<p!]]
             [cljs.reader :as reader]
+            [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.filter :as filter]
@@ -27,6 +28,7 @@
        (map second)
        (filter #(and (string? %)
                      (not= % "none")))
+       (map s/lower-case)
        set))
 
 ;; functions
