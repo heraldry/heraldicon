@@ -218,53 +218,7 @@
     filter/shadow
     filter/shiny
     filter/glow
-    tincture/patterns
-    [:pattern#void {:width         20
-                    :height        20
-                    :pattern-units "userSpaceOnUse"}
-     [:rect {:x      0
-             :y      0
-             :width  20
-             :height 20
-             :fill   "#fff"}]
-     [:rect {:x      0
-             :y      0
-             :width  10
-             :height 10
-             :fill   "#ddd"}]
-     [:rect {:x      10
-             :y      10
-             :width  10
-             :height 10
-             :fill   "#ddd"}]]
-    (let [spacing 2
-          width   (* spacing 2)
-          size    0.3]
-      [:pattern {:id            "selected"
-                 :width         width
-                 :height        width
-                 :pattern-units "userSpaceOnUse"}
-       [:rect {:x      0
-               :y      0
-               :width  width
-               :height width
-               :fill   "#f5f5f5"}]
-       [:g {:fill "#000"}
-        [:circle {:cx 0
-                  :cy 0
-                  :r  size}]
-        [:circle {:cx width
-                  :cy 0
-                  :r  size}]
-        [:circle {:cx 0
-                  :cy width
-                  :r  size}]
-        [:circle {:cx width
-                  :cy width
-                  :r  size}]
-        [:circle {:cx spacing
-                  :cy spacing
-                  :r  size}]]])]))
+    tincture/patterns]))
 
 (defn forms []
   [:<>
