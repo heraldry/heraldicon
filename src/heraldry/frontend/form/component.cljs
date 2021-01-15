@@ -709,7 +709,11 @@
            [form-for-geometry (conj path :geometry)
             (:geometry charge-options)
             :current (:geometry charge)])])
-      [checkbox (conj path :hints :outline?) "Outline"]]
+      [select (conj path :hints :outline-mode) "Outline" [["Keep" :keep]
+                                                          ["Remove" :remove]
+                                                          ["Primary" :primary]
+                                                          ["Transparent" :transparent]]
+       :default :keep]]
      [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn division-choice [path key display-name]

@@ -87,7 +87,7 @@
       nil
       replacement)))
 
-(defn make-mask [data placeholder-colours provided-placeholder-colours]
+(defn make-mask [data placeholder-colours provided-placeholder-colours outline-mode]
   (let [mask-id (util/id "mask")
         mask-inverted-id (util/id "mask")
         mask (replace-colours
@@ -97,7 +97,8 @@
                       kind (get placeholder-colours colour-lower)
                       replacement (get-replacement kind provided-placeholder-colours)]
                   (if (or (= kind :keep)
-                          (= kind :outline)
+                          (and (not (#{:transparent :primary} outline-mode))
+                               (= kind :outline))
                           replacement)
                     "#fff"
                     "#000"))))
@@ -108,7 +109,8 @@
                                kind (get placeholder-colours colour-lower)
                                replacement (get-replacement kind provided-placeholder-colours)]
                            (if (or (= kind :keep)
-                                   (= kind :outline)
+                                   (and (not (#{:primary} outline-mode))
+                                        (= kind :outline))
                                    replacement)
                              "#000"
                              "#fff"))))]
@@ -231,7 +233,7 @@
      :charge-pale [field] parts
      [:all]
      (when (or (:outline? render-options)
-               (:outline? hints))
+               (-> hints :outline-mode (= :keep)))
        [:g.outline
         [:path {:d charge-shape}]
         (when mask-shape
@@ -499,7 +501,7 @@
                                 :data
                                 fix-string-style-values
                                 (cond->
-                                 (not (or (:outline? hints)
+                                 (not (or (-> hints :outline-mode (not= :remove))
                                           (:outline? render-options))) remove-outlines
                                  (and (:squiggly? render-options)
                                       (get #{:roundel
@@ -509,7 +511,8 @@
             [mask-id mask
              mask-inverted-id mask-inverted] (make-mask adjusted-charge
                                                         placeholder-colours
-                                                        tincture)
+                                                        tincture
+                                                        (:outline-mode hints))
             coloured-charge (replace-colours
                              adjusted-charge
                              (fn [colour]
