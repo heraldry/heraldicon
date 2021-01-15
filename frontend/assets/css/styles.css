@@ -98,8 +98,12 @@ form .error label {
   color: #b44;
 }
 
-.spacer {
+.horizontal-spacer {
   display: inline-block;
+}
+
+.spacer {
+  display: block;
 }
 
 label div {

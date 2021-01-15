@@ -25,7 +25,7 @@
          [:li.pure-menu-item {:class (when (= path selected)
                                        "pure-menu-selected")}
           [:a.pure-menu-link {:on-click #(state/goto path)} name]])
-       [:span.spacer {:style {:width "5em"}}]
+       [:span.horizontal-spacer {:style {:width "5em"}}]
        (if (:logged-in? user-data)
          [:li.pure-menu-item.pure-menu-has-children.pure-menu-allow-hover
           {:style {:min-width "6em"}}
