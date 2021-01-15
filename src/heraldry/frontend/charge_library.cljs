@@ -180,9 +180,9 @@
                          (.stopPropagation event)
                          (save-charge-clicked db-path))]
     [:div.pure-g
-     [:div.pure-u-1-2
+     [:div.pure-u-1-2 {:style {:position "fixed"}}
       [preview data]]
-     [:div.pure-u-1-2
+     [:div.pure-u-1-2 {:style {:margin-left "50%"}}
       [:form.pure-form.pure-form-aligned {:style        {:display "inline-block"}
                                           :on-key-press (fn [event]
                                                           (when (-> event .-code (= "Enter"))
