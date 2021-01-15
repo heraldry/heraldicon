@@ -47,6 +47,55 @@
   (let [id "pean"]
     [id (ermine-base id "#000" "#f1b952")]))
 
+(def void
+  [:pattern#void {:width 20
+                  :height 20
+                  :pattern-units "userSpaceOnUse"}
+   [:rect {:x 0
+           :y 0
+           :width 20
+           :height 20
+           :fill "#fff"}]
+   [:rect {:x 0
+           :y 0
+           :width 10
+           :height 10
+           :fill "#ddd"}]
+   [:rect {:x 10
+           :y 10
+           :width 10
+           :height 10
+           :fill "#ddd"}]])
+
+(def selected
+  (let [spacing 2
+        width (* spacing 2)
+        size 0.3]
+    [:pattern.selected {:width width
+                        :height width
+                        :pattern-units "userSpaceOnUse"}
+     [:rect {:x 0
+             :y 0
+             :width width
+             :height width
+             :fill "#f5f5f5"}]
+     [:g {:fill "#000"}
+      [:circle {:cx 0
+                :cy 0
+                :r size}]
+      [:circle {:cx width
+                :cy 0
+                :r size}]
+      [:circle {:cx 0
+                :cy width
+                :r size}]
+      [:circle {:cx width
+                :cy width
+                :r size}]
+      [:circle {:cx spacing
+                :cy spacing
+                :r size}]]]))
+
 ;; colours taken from ;; https://github.com/drawshield/Drawshield-Code/blob/0d7ecc865e5ccd2ae8b17c11511c6afebb2ff6c9/svg/schemes/wappenwiki.txt
 (def metals
   {:argent "#f5f5f5"
@@ -116,6 +165,8 @@
 
 (def patterns
   (into
-   [:<>]
+   [:<>
+    void
+    selected]
    (for [[_ pattern] (vals furs)]
      pattern)))
