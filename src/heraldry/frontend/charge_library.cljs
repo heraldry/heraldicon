@@ -185,11 +185,12 @@
      [:div.pure-u-1-2 {:style {:position "fixed"}}
       [preview data]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"}}
-      [:form.pure-form.pure-form-aligned {:style {:display "inline-block"}
-                                          :on-key-press (fn [event]
-                                                          (when (-> event .-code (= "Enter"))
-                                                            (on-submit event)))
-                                          :on-submit on-submit}
+      [:form.pure-form.pure-form-aligned.narrow
+       {:style {:display "inline-block"}
+        :on-key-press (fn [event]
+                        (when (-> event .-code (= "Enter"))
+                          (on-submit event)))
+        :on-submit on-submit}
        (when error-message
          [:div.error-message error-message])
        [:fieldset
@@ -200,7 +201,9 @@
             [:input {:id "name"
                      :value value
                      :on-change on-change
-                     :type "text"}]])]
+                     :type "text"
+                     :style {:margin-right "0.5em"}}]
+            [form/checkbox (conj db-path :is-public) "Make public"]])]
         [form/field (conj db-path :key)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
