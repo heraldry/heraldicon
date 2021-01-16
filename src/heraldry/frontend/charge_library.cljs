@@ -184,7 +184,8 @@
     [:div.pure-g
      [:div.pure-u-1-2 {:style {:position "fixed"}}
       [preview data]]
-     [:div.pure-u-1-2 {:style {:margin-left "50%"}}
+     [:div.pure-u-1-2 {:style {:margin-left "50%"
+                               :width       "45%"}}
       [:form.pure-form.pure-form-aligned
        {:style        {:display "inline-block"}
         :on-key-press (fn [event]
