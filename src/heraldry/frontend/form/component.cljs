@@ -419,21 +419,21 @@
         [escutcheon-choice path key display-name])]
      [:div.spacer]]))
 
-(defn form-render-options []
-  [component [:render-options] :render-options "Options" nil
-   [form-for-escutcheon [:coat-of-arms :escutcheon]]
-   (let [path [:render-options :mode]]
-     [radio-select path [["Colours" :colours]
-                         ["Hatching" :hatching]]
+(defn form-render-options [db-path]
+  [component (conj db-path :render-options) :render-options "Options" nil
+   [form-for-escutcheon (conj db-path :coat-of-arms :escutcheon)]
+   (let [mode-path    (conj db-path :render-options :mode)
+         outline-path (conj db-path :render-options :outline?)]
+     [radio-select mode-path [["Colours" :colours]
+                              ["Hatching" :hatching]]
       :default :colours
       :on-change #(let [new-mode %]
-                    (rf/dispatch [:set [:render-options :mode] new-mode])
+                    (rf/dispatch [:set mode-path new-mode])
                     (case new-mode
-                      :hatching (rf/dispatch [:set [:render-options :outline?] true])
-                      :colours  (rf/dispatch [:set [:render-options :outline?] false])))])
-
-   [checkbox [:render-options :outline?] "Draw outline"]
-   [checkbox [:render-options :squiggly?] "Squiggly lines (can be slow)"]])
+                      :hatching (rf/dispatch [:set outline-path true])
+                      :colours  (rf/dispatch [:set outline-path false])))])
+   [checkbox (conj db-path :render-options :outline?) "Draw outline"]
+   [checkbox (conj db-path :render-options :squiggly?) "Squiggly lines (can be slow)"]])
 
 (defn tincture-choice [path key display-name]
   (let [value @(rf/subscribe [:get path])]
