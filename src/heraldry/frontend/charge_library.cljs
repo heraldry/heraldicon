@@ -185,7 +185,7 @@
      [:div.pure-u-1-2 {:style {:position "fixed"}}
       [preview data]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"}}
-      [:form.pure-form.pure-form-aligned.narrow
+      [:form.pure-form.pure-form-aligned
        {:style        {:display "inline-block"}
         :on-key-press (fn [event]
                         (when (-> event .-code (= "Enter"))
@@ -197,17 +197,20 @@
         [form/field (conj db-path :name)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
-            [:label {:for "name"} "Name"]
+            [:label {:for   "name"
+                     :style {:width "6em"}} "Name"]
             [:input {:id        "name"
                      :value     value
                      :on-change on-change
                      :type      "text"
                      :style     {:margin-right "0.5em"}}]
-            [form/checkbox (conj db-path :is-public) "Make public"]])]
+            [form/checkbox (conj db-path :is-public) "Make public"
+             :style {:width "7em"}]])]
         [form/field (conj db-path :key)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
-            [:label {:for "key"} "Charge Key"]
+            [:label {:for   "key"
+                     :style {:width "6em"}} "Charge Key"]
             [:input {:id        "key"
                      :value     value
                      :on-change on-change
@@ -221,7 +224,8 @@
                                                           ["Rampant" :rampant]
                                                           ["Salient" :salient]
                                                           ["Sejant" :sejant]
-                                                          ["Statant" :statant]]]
+                                                          ["Statant" :statant]]
+         :label-style {:width "6em"}]
         [form/select (conj db-path :facing) "Facing" [["None" :none]
                                                       ["To dexter" :to-dexter]
                                                       ["To sinister" :to-sinister]
@@ -230,14 +234,17 @@
                                                       ["Guardant" :guardant]
                                                       ["Reguardant" :reguardant]
                                                       ["Salient" :salient]
-                                                      ["In trian aspect" :in-trian-aspect]]]
+                                                      ["In trian aspect" :in-trian-aspect]]
+         :label-style {:width "6em"}]
         [:div.pure-control-group
-         [:h4 {:style {:margin "0.5em"}} "Attributes"]
+         [:h4 {:style {:margin-top    "1em"
+                       :margin-bottom "0.5em"}} "Attributes"]
          [form/checkbox (conj db-path :attributes :coward) "Coward"]
          [form/checkbox (conj db-path :attributes :pierced) "Pierced"]
          [form/checkbox (conj db-path :attributes :voided) "Voided"]]
-        [:div
-         [:h4 {:style {:margin "0.5em"}} "Colours"]
+        [:div.pure-control-group
+         [:h4 {:style {:margin-top    "1em"
+                       :margin-bottom "0.5em"}} "Colours"]
          (let [colours-path   (conj db-path :data :edn-data :colours)
                colours        @(rf/subscribe [:get colours-path])
                colour-options [["Keep" :keep]
@@ -251,8 +258,18 @@
                                ["Beaked" :beaked]]]
            (for [[k _] colours]
              ^{:key k}
-             [form/select (conj colours-path k) k colour-options
-              :label-extra [:div.colour-preview {:style {:background-color k}}]]))]
+             [form/select (conj colours-path k)
+              [:div.colour-preview.tooltip {:style {:background-color k}}
+               [:div.bottom {:style {:top "30px"}}
+                [:h3 {:style {:text-align "center"}} k]
+                [:i]]]
+              colour-options
+              :label-style {:width        "1.5em"
+                            :margin-right "0.5em"}
+              :style {:display      "inline-block"
+                      :padding-left "0"
+                      :margin-right "0.5em"}]))]
+
         [form/field (conj db-path :data)
          (fn [& _]
            [:div.pure-control-group {:style {:margin-top "3em"}}
