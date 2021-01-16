@@ -272,18 +272,20 @@
                       :margin-right "0.5em"}]))
          [form/checkbox [:render-options :preview-original?]
           "Preview original (don't replace colours)" :style {:margin-right "0.5em"
-                                                             :width        "20em"}]]
-
-        [form/field (conj db-path :data)
+                                                             :width        "20em"}]]]
+       [:div.pure-control-group {:style {:text-align "right"
+                                         :margin-top "10px"}}
+        [form/field-without-error (conj db-path :data)
          (fn [& _]
-           [:div.pure-control-group {:style {:margin-top "3em"}}
-            [:label {:for "upload"} "Upload"]
+           [:label.pure-button {:for   "upload"
+                                :style {:display "inline-block"
+                                        :width   "auto"
+                                        :float   "left"}} "Upload SVG"
             [:input {:type      "file"
                      :accept    "image/svg+xml"
                      :id        "upload"
-                     :on-change #(upload-file % db-path)}]])]]
-       [:div.pure-control-group {:style {:text-align "right"
-                                         :margin-top "10px"}}
+                     :on-change #(upload-file % db-path)
+                     :style     {:display "none"}}]])]
         [:button.pure-button.pure-button-primary {:type "submit"}
          "Save"]]]
       [component/form-for-field [:example-coa]]
