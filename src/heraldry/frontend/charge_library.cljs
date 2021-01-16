@@ -135,7 +135,7 @@
         example-coa        @(rf/subscribe [:get [:example-coa]])]
     [:svg {:viewBox             (str "0 0 520 700")
            :preserveAspectRatio "xMidYMid meet"
-           :style               {:width "95%"}}
+           :style               {:width "97%"}}
      [:defs
       filter/shadow
       filter/shiny
@@ -288,7 +288,7 @@
 (defn list-charges-for-user []
   (let [user-data   (user/data)
         charge-list @(rf/subscribe [:get [:charge-list]])]
-    [:div
+    [:div {:style {:padding "15px"}}
      [:h4 "My charges"]
      [:button.pure-button.pure-button-primary {:on-click #(rf/dispatch [:set [:charge-form] {}])}
       "Create"]
@@ -323,7 +323,8 @@
       :else                         [list-charges-for-user])))
 
 (defn not-logged-in []
-  [:div "You need to be logged in."])
+  [:div {:style {:padding "15px"}}
+   "You need to be logged in."])
 
 (defn main []
   (let [user-data (user/data)]
