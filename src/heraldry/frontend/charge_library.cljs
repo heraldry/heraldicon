@@ -130,9 +130,8 @@
 
 (defn preview [charge-data]
   (let [{:keys [edn-data]} charge-data
-        render-options @(rf/subscribe [:get [:render-options]])
-        escutcheon @(rf/subscribe [:get [:coat-of-arms :escutcheon]])
-        example-coa @(rf/subscribe [:get [:example-coa]])]
+        render-options @(rf/subscribe [:get [:example-coa :render-options]])
+        coat-of-arms @(rf/subscribe [:get [:example-coa :coat-of-arms]])]
     [:svg {:viewBox (str "0 0 520 700")
            :preserveAspectRatio "xMidYMid meet"
            :style {:width "97%"}}
@@ -143,9 +142,8 @@
       tincture/patterns]
      [:g {:transform "translate(10,10) scale(5,5)"}
       [render/coat-of-arms
-       {:escutcheon escutcheon
-        :field (-> example-coa
-                   (assoc-in [:components 0 :type] edn-data))}
+       (assoc-in coat-of-arms
+                 [:field :components 0 :type] edn-data)
        render-options
        :width 100]]]))
 
@@ -270,7 +268,7 @@
               :style {:display "inline-block"
                       :padding-left "0"
                       :margin-right "0.5em"}]))
-         [form/checkbox [:render-options :preview-original?]
+         [form/checkbox [:example-coa :render-options :preview-original?]
           "Preview original (don't replace colours)" :style {:margin-right "0.5em"
                                                              :width "20em"}]]]
        [:div.pure-control-group {:style {:text-align "right"
@@ -288,15 +286,16 @@
                      :style {:display "none"}}]])]
         [:button.pure-button.pure-button-primary {:type "submit"}
          "Save"]]]
-      [component/form-for-field [:example-coa]]
-      [component/form-render-options]]]))
+      [component/form-render-options [:example-coa]]
+      [component/form-for-field [:example-coa :coat-of-arms :field]]]]))
 
 (defn list-charges-for-user []
   (let [user-data (user/data)
         charge-list @(rf/subscribe [:get [:charge-list]])]
     [:div {:style {:padding "15px"}}
      [:h4 "My charges"]
-     [:button.pure-button.pure-button-primary {:on-click #(rf/dispatch [:set [:charge-form] {}])}
+     [:button.pure-button.pure-button-primary
+      {:on-click #(rf/dispatch [:set [:charge-form] {}])}
       "Create"]
      (cond
        (nil? charge-list) (do
