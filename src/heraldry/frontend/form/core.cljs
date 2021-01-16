@@ -12,26 +12,29 @@
                :on-change #(let [new-value (-> % .-target .-value)]
                              (rf/dispatch [:set db-path new-value])))]))
 
-(defn checkbox [path label]
+(defn checkbox [path label & {:keys [style]}]
   (let [component-id (util/id "checkbox")
         checked? (-> (and path
                           @(rf/subscribe [:get path]))
                      boolean)]
     [:label {:for component-id
-             :style {:text-align "left"
-                     :width "6em"}}
+             :style (merge {:text-align "left"
+                            :width "6em"}
+                           style)}
      [:input {:type "checkbox"
               :id component-id
               :checked checked?
               :on-change #(let [new-checked? (-> % .-target .-checked)]
-                            (rf/dispatch [:set path new-checked?]))}]
+                            (rf/dispatch [:set path new-checked?]))
+              :style {:vertical-align "-1px"}}]
      (str " " label)]))
 
-(defn select [path label choices & {:keys [grouped? value on-change default label-extra]}]
+(defn select [path label choices & {:keys [grouped? value on-change default label-extra style label-style]}]
   (let [component-id (util/id "select")
         current-value @(rf/subscribe [:get path])]
-    [:div.pure-control-group
-     [:label {:for component-id} label label-extra]
+    [:div.pure-control-group {:style style}
+     [:label {:for component-id
+              :style label-style} label label-extra]
      [:select {:id component-id
                :value (name (or value
                                 current-value
