@@ -20,8 +20,10 @@
     :region (:REGION env)
     :stage stage
     :table-charges (:TABLE_CHARGES env)
+    :table-arms (:TABLE_ARMS env)
     :table-users (:TABLE_USERS env)
     :table-sessions (:TABLE_SESSIONS env)
     :bucket-charges (:BUCKET_CHARGES env)
+    :bucket-arms (:BUCKET_ARMS env)
     :armory-api-endpoint (heraldry.config/get-static :armory-api-endpoint)
     nil))
