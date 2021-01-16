@@ -115,3 +115,21 @@ label div {
   width: 1.5em;
   height: 1.5em;
 }
+
+.blazonry {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 1em;
+}
+
+.blazonry .blazon {
+  font-size: 1.2em;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+.blazonry .disclaimer {
+  font-size: 0.8em;
+  color: #aaa;
+}

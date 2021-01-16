@@ -19,23 +19,24 @@
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:render-options {:component :render-options
-                            :mode :colours
-                            :outline? false
-                            :squiggly? false
-                            :ui {:selectable-fields? true}}
-           :example-coa {:component :field
-                         :content {:tincture :argent}
-                         :components [{:component :charge
-                                       :variant :default
-                                       :field {:component :field
-                                               :content {:tincture :azure}}
-                                       :tincture {:eyes-and-teeth :argent
-                                                  :armed :or
-                                                  :langued :gules
-                                                  :attired :argent
-                                                  :unguled :vert
-                                                  :beaked :or}}]}
+   (merge {:example-coa {:render-options {:component :render-options
+                                          :mode :colours
+                                          :outline? false
+                                          :squiggly? false
+                                          :ui {:selectable-fields? true}}
+                         :coat-of-arms {:escutcheon :rectangle
+                                        :field {:component :field
+                                                :content {:tincture :argent}
+                                                :components [{:component :charge
+                                                              :variant :default
+                                                              :field {:component :field
+                                                                      :content {:tincture :azure}}
+                                                              :tincture {:eyes-and-teeth :argent
+                                                                         :armed :or
+                                                                         :langued :gules
+                                                                         :attired :argent
+                                                                         :unguled :vert
+                                                                         :beaked :or}}]}}}
            :coat-of-arms {:escutcheon :rectangle}
            :ui {:component-open? {[:render-options] true}}
            :site {:menu {:items [["Home" "/"]
