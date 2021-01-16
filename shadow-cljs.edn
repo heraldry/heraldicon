@@ -58,8 +58,7 @@
 
           :api
           {:target :node-library
-           :exports {:handler heraldry.api.core/handler
-                     :signin_handler heraldry.api.core/signin-handler}
+           :exports {:handler heraldry.api.core/handler}
            :js-options {:js-package-dirs ["./api/node_modules"]}
            :output-to "api/generated/api.js"
            :devtools {:repl-pprint true}
