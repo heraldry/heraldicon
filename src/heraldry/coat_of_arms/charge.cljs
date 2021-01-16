@@ -507,7 +507,13 @@
                                       (get #{:roundel
                                              :fusil
                                              :billet} type)) line/squiggly-paths))
-            placeholder-colours (:colours data)
+            placeholder-colours (-> data
+                                    :colours
+                                    (cond->>
+                                     (:preview-original? render-options)
+                                      (into {}
+                                            (map (fn [[k _]]
+                                                   [k :keep])))))
             [mask-id mask
              mask-inverted-id mask-inverted] (make-mask adjusted-charge
                                                         placeholder-colours
