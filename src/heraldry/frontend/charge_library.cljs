@@ -256,7 +256,7 @@
                                ["Attired" :attired]
                                ["Unguled" :unguled]
                                ["Beaked" :beaked]]]
-           (for [[k _] colours]
+           (for [[k _] (sort-by first colours)]
              ^{:key k}
              [form/select (conj colours-path k)
               [:div.colour-preview.tooltip {:style {:background-color k}}
@@ -268,7 +268,10 @@
                             :margin-right "0.5em"}
               :style {:display "inline-block"
                       :padding-left "0"
-                      :margin-right "0.5em"}]))]
+                      :margin-right "0.5em"}]))
+         [form/checkbox [:render-options :preview-original?]
+          "Preview original (don't replace colours)" :style {:margin-right "0.5em"
+                                                             :width "20em"}]]
 
         [form/field (conj db-path :data)
          (fn [& _]
