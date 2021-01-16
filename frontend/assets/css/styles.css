@@ -98,10 +98,6 @@ form .error label {
   color: #b44;
 }
 
-.narrow label {
-  width: 7em !important;
-}
-
 .horizontal-spacer {
   display: inline-block;
 }
@@ -119,5 +115,4 @@ label div {
   border: 1px solid #ddd;
   width: 1.5em;
   height: 1.5em;
-  margin-left: 1em;
 }
