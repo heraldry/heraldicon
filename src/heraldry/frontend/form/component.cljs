@@ -584,7 +584,7 @@
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])
 
-(defn charge-type-selected-choice [key attitude variant display-name & {:keys [current]}]
+(defn charge-type-selected-choice [charge display-name]
   [:div.choice.tooltip
    [:svg {:style {:width "4em"
                   :height "4.5em"}
@@ -598,9 +598,8 @@
                 :content {:tincture :argent}
                 :components [{:component :charge
                               :type key
-                              :attitude attitude
-                              :variant variant
-                              :field {:content {:tincture (if (= current key) :or :azure)}}}]}}
+                              :data (:data charge)
+                              :field {:content {:tincture :or}}}]}}
        {:outline? true}]]]]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
@@ -799,7 +798,8 @@
                    (into {}))
         title (util/combine " " [(or (get names charge-type)
                                      (-> charge :type util/translate-cap-first))
-                                 (-> charge :attitude util/translate)])]
+                                 (-> charge :attitude util/translate)
+                                 (-> charge :facing util/translate)])]
     [:div.setting
      [:label "Type"]
      " "
@@ -808,7 +808,7 @@
         ^{:key key}
         [charge-type-choice path key display-name :current charge-type])
       (when (-> names (contains? charge-type) not)
-        [charge-type-selected-choice charge-type (:attitude charge) (:variant charge) title :current charge-type])
+        [charge-type-selected-choice charge title])
       [charge-type-more-choice path charge]]]))
 
 (defn form-for-charge [path & {:keys [parent-field]}]
