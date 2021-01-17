@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.division
   (:require [clojure.string :as s]
-            [heraldry.coat-of-arms.config :as config]
+            [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line :as line]
@@ -11,8 +11,8 @@
             [heraldry.coat-of-arms.vector :as v]))
 
 (defn default-fields [type]
-  (into [config/default-field
-         (-> config/default-field
+  (into [default/field
+         (-> default/field
              (assoc-in [:content :tincture] :azure))]
         (cond
           (= :per-saltire type) [{:ref 1} {:ref 0}]
@@ -21,7 +21,7 @@
           (#{:tierced-per-pale
              :tierced-per-fess
              :tierced-per-pairle
-             :tierced-per-pairle-reversed} type) [(-> config/default-field
+             :tierced-per-pairle-reversed} type) [(-> default/field
                                                       (assoc-in [:content :tincture] :sable))])))
 
 (defn mandatory-part-count [type]
