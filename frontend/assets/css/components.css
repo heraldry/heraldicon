@@ -163,7 +163,7 @@ button:hover {
 
 .disabled,
 .disabled:hover {
-  color: #ccc;
+  color: #ccc !important;
   cursor: default;
 }
 
