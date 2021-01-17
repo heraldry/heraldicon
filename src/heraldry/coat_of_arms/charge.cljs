@@ -1,8 +1,9 @@
 (ns heraldry.coat-of-arms.charge
   (:require ["svgpath" :as svgpath]
+            [cljs.core.async :refer [go <!]]
             [clojure.string :as s]
             [clojure.walk :as walk]
-            [heraldry.coat-of-arms.default :as default]
+            [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.division :as division]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field-environment :as field-environment]
@@ -14,7 +15,19 @@
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.coat-of-arms.util :as util]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.frontend.user :as user]
             [re-frame.core :as rf]))
+
+(defn fetch-charge-map [db-path]
+  (go
+    (let [user-data (user/data)]
+      (rf/dispatch-sync [:set db-path :loading])
+      (-> (api-request/call :get-charge-map {} user-data)
+          <!
+          (as-> response
+              (if-let [error (:error response)]
+                (println ":fetch-arms-by-id error:" error)
+                (rf/dispatch [:set db-path response])))))))
 
 (defn find-charge [charge-map [group & rest]]
   (let [next (get-in charge-map [:groups group])]
@@ -23,19 +36,14 @@
       next)))
 
 (defn get-charge-map []
-  @(rf/subscribe [:load-data "data/charge-map.edn"]))
-
-(defn get-charge-variant-data [{:keys [type attitude variant]}]
-  (when-let [charge-map (get-charge-map)]
-    (let [lookup-path       (get-in charge-map
-                                    [:lookup type])
-          charge-data       (get-in (find-charge charge-map lookup-path)
-                                    [:charges type])
-          attitude-variants (get-in charge-data
-                                    [:attitudes attitude :variants])
-          variants          (or attitude-variants
-                                (:variants charge-data))]
-      (get variants variant))))
+  (let [db-path    [:charge-map]
+        charge-map @(rf/subscribe [:get db-path])]
+    (cond
+      (nil? charge-map)       (do
+                                (fetch-charge-map db-path)
+                                (rf/dispatch-sync [:set db-path :loading]))
+      (= charge-map :loading) nil
+      :else                   charge-map)))
 
 (defn split-style-value [value]
   (-> value
@@ -445,142 +453,137 @@
 
 (defn render-other-charge [{:keys [type field tincture hints] :as charge} parent
                            environment top-level-render render-options & {:keys [db-path]}]
-  (if-let [charge-data-path (if (not (keyword? type))
-                              :type
-                              (-> charge
-                                  get-charge-variant-data
-                                  :path))]
-    (if-let [data (if (= charge-data-path :type)
-                    type
-                    @(rf/subscribe [:load-data charge-data-path]))]
-      (let [{:keys [position geometry]}      (options/sanitize charge (options charge))
-            {:keys [size stretch
-                    mirrored? reversed?
-                    rotation]}               geometry
-            ;; since size now is filled with a default, check whether it was set at all,
-            ;; if not, then use nil
-            ;; TODO: this probably needs a better mechanism and form representation
-            size                             (if (-> charge :geometry :size) size nil)
-            points                           (:points environment)
-            top                              (:top points)
-            bottom                           (:bottom points)
-            left                             (:left points)
-            right                            (:right points)
-            positional-charge-width          (js/parseFloat (:width data))
-            positional-charge-height         (js/parseFloat (:height data))
-            width                            (:width environment)
-            height                           (:height environment)
-            center-point                     (position/calculate position environment :fess)
-            min-x-distance                   (min (- (:x center-point) (:x left))
-                                                  (- (:x right) (:x center-point)))
-            min-y-distance                   (min (- (:y center-point) (:y top))
-                                                  (- (:y bottom) (:y center-point)))
-            target-width                     (if size
-                                               (-> size
-                                                   (* width)
-                                                   (/ 100))
-                                               (* (* min-x-distance 2) 0.8))
-            target-height                    (/ (if size
-                                                  (-> size
-                                                      (* height)
-                                                      (/ 100))
-                                                  (* (* min-y-distance 2) 0.7))
-                                                stretch)
-            scale-x                          (* (if mirrored? -1 1)
-                                                (min (/ target-width positional-charge-width)
-                                                     (/ target-height positional-charge-height)))
-            scale-y                          (* (if reversed? -1 1)
-                                                (* (Math/abs scale-x) stretch))
-            adjusted-charge                  (-> data
-                                                 :data
-                                                 fix-string-style-values
-                                                 (cond->
-                                                     (not (or (-> hints :outline-mode (not= :remove))
-                                                              (:outline? render-options))) remove-outlines
-                                                     (and (:squiggly? render-options)
-                                                          (get #{:roundel
-                                                                 :fusil
-                                                                 :billet} type)) line/squiggly-paths))
-            placeholder-colours              (-> data
-                                                 :colours
-                                                 (cond->>
-                                                     (:preview-original? render-options)
-                                                   (into {}
-                                                         (map (fn [[k _]]
-                                                                [k :keep])))))
-            [mask-id mask
-             mask-inverted-id mask-inverted] (make-mask adjusted-charge
-                                                        placeholder-colours
-                                                        tincture
-                                                        (:outline-mode hints))
-            coloured-charge                  (replace-colours
-                                              adjusted-charge
-                                              (fn [colour]
-                                                (let [colour-lower (s/lower-case colour)
-                                                      kind         (get placeholder-colours colour-lower)
-                                                      replacement  (get-replacement kind tincture)]
-                                                  (if replacement
-                                                    (tincture/pick replacement render-options)
-                                                    colour))))
-            clip-path-id                     (util/id "clip-path")
-            shift                            (-> (v/v positional-charge-width positional-charge-height)
-                                                 (v// 2)
-                                                 (v/-))
-            [min-x max-x min-y max-y]        (svg/rotated-bounding-box
-                                              shift
-                                              (v/dot shift (v/v -1 -1))
-                                              rotation
-                                              :scale (v/v scale-x scale-y))
-            clip-size                        (v/v (- max-x min-x) (- max-y min-y))
-            position                         (-> clip-size
-                                                 (v/-)
-                                                 (v// 2)
-                                                 (v/+ center-point))
-            charge-environment               (field-environment/create
-                                              (svg/make-path ["M" position
-                                                              "l" (v/v (:x clip-size) 0)
-                                                              "l" (v/v 0 (:y clip-size))
-                                                              "l" (v/v (- (:x clip-size)) 0)
-                                                              "l" (v/v 0 (- (:y clip-size)))
-                                                              "z"])
-                                              {:parent               field
-                                               :context              [:charge]
-                                               :bounding-box         (svg/bounding-box
-                                                                      [position (v/+ position
-                                                                                     clip-size)])
-                                               :override-environment (when (or (:inherit-environment? field)
-                                                                               (counterchangable? field parent)) environment)})
-            field                            (if (counterchangable? field parent)
-                                               (counterchange-field field parent)
-                                               field)]
-        [:<>
-         [:defs
-          [:mask {:id mask-id}
-           mask]
-          [:mask {:id mask-inverted-id}
-           mask-inverted]
-          [:clipPath {:id clip-path-id}
-           [:rect {:x      0
-                   :y      0
-                   :width  positional-charge-width
-                   :height positional-charge-height
-                   :fill   "#fff"}]]]
-         (let [transform         (str "translate(" (:x center-point) "," (:y center-point) ")"
-                                      "rotate(" rotation ")"
-                                      "scale(" scale-x "," scale-y ")"
-                                      "translate(" (-> shift :x) "," (-> shift :y) ")")
-               reverse-transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ")"
-                                      "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
-                                      "rotate(" (- rotation) ")"
-                                      "translate(" (- (:x center-point)) "," (- (:y center-point)) ")")]
-           [:g {:transform transform
-                :clip-path (str "url(#" clip-path-id ")")}
-            [:g {:mask (str "url(#" mask-inverted-id ")")}
-             [:g {:transform reverse-transform}
-              [top-level-render field charge-environment render-options :db-path (conj db-path :field)]]]
-            [:g {:mask (str "url(#" mask-id ")")}
-             coloured-charge]])])
-      [:<>])
+  (if-let [data (if (not (keyword? type))
+                  type
+                  ;; TODO: load real charge
+                  nil)]
+    (let [{:keys [position geometry]}      (options/sanitize charge (options charge))
+          {:keys [size stretch
+                  mirrored? reversed?
+                  rotation]}               geometry
+          ;; since size now is filled with a default, check whether it was set at all,
+          ;; if not, then use nil
+          ;; TODO: this probably needs a better mechanism and form representation
+          size                             (if (-> charge :geometry :size) size nil)
+          points                           (:points environment)
+          top                              (:top points)
+          bottom                           (:bottom points)
+          left                             (:left points)
+          right                            (:right points)
+          positional-charge-width          (js/parseFloat (:width data))
+          positional-charge-height         (js/parseFloat (:height data))
+          width                            (:width environment)
+          height                           (:height environment)
+          center-point                     (position/calculate position environment :fess)
+          min-x-distance                   (min (- (:x center-point) (:x left))
+                                                (- (:x right) (:x center-point)))
+          min-y-distance                   (min (- (:y center-point) (:y top))
+                                                (- (:y bottom) (:y center-point)))
+          target-width                     (if size
+                                             (-> size
+                                                 (* width)
+                                                 (/ 100))
+                                             (* (* min-x-distance 2) 0.8))
+          target-height                    (/ (if size
+                                                (-> size
+                                                    (* height)
+                                                    (/ 100))
+                                                (* (* min-y-distance 2) 0.7))
+                                              stretch)
+          scale-x                          (* (if mirrored? -1 1)
+                                              (min (/ target-width positional-charge-width)
+                                                   (/ target-height positional-charge-height)))
+          scale-y                          (* (if reversed? -1 1)
+                                              (* (Math/abs scale-x) stretch))
+          adjusted-charge                  (-> data
+                                               :data
+                                               fix-string-style-values
+                                               (cond->
+                                                   (not (or (-> hints :outline-mode (not= :remove))
+                                                            (:outline? render-options))) remove-outlines
+                                                   (and (:squiggly? render-options)
+                                                        (get #{:roundel
+                                                               :fusil
+                                                               :billet} type)) line/squiggly-paths))
+          placeholder-colours              (-> data
+                                               :colours
+                                               (cond->>
+                                                   (:preview-original? render-options)
+                                                 (into {}
+                                                       (map (fn [[k _]]
+                                                              [k :keep])))))
+          [mask-id mask
+           mask-inverted-id mask-inverted] (make-mask adjusted-charge
+                                                      placeholder-colours
+                                                      tincture
+                                                      (:outline-mode hints))
+          coloured-charge                  (replace-colours
+                                            adjusted-charge
+                                            (fn [colour]
+                                              (let [colour-lower (s/lower-case colour)
+                                                    kind         (get placeholder-colours colour-lower)
+                                                    replacement  (get-replacement kind tincture)]
+                                                (if replacement
+                                                  (tincture/pick replacement render-options)
+                                                  colour))))
+          clip-path-id                     (util/id "clip-path")
+          shift                            (-> (v/v positional-charge-width positional-charge-height)
+                                               (v// 2)
+                                               (v/-))
+          [min-x max-x min-y max-y]        (svg/rotated-bounding-box
+                                            shift
+                                            (v/dot shift (v/v -1 -1))
+                                            rotation
+                                            :scale (v/v scale-x scale-y))
+          clip-size                        (v/v (- max-x min-x) (- max-y min-y))
+          position                         (-> clip-size
+                                               (v/-)
+                                               (v// 2)
+                                               (v/+ center-point))
+          charge-environment               (field-environment/create
+                                            (svg/make-path ["M" position
+                                                            "l" (v/v (:x clip-size) 0)
+                                                            "l" (v/v 0 (:y clip-size))
+                                                            "l" (v/v (- (:x clip-size)) 0)
+                                                            "l" (v/v 0 (- (:y clip-size)))
+                                                            "z"])
+                                            {:parent               field
+                                             :context              [:charge]
+                                             :bounding-box         (svg/bounding-box
+                                                                    [position (v/+ position
+                                                                                   clip-size)])
+                                             :override-environment (when (or (:inherit-environment? field)
+                                                                             (counterchangable? field parent)) environment)})
+          field                            (if (counterchangable? field parent)
+                                             (counterchange-field field parent)
+                                             field)]
+      [:<>
+       [:defs
+        [:mask {:id mask-id}
+         mask]
+        [:mask {:id mask-inverted-id}
+         mask-inverted]
+        [:clipPath {:id clip-path-id}
+         [:rect {:x      0
+                 :y      0
+                 :width  positional-charge-width
+                 :height positional-charge-height
+                 :fill   "#fff"}]]]
+       (let [transform         (str "translate(" (:x center-point) "," (:y center-point) ")"
+                                    "rotate(" rotation ")"
+                                    "scale(" scale-x "," scale-y ")"
+                                    "translate(" (-> shift :x) "," (-> shift :y) ")")
+             reverse-transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ")"
+                                    "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
+                                    "rotate(" (- rotation) ")"
+                                    "translate(" (- (:x center-point)) "," (- (:y center-point)) ")")]
+         [:g {:transform transform
+              :clip-path (str "url(#" clip-path-id ")")}
+          [:g {:mask (str "url(#" mask-inverted-id ")")}
+           [:g {:transform reverse-transform}
+            [top-level-render field charge-environment render-options :db-path (conj db-path :field)]]]
+          [:g {:mask (str "url(#" mask-id ")")}
+           coloured-charge]])])
     [:<>]))
 
 (defn render [{:keys [type] :as charge} parent environment top-level-render render-options & {:keys [db-path]}]

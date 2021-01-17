@@ -56,6 +56,11 @@
      (-> path count (> 1)) (update-in (drop-last path) dissoc (last path)))))
 
 (rf/reg-event-db
+ :toggle
+ (fn [db [_ path]]
+   (update-in db path not)))
+
+(rf/reg-event-db
  :set-form-error
  (fn [db [_ db-path error]]
    (assoc-in db (concat [:form-errors] db-path [:message]) error)))
