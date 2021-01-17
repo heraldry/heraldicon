@@ -1,0 +1,5 @@
+{:armory-api-endpoint #profile {:local "http://localhost:4000/local/api"
+                                :dev "..."}
+ :stage #profile {:local "local"
+                  :dev "dev"
+                  :prod "prod"}}
