@@ -71,7 +71,7 @@
   (let [spacing 2
         width   (* spacing 2)
         size    0.3]
-    [:pattern.selected {:width         width
+    [:pattern#selected {:width         width
                         :height        width
                         :pattern-units "userSpaceOnUse"}
      [:rect {:x      0
