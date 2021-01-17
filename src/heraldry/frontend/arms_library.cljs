@@ -7,7 +7,7 @@
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.blazon :as blazon]
-            [heraldry.coat-of-arms.config :as config]
+            [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
@@ -150,7 +150,7 @@
     [:div {:style {:padding "15px"}}
      [:h4 "My arms"]
      [:button.pure-button.pure-button-primary
-      {:on-click #(rf/dispatch [:set [:arms-form] {:coat-of-arms   config/default-coat-of-arms
+      {:on-click #(rf/dispatch [:set [:arms-form] {:coat-of-arms   default/coat-of-arms
                                                    :render-options {:component :render-options
                                                                     :mode      :colours
                                                                     :outline?  false
