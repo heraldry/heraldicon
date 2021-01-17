@@ -1,5 +1,6 @@
 ;; shadow-cljs configuration
-{:source-paths ["src"]
+{:source-paths ["src"
+                "backend/src"]
 
  :dependencies [[cider/cider-nrepl "0.25.5"]
                 [cider/piggieback "0.5.2"]
@@ -56,10 +57,10 @@
                               :warnings        {:redef false}}
            :build-hooks      [(shadow-env.core/hook)]}
 
-          :api
+          :backend
           {:target      :node-library
            :exports     {:handler heraldry.api.core/handler}
-           :js-options  {:js-package-dirs ["./api/node_modules"]}
-           :output-to   "api/generated/api.js"
+           :js-options  {:js-package-dirs ["./backend/node_modules"]}
+           :output-to   "backend/generated/api.js"
            :devtools    {:repl-pprint true}
            :build-hooks [(shadow-env.core/hook)]}}}
