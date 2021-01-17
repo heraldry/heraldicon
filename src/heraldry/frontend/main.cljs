@@ -1,6 +1,6 @@
 (ns heraldry.frontend.main
   (:require [clojure.string :as s]
-            [heraldry.frontend.armory :as armory]
+            [heraldry.frontend.arms-library :as arms-library]
             [heraldry.frontend.charge-library :as charge-library]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
@@ -49,7 +49,7 @@
      [header]
      [:div.main-content
       (cond
-        (s/starts-with? path "/armory/") (armory/main)
+        (s/starts-with? path "/arms/") (arms-library/main)
         (s/starts-with? path "/charges/") (charge-library/main))]
      [modal/render]]))
 
