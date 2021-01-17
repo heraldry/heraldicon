@@ -616,34 +616,37 @@
               :open   "fa-minus-square"}
    :variant  {:normal "fa-image"}})
 
-(defn tree-for-charge-map [{:keys [key type name groups charges attitudes facings variants]}
+(defn count-variants [node]
+  (cond
+    (-> node nil?)               0
+    (-> node :type (= :variant)) 1
+    :else                        (->> [:groups :charges :attitudes :facings :variants]
+                                      (map (fn [key]
+                                             (-> node
+                                                 (get key)
+                                                 (->> (map (fn [[_ v]]
+                                                             (count-variants v)))
+                                                      (reduce +)))))
+                                      (reduce +))))
+
+(defn tree-for-charge-map [{:keys [type name groups charges attitudes facings variants] :as node}
                            tree-path db-path
-                           selected-charge remaining-path-to-charge & {:keys [charge-type
-                                                                              charge-attitude
-                                                                              still-on-path?]}]
-  (let [flag-path       (-> db-path
-                            (concat [:ui :charge-map])
-                            vec
-                            (conj tree-path))
-        db-open?        @(rf/subscribe [:get flag-path])
-        open?           (or (= type :_root)
-                            (and (nil? db-open?)
-                                 still-on-path?)
-                            db-open?)
-        charge-type     (if (= type :charge)
-                          key
-                          charge-type)
-        charge-attitude (if (= type :attitude)
-                          key
-                          charge-attitude)]
+                           selected-charge remaining-path-to-charge & {:keys [still-on-path?]}]
+  (let [flag-path (-> db-path
+                      (concat [:ui :charge-map])
+                      vec
+                      (conj tree-path))
+        db-open?  @(rf/subscribe [:get flag-path])
+        open?     (or (= type :_root)
+                      (and (nil? db-open?)
+                           still-on-path?)
+                      db-open?)]
     (cond-> [:<>]
       (not= type
             :_root)   (conj
                        [:span.node-name.clickable
                         {:on-click (if (= type :variant)
-                                     #(util/dispatch % [:update-charge db-path {:type     charge-type
-                                                                                :attitude charge-attitude
-                                                                                :variant  key}])
+                                     #(util/dispatch % [:update-charge db-path node])
                                      #(util/dispatch % [:toggle flag-path]))
                          :style    {:color (when still-on-path? "#1b6690")}}
                         (if (= type :variant)
@@ -657,7 +660,8 @@
                            (= type :charge)     :b
                            (= type :attitude)   :em
                            (= type :facing)     :em
-                           :else                :<>) name]])
+                           :else                :<>) name (when (not= type :variant)
+                                                            (str " (" (count-variants node) ")"))]])
       (and open?
            groups)    (conj [:ul
                              (for [[key group] (sort-by first groups)]
@@ -673,8 +677,6 @@
                                    (conj tree-path :groups key)
                                    db-path selected-charge
                                    remaining-path-to-charge
-                                   :charge-type charge-type
-                                   :charge-attitude charge-attitude
                                    :still-on-path? following-path?]]))])
       (and open?
            charges)   (conj [:ul
@@ -691,8 +693,6 @@
                                    (conj tree-path :charges key)
                                    db-path selected-charge
                                    remaining-path-to-charge
-                                   :charge-type charge-type
-                                   :charge-attitude charge-attitude
                                    :still-on-path? following-path?]]))])
       (and open?
            attitudes) (conj [:ul
@@ -709,8 +709,6 @@
                                    (conj tree-path :attitudes key)
                                    db-path selected-charge
                                    remaining-path-to-charge
-                                   :charge-type charge-type
-                                   :charge-attitude charge-attitude
                                    :still-on-path? following-path?]]))])
       (and open?
            facings)   (conj [:ul
@@ -727,8 +725,6 @@
                                    (conj tree-path :facings key)
                                    db-path selected-charge
                                    remaining-path-to-charge
-                                   :charge-type charge-type
-                                   :charge-attitude charge-attitude
                                    :still-on-path? following-path?]]))])
       (and open?
            variants)  (conj [:ul
@@ -745,8 +741,6 @@
                                    (conj tree-path :variants key)
                                    db-path selected-charge
                                    remaining-path-to-charge
-                                   :charge-type charge-type
-                                   :charge-attitude charge-attitude
                                    :still-on-path? following-path?]]))]))))
 
 (defn charge-type-more-choice [path charge]
