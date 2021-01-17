@@ -16,12 +16,6 @@
             [heraldry.coat-of-arms.vector :as v]
             [re-frame.core :as rf]))
 
-(def placeholder-regex
-  (re-pattern (str "(?i)(" (s/join "|" (vals config/placeholder-colours)) ")")))
-
-(def colour-regex
-  (re-pattern (str "(?i)#([a-f0-9]{6}|[a-f0-9]{3})")))
-
 (defn find-charge [charge-map [group & rest]]
   (let [next (get-in charge-map [:groups group])]
     (if rest
