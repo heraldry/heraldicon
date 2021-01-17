@@ -7,9 +7,7 @@
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
-            [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.render :as render]
-            [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.state :as state]
@@ -135,11 +133,6 @@
     [:svg {:viewBox (str "0 0 520 700")
            :preserveAspectRatio "xMidYMid meet"
            :style {:width "97%"}}
-     [:defs
-      filter/shadow
-      filter/shiny
-      filter/glow
-      tincture/patterns]
      [:g {:transform "translate(10,10) scale(5,5)"}
       [render/coat-of-arms
        (assoc-in coat-of-arms

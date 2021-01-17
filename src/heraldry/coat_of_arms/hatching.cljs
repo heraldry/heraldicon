@@ -180,8 +180,6 @@
                    :width width
                    :height height
                    :pattern-units "userSpaceOnUse"}
-         [:defs]
-
          [:rect {:x 0
                  :y 0
                  :width width
@@ -216,8 +214,6 @@
                    :width width
                    :height height
                    :pattern-units "userSpaceOnUse"}
-         [:defs]
-
          [:rect {:x 0
                  :y 0
                  :width width
