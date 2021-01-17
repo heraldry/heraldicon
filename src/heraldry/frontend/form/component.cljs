@@ -562,7 +562,8 @@
 (defn charge-type-choice [path key display-name & {:keys [current]}]
   [:div.choice.tooltip {:on-click #(util/dispatch % [:update-charge path {:type     key
                                                                           :attitude nil
-                                                                          :variant  nil}])}
+                                                                          :facing   nil
+                                                                          :data     nil}])}
    [:svg {:style               {:width  "4em"
                                 :height "4.5em"}
           :viewBox             "0 0 120 200"
@@ -646,7 +647,13 @@
             :_root)   (conj
                        [:span.node-name.clickable
                         {:on-click (if (= type :variant)
-                                     #(util/dispatch % [:update-charge db-path node])
+                                     #(util/dispatch % [:update-charge
+                                                        db-path
+                                                        (let [charge-data (:data node)]
+                                                          (merge {:type (:key charge-data)
+                                                                  :data charge-data}
+                                                                 (select-keys charge-data
+                                                                              [:attitude :facing])))])
                                      #(util/dispatch % [:toggle flag-path]))
                          :style    {:color (when still-on-path? "#1b6690")}}
                         (if (= type :variant)

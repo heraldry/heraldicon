@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.charge
   (:require ["svgpath" :as svgpath]
             [cljs.core.async :refer [go <!]]
+            [cljs.reader :as reader]
             [clojure.string :as s]
             [clojure.walk :as walk]
             [heraldry.api.request :as api-request]
@@ -15,6 +16,7 @@
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.coat-of-arms.util :as util]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [re-frame.core :as rf]))
 
@@ -26,7 +28,7 @@
           <!
           (as-> response
               (if-let [error (:error response)]
-                (println ":fetch-arms-by-id error:" error)
+                (println "fetch-charge-map error:" error)
                 (rf/dispatch [:set db-path response])))))))
 
 (defn find-charge [charge-map [group & rest]]
@@ -44,6 +46,17 @@
                                 (rf/dispatch-sync [:set db-path :loading]))
       (= charge-map :loading) nil
       :else                   charge-map)))
+
+(defn fetch-charge-data [charge]
+  (let [url         (-> charge :edn-data-url)
+        db-path     [:charge-data url]
+        charge-data @(rf/subscribe [:get db-path])]
+    (cond
+      (nil? charge-data)       (do
+                                 (state/fetch-url-data-to-path db-path url reader/read-string)
+                                 (rf/dispatch-sync [:set db-path :loading]))
+      (= charge-data :loading) nil
+      :else                    charge-data)))
 
 (defn split-style-value [value]
   (-> value
@@ -451,12 +464,9 @@
        (map (fn [function]
               [(-> function meta :display-name) (-> function meta :name keyword)]))))
 
-(defn render-other-charge [{:keys [type field tincture hints] :as charge} parent
+(defn render-other-charge [{:keys [type field tincture hints data] :as charge} parent
                            environment top-level-render render-options & {:keys [db-path]}]
-  (if-let [data (if (not (keyword? type))
-                  type
-                  ;; TODO: load real charge
-                  nil)]
+  (if-let [charge-data (fetch-charge-data data)]
     (let [{:keys [position geometry]}      (options/sanitize charge (options charge))
           {:keys [size stretch
                   mirrored? reversed?
@@ -470,8 +480,8 @@
           bottom                           (:bottom points)
           left                             (:left points)
           right                            (:right points)
-          positional-charge-width          (js/parseFloat (:width data))
-          positional-charge-height         (js/parseFloat (:height data))
+          positional-charge-width          (js/parseFloat (:width charge-data))
+          positional-charge-height         (js/parseFloat (:height charge-data))
           width                            (:width environment)
           height                           (:height environment)
           center-point                     (position/calculate position environment :fess)
@@ -495,7 +505,7 @@
                                                    (/ target-height positional-charge-height)))
           scale-y                          (* (if reversed? -1 1)
                                               (* (Math/abs scale-x) stretch))
-          adjusted-charge                  (-> data
+          adjusted-charge                  (-> charge-data
                                                :data
                                                fix-string-style-values
                                                (cond->
@@ -505,7 +515,7 @@
                                                         (get #{:roundel
                                                                :fusil
                                                                :billet} type)) line/squiggly-paths))
-          placeholder-colours              (-> data
+          placeholder-colours              (-> charge-data
                                                :colours
                                                (cond->>
                                                    (:preview-original? render-options)

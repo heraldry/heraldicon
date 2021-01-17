@@ -1,5 +1,7 @@
 (ns heraldry.frontend.state
-  (:require [clojure.string :as s]
+  (:require [cljs-http.client :as http]
+            [cljs.core.async :refer [go <!]]
+            [clojure.string :as s]
             [re-frame.core :as rf]))
 
 ;; subs
@@ -112,3 +114,18 @@
 (defn goto [path]
   (set-path path)
   (js/window.history.pushState "" nil path))
+
+(defn fetch-url-data-to-path [db-path url function]
+  (go
+    (-> (http/get url)
+        <!
+        (as-> response
+            (let [status (:status response)
+                  body   (:body response)]
+              (if (= status 200)
+                (do
+                  (println "retrieved" url)
+                  (rf/dispatch [:set db-path (if function
+                                               (function body)
+                                               body)]))
+                (println "error fetching" url)))))))
