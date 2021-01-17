@@ -133,3 +133,27 @@ label div {
   font-size: 0.8em;
   color: #aaa;
 }
+
+.tree {
+  margin-bottom: 0.5em;
+  border: solid 1px #bbb;
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+.tree ul {
+  list-style: none;
+  padding-left: 1.5em;
+  margin: 0;
+}
+
+.tree > ul {
+  padding-left: 0;
+}
+
+.tree ul li {
+}
+
+.tree span.node-name i {
+  width: 1.5em;
+}
