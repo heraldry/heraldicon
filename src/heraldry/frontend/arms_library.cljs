@@ -6,18 +6,13 @@
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
+            [heraldry.coat-of-arms.blazon :as blazon]
+            [heraldry.coat-of-arms.config :as config]
+            [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
-            [heraldry.coat-of-arms.blazon :as blazon]
-            [heraldry.coat-of-arms.config :as config]
-            [heraldry.coat-of-arms.filter :as filter]
-            [heraldry.coat-of-arms.hatching :as hatching]
-            [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.ordinary :as ordinary]
-            [heraldry.coat-of-arms.render :as render]
-            [heraldry.coat-of-arms.tincture :as tincture]
             [re-frame.core :as rf]))
 
 ;; functions
@@ -85,12 +80,6 @@
                                     :height "32em"}
               :viewBox             "0 0 520 1000"
               :preserveAspectRatio "xMidYMin slice"}
-        [:defs
-         filter/shadow
-         filter/shiny
-         filter/glow
-         tincture/patterns
-         hatching/patterns]
         [:g {:filter "url(#shadow)"}
          [:g {:transform "translate(10,10) scale(5,5)"}
           [render/coat-of-arms coat-of-arms render-options :db-path [:arms-form :coat-of-arms]]]]]
