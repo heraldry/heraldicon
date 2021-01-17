@@ -1,6 +1,5 @@
 (ns heraldry.frontend.charge-library
   (:require ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
-            [cljs-http.client :as http]
             [cljs.core.async :refer [go <!]]
             [cljs.core.async.interop :refer-macros [<p!]]
             [cljs.reader :as reader]
@@ -45,21 +44,6 @@
                     (println "fetch-charges-by-user error:" error)
                     (rf/dispatch-sync [:set db-path (:charges response)]))))))))
 
-(defn fetch-url-data-to-path [db-path url function]
-  (go
-    (-> (http/get url)
-        <!
-        (as-> response
-              (let [status (:status response)
-                    body (:body response)]
-                (if (= status 200)
-                  (do
-                    (println "retrieved" url)
-                    (rf/dispatch [:set db-path (if function
-                                                 (function body)
-                                                 body)]))
-                  (println "error fetching" url)))))))
-
 (defn fetch-charge-and-fill-form [charge-id]
   (go
     (let [form-db-path [:charge-form]
@@ -72,10 +56,10 @@
                   (println ":fetch-charge-by-id error:" error)
                   (do
                     (rf/dispatch [:set form-db-path response])
-                    (fetch-url-data-to-path (conj form-db-path :data :edn-data)
-                                            (:edn-data-url response) reader/read-string)
-                    (fetch-url-data-to-path (conj form-db-path :data :svg-data)
-                                            (:svg-data-url response) nil))))))))
+                    (state/fetch-url-data-to-path (conj form-db-path :data :edn-data)
+                                                  (:edn-data-url response) reader/read-string)
+                    (state/fetch-url-data-to-path (conj form-db-path :data :svg-data)
+                                                  (:svg-data-url response) nil))))))))
 
 (defn charge-path [charge-id]
   (str "/charges/#" charge-id))
