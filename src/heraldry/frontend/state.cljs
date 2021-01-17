@@ -40,7 +40,7 @@
            :coat-of-arms {:escutcheon :rectangle}
            :ui {:component-open? {[:render-options] true}}
            :site {:menu {:items [["Home" "/"]
-                                 ["Armory" "/armory/"]
+                                 ["Arms Library" "/arms/"]
                                  ["Charge Library" "/charges/"]]}}} db)))
 
 (rf/reg-event-db

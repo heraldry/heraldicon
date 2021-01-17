@@ -1,4 +1,4 @@
-(ns heraldry.frontend.armory
+(ns heraldry.frontend.arms-library
   (:require [cljs-http.client :as http]
             [cljs.core.async :refer [go <!]]
             [cljs.core.async.interop :refer-macros [<p!]]
@@ -61,39 +61,44 @@
           (as-> response
                 (if-let [error (:error response)]
                   (println ":fetch-arms-by-id error:" error)
-                  (rf/dispatch [:set form-db-path response])))))))
+                  (do
+                    (rf/dispatch [:set form-db-path response])
+                    (fetch-url-data-to-path (conj form-db-path :coat-of-arms)
+                                            (:edn-data-url response) reader/read-string))))))))
 
 (defn arms-path [arms-id]
-  (str "/armory/#" arms-id))
+  (str "/arms/#" arms-id))
 
 ;; views
 
 (defn render-coat-of-arms []
   (let [coat-of-arms @(rf/subscribe [:get [:arms-form :coat-of-arms]])
         render-options @(rf/subscribe [:get [:arms-form :render-options]])]
-    [:div {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
-                          (rf/dispatch [:ui-submenu-close-all])
-                          (.stopPropagation %))
-           :style {:margin-left "10px"
-                   :margin-right "10px"}}
-     [:svg {:id "svg"
-            :style {:width "25em"
-                    :height "32em"}
-            :viewBox "0 0 520 1000"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:defs
-       filter/shadow
-       filter/shiny
-       filter/glow
-       tincture/patterns
-       hatching/patterns]
-      [:g {:filter "url(#shadow)"}
-       [:g {:transform "translate(10,10) scale(5,5)"}
-        [render/coat-of-arms coat-of-arms render-options :db-path [:arms-form :coat-of-arms]]]]]
-     [:div.blazonry
-      [:span.disclaimer "Blazon (very rudimentary, very beta)"]
-      [:div.blazon
-       (blazon/encode-field (:field coat-of-arms) :root? true)]]]))
+    (if coat-of-arms
+      [:div {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
+                            (rf/dispatch [:ui-submenu-close-all])
+                            (.stopPropagation %))
+             :style {:margin-left "10px"
+                     :margin-right "10px"}}
+       [:svg {:id "svg"
+              :style {:width "25em"
+                      :height "32em"}
+              :viewBox "0 0 520 1000"
+              :preserveAspectRatio "xMidYMin slice"}
+        [:defs
+         filter/shadow
+         filter/shiny
+         filter/glow
+         tincture/patterns
+         hatching/patterns]
+        [:g {:filter "url(#shadow)"}
+         [:g {:transform "translate(10,10) scale(5,5)"}
+          [render/coat-of-arms coat-of-arms render-options :db-path [:arms-form :coat-of-arms]]]]]
+       [:div.blazonry
+        [:span.disclaimer "Blazon (very rudimentary, very beta)"]
+        [:div.blazon
+         (blazon/encode-field (:field coat-of-arms) :root? true)]]]
+      [:<>])))
 
 (defn save-arms-clicked [db-path]
   (let [payload @(rf/subscribe [:get db-path])
