@@ -1,7 +1,7 @@
 (ns heraldry.frontend.form.component
   (:require [clojure.string :as s]
             [heraldry.coat-of-arms.charge :as charge]
-            [heraldry.coat-of-arms.config :as config]
+            [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.division :as division]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.line :as line]
@@ -1008,10 +1008,10 @@
                                                            :ref)])}
                       [:i.far.fa-times-circle]]))]])))]])
      [:div {:style {:margin-bottom "0.5em"}}
-      [:button {:on-click #(util/dispatch % [:add-component path config/default-ordinary])}
+      [:button {:on-click #(util/dispatch % [:add-component path default/ordinary])}
        [:i.fas.fa-plus] " Add ordinary"]
       " "
-      [:button {:on-click #(util/dispatch % [:add-component path config/default-charge])}
+      [:button {:on-click #(util/dispatch % [:add-component path default/charge])}
        [:i.fas.fa-plus] " Add charge"]]
      [:div.components
       [:ul

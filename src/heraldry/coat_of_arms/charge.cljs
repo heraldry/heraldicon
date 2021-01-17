@@ -2,7 +2,7 @@
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
             [clojure.walk :as walk]
-            [heraldry.coat-of-arms.config :as config]
+            [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.division :as division]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field-environment :as field-environment]
