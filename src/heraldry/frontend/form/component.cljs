@@ -400,7 +400,8 @@
          {:escutcheon key
           :field      {:component :field
                        :content   {:tincture (if (= value key) :or :azure)}}}
-         {:outline? true}]]]]
+         100
+         {:render-options {:outline? true}}]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -453,8 +454,8 @@
          {:escutcheon :rectangle
           :field      {:component :field
                        :content   {:tincture key}}}
-         {:outline? true}
-         :width 40]]]]
+         40
+         {:render-options {:outline? true}}]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -580,7 +581,8 @@
                                    :geometry   {:size 75}
                                    :escutcheon (if (= key :escutcheon) :heater nil)
                                    :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
-       {:outline? true}]]]]
+       100
+       {:render-options {:outline? true}}]]]]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])
@@ -601,7 +603,8 @@
                                    :type      key
                                    :data      (:data charge)
                                    :field     {:content {:tincture :or}}}]}}
-       {:outline? true}]]]]
+       100
+       {:render-options {:outline? true}}]]]]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])
@@ -777,7 +780,8 @@
                                     :geometry  {:size 10}
                                     :position  {:offset-x 15}
                                     :field     {:content {:tincture :azure}}}]}}
-        {:outline? true}]]]]
+        100
+        {:render-options {:outline? true}}]]]]
     [:div.bottom
      [:h3 {:style {:text-align "center"}} "more"]
      [:i]]]
@@ -908,7 +912,8 @@
                                                  (util/replace-recursively :none :argent)
                                                  (cond->
                                                      (= value key) (util/replace-recursively :azure :or)))}})}
-         {:outline? true}]]]]
+         100
+         {:render-options {:outline? true}}]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -948,8 +953,8 @@
                                             :width (* 2 (options/get-value nil (:width options)))}
                                    :fields [{:content {:tincture :argent}}
                                             {:content {:tincture (if (= key current) :or :azure)}}]}}}
-         {:outline? true}
-         :width 100]]]]
+         100
+         {:render-options {:outline? true}}]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -1045,7 +1050,8 @@
                                    :type       key
                                    :escutcheon (if (= key :escutcheon) :heater nil)
                                    :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
-       {:outline? true}]]]]
+       100
+       {:render-options {:outline? true}}]]]]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])

@@ -442,7 +442,9 @@
 
 (defn render-other-charge [{:keys [type field tincture hints data] :as charge} parent
                            environment {:keys [render-field render-options] :as context}]
-  (if-let [charge-data (fetch-charge-data data)]
+  (if-let [charge-data (if (keyword? type)
+                         (fetch-charge-data data)
+                         type)]
     (let [{:keys [position geometry]}      (options/sanitize charge (options charge))
           {:keys [size stretch
                   mirrored? reversed?
