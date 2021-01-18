@@ -121,8 +121,8 @@
       [render/coat-of-arms
        (assoc-in coat-of-arms
                  [:field :components 0 :type] edn-data)
-       render-options
-       :width 100]]]))
+       100
+       {:render-options render-options}]]]))
 
 (defn upload-file [event db-path]
   (let [file (-> event .-target .-files (.item 0))]
