@@ -5,7 +5,7 @@
             [heraldry.coat-of-arms.tincture :as tincture]))
 
 (defn render [{:keys [division components] :as field} environment
-              {:keys [db-path render-options fn-component-selected? fn-select-component] :as context}]
+              {:keys [db-path render-options fn-component-selected? fn-select-component svg-export?] :as context}]
   (let [tincture (get-in field [:content :tincture])
         selected? (when fn-component-selected?
                     (fn-component-selected? db-path))
@@ -15,8 +15,9 @@
                      (fn [event]
                        (fn-select-component db-path)
                        (.stopPropagation event)))
-         :style {:pointer-events "visiblePainted"
-                 :cursor "pointer"}}
+         :style (when (not svg-export?)
+                  {:pointer-events "visiblePainted"
+                   :cursor "pointer"})}
      (cond
        tincture (let [fill (tincture/pick tincture render-options)]
                   [:rect {:x -500
