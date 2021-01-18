@@ -121,7 +121,7 @@
 
 (defn pale
   {:display-name "Pale"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
         opposite-line (sanitize-opposite-line ordinary line)
         {:keys [size]} geometry
@@ -178,11 +178,11 @@
         [:path {:d (svg/make-path
                     ["M" second-bottom-adjusted
                      (line/stitch line-reversed)])}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+     environment ordinary context]))
 
 (defn fess
   {:display-name "Fess"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]} geometry
         opposite-line (sanitize-opposite-line ordinary line)
@@ -236,11 +236,11 @@
         [:path {:d (svg/make-path
                     ["M" second-right-adjusted
                      (line/stitch line-reversed)])}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+     environment ordinary context]))
 
 (defn chief
   {:display-name "Chief"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]} geometry
         points (:points environment)
@@ -281,11 +281,11 @@
         [:path {:d (svg/make-path
                     ["M" row-right-adjusted
                      (line/stitch line-reversed)])}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+     environment ordinary context]))
 
 (defn base
   {:display-name "Base"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]} geometry
         points (:points environment)
@@ -322,11 +322,11 @@
         [:path {:d (svg/make-path
                     ["M" row-left
                      (line/stitch line-one)])}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+     environment ordinary context]))
 
 (defn bend
   {:display-name "Bend"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]} geometry
         opposite-line (sanitize-opposite-line ordinary line)
@@ -389,17 +389,16 @@
          [:path {:d (svg/make-path
                      ["M" second-right-adjusted
                       (line/stitch line-reversed)])}]])
-      environment ordinary top-level-render render-options
-      :db-path db-path
-      :transform (when (or counterchanged?
-                           (:inherit-environment? field))
-                   (str
-                    "rotate(" (- angle) ") "
-                    "translate(" (-> diagonal-start :x -) "," (-> diagonal-start :y -) ")"))]]))
+      environment ordinary (-> context
+                               (assoc :transform (when (or counterchanged?
+                                                           (:inherit-environment? field))
+                                                   (str
+                                                    "rotate(" (- angle) ") "
+                                                    "translate(" (-> diagonal-start :x -) "," (-> diagonal-start :y -) ")"))))]]))
 
 (defn bend-sinister
   {:display-name "Bend sinister"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]} geometry
         opposite-line (sanitize-opposite-line ordinary line)
@@ -462,17 +461,16 @@
          [:path {:d (svg/make-path
                      ["M" second-right-adjusted
                       (line/stitch line-reversed)])}]])
-      environment ordinary top-level-render render-options
-      :db-path db-path
-      :transform (when (or counterchanged?
-                           (:inherit-environment? field))
-                   (str
-                    "rotate(" (- angle) ") "
-                    "translate(" (-> diagonal-start :x -) "," (-> diagonal-start :y -) ")"))]]))
+      environment ordinary (-> context
+                               (assoc :transform (when (or counterchanged?
+                                                           (:inherit-environment? field))
+                                                   (str
+                                                    "rotate(" (- angle) ") "
+                                                    "translate(" (-> diagonal-start :x -) "," (-> diagonal-start :y -) ")"))))]]))
 
 (defn cross
   {:display-name "Cross"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]} geometry
         points (:points environment)
@@ -606,11 +604,11 @@
         [:path {:d (svg/make-path
                     ["M" fess-top-left-adjusted
                      (line/stitch line-fess-top-left)])}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+     environment ordinary context]))
 
 (defn saltire
   {:display-name "Saltire"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]} geometry
         points (:points environment)
@@ -758,11 +756,11 @@
         [:path {:d (svg/make-path
                     ["M" bottom-left-upper-adjusted
                      (line/stitch line-bottom-left-upper)])}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+     environment ordinary context]))
 
 (defn chevron
   {:display-name "Chevron"}
-  [{:keys [field hints] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
         {:keys [size]} geometry
         opposite-line (sanitize-opposite-line ordinary line)
@@ -850,7 +848,7 @@
         [:path {:d (svg/make-path
                     ["M" bottom-left-upper-adjusted
                      (line/stitch line-bottom-left-upper)])}]])
-     environment ordinary top-level-render render-options :db-path db-path]))
+     environment ordinary context]))
 
 (def ordinaries
   [#'pale
@@ -874,6 +872,6 @@
        (map (fn [function]
               [(-> function meta :display-name) (-> function meta :name keyword)]))))
 
-(defn render [{:keys [type] :as ordinary} parent environment top-level-render render-options & {:keys [db-path]}]
+(defn render [{:keys [type] :as ordinary} parent environment context]
   (let [function (get kinds-function-map type)]
-    [function ordinary parent environment top-level-render render-options :db-path db-path]))
+    [function ordinary parent environment context]))
