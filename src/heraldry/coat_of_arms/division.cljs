@@ -7,8 +7,8 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.util :as util]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.util :as util]))
 
 (defn default-fields [type]
   (into [default/field
