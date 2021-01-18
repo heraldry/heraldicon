@@ -5,11 +5,13 @@
             [heraldry.coat-of-arms.tincture :as tincture]
             [re-frame.core :as rf]))
 
-(defn render [{:keys [division components] :as field} environment render-options & {:keys [db-path]}]
+(defn render [{:keys [division components] :as field} environment {:keys [db-path render-options] :as context}]
   (let [tincture           (get-in field [:content :tincture])
         selectable-fields? (-> render-options :ui :selectable-fields?)
         selected?          (and selectable-fields?
-                                @(rf/subscribe [:ui-component-selected? db-path]))]
+                                @(rf/subscribe [:ui-component-selected? db-path]))
+        context            (-> context
+                               (assoc :render-field render))]
     [:g {:on-click (when selectable-fields?
                      (fn [event]
                        (rf/dispatch [:ui-component-select db-path])
@@ -24,12 +26,15 @@
                           :height 1100
                           :fill   fill
                           :stroke fill}])
-       division [division/render division environment render render-options :db-path (conj db-path :division)])
+       division [division/render division environment (-> context
+                                                          (update :db-path conj :division))])
      (when selected?
        [:path {:d     (:shape environment)
                :style {:opacity 0.25}
                :fill  "url(#selected)"}])
      (for [[idx element] (map-indexed vector components)]
        (if (-> element :component (= :ordinary))
-         ^{:key idx} [ordinary/render element field environment render render-options :db-path (conj db-path :components idx)]
-         ^{:key idx} [charge/render element field environment render render-options :db-path (conj db-path :components idx)]))]))
+         ^{:key idx} [ordinary/render element field environment (-> context
+                                                                    (update :db-path conj :components idx))]
+         ^{:key idx} [charge/render element field environment (-> context
+                                                                  (update :db-path conj :components idx))]))]))

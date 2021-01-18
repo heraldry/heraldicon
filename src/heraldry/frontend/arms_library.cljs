@@ -82,7 +82,8 @@
               :preserveAspectRatio "xMidYMin slice"}
         [:g {:filter "url(#shadow)"}
          [:g {:transform "translate(10,10) scale(5,5)"}
-          [render/coat-of-arms coat-of-arms render-options :db-path [:arms-form :coat-of-arms]]]]]
+          [render/coat-of-arms coat-of-arms {:render-options render-options
+                                             :db-path        [:arms-form :coat-of-arms]}]]]]
        [:div.blazonry
         [:span.disclaimer "Blazon (very rudimentary, very beta)"]
         [:div.blazon
