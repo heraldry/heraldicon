@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.charge
   (:require ["svgpath" :as svgpath]
-            [cljs.reader :as reader]
             [clojure.string :as s]
             [clojure.walk :as walk]
             [heraldry.coat-of-arms.division :as division]
@@ -13,26 +12,13 @@
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.coat-of-arms.util :as util]
-            [heraldry.coat-of-arms.vector :as v]
-            [heraldry.frontend.state :as state]
-            [re-frame.core :as rf]))
+            [heraldry.coat-of-arms.vector :as v]))
 
 (defn find-charge [charge-map [group & rest]]
   (let [next (get-in charge-map [:groups group])]
     (if rest
       (recur next rest)
       next)))
-
-(defn fetch-charge-data [charge]
-  (let [url (-> charge :edn-data-url)
-        db-path [:charge-data url]
-        charge-data @(rf/subscribe [:get db-path])]
-    (cond
-      (nil? charge-data) (do
-                           (state/fetch-url-data-to-path db-path url reader/read-string)
-                           (rf/dispatch-sync [:set db-path :loading]))
-      (= charge-data :loading) nil
-      :else charge-data)))
 
 (defn split-style-value [value]
   (-> value
@@ -441,9 +427,9 @@
               [(-> function meta :display-name) (-> function meta :name keyword)]))))
 
 (defn render-other-charge [{:keys [type field tincture hints data] :as charge} parent
-                           environment {:keys [render-field render-options] :as context}]
+                           environment {:keys [render-field render-options load-charge-data] :as context}]
   (if-let [charge-data (if (keyword? type)
-                         (fetch-charge-data data)
+                         (load-charge-data data)
                          type)]
     (let [{:keys [position geometry]} (options/sanitize charge (options charge))
           {:keys [size stretch

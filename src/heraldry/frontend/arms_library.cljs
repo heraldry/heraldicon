@@ -87,6 +87,7 @@
            coat-of-arms
            100
            {:render-options render-options
+            :load-charge-data charge-map/fetch-charge-data
             :db-path [:arms-form :coat-of-arms]}]]]]
        [:div.blazonry
         [:span.disclaimer "Blazon (very rudimentary, very beta)"]
