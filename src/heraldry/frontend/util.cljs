@@ -1,21 +1,6 @@
 (ns heraldry.frontend.util
   (:require [clojure.string :as s]
-            [clojure.walk :as walk]
-            [re-frame.core :as rf]))
-
-(defn dispatch [event effect]
-  (rf/dispatch effect)
-  (.stopPropagation event))
-
-(defn dispatch-sync [event effect]
-  (rf/dispatch-sync effect)
-  (.stopPropagation event))
-
-(def -current-id
-  (atom 0))
-
-(defn id [prefix]
-  (str prefix "_" (swap! -current-id inc)))
+            [clojure.walk :as walk]))
 
 (defn upper-case-first [s]
   (str (s/upper-case (or (first s) "")) (s/join (rest s))))

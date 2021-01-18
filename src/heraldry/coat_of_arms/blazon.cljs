@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.blazon
   (:require [heraldry.coat-of-arms.division :as division]
-            [heraldry.coat-of-arms.util :as util]))
+            [heraldry.frontend.util :as util]))
 
 (declare encode-field)
 
