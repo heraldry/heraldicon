@@ -21,25 +21,7 @@
  :nrepl {:middleware [cider.piggieback/wrap-cljs-repl
                       refactor-nrepl.middleware/wrap-refactor]}
 
- :builds {:client-coat-of-arms
-          {:target :browser
-           :modules {:client {:entries [heraldry.coat-of-arms.client]}}
-           :output-dir "./client-coat-of-arms/assets/js/generated"
-           :asset-path "js/generated"
-           :js-options {:js-package-dirs ["./client-coat-of-arms/node_modules"]}
-           :devtools {:before-load heraldry.coat-of-arms.client/stop
-                      :after-load heraldry.coat-of-arms.client/start
-                      :http-root "./client-coat-of-arms/assets"
-                      :http-port 8081
-                      :preloads [devtools.preload
-                                 day8.re-frame-10x.preload]
-                      :repl-pprint true}
-           :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
-                                                re_frame.trace.trace_enabled_QMARK_ true}
-                              :warnings {:redef false}
-                              :output-feature-set :es8}}
-
-          :frontend
+ :builds {:frontend
           {:target :browser
            :modules {:main {:entries [heraldry.frontend.main]}}
            :output-dir "./frontend/assets/js/generated"
