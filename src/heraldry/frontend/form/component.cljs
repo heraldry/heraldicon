@@ -401,7 +401,8 @@
           :field      {:component :field
                        :content   {:tincture (if (= value key) :or :azure)}}}
          100
-         {:render-options {:outline? true}}]]]]
+         {:render-options   {:outline? true}
+          :load-charge-data charge-map/fetch-charge-data}]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -455,7 +456,8 @@
           :field      {:component :field
                        :content   {:tincture key}}}
          40
-         {:render-options {:outline? true}}]]]]
+         {:render-options   {:outline? true}
+          :load-charge-data charge-map/fetch-charge-data}]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -582,7 +584,8 @@
                                    :escutcheon (if (= key :escutcheon) :heater nil)
                                    :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
        100
-       {:render-options {:outline? true}}]]]]
+       {:render-options   {:outline? true}
+        :load-charge-data charge-map/fetch-charge-data}]]]]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])
@@ -604,7 +607,8 @@
                                    :data      (:data charge)
                                    :field     {:content {:tincture :or}}}]}}
        100
-       {:render-options {:outline? true}}]]]]
+       {:render-options   {:outline? true}
+        :load-charge-data charge-map/fetch-charge-data}]]]]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])
@@ -781,7 +785,8 @@
                                     :position  {:offset-x 15}
                                     :field     {:content {:tincture :azure}}}]}}
         100
-        {:render-options {:outline? true}}]]]]
+        {:render-options   {:outline? true}
+         :load-charge-data charge-map/fetch-charge-data}]]]]
     [:div.bottom
      [:h3 {:style {:text-align "center"}} "more"]
      [:i]]]
@@ -913,7 +918,8 @@
                                                  (cond->
                                                      (= value key) (util/replace-recursively :azure :or)))}})}
          100
-         {:render-options {:outline? true}}]]]]
+         {:render-options   {:outline? true}
+          :load-charge-data charge-map/fetch-charge-data}]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -954,7 +960,8 @@
                                    :fields [{:content {:tincture :argent}}
                                             {:content {:tincture (if (= key current) :or :azure)}}]}}}
          100
-         {:render-options {:outline? true}}]]]]
+         {:render-options   {:outline? true}
+          :load-charge-data charge-map/fetch-charge-data}]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -1051,7 +1058,8 @@
                                    :escutcheon (if (= key :escutcheon) :heater nil)
                                    :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
        100
-       {:render-options {:outline? true}}]]]]
+       {:render-options   {:outline? true}
+        :load-charge-data charge-map/fetch-charge-data}]]]]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])

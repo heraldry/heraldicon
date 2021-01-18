@@ -7,6 +7,7 @@
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.render :as render]
+            [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.state :as state]
@@ -122,7 +123,8 @@
        (assoc-in coat-of-arms
                  [:field :components 0 :type] edn-data)
        100
-       {:render-options render-options}]]]))
+       {:render-options   render-options
+        :load-charge-data charge-map/fetch-charge-data}]]]))
 
 (defn upload-file [event db-path]
   (let [file (-> event .-target .-files (.item 0))]
