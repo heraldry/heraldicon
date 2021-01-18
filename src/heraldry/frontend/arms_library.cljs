@@ -96,6 +96,19 @@
          (blazon/encode-field (:field coat-of-arms) :root? true)]]]
       [:<>])))
 
+(defn generate-svg-clicked [db-path]
+  (let [payload   @(rf/subscribe [:get db-path])
+        user-data (user/data)]
+    (go
+      (try
+        (let [response (<! (api-request/call :generate-svg-arms payload user-data))
+              error    (:error response)]
+          (println "generate-svg-arms response" response)
+          (when-not error
+            (println "success")))
+        (catch :default e
+          (println "generate-svg-arms error:" e))))))
+
 (defn save-arms-clicked [db-path]
   (let [payload   @(rf/subscribe [:get db-path])
         user-data (user/data)]
@@ -146,6 +159,10 @@
              :style {:width "7em"}]])]]
        [:div.pure-control-group {:style {:text-align "right"
                                          :margin-top "10px"}}
+        [:button.pure-button {:type     "button"
+                              :on-click #(generate-svg-clicked db-path)
+                              :style    {:float "left"}}
+         "SVG Link"]
         [:button.pure-button.pure-button-primary {:type "submit"}
          "Save"]]]
       [component/form-render-options [:arms-form]]

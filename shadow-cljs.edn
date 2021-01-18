@@ -15,6 +15,7 @@
                 [cljs-http "0.1.46"]
                 [aero "1.1.6"]
                 [hickory "0.7.1"]
+                [hiccups "0.3.0"]
                 [funcool/hodgepodge "0.1.4"]
                 [com.andrewmcveigh/cljs-time "0.5.2"]]
 
@@ -40,9 +41,10 @@
            :build-hooks      [(shadow-env.core/hook)]}
 
           :backend
-          {:target      :node-library
-           :exports     {:handler heraldry.api.core/handler}
-           :js-options  {:js-package-dirs ["./backend/node_modules"]}
-           :output-to   "backend/generated/api.js"
-           :devtools    {:repl-pprint true}
-           :build-hooks [(shadow-env.core/hook)]}}}
+          {:target           :node-library
+           :exports          {:handler heraldry.api.core/handler}
+           :js-options       {:js-package-dirs ["./backend/node_modules"]}
+           :output-to        "backend/generated/api.js"
+           :devtools         {:repl-pprint true}
+           :compiler-options {:warnings {:redef false}}
+           :build-hooks      [(shadow-env.core/hook)]}}}
