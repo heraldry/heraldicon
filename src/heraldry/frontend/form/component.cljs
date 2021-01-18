@@ -9,6 +9,7 @@
             [heraldry.coat-of-arms.ordinary :as ordinary]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.tincture :as tincture]
+            [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.util :as util]
             [re-frame.core :as rf]))
 
@@ -782,7 +783,7 @@
      [:i]]]
    {}
    [:div.tree
-    (let [charge-map (charge/get-charge-map)]
+    (let [charge-map (charge-map/get-charge-map)]
       (if charge-map
         [tree-for-charge-map charge-map [] path charge
          (get-in charge-map
