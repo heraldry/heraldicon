@@ -133,7 +133,7 @@
   (keyword (str "division-" (name key))))
 
 (defn make-division [type fields parts mask-overlaps outline parent-environment parent
-                     top-level-render render-options & {:keys [db-path transform]}]
+                     {:keys [render-field db-path transform render-options] :as context}]
   (let [mask-ids (->> (range (count fields))
                       (map (fn [idx] [(util/id (str (name type) "-" idx))
                                       (util/id (str (name type) "-" idx))])))
@@ -180,19 +180,19 @@
               :mask (when (-> env :meta :mask)
                       (str "url(#" mask-id ")"))}
           [:g {:transform transform}
-           [top-level-render
+           [render-field
             (get-field fields idx)
             (get environments idx)
-            render-options
-            :db-path (if (-> type name (s/starts-with? "ordinary-")) ;; FIXME: bit of a hack
-                       (conj db-path :field)
-                       (conj db-path :fields idx))]]]))
+            (-> context
+                (assoc :db-path (if (-> type name (s/starts-with? "ordinary-")) ;; FIXME: bit of a hack
+                                  (conj db-path :field)
+                                  (conj db-path :fields idx))))]]]))
      outline]))
 
 (defn per-pale
   {:display-name "Per pale"
    :parts ["dexter" "sinister"]}
-  [{:keys [type fields hints] :as division} environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -231,12 +231,12 @@
         [:path {:d (svg/make-path
                     ["M" bottom-adjusted
                      (line/stitch line-one)])}]])
-     environment division top-level-render render-options :db-path db-path]))
+     environment division context]))
 
 (defn per-fess
   {:display-name "Per fess"
    :parts ["chief" "base"]}
-  [{:keys [type fields hints] :as division} environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -271,7 +271,7 @@
         [:path {:d (svg/make-path
                     ["M" left
                      (line/stitch line-one)])}]])
-     environment division top-level-render render-options :db-path db-path]))
+     environment division context]))
 
 (defn angle-to-point [p1 p2]
   (let [d (v/- p2 p1)
@@ -301,7 +301,7 @@
 (defn per-bend
   {:display-name "Per bend"
    :parts ["chief" "base"]}
-  [{:keys [type fields hints] :as division} environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -341,12 +341,12 @@
         [:path {:d (svg/make-path
                     ["M" top-left
                      (line/stitch line-one)])}]])
-     environment division top-level-render render-options :db-path db-path]))
+     environment division context]))
 
 (defn per-bend-sinister
   {:display-name "Per bend sinister"
    :parts ["chief" "base"]}
-  [{:keys [type fields hints] :as division} environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -392,12 +392,12 @@
         [:path {:d (svg/make-path
                     ["M" diagonal-end-adjusted
                      (line/stitch line-one)])}]])
-     environment division top-level-render render-options :db-path db-path]))
+     environment division context]))
 
 (defn per-chevron
   {:display-name "Per chevron"
    :parts ["chief" "base"]}
-  [{:keys [type fields hints] :as division} environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -453,12 +453,12 @@
                      (line/stitch line-left)
                      "L" origin-point
                      (line/stitch line-right)])}]])
-     environment division top-level-render render-options :db-path db-path]))
+     environment division context]))
 
 (defn per-saltire
   {:display-name "Per saltire"
    :parts ["chief" "dexter" "sinister" "base"]}
-  [{:keys [type fields hints] :as division} environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -572,12 +572,12 @@
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (line/stitch line-bottom-left)])}]])
-     environment division top-level-render render-options :db-path db-path]))
+     environment division context]))
 
 (defn quarterly
   {:display-name "Quarterly"
    :parts ["I" "II" "III" "IV"]}
-  [{:keys [type fields hints] :as division} environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -676,12 +676,12 @@
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (line/stitch line-left)])}]])
-     environment division top-level-render render-options :db-path db-path]))
+     environment division context]))
 
 (defn gyronny
   {:display-name "Gyronny"
    :parts ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"]}
-  [{:keys [type fields hints] :as division} environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -875,12 +875,12 @@
         [:path {:d (svg/make-path
                     ["M" left-adjusted
                      (line/stitch line-left)])}]])
-     environment division top-level-render render-options :db-path db-path]))
+     environment division context]))
 
 (defn tierced-per-pale
   {:display-name "Tierced per pale"
    :parts ["dexter" "fess" "sinister"]}
-  [{:keys [type fields hints] :as division} environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -950,12 +950,12 @@
         [:path {:d (svg/make-path
                     ["M" second-bottom-adjusted
                      (line/stitch line-reversed)])}]])
-     environment division top-level-render render-options :db-path db-path]))
+     environment division context]))
 
 (defn tierced-per-fess
   {:display-name "Tierced per fess"
    :parts ["chief" "fess" "base"]}
-  [{:keys [type fields hints] :as division} environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -1024,12 +1024,12 @@
         [:path {:d (svg/make-path
                     ["M" second-right-adjusted
                      (line/stitch line-reversed)])}]])
-     environment division top-level-render render-options :db-path db-path]))
+     environment division context]))
 
 (defn tierced-per-pairle
   {:display-name "Tierced per pairle"
    :parts ["chief" "dexter" "sinister"]}
-  [{:keys [type fields hints] :as division} environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -1121,12 +1121,12 @@
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (line/stitch line-bottom)])}]])
-     environment division top-level-render render-options :db-path db-path]))
+     environment division context]))
 
 (defn tierced-per-pairle-reversed
   {:display-name "Tierced per pairle reversed"
    :parts ["dexter" "sinister" "base"]}
-  [{:keys [type fields hints] :as division} environment top-level-render render-options & {:keys [db-path]}]
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -1222,7 +1222,7 @@
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (line/stitch line-bottom-left)])}]])
-     environment division top-level-render render-options :db-path db-path]))
+     environment division context]))
 
 (def divisions
   [#'per-pale
@@ -1253,6 +1253,6 @@
   (let [function (get kinds-function-map type)]
     (-> function meta :parts (get index))))
 
-(defn render [{:keys [type] :as division} environment top-level-render render-options & {:keys [db-path]}]
+(defn render [{:keys [type] :as division} environment context]
   (let [function (get kinds-function-map type)]
-    [function division environment top-level-render render-options :db-path db-path]))
+    [function division environment context]))

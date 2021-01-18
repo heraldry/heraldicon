@@ -157,7 +157,7 @@
           (not= type :escutcheon) (assoc :escutcheon nil))))))))
 
 (defn make-charge
-  [{:keys [field hints] :as charge} parent environment top-level-render render-options db-path arg function]
+  [{:keys [field hints] :as charge} parent environment {:keys [render-options] :as context} arg function]
   (let [{:keys [position geometry]} (options/sanitize charge (options charge))
         {:keys [size stretch rotation
                 mirrored? reversed?]} geometry
@@ -229,13 +229,13 @@
         [:path {:d charge-shape}]
         (when mask-shape
           [:path {:d mask-shape}])])
-     environment charge top-level-render render-options :db-path db-path]))
+     environment charge context]))
 
 (defn escutcheon
   {:display-name "Escutcheon"}
-  [charge parent environment top-level-render render-options & {:keys [db-path]}]
+  [charge parent environment context]
   (let [{:keys [escutcheon]} (options/sanitize charge (options charge))]
-    (make-charge charge parent environment top-level-render render-options db-path
+    (make-charge charge parent environment context
                  :width
                  (fn [width]
                    (let [env (field-environment/transform-to-width
@@ -249,8 +249,8 @@
 
 (defn roundel
   {:display-name "Roundel"}
-  [charge parent environment top-level-render render-options & {:keys [db-path]}]
-  (make-charge charge parent environment top-level-render render-options db-path
+  [charge parent environment context]
+  (make-charge charge parent environment context
                :width
                (fn [width]
                  (let [radius (/ width 2)]
@@ -265,8 +265,8 @@
 
 (defn annulet
   {:display-name "Annulet"}
-  [charge parent environment top-level-render render-options & {:keys [db-path]}]
-  (make-charge charge parent environment top-level-render render-options db-path
+  [charge parent environment context]
+  (make-charge charge parent environment context
                :width
                (fn [width]
                  (let [radius (/ width 2)
@@ -288,8 +288,8 @@
 
 (defn billet
   {:display-name "Billet"}
-  [charge parent environment top-level-render render-options & {:keys [db-path]}]
-  (make-charge charge parent environment top-level-render render-options db-path
+  [charge parent environment context]
+  (make-charge charge parent environment context
                :height
                (fn [height]
                  (let [width (/ height 2)
@@ -305,8 +305,8 @@
 
 (defn lozenge
   {:display-name "Lozenge"}
-  [charge parent environment top-level-render render-options & {:keys [db-path]}]
-  (make-charge charge parent environment top-level-render render-options db-path
+  [charge parent environment context]
+  (make-charge charge parent environment context
                :height
                (fn [height]
                  (let [width (/ height 1.3)
@@ -322,8 +322,8 @@
 
 (defn fusil
   {:display-name "Fusil"}
-  [charge parent environment top-level-render render-options & {:keys [db-path]}]
-  (make-charge charge parent environment top-level-render render-options db-path
+  [charge parent environment context]
+  (make-charge charge parent environment context
                :height
                (fn [height]
                  (let [width (/ height 2)
@@ -339,8 +339,8 @@
 
 (defn mascle
   {:display-name "Mascle"}
-  [charge parent environment top-level-render render-options & {:keys [db-path]}]
-  (make-charge charge parent environment top-level-render render-options db-path
+  [charge parent environment context]
+  (make-charge charge parent environment context
                :height
                (fn [height]
                  (let [width (/ height 1.3)
@@ -365,8 +365,8 @@
 
 (defn rustre
   {:display-name "Rustre"}
-  [charge parent environment top-level-render render-options & {:keys [db-path]}]
-  (make-charge charge parent environment top-level-render render-options db-path
+  [charge parent environment context]
+  (make-charge charge parent environment context
                :height
                (fn [height]
                  (let [width (/ height 1.3)
@@ -389,8 +389,8 @@
 
 (defn crescent
   {:display-name "Crescent"}
-  [charge parent environment top-level-render render-options & {:keys [db-path]}]
-  (make-charge charge parent environment top-level-render render-options db-path
+  [charge parent environment context]
+  (make-charge charge parent environment context
                :width
                (fn [width]
                  (let [radius (/ width 2)
@@ -441,7 +441,7 @@
               [(-> function meta :display-name) (-> function meta :name keyword)]))))
 
 (defn render-other-charge [{:keys [type field tincture hints data] :as charge} parent
-                           environment top-level-render render-options & {:keys [db-path]}]
+                           environment {:keys [render-field render-options] :as context}]
   (if-let [charge-data (fetch-charge-data data)]
     (let [{:keys [position geometry]} (options/sanitize charge (options charge))
           {:keys [size stretch
@@ -567,13 +567,14 @@
               :clip-path (str "url(#" clip-path-id ")")}
           [:g {:mask (str "url(#" mask-inverted-id ")")}
            [:g {:transform reverse-transform}
-            [top-level-render field charge-environment render-options :db-path (conj db-path :field)]]]
+            [render-field field charge-environment (-> context
+                                                       (update :db-path conj :field))]]]
           [:g {:mask (str "url(#" mask-id ")")}
            coloured-charge]])])
     [:<>]))
 
-(defn render [{:keys [type] :as charge} parent environment top-level-render render-options & {:keys [db-path]}]
+(defn render [{:keys [type] :as charge} parent environment context]
   (let [function (get kinds-function-map type)]
     (if function
-      [function charge parent environment top-level-render render-options :db-path db-path]
-      [render-other-charge charge parent environment top-level-render render-options :db-path db-path])))
+      [function charge parent environment context]
+      [render-other-charge charge parent environment context])))
