@@ -9,6 +9,7 @@
             [heraldry.coat-of-arms.blazon :as blazon]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.render :as render]
+            [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.state :as state]
@@ -82,8 +83,11 @@
               :preserveAspectRatio "xMidYMin slice"}
         [:g {:filter "url(#shadow)"}
          [:g {:transform "translate(10,10) scale(5,5)"}
-          [render/coat-of-arms coat-of-arms {:render-options render-options
-                                             :db-path [:arms-form :coat-of-arms]}]]]]
+          [render/coat-of-arms
+           coat-of-arms
+           100
+           {:render-options render-options
+            :db-path [:arms-form :coat-of-arms]}]]]]
        [:div.blazonry
         [:span.disclaimer "Blazon (very rudimentary, very beta)"]
         [:div.blazon
