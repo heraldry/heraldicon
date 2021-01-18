@@ -11,8 +11,8 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture :as tincture]
-            [heraldry.coat-of-arms.util :as util]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.util :as util]))
 
 (defn find-charge [charge-map [group & rest]]
   (let [next (get-in charge-map [:groups group])]

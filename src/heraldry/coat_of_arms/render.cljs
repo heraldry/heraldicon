@@ -5,7 +5,7 @@
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
             [heraldry.coat-of-arms.tincture :as tincture]
-            [heraldry.coat-of-arms.util :as util]))
+            [heraldry.util :as util]))
 
 (defn coat-of-arms [coat-of-arms width {:keys [render-options] :as context}]
   (let [shield      (escutcheon/field (:escutcheon coat-of-arms))

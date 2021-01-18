@@ -129,3 +129,11 @@
                                                (function body)
                                                body)]))
                 (println "error fetching" url)))))))
+
+(defn dispatch-on-event [event effect]
+  (rf/dispatch effect)
+  (.stopPropagation event))
+
+(defn dispatch-on-event-sync [event effect]
+  (rf/dispatch-sync effect)
+  (.stopPropagation event))

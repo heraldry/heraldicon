@@ -1,5 +1,5 @@
 (ns heraldry.frontend.form.core
-  (:require [heraldry.coat-of-arms.util :as util]
+  (:require [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (defn field [db-path function]

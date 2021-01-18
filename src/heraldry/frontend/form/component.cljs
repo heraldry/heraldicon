@@ -10,7 +10,9 @@
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.frontend.charge-map :as charge-map]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.util :as util]
+            [heraldry.util :refer [id]]
             [re-frame.core :as rf]))
 
 ;; subs
@@ -234,7 +236,7 @@
 (declare form-for-field)
 
 (defn checkbox [path label & {:keys [on-change disabled? checked?]}]
-  (let [component-id (util/id "checkbox")
+  (let [component-id (id "checkbox")
         checked?     (-> (and path
                               @(rf/subscribe [:get path]))
                          (or checked?)
@@ -252,7 +254,7 @@
      [:label {:for component-id} label]]))
 
 (defn select [path label choices & {:keys [grouped? value on-change default]}]
-  (let [component-id  (util/id "select")
+  (let [component-id  (id "select")
         current-value @(rf/subscribe [:get path])]
     [:div.setting
      [:label {:for component-id} label]
@@ -286,7 +288,7 @@
    (let [current-value (or @(rf/subscribe [:get path])
                            default)]
      (for [[display-name key] choices]
-       (let [component-id (util/id "radio")]
+       (let [component-id (id "radio")]
          ^{:key key}
          [:<>
           [:input {:id        component-id
@@ -302,8 +304,8 @@
 
 (defn range-input [path label min-value max-value & {:keys [value on-change default display-function step
                                                             disabled?]}]
-  (let [component-id   (util/id "range")
-        checkbox-id    (util/id "checkbox")
+  (let [component-id   (id "range")
+        checkbox-id    (id "checkbox")
         current-value  @(rf/subscribe [:get path])
         value          (or value
                            current-value
@@ -338,7 +340,7 @@
                                              display-function display-function)]]]))
 
 (defn selector [path]
-  [:a.selector {:on-click #(util/dispatch % [:ui-component-select path])}
+  [:a.selector {:on-click #(state/dispatch-on-event % [:ui-component-select path])}
    [:i.fas.fa-search]])
 
 (defn component [path type title title-prefix & content]
@@ -352,7 +354,7 @@
      {:class (util/combine " " [(when type (name type))
                                 (when selected? "selected")
                                 (when (not open?) "closed")])}
-     [:div.header.clickable {:on-click #(util/dispatch % [:ui-component-open-toggle path])}
+     [:div.header.clickable {:on-click #(state/dispatch-on-event % [:ui-component-open-toggle path])}
       [:a.arrow {:style {:opacity (if content? 1 0)}}
        (if open?
          [:i.fas.fa-chevron-circle-down]
@@ -377,11 +379,11 @@
         submenu-open? @(rf/subscribe [:ui-submenu-open? submenu-id])]
     [:div.submenu-setting {:style    {:display "inline-block"}
                            :on-click #(.stopPropagation %)}
-     [:a {:on-click #(util/dispatch % [:ui-submenu-open submenu-id])}
+     [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-open submenu-id])}
       link-name]
      (when submenu-open?
        [:div.component.submenu {:style styles}
-        [:div.header [:a {:on-click #(util/dispatch % [:ui-submenu-close submenu-id])}
+        [:div.header [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-close submenu-id])}
                       [:i.far.fa-times-circle]]
          " " title]
         (into [:div.content]
@@ -389,7 +391,7 @@
 
 (defn escutcheon-choice [path key display-name]
   (let [value @(rf/subscribe [:get path])]
-    [:div.choice.tooltip {:on-click #(util/dispatch % [:set path key])}
+    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
      [:svg {:style               {:width  "4em"
                                   :height "5em"}
             :viewBox             "0 0 120 200"
@@ -440,7 +442,7 @@
 
 (defn tincture-choice [path key display-name]
   (let [value @(rf/subscribe [:get path])]
-    [:div.choice.tooltip {:on-click #(util/dispatch % [:set path key])
+    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
                           :style    {:border        (if (= value key)
                                                       "1px solid #000"
                                                       "1px solid transparent")
@@ -564,10 +566,10 @@
          [checkbox (conj path :reversed?) "Reversed"])]]]))
 
 (defn charge-type-choice [path key display-name & {:keys [current]}]
-  [:div.choice.tooltip {:on-click #(util/dispatch % [:update-charge path {:type     key
-                                                                          :attitude nil
-                                                                          :facing   nil
-                                                                          :data     nil}])}
+  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:update-charge path {:type     key
+                                                                                    :attitude nil
+                                                                                    :facing   nil
+                                                                                    :data     nil}])}
    [:svg {:style               {:width  "4em"
                                 :height "4.5em"}
           :viewBox             "0 0 120 200"
@@ -654,14 +656,14 @@
             :_root)   (conj
                        [:span.node-name.clickable
                         {:on-click (if (= type :variant)
-                                     #(util/dispatch % [:update-charge
-                                                        db-path
-                                                        (let [charge-data (:data node)]
-                                                          (merge {:type (:key charge-data)
-                                                                  :data charge-data}
-                                                                 (select-keys charge-data
-                                                                              [:attitude :facing])))])
-                                     #(util/dispatch % [:toggle flag-path]))
+                                     #(state/dispatch-on-event % [:update-charge
+                                                                  db-path
+                                                                  (let [charge-data (:data node)]
+                                                                    (merge {:type (:key charge-data)
+                                                                            :data charge-data}
+                                                                           (select-keys charge-data
+                                                                                        [:attitude :facing])))])
+                                     #(state/dispatch-on-event % [:toggle flag-path]))
                          :style    {:color (when still-on-path? "#1b6690")}}
                         (if (= type :variant)
                           [:i.far {:class (-> node-icons (get type) :normal)}]
@@ -899,7 +901,7 @@
                   :division
                   :type
                   (or :none))]
-    [:div.choice.tooltip {:on-click #(util/dispatch % [:set-division-type path key])}
+    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-division-type path key])}
      [:svg {:style               {:width  "4em"
                                   :height "4.5em"}
             :viewBox             "0 0 120 200"
@@ -944,7 +946,7 @@
 
 (defn line-type-choice [path key display-name & {:keys [current]}]
   (let [options (line/options {:type key})]
-    [:div.choice.tooltip {:on-click #(util/dispatch % [:set path key])}
+    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
      [:svg {:style               {:width  "6.5em"
                                   :height "4.5em"}
             :viewBox             "0 0 120 80"
@@ -1042,7 +1044,7 @@
    [form-for-tincture (conj path :tincture)]])
 
 (defn ordinary-type-choice [path key display-name & {:keys [current]}]
-  [:div.choice.tooltip {:on-click #(util/dispatch % [:set-ordinary-type path key])}
+  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type path key])}
    [:svg {:style               {:width  "4em"
                                 :height "4.5em"}
           :viewBox             "0 0 120 200"
@@ -1164,20 +1166,20 @@
                    [form-for-field part-path :title-prefix part-name])]
                 [:div {:style {:padding-left "10px"}}
                  (if ref
-                   [:a {:on-click #(do (util/dispatch % [:set part-path (get content ref)])
-                                       (util/dispatch % [:ui-component-open part-path]))}
+                   [:a {:on-click #(do (state/dispatch-on-event % [:set part-path (get content ref)])
+                                       (state/dispatch-on-event % [:ui-component-open part-path]))}
                     [:i.far.fa-edit]]
                    (when (>= idx mandatory-part-count)
-                     [:a {:on-click #(util/dispatch % [:set (conj part-path :ref)
-                                                       (-> (division/default-fields division-type)
-                                                           (get idx)
-                                                           :ref)])}
+                     [:a {:on-click #(state/dispatch-on-event % [:set (conj part-path :ref)
+                                                                 (-> (division/default-fields division-type)
+                                                                     (get idx)
+                                                                     :ref)])}
                       [:i.far.fa-times-circle]]))]])))]])
      [:div {:style {:margin-bottom "0.5em"}}
-      [:button {:on-click #(util/dispatch % [:add-component path default/ordinary])}
+      [:button {:on-click #(state/dispatch-on-event % [:add-component path default/ordinary])}
        [:i.fas.fa-plus] " Add ordinary"]
       " "
-      [:button {:on-click #(util/dispatch % [:add-component path default/charge])}
+      [:button {:on-click #(state/dispatch-on-event % [:add-component path default/charge])}
        [:i.fas.fa-plus] " Add charge"]]
      [:div.components
       [:ul
@@ -1190,12 +1192,12 @@
                              :white-space   "nowrap"}}
                [:a (if (zero? idx)
                      {:class "disabled"}
-                     {:on-click #(util/dispatch % [:move-component-down component-path])})
+                     {:on-click #(state/dispatch-on-event % [:move-component-down component-path])})
                 [:i.fas.fa-chevron-down]]
                " "
                [:a (if (= idx (dec (count components)))
                      {:class "disabled"}
-                     {:on-click #(util/dispatch % [:move-component-up component-path])})
+                     {:on-click #(state/dispatch-on-event % [:move-component-up component-path])})
                 [:i.fas.fa-chevron-up]]]
               [:div
                (if (-> component :component (= :ordinary))
@@ -1204,5 +1206,5 @@
               [:div {:style {:padding-left "10px"}}
                (when (not (and (-> component :component (= :charge))
                                (-> component :type keyword? not)))
-                 [:a {:on-click #(util/dispatch % [:remove-component component-path])}
+                 [:a {:on-click #(state/dispatch-on-event % [:remove-component component-path])}
                   [:i.far.fa-trash-alt]])]])))]]]))
