@@ -2,19 +2,18 @@
   (:require [heraldry.coat-of-arms.charge :as charge]
             [heraldry.coat-of-arms.division :as division]
             [heraldry.coat-of-arms.ordinary :as ordinary]
-            [heraldry.coat-of-arms.tincture :as tincture]
-            [re-frame.core :as rf]))
+            [heraldry.coat-of-arms.tincture :as tincture]))
 
-(defn render [{:keys [division components] :as field} environment {:keys [db-path render-options] :as context}]
-  (let [tincture           (get-in field [:content :tincture])
-        selectable-fields? (-> render-options :ui :selectable-fields?)
-        selected?          (and selectable-fields?
-                                @(rf/subscribe [:ui-component-selected? db-path]))
-        context            (-> context
-                               (assoc :render-field render))]
-    [:g {:on-click (when selectable-fields?
+(defn render [{:keys [division components] :as field} environment
+              {:keys [db-path render-options fn-component-selected? fn-select-component] :as context}]
+  (let [tincture  (get-in field [:content :tincture])
+        selected? (when fn-component-selected?
+                    (fn-component-selected? db-path))
+        context   (-> context
+                      (assoc :render-field render))]
+    [:g {:on-click (when fn-select-component
                      (fn [event]
-                       (rf/dispatch [:ui-component-select db-path])
+                       (fn-select-component db-path)
                        (.stopPropagation event)))
          :style    {:pointer-events "visiblePainted"
                     :cursor         "pointer"}}
