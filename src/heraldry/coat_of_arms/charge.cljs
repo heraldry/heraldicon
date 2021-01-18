@@ -1,10 +1,8 @@
 (ns heraldry.coat-of-arms.charge
   (:require ["svgpath" :as svgpath]
-            [cljs.core.async :refer [go <!]]
             [cljs.reader :as reader]
             [clojure.string :as s]
             [clojure.walk :as walk]
-            [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.division :as division]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field-environment :as field-environment]
@@ -17,35 +15,13 @@
             [heraldry.coat-of-arms.util :as util]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.user :as user]
             [re-frame.core :as rf]))
-
-(defn fetch-charge-map [db-path]
-  (go
-    (let [user-data (user/data)]
-      (rf/dispatch-sync [:set db-path :loading])
-      (-> (api-request/call :get-charge-map {} user-data)
-          <!
-          (as-> response
-                (if-let [error (:error response)]
-                  (println "fetch-charge-map error:" error)
-                  (rf/dispatch [:set db-path response])))))))
 
 (defn find-charge [charge-map [group & rest]]
   (let [next (get-in charge-map [:groups group])]
     (if rest
       (recur next rest)
       next)))
-
-(defn get-charge-map []
-  (let [db-path [:charge-map]
-        charge-map @(rf/subscribe [:get db-path])]
-    (cond
-      (nil? charge-map) (do
-                          (fetch-charge-map db-path)
-                          (rf/dispatch-sync [:set db-path :loading]))
-      (= charge-map :loading) nil
-      :else charge-map)))
 
 (defn fetch-charge-data [charge]
   (let [url (-> charge :edn-data-url)
