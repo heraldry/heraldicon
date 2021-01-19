@@ -16,6 +16,11 @@
             [heraldry.util :refer [id]]
             [re-frame.core :as rf]))
 
+(def coa-select-option-context
+  (-> context/default
+      (dissoc :fn-component-selected?)
+      (dissoc :fn-select-component)))
+
 ;; subs
 
 (rf/reg-sub
@@ -404,7 +409,7 @@
           :field      {:component :field
                        :content   {:tincture (if (= value key) :or :azure)}}}
          100
-         (-> context/default
+         (-> coa-select-option-context
              (assoc-in [:render-options :outline?] true))]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
@@ -459,7 +464,7 @@
           :field      {:component :field
                        :content   {:tincture key}}}
          40
-         (-> context/default
+         (-> coa-select-option-context
              (assoc-in [:render-options :outline?] true))]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
@@ -587,7 +592,7 @@
                                    :escutcheon (if (= key :escutcheon) :heater nil)
                                    :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
        100
-       (-> context/default
+       (-> coa-select-option-context
            (assoc-in [:render-options :outline?] true))]]]]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
@@ -610,7 +615,7 @@
                                    :data      (:data charge)
                                    :field     {:content {:tincture :or}}}]}}
        100
-       (-> context/default
+       (-> coa-select-option-context
            (assoc-in [:render-options :outline?] true))]]]]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
@@ -788,7 +793,7 @@
                                     :position  {:offset-x 15}
                                     :field     {:content {:tincture :azure}}}]}}
         100
-        (-> context/default
+        (-> coa-select-option-context
             (assoc-in [:render-options :outline?] true))]]]]
     [:div.bottom
      [:h3 {:style {:text-align "center"}} "more"]
@@ -921,7 +926,7 @@
                                                  (cond->
                                                      (= value key) (util/replace-recursively :azure :or)))}})}
          100
-         (-> context/default
+         (-> coa-select-option-context
              (assoc-in [:render-options :outline?] true))]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
@@ -963,7 +968,7 @@
                                    :fields [{:content {:tincture :argent}}
                                             {:content {:tincture (if (= key current) :or :azure)}}]}}}
          100
-         (-> context/default
+         (-> coa-select-option-context
              (assoc-in [:render-options :outline?] true))]]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
@@ -1061,7 +1066,7 @@
                                    :escutcheon (if (= key :escutcheon) :heater nil)
                                    :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
        100
-       (-> context/default
+       (-> coa-select-option-context
            (assoc-in [:render-options :outline?] true))]]]]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
