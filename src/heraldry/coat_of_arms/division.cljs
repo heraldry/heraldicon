@@ -10,6 +10,8 @@
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
+(def overlap-stroke-width 0.1)
+
 (defn default-fields [type]
   (into [default/field
          (-> default/field
@@ -162,10 +164,16 @@
             [:path {:d    environment-shape
                     :fill "#fff"}]
             (cond
-              (= overlap-paths :all) [:path.overlap {:d environment-shape}]
+              (= overlap-paths :all) [:path {:d            environment-shape
+                                             :fill         "none"
+                                             :stroke-width overlap-stroke-width
+                                             :stroke       "#fff"}]
               overlap-paths          (for [[idx shape] (map-indexed vector overlap-paths)]
                                        ^{:key idx}
-                                       [:path.overlap {:d shape}]))]
+                                       [:path {:d            shape
+                                               :fill         "none"
+                                               :stroke-width overlap-stroke-width
+                                               :stroke       "#fff"}]))]
            (if-let [mask-shape (-> env :meta :mask)]
              [:mask {:id mask-id}
               [:path {:d    environment-shape
