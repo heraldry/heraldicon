@@ -114,18 +114,21 @@
 (defn preview [charge-data]
   (let [{:keys [edn-data]} charge-data
         render-options @(rf/subscribe [:get [:example-coa :render-options]])
-        coat-of-arms @(rf/subscribe [:get [:example-coa :coat-of-arms]])]
-    [:svg {:viewBox (str "0 0 520 700")
+        coat-of-arms @(rf/subscribe [:get [:example-coa :coat-of-arms]])
+        {:keys [result
+                environment]} (render/coat-of-arms
+                               (assoc-in coat-of-arms
+                                         [:field :components 0 :type] edn-data)
+                               100
+                               (merge
+                                context/default
+                                {:render-options render-options}))
+        {:keys [width height]} environment]
+    [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
            :preserveAspectRatio "xMidYMid meet"
            :style {:width "97%"}}
      [:g {:transform "translate(10,10) scale(5,5)"}
-      [render/coat-of-arms
-       (assoc-in coat-of-arms
-                 [:field :components 0 :type] edn-data)
-       100
-       (merge
-        context/default
-        {:render-options render-options})]]]))
+      result]]))
 
 (defn upload-file [event db-path]
   (let [file (-> event .-target .-files (.item 0))]
