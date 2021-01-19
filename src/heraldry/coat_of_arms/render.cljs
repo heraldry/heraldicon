@@ -16,8 +16,6 @@
     [:g
      [:defs
       filter/shadow
-      filter/shiny
-      filter/glow
       tincture/patterns
       hatching/patterns]
      [:defs
