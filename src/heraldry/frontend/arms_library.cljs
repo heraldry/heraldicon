@@ -71,29 +71,31 @@
   (let [coat-of-arms @(rf/subscribe [:get [:arms-form :coat-of-arms]])
         render-options @(rf/subscribe [:get [:arms-form :render-options]])]
     (if coat-of-arms
-      [:div {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
-                            (rf/dispatch [:ui-submenu-close-all])
-                            (.stopPropagation %))
-             :style {:margin-left "10px"
-                     :margin-right "10px"}}
-       [:svg {:id "svg"
-              :style {:width "25em"
-                      :height "32em"}
-              :viewBox "0 0 520 1000"
-              :preserveAspectRatio "xMidYMin slice"}
-        [:g {:filter "url(#shadow)"}
-         [:g {:transform "translate(10,10) scale(5,5)"}
-          [render/coat-of-arms
-           coat-of-arms
-           100
-           (merge
-            context/default
-            {:render-options render-options
-             :db-path [:arms-form :coat-of-arms]})]]]]
-       [:div.blazonry
-        [:span.disclaimer "Blazon (very rudimentary, very beta)"]
-        [:div.blazon
-         (blazon/encode-field (:field coat-of-arms) :root? true)]]]
+      (let [{:keys [result
+                    environment]} (render/coat-of-arms
+                                   coat-of-arms
+                                   100
+                                   (merge
+                                    context/default
+                                    {:render-options render-options
+                                     :db-path [:arms-form :coat-of-arms]}))
+            {:keys [width height]} environment]
+        [:div {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
+                              (rf/dispatch [:ui-submenu-close-all])
+                              (.stopPropagation %))
+               :style {:margin-left "10px"
+                       :margin-right "10px"}}
+         [:svg {:id "svg"
+                :style {:width "25em"}
+                :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
+                :preserveAspectRatio "xMidYMin slice"}
+          [:g {:filter "url(#shadow)"}
+           [:g {:transform "translate(10,10) scale(5,5)"}
+            result]]]
+         [:div.blazonry
+          [:span.disclaimer "Blazon (very rudimentary, very beta)"]
+          [:div.blazon
+           (blazon/encode-field (:field coat-of-arms) :root? true)]]])
       [:<>])))
 
 (defn generate-svg-clicked [db-path]
