@@ -211,7 +211,7 @@
      [:all]
      (when (or (:outline? render-options)
                (-> hints :outline-mode (= :keep)))
-       [:g.outline
+       [:g division/outline-style
         [:path {:d charge-shape}]
         (when mask-shape
           [:path {:d mask-shape}])])
