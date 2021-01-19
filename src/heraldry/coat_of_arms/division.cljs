@@ -11,6 +11,14 @@
             [heraldry.util :as util]))
 
 (def overlap-stroke-width 0.1)
+(def outline-stroke-width 0.5)
+
+(def outline-style
+  {:stroke "#000"
+   :stroke-width outline-stroke-width
+   :fill "none"
+   :stroke-linecap "round"
+   :stroke-linejoin "round"})
 
 (defn default-fields [type]
   (into [default/field
@@ -235,10 +243,11 @@
      [:all nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g outline-style
         [:path {:d (svg/make-path
                     ["M" bottom-adjusted
                      (line/stitch line-one)])}]])
+
      environment division context]))
 
 (defn per-fess
@@ -275,7 +284,7 @@
      [:all nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g outline-style
         [:path {:d (svg/make-path
                     ["M" left
                      (line/stitch line-one)])}]])
@@ -345,7 +354,7 @@
      [:all nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g outline-style
         [:path {:d (svg/make-path
                     ["M" top-left
                      (line/stitch line-one)])}]])
@@ -396,7 +405,7 @@
      [:all nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g outline-style
         [:path {:d (svg/make-path
                     ["M" diagonal-end-adjusted
                      (line/stitch line-one)])}]])
@@ -455,7 +464,7 @@
      [:all nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g outline-style
         [:path {:d (svg/make-path
                     ["M" diagonal-bottom-left-adjusted
                      (line/stitch line-left)
@@ -567,7 +576,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g outline-style
         [:path {:d (svg/make-path
                     ["M" diagonal-top-left-adjusted
                      (line/stitch line-top-left)])}]
@@ -671,7 +680,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g outline-style
         [:path {:d (svg/make-path
                     ["M" top-adjusted
                      (line/stitch line-top)])}]
@@ -858,7 +867,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g outline-style
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (line/stitch line-top-left)])}]
@@ -951,7 +960,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g outline-style
         [:path {:d (svg/make-path
                     ["M" first-top
                      (line/stitch line-one)])}]
@@ -1025,7 +1034,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g outline-style
         [:path {:d (svg/make-path
                     ["M" first-left
                      (line/stitch line-one)])}]
@@ -1119,7 +1128,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g outline-style
         [:path {:d (svg/make-path
                     ["M" diagonal-top-left-adjusted
                      (line/stitch line-top-left)])}]
@@ -1220,7 +1229,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g outline-style
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (line/stitch line-top)])}]

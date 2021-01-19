@@ -171,7 +171,7 @@
      [:all]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g division/outline-style
         [:path {:d (svg/make-path
                     ["M" first-top
                      (line/stitch line-one)])}]
@@ -229,7 +229,7 @@
      [:all]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g division/outline-style
         [:path {:d (svg/make-path
                     ["M" first-left
                      (line/stitch line-one)])}]
@@ -277,7 +277,7 @@
      [:all]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g division/outline-style
         [:path {:d (svg/make-path
                     ["M" row-right-adjusted
                      (line/stitch line-reversed)])}]])
@@ -318,7 +318,7 @@
      [:all]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g division/outline-style
         [:path {:d (svg/make-path
                     ["M" row-left
                      (line/stitch line-one)])}]])
@@ -382,7 +382,7 @@
       [:all]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g.outline
+        [:g division/outline-style
          [:path {:d (svg/make-path
                      ["M" first-left
                       (line/stitch line-one)])}]
@@ -454,7 +454,7 @@
       [:all]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g.outline
+        [:g division/outline-style
          [:path {:d (svg/make-path
                      ["M" first-left
                       (line/stitch line-one)])}]
@@ -579,7 +579,7 @@
      [:all]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g division/outline-style
         [:path {:d (svg/make-path
                     ["M" corner-top-left
                      (line/stitch line-pale-top-left)])}]
@@ -731,7 +731,7 @@
      [:all]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g division/outline-style
         [:path {:d (svg/make-path
                     ["M" corner-left
                      (line/stitch line-top-left-lower)])}]
@@ -835,7 +835,7 @@
      [:all]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g.outline
+       [:g division/outline-style
         [:path {:d (svg/make-path
                     ["M" corner-top
                      (line/stitch line-bottom-right-upper)])}]

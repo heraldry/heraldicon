@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.render
-  (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
+  (:require [heraldry.coat-of-arms.division :as division]
+            [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field :as field]
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.filter :as filter]
@@ -31,4 +32,5 @@
       [field/render field environment (-> context
                                           (update :db-path conj :field))]]
      (when (:outline? render-options)
-       [:path.outline {:d (:shape environment)}])]))
+       [:g division/outline-style
+        [:path {:d (:shape environment)}]])]))
