@@ -396,7 +396,14 @@
               content)])]))
 
 (defn escutcheon-choice [path key display-name]
-  (let [value @(rf/subscribe [:get path])]
+  (let [value            @(rf/subscribe [:get path])
+        {:keys [result]} (render/coat-of-arms
+                          {:escutcheon key
+                           :field      {:component :field
+                                        :content   {:tincture (if (= value key) :or :azure)}}}
+                          100
+                          (-> coa-select-option-context
+                              (assoc-in [:render-options :outline?] true)))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
      [:svg {:style               {:width  "4em"
                                   :height "5em"}
@@ -404,13 +411,7 @@
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(10,10)"}
-        [render/coat-of-arms
-         {:escutcheon key
-          :field      {:component :field
-                       :content   {:tincture (if (= value key) :or :azure)}}}
-         100
-         (-> coa-select-option-context
-             (assoc-in [:render-options :outline?] true))]]]]
+        result]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -447,7 +448,14 @@
    [checkbox (conj db-path :render-options :squiggly?) "Squiggly lines (can be slow)"]])
 
 (defn tincture-choice [path key display-name]
-  (let [value @(rf/subscribe [:get path])]
+  (let [value            @(rf/subscribe [:get path])
+        {:keys [result]} (render/coat-of-arms
+                          {:escutcheon :rectangle
+                           :field      {:component :field
+                                        :content   {:tincture key}}}
+                          40
+                          (-> coa-select-option-context
+                              (assoc-in [:render-options :outline?] true)))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
                           :style    {:border        (if (= value key)
                                                       "1px solid #000"
@@ -459,13 +467,7 @@
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(5,5)"}
-        [render/coat-of-arms
-         {:escutcheon :rectangle
-          :field      {:component :field
-                       :content   {:tincture key}}}
-         40
-         (-> coa-select-option-context
-             (assoc-in [:render-options :outline?] true))]]]]
+        result]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -572,54 +574,56 @@
          [checkbox (conj path :reversed?) "Reversed"])]]]))
 
 (defn charge-type-choice [path key display-name & {:keys [current]}]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:update-charge path {:type     key
-                                                                                    :attitude nil
-                                                                                    :facing   nil
-                                                                                    :data     nil}])}
-   [:svg {:style               {:width  "4em"
-                                :height "4.5em"}
-          :viewBox             "0 0 120 200"
-          :preserveAspectRatio "xMidYMin slice"}
-    [:g {:filter "url(#shadow)"}
-     [:g {:transform "translate(10,10)"}
-      [render/coat-of-arms
-       {:escutcheon :rectangle
-        :field      {:component  :field
-                     :content    {:tincture :argent}
-                     :components [{:component  :charge
-                                   :type       key
-                                   :geometry   {:size 75}
-                                   :escutcheon (if (= key :escutcheon) :heater nil)
-                                   :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
-       100
-       (-> coa-select-option-context
-           (assoc-in [:render-options :outline?] true))]]]]
-   [:div.bottom
-    [:h3 {:style {:text-align "center"}} display-name]
-    [:i]]])
+  (let [{:keys [result]} (render/coat-of-arms
+                          {:escutcheon :rectangle
+                           :field      {:component  :field
+                                        :content    {:tincture :argent}
+                                        :components [{:component  :charge
+                                                      :type       key
+                                                      :geometry   {:size 75}
+                                                      :escutcheon (if (= key :escutcheon) :heater nil)
+                                                      :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
+                          100
+                          (-> coa-select-option-context
+                              (assoc-in [:render-options :outline?] true)))]
+    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:update-charge path {:type     key
+                                                                                      :attitude nil
+                                                                                      :facing   nil
+                                                                                      :data     nil}])}
+     [:svg {:style               {:width  "4em"
+                                  :height "4.5em"}
+            :viewBox             "0 0 120 200"
+            :preserveAspectRatio "xMidYMin slice"}
+      [:g {:filter "url(#shadow)"}
+       [:g {:transform "translate(10,10)"}
+        result]]]
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} display-name]
+      [:i]]]))
 
 (defn charge-type-selected-choice [charge display-name]
-  [:div.choice.tooltip
-   [:svg {:style               {:width  "4em"
-                                :height "4.5em"}
-          :viewBox             "0 0 120 200"
-          :preserveAspectRatio "xMidYMin slice"}
-    [:g {:filter "url(#shadow)"}
-     [:g {:transform "translate(10,10)"}
-      [render/coat-of-arms
-       {:escutcheon :rectangle
-        :field      {:component  :field
-                     :content    {:tincture :argent}
-                     :components [{:component :charge
-                                   :type      key
-                                   :data      (:data charge)
-                                   :field     {:content {:tincture :or}}}]}}
-       100
-       (-> coa-select-option-context
-           (assoc-in [:render-options :outline?] true))]]]]
-   [:div.bottom
-    [:h3 {:style {:text-align "center"}} display-name]
-    [:i]]])
+  (let [{:keys [result]} (render/coat-of-arms
+                          {:escutcheon :rectangle
+                           :field      {:component  :field
+                                        :content    {:tincture :argent}
+                                        :components [{:component :charge
+                                                      :type      key
+                                                      :data      (:data charge)
+                                                      :field     {:content {:tincture :or}}}]}}
+                          100
+                          (-> coa-select-option-context
+                              (assoc-in [:render-options :outline?] true)))]
+    [:div.choice.tooltip
+     [:svg {:style               {:width  "4em"
+                                  :height "4.5em"}
+            :viewBox             "0 0 120 200"
+            :preserveAspectRatio "xMidYMin slice"}
+      [:g {:filter "url(#shadow)"}
+       [:g {:transform "translate(10,10)"}
+        result]]]
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} display-name]
+      [:i]]]))
 
 (def node-icons
   {:group    {:closed "fa-plus-square"
@@ -767,37 +771,38 @@
 
 (defn charge-type-more-choice [path charge]
   [submenu path "Select Other Charge"
-   [:div.choice.tooltip
-    [:svg {:style               {:width  "4em"
-                                 :height "4.5em"}
-           :viewBox             "0 0 120 200"
-           :preserveAspectRatio "xMidYMin slice"}
-     [:g {:filter "url(#shadow)"}
-      [:g {:transform "translate(10,10)"}
-       [render/coat-of-arms
-        {:escutcheon :rectangle
-         :field      {:component  :field
-                      :content    {:tincture :argent}
-                      :components [{:component :charge
-                                    :type      :roundel
-                                    :geometry  {:size 10}
-                                    :field     {:content {:tincture :azure}}}
-                                   {:component :charge
-                                    :type      :roundel
-                                    :geometry  {:size 10}
-                                    :position  {:offset-x -15}
-                                    :field     {:content {:tincture :azure}}}
-                                   {:component :charge
-                                    :type      :roundel
-                                    :geometry  {:size 10}
-                                    :position  {:offset-x 15}
-                                    :field     {:content {:tincture :azure}}}]}}
-        100
-        (-> coa-select-option-context
-            (assoc-in [:render-options :outline?] true))]]]]
-    [:div.bottom
-     [:h3 {:style {:text-align "center"}} "more"]
-     [:i]]]
+   (let [{:keys [result]} (render/coat-of-arms
+                           {:escutcheon :rectangle
+                            :field      {:component  :field
+                                         :content    {:tincture :argent}
+                                         :components [{:component :charge
+                                                       :type      :roundel
+                                                       :geometry  {:size 10}
+                                                       :field     {:content {:tincture :azure}}}
+                                                      {:component :charge
+                                                       :type      :roundel
+                                                       :geometry  {:size 10}
+                                                       :position  {:offset-x -15}
+                                                       :field     {:content {:tincture :azure}}}
+                                                      {:component :charge
+                                                       :type      :roundel
+                                                       :geometry  {:size 10}
+                                                       :position  {:offset-x 15}
+                                                       :field     {:content {:tincture :azure}}}]}}
+                           100
+                           (-> coa-select-option-context
+                               (assoc-in [:render-options :outline?] true)))]
+     [:div.choice.tooltip
+      [:svg {:style               {:width  "4em"
+                                   :height "4.5em"}
+             :viewBox             "0 0 120 200"
+             :preserveAspectRatio "xMidYMin slice"}
+       [:g {:filter "url(#shadow)"}
+        [:g {:transform "translate(10,10)"}
+         result]]]
+      [:div.bottom
+       [:h3 {:style {:text-align "center"}} "more"]
+       [:i]]])
    {}
    [:div.tree
     (let [charge-map (charge-map/get-charge-map)]
@@ -903,10 +908,24 @@
      [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn division-choice [path key display-name]
-  (let [value (-> @(rf/subscribe [:get path])
-                  :division
-                  :type
-                  (or :none))]
+  (let [value            (-> @(rf/subscribe [:get path])
+                             :division
+                             :type
+                             (or :none))
+        {:keys [result]} (render/coat-of-arms
+                          {:escutcheon :rectangle
+                           :field      (if (= key :none)
+                                         {:component :field
+                                          :content   {:tincture (if (= value key) :or :azure)}}
+                                         {:component :field
+                                          :division  {:type   key
+                                                      :fields (-> (division/default-fields key)
+                                                                  (util/replace-recursively :none :argent)
+                                                                  (cond->
+                                                                      (= value key) (util/replace-recursively :azure :or)))}})}
+                          100
+                          (-> coa-select-option-context
+                              (assoc-in [:render-options :outline?] true)))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-division-type path key])}
      [:svg {:style               {:width  "4em"
                                   :height "4.5em"}
@@ -914,20 +933,7 @@
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(10,10)"}
-        [render/coat-of-arms
-         {:escutcheon :rectangle
-          :field      (if (= key :none)
-                        {:component :field
-                         :content   {:tincture (if (= value key) :or :azure)}}
-                        {:component :field
-                         :division  {:type   key
-                                     :fields (-> (division/default-fields key)
-                                                 (util/replace-recursively :none :argent)
-                                                 (cond->
-                                                     (= value key) (util/replace-recursively :azure :or)))}})}
-         100
-         (-> coa-select-option-context
-             (assoc-in [:render-options :outline?] true))]]]]
+        result]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -951,7 +957,18 @@
         [division-choice path key display-name])]]))
 
 (defn line-type-choice [path key display-name & {:keys [current]}]
-  (let [options (line/options {:type key})]
+  (let [options          (line/options {:type key})
+        {:keys [result]} (render/coat-of-arms
+                          {:escutcheon :flag
+                           :field      {:component :field
+                                        :division  {:type   :per-fess
+                                                    :line   {:type  key
+                                                             :width (* 2 (options/get-value nil (:width options)))}
+                                                    :fields [{:content {:tincture :argent}}
+                                                             {:content {:tincture (if (= key current) :or :azure)}}]}}}
+                          100
+                          (-> coa-select-option-context
+                              (assoc-in [:render-options :outline?] true)))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
      [:svg {:style               {:width  "6.5em"
                                   :height "4.5em"}
@@ -959,17 +976,7 @@
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(10,10)"}
-        [render/coat-of-arms
-         {:escutcheon :flag
-          :field      {:component :field
-                       :division  {:type   :per-fess
-                                   :line   {:type  key
-                                            :width (* 2 (options/get-value nil (:width options)))}
-                                   :fields [{:content {:tincture :argent}}
-                                            {:content {:tincture (if (= key current) :or :azure)}}]}}}
-         100
-         (-> coa-select-option-context
-             (assoc-in [:render-options :outline?] true))]]]]
+        result]]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
@@ -1050,27 +1057,28 @@
    [form-for-tincture (conj path :tincture)]])
 
 (defn ordinary-type-choice [path key display-name & {:keys [current]}]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type path key])}
-   [:svg {:style               {:width  "4em"
-                                :height "4.5em"}
-          :viewBox             "0 0 120 200"
-          :preserveAspectRatio "xMidYMin slice"}
-    [:g {:filter "url(#shadow)"}
-     [:g {:transform "translate(10,10)"}
-      [render/coat-of-arms
-       {:escutcheon :rectangle
-        :field      {:component  :field
-                     :content    {:tincture :argent}
-                     :components [{:component  :ordinary
-                                   :type       key
-                                   :escutcheon (if (= key :escutcheon) :heater nil)
-                                   :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
-       100
-       (-> coa-select-option-context
-           (assoc-in [:render-options :outline?] true))]]]]
-   [:div.bottom
-    [:h3 {:style {:text-align "center"}} display-name]
-    [:i]]])
+  (let [{:keys [result]} (render/coat-of-arms
+                          {:escutcheon :rectangle
+                           :field      {:component  :field
+                                        :content    {:tincture :argent}
+                                        :components [{:component  :ordinary
+                                                      :type       key
+                                                      :escutcheon (if (= key :escutcheon) :heater nil)
+                                                      :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
+                          100
+                          (-> coa-select-option-context
+                              (assoc-in [:render-options :outline?] true)))]
+    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type path key])}
+     [:svg {:style               {:width  "4em"
+                                  :height "4.5em"}
+            :viewBox             "0 0 120 200"
+            :preserveAspectRatio "xMidYMin slice"}
+      [:g {:filter "url(#shadow)"}
+       [:g {:transform "translate(10,10)"}
+        result]]]
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} display-name]
+      [:i]]]))
 
 (defn form-for-ordinary-type [path]
   (let [ordinary-type @(rf/subscribe [:get (conj path :type)])
