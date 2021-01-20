@@ -80,11 +80,8 @@
                                      {:render-options render-options
                                       :db-path        [:arms-form :coat-of-arms]}))
             {:keys [width height]} environment]
-        [:div {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
-                              (rf/dispatch [:ui-submenu-close-all])
-                              (.stopPropagation %))
-               :style    {:margin-left  "10px"
-                          :margin-right "10px"}}
+        [:div {:style {:margin-left  "10px"
+                       :margin-right "10px"}}
          [:svg {:id                  "svg"
                 :style               {:width "25em"}
                 :viewBox             (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
@@ -133,7 +130,9 @@
                         (.preventDefault event)
                         (.stopPropagation event)
                         (save-arms-clicked db-path))]
-    [:div.pure-g
+    [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
+                                 (rf/dispatch [:ui-submenu-close-all])
+                                 (.stopPropagation %))}
      [:div.pure-u-1-2 {:style {:position "fixed"}}
       [render-coat-of-arms]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
