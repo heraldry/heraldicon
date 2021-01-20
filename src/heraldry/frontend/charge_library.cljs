@@ -113,8 +113,9 @@
 
 (defn preview [charge-data]
   (let [{:keys [edn-data]} charge-data
+        db-path [:example-coa :coat-of-arms]
         render-options @(rf/subscribe [:get [:example-coa :render-options]])
-        coat-of-arms @(rf/subscribe [:get [:example-coa :coat-of-arms]])
+        coat-of-arms @(rf/subscribe [:get db-path])
         {:keys [result
                 environment]} (render/coat-of-arms
                                (assoc-in coat-of-arms
@@ -122,7 +123,8 @@
                                100
                                (merge
                                 context/default
-                                {:render-options render-options}))
+                                {:render-options render-options
+                                 :db-path db-path}))
         {:keys [width height]} environment]
     [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
            :preserveAspectRatio "xMidYMid meet"
@@ -162,7 +164,9 @@
                     (.preventDefault event)
                     (.stopPropagation event)
                     (save-charge-clicked db-path))]
-    [:div.pure-g
+    [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
+                                 (rf/dispatch [:ui-submenu-close-all])
+                                 (.stopPropagation %))}
      [:div.pure-u-1-2 {:style {:position "fixed"}}
       [preview data]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
