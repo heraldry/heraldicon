@@ -2,6 +2,9 @@
   (:require [clojure.string :as s]
             [clojure.walk :as walk]))
 
+(defn lower-case-first [s]
+  (str (s/lower-case (or (first s) "")) (s/join (rest s))))
+
 (defn upper-case-first [s]
   (str (s/upper-case (or (first s) "")) (s/join (rest s))))
 
