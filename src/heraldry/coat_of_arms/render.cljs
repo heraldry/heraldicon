@@ -8,7 +8,7 @@
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.util :as util]))
 
-(defn coat-of-arms [coat-of-arms width {:keys [render-options] :as context}]
+(defn coat-of-arms [coat-of-arms width {:keys [render-options svg-export?] :as context}]
   (let [shield (escutcheon/field (:escutcheon coat-of-arms))
         environment (field-environment/transform-to-width shield width)
         field (:field coat-of-arms)
@@ -16,7 +16,8 @@
     {:environment environment
      :result [:g
               [:defs
-               filter/shadow
+               (when-not svg-export?
+                 filter/shadow)
                tincture/patterns
                hatching/patterns]
               [:defs
