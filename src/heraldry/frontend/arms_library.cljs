@@ -108,6 +108,19 @@
         (catch :default e
           (println "generate-svg-arms error:" e))))))
 
+(defn generate-png-clicked [db-path]
+  (let [payload   @(rf/subscribe [:get db-path])
+        user-data (user/data)]
+    (go
+      (try
+        (let [response (<! (api-request/call :generate-png-arms payload user-data))
+              error    (:error response)]
+          (println "generate-png-arms response" response)
+          (when-not error
+            (println "success")))
+        (catch :default e
+          (println "generate-png-arms error:" e))))))
+
 (defn save-arms-clicked [db-path]
   (let [payload   @(rf/subscribe [:get db-path])
         user-data (user/data)]
@@ -164,6 +177,11 @@
                               :on-click #(generate-svg-clicked db-path)
                               :style    {:float "left"}}
          "SVG Link"]
+        [:button.pure-button {:type     "button"
+                              :on-click #(generate-png-clicked db-path)
+                              :style    {:float       "left"
+                                         :margin-left "5px"}}
+         "PNG Link"]
         [:button.pure-button.pure-button-primary {:type "submit"}
          "Save"]]]
       [component/form-render-options [:arms-form]]
