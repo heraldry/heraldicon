@@ -1,31 +1,19 @@
 (ns heraldry.frontend.main
-  (:require [clojure.string :as s]
-            [heraldry.frontend.arms-library :as arms-library]
-            [heraldry.frontend.charge-library :as charge-library]
-            [heraldry.frontend.modal :as modal]
-            [heraldry.frontend.state :as state]
+  (:require [heraldry.frontend.modal :as modal]
+            [heraldry.frontend.route :as route]
             [heraldry.frontend.user :as user]
             [re-frame.core :as rf]
             [reagent.dom :as r]))
 
 (defn header []
-  (let [user-data (user/data)
-        menu @(rf/subscribe [:get [:site :menu]])
-        items (:items menu)
-        known-paths (set (map second items))
-        path (state/path)
-        selected (if (get known-paths path)
-                   path
-                   "/")]
+  (let [user-data (user/data)]
     [:div.header
      [:div.home-menu.pure-menu.pure-menu-horizontal.pure-menu-fixed
       [:a.pure-menu-heading.pure-float-right {} "Heraldry"]
       [:ul.pure-menu-list
-       (for [[name path] items]
-         ^{:key path}
-         [:li.pure-menu-item {:class (when (= path selected)
-                                       "pure-menu-selected")}
-          [:a.pure-menu-link {:on-click #(state/goto path)} name]])
+       [route/nav-link {:to :home} "Home"]
+       [route/nav-link {:to :arms} "Arms"]
+       [route/nav-link {:to :charges} "Charges"]
        [:span.horizontal-spacer {:style {:width "5em"}}]
        (if (:logged-in? user-data)
          [:li.pure-menu-item.pure-menu-has-children.pure-menu-allow-hover
@@ -44,22 +32,21 @@
            [:a.pure-menu-link {:on-click #(user/sign-up-modal)} "Register"]]])]]]))
 
 (defn app []
-  (let [path (state/path)]
-    [:<>
-     [header]
-     [:div.main-content
-      (cond
-        (s/starts-with? path "/arms/") (arms-library/main)
-        (s/starts-with? path "/charges/") (charge-library/main))]
-     [modal/render]]))
+  [:<>
+   [header]
+   [:div.main-content
+    (if-let [view (route/view)]
+      view
+      [:div "Not found"])
+    [modal/render]]])
 
 (defn stop []
   (println "Stopping..."))
 
 (defn start []
   (rf/dispatch-sync [:initialize-db])
+  (route/start-router)
   (user/load-session-user-data)
-  (state/set-path js/location.pathname js/location.hash)
   (r/render
    [app]
    (.getElementById js/document "app")))
