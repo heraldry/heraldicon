@@ -1,13 +1,17 @@
 (ns heraldry.coat-of-arms.svg
-  (:require [clojure.string :as s]
+  (:require ["svg-path-properties" :as svg-path-properties]
+            [clojure.string :as s]
             [heraldry.coat-of-arms.vector :as v]))
 
-(defn new-path [d]
-  (let [p (js/document.createElementNS "http://www.w3.org/2000/svg" "path")]
-    (.setAttribute p "d" d)
-    p))
+(defn clean-path [d]
+  (s/replace d #"l *0 *[, ] *0" ""))
 
-(defn points [^js/SVGPath path n]
+(defn new-path [d]
+  (->> d
+       clean-path
+       (new svg-path-properties/svgPathProperties)))
+
+(defn points [^js/Object path n]
   (let [length (.getTotalLength path)]
     (mapv (fn [i]
             (let [p (.getPointAtLength path (-> length (* i) (/ n)))]
