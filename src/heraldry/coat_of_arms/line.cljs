@@ -282,7 +282,7 @@
   (random/seed path)
   (let [points   (-> path
                      svg/new-path
-                     (svg/points 100))
+                     (svg/points :length))
         points   (vec (concat [(first points)]
                               (map jiggle (partition 3 1 points))
                               [(last points)]))
