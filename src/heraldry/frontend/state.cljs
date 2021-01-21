@@ -6,6 +6,7 @@
 
 ;; subs
 
+
 (rf/reg-sub
  :get
  (fn [db [_ path]]
@@ -40,10 +41,7 @@
                                                                                   :unguled        :vert
                                                                                   :beaked         :or}}]}}}
            :coat-of-arms {:escutcheon :rectangle}
-           :ui           {:component-open? {[:render-options] true}}
-           :site         {:menu {:items [["Home" "/"]
-                                         ["Arms Library" "/arms/"]
-                                         ["Charge Library" "/charges/"]]}}} db)))
+           :ui           {:component-open? {[:render-options] true}}} db)))
 
 (rf/reg-event-db
  :set
@@ -78,42 +76,8 @@
    {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]
          [:dispatch [:remove db-path]]]}))
 
-(rf/reg-event-db
- :set-location
- (fn [db [_ path path-extra]]
-   (let [path-extra (when (-> path-extra count (> 0))
-                      path-extra)]
-     (-> db
-         (assoc-in [:location :path] path)
-         (assoc-in [:location :path-extra] path-extra)
-         (cond->
-             ;; TODO: also not so pretty, there ought to be a better way for this
-             (and (= path "/charges/")
-                  path-extra) (assoc-in [:charges-by-user] nil)
-             (and (= path "/charges/")
-                  (not path-extra)) (assoc-in [:charge-form] nil))))))
-
 ;; other
 
-
-(defn path []
-  (or @(rf/subscribe [:get [:location :path]]) ""))
-
-(defn path-extra []
-  @(rf/subscribe [:get [:location :path-extra]]))
-
-(defn set-path [path & [hash]]
-  (let [path       (if hash
-                     (str path hash)
-                     path)
-        chunks     (s/split path #"#" 2)
-        path       (first chunks)
-        path-extra (second chunks)]
-    (rf/dispatch-sync [:set-location path path-extra])))
-
-(defn goto [path]
-  (set-path path)
-  (js/window.history.pushState "" nil path))
 
 (defn fetch-url-data-to-path [db-path url function]
   (go

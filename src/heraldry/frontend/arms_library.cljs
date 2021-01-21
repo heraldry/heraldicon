@@ -14,7 +14,8 @@
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [reitit.frontend.easy :as reife]))
 
 ;; functions
 
@@ -61,9 +62,6 @@
                   (rf/dispatch [:set form-db-path response])
                   (fetch-url-data-to-path (conj form-db-path :coat-of-arms)
                                           (:edn-data-url response) reader/read-string))))))))
-
-(defn arms-path [arms-id]
-  (str "/arms/#" arms-id))
 
 ;; views
 
@@ -134,7 +132,7 @@
           (println "save arms response" response)
           (when-not error
             (rf/dispatch [:set (conj db-path :id) arms-id])
-            (state/goto (arms-path arms-id))))
+            (reife/push-state :arms-by-id {:id arms-id})))
         (catch :default e
           (println "save-form error:" e))))))
 
@@ -212,32 +210,38 @@
                                 (for [arms arms-list]
                                   ^{:key (:id arms)}
                                   [:li.arms
-                                   (let [href (str (state/path) "#" (:id arms))]
-                                     [:a {:href     href
-                                          :on-click #(do
-                                                       (.preventDefault %)
-                                                       (state/goto href))}
+                                   (let [arms-id (-> arms
+                                                     :id
+                                                     (s/split #":" 2)
+                                                     second)]
+                                     [:a {:href (reife/href :arms-by-id {:id arms-id})}
                                       (:name arms) " "
                                       [:i.far.fa-edit]])]))])]))
 
-(defn logged-in []
-  (let [arms-form-data @(rf/subscribe [:get [:arms-form]])
-        path-extra     (state/path-extra)]
+(defn arms-by-id [arms-id]
+  (let [arms-form-data @(rf/subscribe [:get [:arms-form]])]
     (cond
-      (and path-extra
+      (and arms-id
            (nil? arms-form-data)) (do
-                                    (fetch-arms-and-fill-form path-extra)
+                                    (fetch-arms-and-fill-form arms-id)
                                     [:<>])
       (= arms-form-data :loading) [:<>]
       arms-form-data              [arms-form]
-      :else                       [list-arms-for-user])))
+      :else                       [:<>])))
 
 (defn not-logged-in []
   [:div {:style {:padding "15px"}}
    "You need to be logged in."])
 
-(defn main []
+(defn view-list-arms []
   (let [user-data (user/data)]
     (if (:logged-in? user-data)
-      [logged-in]
+      [list-arms-for-user]
+      [not-logged-in])))
+
+(defn view-arms-by-id [{:keys [parameters]}]
+  (let [user-data (user/data)
+        arms-id   (str "arms:" (-> parameters :path :id))]
+    (if (:logged-in? user-data)
+      [arms-by-id arms-id]
       [not-logged-in])))
