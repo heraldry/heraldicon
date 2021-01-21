@@ -12,7 +12,12 @@
        (new svg-path-properties/svgPathProperties)))
 
 (defn points [^js/Object path n]
-  (let [length (.getTotalLength path)]
+  (let [length (.getTotalLength path)
+        n (if (= n :length)
+            (-> length
+                Math/floor
+                inc)
+            n)]
     (mapv (fn [i]
             (let [x (-> length (* i) (/ (dec n)))
                   p (.getPointAtLength path x)]
