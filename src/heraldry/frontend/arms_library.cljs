@@ -104,7 +104,8 @@
               error (:error response)]
           (println "generate-svg-arms response" response)
           (when-not error
-            (println "success")))
+            (println "success")
+            (js/window.open (:svg-url response))))
         (catch :default e
           (println "generate-svg-arms error:" e))))))
 
@@ -117,7 +118,8 @@
               error (:error response)]
           (println "generate-png-arms response" response)
           (when-not error
-            (println "success")))
+            (println "success")
+            (js/window.open (:png-url response))))
         (catch :default e
           (println "generate-png-arms error:" e))))))
 
