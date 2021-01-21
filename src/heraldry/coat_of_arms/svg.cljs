@@ -14,8 +14,9 @@
 (defn points [^js/Object path n]
   (let [length (.getTotalLength path)]
     (mapv (fn [i]
-            (let [p (.getPointAtLength path (-> length (* i) (/ n)))]
-              (v/v (.-x p) (.-y p)))) (range (inc n)))))
+            (let [x (-> length (* i) (/ (dec n)))
+                  p (.getPointAtLength path x)]
+              (v/v (.-x p) (.-y p)))) (range n))))
 
 (defn min-max-x-y [[{x :x y :y} & rest]]
   (reduce (fn [[min-x max-x min-y max-y] {x :x y :y}]
