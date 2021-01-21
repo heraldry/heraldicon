@@ -6,6 +6,11 @@
 (defn clean-path [d]
   (s/replace d #"l *0 *[, ] *0" ""))
 
+(defn new-path-browser [d]
+  (let [p (js/document.createElementNS "http://www.w3.org/2000/svg" "path")]
+    (.setAttribute p "d" d)
+    p))
+
 (defn new-path [d]
   (->> d
        clean-path
