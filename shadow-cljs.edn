@@ -17,7 +17,8 @@
                 [hickory "0.7.1"]
                 [hiccups "0.3.0"]
                 [funcool/hodgepodge "0.1.4"]
-                [com.andrewmcveigh/cljs-time "0.5.2"]]
+                [com.andrewmcveigh/cljs-time "0.5.2"]
+                [metosin/reitit "0.5.11"]]
 
  :nrepl {:middleware [cider.piggieback/wrap-cljs-repl
                       refactor-nrepl.middleware/wrap-refactor]}

@@ -13,7 +13,8 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [hickory.core :as hickory]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [reitit.frontend.easy :as reife]))
 
 (defn find-colours [data]
   (->> data
@@ -152,7 +153,7 @@
           (println "save charge response" response)
           (when-not error
             (rf/dispatch [:set (conj db-path :id) charge-id])
-            (state/goto (charge-path charge-id))))
+            (reife/push-state :charge-by-id {:id charge-id})))
         (catch :default e
           (println "save-form error:" e))))))
 
@@ -292,34 +293,40 @@
        :else [:ul.charge-list
               (doall
                (for [charge charge-list]
-                 ^{:key (:id charge)}
-                 [:li.charge
-                  (let [href (str (state/path) "#" (:id charge))]
-                    [:a {:href href
-                         :on-click #(do
-                                      (.preventDefault %)
-                                      (state/goto href))}
+                 (let [charge-id (-> charge
+                                     :id
+                                     (s/split #":" 2)
+                                     second)]
+                   ^{:key charge-id}
+                   [:li.charge
+                    [:a {:href (reife/href :charge-by-id {:id charge-id})}
                      (:name charge) " "
-                     [:i.far.fa-edit]])]))])]))
+                     [:i.far.fa-edit]]])))])]))
 
-(defn logged-in []
-  (let [charge-form-data @(rf/subscribe [:get [:charge-form]])
-        path-extra (state/path-extra)]
+(defn charge-by-id [charge-id]
+  (let [charge-form-data @(rf/subscribe [:get [:charge-form]])]
     (cond
-      (and path-extra
+      (and charge-id
            (nil? charge-form-data)) (do
-                                      (fetch-charge-and-fill-form path-extra)
+                                      (fetch-charge-and-fill-form charge-id)
                                       [:<>])
       (= charge-form-data :loading) [:<>]
       charge-form-data [charge-form]
-      :else [list-charges-for-user])))
+      :else [:<>])))
 
 (defn not-logged-in []
   [:div {:style {:padding "15px"}}
    "You need to be logged in."])
 
-(defn main []
+(defn view-list-charges []
   (let [user-data (user/data)]
     (if (:logged-in? user-data)
-      [logged-in]
+      [list-charges-for-user]
+      [not-logged-in])))
+
+(defn view-charge-by-id [{:keys [parameters]}]
+  (let [user-data (user/data)
+        charge-id (str "charge:" (-> parameters :path :id))]
+    (if (:logged-in? user-data)
+      [charge-by-id charge-id]
       [not-logged-in])))
