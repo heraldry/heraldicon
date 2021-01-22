@@ -6,8 +6,7 @@
             [reagent.core :as rc]
             [reitit.coercion.spec :as rss]
             [reitit.frontend :as reif]
-            [reitit.frontend.easy :as reife]
-            [spec-tools.data-spec :as ds]))
+            [reitit.frontend.easy :as reife]))
 
 (defonce current-match (rc/atom nil))
 
@@ -17,24 +16,34 @@
      :view home/view}]
 
    ["/arms/"
-    {:name       :arms
-     :parameters {:query {(ds/opt :new) string?}}
-     :view       arms-library/view-list-arms}]
+    {:name :arms
+     :view arms-library/view-list-arms}]
+
+   ["/arms/new"
+    {:name        :create-arms
+     :view        arms-library/create-arms
+     :conflicting true}]
 
    ["/arms/:id"
-    {:name       :arms-by-id
-     :parameters {:path {:id string?}}
-     :view       arms-library/view-arms-by-id}]
+    {:name        :arms-by-id
+     :parameters  {:path {:id string?}}
+     :view        arms-library/view-arms-by-id
+     :conflicting true}]
 
    ["/charges/"
-    {:name       :charges
-     :parameters {:query {(ds/opt :new) string?}}
-     :view       charge-library/view-list-charges}]
+    {:name :charges
+     :view charge-library/view-list-charges}]
+
+   ["/charges/new"
+    {:name        :create-charge
+     :view        charge-library/create-charge
+     :conflicting true}]
 
    ["/charges/:id"
-    {:name       :charge-by-id
-     :parameters {:path {:id string?}}
-     :view       charge-library/view-charge-by-id}]])
+    {:name        :charge-by-id
+     :parameters  {:path {:id string?}}
+     :view        charge-library/view-charge-by-id
+     :conflicting true}]])
 
 (def router
   (reif/router routes {:data {:coercion rss/coercion}}))
