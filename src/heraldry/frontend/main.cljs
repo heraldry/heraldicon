@@ -19,10 +19,9 @@
          [:li.pure-menu-item.pure-menu-has-children.pure-menu-allow-hover
           {:style {:min-width "6em"}}
           [:<>
-           [:a.pure-menu-link {} (str "@" (:username user-data))]
+           [:a.pure-menu-link {:href "#"} (str "@" (:username user-data))]
            [:ul.pure-menu-children
-            [:li.pure-menu-item
-             [:a.pure-menu-link {} "Settings"]]
+            [route/nav-link {:to :account} "Account"]
             [:li.pure-menu-item
              [:a.pure-menu-link {:on-click #(user/logout)} "Logout"]]]]]
          [:<>
