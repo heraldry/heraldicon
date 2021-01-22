@@ -188,8 +188,8 @@
      [:h4 "My arms"]
      [:button.pure-button.pure-button-primary
       {:on-click #(do
-                    (rf/dispatch [:set [:arms-form] nil])
-                    (reife/push-state :arms {} {:new ""}))}
+                    (rf/dispatch-sync [:set [:arms-form] nil])
+                    (reife/push-state :create-arms))}
       "Create"]
      (cond
        (nil? arms-list) (do
@@ -207,7 +207,7 @@
                                     second)]
                     [:a {:href (reife/href :arms-by-id {:id arms-id})
                          :on-click #(do
-                                      (rf/dispatch [:set [:arms-form] nil])
+                                      (rf/dispatch-sync [:set [:arms-form] nil])
                                       (reife/href :arms-by-id {:id arms-id}))}
                      (:name arms) " "
                      [:i.far.fa-edit]])]))])]))
@@ -239,13 +239,10 @@
   [:div {:style {:padding "15px"}}
    "You need to be logged in."])
 
-(defn view-list-arms [{:keys [parameters]}]
-  (let [user-data (user/data)
-        new? (-> parameters :query :new)]
+(defn view-list-arms []
+  (let [user-data (user/data)]
     (if (:logged-in? user-data)
-      (if new?
-        [create-arms]
-        [list-arms-for-user])
+      [list-arms-for-user]
       [not-logged-in])))
 
 (defn view-arms-by-id [{:keys [parameters]}]
