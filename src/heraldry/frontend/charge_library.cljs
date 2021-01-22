@@ -12,6 +12,7 @@
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
+            [heraldry.frontend.util :as util]
             [hickory.core :as hickory]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]))
@@ -150,7 +151,7 @@
           (println "save charge response" response)
           (when-not error
             (rf/dispatch [:set (conj db-path :id) charge-id])
-            (reife/push-state :charge-by-id {:id charge-id})))
+            (reife/push-state :charge-by-id {:id (util/id-for-url charge-id)})))
         (catch :default e
           (println "save-form error:" e))))))
 
@@ -294,8 +295,7 @@
                (for [charge charge-list]
                  (let [charge-id (-> charge
                                      :id
-                                     (s/split #":" 2)
-                                     second)]
+                                     util/id-for-url)]
                    ^{:key charge-id}
                    [:li.charge
                     [:a {:href (reife/href :charge-by-id {:id charge-id})
