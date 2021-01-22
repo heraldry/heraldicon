@@ -1,13 +1,13 @@
 (ns heraldry.frontend.route
-  (:require
-   [clojure.string :as s]
-   [heraldry.frontend.arms-library :as arms-library]
-   [heraldry.frontend.charge-library :as charge-library]
-   [heraldry.frontend.home :as home]
-   [reagent.core :as rc]
-   [reitit.coercion.spec :as rss]
-   [reitit.frontend :as reif]
-   [reitit.frontend.easy :as reife]))
+  (:require [clojure.string :as s]
+            [heraldry.frontend.arms-library :as arms-library]
+            [heraldry.frontend.charge-library :as charge-library]
+            [heraldry.frontend.home :as home]
+            [reagent.core :as rc]
+            [reitit.coercion.spec :as rss]
+            [reitit.frontend :as reif]
+            [reitit.frontend.easy :as reife]
+            [spec-tools.data-spec :as ds]))
 
 (defonce current-match (rc/atom nil))
 
@@ -17,8 +17,9 @@
      :view home/view}]
 
    ["/arms/"
-    {:name :arms
-     :view arms-library/view-list-arms}]
+    {:name       :arms
+     :parameters {:query {(ds/opt :new) string?}}
+     :view       arms-library/view-list-arms}]
 
    ["/arms/:id"
     {:name       :arms-by-id
@@ -26,8 +27,9 @@
      :view       arms-library/view-arms-by-id}]
 
    ["/charges/"
-    {:name :charges
-     :view charge-library/view-list-charges}]
+    {:name       :charges
+     :parameters {:query {(ds/opt :new) string?}}
+     :view       charge-library/view-list-charges}]
 
    ["/charges/:id"
     {:name       :charge-by-id

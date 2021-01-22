@@ -30,9 +30,6 @@
        (map s/lower-case)
        set))
 
-;; functions
-
-
 (defn fetch-charge-list-by-user [user-id]
   (go
     (let [db-path   [:charge-list]
@@ -283,7 +280,9 @@
     [:div {:style {:padding "15px"}}
      [:h4 "My charges"]
      [:button.pure-button.pure-button-primary
-      {:on-click #(rf/dispatch [:set [:charge-form] {}])}
+      {:on-click #(do
+                    (rf/dispatch [:set [:charge-form] nil])
+                    (reife/push-state :charges {} {:new ""}))}
       "Create"]
      (cond
        (nil? charge-list)       (do
@@ -299,9 +298,15 @@
                                                         second)]
                                       ^{:key charge-id}
                                       [:li.charge
-                                       [:a {:href (reife/href :charge-by-id {:id charge-id})}
+                                       [:a {:href     (reife/href :charge-by-id {:id charge-id})
+                                            :on-click #(do
+                                                         (rf/dispatch [:set [:charge-form] nil])
+                                                         (reife/href :charge-by-id {:id charge-id}))}
                                         (:name charge) " "
                                         [:i.far.fa-edit]]])))])]))
+
+(defn create-charge []
+  [charge-form])
 
 (defn charge-by-id [charge-id]
   (let [charge-form-data @(rf/subscribe [:get [:charge-form]])]
@@ -318,10 +323,13 @@
   [:div {:style {:padding "15px"}}
    "You need to be logged in."])
 
-(defn view-list-charges []
-  (let [user-data (user/data)]
+(defn view-list-charges [{:keys [parameters]}]
+  (let [user-data (user/data)
+        new?      (-> parameters :query :new)]
     (if (:logged-in? user-data)
-      [list-charges-for-user]
+      (if new?
+        [create-charge]
+        [list-charges-for-user])
       [not-logged-in])))
 
 (defn view-charge-by-id [{:keys [parameters]}]
