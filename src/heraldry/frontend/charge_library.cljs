@@ -281,8 +281,8 @@
      [:h4 "My charges"]
      [:button.pure-button.pure-button-primary
       {:on-click #(do
-                    (rf/dispatch [:set [:charge-form] nil])
-                    (reife/push-state :charges {} {:new ""}))}
+                    (rf/dispatch-sync [:set [:charge-form] nil])
+                    (reife/push-state :create-charge))}
       "Create"]
      (cond
        (nil? charge-list) (do
@@ -300,7 +300,7 @@
                    [:li.charge
                     [:a {:href (reife/href :charge-by-id {:id charge-id})
                          :on-click #(do
-                                      (rf/dispatch [:set [:charge-form] nil])
+                                      (rf/dispatch-sync [:set [:charge-form] nil])
                                       (reife/href :charge-by-id {:id charge-id}))}
                      (:name charge) " "
                      [:i.far.fa-edit]]])))])]))
@@ -323,13 +323,10 @@
   [:div {:style {:padding "15px"}}
    "You need to be logged in."])
 
-(defn view-list-charges [{:keys [parameters]}]
-  (let [user-data (user/data)
-        new? (-> parameters :query :new)]
+(defn view-list-charges []
+  (let [user-data (user/data)]
     (if (:logged-in? user-data)
-      (if new?
-        [create-charge]
-        [list-charges-for-user])
+      [list-charges-for-user]
       [not-logged-in])))
 
 (defn view-charge-by-id [{:keys [parameters]}]
