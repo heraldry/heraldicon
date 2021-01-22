@@ -40,3 +40,8 @@
                     replacement
                     %)
                  data))
+
+(defn id-for-url [id]
+  (-> id
+      (s/split #":" 2)
+      second))
