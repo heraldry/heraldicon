@@ -1,10 +1,8 @@
 (ns heraldry.frontend.arms-library
   (:require [cljs-http.client :as http]
             [cljs.core.async :refer [go <!]]
-            [cljs.core.async.interop :refer-macros [<p!]]
             [cljs.reader :as reader]
             [clojure.string :as s]
-            [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.blazon :as blazon]
             [heraldry.coat-of-arms.default :as default]
@@ -12,13 +10,9 @@
             [heraldry.frontend.context :as context]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
-            [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]))
-
-;; functions
-
 
 (defn fetch-arms-list-by-user [user-id]
   (go
@@ -193,12 +187,9 @@
     [:div {:style {:padding "15px"}}
      [:h4 "My arms"]
      [:button.pure-button.pure-button-primary
-      {:on-click #(rf/dispatch [:set [:arms-form] {:coat-of-arms default/coat-of-arms
-                                                   :render-options {:component :render-options
-                                                                    :mode :colours
-                                                                    :outline? false
-                                                                    :squiggly? false
-                                                                    :ui {:selectable-fields? true}}}])}
+      {:on-click #(do
+                    (rf/dispatch [:set [:arms-form] nil])
+                    (reife/push-state :arms {} {:new ""}))}
       "Create"]
      (cond
        (nil? arms-list) (do
@@ -214,9 +205,24 @@
                                     :id
                                     (s/split #":" 2)
                                     second)]
-                    [:a {:href (reife/href :arms-by-id {:id arms-id})}
+                    [:a {:href (reife/href :arms-by-id {:id arms-id})
+                         :on-click #(do
+                                      (rf/dispatch [:set [:arms-form] nil])
+                                      (reife/href :arms-by-id {:id arms-id}))}
                      (:name arms) " "
                      [:i.far.fa-edit]])]))])]))
+
+(defn create-arms []
+  (let [db-path [:arms-form]
+        form-data @(rf/subscribe [:get db-path])]
+    (when (nil? form-data)
+      (rf/dispatch [:set [:arms-form] {:coat-of-arms default/coat-of-arms
+                                       :render-options {:component :render-options
+                                                        :mode :colours
+                                                        :outline? false
+                                                        :squiggly? false
+                                                        :ui {:selectable-fields? true}}}])))
+  [arms-form])
 
 (defn arms-by-id [arms-id]
   (let [arms-form-data @(rf/subscribe [:get [:arms-form]])]
@@ -233,10 +239,13 @@
   [:div {:style {:padding "15px"}}
    "You need to be logged in."])
 
-(defn view-list-arms []
-  (let [user-data (user/data)]
+(defn view-list-arms [{:keys [parameters]}]
+  (let [user-data (user/data)
+        new? (-> parameters :query :new)]
     (if (:logged-in? user-data)
-      [list-arms-for-user]
+      (if new?
+        [create-arms]
+        [list-arms-for-user])
       [not-logged-in])))
 
 (defn view-arms-by-id [{:keys [parameters]}]
