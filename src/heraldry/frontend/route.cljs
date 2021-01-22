@@ -1,5 +1,6 @@
 (ns heraldry.frontend.route
   (:require [clojure.string :as s]
+            [heraldry.frontend.account :as account]
             [heraldry.frontend.arms-library :as arms-library]
             [heraldry.frontend.charge-library :as charge-library]
             [heraldry.frontend.home :as home]
@@ -43,7 +44,11 @@
     {:name :charge-by-id
      :parameters {:path {:id string?}}
      :view charge-library/view-charge-by-id
-     :conflicting true}]])
+     :conflicting true}]
+
+   ["/account/"
+    {:name :account
+     :view account/view}]])
 
 (def router
   (reif/router routes {:data {:coercion rss/coercion}}))
