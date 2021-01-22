@@ -2,7 +2,6 @@
   (:require [cljs-http.client :as http]
             [cljs.core.async :refer [go <!]]
             [cljs.reader :as reader]
-            [clojure.string :as s]
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.blazon :as blazon]
             [heraldry.coat-of-arms.default :as default]
@@ -11,6 +10,7 @@
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.user :as user]
+            [heraldry.frontend.util :as util]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]))
 
@@ -126,7 +126,7 @@
           (println "save arms response" response)
           (when-not error
             (rf/dispatch [:set (conj db-path :id) arms-id])
-            (reife/push-state :arms-by-id {:id arms-id})))
+            (reife/push-state :arms-by-id {:id (util/id-for-url arms-id)})))
         (catch :default e
           (println "save-form error:" e))))))
 
@@ -203,8 +203,7 @@
                                   [:li.arms
                                    (let [arms-id (-> arms
                                                      :id
-                                                     (s/split #":" 2)
-                                                     second)]
+                                                     util/id-for-url)]
                                      [:a {:href     (reife/href :arms-by-id {:id arms-id})
                                           :on-click #(do
                                                        (rf/dispatch-sync [:set [:arms-form] nil])
