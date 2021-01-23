@@ -48,4 +48,10 @@
            :output-to "backend/generated/api.js"
            :devtools {:repl-pprint true}
            :compiler-options {:warnings {:redef false}}
-           :build-hooks [(shadow-env.core/hook)]}}}
+           :build-hooks [(shadow-env.core/hook)]}
+
+          :test
+          {:target :node-test
+           :output-to "out/node-tests.js"
+           :ns-regexp "test"
+           :autorun true}}}
