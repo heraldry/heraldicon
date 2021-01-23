@@ -119,3 +119,58 @@
                                  #(-> %
                                       (get-key :heraldry/component)
                                       (= :ordinary))))
+
+(s/def :heraldry.charge/type keyword?)
+(s/def :heraldry.charge/position #(s/valid? :heraldry/position %))
+(s/def :heraldry.charge/field #(s/valid? :heraldry/field %))
+(s/def :heraldry.charge/geometry #(s/valid? :heraldry/geometry %))
+(s/def :heraldry.charge.tincture/armed #(s/valid? :heraldry/tincture %))
+(s/def :heraldry.charge.tincture/langued #(s/valid? :heraldry/tincture %))
+(s/def :heraldry.charge.tincture/attired #(s/valid? :heraldry/tincture %))
+(s/def :heraldry.charge.tincture/unguled #(s/valid? :heraldry/tincture %))
+(s/def :heraldry.charge.tincture/beaked #(s/valid? :heraldry/tincture %))
+(s/def :heraldry.charge.tincture/eyes-and-teeth #(s/valid? :heraldry/tincture %))
+(s/def :heraldry.charge/tincture (s/keys :opt-un [:heraldry.charge.tincture/armed
+                                                  :heraldry.charge.tincture/langued
+                                                  :heraldry.charge.tincture/attired
+                                                  :heraldry.charge.tincture/unguled
+                                                  :heraldry.charge.tincture/beaked
+                                                  :heraldry.charge.tincture/eyes-and-teeth]))
+(s/def :heraldry.charge.hint/outline? boolean?)
+(s/def :heraldry.charge/hints (s/keys :opt-un [:heraldry.charge.hint/outline?]))
+(s/def :heraldry.charge/attitude #{:none
+                                   :couchant
+                                   :courant
+                                   :dormant
+                                   :pascuant
+                                   :passant
+                                   :rampant
+                                   :salient
+                                   :sejant
+                                   :statant})
+(s/def :heraldry.charge/facing #{:none
+                                 :to-dexter
+                                 :to-sinister
+                                 :affronte
+                                 :en-arriere
+                                 :guardant
+                                 :reguardant
+                                 :salient
+                                 :in-trian-aspect})
+(s/def :heraldry.charge.variant/id string?)
+(s/def :heraldry.charge.variant/version number?)
+(s/def :heraldry.charge/variant (s/keys :req-un [:heraldry.charge.variant/id
+                                                 :heraldry.charge.variant/version]))
+(s/def :heraldry/charge (s/and (s/keys :req-un [:heraldry/component
+                                                :heraldry.charge/type
+                                                :heraldry.charge/field]
+                                       :opt-un [:heraldry.charge/attitude
+                                                :heraldry.charge/facing
+                                                :heraldry.charge/position
+                                                :heraldry.charge/geometry
+                                                :heraldry.charge/tincture
+                                                :heraldry.charge/hints
+                                                :heraldry.charge/variant])
+                               #(-> %
+                                    (get-key :heraldry/component)
+                                    (= :charge))))
