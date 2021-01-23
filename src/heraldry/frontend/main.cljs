@@ -23,12 +23,15 @@
            [:ul.pure-menu-children
             [route/nav-link {:to :account} "Account"]
             [:li.pure-menu-item
-             [:a.pure-menu-link {:on-click #(user/logout)} "Logout"]]]]]
+             [:a.pure-menu-link {:href "#"
+                                 :on-click #(user/logout)} "Logout"]]]]]
          [:<>
           [:li.pure-menu-item
-           [:a.pure-menu-link {:on-click #(user/login-modal)} "Login"]]
+           [:a.pure-menu-link {:href "#"
+                               :on-click #(user/login-modal)} "Login"]]
           [:li.pure-menu-item
-           [:a.pure-menu-link {:on-click #(user/sign-up-modal)} "Register"]]])]]]))
+           [:a.pure-menu-link {:href "#"
+                               :on-click #(user/sign-up-modal)} "Register"]]])]]]))
 
 (defn app []
   [:<>
