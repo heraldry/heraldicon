@@ -81,3 +81,43 @@
     :heraldry/ordinary {:component :ordinary
                         :type :fess
                         :field {:component :field}}))
+
+(deftest valid-charges
+  (are [spec form] (do
+                     (s/explain spec form)
+                     (s/valid? spec form))
+
+    :heraldry/charge {:component :charge
+                      :type :lion
+                      :attitude :rampant
+                      :facing :reguardant
+                      :field {:component :field
+                              :content {:tincture :azure}}}
+
+    :heraldry/charge {:component :charge
+                      :type :roundel
+                      :field {:component :field
+                              :content {:tincture :azure}}
+                      :geometry {:size 50}
+                      :origin {:point :fess
+                               :offset-x -5
+                               :offset-y 5}}))
+
+(deftest invalid-charges
+  (are [spec form] (not (s/valid? spec form))
+
+    :heraldry/charge {:component :charge}
+
+    :heraldry/charge {:component :something-else
+                      :type :lion
+                      :field {:component :field
+                              :content {:tincture :azure}}}
+
+    :heraldry/charge {:component :charge
+                      :type :wolf
+                      :field {:component :field}}
+
+    :heraldry/charge {:component :charge
+                      :type :wolf
+                      :attitude :foobar
+                      :field {:component :field}}))
