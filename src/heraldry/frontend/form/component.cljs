@@ -652,10 +652,7 @@
 (defn tree-for-charge-map [{:keys [type name groups charges attitudes facings variants] :as node}
                            tree-path db-path
                            selected-charge remaining-path-to-charge & {:keys [still-on-path?]}]
-  (let [flag-path (-> db-path
-                      (concat [:ui :charge-map])
-                      vec
-                      (conj tree-path))
+  (let [flag-path (conj [:ui :charge-map] tree-path)
         db-open?  @(rf/subscribe [:get flag-path])
         open?     (or (= type :_root)
                       (and (nil? db-open?)
