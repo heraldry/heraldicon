@@ -607,8 +607,8 @@
                            :field {:component :field
                                    :content {:tincture :argent}
                                    :components [{:component :charge
-                                                 :type key
-                                                 :data (:data charge)
+                                                 :type (:type charge)
+                                                 :variant (:variant charge)
                                                  :field {:content {:tincture :or}}}]}}
                           100
                           (-> coa-select-option-context
