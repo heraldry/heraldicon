@@ -57,7 +57,11 @@
                 (do
                   (rf/dispatch [:set form-db-path response])
                   (state/fetch-url-data-to-path (conj form-db-path :data :edn-data)
-                                                (:edn-data-url response) reader/read-string)
+                                                (:edn-data-url response)
+                                                (fn [data]
+                                                  (if (string? data)
+                                                    (reader/read-string data)
+                                                    data)))
                   (state/fetch-url-data-to-path (conj form-db-path :data :svg-data)
                                                 (:svg-data-url response) nil))))))))
 

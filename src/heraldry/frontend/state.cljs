@@ -84,14 +84,17 @@
     (-> (http/get url)
         <!
         (as-> response
-            (let [status (:status response)
-                  body   (:body response)]
+            (let [status   (:status response)
+                  body     (:body response)
+                  previous @(rf/subscribe [:get db-path])]
               (if (= status 200)
                 (do
                   (println "retrieved" url)
-                  (rf/dispatch [:set db-path (if function
-                                               (function body)
-                                               body)]))
+                  (rf/dispatch [:set db-path (merge
+                                              previous
+                                              (if function
+                                                (function body)
+                                                body))]))
                 (println "error fetching" url)))))))
 
 (defn dispatch-on-event [event effect]
