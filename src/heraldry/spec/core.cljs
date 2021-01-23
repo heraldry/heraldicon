@@ -57,6 +57,9 @@
                                            :heraldry.position/offset-x
                                            :heraldry.position/offset-y]))
 
+(s/def :heraldry.geometry/size number?)
+(s/def :heraldry/geometry (s/keys :opt-un [:heraldry.geometry/size]))
+
 (s/def :heraldry.field.division/type #{:per-pale
                                        :per-fess
                                        :per-bend
@@ -91,3 +94,28 @@
                               #(-> %
                                    (get-key :heraldry/component)
                                    (= :field))))
+
+(s/def :heraldry.ordinary/type #{:pale
+                                 :fess
+                                 :chief
+                                 :base
+                                 :bend
+                                 :bend-sinister
+                                 :cross
+                                 :saltire
+                                 :chevron})
+(s/def :heraldry.ordinary/line #(s/valid? :heraldry/line %))
+(s/def :heraldry.ordinary/opposite-line #(s/valid? :heraldry/line %))
+(s/def :heraldry.ordinary/origin #(s/valid? :heraldry/position %))
+(s/def :heraldry.ordinary/field #(s/valid? :heraldry/field %))
+(s/def :heraldry.ordinary/geometry #(s/valid? :heraldry/geometry %))
+(s/def :heraldry/ordinary (s/and (s/keys :req-un [:heraldry/component
+                                                  :heraldry.ordinary/type
+                                                  :heraldry.ordinary/field]
+                                         :opt-un [:heraldry.ordinary/line
+                                                  :heraldry.ordinary/opposite-line
+                                                  :heraldry.ordinary/origin
+                                                  :heraldry.ordinary/geometry])
+                                 #(-> %
+                                      (get-key :heraldry/component)
+                                      (= :ordinary))))
