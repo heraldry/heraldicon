@@ -426,10 +426,10 @@
        (map (fn [function]
               [(-> function meta :display-name) (-> function meta :name keyword)]))))
 
-(defn render-other-charge [{:keys [type field tincture hints data] :as charge} parent
+(defn render-other-charge [{:keys [type field tincture hints variant] :as charge} parent
                            environment {:keys [render-field render-options load-charge-data] :as context}]
   (if-let [charge-data (if (keyword? type)
-                         (load-charge-data data)
+                         (:data (load-charge-data variant))
                          type)]
     (let [{:keys [position geometry]} (options/sanitize charge (options charge))
           {:keys [size stretch
