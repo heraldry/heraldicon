@@ -1,6 +1,6 @@
 (ns heraldry.frontend.arms-library
-  (:require [cljs.core.async :refer [go <!]]
-            [com.wsscode.common.async-cljs :refer [<? go-catch]]
+  (:require [cljs.core.async :refer [go]]
+            [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.blazon :as blazon]
             [heraldry.coat-of-arms.default :as default]
@@ -16,30 +16,29 @@
 
 (defn fetch-arms-list-by-user [user-id]
   (go
-    (let [db-path [:arms-list]
-          user-data (user/data)]
-      (rf/dispatch-sync [:set db-path :loading])
-      (-> (api-request/call :list-arms {:user-id user-id} user-data)
-          <!
-          (as-> response
-                (let [error (:error response)]
-                  (if error
-                    (println "fetch-arms-list-by-user error:" error)
-                    (rf/dispatch-sync [:set db-path (:arms response)]))))))))
+    (try
+      (let [db-path [:arms-list]
+            user-data (user/data)]
+        (rf/dispatch-sync [:set db-path :loading])
+        (rf/dispatch-sync [:set db-path (-> (api-request/call :list-arms {:user-id user-id} user-data)
+                                            <?
+                                            :arms)]))
+      (catch :default e
+        (println "fetch-arms-list-by-user error:" e)))))
 
 (defn fetch-arms-and-fill-form [arms-id]
   (go
-    (let [form-db-path [:arms-form]
-          user-data (user/data)]
-      (rf/dispatch-sync [:set form-db-path :loading])
-      (-> (api-request/call :fetch-arms {:id arms-id} user-data)
-          <!
-          (as-> response
-                (if-let [error (:error response)]
-                  (println ":fetch-arms-by-id error:" error)
-                  (let [edn-data (<? (http/fetch (:edn-data-url response)))]
-                    (rf/dispatch [:set form-db-path (-> response
-                                                        (merge edn-data))]))))))))
+    (try
+      (let [form-db-path [:arms-form]
+            user-data (user/data)]
+        (rf/dispatch-sync [:set form-db-path :loading])
+        (let [response (<? (api-request/call :fetch-arms {:id arms-id} user-data))
+              edn-data (<? (http/fetch (:edn-data-url response)))]
+          (rf/dispatch [:set form-db-path (-> response
+                                              (merge edn-data))])))
+
+      (catch :default e
+        (println ":fetch-arms-by-id error:" e)))))
 
 ;; views
 
@@ -72,47 +71,39 @@
       [:<>])))
 
 (defn generate-svg-clicked [db-path]
-  (let [payload @(rf/subscribe [:get db-path])
-        user-data (user/data)]
-    (go
-      (try
-        (let [response (<! (api-request/call :generate-svg-arms payload user-data))
-              error (:error response)]
-          (println "generate-svg-arms response" response)
-          (when-not error
-            (println "success")
-            (js/window.open (:svg-url response))))
-        (catch :default e
-          (println "generate-svg-arms error:" e))))))
+  (go
+    (try
+      (let [payload @(rf/subscribe [:get db-path])
+            user-data (user/data)
+            response (<? (api-request/call :generate-svg-arms payload user-data))]
+        (println "generate-svg-arms response" response)
+        (js/window.open (:svg-url response)))
+      (catch :default e
+        (println "generate-svg-arms error:" (:error e))))))
 
 (defn generate-png-clicked [db-path]
-  (let [payload @(rf/subscribe [:get db-path])
-        user-data (user/data)]
-    (go
-      (try
-        (let [response (<! (api-request/call :generate-png-arms payload user-data))
-              error (:error response)]
-          (println "generate-png-arms response" response)
-          (when-not error
-            (println "success")
-            (js/window.open (:png-url response))))
-        (catch :default e
-          (println "generate-png-arms error:" e))))))
+  (go
+    (try
+      (let [payload @(rf/subscribe [:get db-path])
+            user-data (user/data)
+            response (<? (api-request/call :generate-png-arms payload user-data))]
+        (println "generate-png-arms response" response)
+        (js/window.open (:png-url response)))
+      (catch :default e
+        (println "generate-png-arms error:" (:error e))))))
 
 (defn save-arms-clicked [db-path]
-  (let [payload @(rf/subscribe [:get db-path])
-        user-data (user/data)]
-    (go
-      (try
-        (let [response (<! (api-request/call :save-arms payload user-data))
-              error (:error response)
-              arms-id (-> response :arms-id)]
-          (println "save arms response" response)
-          (when-not error
-            (rf/dispatch [:set (conj db-path :id) arms-id])
-            (reife/push-state :arms-by-id {:id (util/id-for-url arms-id)})))
-        (catch :default e
-          (println "save-form error:" e))))))
+  (go
+    (try
+      (let [payload @(rf/subscribe [:get db-path])
+            user-data (user/data)
+            response (<? (api-request/call :save-arms payload user-data))
+            arms-id (-> response :arms-id)]
+        (println "save arms response" response)
+        (rf/dispatch-sync [:set (conj db-path :id) arms-id])
+        (reife/push-state :arms-by-id {:id (util/id-for-url arms-id)}))
+      (catch :default e
+        (println "save-form error:" (:error e))))))
 
 (defn arms-form []
   (let [db-path [:arms-form]

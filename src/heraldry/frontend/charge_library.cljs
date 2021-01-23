@@ -1,6 +1,6 @@
 (ns heraldry.frontend.charge-library
   (:require ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
-            [cljs.core.async :refer [go <!]]
+            [cljs.core.async :refer [go]]
             [cljs.core.async.interop :refer-macros [<p!]]
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
@@ -32,32 +32,30 @@
 
 (defn fetch-charge-list-by-user [user-id]
   (go
-    (let [db-path [:charge-list]
-          user-data (user/data)]
-      (rf/dispatch-sync [:set db-path :loading])
-      (-> (api-request/call :list-charges {:user-id user-id} user-data)
-          <!
-          (as-> response
-                (let [error (:error response)]
-                  (if error
-                    (println "fetch-charges-by-user error:" error)
-                    (rf/dispatch-sync [:set db-path (:charges response)]))))))))
+    (try
+      (let [db-path [:charge-list]
+            user-data (user/data)]
+        (rf/dispatch-sync [:set db-path :loading])
+        (rf/dispatch-sync [:set db-path (-> (api-request/call :list-charges {:user-id user-id} user-data)
+                                            <?
+                                            :charges)]))
+      (catch :default e
+        (println "fetch-charges-by-user error:" e)))))
 
 (defn fetch-charge-and-fill-form [charge-id]
   (go
-    (let [form-db-path [:charge-form]
-          user-data (user/data)]
-      (rf/dispatch-sync [:set form-db-path :loading])
-      (-> (api-request/call :fetch-charge {:id charge-id} user-data)
-          <!
-          (as-> response
-                (if-let [error (:error response)]
-                  (println ":fetch-charge-by-id error:" error)
-                  (let [edn-data (<? (http/fetch (:edn-data-url response)))
-                        svg-data (<? (http/fetch (:svg-data-url response)))]
-                    (rf/dispatch-sync [:set form-db-path (-> response
-                                                             (assoc-in [:data :edn-data] edn-data)
-                                                             (assoc-in [:data :svg-data] svg-data))]))))))))
+    (try
+      (let [form-db-path [:charge-form]
+            user-data (user/data)]
+        (rf/dispatch-sync [:set form-db-path :loading])
+        (let [response (<? (api-request/call :fetch-charge {:id charge-id} user-data))
+              edn-data (<? (http/fetch (:edn-data-url response)))
+              svg-data (<? (http/fetch (:svg-data-url response)))]
+          (rf/dispatch-sync [:set form-db-path (-> response
+                                                   (assoc-in [:data :edn-data] edn-data)
+                                                   (assoc-in [:data :svg-data] svg-data))])))
+      (catch :default e
+        (println ":fetch-charge-by-id error:" e)))))
 
 (defn charge-path [charge-id]
   (str "/charges/#" charge-id))
@@ -76,37 +74,37 @@
 
 
 (defn load-svg-file [db-path data]
-  (go
-    (try
-      (-> data
-          optimize-svg
-          <?
-          hickory/parse-fragment
-          first
-          hickory/as-hiccup
-          (as-> parsed
-                (let [edn-data (-> parsed
-                                   (assoc 0 :g)
-                                   (assoc 1 {}))
-                      width (-> parsed
-                                (get-in [1 :width])
+  (go-catch
+   (try
+     (-> data
+         optimize-svg
+         <?
+         hickory/parse-fragment
+         first
+         hickory/as-hiccup
+         (as-> parsed
+               (let [edn-data (-> parsed
+                                  (assoc 0 :g)
+                                  (assoc 1 {}))
+                     width (-> parsed
+                               (get-in [1 :width])
+                               js/parseFloat)
+                     height (-> parsed
+                                (get-in [1 :height])
                                 js/parseFloat)
-                      height (-> parsed
-                                 (get-in [1 :height])
-                                 js/parseFloat)
-                      colours (into {}
-                                    (map (fn [c]
-                                           [c :keep]) (find-colours
-                                                       edn-data)))]
-                  (rf/dispatch [:set (conj db-path :width) width])
-                  (rf/dispatch [:set (conj db-path :height) height])
-                  (rf/dispatch [:set (conj db-path :data) {:edn-data {:data edn-data
-                                                                      :width width
-                                                                      :height height
-                                                                      :colours colours}
-                                                           :svg-data data}]))))
-      (catch :default e
-        (println "error:" e)))))
+                     colours (into {}
+                                   (map (fn [c]
+                                          [c :keep]) (find-colours
+                                                      edn-data)))]
+                 (rf/dispatch [:set (conj db-path :width) width])
+                 (rf/dispatch [:set (conj db-path :height) height])
+                 (rf/dispatch [:set (conj db-path :data) {:edn-data {:data edn-data
+                                                                     :width width
+                                                                     :height height
+                                                                     :colours colours}
+                                                          :svg-data data}]))))
+     (catch :default e
+       (println "error:" e)))))
 
 (defn preview [charge-data]
   (let [{:keys [edn-data]} charge-data
@@ -143,13 +141,11 @@
         user-data (user/data)]
     (go
       (try
-        (let [response (<! (api-request/call :save-charge payload user-data))
-              error (:error response)
+        (let [response (<? (api-request/call :save-charge payload user-data))
               charge-id (-> response :charge-id)]
           (println "save charge response" response)
-          (when-not error
-            (rf/dispatch [:set (conj db-path :id) charge-id])
-            (reife/push-state :charge-by-id {:id (util/id-for-url charge-id)})))
+          (rf/dispatch [:set (conj db-path :id) charge-id])
+          (reife/push-state :charge-by-id {:id (util/id-for-url charge-id)}))
         (catch :default e
           (println "save-form error:" e))))))
 
