@@ -1,6 +1,5 @@
 (ns heraldry.frontend.arms-library
-  (:require [cljs-http.client :as http]
-            [cljs.core.async :refer [go <!]]
+  (:require [cljs.core.async :refer [go <!]]
             [cljs.reader :as reader]
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.blazon :as blazon]
@@ -9,6 +8,7 @@
             [heraldry.frontend.context :as context]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
             [re-frame.core :as rf]
@@ -27,21 +27,6 @@
                     (println "fetch-arms-list-by-user error:" error)
                     (rf/dispatch-sync [:set db-path (:arms response)]))))))))
 
-(defn fetch-url-data-to-path [db-path url function]
-  (go
-    (-> (http/get url)
-        <!
-        (as-> response
-              (let [status (:status response)
-                    body (:body response)]
-                (if (= status 200)
-                  (do
-                    (println "retrieved" url)
-                    (rf/dispatch [:set db-path (if function
-                                                 (function body)
-                                                 body)]))
-                  (println "error fetching" url)))))))
-
 (defn fetch-arms-and-fill-form [arms-id]
   (go
     (let [form-db-path [:arms-form]
@@ -53,9 +38,13 @@
                 (if-let [error (:error response)]
                   (println ":fetch-arms-by-id error:" error)
                   (do
-                    (rf/dispatch [:set form-db-path response])
-                    (fetch-url-data-to-path (conj form-db-path :coat-of-arms)
-                                            (:edn-data-url response) reader/read-string))))))))
+                    (rf/dispatch-sync [:set form-db-path response])
+                    (state/fetch-url-data-to-path form-db-path
+                                                  (:edn-data-url response)
+                                                  (fn [data]
+                                                    (if (string? data)
+                                                      (reader/read-string data)
+                                                      data))))))))))
 
 ;; views
 
