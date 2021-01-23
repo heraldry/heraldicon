@@ -16,6 +16,12 @@
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]))
 
+(def form-db-path
+  [:charge-form])
+
+(def list-db-path
+  [:charge-list])
+
 (defn find-colours [data]
   (->> data
        (tree-seq #(or (map? %)
@@ -33,27 +39,25 @@
 (defn fetch-charge-list-by-user [user-id]
   (go
     (try
-      (let [db-path   [:charge-list]
-            user-data (user/data)]
-        (rf/dispatch-sync [:set db-path :loading])
-        (rf/dispatch-sync [:set db-path (-> (api-request/call :list-charges {:user-id user-id} user-data)
-                                            <?
-                                            :charges)]))
+      (let [user-data (user/data)]
+        (rf/dispatch-sync [:set list-db-path :loading])
+        (rf/dispatch-sync [:set list-db-path (-> (api-request/call :list-charges {:user-id user-id} user-data)
+                                                 <?
+                                                 :charges)]))
       (catch :default e
         (println "fetch-charges-by-user error:" e)))))
 
 (defn fetch-charge-and-fill-form [charge-id]
   (go
     (try
-      (let [form-db-path [:charge-form]
-            user-data    (user/data)]
-        (rf/dispatch-sync [:set form-db-path :loading])
-        (let [response (<? (api-request/call :fetch-charge {:id charge-id} user-data))
-              edn-data (<? (http/fetch (:edn-data-url response)))
-              svg-data (<? (http/fetch (:svg-data-url response)))]
-          (rf/dispatch-sync [:set form-db-path (-> response
-                                                   (assoc-in [:data :edn-data] edn-data)
-                                                   (assoc-in [:data :svg-data] svg-data))])))
+      (rf/dispatch-sync [:set form-db-path :loading])
+      (let [user-data (user/data)
+            response  (<? (api-request/call :fetch-charge {:id charge-id} user-data))
+            edn-data  (<? (http/fetch (:edn-data-url response)))
+            svg-data  (<? (http/fetch (:svg-data-url response)))]
+        (rf/dispatch-sync [:set form-db-path (-> response
+                                                 (assoc-in [:data :edn-data] edn-data)
+                                                 (assoc-in [:data :svg-data] svg-data))]))
       (catch :default e
         (println ":fetch-charge-by-id error:" e)))))
 
@@ -136,27 +140,26 @@
                                        (load-svg-file db-path raw-data))))
         (.readAsText reader file)))))
 
-(defn save-charge-clicked [db-path]
-  (let [payload   @(rf/subscribe [:get db-path])
+(defn save-charge-clicked []
+  (let [payload   @(rf/subscribe [:get form-db-path])
         user-data (user/data)]
     (go
       (try
         (let [response  (<? (api-request/call :save-charge payload user-data))
               charge-id (-> response :charge-id)]
           (println "save charge response" response)
-          (rf/dispatch [:set (conj db-path :id) charge-id])
+          (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
           (reife/push-state :charge-by-id {:id (util/id-for-url charge-id)}))
         (catch :default e
           (println "save-form error:" e))))))
 
 (defn charge-form []
-  (let [db-path        [:charge-form]
-        error-message  @(rf/subscribe [:get-form-error db-path])
-        {:keys [data]} @(rf/subscribe [:get db-path])
+  (let [error-message  @(rf/subscribe [:get-form-error form-db-path])
+        {:keys [data]} @(rf/subscribe [:get form-db-path])
         on-submit      (fn [event]
                          (.preventDefault event)
                          (.stopPropagation event)
-                         (save-charge-clicked db-path))]
+                         (save-charge-clicked))]
     [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
@@ -173,7 +176,7 @@
        (when error-message
          [:div.error-message error-message])
        [:fieldset
-        [form/field (conj db-path :name)
+        [form/field (conj form-db-path :name)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
             [:label {:for   "name"
@@ -183,9 +186,9 @@
                      :on-change on-change
                      :type      "text"
                      :style     {:margin-right "0.5em"}}]
-            [form/checkbox (conj db-path :is-public) "Make public"
+            [form/checkbox (conj form-db-path :is-public) "Make public"
              :style {:width "7em"}]])]
-        [form/field (conj db-path :key)
+        [form/field (conj form-db-path :key)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
             [:label {:for   "key"
@@ -194,37 +197,37 @@
                      :value     value
                      :on-change on-change
                      :type      "text"}]])]
-        [form/select (conj db-path :attitude) "Attitude" [["None" :none]
-                                                          ["Couchant" :couchant]
-                                                          ["Courant" :courant]
-                                                          ["Dormant" :dormant]
-                                                          ["Pascuant" :pascuant]
-                                                          ["Passant" :passant]
-                                                          ["Rampant" :rampant]
-                                                          ["Salient" :salient]
-                                                          ["Sejant" :sejant]
-                                                          ["Statant" :statant]]
+        [form/select (conj form-db-path :attitude) "Attitude" [["None" :none]
+                                                               ["Couchant" :couchant]
+                                                               ["Courant" :courant]
+                                                               ["Dormant" :dormant]
+                                                               ["Pascuant" :pascuant]
+                                                               ["Passant" :passant]
+                                                               ["Rampant" :rampant]
+                                                               ["Salient" :salient]
+                                                               ["Sejant" :sejant]
+                                                               ["Statant" :statant]]
          :label-style {:width "6em"}]
-        [form/select (conj db-path :facing) "Facing" [["None" :none]
-                                                      ["To dexter" :to-dexter]
-                                                      ["To sinister" :to-sinister]
-                                                      ["Affronté" :affronte]
-                                                      ["En arrière" :en-arriere]
-                                                      ["Guardant" :guardant]
-                                                      ["Reguardant" :reguardant]
-                                                      ["Salient" :salient]
-                                                      ["In trian aspect" :in-trian-aspect]]
+        [form/select (conj form-db-path :facing) "Facing" [["None" :none]
+                                                           ["To dexter" :to-dexter]
+                                                           ["To sinister" :to-sinister]
+                                                           ["Affronté" :affronte]
+                                                           ["En arrière" :en-arriere]
+                                                           ["Guardant" :guardant]
+                                                           ["Reguardant" :reguardant]
+                                                           ["Salient" :salient]
+                                                           ["In trian aspect" :in-trian-aspect]]
          :label-style {:width "6em"}]
         [:div.pure-control-group
          [:h4 {:style {:margin-top    "1em"
                        :margin-bottom "0.5em"}} "Attributes"]
-         [form/checkbox (conj db-path :attributes :coward) "Coward"]
-         [form/checkbox (conj db-path :attributes :pierced) "Pierced"]
-         [form/checkbox (conj db-path :attributes :voided) "Voided"]]
+         [form/checkbox (conj form-db-path :attributes :coward) "Coward"]
+         [form/checkbox (conj form-db-path :attributes :pierced) "Pierced"]
+         [form/checkbox (conj form-db-path :attributes :voided) "Voided"]]
         [:div.pure-control-group
          [:h4 {:style {:margin-top    "1em"
                        :margin-bottom "0.5em"}} "Colours"]
-         (let [colours-path   (conj db-path :data :edn-data :colours)
+         (let [colours-path   (conj form-db-path :data :edn-data :colours)
                colours        @(rf/subscribe [:get colours-path])
                colour-options [["Keep" :keep]
                                ["Primary" :primary]
@@ -253,7 +256,7 @@
                                                              :width        "20em"}]]]
        [:div.pure-control-group {:style {:text-align "right"
                                          :margin-top "10px"}}
-        [form/field-without-error (conj db-path :data)
+        [form/field-without-error (conj form-db-path :data)
          (fn [& _]
            [:label.pure-button {:for   "upload"
                                 :style {:display "inline-block"
@@ -262,7 +265,7 @@
             [:input {:type      "file"
                      :accept    "image/svg+xml"
                      :id        "upload"
-                     :on-change #(upload-file % db-path)
+                     :on-change #(upload-file % form-db-path)
                      :style     {:display "none"}}]])]
         [:button.pure-button.pure-button-primary {:type "submit"}
          "Save"]]]
@@ -271,12 +274,12 @@
 
 (defn list-charges-for-user []
   (let [user-data   (user/data)
-        charge-list @(rf/subscribe [:get [:charge-list]])]
+        charge-list @(rf/subscribe [:get list-db-path])]
     [:div {:style {:padding "15px"}}
      [:h4 "My charges"]
      [:button.pure-button.pure-button-primary
       {:on-click #(do
-                    (rf/dispatch-sync [:set [:charge-form] nil])
+                    (rf/dispatch-sync [:set form-db-path nil])
                     (reife/push-state :create-charge))}
       "Create"]
      (cond
@@ -294,7 +297,7 @@
                                       [:li.charge
                                        [:a {:href     (reife/href :charge-by-id {:id charge-id})
                                             :on-click #(do
-                                                         (rf/dispatch-sync [:set [:charge-form] nil])
+                                                         (rf/dispatch-sync [:set form-db-path nil])
                                                          (reife/href :charge-by-id {:id charge-id}))}
                                         (:name charge) " "
                                         [:i.far.fa-edit]]])))])]))
@@ -303,7 +306,7 @@
   [charge-form])
 
 (defn charge-by-id [charge-id]
-  (let [charge-form-data @(rf/subscribe [:get [:charge-form]])]
+  (let [charge-form-data @(rf/subscribe [:get form-db-path])]
     (cond
       (and charge-id
            (nil? charge-form-data)) (do
