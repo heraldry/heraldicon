@@ -1,6 +1,6 @@
 (ns heraldry.frontend.arms-library
   (:require [cljs.core.async :refer [go <!]]
-            [cljs.reader :as reader]
+            [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.blazon :as blazon]
             [heraldry.coat-of-arms.default :as default]
@@ -8,7 +8,7 @@
             [heraldry.frontend.context :as context]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
-            [heraldry.frontend.state :as state]
+            [heraldry.frontend.http :as http]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
             [re-frame.core :as rf]
@@ -37,14 +37,9 @@
           (as-> response
               (if-let [error (:error response)]
                 (println ":fetch-arms-by-id error:" error)
-                (do
-                  (rf/dispatch-sync [:set form-db-path response])
-                  (state/fetch-url-data-to-path form-db-path
-                                                (:edn-data-url response)
-                                                (fn [data]
-                                                  (if (string? data)
-                                                    (reader/read-string data)
-                                                    data))))))))))
+                (let [edn-data (<? (http/fetch (:edn-data-url response)))]
+                  (rf/dispatch [:set form-db-path (-> response
+                                                      (merge edn-data))]))))))))
 
 ;; views
 

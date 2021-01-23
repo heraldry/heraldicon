@@ -1,8 +1,8 @@
 (ns heraldry.frontend.charge-map
   (:require [cljs.core.async :refer [go <!]]
-            [cljs.reader :as reader]
+            [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
-            [heraldry.frontend.state :as state]
+            [heraldry.frontend.http :as http]
             [heraldry.frontend.user :as user]
             [re-frame.core :as rf]))
 
@@ -28,12 +28,14 @@
       :else                   charge-map)))
 
 (defn fetch-charge-data [charge]
-  (let [url         (-> charge :edn-data-url)
-        db-path     [:charge-data url]
-        charge-data @(rf/subscribe [:get db-path])]
-    (cond
-      (nil? charge-data)       (do
-                                 (state/fetch-url-data-to-path db-path url reader/read-string)
-                                 (rf/dispatch-sync [:set db-path :loading]))
-      (= charge-data :loading) nil
-      :else                    charge-data)))
+  (go-catch
+   (let [url         (-> charge :edn-data-url)
+         db-path     [:charge-data url]
+         charge-data @(rf/subscribe [:get db-path])]
+     (cond
+       (nil? charge-data)       (do
+                                  (rf/dispatch-sync [:set db-path :loading])
+                                  (let [data (<? (http/fetch url))]
+                                    (rf/dispatch [:set db-path data])))
+       (= charge-data :loading) nil
+       :else                    charge-data))))

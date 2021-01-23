@@ -1,8 +1,5 @@
 (ns heraldry.frontend.state
-  (:require [cljs-http.client :as http]
-            [cljs.core.async :refer [go <!]]
-            [clojure.string :as s]
-            [re-frame.core :as rf]))
+  (:require [re-frame.core :as rf]))
 
 ;; subs
 
@@ -75,27 +72,6 @@
  (fn [_ [_ db-path]]
    {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]
          [:dispatch [:remove db-path]]]}))
-
-;; other
-
-
-(defn fetch-url-data-to-path [db-path url function]
-  (go
-    (-> (http/get url)
-        <!
-        (as-> response
-            (let [status   (:status response)
-                  body     (:body response)
-                  previous @(rf/subscribe [:get db-path])]
-              (if (= status 200)
-                (do
-                  (println "retrieved" url)
-                  (rf/dispatch [:set db-path (merge
-                                              previous
-                                              (if function
-                                                (function body)
-                                                body))]))
-                (println "error fetching" url)))))))
 
 (defn dispatch-on-event [event effect]
   (rf/dispatch effect)
