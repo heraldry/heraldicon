@@ -55,7 +55,7 @@
                 (if-let [error (:error response)]
                   (println ":fetch-charge-by-id error:" error)
                   (do
-                    (rf/dispatch [:set form-db-path response])
+                    (rf/dispatch-sync [:set form-db-path response])
                     (state/fetch-url-data-to-path (conj form-db-path :data :edn-data)
                                                   (:edn-data-url response)
                                                   (fn [data]
