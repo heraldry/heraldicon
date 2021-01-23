@@ -666,13 +666,16 @@
             :_root)   (conj
                        [:span.node-name.clickable
                         {:on-click (if (= type :variant)
-                                     #(state/dispatch-on-event % [:update-charge
-                                                                  db-path
-                                                                  (let [charge-data (:data node)]
-                                                                    (merge {:type (:key charge-data)
-                                                                            :data charge-data}
-                                                                           (select-keys charge-data
-                                                                                        [:attitude :facing])))])
+                                     #(state/dispatch-on-event
+                                       %
+                                       [:update-charge
+                                        db-path
+                                        (let [charge-data (:data node)]
+                                          (merge {:type    (:key charge-data)
+                                                  :variant {:id      (:id charge-data)
+                                                            :version (:version charge-data)}}
+                                                 (select-keys charge-data
+                                                              [:attitude :facing])))])
                                      #(state/dispatch-on-event % [:toggle flag-path]))
                          :style    {:color (when still-on-path? "#1b6690")}}
                         (if (= type :variant)

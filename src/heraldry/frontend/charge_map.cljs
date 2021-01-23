@@ -25,18 +25,24 @@
       (= charge-map :loading) nil
       :else                   charge-map)))
 
-(defn fetch-charge-data [charge]
-  (go
-    (let [url         (-> charge :edn-data-url)
-          db-path     [:charge-data url]
+(defn fetch-charge-data [{:keys [id version] :as variant}]
+  (if (and id version)
+    (let [db-path     [:charge-data variant]
           charge-data @(rf/subscribe [:get db-path])]
       (cond
         (nil? charge-data)       (do
                                    (rf/dispatch-sync [:set db-path :loading])
-                                   (try
-                                     (let [data (<? (http/fetch url))]
-                                       (rf/dispatch [:set db-path data]))
-                                     (catch :default e
-                                       (println "fetch-charge-data:" e))))
+                                   (go
+                                     (try
+                                       (let [user-data (user/data)
+                                             response  (<? (api-request/call :fetch-charge {:id      id
+                                                                                            :version version} user-data))
+                                             edn-data  (<? (http/fetch (:edn-data-url response)))]
+                                         (rf/dispatch [:set db-path (-> response
+                                                                        (assoc :data edn-data))]))
+                                       (catch :default e
+                                         (println "fetch-charge-data:" e))))
+                                   nil)
         (= charge-data :loading) nil
-        :else                    charge-data))))
+        :else                    charge-data))
+    (println "error fetching charge data, variant:" variant)))
