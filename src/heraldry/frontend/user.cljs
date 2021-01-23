@@ -1,5 +1,6 @@
 (ns heraldry.frontend.user
-  (:require [cljs.core.async :refer [<! go]]
+  (:require [cljs.core.async :refer [go]]
+            [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.api.request :as api-request]
             [heraldry.aws.cognito :as cognito]
             [heraldry.frontend.form.core :as form]
@@ -38,20 +39,20 @@
 
 (defn complete-login [db-path jwt-token]
   (go
-    (-> (api-request/call :login {:jwt-token jwt-token} nil)
-        <!
-        (as-> response
-            (if-let [error (:error response)]
-              (do
-                (println "error:" error)
-                (rf/dispatch [:set-form-error db-path error]))
-              (let [{:keys [session-id username user-id]} response]
-                (set-item local-storage local-storage-session-id-name session-id)
-                (set-item local-storage local-storage-username-name username)
-                (set-item local-storage local-storage-user-id-name user-id)
-                (read-session-data)
-                (rf/dispatch [:clear-form db-path])
-                (modal/clear)))))))
+    (try
+      (let [response          (<? (api-request/call :login {:jwt-token jwt-token} nil))
+            {:keys [session-id
+                    username
+                    user-id]} response]
+        (set-item local-storage local-storage-session-id-name session-id)
+        (set-item local-storage local-storage-username-name username)
+        (set-item local-storage local-storage-user-id-name user-id)
+        (read-session-data)
+        (rf/dispatch [:clear-form db-path])
+        (modal/clear))
+      (catch :default e
+        (println "error:" e)
+        (rf/dispatch [:set-form-error db-path (:error e)])))))
 
 (defn login-clicked [db-path]
   (let [{:keys [username password]} @(rf/subscribe [:get db-path])]
