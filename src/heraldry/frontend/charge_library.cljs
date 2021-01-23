@@ -2,7 +2,6 @@
   (:require ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
             [cljs.core.async :refer [go <!]]
             [cljs.core.async.interop :refer-macros [<p!]]
-            [cljs.reader :as reader]
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
@@ -10,7 +9,7 @@
             [heraldry.frontend.context :as context]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
-            [heraldry.frontend.state :as state]
+            [heraldry.frontend.http :as http]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
             [hickory.core :as hickory]
@@ -54,16 +53,11 @@
           (as-> response
                 (if-let [error (:error response)]
                   (println ":fetch-charge-by-id error:" error)
-                  (do
-                    (rf/dispatch-sync [:set form-db-path response])
-                    (state/fetch-url-data-to-path (conj form-db-path :data :edn-data)
-                                                  (:edn-data-url response)
-                                                  (fn [data]
-                                                    (if (string? data)
-                                                      (reader/read-string data)
-                                                      data)))
-                    (state/fetch-url-data-to-path (conj form-db-path :data :svg-data)
-                                                  (:svg-data-url response) nil))))))))
+                  (let [edn-data (<? (http/fetch (:edn-data-url response)))
+                        svg-data (<? (http/fetch (:svg-data-url response)))]
+                    (rf/dispatch-sync [:set form-db-path (-> response
+                                                             (assoc-in [:data :edn-data] edn-data)
+                                                             (assoc-in [:data :svg-data] svg-data))]))))))))
 
 (defn charge-path [charge-id]
   (str "/charges/#" charge-id))
