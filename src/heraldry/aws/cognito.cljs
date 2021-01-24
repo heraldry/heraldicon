@@ -25,7 +25,9 @@
                                           (on-confirmation-needed user)
                                           (on-failure error))))
                :newPasswordRequired (fn [user-attributes _required-attributes]
-                                      (let [user-attributes (dissoc (js->clj user-attributes :keywordize-keys true) :email_verified)]
+                                      (let [user-attributes (-> user-attributes
+                                                                (js->clj :keywordize-keys true)
+                                                                (dissoc  :email_verified))]
                                         (on-new-password-required user user-attributes)))}))))
 
 (defn sign-up [username password email & {:keys [on-success on-failure on-confirmation-needed]}]
@@ -35,7 +37,10 @@
                      :Value email}]]
     (.signUp
      user-pool
-     username password (clj->js attributes) nil
+     username
+     password
+     (clj->js attributes)
+     nil
      (fn [err result]
        ;; data on success
        ;; {:user #object[CognitoUser [object Object]]
@@ -54,7 +59,8 @@
 (defn confirm [user code & {:keys [on-success on-failure]}]
   (.confirmRegistration
    user
-   code true
+   code
+   true
    (fn [err _result]
      (if err
        (on-failure (js->clj err :keywordize-keys true))
@@ -71,7 +77,8 @@
 (defn complete-new-password-challenge [user password user-attributes & {:keys [on-success on-failure]}]
   (.completeNewPasswordChallenge
    user
-   password (clj->js user-attributes)
+   password
+   (clj->js user-attributes)
    (clj->js {:onSuccess (fn [result]
                           (on-success (js->clj result :keywordize-keys true)))
              :onFailure (fn [error]
