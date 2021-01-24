@@ -42,7 +42,8 @@
 
     :heraldry/field {:component :field}
 
-    :heraldry/field {:component :something-else}
+    :heraldry/field {:component :charge
+                     :content   {:tincture :or}}
 
     :heraldry/field {:component :field
                      :division  {:type :does-not-exist}}
@@ -86,7 +87,7 @@
 
     :heraldry/ordinary {:component :ordinary}
 
-    :heraldry/ordinary {:component :something-else
+    :heraldry/ordinary {:component :field
                         :type      :pale
                         :field     {:component :field
                                     :content   {:tincture :azure}}}
@@ -126,7 +127,7 @@
 
     :heraldry/charge {:component :charge}
 
-    :heraldry/charge {:component :something-else
+    :heraldry/charge {:component :field
                       :type      :lion
                       :field     {:component :field
                                   :content   {:tincture :azure}}}
@@ -168,7 +169,7 @@
 (deftest invalid-coat-of-arms
   (are [spec form] (not (s/valid? spec form))
 
-    :heraldry/coat-of-arms {:component  :something-else
+    :heraldry/coat-of-arms {:component  :field
                             :escutcheon :heater
                             :field      {:component :field
                                          :content   {:tincture :azure}}}
