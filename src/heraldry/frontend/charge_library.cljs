@@ -110,15 +110,17 @@
      (catch :default e
        (println "error:" e)))))
 
-(defn preview [charge-data]
-  (let [{:keys [edn-data]} charge-data
+(defn preview []
+  (let [{:keys [data type]} @(rf/subscribe [:get form-db-path])
+        {:keys [edn-data]} data
         db-path [:example-coa :coat-of-arms]
         render-options @(rf/subscribe [:get [:example-coa :render-options]])
         coat-of-arms @(rf/subscribe [:get db-path])
         {:keys [result
                 environment]} (render/coat-of-arms
-                               (assoc-in coat-of-arms
-                                         [:field :components 0 :type] edn-data)
+                               (-> coat-of-arms
+                                   (assoc-in [:field :components 0 :type] type)
+                                   (assoc-in [:field :components 0 :data] edn-data))
                                100
                                (merge
                                 context/default
@@ -155,7 +157,6 @@
 
 (defn charge-form []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
-        {:keys [data]} @(rf/subscribe [:get form-db-path])
         on-submit (fn [event]
                     (.preventDefault event)
                     (.stopPropagation event)
@@ -164,7 +165,7 @@
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
      [:div.pure-u-1-2 {:style {:position "fixed"}}
-      [preview data]]
+      [preview]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
                                :width "45%"}}
       [:form.pure-form.pure-form-aligned
@@ -188,12 +189,12 @@
                      :style {:margin-right "0.5em"}}]
             [form/checkbox (conj form-db-path :is-public) "Make public"
              :style {:width "7em"}]])]
-        [form/field (conj form-db-path :key)
+        [form/field (conj form-db-path :type)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
-            [:label {:for "key"
-                     :style {:width "6em"}} "Charge Key"]
-            [:input {:id "key"
+            [:label {:for "type"
+                     :style {:width "6em"}} "Charge type"]
+            [:input {:id "type"
                      :value value
                      :on-change on-change
                      :type "text"}]])]
