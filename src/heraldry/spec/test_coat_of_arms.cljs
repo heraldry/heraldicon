@@ -22,7 +22,20 @@
                                           :content {:tincture :azure}}
                                          {:component :field
                                           :content {:tincture :or}}]
-                                :hints {:outline? true}}}))
+                                :hints {:outline? true}}}
+
+    :heraldry/field {:component :field
+                     :content {:tincture :azure}
+                     :components [{:component :ordinary
+                                   :type :pale
+                                   :field {:component :field
+                                           :content {:tincture :azure}}}
+                                  {:component :charge
+                                   :type :lion
+                                   :attitude :rampant
+                                   :facing :reguardant
+                                   :field {:component :field
+                                           :content {:tincture :azure}}}]}))
 
 (deftest invalid-fields
   (are [spec form] (not (s/valid? spec form))
@@ -32,7 +45,12 @@
     :heraldry/field {:component :something-else}
 
     :heraldry/field {:component :field
-                     :division {:type :does-not-exist}}))
+                     :division {:type :does-not-exist}}
+
+    :heraldry/field {:component :field
+                     :content {:tincture :azure}
+                     :components [{:component :field
+                                   :content {:tincture :or}}]}))
 
 (deftest valid-ordinaries
   (are [spec form] (do
