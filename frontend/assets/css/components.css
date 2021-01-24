@@ -4,19 +4,16 @@
 
 .setting {
   position: relative;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 
 .setting > select,
+.setting > input[type="text"],
 .setting > .submenu-setting,
 .setting > .slider,
 .setting > .other {
   position: absolute;
-  left: 6em;
-}
-
-.setting > select {
-  left: 6em;
+  left: 7em;
 }
 
 .setting input[type="checkbox"],
