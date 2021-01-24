@@ -426,8 +426,19 @@
        (map (fn [function]
               [(-> function meta :display-name) (-> function meta :name keyword)]))))
 
-(defn render-other-charge [{:keys [type field tincture hints variant] :as charge} parent
-                           environment {:keys [render-field render-options load-charge-data] :as context}]
+(defn render-other-charge [{:keys [type
+                                   field
+                                   tincture
+                                   hints
+                                   variant]
+                            :as   charge}
+                           parent
+                           environment
+                           {:keys [render-field
+                                   render-options
+                                   load-charge-data
+                                   fn-select-component]
+                            :as   context}]
   (if-let [charge-data (if (keyword? type)
                          (:data (load-charge-data variant))
                          type)]
@@ -556,8 +567,15 @@
           [:g {:mask (str "url(#" mask-inverted-id ")")}
            [:g {:transform reverse-transform}
             [render-field field charge-environment (-> context
-                                                       (update :db-path conj :field))]]]
-          [:g {:mask (str "url(#" mask-id ")")}
+                                                       (update :db-path conj :field)
+                                                       (dissoc :fn-select-component))]]]
+          [:g {:mask     (str "url(#" mask-id ")")
+               :on-click (when fn-select-component
+                           (fn [event]
+                             (fn-select-component (-> context
+                                                      :db-path
+                                                      (conj :field)))
+                             (.stopPropagation event)))}
            coloured-charge]])])
     [:<>]))
 
