@@ -20,7 +20,9 @@
 
 (s/def :heraldry/component #{:field
                              :ordinary
-                             :charge})
+                             :charge
+                             :coat-of-arms
+                             :render-options})
 
 (s/def :heraldry.line/type #{:straight
                              :invected
@@ -174,3 +176,25 @@
                                #(-> %
                                     (core/get-key :heraldry/component)
                                     (= :charge))))
+
+(s/def :heraldry.coat-of-arms/escutcheon #{:heater
+                                           :square-french
+                                           :square-iberian
+                                           :french-modern
+                                           :lozenge
+                                           :roundel
+                                           :oval
+                                           :renaissance
+                                           :swiss
+                                           :english
+                                           :polish
+                                           :polish-19th-century
+                                           :rectangle
+                                           :flag})
+(s/def :heraldry.coat-of-arms/field #(s/valid? :heraldry/field %))
+(s/def :heraldry/coat-of-arms (s/and (s/keys :req-un [:heraldry/component
+                                                      :heraldry.coat-of-arms/escutcheon
+                                                      :heraldry.coat-of-arms/field])
+                                     #(-> %
+                                          (core/get-key :heraldry/component)
+                                          (= :coat-of-arms))))
