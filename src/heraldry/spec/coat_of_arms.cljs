@@ -198,3 +198,15 @@
                                      #(-> %
                                           (core/get-key :heraldry/component)
                                           (= :coat-of-arms))))
+
+(s/def :heraldry.render-options/mode #{:colours
+                                       :hatching})
+(s/def :heraldry.render-options/outline? boolean?)
+(s/def :heraldry.render-options/squiggly? boolean?)
+(s/def :heraldry/render-options (s/and (s/keys :req-un [:heraldry/component]
+                                               :opt-un [:heraldry.render-options/mode
+                                                        :heraldry.render-options/outline?
+                                                        :heraldry.render-options/squiggly?])
+                                       #(-> %
+                                            (core/get-key :heraldry/component)
+                                            (= :render-options))))
