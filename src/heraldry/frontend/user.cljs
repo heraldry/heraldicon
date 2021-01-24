@@ -21,6 +21,7 @@
 
 (declare login-modal)
 (declare confirmation-modal)
+(declare change-temporary-password-modal)
 
 (defn data []
   @(rf/subscribe [:get user-db-path]))
@@ -70,7 +71,12 @@
                                              (confirmation-modal))
                    :on-failure (fn [error]
                                  (println "login failure" error)
-                                 (rf/dispatch [:set-form-error db-path (:message error)])))))
+                                 (rf/dispatch [:set-form-error db-path (:message error)]))
+                   :on-new-password-required (fn [user user-attributes]
+                                               (rf/dispatch [:clear-form db-path])
+                                               (rf/dispatch [:set (conj user-db-path :user) user])
+                                               (rf/dispatch [:set (conj user-db-path :user-attributes) user-attributes])
+                                               (change-temporary-password-modal)))))
 
 (defn login-form [db-path]
   (let [error-message @(rf/subscribe [:get-form-error db-path])
@@ -251,6 +257,74 @@
         "Resend code"]
        [:button.pure-button.pure-button-primary {:type "submit"} "Confirm"]]]]))
 
+
+(defn change-temporary-password-clicked [db-path]
+  (let [user-data                    (data)
+        user                         (:user user-data)
+        user-attributes              (:user-attributes user-data)
+        {:keys [new-password
+                new-password-again]} @(rf/subscribe [:get db-path])]
+    (rf/dispatch-sync [:clear-form-errors])
+    (if (not= new-password new-password-again)
+      (rf/dispatch [:set-form-error (conj db-path :new-password-again) "Passwords don't match."])
+      (cognito/complete-new-password-challenge
+       user
+       new-password
+       user-attributes
+       :on-success (fn [user]
+                     (println "change password success" user)
+                     (rf/dispatch [:clear-form db-path])
+                     (complete-login db-path (-> user
+                                                 .getAccessToken
+                                                 .getJwtToken)))
+       :on-failure (fn [error]
+                     (println "change password failure" error)
+                     (rf/dispatch [:set-form-error db-path (:message error)]))))))
+
+(defn change-temporary-password-form [db-path]
+  (let [error-message @(rf/subscribe [:get-form-error db-path])
+        on-submit     (fn [event]
+                        (.preventDefault event)
+                        (.stopPropagation event)
+                        (change-temporary-password-clicked db-path))]
+    [:form.pure-form.pure-form-aligned
+     {:on-key-press (fn [event]
+                      (when (-> event .-code (= "Enter"))
+                        (on-submit event)))
+      :on-submit    on-submit}
+     (when error-message
+       [:div.error-message error-message])
+     [:fieldset
+      [form/field (conj db-path :new-password)
+       (fn [& {:keys [value on-change]}]
+         [:div.pure-control-group
+          [:label {:for "new-password"} "New password:"]
+          [:input {:id          "new-password"
+                   :value       value
+                   :on-change   on-change
+                   :placeholder "New password"
+                   :type        "password"}]])]
+      [form/field (conj db-path :new-password-again)
+       (fn [& {:keys [value on-change]}]
+         [:div.pure-control-group
+          [:label {:for "new-password-again"} "New password again:"]
+          [:input {:id          "new-password-again"
+                   :value       value
+                   :on-change   on-change
+                   :placeholder "New password again"
+                   :type        "password"}]])]
+      [:div.pure-control-group {:style {:text-align "right"
+                                        :margin-top "10px"}}
+       [:button.pure-button
+        {:style    {:margin-right "5px"}
+         :type     "reset"
+         :on-click #(do
+                      (rf/dispatch [:clear-form db-path])
+                      (modal/clear))}
+        "Cancel"]
+       [:button.pure-button.pure-button-primary {:type "submit"}
+        "Change"]]]]))
+
 (defn logout []
   ;; TODO: logout via API
   (remove-item local-storage local-storage-session-id-name)
@@ -275,4 +349,9 @@
 (defn confirmation-modal []
   (let [db-path [:confirmation-form]]
     (modal/create "Register Confirmation" [confirmation-form db-path]
+                  :on-cancel #(rf/dispatch [:clear-form db-path]))))
+
+(defn change-temporary-password-modal []
+  (let [db-path [:change-temporary-password-form]]
+    (modal/create "Change Temporary Password" [change-temporary-password-form db-path]
                   :on-cancel #(rf/dispatch [:clear-form db-path]))))
