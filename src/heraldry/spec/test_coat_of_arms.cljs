@@ -185,3 +185,33 @@
                             :escutcheon :does-not-exist
                             :field {:component :field
                                     :content {:tincture :azure}}}))
+
+(deftest valid-render-options
+  (are [spec form] (do
+                     (s/explain spec form)
+                     (s/valid? spec form))
+
+    :heraldry/render-options {:component :render-options}
+
+    :heraldry/render-options {:component :render-options
+                              :mode :colours}
+
+    :heraldry/render-options {:component :render-options
+                              :outline? false}
+
+    :heraldry/render-options {:component :render-options
+                              :squiggly true}))
+
+(deftest invalid-render-options
+  (are [spec form] (not (s/valid? spec form))
+
+    :heraldry/render-options {:component :field}
+
+    :heraldry/render-options {:component :render-options
+                              :mode :does-not-exist}
+
+    :heraldry/render-options {:component :render-options
+                              :outline? 5}
+
+    :heraldry/render-options {:component :render-options
+                              :squiggly? "foo"}))
