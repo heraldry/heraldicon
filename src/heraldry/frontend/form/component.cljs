@@ -368,9 +368,8 @@
       [:h1 (util/combine " " [(when title-prefix
                                 (str (util/upper-case-first title-prefix) ":"))
                               (when (and type
-                                         (-> #{:field :ref}
-                                             (get type)
-                                             not))
+                                         (-> #{:charge :ordinary}
+                                             (get type)))
                                 (str (util/translate-cap-first type) ":"))
                               title])]
       (when show-selector?
