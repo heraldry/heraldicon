@@ -139,3 +139,48 @@
                       :type :wolf
                       :attitude :foobar
                       :field {:component :field}}))
+
+(deftest valid-coat-of-arms
+  (are [spec form] (do
+                     (s/explain spec form)
+                     (s/valid? spec form))
+
+    :heraldry/coat-of-arms {:component :coat-of-arms
+                            :escutcheon :heater
+                            :field {:component :field
+                                    :content {:tincture :azure}}}
+
+    :heraldry/coat-of-arms {:component :coat-of-arms
+                            :escutcheon :polish
+                            :field {:component :field
+                                    :division {:type :per-pale
+                                               :line {:type :invected
+                                                      :eccentricity 1.3
+                                                      :width 2
+                                                      :offset 0.2
+                                                      :flipped? false}
+                                               :fields [{:component :field
+                                                         :content {:tincture :azure}}
+                                                        {:component :field
+                                                         :content {:tincture :or}}]
+                                               :hints {:outline? true}}}}))
+
+(deftest invalid-coat-of-arms
+  (are [spec form] (not (s/valid? spec form))
+
+    :heraldry/coat-of-arms {:component :something-else
+                            :escutcheon :heater
+                            :field {:component :field
+                                    :content {:tincture :azure}}}
+
+    :heraldry/coat-of-arms {:component :coat-of-arms
+                            :escutcheon :heater}
+
+    :heraldry/coat-of-arms {:component :coat-of-arms
+                            :field {:component :field
+                                    :content {:tincture :azure}}}
+
+    :heraldry/coat-of-arms {:component :coat-of-arms
+                            :escutcheon :does-not-exist
+                            :field {:component :field
+                                    :content {:tincture :azure}}}))
