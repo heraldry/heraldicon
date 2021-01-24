@@ -59,9 +59,7 @@
          (if (empty? rest)
            db
            (recur
-            (if (get-in db (conj rest :component))
-              (assoc-in db [:ui :component-open? rest] true)
-              db)
+            (assoc-in db [:ui :component-open? rest] true)
             (-> rest drop-last vec)))))))
 
 (rf/reg-event-db
