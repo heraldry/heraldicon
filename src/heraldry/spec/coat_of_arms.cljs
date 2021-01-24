@@ -82,12 +82,15 @@
 (s/def :heraldry.field/content (s/keys :req-un [:heraldry/tincture]))
 (s/def :heraldry.field/inherit-environment? boolean?)
 (s/def :heraldry.field/counterchanged? boolean?)
+(s/def :heraldry.field/components (s/coll-of #(or (s/valid? :heraldry/ordinary %)
+                                                  (s/valid? :heraldry/charge %)) :into []))
 
 (s/def :heraldry/field (s/and (s/keys :req-un [:heraldry/component
                                                (or :heraldry.field/division
                                                    :heraldry.field/content)]
                                       :opt-un [:heraldry.field/inherit-environment?
-                                               :heraldry.field/counterchanged?])
+                                               :heraldry.field/counterchanged?
+                                               :heraldry.field/components])
                               #(-> %
                                    (core/get-key :heraldry/component)
                                    (= :field))))
