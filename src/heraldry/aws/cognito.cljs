@@ -83,3 +83,25 @@
                           (on-success (js->clj result :keywordize-keys true)))
              :onFailure (fn [error]
                           (on-failure (js->clj error :keywordize-keys true)))})))
+
+(defn forgot-password [username & {:keys [on-success on-failure]}]
+  (let [user (new CognitoUser (clj->js {:Username username
+                                        :Pool user-pool}))]
+    (.forgotPassword
+     user
+     (clj->js {:onSuccess (fn [_data]
+                            (on-success user))
+               :onFailure (fn [error]
+                            (let [error (js->clj error :keywordize-keys true)]
+                              (on-failure error)))}))))
+
+(defn confirm-password [user code new-password & {:keys [on-success on-failure]}]
+  (.confirmPassword
+   user
+   code
+   new-password
+   (clj->js {:onSuccess (fn [_data]
+                          (on-success user))
+             :onFailure (fn [error]
+                          (let [error (js->clj error :keywordize-keys true)]
+                            (on-failure error)))})))

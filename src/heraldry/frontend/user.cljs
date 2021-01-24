@@ -22,6 +22,7 @@
 (declare login-modal)
 (declare confirmation-modal)
 (declare change-temporary-password-modal)
+(declare password-reset-confirmation-modal)
 
 (defn data []
   @(rf/subscribe [:get user-db-path]))
@@ -77,6 +78,23 @@
                                                (rf/dispatch [:set (conj user-db-path :user) user])
                                                (rf/dispatch [:set (conj user-db-path :user-attributes) user-attributes])
                                                (change-temporary-password-modal)))))
+(defn forgotten-password-clicked [db-path]
+  (let [{:keys [username]} @(rf/subscribe [:get db-path])]
+    (rf/dispatch-sync [:clear-form-errors db-path])
+    (if (-> username
+            count
+            zero?)
+      (rf/dispatch [:set-form-error (conj db-path :username) "Username required for password reset."])
+      (cognito/forgot-password
+       username
+       :on-success (fn [user]
+                     (rf/dispatch [:clear-form db-path])
+                     (rf/dispatch [:set (conj user-db-path :user) user])
+                     (println "password reset initiation success")
+                     (password-reset-confirmation-modal))
+       :on-failure (fn [error]
+                     (println "password reset initiation failure" error)
+                     (rf/dispatch [:set-form-error db-path (:message error)]))))))
 
 (defn login-form [db-path]
   (let [error-message @(rf/subscribe [:get-form-error db-path])
@@ -108,6 +126,14 @@
                    :on-change on-change
                    :placeholder "Password"
                    :type "password"}]])]
+      [:a
+       {:style {:margin-right "5px"}
+        :href "#"
+        :on-click (fn [event]
+                    (.preventDefault event)
+                    (.stopPropagation event)
+                    (forgotten-password-clicked db-path))}
+       "Forgotten password"]
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
        [:button.pure-button
@@ -324,6 +350,72 @@
        [:button.pure-button.pure-button-primary {:type "submit"}
         "Change"]]]]))
 
+(defn reset-password-clicked [db-path]
+  (let [{:keys [code
+                new-password
+                new-password-again]} @(rf/subscribe [:get db-path])
+        user-data (data)
+        user (:user user-data)]
+    (rf/dispatch-sync [:clear-form-errors db-path])
+    (if (not= new-password new-password-again)
+      (rf/dispatch [:set-form-error (conj db-path :new-password-again) "Passwords don't match."])
+      (cognito/confirm-password
+       user
+       code
+       new-password
+       :on-success (fn [user]
+                     (println "password reset success" user)
+                     (rf/dispatch [:clear-form db-path])
+                     (login-modal "Password reset completed"))
+       :on-failure (fn [error]
+                     (println "password reset error" error)
+                     (rf/dispatch [:set-form-error db-path (:message error)]))))))
+
+(defn password-reset-confirmation-form [db-path]
+  (let [error-message @(rf/subscribe [:get-form-error db-path])
+        on-submit (fn [event]
+                    (.preventDefault event)
+                    (.stopPropagation event)
+                    (reset-password-clicked db-path))]
+    [:form.pure-form.pure-form-stacked
+     {:on-key-press (fn [event]
+                      (when (-> event .-code (= "Enter"))
+                        (on-submit event)))
+      :on-submit on-submit}
+     "A password reset confirmation code was sent to your email address."
+     (when error-message
+       [:div.error-message error-message])
+     [:fieldset
+      [form/field (conj db-path :code)
+       (fn [& {:keys [value on-change]}]
+         [:div.pure-control-group
+          [:input {:id "code"
+                   :value value
+                   :on-change on-change
+                   :placeholder "Confirmation code"
+                   :type "text"}]])]
+      [form/field (conj db-path :new-password)
+       (fn [& {:keys [value on-change]}]
+         [:div.pure-control-group
+          [:label {:for "new-password"} "New password:"]
+          [:input {:id "new-password"
+                   :value value
+                   :on-change on-change
+                   :placeholder "New password"
+                   :type "password"}]])]
+      [form/field (conj db-path :new-password-again)
+       (fn [& {:keys [value on-change]}]
+         [:div.pure-control-group
+          [:label {:for "new-password-again"} "New password again:"]
+          [:input {:id "new-password-again"
+                   :value value
+                   :on-change on-change
+                   :placeholder "New password again"
+                   :type "password"}]])]
+      [:div.pure-control-group {:style {:text-align "right"
+                                        :margin-top "10px"}}
+       [:button.pure-button.pure-button-primary {:type "submit"} "Reset password"]]]]))
+
 (defn logout []
   ;; TODO: logout via API
   (remove-item local-storage local-storage-session-id-name)
@@ -353,4 +445,9 @@
 (defn change-temporary-password-modal []
   (let [db-path [:change-temporary-password-form]]
     (modal/create "Change Temporary Password" [change-temporary-password-form db-path]
+                  :on-cancel #(rf/dispatch [:clear-form db-path]))))
+
+(defn password-reset-confirmation-modal []
+  (let [db-path [:password-reset-confirmation-form]]
+    (modal/create "Reset Forgotten Password" [password-reset-confirmation-form db-path]
                   :on-cancel #(rf/dispatch [:clear-form db-path]))))
