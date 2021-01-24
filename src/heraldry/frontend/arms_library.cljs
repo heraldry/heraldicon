@@ -122,6 +122,7 @@
       [render-coat-of-arms]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
                                :width "45%"}}
+      [component/form-attribution (conj form-db-path :attribution)]
       [:form.pure-form.pure-form-aligned
        {:style {:display "inline-block"}
         :on-key-press (fn [event]
