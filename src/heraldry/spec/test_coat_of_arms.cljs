@@ -1,7 +1,7 @@
-(ns heraldry.spec.test
+(ns heraldry.spec.test-coat-of-arms
   (:require [cljs.spec.alpha :as s]
-            [cljs.test :refer-macros [deftest is are]]
-            [heraldry.spec.core]))
+            [cljs.test :refer-macros [deftest are]]
+            [heraldry.spec.coat-of-arms]))
 
 (deftest valid-fields
   (are [spec form] (do
