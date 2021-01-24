@@ -430,7 +430,8 @@
                                    field
                                    tincture
                                    hints
-                                   variant]
+                                   variant
+                                   data]
                             :as   charge}
                            parent
                            environment
@@ -439,9 +440,8 @@
                                    load-charge-data
                                    fn-select-component]
                             :as   context}]
-  (if-let [charge-data (if (keyword? type)
-                         (:data (load-charge-data variant))
-                         type)]
+  (if-let [charge-data (or data
+                           (:data (load-charge-data variant)))]
     (let [{:keys [position geometry]}      (options/sanitize charge (options charge))
           {:keys [size stretch
                   mirrored? reversed?

@@ -668,7 +668,7 @@
                                        [:update-charge
                                         db-path
                                         (let [charge-data (:data node)]
-                                          (merge {:type    (:key charge-data)
+                                          (merge {:type    (:type charge-data)
                                                   :variant {:id      (:id charge-data)
                                                             :version (:version charge-data)}}
                                                  (select-keys charge-data

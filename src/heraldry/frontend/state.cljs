@@ -28,7 +28,6 @@
                                            :field      {:component  :field
                                                         :content    {:tincture :argent}
                                                         :components [{:component :charge
-                                                                      :variant   :default
                                                                       :field     {:component :field
                                                                                   :content   {:tincture :azure}}
                                                                       :tincture  {:eyes-and-teeth :argent
