@@ -345,6 +345,20 @@
       [:span {:style {:margin-left "1em"}} (cond-> value
                                              display-function display-function)]]]))
 
+(defn text-field [path label & {:keys [on-change default]}]
+  (let [current-value (or @(rf/subscribe [:get path])
+                          default)
+        input-id (id "input")]
+    [:div.setting
+     [:label {:for input-id} label]
+     [:input {:id input-id
+              :type "text"
+              :value current-value
+              :on-change #(let [value (-> % .-target .-value)]
+                            (if on-change
+                              (on-change value)
+                              (rf/dispatch-sync [:set path value])))}]]))
+
 (defn selector [path]
   [:a.selector {:on-click #(state/dispatch-on-event % [:ui-component-select path])}
    [:i.fas.fa-search]])
@@ -1221,3 +1235,20 @@
                                (-> component :type keyword? not)))
                  [:a {:on-click #(state/dispatch-on-event % [:remove-component component-path])}
                   [:i.far.fa-trash-alt]])]])))]]]))
+
+(defn form-attribution [db-path]
+  (let [attribution-options [["None (No sharing)" :none]
+                             ["CC Attribution" :cc-attribution]
+                             ["CC Attribution-ShareAlike" :cc-attribution-share-alike]
+                             ["Public Domain" :public-domain]]]
+    [component db-path :attribution "Attribution" nil
+     [select (conj db-path :license) "License" attribution-options]
+     [radio-select (conj db-path :nature) [["Own work" :own-work]
+                                           ["Derivative" :derivative]]
+      :default :derivative]
+     [select (conj db-path :source-license) "Source license" attribution-options]
+     [text-field (conj db-path :source-name) "Source name"]
+     [text-field (conj db-path :source-link) "Source link"]
+     [text-field (conj db-path :source-creator-name) "Creator name"]
+     [text-field (conj db-path :source-creator-link) "Creator link"]
+     [:div {:style {:margin-bottom "1em"}} " "]]))
