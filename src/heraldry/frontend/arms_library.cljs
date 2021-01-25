@@ -98,6 +98,7 @@
 
 (defn save-arms-clicked []
   (go
+    (rf/dispatch-sync [:clear-form-errors form-db-path])
     (try
       (let [payload @(rf/subscribe [:get form-db-path])
             user-data (user/data)
