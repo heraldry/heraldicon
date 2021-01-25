@@ -1242,15 +1242,21 @@
   (let [attribution-options [["None (No sharing)" :none]
                              ["CC Attribution" :cc-attribution]
                              ["CC Attribution-ShareAlike" :cc-attribution-share-alike]
-                             ["Public Domain" :public-domain]]]
+                             ["Public Domain" :public-domain]]
+        license-nature @(rf/subscribe [:get (conj db-path :nature)])]
     [component db-path :attribution "Attribution" nil
      [select (conj db-path :license) "License" attribution-options]
      [radio-select (conj db-path :nature) [["Own work" :own-work]
                                            ["Derivative" :derivative]]
       :default :derivative]
-     [select (conj db-path :source-license) "Source license" attribution-options]
-     [text-field (conj db-path :source-name) "Source name"]
-     [text-field (conj db-path :source-link) "Source link"]
-     [text-field (conj db-path :source-creator-name) "Creator name"]
-     [text-field (conj db-path :source-creator-link) "Creator link"]
+     (when (= license-nature :derivative)
+       [:<>
+        [select (conj db-path :source-license) "Source license" (assoc-in
+                                                                 attribution-options
+                                                                 [0 0]
+                                                                 "None")]
+        [text-field (conj db-path :source-name) "Source name"]
+        [text-field (conj db-path :source-link) "Source link"]
+        [text-field (conj db-path :source-creator-name) "Creator name"]
+        [text-field (conj db-path :source-creator-link) "Creator link"]])
      [:div {:style {:margin-bottom "1em"}} " "]]))

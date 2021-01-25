@@ -15,5 +15,5 @@
      (if (= status 200)
        (:success body)
        (if (:error body)
-         (throw (ex-info "API error" body :api-error))
-         (throw (ex-info (str "API error: " status) {:error body} :api-error)))))))
+         (throw (ex-info "API error" (:error body) :api-error))
+         (throw (ex-info (str "API error: " status) {:message body} :api-error)))))))
