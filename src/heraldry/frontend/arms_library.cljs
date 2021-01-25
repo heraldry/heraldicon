@@ -157,8 +157,8 @@
          "PNG Link"]
         [:button.pure-button.pure-button-primary {:type "submit"}
          "Save"]]]
-      [component/form-render-options form-db-path]
-      [component/form-for-field (conj form-db-path :coat-of-arms :field)]]]))
+      [component/form-render-options (conj form-db-path :render-options)]
+      [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]]))
 
 (defn list-arms-for-user []
   (let [user-data (user/data)
