@@ -22,5 +22,6 @@
    :hints {:outline? true}})
 
 (def coat-of-arms
-  {:escutcheon :heater
+  {:component :coat-of-arms
+   :escutcheon :heater
    :field field})
