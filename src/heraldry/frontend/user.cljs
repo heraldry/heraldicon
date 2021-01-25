@@ -54,7 +54,7 @@
         (modal/clear))
       (catch :default e
         (println "error:" e)
-        (rf/dispatch [:set-form-error db-path (:error e)])))))
+        (rf/dispatch [:set-form-error db-path (:message e)])))))
 
 (defn login-clicked [db-path]
   (let [{:keys [username password]} @(rf/subscribe [:get db-path])]
