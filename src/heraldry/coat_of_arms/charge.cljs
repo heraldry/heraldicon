@@ -43,7 +43,7 @@
 (defn remove-outlines [data]
   (walk/postwalk #(if (and (vector? %)
                            (->> % first (get #{:stroke :fill}))
-                           (->> % second (get #{"#000000" "#000" "black"})))
+                           (->> % second svg/normalize-colour (= "#000000")))
                     [(first %) "none"]
                     %)
                  data))
@@ -70,7 +70,7 @@
         mask             (replace-colours
                           data
                           (fn [colour]
-                            (let [colour-lower (s/lower-case colour)
+                            (let [colour-lower (svg/normalize-colour colour)
                                   kind         (get placeholder-colours colour-lower)
                                   replacement  (get-replacement kind provided-placeholder-colours)]
                               (if (or (= kind :keep)
@@ -82,7 +82,7 @@
         mask-inverted    (replace-colours
                           data
                           (fn [colour]
-                            (let [colour-lower (s/lower-case colour)
+                            (let [colour-lower (svg/normalize-colour colour)
                                   kind         (get placeholder-colours colour-lower)
                                   replacement  (get-replacement kind provided-placeholder-colours)]
                               (if (or (= kind :keep)
@@ -505,7 +505,7 @@
           coloured-charge                  (replace-colours
                                             adjusted-charge
                                             (fn [colour]
-                                              (let [colour-lower (s/lower-case colour)
+                                              (let [colour-lower (svg/normalize-colour colour)
                                                     kind         (get placeholder-colours colour-lower)
                                                     replacement  (get-replacement kind tincture)]
                                                 (if replacement
