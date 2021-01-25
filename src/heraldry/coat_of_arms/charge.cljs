@@ -40,10 +40,10 @@
                     %)
                  data))
 
-(defn remove-outlines [data]
+(defn remove-outlines [data placeholder-colours]
   (walk/postwalk #(if (and (vector? %)
                            (->> % first (get #{:stroke :fill}))
-                           (->> % second svg/normalize-colour (= "#000000")))
+                           (->> % second svg/normalize-colour (get placeholder-colours) (= :outline)))
                     [(first %) "none"]
                     %)
                  data))
@@ -480,16 +480,6 @@
                           (/ target-height positional-charge-height)))
           scale-y (* (if reversed? -1 1)
                      (* (Math/abs scale-x) stretch))
-          adjusted-charge (-> charge-data
-                              :data
-                              fix-string-style-values
-                              (cond->
-                               (not (or (-> hints :outline-mode (not= :remove))
-                                        (:outline? render-options))) remove-outlines
-                               (and (:squiggly? render-options)
-                                    (get #{:roundel
-                                           :fusil
-                                           :billet} type)) line/squiggly-paths))
           placeholder-colours (-> charge-data
                                   :colours
                                   (cond->>
@@ -497,6 +487,16 @@
                                     (into {}
                                           (map (fn [[k _]]
                                                  [k :keep])))))
+          adjusted-charge (-> charge-data
+                              :data
+                              fix-string-style-values
+                              (cond->
+                               (not (or (-> hints :outline-mode (not= :remove))
+                                        (:outline? render-options))) (remove-outlines placeholder-colours)
+                               (and (:squiggly? render-options)
+                                    (get #{:roundel
+                                           :fusil
+                                           :billet} type)) line/squiggly-paths))
           [mask-id mask
            mask-inverted-id mask-inverted] (make-mask adjusted-charge
                                                       placeholder-colours
