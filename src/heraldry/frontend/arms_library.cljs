@@ -83,7 +83,7 @@
         (println "generate-svg-arms response" response)
         (js/window.open (:svg-url response)))
       (catch :default e
-        (println "generate-svg-arms error:" (:error e))))))
+        (println "generate-svg-arms error:" e)))))
 
 (defn generate-png-clicked [db-path]
   (go
@@ -94,7 +94,7 @@
         (println "generate-png-arms response" response)
         (js/window.open (:png-url response)))
       (catch :default e
-        (println "generate-png-arms error:" (:error e))))))
+        (println "generate-png-arms error:" e)))))
 
 (defn save-arms-clicked []
   (go
@@ -107,7 +107,8 @@
         (rf/dispatch-sync [:set (conj form-db-path :id) arms-id])
         (reife/push-state :arms-by-id {:id (util/id-for-url arms-id)}))
       (catch :default e
-        (println "save-form error:" (:error e))))))
+        (println "save-form error:" e)
+        (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
 
 (defn arms-form []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])

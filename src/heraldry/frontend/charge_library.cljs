@@ -145,6 +145,7 @@
 (defn save-charge-clicked []
   (let [payload   @(rf/subscribe [:get form-db-path])
         user-data (user/data)]
+    (rf/dispatch-sync [:clear-form-errors form-db-path])
     (go
       (try
         (let [response  (<? (api-request/call :save-charge payload user-data))
@@ -153,7 +154,8 @@
           (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
           (reife/push-state :charge-by-id {:id (util/id-for-url charge-id)}))
         (catch :default e
-          (println "save-form error:" e))))))
+          (println "save-form error:" e)
+          (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))]))))))
 
 (defn charge-form []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
