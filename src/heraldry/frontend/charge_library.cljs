@@ -273,8 +273,8 @@
                      :style     {:display "none"}}]])]
         [:button.pure-button.pure-button-primary {:type "submit"}
          "Save"]]]
-      [component/form-render-options [:example-coa]]
-      [component/form-for-field [:example-coa :coat-of-arms :field]]]]))
+      [component/form-render-options [:example-coa :render-options]]
+      [component/form-for-coat-of-arms [:example-coa :coat-of-arms]]]]))
 
 (defn list-charges-for-user []
   (let [user-data   (user/data)
