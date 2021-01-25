@@ -6,6 +6,7 @@
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.render :as render]
+            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
@@ -33,6 +34,7 @@
        (map second)
        (filter #(and (string? %)
                      (not= % "none")))
+       (map svg/normalize-colour)
        (map s/lower-case)
        set))
 
