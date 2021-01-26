@@ -192,9 +192,11 @@
                                            :rectangle
                                            :flag})
 (s/def :heraldry.coat-of-arms/field #(s/valid? :heraldry/field %))
+(s/def :heraldry.coat-of-arms/spec-version number?)
 (s/def :heraldry/coat-of-arms (s/and (s/keys :req-un [:heraldry/component
                                                       :heraldry.coat-of-arms/escutcheon
-                                                      :heraldry.coat-of-arms/field])
+                                                      :heraldry.coat-of-arms/field
+                                                      :heraldry.coat-of-arms/spec-version])
                                      #(-> %
                                           (core/get-key :heraldry/component)
                                           (= :coat-of-arms))))
