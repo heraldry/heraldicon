@@ -170,6 +170,7 @@
      [:button.pure-button.pure-button-primary
       {:on-click #(do
                     (rf/dispatch-sync [:set form-db-path nil])
+                    (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (reife/push-state :create-arms))}
       "Create"]
      (cond
@@ -188,6 +189,7 @@
                     [:a {:href (reife/href :arms-by-id {:id arms-id})
                          :on-click #(do
                                       (rf/dispatch-sync [:set form-db-path nil])
+                                      (rf/dispatch-sync [:clear-form-errors form-db-path])
                                       (reife/href :arms-by-id {:id arms-id}))}
                      (:name arms) " "
                      [:i.far.fa-edit]])]))])]))
