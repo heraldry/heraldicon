@@ -12,14 +12,14 @@
    :type :pale
    :line {:type :straight}
    :field field
-   :hints {:outline? true}})
+   :hints {:outline-mode :keep}})
 
 (def charge
   {:component :charge
    :type :roundel
    :variant :default
    :field field
-   :hints {:outline? true}})
+   :hints {:outline-mode :keep}})
 
 (def coat-of-arms
   {:component :coat-of-arms
