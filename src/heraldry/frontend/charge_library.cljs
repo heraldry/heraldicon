@@ -102,8 +102,6 @@
                                    (map (fn [c]
                                           [c :keep]) (find-colours
                                                       edn-data)))]
-                 (rf/dispatch [:set (conj db-path :width) width])
-                 (rf/dispatch [:set (conj db-path :height) height])
                  (rf/dispatch [:set (conj db-path :data) {:edn-data {:data edn-data
                                                                      :width width
                                                                      :height height
