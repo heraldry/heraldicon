@@ -654,7 +654,7 @@
 (defn count-variants [node]
   (cond
     (-> node nil?) 0
-    (-> node :type (= :variant)) 1
+    (-> node :node-type (= :variant)) 1
     :else (->> [:groups :charges :attitudes :facings :variants]
                (map (fn [key]
                       (-> node
@@ -664,20 +664,20 @@
                                (reduce +)))))
                (reduce +))))
 
-(defn tree-for-charge-map [{:keys [type name groups charges attitudes facings variants] :as node}
+(defn tree-for-charge-map [{:keys [node-type name groups charges attitudes facings variants] :as node}
                            tree-path db-path
                            selected-charge remaining-path-to-charge & {:keys [still-on-path?]}]
   (let [flag-path (conj [:ui :charge-map] tree-path)
         db-open? @(rf/subscribe [:get flag-path])
-        open? (or (= type :_root)
+        open? (or (= node-type :_root)
                   (and (nil? db-open?)
                        still-on-path?)
                   db-open?)]
     (cond-> [:<>]
-      (not= type
+      (not= node-type
             :_root) (conj
                      [:span.node-name.clickable
-                      {:on-click (if (= type :variant)
+                      {:on-click (if (= node-type :variant)
                                    #(state/dispatch-on-event
                                      %
                                      [:update-charge
@@ -690,18 +690,18 @@
                                                             [:attitude :facing])))])
                                    #(state/dispatch-on-event % [:toggle flag-path]))
                        :style {:color (when still-on-path? "#1b6690")}}
-                      (if (= type :variant)
-                        [:i.far {:class (-> node-icons (get type) :normal)}]
+                      (if (= node-type :variant)
+                        [:i.far {:class (-> node-icons (get node-type) :normal)}]
                         (if open?
-                          [:i.far {:class (-> node-icons (get type) :open)}]
-                          [:i.far {:class (-> node-icons (get type) :closed)}]))
+                          [:i.far {:class (-> node-icons (get node-type) :open)}]
+                          [:i.far {:class (-> node-icons (get node-type) :closed)}]))
                       [(cond
-                         (and (= type :variant)
+                         (and (= node-type :variant)
                               still-on-path?) :b
-                         (= type :charge) :b
-                         (= type :attitude) :em
-                         (= type :facing) :em
-                         :else :<>) name (when (not= type :variant)
+                         (= node-type :charge) :b
+                         (= node-type :attitude) :em
+                         (= node-type :facing) :em
+                         :else :<>) name (when (not= node-type :variant)
                                            (str " (" (count-variants node) ")"))]])
       (and open?
            groups) (conj [:ul
@@ -725,7 +725,7 @@
                              (let [following-path? (and still-on-path?
                                                         (-> remaining-path-to-charge
                                                             count zero?)
-                                                        (= (:key charge)
+                                                        (= (:type charge)
                                                            (:type selected-charge)))]
                                ^{:key key}
                                [:li.charge
