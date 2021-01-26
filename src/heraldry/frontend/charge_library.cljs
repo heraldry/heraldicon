@@ -284,6 +284,7 @@
      [:button.pure-button.pure-button-primary
       {:on-click #(do
                     (rf/dispatch-sync [:set form-db-path nil])
+                    (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (reife/push-state :create-charge))}
       "Create"]
      (cond
@@ -302,6 +303,7 @@
                     [:a {:href (reife/href :charge-by-id {:id charge-id})
                          :on-click #(do
                                       (rf/dispatch-sync [:set form-db-path nil])
+                                      (rf/dispatch-sync [:clear-form-errors form-db-path])
                                       (reife/href :charge-by-id {:id charge-id}))}
                      (:name charge) " "
                      [:i.far.fa-edit]]])))])]))
