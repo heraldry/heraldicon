@@ -146,12 +146,14 @@
                      (s/explain spec form)
                      (s/valid? spec form))
 
-    :heraldry/coat-of-arms {:component :coat-of-arms
+    :heraldry/coat-of-arms {:spec-version 1
+                            :component :coat-of-arms
                             :escutcheon :heater
                             :field {:component :field
                                     :content {:tincture :azure}}}
 
-    :heraldry/coat-of-arms {:component :coat-of-arms
+    :heraldry/coat-of-arms {:spec-version 1
+                            :component :coat-of-arms
                             :escutcheon :polish
                             :field {:component :field
                                     :division {:type :per-pale
@@ -169,20 +171,29 @@
 (deftest invalid-coat-of-arms
   (are [spec form] (not (s/valid? spec form))
 
-    :heraldry/coat-of-arms {:component :field
+    :heraldry/coat-of-arms {:spec-version 1
+                            :component :field
                             :escutcheon :heater
                             :field {:component :field
                                     :content {:tincture :azure}}}
 
-    :heraldry/coat-of-arms {:component :coat-of-arms
+    :heraldry/coat-of-arms {:spec-version 1
+                            :component :coat-of-arms
                             :escutcheon :heater}
 
-    :heraldry/coat-of-arms {:component :coat-of-arms
+    :heraldry/coat-of-arms {:spec-version 1
+                            :component :coat-of-arms
+                            :field {:component :field
+                                    :content {:tincture :azure}}}
+
+    :heraldry/coat-of-arms {:spec-version 1
+                            :component :coat-of-arms
+                            :escutcheon :does-not-exist
                             :field {:component :field
                                     :content {:tincture :azure}}}
 
     :heraldry/coat-of-arms {:component :coat-of-arms
-                            :escutcheon :does-not-exist
+                            :escutcheon :heater
                             :field {:component :field
                                     :content {:tincture :azure}}}))
 
