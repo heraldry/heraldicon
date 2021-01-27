@@ -5,6 +5,7 @@
             [heraldry.coat-of-arms.blazon :as blazon]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.render :as render]
+            [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
@@ -45,6 +46,60 @@
 
 ;; views
 
+(defn charge-credits []
+  (let [coat-of-arms-db-path (conj form-db-path :coat-of-arms)
+        coat-of-arms         @(rf/subscribe [:get coat-of-arms-db-path])
+        used-charges         (->> coat-of-arms
+                                  (tree-seq #(or (map? %)
+                                                 (vector? %)
+                                                 (seq? %)) seq)
+                                  (filter #(and (map? %)
+                                                (-> % :component (= :charge))
+                                                (-> % :variant :version)
+                                                (-> % :variant :id)))
+                                  (map :variant)
+                                  set)
+        charges-data         (->> used-charges
+                                  (map charge-map/fetch-charge-data))]
+    (when (-> charges-data first :id)
+      [:div.credits
+       [:span.credits-heading "Charge attribution"]
+       [:ul
+        (for [charge charges-data]
+          (when-let [charge-id (:id charge)]
+            (let [license        (-> charge :attribution :license)
+                  source-license (-> charge :attribution :source-license)]
+              ^{:key charge-id}
+              [:li.credit
+               [:a {:href   (reife/href :charge-by-id {:id (util/id-for-url charge-id)})
+                    :target "_blank"} (str " " (-> charge :type name) ": " (:name charge))]
+               " by "
+               [:a {:href "#"} (:username charge)]
+               " "
+               (cond
+                 (= license :none)                       "is private"
+                 (= license :cc-attribution)             [:<> "is licensed under " [:a {:href   "https://creativecommons.org/licenses/by/4.0"
+                                                                                        :target "_blank"} "CC BY"]]
+                 (= license :cc-attribution-share-alike) [:<> "is licensed under " [:a {:href   "https://creativecommons.org/licenses/by-sa/4.0"
+                                                                                        :target "_blank"} "CC BY-SA"]]
+                 (= license :public-domain)              [:<> "is in the public domain"])
+               (when (-> charge :nature (not= :derivative))
+                 [:div.sub-credit
+                  "source: "
+                  [:a {:href   (-> charge :attribution :source-link)
+                       :target "_blank"} " " (-> charge :attribution :source-name)]
+                  " by "
+                  [:a {:href   (-> charge :attribution :source-creator-link)
+                       :target "_blank"} (-> charge :attribution :source-creator-name)]
+                  " "
+                  (cond
+                    (= source-license :none)                       "is private"
+                    (= source-license :cc-attribution)             [:<> "is licensed under " [:a {:href   "https://creativecommons.org/licenses/by/4.0"
+                                                                                                  :target "_blank"} "CC BY"]]
+                    (= source-license :cc-attribution-share-alike) [:<> "is licensed under " [:a {:href   "https://creativecommons.org/licenses/by-sa/4.0"
+                                                                                                  :target "_blank"} "CC BY-SA"]]
+                    (= source-license :public-domain)              [:<> "is in the public domain"])])])))]])))
+
 (defn render-coat-of-arms []
   (let [coat-of-arms-db-path (conj form-db-path :coat-of-arms)
         coat-of-arms         @(rf/subscribe [:get coat-of-arms-db-path])
@@ -71,7 +126,8 @@
          [:div.blazonry
           [:span.disclaimer "Blazon (very rudimentary, very beta)"]
           [:div.blazon
-           (blazon/encode-field (:field coat-of-arms) :root? true)]]])
+           (blazon/encode-field (:field coat-of-arms) :root? true)]]
+         [charge-credits]])
       [:<>])))
 
 (defn generate-svg-clicked [db-path]
