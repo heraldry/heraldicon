@@ -161,3 +161,18 @@ label div {
 .tree span.node-name i {
   width: 1.5em;
 }
+
+.credits {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 1em;
+}
+
+.credits-heading {
+  font-size: 1.2em;
+}
+
+.sub-credit {
+  margin-left: 1em;
+}
