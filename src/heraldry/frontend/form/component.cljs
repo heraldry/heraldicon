@@ -701,7 +701,8 @@
                          (= node-type :charge) :b
                          (= node-type :attitude) :em
                          (= node-type :facing) :em
-                         :else :<>) name (when (not= node-type :variant)
+                         :else :<>) name (if (= node-type :variant)
+                                           (str " by " (-> node :data :username))
                                            (str " (" (count-variants node) ")"))]])
       (and open?
            groups) (conj [:ul
