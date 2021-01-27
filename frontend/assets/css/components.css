@@ -167,7 +167,7 @@ button:hover {
 .submenu {
   position: absolute;
   top: -1em;
-  min-width: 20em;
+  min-width: 21em;
   min-height: 3em;
   z-index: 2;
 }
