@@ -7,6 +7,7 @@
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.line :as line]
+            [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
@@ -440,12 +441,14 @@
                                    load-charge-data
                                    fn-select-component]
                             :as context}]
-  (if-let [charge-data (or data
-                           (:data (load-charge-data variant)))]
+  (if-let [full-charge-data (if data
+                              {:data data}
+                              (load-charge-data variant))]
     (let [{:keys [position geometry]} (options/sanitize charge (options charge))
           {:keys [size stretch
                   mirrored? reversed?
                   rotation]} geometry
+          charge-data (:data full-charge-data)
           ;; since size now is filled with a default, check whether it was set at all,
           ;; if not, then use nil
           ;; TODO: this probably needs a better mechanism and form representation
@@ -541,7 +544,12 @@
                                                                (counterchangable? field parent)) environment)})
           field (if (counterchangable? field parent)
                   (counterchange-field field parent)
-                  field)]
+                  field)
+          charge-name (:name full-charge-data)
+          username (:username full-charge-data)
+          ;; TODO: correct URL
+          charge-url "TBD"
+          attribution (:attribution full-charge-data)]
       [:<>
        [:defs
         [:mask {:id mask-id}
@@ -564,6 +572,7 @@
                                     "translate(" (- (:x center-point)) "," (- (:y center-point)) ")")]
          [:g {:transform transform
               :clip-path (str "url(#" clip-path-id ")")}
+          [metadata/attribution charge-name username charge-url attribution]
           [:g {:mask (str "url(#" mask-inverted-id ")")}
            [:g {:transform reverse-transform}
             [render-field field charge-environment (-> context
