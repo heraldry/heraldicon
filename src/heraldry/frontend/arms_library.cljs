@@ -4,6 +4,7 @@
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.blazon :as blazon]
             [heraldry.coat-of-arms.default :as default]
+            [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.context :as context]
@@ -78,10 +79,12 @@
                " "
                (cond
                  (= license :none) "is private"
-                 (= license :cc-attribution) [:<> "is licensed under " [:a {:href "https://creativecommons.org/licenses/by/4.0"
-                                                                            :target "_blank"} "CC BY"]]
-                 (= license :cc-attribution-share-alike) [:<> "is licensed under " [:a {:href "https://creativecommons.org/licenses/by-sa/4.0"
-                                                                                        :target "_blank"} "CC BY-SA"]]
+                 (= license :cc-attribution) [:<> "is licensed under "
+                                              [:a {:href "https://creativecommons.org/licenses/by/4.0"
+                                                   :target "_blank"} "CC BY"]]
+                 (= license :cc-attribution-share-alike) [:<> "is licensed under "
+                                                          [:a {:href "https://creativecommons.org/licenses/by-sa/4.0"
+                                                               :target "_blank"} "CC BY-SA"]]
                  (= license :public-domain) [:<> "is in the public domain"])
                (when (-> charge :nature (not= :derivative))
                  [:div.sub-credit
@@ -94,16 +97,27 @@
                   " "
                   (cond
                     (= source-license :none) "is private"
-                    (= source-license :cc-attribution) [:<> "is licensed under " [:a {:href "https://creativecommons.org/licenses/by/4.0"
-                                                                                      :target "_blank"} "CC BY"]]
-                    (= source-license :cc-attribution-share-alike) [:<> "is licensed under " [:a {:href "https://creativecommons.org/licenses/by-sa/4.0"
-                                                                                                  :target "_blank"} "CC BY-SA"]]
-                    (= source-license :public-domain) [:<> "is in the public domain"])])])))]])))
+                    (= source-license :cc-attribution) [:<> "is licensed under "
+                                                        [:a {:href "https://creativecommons.org/licenses/by/4.0"
+                                                             :target "_blank"} "CC BY"]]
+                    (= source-license :cc-attribution-share-alike) [:<> "is licensed under "
+                                                                    [:a {:href "https://creativecommons.org/licenses/by-sa/4.0"
+                                                                         :target "_blank"} "CC BY-SA"]]
+                    (= source-license :public-domain) [:<> "is in the "
+                                                       [:a {:href "https://creativecommons.org/publicdomain/mark/1.0/"
+                                                            :target "_blank"} "public domain"]])])])))]])))
 
 (defn render-coat-of-arms []
   (let [coat-of-arms-db-path (conj form-db-path :coat-of-arms)
         coat-of-arms @(rf/subscribe [:get coat-of-arms-db-path])
-        render-options @(rf/subscribe [:get (conj form-db-path :render-options)])]
+        render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
+        arms-data @(rf/subscribe [:get form-db-path])
+        attribution (:attribution arms-data)
+        name (:name arms-data)
+        ;; TODO: build real url
+        arms-url "TBD"
+        username (-> (user/data)
+                     :username)]
     (if coat-of-arms
       (let [{:keys [result
                     environment]} (render/coat-of-arms
@@ -112,7 +126,8 @@
                                    (merge
                                     context/default
                                     {:render-options render-options
-                                     :db-path coat-of-arms-db-path}))
+                                     :db-path coat-of-arms-db-path
+                                     :metadata [metadata/attribution name username arms-url attribution]}))
             {:keys [width height]} environment]
         [:div {:style {:margin-left "10px"
                        :margin-right "10px"}}
