@@ -113,8 +113,11 @@
        (println "error:" e)))))
 
 (defn preview []
-  (let [{:keys [data type]} @(rf/subscribe [:get form-db-path])
+  (let [{:keys [data type]
+         :as form-data} @(rf/subscribe [:get form-db-path])
         {:keys [edn-data]} data
+        prepared-charge-data (-> form-data
+                                 (assoc :data edn-data))
         db-path [:example-coa :coat-of-arms]
         render-options @(rf/subscribe [:get [:example-coa :render-options]])
         coat-of-arms @(rf/subscribe [:get db-path])
@@ -122,7 +125,7 @@
                 environment]} (render/coat-of-arms
                                (-> coat-of-arms
                                    (assoc-in [:field :components 0 :type] type)
-                                   (assoc-in [:field :components 0 :data] edn-data))
+                                   (assoc-in [:field :components 0 :data] prepared-charge-data))
                                100
                                (merge
                                 context/default
