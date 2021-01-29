@@ -142,7 +142,7 @@
             arms-id (-> response :arms-id)]
         (println "save arms response" response)
         (rf/dispatch-sync [:set (conj form-db-path :id) arms-id])
-        (reife/push-state :arms-by-id {:id (util/id-for-url arms-id)}))
+        (reife/push-state :edit-arms-by-id {:id (util/id-for-url arms-id)}))
       (catch :default e
         (println "save-form error:" e)
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
@@ -198,6 +198,34 @@
       [component/form-render-options (conj form-db-path :render-options)]
       [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]]))
 
+(defn arms-display []
+  (let [user-data (user/data)
+        arms-data @(rf/subscribe [:get form-db-path])
+        arms-id (-> arms-data
+                    :id
+                    util/id-for-url)]
+    [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
+                                 (rf/dispatch [:ui-submenu-close-all])
+                                 (.stopPropagation %))}
+     [:div.pure-u-1-2 {:style {:position "fixed"}}
+      [render-coat-of-arms]]
+     [:div.pure-u-1-2 {:style {:margin-left "50%"
+                               :width "45%"}}
+      [:div.credits
+       [credits/for-arms arms-data]]
+      (when (= (:username arms-data)
+               (:username user-data))
+        [:div.pure-control-group {:style {:text-align "right"
+                                          :margin-top "10px"
+                                          :margin-bottom "10px"}}
+         [:button.pure-button.pure-button-primary {:type "button"
+                                                   :on-click #(do
+                                                                (rf/dispatch-sync [:clear-form-errors form-db-path])
+                                                                (reife/push-state :edit-arms-by-id {:id arms-id}))}
+          "Edit"]])
+      [component/form-render-options (conj form-db-path :render-options)]
+      [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]]))
+
 (defn list-arms-for-user []
   (let [user-data (user/data)
         arms-list @(rf/subscribe [:get list-db-path])]
@@ -222,13 +250,12 @@
                   (let [arms-id (-> arms
                                     :id
                                     util/id-for-url)]
-                    [:a {:href (reife/href :arms-by-id {:id arms-id})
+                    [:a {:href (reife/href :view-arms-by-id {:id arms-id})
                          :on-click #(do
                                       (rf/dispatch-sync [:set form-db-path nil])
                                       (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                      (reife/href :arms-by-id {:id arms-id}))}
-                     (:name arms) " "
-                     [:i.far.fa-edit]])]))])]))
+                                      (reife/href :view-arms-by-id {:id arms-id}))}
+                     (:name arms)])]))])]))
 
 (defn create-arms []
   (let [form-data @(rf/subscribe [:get form-db-path])]
@@ -241,7 +268,7 @@
                                                         :ui {:selectable-fields? true}}}])))
   [arms-form])
 
-(defn arms-by-id [arms-id]
+(defn edit-arms [arms-id]
   (let [arms-form-data @(rf/subscribe [:get form-db-path])]
     (cond
       (and arms-id
@@ -250,6 +277,17 @@
                                     [:<>])
       (= arms-form-data :loading) [:<>]
       arms-form-data [arms-form]
+      :else [:<>])))
+
+(defn view-arms [arms-id]
+  (let [arms-form-data @(rf/subscribe [:get form-db-path])]
+    (cond
+      (and arms-id
+           (nil? arms-form-data)) (do
+                                    (fetch-arms-and-fill-form arms-id)
+                                    [:<>])
+      (= arms-form-data :loading) [:<>]
+      arms-form-data [arms-display]
       :else [:<>])))
 
 (defn not-logged-in []
@@ -262,9 +300,16 @@
       [list-arms-for-user]
       [not-logged-in])))
 
+(defn edit-arms-by-id [{:keys [parameters]}]
+  (let [user-data (user/data)
+        arms-id (str "arms:" (-> parameters :path :id))]
+    (if (:logged-in? user-data)
+      [edit-arms arms-id]
+      [not-logged-in])))
+
 (defn view-arms-by-id [{:keys [parameters]}]
   (let [user-data (user/data)
         arms-id (str "arms:" (-> parameters :path :id))]
     (if (:logged-in? user-data)
-      [arms-by-id arms-id]
+      [view-arms arms-id]
       [not-logged-in])))

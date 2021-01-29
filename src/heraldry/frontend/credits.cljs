@@ -49,3 +49,12 @@
           ;; TODO: external URL
           url (reife/href :view-charge-by-id {:id (util/id-for-url charge-id)})]
       [general title url username attribution])))
+
+(defn for-arms [arms]
+  (when-let [arms-id (:id arms)]
+    (let [attribution (-> arms :attribution)
+          username (:username arms)
+          title (:name arms)
+          ;; TODO: external URL
+          url (reife/href :view-arms-by-id {:id (util/id-for-url arms-id)})]
+      [general title url username attribution])))
