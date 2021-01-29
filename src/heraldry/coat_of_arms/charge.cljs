@@ -545,8 +545,7 @@
                                              field)
           charge-name                      (:name full-charge-data)
           username                         (:username full-charge-data)
-          ;; TODO: correct URL
-          charge-url                       "TBD"
+          charge-url                       (util/full-url-for-charge full-charge-data)
           attribution                      (:attribution full-charge-data)]
       [:<>
        [:defs

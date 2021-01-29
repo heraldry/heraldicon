@@ -1,5 +1,5 @@
 (ns heraldry.frontend.credits
-  (:require [heraldry.frontend.util :as util]))
+  (:require [heraldry.util :as util]))
 
 (defn general [title url username data]
   (let [license        (-> data :license)

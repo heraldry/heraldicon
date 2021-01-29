@@ -20,6 +20,7 @@
 
 (defn get [setting]
   (case setting
-    :region region
-    :stage  stage
+    :region     region
+    :stage      stage
+    :armory-url (heraldry.config/get-static :armory-url)
     nil))
