@@ -56,22 +56,23 @@
 
 (defn full-url-for-arms [arms-data]
   (let [version (:version arms-data)
-        arms-id (combine ":"
-                         [(-> arms-data
-                              :id
-                              id-for-url)
-                          (if (zero? version)
-                            (:latest-version arms-data)
-                            version)])]
-    (str (config/get :armory-url) (reife/href :view-arms-by-id {:id arms-id}))))
+        version (if (zero? version)
+                  (:latest-version arms-data)
+                  version)
+        arms-id (-> arms-data
+                    :id
+                    id-for-url)]
+    (str (config/get :armory-url) (reife/href :view-arms-by-id-and-version {:id arms-id
+                                                                            :version version}))))
 
 (defn full-url-for-charge [charge-data]
   (let [version (:version charge-data)
-        charge-id (combine ":"
-                           [(-> charge-data
-                                :id
-                                id-for-url)
-                            (if (zero? version)
-                              (:latest-version charge-data)
-                              version)])]
-    (str (config/get :armory-url) (reife/href :view-charge-by-id {:id charge-id}))))
+        version (if (zero? version)
+                  (:latest-version charge-data)
+                  version)
+        charge-id (-> charge-data
+                      :id
+                      id-for-url)]
+
+    (str (config/get :armory-url) (reife/href :view-charge-by-id-and-version {:id charge-id
+                                                                              :version version}))))
