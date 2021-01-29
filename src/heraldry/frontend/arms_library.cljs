@@ -1,5 +1,6 @@
 (ns heraldry.frontend.arms-library
   (:require [cljs.core.async :refer [go]]
+            [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.blazon :as blazon]
@@ -37,12 +38,13 @@
       (catch :default e
         (println "fetch-arms-list-by-user error:" e)))))
 
-(defn fetch-arms-and-fill-form [arms-id]
+(defn fetch-arms-and-fill-form [arms-id version]
   (go
     (try
       (rf/dispatch-sync [:set form-db-path :loading])
       (let [user-data (user/data)
-            response  (<? (api-request/call :fetch-arms {:id arms-id} user-data))
+            response  (<? (api-request/call :fetch-arms {:id      arms-id
+                                                         :version version} user-data))
             edn-data  (<? (http/fetch (:edn-data-url response)))]
         (rf/dispatch [:set saved-data-db-path (-> response
                                                   (merge edn-data))])
@@ -292,23 +294,23 @@
                                                         :ui        {:selectable-fields? true}}}])))
   [arms-form])
 
-(defn edit-arms [arms-id]
+(defn edit-arms [arms-id version]
   (let [arms-form-data @(rf/subscribe [:get form-db-path])]
     (cond
       (and arms-id
            (nil? arms-form-data)) (do
-                                    (fetch-arms-and-fill-form arms-id)
+                                    (fetch-arms-and-fill-form arms-id version)
                                     [:<>])
       (= arms-form-data :loading) [:<>]
       arms-form-data              [arms-form]
       :else                       [:<>])))
 
-(defn view-arms [arms-id]
+(defn view-arms [arms-id version]
   (let [arms-form-data @(rf/subscribe [:get form-db-path])]
     (cond
       (and arms-id
            (nil? arms-form-data)) (do
-                                    (fetch-arms-and-fill-form arms-id)
+                                    (fetch-arms-and-fill-form arms-id version)
                                     [:<>])
       (= arms-form-data :loading) [:<>]
       arms-form-data              [arms-display]
@@ -325,15 +327,27 @@
       [not-logged-in])))
 
 (defn edit-arms-by-id [{:keys [parameters]}]
-  (let [user-data (user/data)
-        arms-id   (str "arms:" (-> parameters :path :id))]
+  (let [user-data    (user/data)
+        [id version] (-> parameters
+                         :path
+                         :id
+                         (s/split #":" 2))
+        arms-id      (str "arms:" id)]
     (if (:logged-in? user-data)
-      [edit-arms arms-id]
+      [edit-arms arms-id version]
       [not-logged-in])))
 
 (defn view-arms-by-id [{:keys [parameters]}]
-  (let [user-data (user/data)
-        arms-id   (str "arms:" (-> parameters :path :id))]
+  (let [user-data    (user/data)
+        [id version] (-> parameters
+                         :path
+                         :id
+                         (s/split #":" 2))
+        ;; TODO: handle the error of version not being an integer
+        version      (if version
+                       (js/parseInt version)
+                       nil)
+        arms-id      (str "arms:" id)]
     (if (:logged-in? user-data)
-      [view-arms arms-id]
+      [view-arms arms-id version]
       [not-logged-in])))
