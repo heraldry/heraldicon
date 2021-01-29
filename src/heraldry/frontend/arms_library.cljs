@@ -1,6 +1,5 @@
 (ns heraldry.frontend.arms-library
   (:require [cljs.core.async :refer [go]]
-            [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.blazon :as blazon]
@@ -15,6 +14,7 @@
             [heraldry.frontend.http :as http]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
+            [heraldry.util :refer [full-url-for-arms id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]))
 
@@ -86,8 +86,7 @@
         arms-data @(rf/subscribe [:get form-db-path])
         attribution (:attribution arms-data)
         name (:name arms-data)
-        ;; TODO: build real url
-        arms-url "TBD"
+        arms-url (full-url-for-arms arms-data)
         username (-> (user/data)
                      :username)]
     (if coat-of-arms
@@ -150,7 +149,7 @@
         (println "save arms response" response)
         (rf/dispatch-sync [:set (conj form-db-path :id) arms-id])
         (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
-        (reife/push-state :edit-arms-by-id {:id (util/id-for-url arms-id)}))
+        (reife/push-state :edit-arms-by-id {:id (id-for-url arms-id)}))
       (catch :default e
         (println "save-form error:" e)
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
@@ -220,7 +219,7 @@
         arms-data @(rf/subscribe [:get form-db-path])
         arms-id (-> arms-data
                     :id
-                    util/id-for-url)]
+                    id-for-url)]
     [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
@@ -275,7 +274,7 @@
                  [:li.arms
                   (let [arms-id (-> arms
                                     :id
-                                    util/id-for-url)]
+                                    id-for-url)]
                     [:a {:href (reife/href :view-arms-by-id {:id arms-id})
                          :on-click #(do
                                       (rf/dispatch-sync [:set form-db-path nil])
