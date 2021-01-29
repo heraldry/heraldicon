@@ -213,16 +213,25 @@
                                :width "45%"}}
       [:div.credits
        [credits/for-arms arms-data]]
-      (when (= (:username arms-data)
-               (:username user-data))
-        [:div.pure-control-group {:style {:text-align "right"
-                                          :margin-top "10px"
-                                          :margin-bottom "10px"}}
+      [:div.pure-control-group {:style {:text-align "right"
+                                        :margin-top "10px"
+                                        :margin-bottom "10px"}}
+       [:button.pure-button {:type "button"
+                             :on-click #(generate-svg-clicked form-db-path)
+                             :style {:float "left"}}
+        "SVG Link"]
+       [:button.pure-button {:type "button"
+                             :on-click #(generate-png-clicked form-db-path)
+                             :style {:float "left"
+                                     :margin-left "5px"}}
+        "PNG Link"]
+       (when (= (:username arms-data)
+                (:username user-data))
          [:button.pure-button.pure-button-primary {:type "button"
                                                    :on-click #(do
                                                                 (rf/dispatch-sync [:clear-form-errors form-db-path])
                                                                 (reife/push-state :edit-arms-by-id {:id arms-id}))}
-          "Edit"]])
+          "Edit"])]
       [component/form-render-options (conj form-db-path :render-options)]
       [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]]))
 
