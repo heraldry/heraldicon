@@ -26,7 +26,13 @@
      :conflicting true}]
 
    ["/arms/:id"
-    {:name :arms-by-id
+    {:name :view-arms-by-id
+     :parameters {:path {:id string?}}
+     :view arms-library/view-arms-by-id
+     :conflicting true}]
+
+   ["/arms/:id/"
+    {:name :view-arms-by-id-with-slash
      :parameters {:path {:id string?}}
      :view arms-library/view-arms-by-id
      :conflicting true}]
