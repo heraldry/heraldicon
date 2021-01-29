@@ -1,6 +1,5 @@
 (ns heraldry.frontend.credits
-  (:require [heraldry.frontend.util :as util]
-            [reitit.frontend.easy :as reife]))
+  (:require [heraldry.frontend.util :as util]))
 
 (defn general [title url username data]
   (let [license (-> data :license)
@@ -42,19 +41,17 @@
                                                   :target "_blank"} "public domain"]])])]))
 
 (defn for-charge [charge]
-  (when-let [charge-id (:id charge)]
+  (when (:id charge)
     (let [attribution (-> charge :attribution)
           username (:username charge)
           title (str " " (-> charge :type name) ": " (:name charge))
-          ;; TODO: external URL
-          url (reife/href :view-charge-by-id {:id (util/id-for-url charge-id)})]
+          url (util/full-url-for-charge charge)]
       [general title url username attribution])))
 
 (defn for-arms [arms]
-  (when-let [arms-id (:id arms)]
+  (when (:id arms)
     (let [attribution (-> arms :attribution)
           username (:username arms)
           title (:name arms)
-          ;; TODO: external URL
-          url (reife/href :view-arms-by-id {:id (util/id-for-url arms-id)})]
+          url (util/full-url-for-arms arms)]
       [general title url username attribution])))
