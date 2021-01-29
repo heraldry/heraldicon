@@ -441,9 +441,7 @@
                                    load-charge-data
                                    fn-select-component]
                             :as context}]
-  (if-let [full-charge-data (if data
-                              {:data data}
-                              (load-charge-data variant))]
+  (if-let [full-charge-data (or data (load-charge-data variant))]
     (let [{:keys [position geometry]} (options/sanitize charge (options charge))
           {:keys [size stretch
                   mirrored? reversed?
