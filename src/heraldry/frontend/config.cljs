@@ -6,4 +6,5 @@
 (defn get [setting]
   (case setting
     :armory-api-endpoint (heraldry.config/get-static :armory-api-endpoint)
+    :armory-url (heraldry.config/get-static :armory-url)
     (config/get setting)))
