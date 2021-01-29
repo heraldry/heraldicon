@@ -50,12 +50,13 @@
       (catch :default e
         (println "fetch-charges-by-user error:" e)))))
 
-(defn fetch-charge-and-fill-form [charge-id]
+(defn fetch-charge-and-fill-form [charge-id version]
   (go
     (try
       (rf/dispatch-sync [:set form-db-path :loading])
       (let [user-data (user/data)
-            response  (<? (api-request/call :fetch-charge {:id charge-id} user-data))
+            response  (<? (api-request/call :fetch-charge {:id      charge-id
+                                                           :version version} user-data))
             edn-data  (<? (http/fetch (:edn-data-url response)))
             svg-data  (<? (http/fetch (:svg-data-url response)))]
         (rf/dispatch-sync [:set form-db-path (-> response
@@ -297,7 +298,6 @@
         [:div.pure-control-group {:style {:text-align    "right"
                                           :margin-top    "10px"
                                           :margin-bottom "10px"}}
-
          [:button.pure-button.pure-button-primary {:type     "button"
                                                    :on-click #(do
                                                                 (rf/dispatch-sync [:clear-form-errors form-db-path])
@@ -340,23 +340,23 @@
 (defn create-charge []
   [charge-form])
 
-(defn edit-charge [charge-id]
+(defn edit-charge [charge-id version]
   (let [charge-form-data @(rf/subscribe [:get form-db-path])]
     (cond
       (and charge-id
            (nil? charge-form-data)) (do
-                                      (fetch-charge-and-fill-form charge-id)
+                                      (fetch-charge-and-fill-form charge-id version)
                                       [:<>])
       (= charge-form-data :loading) [:<>]
       charge-form-data              [charge-form]
       :else                         [:<>])))
 
-(defn view-charge [charge-id]
+(defn view-charge [charge-id version]
   (let [charge-form-data @(rf/subscribe [:get form-db-path])]
     (cond
       (and charge-id
            (nil? charge-form-data)) (do
-                                      (fetch-charge-and-fill-form charge-id)
+                                      (fetch-charge-and-fill-form charge-id version)
                                       [:<>])
       (= charge-form-data :loading) [:<>]
       charge-form-data              [charge-display]
@@ -373,15 +373,31 @@
       [not-logged-in])))
 
 (defn edit-charge-by-id [{:keys [parameters]}]
-  (let [user-data (user/data)
-        charge-id (str "charge:" (-> parameters :path :id))]
+  (let [user-data    (user/data)
+        [id version] (-> parameters
+                         :path
+                         :id
+                         (s/split #":" 2))
+        ;; TODO: handle the error of version not being an integer
+        version      (if version
+                       (js/parseInt version)
+                       nil)
+        charge-id    (str "charge:" id)]
     (if (:logged-in? user-data)
-      [edit-charge charge-id]
+      [edit-charge charge-id version]
       [not-logged-in])))
 
 (defn view-charge-by-id [{:keys [parameters]}]
-  (let [user-data (user/data)
-        charge-id (str "charge:" (-> parameters :path :id))]
+  (let [user-data    (user/data)
+        [id version] (-> parameters
+                         :path
+                         :id
+                         (s/split #":" 2))
+        ;; TODO: handle the error of version not being an integer
+        version      (if version
+                       (js/parseInt version)
+                       nil)
+        charge-id    (str "charge:" id)]
     (if (:logged-in? user-data)
-      [view-charge charge-id]
+      [view-charge charge-id version]
       [not-logged-in])))
