@@ -41,9 +41,15 @@
      :conflicting true}]
 
    ["/charges/:id"
-    {:name :charge-by-id
+    {:name :view-charge-by-id
      :parameters {:path {:id string?}}
      :view charge-library/view-charge-by-id
+     :conflicting true}]
+
+   ["/charges/:id/edit"
+    {:name :edit-charge-by-id
+     :parameters {:path {:id string?}}
+     :view charge-library/edit-charge-by-id
      :conflicting true}]
 
    ["/account/"

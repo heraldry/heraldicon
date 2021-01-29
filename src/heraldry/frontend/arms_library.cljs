@@ -8,6 +8,7 @@
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.context :as context]
+            [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.http :as http]
@@ -68,44 +69,8 @@
        [:ul
         (for [charge charges-data]
           (when-let [charge-id (:id charge)]
-            (let [license (-> charge :attribution :license)
-                  source-license (-> charge :attribution :source-license)]
-              ^{:key charge-id}
-              [:li.credit
-               [:a {:href (reife/href :charge-by-id {:id (util/id-for-url charge-id)})
-                    :target "_blank"} (str " " (-> charge :type name) ": " (:name charge))]
-               " by "
-               [:a {:href "#"} (:username charge)]
-               " "
-               (cond
-                 (= license :none) "is private"
-                 (= license :cc-attribution) [:<> "is licensed under "
-                                              [:a {:href "https://creativecommons.org/licenses/by/4.0"
-                                                   :target "_blank"} "CC BY"]]
-                 (= license :cc-attribution-share-alike) [:<> "is licensed under "
-                                                          [:a {:href "https://creativecommons.org/licenses/by-sa/4.0"
-                                                               :target "_blank"} "CC BY-SA"]]
-                 (= license :public-domain) [:<> "is in the public domain"])
-               (when (-> charge :nature (not= :derivative))
-                 [:div.sub-credit
-                  "source: "
-                  [:a {:href (-> charge :attribution :source-link)
-                       :target "_blank"} " " (-> charge :attribution :source-name)]
-                  " by "
-                  [:a {:href (-> charge :attribution :source-creator-link)
-                       :target "_blank"} (-> charge :attribution :source-creator-name)]
-                  " "
-                  (cond
-                    (= source-license :none) "is private"
-                    (= source-license :cc-attribution) [:<> "is licensed under "
-                                                        [:a {:href "https://creativecommons.org/licenses/by/4.0"
-                                                             :target "_blank"} "CC BY"]]
-                    (= source-license :cc-attribution-share-alike) [:<> "is licensed under "
-                                                                    [:a {:href "https://creativecommons.org/licenses/by-sa/4.0"
-                                                                         :target "_blank"} "CC BY-SA"]]
-                    (= source-license :public-domain) [:<> "is in the "
-                                                       [:a {:href "https://creativecommons.org/publicdomain/mark/1.0/"
-                                                            :target "_blank"} "public domain"]])])])))]])))
+            ^{:key charge-id}
+            [:li [credits/for-charge charge]]))]])))
 
 (defn render-coat-of-arms []
   (let [coat-of-arms-db-path (conj form-db-path :coat-of-arms)
