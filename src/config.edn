@@ -2,4 +2,5 @@
                                 :dev   "..."}
  :stage               #profile {:local "local"
                                 :dev   "dev"
-                                :prod  "prod"}}
+                                :prod  "prod"}
+ :armory-url          #profile {:local "http://localhost:8181"}}
