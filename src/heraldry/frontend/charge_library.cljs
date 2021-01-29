@@ -14,6 +14,7 @@
             [heraldry.frontend.http :as http]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
+            [heraldry.util :refer [id-for-url]]
             [hickory.core :as hickory]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]))
@@ -64,9 +65,6 @@
                                                  (assoc-in [:data :svg-data] svg-data))]))
       (catch :default e
         (println ":fetch-charge-by-id error:" e)))))
-
-(defn charge-path [charge-id]
-  (str "/charges/#" charge-id))
 
 (defn optimize-svg [data]
   (go-catch
@@ -157,7 +155,7 @@
               charge-id (-> response :charge-id)]
           (println "save charge response" response)
           (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
-          (reife/push-state :edit-charge-by-id {:id (util/id-for-url charge-id)}))
+          (reife/push-state :edit-charge-by-id {:id (id-for-url charge-id)}))
         (catch :default e
           (println "save-form error:" e)
           (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))]))))))
@@ -286,7 +284,7 @@
         charge-data @(rf/subscribe [:get form-db-path])
         charge-id (-> charge-data
                       :id
-                      util/id-for-url)]
+                      id-for-url)]
     [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
@@ -330,7 +328,7 @@
                (for [charge charge-list]
                  (let [charge-id (-> charge
                                      :id
-                                     util/id-for-url)]
+                                     id-for-url)]
                    ^{:key charge-id}
                    [:li.charge
                     [:a {:href (reife/href :view-charge-by-id {:id charge-id})
