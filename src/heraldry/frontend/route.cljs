@@ -43,6 +43,13 @@
      :view        arms-library/edit-arms-by-id
      :conflicting true}]
 
+   ["/arms/:id/:version"
+    {:name        :view-arms-by-id-and-version
+     :parameters  {:path {:id      string?
+                          :version number?}}
+     :view        arms-library/view-arms-by-id
+     :conflicting true}]
+
    ["/charges/"
     {:name :charges
      :view charge-library/view-list-charges}]
@@ -68,6 +75,13 @@
     {:name        :edit-charge-by-id
      :parameters  {:path {:id string?}}
      :view        charge-library/edit-charge-by-id
+     :conflicting true}]
+
+   ["/charges/:id/:version"
+    {:name        :view-charge-by-id-and-version
+     :parameters  {:path {:id      string?
+                          :version number?}}
+     :view        charge-library/view-charge-by-id
      :conflicting true}]
 
    ["/account/"

@@ -373,31 +373,19 @@
       [not-logged-in])))
 
 (defn edit-charge-by-id [{:keys [parameters]}]
-  (let [user-data    (user/data)
-        [id version] (-> parameters
-                         :path
-                         :id
-                         (s/split #":" 2))
-        ;; TODO: handle the error of version not being an integer
-        version      (if version
-                       (js/parseInt version)
-                       nil)
-        charge-id    (str "charge:" id)]
+  (let [user-data (user/data)
+        id        (-> parameters :path :id)
+        version   (-> parameters :path :version)
+        charge-id (str "charge:" id)]
     (if (:logged-in? user-data)
       [edit-charge charge-id version]
       [not-logged-in])))
 
 (defn view-charge-by-id [{:keys [parameters]}]
-  (let [user-data    (user/data)
-        [id version] (-> parameters
-                         :path
-                         :id
-                         (s/split #":" 2))
-        ;; TODO: handle the error of version not being an integer
-        version      (if version
-                       (js/parseInt version)
-                       nil)
-        charge-id    (str "charge:" id)]
+  (let [user-data (user/data)
+        id        (-> parameters :path :id)
+        version   (-> parameters :path :version)
+        charge-id (str "charge:" id)]
     (if (:logged-in? user-data)
       [view-charge charge-id version]
       [not-logged-in])))

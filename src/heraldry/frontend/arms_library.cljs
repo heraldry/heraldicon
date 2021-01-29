@@ -327,27 +327,19 @@
       [not-logged-in])))
 
 (defn edit-arms-by-id [{:keys [parameters]}]
-  (let [user-data    (user/data)
-        [id version] (-> parameters
-                         :path
-                         :id
-                         (s/split #":" 2))
-        arms-id      (str "arms:" id)]
+  (let [user-data (user/data)
+        id        (-> parameters :path :id)
+        version   (-> parameters :path :version)
+        arms-id   (str "arms:" id)]
     (if (:logged-in? user-data)
       [edit-arms arms-id version]
       [not-logged-in])))
 
 (defn view-arms-by-id [{:keys [parameters]}]
-  (let [user-data    (user/data)
-        [id version] (-> parameters
-                         :path
-                         :id
-                         (s/split #":" 2))
-        ;; TODO: handle the error of version not being an integer
-        version      (if version
-                       (js/parseInt version)
-                       nil)
-        arms-id      (str "arms:" id)]
+  (let [user-data (user/data)
+        id        (-> parameters :path :id)
+        version   (-> parameters :path :version)
+        arms-id   (str "arms:" id)]
     (if (:logged-in? user-data)
       [view-arms arms-id version]
       [not-logged-in])))
