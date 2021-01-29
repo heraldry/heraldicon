@@ -113,7 +113,7 @@
 (defn generate-svg-clicked [db-path]
   (go
     (try
-      (let [payload   @(rf/subscribe [:get db-path])
+      (let [payload   (select-keys @(rf/subscribe [:get db-path]) [:id :version])
             user-data (user/data)
             response  (<? (api-request/call :generate-svg-arms payload user-data))]
         (println "generate-svg-arms response" response)
@@ -124,7 +124,7 @@
 (defn generate-png-clicked [db-path]
   (go
     (try
-      (let [payload   @(rf/subscribe [:get db-path])
+      (let [payload   (select-keys @(rf/subscribe [:get db-path]) [:id :version])
             user-data (user/data)
             response  (<? (api-request/call :generate-png-arms payload user-data))]
         (println "generate-png-arms response" response)
