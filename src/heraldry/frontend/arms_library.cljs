@@ -20,6 +20,9 @@
 (def form-db-path
   [:arms-form])
 
+(def saved-data-db-path
+  [:saved-arms-data])
+
 (def list-db-path
   [:arms-list])
 
@@ -41,6 +44,8 @@
       (let [user-data (user/data)
             response (<? (api-request/call :fetch-arms {:id arms-id} user-data))
             edn-data (<? (http/fetch (:edn-data-url response)))]
+        (rf/dispatch [:set saved-data-db-path (-> response
+                                                  (merge edn-data))])
         (rf/dispatch [:set form-db-path (-> response
                                             (merge edn-data))]))
       (catch :default e
@@ -142,6 +147,7 @@
             arms-id (-> response :arms-id)]
         (println "save arms response" response)
         (rf/dispatch-sync [:set (conj form-db-path :id) arms-id])
+        (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
         (reife/push-state :edit-arms-by-id {:id (util/id-for-url arms-id)}))
       (catch :default e
         (println "save-form error:" e)
@@ -184,15 +190,24 @@
              :style {:width "7em"}]])]]
        [:div.pure-control-group {:style {:text-align "right"
                                          :margin-top "10px"}}
-        [:button.pure-button {:type "button"
-                              :on-click #(generate-svg-clicked form-db-path)
-                              :style {:float "left"}}
-         "SVG Link"]
-        [:button.pure-button {:type "button"
-                              :on-click #(generate-png-clicked form-db-path)
-                              :style {:float "left"
-                                      :margin-left "5px"}}
-         "PNG Link"]
+        (let [disabled? (not= @(rf/subscribe [:get form-db-path])
+                              @(rf/subscribe [:get saved-data-db-path]))]
+          [:<>
+           [:button.pure-button {:type "button"
+                                 :class (when disabled? "disabled")
+                                 :on-click (if disabled?
+                                             #(js/alert "Save your changes first")
+                                             #(generate-svg-clicked form-db-path))
+                                 :style {:float "left"}}
+            "SVG Link"]
+           [:button.pure-button {:type "button"
+                                 :class (when disabled? "disabled")
+                                 :on-click (if disabled?
+                                             #(js/alert "Save your changes first")
+                                             #(generate-png-clicked form-db-path))
+                                 :style {:float "left"
+                                         :margin-left "5px"}}
+            "PNG Link"]])
         [:button.pure-button.pure-button-primary {:type "submit"}
          "Save"]]]
       [component/form-render-options (conj form-db-path :render-options)]
