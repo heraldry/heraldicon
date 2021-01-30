@@ -32,7 +32,10 @@
     (try
       (let [user-data (user/data)]
         (rf/dispatch-sync [:set list-db-path :loading])
-        (rf/dispatch-sync [:set list-db-path (-> (api-request/call :list-arms {:user-id user-id} user-data)
+        (rf/dispatch-sync [:set list-db-path (-> (api-request/call
+                                                  :fetch-arms-for-user
+                                                  {:user-id user-id}
+                                                  user-data)
                                                  <?
                                                  :arms)]))
       (catch :default e
@@ -251,9 +254,32 @@
       [component/form-render-options (conj form-db-path :render-options)]
       [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]]))
 
-(defn list-arms-for-user []
-  (let [user-data (user/data)
-        arms-list @(rf/subscribe [:get list-db-path])]
+(defn list-arms-for-user [user-id]
+  (let [arms-list @(rf/subscribe [:get list-db-path])]
+    (cond
+      (nil? arms-list)       (do
+                               (fetch-arms-list-by-user user-id)
+                               [:<>])
+      (= arms-list :loading) [:<>]
+      :else                  (if (empty? arms-list)
+                               [:span "None"]
+                               [:ul.arms-list
+                                (doall
+                                 (for [arms arms-list]
+                                   ^{:key (:id arms)}
+                                   [:li.arms
+                                    (let [arms-id (-> arms
+                                                      :id
+                                                      id-for-url)]
+                                      [:a {:href     (reife/href :view-arms-by-id {:id arms-id})
+                                           :on-click #(do
+                                                        (rf/dispatch-sync [:set form-db-path nil])
+                                                        (rf/dispatch-sync [:clear-form-errors form-db-path])
+                                                        (reife/href :view-arms-by-id {:id arms-id}))}
+                                       (:name arms)])]))]))))
+
+(defn list-my-arms []
+  (let [user-data (user/data)]
     [:div {:style {:padding "15px"}}
      [:h4 "My arms"]
      [:button.pure-button.pure-button-primary
@@ -262,25 +288,7 @@
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (reife/push-state :create-arms))}
       "Create"]
-     (cond
-       (nil? arms-list)       (do
-                                (fetch-arms-list-by-user (:user-id user-data))
-                                [:<>])
-       (= arms-list :loading) [:<>]
-       :else                  [:ul.arms-list
-                               (doall
-                                (for [arms arms-list]
-                                  ^{:key (:id arms)}
-                                  [:li.arms
-                                   (let [arms-id (-> arms
-                                                     :id
-                                                     id-for-url)]
-                                     [:a {:href     (reife/href :view-arms-by-id {:id arms-id})
-                                          :on-click #(do
-                                                       (rf/dispatch-sync [:set form-db-path nil])
-                                                       (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                                       (reife/href :view-arms-by-id {:id arms-id}))}
-                                      (:name arms)])]))])]))
+     [list-arms-for-user (:user-id user-data)]]))
 
 (defn create-arms []
   (let [form-data @(rf/subscribe [:get form-db-path])]
@@ -322,7 +330,7 @@
 (defn view-list-arms []
   (let [user-data (user/data)]
     (if (:logged-in? user-data)
-      [list-arms-for-user]
+      [list-my-arms]
       [not-logged-in])))
 
 (defn edit-arms-by-id [{:keys [parameters]}]

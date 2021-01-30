@@ -45,7 +45,10 @@
     (try
       (let [user-data (user/data)]
         (rf/dispatch-sync [:set list-db-path :loading])
-        (rf/dispatch-sync [:set list-db-path (-> (api-request/call :list-charges {:user-id user-id} user-data)
+        (rf/dispatch-sync [:set list-db-path (-> (api-request/call
+                                                  :fetch-charges-for-user
+                                                  {:user-id user-id}
+                                                  user-data)
                                                  <?
                                                  :charges)]))
       (catch :default e
@@ -307,9 +310,32 @@
       [component/form-render-options [:example-coa :render-options]]
       [component/form-for-coat-of-arms [:example-coa :coat-of-arms]]]]))
 
-(defn list-charges-for-user []
-  (let [user-data   (user/data)
-        charge-list @(rf/subscribe [:get list-db-path])]
+(defn list-charges-for-user [user-id]
+  (let [charge-list @(rf/subscribe [:get list-db-path])]
+    (cond
+      (nil? charge-list)       (do
+                                 (fetch-charge-list-by-user user-id)
+                                 [:<>])
+      (= charge-list :loading) [:<>]
+      :else                    (if (empty? charge-list)
+                                 [:span "None"]
+                                 [:ul.charge-list
+                                  (doall
+                                   (for [charge charge-list]
+                                     (let [charge-id (-> charge
+                                                         :id
+                                                         id-for-url)]
+                                       ^{:key charge-id}
+                                       [:li.charge
+                                        [:a {:href     (reife/href :view-charge-by-id {:id charge-id})
+                                             :on-click #(do
+                                                          (rf/dispatch-sync [:set form-db-path nil])
+                                                          (rf/dispatch-sync [:clear-form-errors form-db-path])
+                                                          (reife/push-state :view-charge-by-id {:id charge-id}))}
+                                         (:name charge)]])))]))))
+
+(defn list-my-charges []
+  (let [user-data (user/data)]
     [:div {:style {:padding "15px"}}
      [:h4 "My charges"]
      [:button.pure-button.pure-button-primary
@@ -318,25 +344,7 @@
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (reife/push-state :create-charge))}
       "Create"]
-     (cond
-       (nil? charge-list)       (do
-                                  (fetch-charge-list-by-user (:user-id user-data))
-                                  [:<>])
-       (= charge-list :loading) [:<>]
-       :else                    [:ul.charge-list
-                                 (doall
-                                  (for [charge charge-list]
-                                    (let [charge-id (-> charge
-                                                        :id
-                                                        id-for-url)]
-                                      ^{:key charge-id}
-                                      [:li.charge
-                                       [:a {:href     (reife/href :view-charge-by-id {:id charge-id})
-                                            :on-click #(do
-                                                         (rf/dispatch-sync [:set form-db-path nil])
-                                                         (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                                         (reife/push-state :view-charge-by-id {:id charge-id}))}
-                                        (:name charge)]])))])]))
+     [list-charges-for-user (:user-id user-data)]]))
 
 (defn create-charge []
   [charge-form])
@@ -370,7 +378,7 @@
 (defn view-list-charges []
   (let [user-data (user/data)]
     (if (:logged-in? user-data)
-      [list-charges-for-user]
+      [list-my-charges]
       [not-logged-in])))
 
 (defn edit-charge-by-id [{:keys [parameters]}]
