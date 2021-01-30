@@ -48,8 +48,5 @@
    "You need to be logged in."])
 
 (defn view-user-by-username [{:keys [parameters]}]
-  (let [user-data (user/data)
-        username (-> parameters :path :username)]
-    (if (:logged-in? user-data)
-      [view-user username]
-      [not-logged-in])))
+  (let [username (-> parameters :path :username)]
+    [view-user username]))
