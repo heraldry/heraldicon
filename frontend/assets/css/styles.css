@@ -81,6 +81,13 @@ button {
   border-radius: 5px;
 }
 
+form > .form-message {
+  border: 1px solid #4a4;
+  background-color: #efe;
+  color: #4a4;
+  padding: 5px;
+}
+
 form > .error-message {
   border: 1px solid #b44;
   background-color: #fdd;
