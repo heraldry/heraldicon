@@ -1249,7 +1249,7 @@
      [select (conj db-path :license) "License" attribution-options]
      [radio-select (conj db-path :nature) [["Own work" :own-work]
                                            ["Derivative" :derivative]]
-      :default :derivative]
+      :default :own-work]
      (when (= license-nature :derivative)
        [:<>
         [select (conj db-path :source-license) "Source license" (assoc-in
