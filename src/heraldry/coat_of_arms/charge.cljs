@@ -456,8 +456,8 @@
           bottom                           (:bottom points)
           left                             (:left points)
           right                            (:right points)
-          positional-charge-width          (js/parseFloat (:width charge-data))
-          positional-charge-height         (js/parseFloat (:height charge-data))
+          positional-charge-width          (js/parseFloat (-> charge-data :width (or "1")))
+          positional-charge-height         (js/parseFloat (-> charge-data :height (or "1")))
           width                            (:width environment)
           height                           (:height environment)
           center-point                     (position/calculate position environment :fess)
@@ -543,9 +543,9 @@
           field                            (if (counterchangable? field parent)
                                              (counterchange-field field parent)
                                              field)
-          charge-name                      (:name full-charge-data)
+          charge-name                      (or (:name full-charge-data) "")
           username                         (:username full-charge-data)
-          charge-url                       (util/full-url-for-charge full-charge-data)
+          charge-url                       (or (util/full-url-for-charge full-charge-data) "")
           attribution                      (:attribution full-charge-data)]
       [:<>
        [:defs
