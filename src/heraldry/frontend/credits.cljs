@@ -12,14 +12,14 @@
           :target "_blank"} username]
      " "
      (cond
-       (= license :none)                       "is private"
        (= license :cc-attribution)             [:<> "is licensed under "
                                                 [:a {:href   "https://creativecommons.org/licenses/by/4.0"
                                                      :target "_blank"} "CC BY"]]
        (= license :cc-attribution-share-alike) [:<> "is licensed under "
                                                 [:a {:href   "https://creativecommons.org/licenses/by-sa/4.0"
                                                      :target "_blank"} "CC BY-SA"]]
-       (= license :public-domain)              [:<> "is in the public domain"])
+       (= license :public-domain)              [:<> "is in the public domain"]
+       :else                                   "is private")
      (when (-> data :nature (= :derivative))
        [:div.sub-credit
         "source: "
@@ -30,7 +30,6 @@
              :target "_blank"} (-> data :source-creator-name)]
         " "
         (cond
-          (= source-license :none)                       "is private"
           (= source-license :cc-attribution)             [:<> "is licensed under "
                                                           [:a {:href   "https://creativecommons.org/licenses/by/4.0"
                                                                :target "_blank"} "CC BY"]]
@@ -39,7 +38,8 @@
                                                                :target "_blank"} "CC BY-SA"]]
           (= source-license :public-domain)              [:<> "is in the "
                                                           [:a {:href   "https://creativecommons.org/publicdomain/mark/1.0/"
-                                                               :target "_blank"} "public domain"]])])]))
+                                                               :target "_blank"} "public domain"]]
+          :else                                          "is private")])]))
 
 (defn for-charge [charge]
   (when (:id charge)
