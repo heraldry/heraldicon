@@ -569,7 +569,7 @@
                                     "translate(" (- (:x center-point)) "," (- (:y center-point)) ")")]
          [:g {:transform transform
               :clip-path (str "url(#" clip-path-id ")")}
-          [metadata/attribution charge-name username charge-url attribution]
+          [metadata/attribution charge-name username (util/full-url-for-username username) charge-url attribution]
           [:g {:mask (str "url(#" mask-inverted-id ")")}
            [:g {:transform reverse-transform}
             [render-field field charge-environment (-> context
