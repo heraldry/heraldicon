@@ -4,6 +4,7 @@
             [heraldry.frontend.arms-library :as arms-library]
             [heraldry.frontend.charge-library :as charge-library]
             [heraldry.frontend.home :as home]
+            [heraldry.frontend.user-library :as user-library]
             [reagent.core :as rc]
             [reitit.coercion.spec :as rss]
             [reitit.frontend :as reif]
@@ -82,6 +83,18 @@
      :parameters {:path {:id string?
                          :version number?}}
      :view charge-library/view-charge-by-id
+     :conflicting true}]
+
+   ["/users/:username"
+    {:name :view-user
+     :parameters {:path {:username string?}}
+     :view user-library/view-user-by-username
+     :conflicting true}]
+
+   ["/users/:username/"
+    {:name :view-user-with-slash
+     :parameters {:path {:username string?}}
+     :view user-library/view-user-by-username
      :conflicting true}]
 
    ["/account/"
