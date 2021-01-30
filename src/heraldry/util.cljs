@@ -12,9 +12,10 @@
   (str prefix "_" (swap! -current-id inc)))
 
 (defn id-for-url [id]
-  (-> id
-      (s/split #":" 2)
-      second))
+  (when id
+    (-> id
+        (s/split #":" 2)
+        second)))
 
 (defn full-url-for-arms [arms-data]
   (when-let [arms-id (:id arms-data)]
