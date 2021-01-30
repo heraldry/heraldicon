@@ -439,7 +439,8 @@
                            {:keys [render-field
                                    render-options
                                    load-charge-data
-                                   fn-select-component]
+                                   fn-select-component
+                                   svg-export?]
                             :as context}]
   (if-let [full-charge-data (or data (load-charge-data variant))]
     (let [{:keys [position geometry]} (options/sanitize charge (options charge))
@@ -553,12 +554,13 @@
          mask]
         [:mask {:id mask-inverted-id}
          mask-inverted]
-        [:clipPath {:id clip-path-id}
-         [:rect {:x 0
-                 :y 0
-                 :width positional-charge-width
-                 :height positional-charge-height
-                 :fill "#fff"}]]]
+        (when-not svg-export?
+          [:clipPath {:id clip-path-id}
+           [:rect {:x 0
+                   :y 0
+                   :width positional-charge-width
+                   :height positional-charge-height
+                   :fill "#fff"}]])]
        (let [transform (str "translate(" (:x center-point) "," (:y center-point) ")"
                             "rotate(" rotation ")"
                             "scale(" scale-x "," scale-y ")"
@@ -568,7 +570,8 @@
                                     "rotate(" (- rotation) ")"
                                     "translate(" (- (:x center-point)) "," (- (:y center-point)) ")")]
          [:g {:transform transform
-              :clip-path (str "url(#" clip-path-id ")")}
+              :clip-path (when-not svg-export?
+                           (str "url(#" clip-path-id ")"))}
           [metadata/attribution charge-name username (util/full-url-for-username username) charge-url attribution]
           [:g {:mask (str "url(#" mask-inverted-id ")")}
            [:g {:transform reverse-transform}
