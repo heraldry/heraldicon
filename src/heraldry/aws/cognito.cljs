@@ -1,11 +1,12 @@
 (ns heraldry.aws.cognito
   (:require ["amazon-cognito-identity-js" :refer [CognitoUserPool
                                                   CognitoUser
-                                                  AuthenticationDetails]]))
+                                                  AuthenticationDetails]]
+            [heraldry.config :as config]))
 
 (def user-pool
-  (new CognitoUserPool (clj->js {:UserPoolId "eu-central-1_2V31wcCCt"
-                                 :ClientId "23nbkmboar365k4rfn2o6qrs0c"})))
+  (new CognitoUserPool (clj->js (select-keys (config/get :cognito-pool-config)
+                                             [:UserPoolId :ClientId]))))
 
 (defn login [username password & {:keys [on-success on-failure on-new-password-required on-confirmation-needed]}]
   (let [username (or username "")
