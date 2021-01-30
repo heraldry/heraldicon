@@ -149,6 +149,7 @@
   (let [payload   @(rf/subscribe [:get form-db-path])
         user-data (user/data)]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (rf/dispatch-sync [:clear-form-message form-db-path])
     (go
       (try
         (let [response  (<? (api-request/call :save-charge payload user-data))
@@ -159,6 +160,7 @@
           (state/invalidate-cache form-db-path [charge-id 0])
           (rf/dispatch-sync [:set list-db-path nil])
           (state/invalidate-cache list-db-path (:user-id user-data))
+          (rf/dispatch-sync [:set-form-message form-db-path (str "Charge saved, new version: " (:version response))])
           (reife/push-state :edit-charge-by-id {:id (id-for-url charge-id)}))
         (catch :default e
           (println "save-form error:" e)
@@ -166,6 +168,7 @@
 
 (defn charge-form []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
+        form-message  @(rf/subscribe [:get-form-message form-db-path])
         on-submit     (fn [event]
                         (.preventDefault event)
                         (.stopPropagation event)
@@ -184,6 +187,8 @@
                         (when (-> event .-code (= "Enter"))
                           (on-submit event)))
         :on-submit    on-submit}
+       (when form-message
+         [:div.form-message form-message])
        (when error-message
          [:div.error-message error-message])
        [:fieldset
@@ -310,6 +315,7 @@
            [:button.pure-button.pure-button-primary {:type     "button"
                                                      :on-click #(do
                                                                   (rf/dispatch-sync [:clear-form-errors form-db-path])
+                                                                  (rf/dispatch-sync [:clear-form-message form-db-path])
                                                                   (reife/push-state :edit-charge-by-id {:id charge-id}))}
             "Edit"]])
         [component/form-render-options [:example-coa :render-options]]
@@ -334,6 +340,7 @@
                [:a {:href     (reife/href :view-charge-by-id {:id charge-id})
                     :on-click #(do
                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
+                                 (rf/dispatch-sync [:clear-form-message form-db-path])
                                  (reife/push-state :view-charge-by-id {:id charge-id}))}
                 (:name charge)]])))]))))
 
@@ -344,6 +351,7 @@
      [:button.pure-button.pure-button-primary
       {:on-click #(do
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
+                    (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-charge))}
       "Create"]
      [list-charges-for-user (:user-id user-data)]]))

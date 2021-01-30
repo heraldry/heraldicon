@@ -16,6 +16,11 @@
  (fn [db [_ path]]
    (get-in db (concat [:form-errors] path [:message]))))
 
+(rf/reg-sub
+ :get-form-message
+ (fn [db [_ path]]
+   (get-in db (concat [:form-message] path [:message]))))
+
 ;; events
 
 (rf/reg-event-db
@@ -63,15 +68,26 @@
  (fn [db [_ db-path error]]
    (assoc-in db (concat [:form-errors] db-path [:message]) error)))
 
+(rf/reg-event-db
+ :set-form-message
+ (fn [db [_ db-path message]]
+   (assoc-in db (concat [:form-message] db-path [:message]) message)))
+
 (rf/reg-event-fx
  :clear-form-errors
  (fn [_ [_ db-path]]
    {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]]}))
 
 (rf/reg-event-fx
+ :clear-form-message
+ (fn [_ [_ db-path]]
+   {:fx [[:dispatch [:remove (into [:form-message] db-path)]]]}))
+
+(rf/reg-event-fx
  :clear-form
  (fn [_ [_ db-path]]
    {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]
+         [:dispatch [:remove (into [:form-message] db-path)]]
          [:dispatch [:remove db-path]]]}))
 
 (defn dispatch-on-event [event effect]

@@ -142,6 +142,7 @@
 (defn save-arms-clicked []
   (go
     (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (rf/dispatch-sync [:clear-form-message form-db-path])
     (try
       (let [payload   @(rf/subscribe [:get form-db-path])
             user-data (user/data)
@@ -154,6 +155,7 @@
         (state/invalidate-cache form-db-path [arms-id 0])
         (rf/dispatch-sync [:set list-db-path nil])
         (state/invalidate-cache list-db-path (:user-id user-data))
+        (rf/dispatch-sync [:set-form-message form-db-path (str "Arms saved, new version: " (:version response))])
         (reife/push-state :edit-arms-by-id {:id (id-for-url arms-id)}))
       (catch :default e
         (println "save-form error:" e)
@@ -161,6 +163,7 @@
 
 (defn arms-form []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
+        form-message  @(rf/subscribe [:get-form-message form-db-path])
         on-submit     (fn [event]
                         (.preventDefault event)
                         (.stopPropagation event)
@@ -179,6 +182,8 @@
                         (when (-> event .-code (= "Enter"))
                           (on-submit event)))
         :on-submit    on-submit}
+       (when form-message
+         [:div.form-message form-message])
        (when error-message
          [:div.error-message error-message])
        [:fieldset
@@ -255,6 +260,7 @@
            [:button.pure-button.pure-button-primary {:type     "button"
                                                      :on-click #(do
                                                                   (rf/dispatch-sync [:clear-form-errors form-db-path])
+                                                                  (rf/dispatch-sync [:clear-form-message form-db-path])
                                                                   (reife/push-state :edit-arms-by-id {:id arms-id}))}
             "Edit"])]
         [component/form-render-options (conj form-db-path :render-options)]
@@ -278,8 +284,8 @@
                                id-for-url)]
                [:a {:href     (reife/href :view-arms-by-id {:id arms-id})
                     :on-click #(do
-                                 (rf/dispatch-sync [:set form-db-path nil])
                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
+                                 (rf/dispatch-sync [:clear-form-message form-db-path])
                                  (reife/href :view-arms-by-id {:id arms-id}))}
                 (:name arms)])]))]))))
 
@@ -290,6 +296,7 @@
      [:button.pure-button.pure-button-primary
       {:on-click #(do
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
+                    (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-arms))}
       "Create"]
      [list-arms-for-user (:user-id user-data)]]))
