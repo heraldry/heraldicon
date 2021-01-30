@@ -161,13 +161,43 @@
         (println "save-form error:" e)
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
 
+(defn export-buttons [mode]
+  (let [logged-in? (-> (user/data)
+                       :logged-in?)
+        disabled? (or (not logged-in?)
+                      (and (= mode :form)
+                           (not= @(rf/subscribe [:get form-db-path])
+                                 @(rf/subscribe [:get saved-data-db-path]))))]
+    [:<>
+     [:button.pure-button {:type "button"
+                           :class (when disabled? "disabled")
+                           :on-click (if disabled?
+                                       (if (not logged-in?)
+                                         #(js/alert "Need to be logged in")
+                                         #(js/alert "Save your changes first"))
+                                       #(generate-svg-clicked form-db-path))
+                           :style {:float "left"}}
+      "SVG Link"]
+     [:button.pure-button {:type "button"
+                           :class (when disabled? "disabled")
+                           :on-click (if disabled?
+                                       (if (not logged-in?)
+                                         #(js/alert "Need to be logged in")
+                                         #(js/alert "Save your changes first"))
+                                       #(generate-png-clicked form-db-path))
+                           :style {:float "left"
+                                   :margin-left "5px"}}
+      "PNG Link"]]))
+
 (defn arms-form []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
         on-submit (fn [event]
                     (.preventDefault event)
                     (.stopPropagation event)
-                    (save-arms-clicked))]
+                    (save-arms-clicked))
+        logged-in? (-> (user/data)
+                       :logged-in?)]
     [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
@@ -201,24 +231,7 @@
              :style {:width "7em"}]])]]
        [:div.pure-control-group {:style {:text-align "right"
                                          :margin-top "10px"}}
-        (let [disabled? (not= @(rf/subscribe [:get form-db-path])
-                              @(rf/subscribe [:get saved-data-db-path]))]
-          [:<>
-           [:button.pure-button {:type "button"
-                                 :class (when disabled? "disabled")
-                                 :on-click (if disabled?
-                                             #(js/alert "Save your changes first")
-                                             #(generate-svg-clicked form-db-path))
-                                 :style {:float "left"}}
-            "SVG Link"]
-           [:button.pure-button {:type "button"
-                                 :class (when disabled? "disabled")
-                                 :on-click (if disabled?
-                                             #(js/alert "Save your changes first")
-                                             #(generate-png-clicked form-db-path))
-                                 :style {:float "left"
-                                         :margin-left "5px"}}
-            "PNG Link"]])
+        [export-buttons :form]
         [:button.pure-button.pure-button
          {:type "button"
           :on-click (let [match @(rf/subscribe [:get [:route-match]])
@@ -230,8 +243,11 @@
                         :else nil))
           :style {:margin-right "5px"}}
          "Cancel"]
-        [:button.pure-button.pure-button-primary {:type "submit"}
-         "Save"]]]
+        (let [disabled? (not logged-in?)]
+          [:button.pure-button.pure-button-primary {:type "submit"
+                                                    :class (when disabled? "disabled")}
+           "Save"])
+        [:div.spacer]]]
       [component/form-render-options (conj form-db-path :render-options)]
       [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]]))
 
@@ -257,15 +273,8 @@
         [:div.pure-control-group {:style {:text-align "right"
                                           :margin-top "10px"
                                           :margin-bottom "10px"}}
-         [:button.pure-button {:type "button"
-                               :on-click #(generate-svg-clicked form-db-path)
-                               :style {:float "left"}}
-          "SVG Link"]
-         [:button.pure-button {:type "button"
-                               :on-click #(generate-png-clicked form-db-path)
-                               :style {:float "left"
-                                       :margin-left "5px"}}
-          "PNG Link"]
+
+         [export-buttons :display]
          (when (= (:username arms-data)
                   (:username user-data))
            [:button.pure-button.pure-button-primary {:type "button"
@@ -273,7 +282,8 @@
                                                                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                                                                   (rf/dispatch-sync [:clear-form-message form-db-path])
                                                                   (reife/push-state :edit-arms-by-id {:id arms-id}))}
-            "Edit"])]
+            "Edit"])
+         [:div.spacer]]
         [component/form-render-options (conj form-db-path :render-options)]
         [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]])))
 
@@ -284,7 +294,7 @@
                             #(fetch-arms-list-by-user user-id))]
     (when (= status :done)
       (if (empty? arms-list)
-        [:span "None"]
+        [:div "None"]
         [:ul.arms-list
          (doall
           (for [arms arms-list]
@@ -303,14 +313,16 @@
 (defn list-my-arms []
   (let [user-data (user/data)]
     [:div {:style {:padding "15px"}}
-     [:h4 "My arms"]
      [:button.pure-button.pure-button-primary
       {:on-click #(do
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-arms))}
       "Create"]
-     [list-arms-for-user (:user-id user-data)]]))
+     (when-let [user-id (:user-id user-data)]
+       [:<>
+        [:h4 "My arms"]
+        [list-arms-for-user user-id]])]))
 
 (defn create-arms [match]
   (rf/dispatch [:set [:route-match] match])
@@ -335,31 +347,18 @@
     (when (= status :done)
       [arms-form])))
 
-(defn not-logged-in []
-  [:div {:style {:padding "15px"}}
-   "You need to be logged in."])
-
 (defn view-list-arms []
-  (let [user-data (user/data)]
-    (if (:logged-in? user-data)
-      [list-my-arms]
-      [not-logged-in])))
+  [list-my-arms])
 
 (defn edit-arms-by-id [{:keys [parameters] :as match}]
   (rf/dispatch [:set [:route-match] match])
-  (let [user-data (user/data)
-        id (-> parameters :path :id)
+  (let [id (-> parameters :path :id)
         version (-> parameters :path :version)
         arms-id (str "arms:" id)]
-    (if (:logged-in? user-data)
-      [edit-arms arms-id version]
-      [not-logged-in])))
+    [edit-arms arms-id version]))
 
 (defn view-arms-by-id [{:keys [parameters]}]
-  (let [user-data (user/data)
-        id (-> parameters :path :id)
+  (let [id (-> parameters :path :id)
         version (-> parameters :path :version)
         arms-id (str "arms:" id)]
-    (if (:logged-in? user-data)
-      [arms-display arms-id version]
-      [not-logged-in])))
+    [arms-display arms-id version]))
