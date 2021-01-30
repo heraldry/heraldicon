@@ -73,7 +73,7 @@
                                        :tierced-per-pairle-reversed})
 (s/def :heraldry.field.division/line #(s/valid? :heraldry/line %))
 (s/def :heraldry.field.division/origin #(s/valid? :heraldry/position %))
-(s/def :heraldry.field.division/fields (s/coll-of :heraldry/field :into []))
+(s/def :heraldry.field.division/fields (s/coll-of :heraldry/field-or-field-reference :into []))
 (s/def :heraldry.field.divison.hint/outline? boolean?)
 (s/def :heraldry.field.division/hints (s/keys :opt-un [:heraldry.division.hint/outline?]))
 (s/def :heraldry.field/division (s/keys :req-un [:heraldry.field.division/type
@@ -96,6 +96,13 @@
                               #(-> %
                                    (core/get-key :heraldry/component)
                                    (= :field))))
+
+(s/def :heraldry.field-reference/ref #(and (number? %)
+                                           (>= % 0)))
+(s/def :heraldry/field-reference (s/keys :req-un [:heraldry.field-reference/ref]))
+
+(s/def :heraldry/field-or-field-reference #(or (s/valid? :heraldry/field %)
+                                               (s/valid? :heraldry/field-reference %)))
 
 (s/def :heraldry.ordinary/type #{:pale
                                  :fess
