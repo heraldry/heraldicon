@@ -155,6 +155,10 @@
               charge-id (-> response :charge-id)]
           (println "save charge response" response)
           (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
+          (state/invalidate-cache form-db-path [charge-id nil])
+          (state/invalidate-cache form-db-path [charge-id 0])
+          (rf/dispatch-sync [:set list-db-path nil])
+          (state/invalidate-cache list-db-path (:user-id user-data))
           (reife/push-state :edit-charge-by-id {:id (id-for-url charge-id)}))
         (catch :default e
           (println "save-form error:" e)
