@@ -172,7 +172,9 @@
         on-submit     (fn [event]
                         (.preventDefault event)
                         (.stopPropagation event)
-                        (save-charge-clicked))]
+                        (save-charge-clicked))
+        logged-in?    (-> (user/data)
+                          :logged-in?)]
     [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
@@ -294,8 +296,11 @@
                         :else                        nil))
           :style    {:margin-right "5px"}}
          "Cancel"]
-        [:button.pure-button.pure-button-primary {:type "submit"}
-         "Save"]]]
+        (let [disabled? (not logged-in?)]
+          [:button.pure-button.pure-button-primary {:type  "submit"
+                                                    :class (when disabled?
+                                                             "disabled")}
+           "Save"])]]
       [component/form-render-options [:example-coa :render-options]]
       [component/form-for-coat-of-arms [:example-coa :coat-of-arms]]]]))
 
@@ -339,7 +344,8 @@
                               #(fetch-charge-list-by-user user-id))]
     (when (= status :done)
       (if (empty? charge-list)
-        [:span "None"]
+        (when user-id
+          [:div "None"])
         [:ul.charge-list
          (doall
           (for [charge charge-list]
@@ -358,14 +364,17 @@
 (defn list-my-charges []
   (let [user-data (user/data)]
     [:div {:style {:padding "15px"}}
-     [:h4 "My charges"]
      [:button.pure-button.pure-button-primary
       {:on-click #(do
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-charge))}
       "Create"]
-     [list-charges-for-user (:user-id user-data)]]))
+
+     (when-let [user-id (:user-id user-data)]
+       [:<>
+        [:h4 "My charges"]
+        [list-charges-for-user user-id]])]))
 
 (defn create-charge [match]
   (rf/dispatch [:set [:route-match] match])
@@ -386,31 +395,18 @@
     (when (= status :done)
       [charge-form])))
 
-(defn not-logged-in []
-  [:div {:style {:padding "15px"}}
-   "You need to be logged in."])
-
 (defn view-list-charges []
-  (let [user-data (user/data)]
-    (if (:logged-in? user-data)
-      [list-my-charges]
-      [not-logged-in])))
+  [list-my-charges])
 
 (defn edit-charge-by-id [{:keys [parameters] :as match}]
   (rf/dispatch [:set [:route-match] match])
-  (let [user-data (user/data)
-        id        (-> parameters :path :id)
+  (let [id        (-> parameters :path :id)
         version   (-> parameters :path :version)
         charge-id (str "charge:" id)]
-    (if (:logged-in? user-data)
-      [edit-charge charge-id version]
-      [not-logged-in])))
+    [edit-charge charge-id version]))
 
 (defn view-charge-by-id [{:keys [parameters]}]
-  (let [user-data (user/data)
-        id        (-> parameters :path :id)
+  (let [id        (-> parameters :path :id)
         version   (-> parameters :path :version)
         charge-id (str "charge:" id)]
-    (if (:logged-in? user-data)
-      [charge-display charge-id version]
-      [not-logged-in])))
+    [charge-display charge-id version]))
