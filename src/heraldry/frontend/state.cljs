@@ -1,5 +1,7 @@
 (ns heraldry.frontend.state
-  (:require [re-frame.core :as rf]))
+  (:require [cljs.core.async :refer [go]]
+            [com.wsscode.common.async-cljs :refer [<?]]
+            [re-frame.core :as rf]))
 
 ;; subs
 
@@ -79,3 +81,37 @@
 (defn dispatch-on-event-sync [event effect]
   (rf/dispatch-sync effect)
   (.stopPropagation event))
+
+(defn async-fetch-data [db-path query-id async-function]
+  (let [current-query @(rf/subscribe [:get [:async-fetch-data db-path :current]])
+        query         @(rf/subscribe [:get [:async-fetch-data db-path :queries query-id]])
+        current-data  @(rf/subscribe [:get db-path])]
+    (cond
+      (not= current-query query-id) (do
+                                      (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
+                                      (rf/dispatch-sync [:set db-path nil])
+                                      [:loading nil])
+      current-data                  [:done current-data]
+      (-> query :state (= :done))   (do
+                                      (rf/dispatch-sync [:set db-path (:data query)])
+                                      [:done (:data query)])
+      (-> query :state)             [:loading nil]
+      :else                         (do
+                                      (rf/dispatch-sync [:set db-path nil])
+                                      (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
+                                      (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id]
+                                                         {:state :loading}])
+                                      (go
+                                        (try
+                                          (let [data (<? (async-function))]
+                                            (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id]
+                                                               {:state :done
+                                                                :data  data}]))
+                                          (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
+                                          (catch :default e
+                                            (println "async-fetch-data error:" db-path query-id e))))
+                                      [:loading nil]))))
+
+(defn reset-data [db-path]
+  (rf/dispatch-sync [:set db-path nil])
+  (rf/dispatch-sync [:set [:async-fetch-data db-path] nil]))

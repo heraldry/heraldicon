@@ -12,8 +12,8 @@
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.http :as http]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
-            [heraldry.frontend.util :as util]
             [heraldry.util :refer [id-for-url]]
             [hickory.core :as hickory]
             [re-frame.core :as rf]
@@ -44,30 +44,26 @@
   (go
     (try
       (let [user-data (user/data)]
-        (rf/dispatch-sync [:set list-db-path :loading])
-        (rf/dispatch-sync [:set list-db-path (-> (api-request/call
-                                                  :fetch-charges-for-user
-                                                  {:user-id user-id}
-                                                  user-data)
-                                                 <?
-                                                 :charges)]))
+        (-> (api-request/call :fetch-charges-for-user {:user-id user-id}
+                              user-data)
+            <?
+            :charges))
       (catch :default e
         (println "fetch-charges-by-user error:" e)))))
 
-(defn fetch-charge-and-fill-form [charge-id version]
+(defn fetch-charge [charge-id version]
   (go
     (try
-      (rf/dispatch-sync [:set form-db-path :loading])
       (let [user-data (user/data)
             response  (<? (api-request/call :fetch-charge {:id      charge-id
                                                            :version version} user-data))
             edn-data  (<? (http/fetch (:edn-data-url response)))
             svg-data  (<? (http/fetch (:svg-data-url response)))]
-        (rf/dispatch-sync [:set form-db-path (-> response
-                                                 (assoc-in [:data :edn-data] edn-data)
-                                                 (assoc-in [:data :svg-data] svg-data))]))
+        (-> response
+            (assoc-in [:data :edn-data] edn-data)
+            (assoc-in [:data :svg-data] svg-data)))
       (catch :default e
-        (println ":fetch-charge-by-id error:" e)))))
+        (println "fetch-charge error:" e)))))
 
 (defn optimize-svg [data]
   (go-catch
@@ -118,7 +114,8 @@
          :as   form-data}      @(rf/subscribe [:get form-db-path])
         {:keys [edn-data]}     data
         prepared-charge-data   (-> form-data
-                                   (assoc :data edn-data))
+                                   (assoc :data edn-data)
+                                   (assoc :username (:username (user/data))))
         db-path                [:example-coa :coat-of-arms]
         render-options         @(rf/subscribe [:get [:example-coa :render-options]])
         coat-of-arms           @(rf/subscribe [:get db-path])
@@ -282,57 +279,59 @@
       [component/form-render-options [:example-coa :render-options]]
       [component/form-for-coat-of-arms [:example-coa :coat-of-arms]]]]))
 
-(defn charge-display []
-  (let [user-data   (user/data)
-        charge-data @(rf/subscribe [:get form-db-path])
-        charge-id   (-> charge-data
-                        :id
-                        id-for-url)]
-    [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
-                                 (rf/dispatch [:ui-submenu-close-all])
-                                 (.stopPropagation %))}
-     [:div.pure-u-1-2 {:style {:position "fixed"}}
-      [preview]]
-     [:div.pure-u-1-2 {:style {:margin-left "50%"
-                               :width       "45%"}}
-      [:div.credits
-       [credits/for-charge charge-data]]
-      (when (= (:username charge-data)
-               (:username user-data))
-        [:div.pure-control-group {:style {:text-align    "right"
-                                          :margin-top    "10px"
-                                          :margin-bottom "10px"}}
-         [:button.pure-button.pure-button-primary {:type     "button"
-                                                   :on-click #(do
-                                                                (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                                                (reife/push-state :edit-charge-by-id {:id charge-id}))}
-          "Edit"]])
-      [component/form-render-options [:example-coa :render-options]]
-      [component/form-for-coat-of-arms [:example-coa :coat-of-arms]]]]))
+(defn charge-display [charge-id version]
+  (let [user-data            (user/data)
+        [status charge-data] (state/async-fetch-data
+                              form-db-path
+                              [charge-id version]
+                              #(fetch-charge charge-id version))
+        charge-id            (-> charge-data
+                                 :id
+                                 id-for-url)]
+    (when (= status :done)
+      [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
+                                   (rf/dispatch [:ui-submenu-close-all])
+                                   (.stopPropagation %))}
+       [:div.pure-u-1-2 {:style {:position "fixed"}}
+        [preview]]
+       [:div.pure-u-1-2 {:style {:margin-left "50%"
+                                 :width       "45%"}}
+        [:div.credits
+         [credits/for-charge charge-data]]
+        (when (= (:username charge-data)
+                 (:username user-data))
+          [:div.pure-control-group {:style {:text-align    "right"
+                                            :margin-top    "10px"
+                                            :margin-bottom "10px"}}
+           [:button.pure-button.pure-button-primary {:type     "button"
+                                                     :on-click #(do
+                                                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
+                                                                  (reife/push-state :edit-charge-by-id {:id charge-id}))}
+            "Edit"]])
+        [component/form-render-options [:example-coa :render-options]]
+        [component/form-for-coat-of-arms [:example-coa :coat-of-arms]]]])))
 
 (defn list-charges-for-user [user-id]
-  (let [charge-list @(rf/subscribe [:get list-db-path])]
-    (cond
-      (nil? charge-list)       (do
-                                 (fetch-charge-list-by-user user-id)
-                                 [:<>])
-      (= charge-list :loading) [:<>]
-      :else                    (if (empty? charge-list)
-                                 [:span "None"]
-                                 [:ul.charge-list
-                                  (doall
-                                   (for [charge charge-list]
-                                     (let [charge-id (-> charge
-                                                         :id
-                                                         id-for-url)]
-                                       ^{:key charge-id}
-                                       [:li.charge
-                                        [:a {:href     (reife/href :view-charge-by-id {:id charge-id})
-                                             :on-click #(do
-                                                          (rf/dispatch-sync [:set form-db-path nil])
-                                                          (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                                          (reife/push-state :view-charge-by-id {:id charge-id}))}
-                                         (:name charge)]])))]))))
+  (let [[status charge-list] (state/async-fetch-data
+                              list-db-path
+                              user-id
+                              #(fetch-charge-list-by-user user-id))]
+    (when (= status :done)
+      (if (empty? charge-list)
+        [:span "None"]
+        [:ul.charge-list
+         (doall
+          (for [charge charge-list]
+            (let [charge-id (-> charge
+                                :id
+                                id-for-url)]
+              ^{:key charge-id}
+              [:li.charge
+               [:a {:href     (reife/href :view-charge-by-id {:id charge-id})
+                    :on-click #(do
+                                 (rf/dispatch-sync [:clear-form-errors form-db-path])
+                                 (reife/push-state :view-charge-by-id {:id charge-id}))}
+                (:name charge)]])))]))))
 
 (defn list-my-charges []
   (let [user-data (user/data)]
@@ -340,36 +339,28 @@
      [:h4 "My charges"]
      [:button.pure-button.pure-button-primary
       {:on-click #(do
-                    (rf/dispatch-sync [:set form-db-path nil])
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (reife/push-state :create-charge))}
       "Create"]
      [list-charges-for-user (:user-id user-data)]]))
 
 (defn create-charge []
-  [charge-form])
+  (let [[status _charge-form-data] (state/async-fetch-data
+                                    form-db-path
+                                    :new
+                                    #(go
+                                       ;; TODO: make a default charge here?
+                                       {}))]
+    (when (= status :done)
+      [charge-form])))
 
 (defn edit-charge [charge-id version]
-  (let [charge-form-data @(rf/subscribe [:get form-db-path])]
-    (cond
-      (and charge-id
-           (nil? charge-form-data)) (do
-                                      (fetch-charge-and-fill-form charge-id version)
-                                      [:<>])
-      (= charge-form-data :loading) [:<>]
-      charge-form-data              [charge-form]
-      :else                         [:<>])))
-
-(defn view-charge [charge-id version]
-  (let [charge-form-data @(rf/subscribe [:get form-db-path])]
-    (cond
-      (and charge-id
-           (nil? charge-form-data)) (do
-                                      (fetch-charge-and-fill-form charge-id version)
-                                      [:<>])
-      (= charge-form-data :loading) [:<>]
-      charge-form-data              [charge-display]
-      :else                         [:<>])))
+  (let [[status _charge-form-data] (state/async-fetch-data
+                                    form-db-path
+                                    [charge-id version]
+                                    #(fetch-charge charge-id version))]
+    (when (= status :done)
+      [charge-form])))
 
 (defn not-logged-in []
   [:div {:style {:padding "15px"}}
@@ -396,5 +387,5 @@
         version   (-> parameters :path :version)
         charge-id (str "charge:" id)]
     (if (:logged-in? user-data)
-      [view-charge charge-id version]
+      [charge-display charge-id version]
       [not-logged-in])))

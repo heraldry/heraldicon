@@ -12,8 +12,8 @@
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.http :as http]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
-            [heraldry.frontend.util :as util]
             [heraldry.util :refer [full-url-for-arms full-url-for-username id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]))
@@ -31,30 +31,28 @@
   (go
     (try
       (let [user-data (user/data)]
-        (rf/dispatch-sync [:set list-db-path :loading])
-        (rf/dispatch-sync [:set list-db-path (-> (api-request/call
-                                                  :fetch-arms-for-user
-                                                  {:user-id user-id}
-                                                  user-data)
-                                                 <?
-                                                 :arms)]))
+        (-> (api-request/call
+             :fetch-arms-for-user
+             {:user-id user-id}
+             user-data)
+            <?
+            :arms))
       (catch :default e
         (println "fetch-arms-list-by-user error:" e)))))
 
-(defn fetch-arms-and-fill-form [arms-id version]
+(defn fetch-arms [arms-id version]
   (go
     (try
-      (rf/dispatch-sync [:set form-db-path :loading])
       (let [user-data (user/data)
             response  (<? (api-request/call :fetch-arms {:id      arms-id
                                                          :version version} user-data))
-            edn-data  (<? (http/fetch (:edn-data-url response)))]
-        (rf/dispatch [:set saved-data-db-path (-> response
-                                                  (merge edn-data))])
-        (rf/dispatch [:set form-db-path (-> response
-                                            (merge edn-data))]))
+            edn-data  (<? (http/fetch (:edn-data-url response)))
+            full-data (-> response
+                          (merge edn-data))]
+        (rf/dispatch [:set saved-data-db-path full-data])
+        full-data)
       (catch :default e
-        (println ":fetch-arms-by-id error:" e)))))
+        (println "fetch-arms error:" e)))))
 
 ;; views
 
@@ -217,66 +215,69 @@
       [component/form-render-options (conj form-db-path :render-options)]
       [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]]))
 
-(defn arms-display []
-  (let [user-data (user/data)
-        arms-data @(rf/subscribe [:get form-db-path])
-        arms-id   (-> arms-data
-                      :id
-                      id-for-url)]
-    [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
-                                 (rf/dispatch [:ui-submenu-close-all])
-                                 (.stopPropagation %))}
-     [:div.pure-u-1-2 {:style {:position "fixed"}}
-      [render-coat-of-arms]]
-     [:div.pure-u-1-2 {:style {:margin-left "50%"
-                               :width       "45%"}}
-      [:div.credits
-       [credits/for-arms arms-data]]
-      [:div.pure-control-group {:style {:text-align    "right"
-                                        :margin-top    "10px"
-                                        :margin-bottom "10px"}}
-       [:button.pure-button {:type     "button"
-                             :on-click #(generate-svg-clicked form-db-path)
-                             :style    {:float "left"}}
-        "SVG Link"]
-       [:button.pure-button {:type     "button"
-                             :on-click #(generate-png-clicked form-db-path)
-                             :style    {:float       "left"
-                                        :margin-left "5px"}}
-        "PNG Link"]
-       (when (= (:username arms-data)
-                (:username user-data))
-         [:button.pure-button.pure-button-primary {:type     "button"
-                                                   :on-click #(do
-                                                                (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                                                (reife/push-state :edit-arms-by-id {:id arms-id}))}
-          "Edit"])]
-      [component/form-render-options (conj form-db-path :render-options)]
-      [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]]))
+(defn arms-display [arms-id version]
+  (let [user-data          (user/data)
+        [status arms-data] (state/async-fetch-data
+                            form-db-path
+                            [arms-id version]
+                            #(fetch-arms arms-id version))
+        arms-id            (-> arms-data
+                               :id
+                               id-for-url)]
+    (when (= status :done)
+      [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
+                                   (rf/dispatch [:ui-submenu-close-all])
+                                   (.stopPropagation %))}
+       [:div.pure-u-1-2 {:style {:position "fixed"}}
+        [render-coat-of-arms]]
+       [:div.pure-u-1-2 {:style {:margin-left "50%"
+                                 :width       "45%"}}
+        [:div.credits
+         [credits/for-arms arms-data]]
+        [:div.pure-control-group {:style {:text-align    "right"
+                                          :margin-top    "10px"
+                                          :margin-bottom "10px"}}
+         [:button.pure-button {:type     "button"
+                               :on-click #(generate-svg-clicked form-db-path)
+                               :style    {:float "left"}}
+          "SVG Link"]
+         [:button.pure-button {:type     "button"
+                               :on-click #(generate-png-clicked form-db-path)
+                               :style    {:float       "left"
+                                          :margin-left "5px"}}
+          "PNG Link"]
+         (when (= (:username arms-data)
+                  (:username user-data))
+           [:button.pure-button.pure-button-primary {:type     "button"
+                                                     :on-click #(do
+                                                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
+                                                                  (reife/push-state :edit-arms-by-id {:id arms-id}))}
+            "Edit"])]
+        [component/form-render-options (conj form-db-path :render-options)]
+        [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]])))
 
 (defn list-arms-for-user [user-id]
-  (let [arms-list @(rf/subscribe [:get list-db-path])]
-    (cond
-      (nil? arms-list)       (do
-                               (fetch-arms-list-by-user user-id)
-                               [:<>])
-      (= arms-list :loading) [:<>]
-      :else                  (if (empty? arms-list)
-                               [:span "None"]
-                               [:ul.arms-list
-                                (doall
-                                 (for [arms arms-list]
-                                   ^{:key (:id arms)}
-                                   [:li.arms
-                                    (let [arms-id (-> arms
-                                                      :id
-                                                      id-for-url)]
-                                      [:a {:href     (reife/href :view-arms-by-id {:id arms-id})
-                                           :on-click #(do
-                                                        (rf/dispatch-sync [:set form-db-path nil])
-                                                        (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                                        (reife/href :view-arms-by-id {:id arms-id}))}
-                                       (:name arms)])]))]))))
+  (let [[status arms-list] (state/async-fetch-data
+                            list-db-path
+                            user-id
+                            #(fetch-arms-list-by-user user-id))]
+    (when (= status :done)
+      (if (empty? arms-list)
+        [:span "None"]
+        [:ul.arms-list
+         (doall
+          (for [arms arms-list]
+            ^{:key (:id arms)}
+            [:li.arms
+             (let [arms-id (-> arms
+                               :id
+                               id-for-url)]
+               [:a {:href     (reife/href :view-arms-by-id {:id arms-id})
+                    :on-click #(do
+                                 (rf/dispatch-sync [:set form-db-path nil])
+                                 (rf/dispatch-sync [:clear-form-errors form-db-path])
+                                 (reife/href :view-arms-by-id {:id arms-id}))}
+                (:name arms)])]))]))))
 
 (defn list-my-arms []
   (let [user-data (user/data)]
@@ -284,44 +285,32 @@
      [:h4 "My arms"]
      [:button.pure-button.pure-button-primary
       {:on-click #(do
-                    (rf/dispatch-sync [:set form-db-path nil])
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (reife/push-state :create-arms))}
       "Create"]
      [list-arms-for-user (:user-id user-data)]]))
 
 (defn create-arms []
-  (let [form-data @(rf/subscribe [:get form-db-path])]
-    (when (nil? form-data)
-      (rf/dispatch [:set form-db-path {:coat-of-arms   default/coat-of-arms
-                                       :render-options {:component :render-options
-                                                        :mode      :colours
-                                                        :outline?  false
-                                                        :squiggly? false
-                                                        :ui        {:selectable-fields? true}}}])))
-  [arms-form])
+  (let [[status _arms-form-data] (state/async-fetch-data
+                                  form-db-path
+                                  :new
+                                  #(go
+                                     {:coat-of-arms   default/coat-of-arms
+                                      :render-options {:component :render-options
+                                                       :mode      :colours
+                                                       :outline?  false
+                                                       :squiggly? false
+                                                       :ui        {:selectable-fields? true}}}))]
+    (when (= status :done)
+      [arms-form])))
 
 (defn edit-arms [arms-id version]
-  (let [arms-form-data @(rf/subscribe [:get form-db-path])]
-    (cond
-      (and arms-id
-           (nil? arms-form-data)) (do
-                                    (fetch-arms-and-fill-form arms-id version)
-                                    [:<>])
-      (= arms-form-data :loading) [:<>]
-      arms-form-data              [arms-form]
-      :else                       [:<>])))
-
-(defn view-arms [arms-id version]
-  (let [arms-form-data @(rf/subscribe [:get form-db-path])]
-    (cond
-      (and arms-id
-           (nil? arms-form-data)) (do
-                                    (fetch-arms-and-fill-form arms-id version)
-                                    [:<>])
-      (= arms-form-data :loading) [:<>]
-      arms-form-data              [arms-display]
-      :else                       [:<>])))
+  (let [[status _arms-form-data] (state/async-fetch-data
+                                  form-db-path
+                                  [arms-id version]
+                                  #(fetch-arms arms-id version))]
+    (when (= status :done)
+      [arms-form])))
 
 (defn not-logged-in []
   [:div {:style {:padding "15px"}}
@@ -348,5 +337,5 @@
         version   (-> parameters :path :version)
         arms-id   (str "arms:" id)]
     (if (:logged-in? user-data)
-      [view-arms arms-id version]
+      [arms-display arms-id version]
       [not-logged-in])))

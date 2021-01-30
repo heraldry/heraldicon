@@ -4,19 +4,18 @@
             [heraldry.api.request :as api-request]
             [heraldry.frontend.arms-library :as arms-library]
             [heraldry.frontend.charge-library :as charge-library]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [re-frame.core :as rf]))
 
 (def user-info-db-path
   [:user-info])
 
-(defn fetch-user-and-fill-info [username]
+(defn fetch-user [username]
   (go
     (try
-      (rf/dispatch-sync [:set user-info-db-path :loading])
-      (let [user-data (user/data)
-            response  (<? (api-request/call :fetch-user {:username username} user-data))]
-        (rf/dispatch-sync [:set user-info-db-path response]))
+      (let [user-data (user/data)]
+        (<? (api-request/call :fetch-user {:username username} user-data)))
       (catch :default e
         (println "fetch-user error:" e)))))
 
@@ -37,15 +36,12 @@
         [charge-library/list-charges-for-user (:id charge-info-data)]]]]]))
 
 (defn view-user [username]
-  (let [user-info-data @(rf/subscribe [:get user-info-db-path])]
-    (cond
-      (and username
-           (nil? user-info-data)) (do
-                                    (fetch-user-and-fill-info username)
-                                    [:<>])
-      (= user-info-data :loading) [:<>]
-      user-info-data              [user-display]
-      :else                       [:<>])))
+  (let [[status _user-form-data] (state/async-fetch-data
+                                  user-info-db-path
+                                  username
+                                  #(fetch-user username))]
+    (when (= status :done)
+      [user-display])))
 
 (defn not-logged-in []
   [:div {:style {:padding "15px"}}
