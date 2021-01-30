@@ -283,6 +283,17 @@
                      :id        "upload"
                      :on-change #(upload-file % form-db-path)
                      :style     {:display "none"}}]])]
+        [:button.pure-button.pure-button
+         {:type     "button"
+          :on-click (let [match  @(rf/subscribe [:get [:route-match]])
+                          route  (-> match :data :name)
+                          params (-> match :parameters :path)]
+                      (cond
+                        (= route :edit-charge-by-id) #(reife/push-state :view-charge-by-id params)
+                        (= route :create-charge)     #(reife/push-state :charges params)
+                        :else                        nil))
+          :style    {:margin-right "5px"}}
+         "Cancel"]
         [:button.pure-button.pure-button-primary {:type "submit"}
          "Save"]]]
       [component/form-render-options [:example-coa :render-options]]
@@ -356,7 +367,8 @@
       "Create"]
      [list-charges-for-user (:user-id user-data)]]))
 
-(defn create-charge []
+(defn create-charge [match]
+  (rf/dispatch [:set [:route-match] match])
   (let [[status _charge-form-data] (state/async-fetch-data
                                     form-db-path
                                     :new
@@ -384,7 +396,8 @@
       [list-my-charges]
       [not-logged-in])))
 
-(defn edit-charge-by-id [{:keys [parameters]}]
+(defn edit-charge-by-id [{:keys [parameters] :as match}]
+  (rf/dispatch [:set [:route-match] match])
   (let [user-data (user/data)
         id        (-> parameters :path :id)
         version   (-> parameters :path :version)

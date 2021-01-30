@@ -219,6 +219,17 @@
                                  :style    {:float       "left"
                                             :margin-left "5px"}}
             "PNG Link"]])
+        [:button.pure-button.pure-button
+         {:type     "button"
+          :on-click (let [match  @(rf/subscribe [:get [:route-match]])
+                          route  (-> match :data :name)
+                          params (-> match :parameters :path)]
+                      (cond
+                        (= route :edit-arms-by-id) #(reife/push-state :view-arms-by-id params)
+                        (= route :create-arms)     #(reife/push-state :arms params)
+                        :else                      nil))
+          :style    {:margin-right "5px"}}
+         "Cancel"]
         [:button.pure-button.pure-button-primary {:type "submit"}
          "Save"]]]
       [component/form-render-options (conj form-db-path :render-options)]
@@ -301,7 +312,8 @@
       "Create"]
      [list-arms-for-user (:user-id user-data)]]))
 
-(defn create-arms []
+(defn create-arms [match]
+  (rf/dispatch [:set [:route-match] match])
   (let [[status _arms-form-data] (state/async-fetch-data
                                   form-db-path
                                   :new
@@ -333,7 +345,8 @@
       [list-my-arms]
       [not-logged-in])))
 
-(defn edit-arms-by-id [{:keys [parameters]}]
+(defn edit-arms-by-id [{:keys [parameters] :as match}]
+  (rf/dispatch [:set [:route-match] match])
   (let [user-data (user/data)
         id        (-> parameters :path :id)
         version   (-> parameters :path :version)
