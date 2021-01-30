@@ -8,7 +8,8 @@
      [:a {:href url
           :target "_blank"} title]
      " by "
-     [:a {:href "#"} username]
+     [:a {:href (util/full-url-for-username username)
+          :target "_blank"} username]
      " "
      (cond
        (= license :none) "is private"
