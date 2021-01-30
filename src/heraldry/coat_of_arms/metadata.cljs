@@ -1,8 +1,9 @@
 (ns heraldry.coat-of-arms.metadata)
 
-(defn attribution [title creator url {:keys [license nature
-                                             source-name source-link
-                                             source-creator-name source-creator-link]}]
+(defn attribution [title creator creator-url url
+                   {:keys [license nature
+                           source-name source-link
+                           source-creator-name source-creator-link]}]
   (let [license-url (cond
                       (= license :cc-attribution) "https://creativecommons.org/licenses/by/4.0"
                       (= license :cc-attribution-share-alike) "https://creativecommons.org/licenses/by-sa/4.0"
@@ -14,10 +15,10 @@
      [:rdf:RDF
       [:rdf:Description {:dc:title title
                          :dc:creator creator}]
-      [:cc:Work {:rdf:about ""}
+      [:cc:Work {:rdf:about url}
        [:cc:license {:rdf:resource license-url}]
        [:cc:attributionName (str title " by " creator)]
-       [:cc:attributionURL {:rdf:resource url}]]
+       [:cc:attributionURL {:rdf:resource creator-url}]]
       [:cc:License {:rdf:about license-url}
        (cond
          (= license :cc-attribution) [:<>
