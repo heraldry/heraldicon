@@ -14,7 +14,7 @@
             [heraldry.frontend.http :as http]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
-            [heraldry.util :refer [full-url-for-arms id-for-url]]
+            [heraldry.util :refer [full-url-for-arms full-url-for-username id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]))
 
@@ -101,7 +101,7 @@
                                      context/default
                                      {:render-options render-options
                                       :db-path        coat-of-arms-db-path
-                                      :metadata       [metadata/attribution name username arms-url attribution]}))
+                                      :metadata       [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
             {:keys [width height]} environment]
         [:div {:style {:margin-left  "10px"
                        :margin-right "10px"}}

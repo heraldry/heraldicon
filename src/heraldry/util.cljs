@@ -35,3 +35,6 @@
                       :id
                       id-for-url)]
     (str (config/get :armory-url) "/charges/" charge-id "/" version)))
+
+(defn full-url-for-username [username]
+  (str (config/get :armory-url) "/users/" username))
