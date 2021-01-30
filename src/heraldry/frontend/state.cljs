@@ -112,6 +112,5 @@
                                             (println "async-fetch-data error:" db-path query-id e))))
                                       [:loading nil]))))
 
-(defn reset-data [db-path]
-  (rf/dispatch-sync [:set db-path nil])
-  (rf/dispatch-sync [:set [:async-fetch-data db-path] nil]))
+(defn invalidate-cache [db-path query-id]
+  (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id] nil]))

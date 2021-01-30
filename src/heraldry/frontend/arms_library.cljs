@@ -150,6 +150,10 @@
         (println "save arms response" response)
         (rf/dispatch-sync [:set (conj form-db-path :id) arms-id])
         (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
+        (state/invalidate-cache form-db-path [arms-id nil])
+        (state/invalidate-cache form-db-path [arms-id 0])
+        (rf/dispatch-sync [:set list-db-path nil])
+        (state/invalidate-cache list-db-path (:user-id user-data))
         (reife/push-state :edit-arms-by-id {:id (id-for-url arms-id)}))
       (catch :default e
         (println "save-form error:" e)
