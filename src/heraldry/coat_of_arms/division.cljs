@@ -143,7 +143,7 @@
   (keyword (str "division-" (name key))))
 
 (defn make-division [type fields parts mask-overlaps outline parent-environment parent
-                     {:keys [render-field db-path transform render-options] :as context}]
+                     {:keys [render-field db-path transform svg-export?] :as context}]
   (let [mask-ids     (->> (range (count fields))
                           (map (fn [idx] [(util/id (str (name type) "-" idx))
                                           (util/id (str (name type) "-" idx))])))
@@ -168,7 +168,9 @@
               overlap-paths     (get mask-overlaps idx)]
           ^{:key idx}
           [:<>
-           [:clipPath {:id clip-path-id}
+           [(if svg-export?
+              :mask
+              :clipPath) {:id clip-path-id}
             [:path {:d    environment-shape
                     :fill "#fff"}]
             (cond
@@ -182,7 +184,7 @@
                                                :fill         "none"
                                                :stroke-width overlap-stroke-width
                                                :stroke       "#fff"}]))]
-           (if-let [mask-shape (-> env :meta :mask)]
+           (when-let [mask-shape (-> env :meta :mask)]
              [:mask {:id mask-id}
               [:path {:d    environment-shape
                       :fill "#fff"}]
@@ -192,10 +194,12 @@
      (for [[idx [clip-path-id mask-id]] (map-indexed vector mask-ids)]
        (let [env (get environments idx)]
          ^{:key idx}
-         [:g {:clip-path (str "url(#" clip-path-id ")")
-              :mask      (when (-> env :meta :mask)
-                           (str "url(#" mask-id ")"))}
-          [:g {:transform transform}
+         [:g {(if svg-export?
+                :mask
+                :clip-path) (str "url(#" clip-path-id ")")}
+          [:g {:transform transform
+               :mask      (when (-> env :meta :mask)
+                            (str "url(#" mask-id ")"))}
            [render-field
             (get-field fields idx)
             (get environments idx)

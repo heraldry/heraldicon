@@ -22,12 +22,16 @@
                     tincture/patterns
                     hatching/patterns]
                    [:defs
-                    [:clipPath
+                    [(if svg-export?
+                       :mask
+                       :clipPath)
                      {:id mask-id}
                      [:path {:d      (:shape environment)
                              :fill   "#fff"
                              :stroke "none"}]]]
-                   [:g {:clip-path (str "url(#" mask-id ")")}
+                   [:g {(if svg-export?
+                          :mask
+                          :clip-path) (str "url(#" mask-id ")")}
                     [:path {:d    (:shape environment)
                             :fill "#f0f0f0"}]
                     [field/render field environment (-> context
