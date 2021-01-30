@@ -17,24 +17,20 @@
       second))
 
 (defn full-url-for-arms [arms-data]
-  (let [version (:version arms-data)
-        version (if (zero? version)
-                  (:latest-version arms-data)
-                  version)
-        arms-id (-> arms-data
-                    :id
-                    id-for-url)]
-    (str (config/get :armory-url) "/arms/" arms-id "/" version)))
+  (when-let [arms-id (:id arms-data)]
+    (let [version (:version arms-data)
+          version (if (zero? version)
+                    (:latest-version arms-data)
+                    version)]
+      (str (config/get :armory-url) "/arms/" (id-for-url arms-id) "/" version))))
 
 (defn full-url-for-charge [charge-data]
-  (let [version (:version charge-data)
-        version (if (zero? version)
-                  (:latest-version charge-data)
-                  version)
-        charge-id (-> charge-data
-                      :id
-                      id-for-url)]
-    (str (config/get :armory-url) "/charges/" charge-id "/" version)))
+  (when-let [charge-id (:id charge-data)]
+    (let [version (:version charge-data)
+          version (if (zero? version)
+                    (:latest-version charge-data)
+                    version)]
+      (str (config/get :armory-url) "/charges/" (id-for-url charge-id) "/" version))))
 
 (defn full-url-for-username [username]
   (str (config/get :armory-url) "/users/" username))
