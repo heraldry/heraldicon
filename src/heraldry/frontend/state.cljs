@@ -44,7 +44,12 @@
                                                                          :unguled :vert
                                                                          :beaked :or}}]}}}
            :coat-of-arms {:escutcheon :rectangle}
-           :ui {:component-open? {[:render-options] true}}} db)))
+           :ui {:component-open? {[:arms-form :render-options] true
+                                  [:arms-form :coat-of-arms] true
+                                  [:arms-form :coat-of-arms :field] true
+                                  [:example-coa :render-options] true
+                                  [:example-coa :coat-of-arms] true
+                                  [:example-coa :coat-of-arms :field] true}}} db)))
 
 (rf/reg-event-db
  :set
