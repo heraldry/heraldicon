@@ -20,7 +20,10 @@
                     (when-not svg-export?
                       filter/shadow)
                     [tincture/patterns render-options]
-                    hatching/patterns]
+                    (when (-> render-options
+                              :mode
+                              (= :hatching))
+                      hatching/patterns)]
                    [:defs
                     [(if svg-export?
                        :mask
