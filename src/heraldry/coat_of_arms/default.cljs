@@ -17,7 +17,6 @@
 (def charge
   {:component :charge
    :type :roundel
-   :variant :default
    :field field
    :hints {:outline-mode :keep}})
 
