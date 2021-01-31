@@ -107,6 +107,14 @@
                      (s/valid? spec form))
 
     :heraldry/charge {:component :charge
+                      :type :roundel
+                      :attitude nil
+                      :facing nil
+                      :variant nil
+                      :field {:component :field
+                              :content {:tincture :azure}}}
+
+    :heraldry/charge {:component :charge
                       :type :lion
                       :attitude :rampant
                       :facing :reguardant
