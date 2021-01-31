@@ -212,10 +212,12 @@
                                        :hatching})
 (s/def :heraldry.render-options/outline? boolean?)
 (s/def :heraldry.render-options/squiggly? boolean?)
+(s/def :heraldry.render-options/theme keyword?)
 (s/def :heraldry/render-options (s/and (s/keys :req-un [:heraldry/component]
                                                :opt-un [:heraldry.render-options/mode
                                                         :heraldry.render-options/outline?
-                                                        :heraldry.render-options/squiggly?])
+                                                        :heraldry.render-options/squiggly?
+                                                        :heraldry.render-options/theme])
                                        #(-> %
                                             (core/get-key :heraldry/component)
                                             (= :render-options))))
