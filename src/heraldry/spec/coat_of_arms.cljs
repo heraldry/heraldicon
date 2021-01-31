@@ -147,29 +147,31 @@
                                                   :heraldry.charge.tincture/eyes-and-teeth]))
 (s/def :heraldry.charge.hint/outline? boolean?)
 (s/def :heraldry.charge/hints (s/keys :opt-un [:heraldry.charge.hint/outline?]))
-(s/def :heraldry.charge/attitude #{:none
-                                   :couchant
-                                   :courant
-                                   :dormant
-                                   :pascuant
-                                   :passant
-                                   :rampant
-                                   :salient
-                                   :sejant
-                                   :statant})
-(s/def :heraldry.charge/facing #{:none
-                                 :to-dexter
-                                 :to-sinister
-                                 :affronte
-                                 :en-arriere
-                                 :guardant
-                                 :reguardant
-                                 :salient
-                                 :in-trian-aspect})
+(s/def :heraldry.charge/attitude (s/nilable #{:none
+                                              :couchant
+                                              :courant
+                                              :dormant
+                                              :pascuant
+                                              :passant
+                                              :rampant
+                                              :salient
+                                              :sejant
+                                              :statant}))
+(s/def :heraldry.charge/facing (s/nilable #{:none
+                                            :to-dexter
+                                            :to-sinister
+                                            :affronte
+                                            :en-arriere
+                                            :guardant
+                                            :reguardant
+                                            :salient
+                                            :in-trian-aspect}))
 (s/def :heraldry.charge.variant/id string?)
 (s/def :heraldry.charge.variant/version number?)
-(s/def :heraldry.charge/variant (s/keys :req-un [:heraldry.charge.variant/id
-                                                 :heraldry.charge.variant/version]))
+(s/def :heraldry.charge/variant (s/nilable (s/keys :req-un [:heraldry.charge.variant/id
+                                                            :heraldry.charge.variant/version])))
+(s/def :heraldry.charge/escutcheon #(or (= % :none)
+                                        (s/valid? :heraldry.coat-of-arms/escutcheon %)))
 (s/def :heraldry/charge (s/and (s/keys :req-un [:heraldry/component
                                                 :heraldry.charge/type
                                                 :heraldry.charge/field]
@@ -177,6 +179,7 @@
                                                 :heraldry.charge/facing
                                                 :heraldry.charge/position
                                                 :heraldry.charge/geometry
+                                                :heraldry.charge/escutcheon
                                                 :heraldry.charge/tincture
                                                 :heraldry.charge/hints
                                                 :heraldry.charge/variant])
