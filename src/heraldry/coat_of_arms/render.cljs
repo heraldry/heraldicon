@@ -19,7 +19,7 @@
                    [:defs
                     (when-not svg-export?
                       filter/shadow)
-                    tincture/patterns
+                    [tincture/patterns render-options]
                     hatching/patterns]
                    [:defs
                     [(if svg-export?
