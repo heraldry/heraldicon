@@ -642,7 +642,8 @@
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:update-charge path {:type     key
                                                                                       :attitude nil
                                                                                       :facing   nil
-                                                                                      :data     nil}])}
+                                                                                      :data     nil
+                                                                                      :variant  nil}])}
      [:svg {:style               {:width  "4em"
                                   :height "4.5em"}
             :viewBox             "0 0 120 200"
