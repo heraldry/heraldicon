@@ -44,7 +44,8 @@
                     [:path {:d    (:shape environment)
                             :fill "#f0f0f0"}]
                     [field/render field environment (-> context
-                                                        (update :db-path conj :field))]]
+                                                        (update :db-path conj :field)
+                                                        (assoc :root-escutcheon escutcheon))]]
                    (when (:outline? render-options)
                      [:g division/outline-style
                       [:path {:d (:shape environment)}]])]}))
