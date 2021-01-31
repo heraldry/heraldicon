@@ -120,7 +120,9 @@
 (defn generate-svg-clicked [db-path]
   (go
     (try
-      (let [payload (select-keys @(rf/subscribe [:get db-path]) [:id :version])
+      (let [payload (select-keys @(rf/subscribe [:get db-path]) [:id
+                                                                 :version
+                                                                 :render-options])
             user-data (user/data)
             response (<? (api-request/call :generate-svg-arms payload user-data))]
         (println "generate-svg-arms response" response)
@@ -131,7 +133,9 @@
 (defn generate-png-clicked [db-path]
   (go
     (try
-      (let [payload (select-keys @(rf/subscribe [:get db-path]) [:id :version])
+      (let [payload (select-keys @(rf/subscribe [:get db-path]) [:id
+                                                                 :version
+                                                                 :render-options])
             user-data (user/data)
             response (<? (api-request/call :generate-png-arms payload user-data))]
         (println "generate-png-arms response" response)
@@ -164,10 +168,13 @@
 (defn export-buttons [mode]
   (let [logged-in? (-> (user/data)
                        :logged-in?)
+        unsaved-changes? (not= (-> @(rf/subscribe [:get form-db-path])
+                                   (dissoc :render-options))
+                               (-> @(rf/subscribe [:get saved-data-db-path])
+                                   (dissoc :render-options)))
         disabled? (or (not logged-in?)
                       (and (= mode :form)
-                           (not= @(rf/subscribe [:get form-db-path])
-                                 @(rf/subscribe [:get saved-data-db-path]))))]
+                           unsaved-changes?))]
     [:<>
      [:button.pure-button {:type "button"
                            :class (when disabled? "disabled")
