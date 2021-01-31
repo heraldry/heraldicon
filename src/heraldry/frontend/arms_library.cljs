@@ -291,8 +291,7 @@
                                                                   (reife/push-state :edit-arms-by-id {:id arms-id}))}
             "Edit"])
          [:div.spacer]]
-        [component/form-render-options (conj form-db-path :render-options)]
-        [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]])))
+        [component/form-render-options (conj form-db-path :render-options)]]])))
 
 (defn list-arms-for-user [user-id]
   (let [[status arms-list] (state/async-fetch-data

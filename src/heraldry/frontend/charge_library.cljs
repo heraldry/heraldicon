@@ -334,8 +334,7 @@
                                                                   (rf/dispatch-sync [:clear-form-message form-db-path])
                                                                   (reife/push-state :edit-charge-by-id {:id charge-id}))}
             "Edit"]])
-        [component/form-render-options [:example-coa :render-options]]
-        [component/form-for-coat-of-arms [:example-coa :coat-of-arms]]]])))
+        [component/form-render-options [:example-coa :render-options]]]])))
 
 (defn list-charges-for-user [user-id]
   (let [[status charge-list] (state/async-fetch-data
