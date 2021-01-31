@@ -21,6 +21,9 @@
       (dissoc :fn-component-selected?)
       (dissoc :fn-select-component)))
 
+(def ui-render-options-theme-path
+  [:ui :render-options :theme])
+
 ;; subs
 
 (rf/reg-sub
@@ -414,7 +417,8 @@
                                    :content {:tincture (if (= value key) :or :azure)}}}
                           100
                           (-> coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)))]
+                              (assoc-in [:render-options :outline?] true)
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
      [:svg {:style {:width "4em"
                     :height "5em"}
@@ -457,6 +461,9 @@
                        :colours (rf/dispatch [:set outline-path false])))]
       (when (= @(rf/subscribe [:get mode-path]) :colours)
         [select (conj db-path :theme) "Colour Theme" tincture/theme-choices
+         :on-change #(do
+                       (rf/dispatch [:set (conj db-path :theme) %])
+                       (rf/dispatch [:set ui-render-options-theme-path %]))
          :grouped? true
          :default tincture/default-theme])])
    [checkbox (conj db-path :outline?) "Draw outline"]
@@ -468,6 +475,9 @@
    [form-for-field (conj db-path :field)]])
 
 (defn tincture-choice [path key display-name]
+  (println "tin" key (-> coa-select-option-context
+                         (assoc-in [:render-options :outline?] true)
+                         (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))
   (let [value @(rf/subscribe [:get path])
         {:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
@@ -475,7 +485,8 @@
                                    :content {:tincture key}}}
                           40
                           (-> coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)))]
+                              (assoc-in [:render-options :outline?] true)
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
                           :style {:border (if (= value key)
                                             "1px solid #000"
@@ -605,7 +616,8 @@
                                                  :field {:content {:tincture (if (= current key) :or :azure)}}}]}}
                           100
                           (-> coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)))]
+                              (assoc-in [:render-options :outline?] true)
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:update-charge path {:type key
                                                                                       :attitude nil
                                                                                       :facing nil
@@ -632,7 +644,8 @@
                                                  :field {:content {:tincture :or}}}]}}
                           100
                           (-> coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)))]
+                              (assoc-in [:render-options :outline?] true)
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
     [:div.choice.tooltip
      [:svg {:style {:width "4em"
                     :height "4.5em"}
@@ -812,7 +825,8 @@
                                                   :field {:content {:tincture :azure}}}]}}
                            100
                            (-> coa-select-option-context
-                               (assoc-in [:render-options :outline?] true)))]
+                               (assoc-in [:render-options :outline?] true)
+                               (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
      [:div.choice.tooltip
       [:svg {:style {:width "4em"
                      :height "4.5em"}
@@ -946,7 +960,8 @@
                                                              (= value key) (util/replace-recursively :azure :or)))}})}
                           100
                           (-> coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)))]
+                              (assoc-in [:render-options :outline?] true)
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-division-type path key])}
      [:svg {:style {:width "4em"
                     :height "4.5em"}
@@ -989,7 +1004,8 @@
                                                        {:content {:tincture (if (= key current) :or :azure)}}]}}}
                           100
                           (-> coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)))]
+                              (assoc-in [:render-options :outline?] true)
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
      [:svg {:style {:width "6.5em"
                     :height "4.5em"}
@@ -1088,7 +1104,8 @@
                                                  :field {:content {:tincture (if (= current key) :or :azure)}}}]}}
                           100
                           (-> coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)))]
+                              (assoc-in [:render-options :outline?] true)
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type path key])}
      [:svg {:style {:width "4em"
                     :height "4.5em"}
