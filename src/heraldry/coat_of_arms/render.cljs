@@ -9,7 +9,13 @@
             [heraldry.util :as util]))
 
 (defn coat-of-arms [coat-of-arms width {:keys [render-options svg-export? metadata] :as context}]
-  (let [shield      (escutcheon/field (:escutcheon coat-of-arms))
+  (let [escutcheon  (if (-> render-options
+                            :escutcheon-override
+                            (or :none)
+                            (not= :none))
+                      (:escutcheon-override render-options)
+                      (:escutcheon coat-of-arms))
+        shield      (escutcheon/field escutcheon)
         environment (field-environment/transform-to-width shield width)
         field       (:field coat-of-arms)
         mask-id     (util/id "mask")]

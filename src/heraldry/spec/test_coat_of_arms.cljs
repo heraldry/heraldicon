@@ -211,7 +211,10 @@
                               :outline?  false}
 
     :heraldry/render-options {:component :render-options
-                              :squiggly  true}))
+                              :squiggly  true}
+
+    :heraldry/render-options {:component           :render-options
+                              :escutcheon-override :heater}))
 
 (deftest invalid-render-options
   (are [spec form] (not (s/valid? spec form))
@@ -225,4 +228,7 @@
                               :outline?  5}
 
     :heraldry/render-options {:component :render-options
-                              :squiggly? "foo"}))
+                              :squiggly? "foo"}
+
+    :heraldry/render-options {:component           :render-options
+                              :escutcheon-override :does-not-exist}))

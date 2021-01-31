@@ -208,6 +208,8 @@
                                           (core/get-key :heraldry/component)
                                           (= :coat-of-arms))))
 
+(s/def :heraldry.render-options/escutcheon-override #(or (= % :none)
+                                                         (s/valid? :heraldry.coat-of-arms/escutcheon %)))
 (s/def :heraldry.render-options/mode #{:colours
                                        :hatching})
 (s/def :heraldry.render-options/outline? boolean?)
@@ -217,7 +219,8 @@
                                                :opt-un [:heraldry.render-options/mode
                                                         :heraldry.render-options/outline?
                                                         :heraldry.render-options/squiggly?
-                                                        :heraldry.render-options/theme])
+                                                        :heraldry.render-options/theme
+                                                        :heraldry.render-options/escutcheon-override])
                                        #(-> %
                                             (core/get-key :heraldry/component)
                                             (= :render-options))))
