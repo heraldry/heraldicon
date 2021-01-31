@@ -446,14 +446,19 @@
   [component db-path :render-options "Options" nil
    (let [mode-path    (conj db-path :mode)
          outline-path (conj db-path :outline?)]
-     [radio-select mode-path [["Colours" :colours]
-                              ["Hatching" :hatching]]
-      :default :colours
-      :on-change #(let [new-mode %]
-                    (rf/dispatch [:set mode-path new-mode])
-                    (case new-mode
-                      :hatching (rf/dispatch [:set outline-path true])
-                      :colours  (rf/dispatch [:set outline-path false])))])
+     [:<>
+      [radio-select mode-path [["Colours" :colours]
+                               ["Hatching" :hatching]]
+       :default :colours
+       :on-change #(let [new-mode %]
+                     (rf/dispatch [:set mode-path new-mode])
+                     (case new-mode
+                       :hatching (rf/dispatch [:set outline-path true])
+                       :colours  (rf/dispatch [:set outline-path false])))]
+      (when (= @(rf/subscribe [:get mode-path]) :colours)
+        [select (conj db-path :theme) "Colour Theme" tincture/theme-choices
+         :grouped? true
+         :default tincture/default-theme])])
    [checkbox (conj db-path :outline?) "Draw outline"]
    [checkbox (conj db-path :squiggly?) "Squiggly lines (can be slow)"]])
 
