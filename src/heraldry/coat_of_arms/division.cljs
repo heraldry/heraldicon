@@ -204,7 +204,11 @@
             (get-field fields idx)
             (get environments idx)
             (-> context
-                (assoc :db-path (if (-> type name (s/starts-with? "ordinary-")) ;; FIXME: bit of a hack
+                (assoc :db-path (if (-> type
+                                        name
+                                        (s/split #"-" 2)
+                                        first
+                                        (->> (get #{"charge" "ordinary"}))) ;; FIXME: bit of a hack
                                   (conj db-path :field)
                                   (conj db-path :fields idx))))]]]))
      outline]))
