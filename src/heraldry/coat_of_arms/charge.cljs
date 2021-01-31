@@ -194,7 +194,7 @@
                                                             (v//
                                                              (v/v charge-width
                                                                   charge-height)
-                                                             -2)
+                                                             2)
                                                             rotation
                                                             :scale (v/v scale-x scale-y))
         box-size (v/v (- max-x min-x)
