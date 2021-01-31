@@ -31,22 +31,6 @@
       [:path {:d shape
               :transform (str "translate(" spot-width "," spot-height ") scale(" scale "," scale ")")}]]]))
 
-(def ermine
-  (let [id "ermine"]
-    [id (ermine-base id "#fff" "#000")]))
-
-(def ermines
-  (let [id "ermines"]
-    [id (ermine-base id "#000" "#fff")]))
-
-(def erminois
-  (let [id "erminois"]
-    [id (ermine-base id "#f1b952" "#000")]))
-
-(def pean
-  (let [id "pean"]
-    [id (ermine-base id "#000" "#f1b952")]))
-
 (def void
   [:pattern#void {:width 20
                   :height 20
@@ -395,12 +379,6 @@
        (apply concat)
        (into {})))
 
-(def furs
-  {:ermine ermine
-   :ermines ermines
-   :erminois erminois
-   :pean pean})
-
 (def choices
   [["Metal"
     ["Argent" :argent]
@@ -427,10 +405,28 @@
                        (get theme-map theme))]
     (get theme-colours tincture)))
 
+(def ermine
+  ["ermine" :argent :sable])
+
+(def ermines
+  ["ermines" :sable :argent])
+
+(def erminois
+  ["erminois" :or :sable])
+
+(def pean
+  ["pean" :sable :or])
+
+(def furs
+  {:ermine ermine
+   :ermines ermines
+   :erminois erminois
+   :pean pean})
+
 (defn pick [tincture {:keys [mode theme]}]
   (cond
     (= tincture :none) "url(#void)"
-    (get furs tincture) (let [[id _] (get furs tincture)]
+    (get furs tincture) (let [[id _ _] (get furs tincture)]
                           (str "url(#" id ")"))
     (= mode :hatching) (or
                         (hatching/get-for tincture)
@@ -439,10 +435,13 @@
               (get furs tincture)
               "url(#void)")))
 
-(def patterns
+(defn patterns [{:keys [theme]}]
   (into
    [:<>
     void
     selected]
-   (for [[_ pattern] (vals furs)]
-     pattern)))
+   (for [[id background foreground] (vals furs)]
+     (ermine-base
+      id
+      (lookup-colour background theme)
+      (lookup-colour foreground theme)))))
