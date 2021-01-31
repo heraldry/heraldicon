@@ -112,8 +112,9 @@
   {:position position/default-options
    :geometry geometry/default-options
    :escutcheon {:type :choice
-                :choices escutcheon/choices
-                :default :heater}})
+                :choices (concat [["Root" :none]]
+                                 escutcheon/choices)
+                :default :none}})
 
 (defn options [charge]
   (when charge
@@ -220,13 +221,15 @@
 
 (defn escutcheon
   {:display-name "Escutcheon"}
-  [charge parent environment context]
+  [charge parent environment {:keys [root-escutcheon] :as context}]
   (let [{:keys [escutcheon]} (options/sanitize charge (options charge))]
     (make-charge charge parent environment context
                  :width
                  (fn [width]
                    (let [env (field-environment/transform-to-width
-                              (escutcheon/field escutcheon) width)
+                              (escutcheon/field (if (= escutcheon :none)
+                                                  root-escutcheon
+                                                  escutcheon)) width)
                          env-fess (-> env :points :fess)]
                      {:shape (line/translate (:shape env)
                                              (-> env-fess :x -)

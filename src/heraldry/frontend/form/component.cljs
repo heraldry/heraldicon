@@ -435,28 +435,33 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn form-for-escutcheon [path label & {:keys [label-width allow-none?]}]
+(defn form-for-escutcheon [path label & {:keys [label-width allow-none? choices]}]
   (let [escutcheon (or @(rf/subscribe [:get path])
                        (when allow-none?
                          :none)
+                       (when choices
+                         (-> choices first second))
                        :heater)
-        choices (if allow-none?
-                  (concat [["None" :none]]
-                          escutcheon/choices)
-                  escutcheon/choices)
+        choices (or choices
+                    (if allow-none?
+                      (concat [["None" :none]]
+                              escutcheon/choices)
+                      escutcheon/choices))
         names (->> choices
                    (map (comp vec reverse))
                    (into {}))]
     [:div.setting
      [:label label]
      " "
-     [:div {:style {:left label-width
-                    :display "inline-block"
-                    :position "absolute"}}
-      [submenu path "Select Escutcheon" (get names escutcheon) {:min-width "17.5em"}
-       (for [[display-name key] choices]
-         ^{:key key}
-         [escutcheon-choice path key display-name])]]
+     (conj (if label-width
+             [:div {:style {:display "inline-block"
+                            :position "absolute"
+                            :left label-width}}]
+             [:<>])
+           [submenu path "Select Escutcheon" (get names escutcheon) {:min-width "17.5em"}
+            (for [[display-name key] choices]
+              ^{:key key}
+              [escutcheon-choice path key display-name])])
      [:div.spacer]]))
 
 (defn form-render-options [db-path]
@@ -950,7 +955,10 @@
          (when (:geometry charge-options)
            [form-for-geometry (conj path :geometry)
             (:geometry charge-options)
-            :current (:geometry charge)])])
+            :current (:geometry charge)])
+         (when (:escutcheon charge-options)
+           [form-for-escutcheon (conj path :escutcheon) "Escutcheon"
+            :choices (-> charge-options :escutcheon :choices)])])
       [select (conj path :hints :outline-mode) "Outline" [["Keep" :keep]
                                                           ["Remove" :remove]
                                                           ["Primary" :primary]
