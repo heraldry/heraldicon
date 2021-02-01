@@ -6,7 +6,7 @@
 (defn call [name payload user-data]
   (println "calling API" name)
   (go-catch
-   (let [response (<? (http/post (config/get :armory-api-endpoint)
+   (let [response (<? (http/post (config/get :heraldry-api-endpoint)
                                  {:headers {"Session-Id" (:session-id user-data)}
                                   :edn-params {:call name
                                                :data payload}}))

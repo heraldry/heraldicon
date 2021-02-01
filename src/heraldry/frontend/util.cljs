@@ -62,8 +62,8 @@
         arms-id (-> arms-data
                     :id
                     id-for-url)]
-    (str (config/get :armory-url) (reife/href :view-arms-by-id-and-version {:id arms-id
-                                                                            :version version}))))
+    (str (config/get :heraldry-url) (reife/href :view-arms-by-id-and-version {:id arms-id
+                                                                              :version version}))))
 
 (defn full-url-for-charge [charge-data]
   (let [version (:version charge-data)
@@ -74,5 +74,5 @@
                       :id
                       id-for-url)]
 
-    (str (config/get :armory-url) (reife/href :view-charge-by-id-and-version {:id charge-id
-                                                                              :version version}))))
+    (str (config/get :heraldry-url) (reife/href :view-charge-by-id-and-version {:id charge-id
+                                                                                :version version}))))
