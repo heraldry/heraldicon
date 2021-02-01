@@ -1,9 +1,9 @@
-{:armory-api-endpoint #profile {:local "http://localhost:4000/local/api"
-                                :dev "..."}
+{:heraldry-api-endpoint #profile {:local "http://localhost:4000/local/api"
+                                  :dev "..."}
  :stage #profile {:local "local"
                   :dev "dev"
                   :prod "prod"}
- :armory-url #profile {:local "http://localhost:8181"}
+ :heraldry-url #profile {:local "http://localhost:8181"}
  :cognito-pool-config #profile {:local {:UserPoolId "eu-central-1_2V31wcCCt"
                                         :ClientId "23nbkmboar365k4rfn2o6qrs0c"
                                         :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_2V31wcCCt/.well-known/jwks.json"}}}
