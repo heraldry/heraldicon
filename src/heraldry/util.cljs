@@ -23,7 +23,7 @@
           version (if (zero? version)
                     (:latest-version arms-data)
                     version)]
-      (str (config/get :armory-url) "/arms/" (id-for-url arms-id) "/" version))))
+      (str (config/get :heraldry-url) "/arms/" (id-for-url arms-id) "/" version))))
 
 (defn full-url-for-charge [charge-data]
   (when-let [charge-id (:id charge-data)]
@@ -31,7 +31,7 @@
           version (if (zero? version)
                     (:latest-version charge-data)
                     version)]
-      (str (config/get :armory-url) "/charges/" (id-for-url charge-id) "/" version))))
+      (str (config/get :heraldry-url) "/charges/" (id-for-url charge-id) "/" version))))
 
 (defn full-url-for-username [username]
-  (str (config/get :armory-url) "/users/" username))
+  (str (config/get :heraldry-url) "/users/" username))
