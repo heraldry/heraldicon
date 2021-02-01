@@ -1,14 +1,13 @@
-.PHONY: setup-dev dev release
+.PHONY: release
 
-setup-dev:
-	yarn install
+release-frontend-prod:
+	mkdir -p release
+	rm -rf release/output 2> /dev/null || true
+	cp -r frontend/assets release/output
+	rm -rf release/output/js/generated 2> /dev/null || true
+	STAGE=prod npx shadow-cljs release frontend --config-merge '{:output-dir "release/output/js/generated"}'
 
-dev:
-	npx shadow-cljs watch main
 
-release:
-	rm -rf release/coad 2> /dev/null || true
-	cp -r client-coat-of-arms/assets/ release/coad
-	rm -rf release/coad/js/generated 2> /dev/null || true
-	npx shadow-cljs release client-coat-of-arms --config-merge '{:output-dir "release/coad/js/generated"}'
-
+release-backend-prod:
+	rm -rf backend/generated/* 2> /dev/null || true
+	STAGE=prod npx shadow-cljs release backend
