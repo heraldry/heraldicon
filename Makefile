@@ -10,4 +10,6 @@ release-frontend-prod:
 
 release-backend-prod:
 	rm -rf backend/generated/* 2> /dev/null || true
+	rm -rf backend/node_modules/sharp 2> /dev/null || true
+	cp -r backend/linux-sharp/ backend/node_modules/sharp
 	STAGE=prod npx shadow-cljs release backend
