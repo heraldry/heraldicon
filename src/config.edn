@@ -1,5 +1,5 @@
 {:heraldry-api-endpoint #profile {:local "http://localhost:4000/local/api"
-                                  :prod "https://rig9gqedwg.execute-api.eu-central-1.amazonaws.com/api"}
+                                  :prod "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/api"}
  :stage #profile {:local "local"
                   :prod "prod"}
  :heraldry-url #profile {:local "http://localhost:8181"
