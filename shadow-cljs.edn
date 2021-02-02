@@ -43,7 +43,8 @@
 
           :backend
           {:target :node-library
-           :exports {:handler heraldry.api.core/handler}
+           :exports {:handler heraldry.api.core/handler
+                     :options_handler heraldry.api.core/options-handler}
            :js-options {:js-package-dirs ["./backend/node_modules"]}
            :output-to "backend/generated/api.js"
            :devtools {:repl-pprint true}
