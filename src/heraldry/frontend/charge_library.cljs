@@ -14,6 +14,7 @@
             [heraldry.frontend.http :as http]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
+            [heraldry.frontend.util :as util]
             [heraldry.util :refer [id-for-url]]
             [hickory.core :as hickory]
             [re-frame.core :as rf]
@@ -352,13 +353,28 @@
                                 :id
                                 id-for-url)]
               ^{:key charge-id}
-              [:li.charge
+              [:li.charge {:style {:white-space "nowrap"}}
                [:a {:href     (reife/href :view-charge-by-id {:id charge-id})
                     :on-click #(do
                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
                                  (rf/dispatch-sync [:clear-form-message form-db-path])
                                  (reife/push-state :view-charge-by-id {:id charge-id}))}
-                (:name charge)]])))]))))
+                (:name charge)]
+               [:div.details {:style {:display        "inline-block"
+                                      :line-height    "1.5em"
+                                      :vertical-align "middle"
+                                      :white-space    "normal"}}
+                (when-let [attitude (:attitude charge)]
+                  [:div.tag.attitude (util/translate attitude)])
+                (when-let [facing (:facing charge)]
+                  [:div.tag.facing (util/translate facing)])
+                (for [attribute (->> charge
+                                     :attributes
+                                     (filter second)
+                                     (map first)
+                                     sort)]
+                  ^{:key attribute}
+                  [:div.tag.attribute (util/translate attribute)])]])))]))))
 
 (defn list-my-charges []
   (let [user-data (user/data)]
