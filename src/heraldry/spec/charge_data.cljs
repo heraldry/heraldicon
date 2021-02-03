@@ -25,15 +25,7 @@
                                         (-> % count (> 0))))
 (s/def :heraldry.charge-data/type keyword?)
 (s/def :heraldry.charge-data/attitude attributes/attitude-map)
-(s/def :heraldry.charge-data/facing #{:none
-                                      :to-dexter
-                                      :to-sinister
-                                      :affronte
-                                      :en-arriere
-                                      :guardant
-                                      :reguardant
-                                      :salient
-                                      :in-trian-aspect})
+(s/def :heraldry.charge-data/facing attributes/facing-map)
 (s/def :heraldry.charge-data/attributes #(every? (fn [[k v]]
                                                    (and (get #{:coward
                                                                :pierced

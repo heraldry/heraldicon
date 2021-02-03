@@ -1,5 +1,18 @@
 (ns heraldry.coat-of-arms.attributes)
 
+(defn options->map [options]
+  (->> options
+       (map (fn [[group-name & items]]
+              (if (and (-> items count (= 1))
+                       (-> items first keyword?))
+                ;; in this case there is no group, treat the first element of "items" as key
+                ;; and "group-name" as display-name
+                [[(first items) group-name]]
+                (->> items
+                     (map (comp vec reverse))))))
+       (apply concat)
+       (into {})))
+
 (def attitude-options
   [["None" :none]
    ["Beasts"
@@ -37,14 +50,18 @@
     ["Glissant" :glissant]]])
 
 (def attitude-map
-  (->> attitude-options
-       (map (fn [[group-name & items]]
-              (if (and (-> items count (= 1))
-                       (-> items first keyword?))
-                ;; in this case there is no group, treat the first element of "items" as key
-                ;; and "group-name" as display-name
-                [[(first items) group-name]]
-                (->> items
-                     (map (comp vec reverse))))))
-       (apply concat)
-       (into {})))
+  (options->map attitude-options))
+
+(def facing-options
+  [["None" :none]
+   ["To dexter" :to-dexter]
+   ["To sinister" :to-sinister]
+   ["Affronté" :affronte]
+   ["En arrière" :en-arriere]
+   ["Guardant" :guardant]
+   ["Reguardant" :reguardant]
+   ["Salient" :salient]
+   ["In trian aspect" :in-trian-aspect]])
+
+(def facing-map
+  (options->map facing-options))
