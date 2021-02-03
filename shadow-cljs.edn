@@ -52,7 +52,8 @@
            :build-hooks      [(shadow-env.core/hook)]}
 
           :test
-          {:target    :node-test
-           :output-to "out/node-tests.js"
-           :ns-regexp "test"
-           :autorun   true}}}
+          {:target           :node-test
+           :output-to        "./backend/out/node-tests.js"
+           :compiler-options {:warnings {:redef false}}
+           :ns-regexp        "test"
+           :autorun          true}}}
