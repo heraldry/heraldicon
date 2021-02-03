@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.position
-  (:require [heraldry.coat-of-arms.vector :as v]))
+  (:require [heraldry.coat-of-arms.vector :as v]
+            [heraldry.util :as util]))
 
-(def choices
+(def point-choices
   [["Fess" :fess]
    ["Chief" :chief]
    ["Base" :base]
@@ -10,9 +11,12 @@
    ["Honour" :honour]
    ["Nombril" :nombril]])
 
+(def point-map
+  (util/choices->map point-choices))
+
 (def default-options
   {:point {:type :choice
-           :choices choices
+           :choices point-choices
            :default :fess}
    :offset-x {:type :range
               :min -45
