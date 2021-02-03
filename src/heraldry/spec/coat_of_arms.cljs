@@ -18,19 +18,19 @@
                              :coat-of-arms
                              :render-options})
 
-(s/def :heraldry.line/type line/line-map)
-(s/def :heraldry.line/eccentricity number?)
-(s/def :heraldry.line/width number?)
-(s/def :heraldry.line/flipped? boolean?)
+(s/def :heraldry.line/type (s/nilable line/line-map))
+(s/def :heraldry.line/eccentricity (s/nilable number?))
+(s/def :heraldry.line/width (s/nilable number?))
+(s/def :heraldry.line/flipped? (s/nilable boolean?))
 (s/def :heraldry/line (s/keys :opt-un [:heraldry.line/type
                                        :heraldry.line/eccentricity
                                        :heraldry.line/width
                                        :heraldry.line/offset
                                        :heraldry.line/flipped?]))
 
-(s/def :heraldry.position/point position/point-map)
-(s/def :heraldry.position/offset-x number?)
-(s/def :heraldry.position/offset-y number?)
+(s/def :heraldry.position/point (s/nilable position/point-map))
+(s/def :heraldry.position/offset-x (s/nilable number?))
+(s/def :heraldry.position/offset-y (s/nilable number?))
 (s/def :heraldry/position (s/keys :opt-un [:heraldry.position/point
                                            :heraldry.position/offset-x
                                            :heraldry.position/offset-y]))

@@ -13,9 +13,12 @@
 
     :heraldry/field {:component :field
                      :division  {:type   :per-pale
+                                 :origin {:point    :fess
+                                          :offset-x 0
+                                          :offset-y nil}
                                  :line   {:type         :invected
                                           :eccentricity 1.3
-                                          :width        2
+                                          :width        nil
                                           :offset       0.2
                                           :flipped?     false}
                                  :fields [{:component :field
