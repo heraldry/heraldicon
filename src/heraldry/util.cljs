@@ -36,8 +36,8 @@
 (defn full-url-for-username [username]
   (str (config/get :heraldry-url) "/users/" username))
 
-(defn options->map [options]
-  (->> options
+(defn choices->map [choices]
+  (->> choices
        (map (fn [[group-name & items]]
               (if (and (-> items count (= 1))
                        (-> items first keyword?))
