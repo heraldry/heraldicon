@@ -53,6 +53,7 @@
 
           :test
           {:target :node-test
-           :output-to "out/node-tests.js"
+           :output-to "./backend/out/node-tests.js"
+           :compiler-options {:warnings {:redef false}}
            :ns-regexp "test"
            :autorun true}}}

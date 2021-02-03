@@ -1,6 +1,7 @@
 (ns heraldry.spec.coat-of-arms
   (:require [cljs.spec.alpha :as s]
             [heraldry.coat-of-arms.attributes :as attributes]
+            [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.spec.core :as core]))
 
 (s/def :heraldry/tincture #{:none
@@ -171,20 +172,7 @@
                                     (core/get-key :heraldry/component)
                                     (= :charge))))
 
-(s/def :heraldry.coat-of-arms/escutcheon #{:heater
-                                           :square-french
-                                           :square-iberian
-                                           :french-modern
-                                           :lozenge
-                                           :roundel
-                                           :oval
-                                           :renaissance
-                                           :swiss
-                                           :english
-                                           :polish
-                                           :polish-19th-century
-                                           :rectangle
-                                           :flag})
+(s/def :heraldry.coat-of-arms/escutcheon escutcheon/kinds-map)
 (s/def :heraldry.coat-of-arms/field #(s/valid? :heraldry/field %))
 (s/def :heraldry.coat-of-arms/spec-version number?)
 (s/def :heraldry/coat-of-arms (s/and (s/keys :req-un [:heraldry/component
