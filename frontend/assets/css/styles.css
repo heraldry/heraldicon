@@ -183,3 +183,29 @@ label div {
 .sub-credit {
   margin-left: 1em;
 }
+
+.tag {
+  display: inline-block;
+  font-size: 0.8em;
+  margin-left: 0.5em;
+  height: 1.2em;
+  border-radius: 0.6em;
+  padding: 4px 8px;
+  white-space: nowrap;
+  line-height: 1.2em;
+}
+
+.tag.attitude {
+  background-color: #fdd;
+  color: #933;
+}
+
+.tag.facing {
+  background-color: #ccf;
+  color: #339;
+}
+
+.tag.attribute {
+  background-color: #beb;
+  color: #171;
+}
