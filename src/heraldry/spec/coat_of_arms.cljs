@@ -2,23 +2,11 @@
   (:require [cljs.spec.alpha :as s]
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
+            [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.spec.core :as core]))
 
-(s/def :heraldry/tincture #{:none
-                            :argent
-                            :or
-                            :vert
-                            :azure
-                            :gules
-                            :sable
-                            :purpure
-                            :murrey
-                            :sanguine
-                            :tenne
-                            :ermine
-                            :ermines
-                            :erminois
-                            :pean})
+(s/def :heraldry/tincture #(or (= % :none)
+                               (get tincture/tincture-map %)))
 
 (s/def :heraldry/component #{:field
                              :ordinary
@@ -181,7 +169,7 @@
                                        :hatching})
 (s/def :heraldry.render-options/outline? boolean?)
 (s/def :heraldry.render-options/squiggly? boolean?)
-(s/def :heraldry.render-options/theme keyword?)
+(s/def :heraldry.render-options/theme tincture/theme-map)
 (s/def :heraldry/render-options (s/and (s/keys :req-un [:heraldry/component]
                                                :opt-un [:heraldry.render-options/mode
                                                         :heraldry.render-options/outline?
