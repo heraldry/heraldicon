@@ -4,15 +4,7 @@
 
 (s/def :heraldry.charge-data.data.edn-data/width number?)
 (s/def :heraldry.charge-data.data.edn-data/height number?)
-(s/def :heraldry.charge-data.data.edn-data.colour/type #{:primary
-                                                         :outline
-                                                         :keep
-                                                         :eyes-and-teeth
-                                                         :armed
-                                                         :langued
-                                                         :attired
-                                                         :unguled
-                                                         :beaked})
+(s/def :heraldry.charge-data.data.edn-data.colour/type attributes/tincture-modifier-for-charge-map)
 (s/def :heraldry.charge-data.data.edn-data/colours #(every? (fn [k v]
                                                               (and (re-matches #"^#[a-z0-9]{6}$" k)
                                                                    (s/valid? :heraldry.charge-data.colour/type v))) %))

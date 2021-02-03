@@ -82,3 +82,46 @@
 
 (def attribute-map
   (options->map attribute-options))
+
+(def tincture-modifier-options
+  [["Fauna"
+    ["Armed" :armed]
+    ["Attired" :attired]
+    ["Beaked" :beaked]
+    ["Eyed (peacock)" :eyed]
+    ["Jelloped" :jelloped]
+    ["Langued" :langued]
+    ["Legged" :legged]
+    ["Unguled" :unguled]
+    ["Winged" :winged]]
+   ["Flora"
+    ["Barbed" :barbed]
+    ["Bladed" :bladed]
+    ["Fructed" :fructed]
+    ["Leaved" :leaved]
+    ["Seeded" :seeded]
+    ["Slipped" :slipped]]
+   ["Other"
+    ["Caparisoned" :caparisoned]
+    ["Collared" :collared]
+    ["Erased" :erased]
+    ["Garnished" :garnished]
+    ["Hilt" :hilt]
+    ["Hooded" :hooded]
+    ["Masoned" :masoned]
+    ["Pommel" :pommel]
+    ["Stringed" :stringed]]])
+
+(def tincture-modifier-map
+  (options->map tincture-modifier-options))
+
+(def tincture-modifier-for-charge-options
+  (concat [["Technical"
+            ["Don't replace" :keep]
+            ["Primary" :primary]
+            ["Outline" :outline]
+            ["Eyes/teeth" :eyes-and-teeth]]]
+          tincture-modifier-options))
+
+(def tincture-modifier-for-charge-map
+  (options->map tincture-modifier-for-charge-options))
