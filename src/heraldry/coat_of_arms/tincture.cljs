@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.tincture
-  (:require             [heraldry.coat-of-arms.hatching :as hatching]))
+  (:require [heraldry.coat-of-arms.hatching :as hatching]
+            [heraldry.util :as util]))
 
 (def ermine-shape
   [100 160
@@ -363,14 +364,18 @@
 (def default-theme
   :wappenwiki)
 
-(def theme-choices
+(def theme-options
   (->> themes
        (map (fn [[group-name & items]]
-              (concat [group-name] (->> items
-                                        (map (fn [[display-name key _]]
-                                               [display-name key]))))))))
+              (vec (concat [group-name] (->> items
+                                             (map (fn [[display-name key _]]
+                                                    [display-name key])))))))
+       vec))
 
 (def theme-map
+  (util/options->map theme-options))
+
+(def theme-data-map
   (->> themes
        (map (fn [[_group-name & items]]
               (->> items
@@ -379,7 +384,7 @@
        (apply concat)
        (into {})))
 
-(def choices
+(def tincture-options
   [["Metal"
     ["Argent" :argent]
     ["Or" :or]]
@@ -399,10 +404,13 @@
     ["Murrey" :murrey]
     ["Tenné" :tenne]]])
 
+(def tincture-map
+  (util/options->map tincture-options))
+
 (defn lookup-colour [tincture theme]
   (let [theme-colours (merge
-                       (get theme-map default-theme)
-                       (get theme-map theme))]
+                       (get theme-data-map default-theme)
+                       (get theme-data-map theme))]
     (get theme-colours tincture)))
 
 (def ermine
