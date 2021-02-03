@@ -23,45 +23,45 @@
     ["Passant" :passant]
     ["Rampant" :rampant]
     ["Salient" :salient]
+    ["Segreant" :segreant]
     ["Sejant" :sejant]
-    ["Statant" :statant]
-    ["Segreant" :segreant]]
+    ["Statant" :statant]]
    ["Two beasts"
+    ["Addorsed" :addorsed]
     ["Combatant" :combatant]
-    ["Respectant" :respectant]
-    ["Addorsed" :addorsed]]
+    ["Respectant" :respectant]]
    ["Winged creatures"
-    ["Displayed" :displayed]
-    ["Overt" :overt]
     ["Close" :close]
+    ["Displayed" :displayed]
+    ["In her piety" :in-her-piety]
     ["Issuant" :issuant]
-    ["Rising" :rising]
-    ["Volant" :volant]
+    ["Overt" :overt]
     ["Recursant" :recursant]
+    ["Rising" :rising]
     ["Vigilant" :vigilant]
-    ["Vulning herself" :vulning]
-    ["In her piety" :in-her-piety]]
+    ["Volant" :volant]
+    ["Vulning herself" :vulning]]
    ["Sea creatures"
+    ["Hauriant" :hauriant]
     ["Naiant" :naiant]
-    ["Urinant" :urinant]
-    ["Hauriant" :hauriant]]
+    ["Urinant" :urinant]]
    ["Serpents"
-    ["Nowed" :nowed]
-    ["Glissant" :glissant]]])
+    ["Glissant" :glissant]
+    ["Nowed" :nowed]]])
 
 (def attitude-map
   (options->map attitude-options))
 
 (def facing-options
   [["None" :none]
-   ["To dexter" :to-dexter]
+   ["To dexter (default)" :to-dexter]
    ["To sinister" :to-sinister]
    ["Affronté" :affronte]
    ["En arrière" :en-arriere]
    ["Guardant" :guardant]
+   ["In trian aspect" :in-trian-aspect]
    ["Reguardant" :reguardant]
-   ["Salient" :salient]
-   ["In trian aspect" :in-trian-aspect]])
+   ["Salient" :salient]])
 
 (def facing-map
   (options->map facing-options))
