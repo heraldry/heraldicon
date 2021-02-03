@@ -497,9 +497,6 @@
    [form-for-field (conj db-path :field)]])
 
 (defn tincture-choice [path key display-name]
-  (println "tin" key (-> coa-select-option-context
-                         (assoc-in [:render-options :outline?] true)
-                         (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))
   (let [value @(rf/subscribe [:get path])
         {:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
