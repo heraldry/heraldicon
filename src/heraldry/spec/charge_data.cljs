@@ -27,9 +27,7 @@
 (s/def :heraldry.charge-data/attitude attributes/attitude-map)
 (s/def :heraldry.charge-data/facing attributes/facing-map)
 (s/def :heraldry.charge-data/attributes #(every? (fn [[k v]]
-                                                   (and (get #{:coward
-                                                               :pierced
-                                                               :voided} k)
+                                                   (and (get attributes/attribute-map k)
                                                         (boolean? v))) %))
 (s/def :heraldry.charge-data/spec-version number?)
 (s/def :heraldry/charge-data (s/keys :req-un [:heraldry.charge-data/name
