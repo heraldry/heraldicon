@@ -42,7 +42,8 @@
                                                                          :langued :gules
                                                                          :attired :argent
                                                                          :unguled :vert
-                                                                         :beaked :or}}]}}}
+                                                                         :beaked :or
+                                                                         :winged :purpure}}]}}}
            :coat-of-arms {:escutcheon :rectangle}
            :ui {:component-open? {[:arms-form :render-options] true
                                   [:arms-form :coat-of-arms] true
