@@ -1274,6 +1274,9 @@
        (map (fn [function]
               [(-> function meta :display-name) (-> function meta :name keyword)]))))
 
+(def division-map
+  (util/choices->map choices))
+
 (defn part-name [type index]
   (let [function (get kinds-function-map type)]
     (-> function meta :parts (get index))))

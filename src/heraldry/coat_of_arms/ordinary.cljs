@@ -7,7 +7,8 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.util :as util]))
 
 (defn diagonal-mode-choices [type]
   (let [options {:forty-five-degrees "45°"
@@ -871,6 +872,9 @@
   (->> ordinaries
        (map (fn [function]
               [(-> function meta :display-name) (-> function meta :name keyword)]))))
+
+(def ordinary-map
+  (util/choices->map choices))
 
 (defn render [{:keys [type] :as ordinary} parent environment context]
   (let [function (get kinds-function-map type)]

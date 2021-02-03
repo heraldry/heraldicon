@@ -6,7 +6,8 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.random :as random]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.util :as util]))
 
 (declare options)
 
@@ -233,6 +234,9 @@
   (->> lines
        (map (fn [function]
               [(-> function meta :display-name) (-> function meta :name keyword)]))))
+
+(def line-map
+  (util/choices->map choices))
 
 (def default-options
   {:type {:type :choice
