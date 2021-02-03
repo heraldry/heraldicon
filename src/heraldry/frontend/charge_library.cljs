@@ -226,9 +226,12 @@
         [:div.pure-control-group
          [:h4 {:style {:margin-top    "1em"
                        :margin-bottom "0.5em"}} "Attributes"]
-         [form/checkbox (conj form-db-path :attributes :coward) "Coward"]
-         [form/checkbox (conj form-db-path :attributes :pierced) "Pierced"]
-         [form/checkbox (conj form-db-path :attributes :voided) "Voided"]]
+         (for [[group-name & attributes] attributes/attribute-options]
+           ^{:key group-name}
+           [:div {:style {:display "inline-block"}}
+            (for [[display-name key] attributes]
+              ^{:key key}
+              [form/checkbox (conj form-db-path :attributes key) display-name])])]
         [:div.pure-control-group
          [:h4 {:style {:margin-top    "1em"
                        :margin-bottom "0.5em"}} "Colours"]

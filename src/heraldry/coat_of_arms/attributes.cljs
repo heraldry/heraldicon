@@ -65,3 +65,20 @@
 
 (def facing-map
   (options->map facing-options))
+
+(def attribute-options
+  [["General"
+    ["Erased" :erased]
+    ["Pierced" :pierced]
+    ["Voided" :voided]]
+   ["Tail"
+    ["Coward" :coward]
+    ["Defamed" :defamed]
+    ["Double queued" :double-queued]
+    ["Nowed" :tail-nowed]
+    ["Queue fourchée saltire reversed" :queue-fourchee-saltire-reversed]
+    ["Queue fourchée saltire" :queue-fourchee-saltire]
+    ["Queue fourchée" :queue-fourchee]]])
+
+(def attribute-map
+  (options->map attribute-options))
