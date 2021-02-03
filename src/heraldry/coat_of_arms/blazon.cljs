@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.blazon
-  (:require [heraldry.coat-of-arms.division :as division]
+  (:require [heraldry.coat-of-arms.attributes :as attributes]
+            [heraldry.coat-of-arms.division :as division]
             [heraldry.frontend.util :as util]))
 
 (declare encode-field)
@@ -22,7 +23,9 @@
                                                     (when (not= t :none)
                                                       (util/combine " " [(util/translate colour-key)
                                                                          (util/translate t)]))))
-                                                [:armed :langued :attired :unguled]))]))
+                                                (-> attributes/tincture-modifier-map
+                                                    keys
+                                                    sort)))]))
 
 (defn encode-component [component]
   (case (:component component)

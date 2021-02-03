@@ -235,17 +235,8 @@
         [:div.pure-control-group
          [:h4 {:style {:margin-top    "1em"
                        :margin-bottom "0.5em"}} "Colours"]
-         (let [colours-path   (conj form-db-path :data :edn-data :colours)
-               colours        @(rf/subscribe [:get colours-path])
-               colour-options [["Keep" :keep]
-                               ["Primary" :primary]
-                               ["Outline" :outline]
-                               ["Eyes and Teeth" :eyes-and-teeth]
-                               ["Armed" :armed]
-                               ["Langued" :langued]
-                               ["Attired" :attired]
-                               ["Unguled" :unguled]
-                               ["Beaked" :beaked]]]
+         (let [colours-path (conj form-db-path :data :edn-data :colours)
+               colours      @(rf/subscribe [:get colours-path])]
            (for [[k _] (sort-by first colours)]
              ^{:key k}
              [form/select (conj colours-path k)
@@ -253,7 +244,8 @@
                [:div.bottom {:style {:top "30px"}}
                 [:h3 {:style {:text-align "center"}} k]
                 [:i]]]
-              colour-options
+              attributes/tincture-modifier-for-charge-options
+              :grouped? true
               :label-style {:width        "1.5em"
                             :margin-right "0.5em"}
               :style {:display      "inline-block"

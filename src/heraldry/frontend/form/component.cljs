@@ -1,5 +1,6 @@
 (ns heraldry.frontend.form.component
   (:require [clojure.string :as s]
+            [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.charge :as charge]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.division :as division]
@@ -893,12 +894,13 @@
 
 (defn form-for-charge [path & {:keys [parent-field]}]
   (let [charge                     @(rf/subscribe [:get path])
-        supported-tinctures        #{:armed :langued :attired :unguled
-                                     :beaked}
-        sorted-supported-tinctures (filter supported-tinctures
-                                           [:armed :langued :attired :unguled
-                                            :beaked])
-        eyes-and-teeth-support     true
+        supported-tinctures        (-> attributes/tincture-modifier-map
+                                       keys
+                                       set
+                                       (conj :eyes-and-teeth))
+        sorted-supported-tinctures (-> supported-tinctures
+                                       sort
+                                       vec)
         tinctures-set              (-> charge
                                        :tincture
                                        (->> (filter (fn [[_ v]]
@@ -906,9 +908,7 @@
                                                            (not= v :none))))
                                             (map first)
                                             set)
-                                       (filter
-                                        [:armed :langued :attired :unguled
-                                         :beaked :eyes-and-teeth])
+                                       (filter supported-tinctures)
                                        (->> (map util/translate-cap-first)))
         tinctures-title            (if (-> tinctures-set count pos?)
                                      (util/combine ", " tinctures-set)
@@ -939,7 +939,7 @@
         [:div
          {:style {:width "50%"
                   :float "left"}}
-         (when eyes-and-teeth-support
+         (when (get supported-tinctures :eyes-and-teeth)
            [checkbox
             (conj path :tincture :eyes-and-teeth)
             "White eyes and teeth"
