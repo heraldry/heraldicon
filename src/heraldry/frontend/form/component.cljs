@@ -1037,12 +1037,9 @@
       [:i]]]))
 
 (defn form-for-line-type [path & {:keys [options can-disable? default value]}]
-  (let [line       @(rf/subscribe [:get path])
-        value      (or value
-                       (options/get-value (:type line) (:type options)))
-        type-names (->> line/choices
-                        (map (comp vec reverse))
-                        (into {}))]
+  (let [line  @(rf/subscribe [:get path])
+        value (or value
+                  (options/get-value (:type line) (:type options)))]
     [:div.setting
      [:label "Type"]
      [:div.other {:style {:display "inline-block"}}
@@ -1054,19 +1051,16 @@
                                  (rf/dispatch [:set (conj path :type) default])
                                  (rf/dispatch [:remove (conj path :type)])))}])
       (if (some? (:type line))
-        [submenu (conj path :type) "Select Line Type" (get type-names value) {:min-width "21em"}
+        [submenu (conj path :type) "Select Line Type" (get line/line-map value) {:min-width "21em"}
          (for [[display-name key] (-> options :type :choices)]
            ^{:key display-name}
            [line-type-choice (conj path :type) key display-name :current value])]
         (when can-disable?
-          [:span {:style {:color "#ccc"}} (get type-names value)
+          [:span {:style {:color "#ccc"}} (get line/line-map value)
            " (inherited)"]))]]))
 
 (defn form-for-line [path & {:keys [title options defaults] :or {title "Line"}}]
   (let [line              @(rf/subscribe [:get path])
-        type-names        (->> line/choices
-                               (map (comp vec reverse))
-                               (into {}))
         line-type         (or (:type line)
                               (:type defaults))
         line-eccentricity (or (:eccentricity line)
@@ -1078,7 +1072,7 @@
     [:div.setting
      [:label title]
      " "
-     [submenu path title (get type-names line-type) {}
+     [submenu path title (get line/line-map line-type) {}
       [form-for-line-type path :options options
        :can-disable? (some? defaults)
        :value line-type
@@ -1137,14 +1131,11 @@
       [:i]]]))
 
 (defn form-for-ordinary-type [path]
-  (let [ordinary-type @(rf/subscribe [:get (conj path :type)])
-        names         (->> ordinary/choices
-                           (map (comp vec reverse))
-                           (into {}))]
+  (let [ordinary-type @(rf/subscribe [:get (conj path :type)])]
     [:div.setting
      [:label "Type"]
      " "
-     [submenu path "Select Ordinary" (get names ordinary-type) {:min-width "17.5em"}
+     [submenu path "Select Ordinary" (get ordinary/ordinary-map ordinary-type) {:min-width "17.5em"}
       (for [[display-name key] ordinary/choices]
         ^{:key key}
         [ordinary-type-choice path key display-name :current ordinary-type])]]))
