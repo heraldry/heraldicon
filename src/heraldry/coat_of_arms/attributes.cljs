@@ -1,17 +1,5 @@
-(ns heraldry.coat-of-arms.attributes)
-
-(defn options->map [options]
-  (->> options
-       (map (fn [[group-name & items]]
-              (if (and (-> items count (= 1))
-                       (-> items first keyword?))
-                ;; in this case there is no group, treat the first element of "items" as key
-                ;; and "group-name" as display-name
-                [[(first items) group-name]]
-                (->> items
-                     (map (comp vec reverse))))))
-       (apply concat)
-       (into {})))
+(ns heraldry.coat-of-arms.attributes
+  (:require [heraldry.util :as util]))
 
 (def attitude-options
   [["None" :none]
@@ -50,7 +38,7 @@
     ["Nowed" :nowed]]])
 
 (def attitude-map
-  (options->map attitude-options))
+  (util/options->map attitude-options))
 
 (def facing-options
   [["None" :none]
@@ -64,7 +52,7 @@
    ["Salient" :salient]])
 
 (def facing-map
-  (options->map facing-options))
+  (util/options->map facing-options))
 
 (def attribute-options
   [["General"
@@ -81,7 +69,7 @@
     ["Queue fourchée" :queue-fourchee]]])
 
 (def attribute-map
-  (options->map attribute-options))
+  (util/options->map attribute-options))
 
 (def tincture-modifier-options
   [["Fauna"
@@ -113,7 +101,7 @@
     ["Stringed" :stringed]]])
 
 (def tincture-modifier-map
-  (options->map tincture-modifier-options))
+  (util/options->map tincture-modifier-options))
 
 (def tincture-modifier-for-charge-options
   (concat [["Technical"
@@ -124,4 +112,4 @@
           tincture-modifier-options))
 
 (def tincture-modifier-for-charge-map
-  (options->map tincture-modifier-for-charge-options))
+  (util/options->map tincture-modifier-for-charge-options))

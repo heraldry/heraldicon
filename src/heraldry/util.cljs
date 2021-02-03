@@ -35,3 +35,16 @@
 
 (defn full-url-for-username [username]
   (str (config/get :heraldry-url) "/users/" username))
+
+(defn options->map [options]
+  (->> options
+       (map (fn [[group-name & items]]
+              (if (and (-> items count (= 1))
+                       (-> items first keyword?))
+                ;; in this case there is no group, treat the first element of "items" as key
+                ;; and "group-name" as display-name
+                [[(first items) group-name]]
+                (->> items
+                     (map (comp vec reverse))))))
+       (apply concat)
+       (into {})))
