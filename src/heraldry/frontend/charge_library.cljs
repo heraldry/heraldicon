@@ -217,16 +217,16 @@
                      :value     value
                      :on-change on-change
                      :type      "text"}]])]
-        [form/select (conj form-db-path :attitude) "Attitude" attributes/attitude-options
+        [form/select (conj form-db-path :attitude) "Attitude" attributes/attitude-choices
          :grouped? true
          :label-style {:width "6em"}]
-        [form/select (conj form-db-path :facing) "Facing" attributes/facing-options
+        [form/select (conj form-db-path :facing) "Facing" attributes/facing-choices
          :grouped? true
          :label-style {:width "6em"}]
         [:div.pure-control-group
          [:h4 {:style {:margin-top    "1em"
                        :margin-bottom "0.5em"}} "Attributes"]
-         (for [[group-name & attributes] attributes/attribute-options]
+         (for [[group-name & attributes] attributes/attribute-choices]
            ^{:key group-name}
            [:div {:style {:display "inline-block"}}
             (for [[display-name key] attributes]
@@ -244,7 +244,7 @@
                [:div.bottom {:style {:top "30px"}}
                 [:h3 {:style {:text-align "center"}} k]
                 [:i]]]
-              attributes/tincture-modifier-for-charge-options
+              attributes/tincture-modifier-for-charge-choices
               :grouped? true
               :label-style {:width        "1.5em"
                             :margin-right "0.5em"}

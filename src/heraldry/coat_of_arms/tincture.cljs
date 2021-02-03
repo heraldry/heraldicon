@@ -364,7 +364,7 @@
 (def default-theme
   :wappenwiki)
 
-(def theme-options
+(def theme-choices
   (->> themes
        (map (fn [[group-name & items]]
               (vec (concat [group-name] (->> items
@@ -373,7 +373,7 @@
        vec))
 
 (def theme-map
-  (util/options->map theme-options))
+  (util/choices->map theme-choices))
 
 (def theme-data-map
   (->> themes
@@ -384,7 +384,7 @@
        (apply concat)
        (into {})))
 
-(def tincture-options
+(def choices
   [["Metal"
     ["Argent" :argent]
     ["Or" :or]]
@@ -405,7 +405,7 @@
     ["Tenné" :tenne]]])
 
 (def tincture-map
-  (util/options->map tincture-options))
+  (util/choices->map choices))
 
 (defn lookup-colour [tincture theme]
   (let [theme-colours (merge
