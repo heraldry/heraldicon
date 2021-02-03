@@ -1,4 +1,4 @@
-.PHONY: release
+.PHONY: release-frontend-prod release-backend-prod dev-local
 
 release-frontend-prod:
 	mkdir -p release
@@ -13,3 +13,6 @@ release-backend-prod:
 	rm -rf backend/node_modules/sharp 2> /dev/null || true
 	cp -r backend/linux-sharp/ backend/node_modules/sharp
 	STAGE=prod npx shadow-cljs release backend
+
+dev-local:
+	npx shadow-cljs watch frontend backend test
