@@ -1,5 +1,6 @@
 (ns heraldry.spec.coat-of-arms
   (:require [cljs.spec.alpha :as s]
+            [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.spec.core :as core]))
 
 (s/def :heraldry/tincture #{:none
@@ -147,16 +148,7 @@
                                                   :heraldry.charge.tincture/eyes-and-teeth]))
 (s/def :heraldry.charge.hint/outline? boolean?)
 (s/def :heraldry.charge/hints (s/keys :opt-un [:heraldry.charge.hint/outline?]))
-(s/def :heraldry.charge/attitude (s/nilable #{:none
-                                              :couchant
-                                              :courant
-                                              :dormant
-                                              :pascuant
-                                              :passant
-                                              :rampant
-                                              :salient
-                                              :sejant
-                                              :statant}))
+(s/def :heraldry.charge/attitude (s/nilable attributes/attitude-map))
 (s/def :heraldry.charge/facing (s/nilable #{:none
                                             :to-dexter
                                             :to-sinister

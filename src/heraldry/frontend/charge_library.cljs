@@ -5,6 +5,7 @@
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
+            [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.frontend.context :as context]
@@ -216,16 +217,8 @@
                      :value value
                      :on-change on-change
                      :type "text"}]])]
-        [form/select (conj form-db-path :attitude) "Attitude" [["None" :none]
-                                                               ["Couchant" :couchant]
-                                                               ["Courant" :courant]
-                                                               ["Dormant" :dormant]
-                                                               ["Pascuant" :pascuant]
-                                                               ["Passant" :passant]
-                                                               ["Rampant" :rampant]
-                                                               ["Salient" :salient]
-                                                               ["Sejant" :sejant]
-                                                               ["Statant" :statant]]
+        [form/select (conj form-db-path :attitude) "Attitude" attributes/attitude-options
+         :grouped? true
          :label-style {:width "6em"}]
         [form/select (conj form-db-path :facing) "Facing" [["None" :none]
                                                            ["To dexter" :to-dexter]

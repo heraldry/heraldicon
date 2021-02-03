@@ -1,5 +1,6 @@
 (ns heraldry.spec.charge-data
-  (:require [cljs.spec.alpha :as s]))
+  (:require [cljs.spec.alpha :as s]
+            [heraldry.coat-of-arms.attributes :as attributes]))
 
 (s/def :heraldry.charge-data.data.edn-data/width number?)
 (s/def :heraldry.charge-data.data.edn-data/height number?)
@@ -23,16 +24,7 @@
 (s/def :heraldry.charge-data/name #(and (string? %)
                                         (-> % count (> 0))))
 (s/def :heraldry.charge-data/type keyword?)
-(s/def :heraldry.charge-data/attitude #{:none
-                                        :couchant
-                                        :courant
-                                        :dormant
-                                        :pascuant
-                                        :passant
-                                        :rampant
-                                        :salient
-                                        :sejant
-                                        :statant})
+(s/def :heraldry.charge-data/attitude attributes/attitude-map)
 (s/def :heraldry.charge-data/facing #{:none
                                       :to-dexter
                                       :to-sinister
