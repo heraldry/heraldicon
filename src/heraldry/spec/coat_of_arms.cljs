@@ -1,7 +1,11 @@
 (ns heraldry.spec.coat-of-arms
   (:require [cljs.spec.alpha :as s]
             [heraldry.coat-of-arms.attributes :as attributes]
+            [heraldry.coat-of-arms.division :as division]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
+            [heraldry.coat-of-arms.line :as line]
+            [heraldry.coat-of-arms.ordinary :as ordinary]
+            [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.spec.core :as core]))
 
@@ -14,16 +18,7 @@
                              :coat-of-arms
                              :render-options})
 
-(s/def :heraldry.line/type #{:straight
-                             :invected
-                             :engrailed
-                             :embattled
-                             :indented
-                             :dancetty
-                             :wavy
-                             :dovetailed
-                             :raguly
-                             :urdy})
+(s/def :heraldry.line/type line/line-map)
 (s/def :heraldry.line/eccentricity number?)
 (s/def :heraldry.line/width number?)
 (s/def :heraldry.line/flipped? boolean?)
@@ -33,13 +28,7 @@
                                        :heraldry.line/offset
                                        :heraldry.line/flipped?]))
 
-(s/def :heraldry.position/point #{:fess
-                                  :chief
-                                  :base
-                                  :dexter
-                                  :sinister
-                                  :honour
-                                  :nombril})
+(s/def :heraldry.position/point position/point-map)
 (s/def :heraldry.position/offset-x number?)
 (s/def :heraldry.position/offset-y number?)
 (s/def :heraldry/position (s/keys :opt-un [:heraldry.position/point
@@ -49,18 +38,7 @@
 (s/def :heraldry.geometry/size number?)
 (s/def :heraldry/geometry (s/keys :opt-un [:heraldry.geometry/size]))
 
-(s/def :heraldry.field.division/type #{:per-pale
-                                       :per-fess
-                                       :per-bend
-                                       :per-bend-sinister
-                                       :per-chevron
-                                       :per-saltire
-                                       :quarterly
-                                       :gyronny
-                                       :tierced-per-pale
-                                       :tierced-per-fess
-                                       :tierced-per-pairle
-                                       :tierced-per-pairle-reversed})
+(s/def :heraldry.field.division/type division/division-map)
 (s/def :heraldry.field.division/line #(s/valid? :heraldry/line %))
 (s/def :heraldry.field.division/origin #(s/valid? :heraldry/position %))
 (s/def :heraldry.field.division/fields (s/coll-of :heraldry/field-or-field-reference :into []))
@@ -94,15 +72,7 @@
 (s/def :heraldry/field-or-field-reference #(or (s/valid? :heraldry/field %)
                                                (s/valid? :heraldry/field-reference %)))
 
-(s/def :heraldry.ordinary/type #{:pale
-                                 :fess
-                                 :chief
-                                 :base
-                                 :bend
-                                 :bend-sinister
-                                 :cross
-                                 :saltire
-                                 :chevron})
+(s/def :heraldry.ordinary/type ordinary/ordinary-map)
 (s/def :heraldry.ordinary/line #(s/valid? :heraldry/line %))
 (s/def :heraldry.ordinary/opposite-line #(s/valid? :heraldry/line %))
 (s/def :heraldry.ordinary/origin #(s/valid? :heraldry/position %))
