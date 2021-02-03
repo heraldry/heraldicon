@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.attributes
   (:require [heraldry.util :as util]))
 
-(def attitude-options
+(def attitude-choices
   [["None" :none]
    ["Beasts"
     ["Couchant" :couchant]
@@ -38,9 +38,9 @@
     ["Nowed" :nowed]]])
 
 (def attitude-map
-  (util/options->map attitude-options))
+  (util/choices->map attitude-choices))
 
-(def facing-options
+(def facing-choices
   [["None" :none]
    ["To dexter (default)" :to-dexter]
    ["To sinister" :to-sinister]
@@ -52,9 +52,9 @@
    ["Salient" :salient]])
 
 (def facing-map
-  (util/options->map facing-options))
+  (util/choices->map facing-choices))
 
-(def attribute-options
+(def attribute-choices
   [["General"
     ["Erased" :erased]
     ["Pierced" :pierced]
@@ -69,9 +69,9 @@
     ["Queue fourchée" :queue-fourchee]]])
 
 (def attribute-map
-  (util/options->map attribute-options))
+  (util/choices->map attribute-choices))
 
-(def tincture-modifier-options
+(def tincture-modifier-choices
   [["Fauna"
     ["Armed" :armed]
     ["Attired" :attired]
@@ -101,15 +101,15 @@
     ["Stringed" :stringed]]])
 
 (def tincture-modifier-map
-  (util/options->map tincture-modifier-options))
+  (util/choices->map tincture-modifier-choices))
 
-(def tincture-modifier-for-charge-options
+(def tincture-modifier-for-charge-choices
   (concat [["Technical"
             ["Don't replace" :keep]
             ["Primary" :primary]
             ["Outline" :outline]
             ["Eyes/teeth" :eyes-and-teeth]]]
-          tincture-modifier-options))
+          tincture-modifier-choices))
 
 (def tincture-modifier-for-charge-map
-  (util/options->map tincture-modifier-for-charge-options))
+  (util/choices->map tincture-modifier-for-charge-choices))
