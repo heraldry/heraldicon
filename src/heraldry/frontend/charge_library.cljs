@@ -220,15 +220,8 @@
         [form/select (conj form-db-path :attitude) "Attitude" attributes/attitude-options
          :grouped? true
          :label-style {:width "6em"}]
-        [form/select (conj form-db-path :facing) "Facing" [["None" :none]
-                                                           ["To dexter" :to-dexter]
-                                                           ["To sinister" :to-sinister]
-                                                           ["Affronté" :affronte]
-                                                           ["En arrière" :en-arriere]
-                                                           ["Guardant" :guardant]
-                                                           ["Reguardant" :reguardant]
-                                                           ["Salient" :salient]
-                                                           ["In trian aspect" :in-trian-aspect]]
+        [form/select (conj form-db-path :facing) "Facing" attributes/facing-options
+         :grouped? true
          :label-style {:width "6em"}]
         [:div.pure-control-group
          [:h4 {:style {:margin-top    "1em"

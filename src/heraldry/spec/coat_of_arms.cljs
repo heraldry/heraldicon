@@ -149,15 +149,7 @@
 (s/def :heraldry.charge.hint/outline? boolean?)
 (s/def :heraldry.charge/hints (s/keys :opt-un [:heraldry.charge.hint/outline?]))
 (s/def :heraldry.charge/attitude  (s/nilable attributes/attitude-map))
-(s/def :heraldry.charge/facing  (s/nilable #{:none
-                                             :to-dexter
-                                             :to-sinister
-                                             :affronte
-                                             :en-arriere
-                                             :guardant
-                                             :reguardant
-                                             :salient
-                                             :in-trian-aspect}))
+(s/def :heraldry.charge/facing  (s/nilable attributes/facing-map))
 (s/def :heraldry.charge.variant/id string?)
 (s/def :heraldry.charge.variant/version number?)
 (s/def :heraldry.charge/variant (s/nilable (s/keys :req-un [:heraldry.charge.variant/id
