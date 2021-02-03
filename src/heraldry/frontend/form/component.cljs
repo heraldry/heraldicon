@@ -482,7 +482,7 @@
                        :hatching (rf/dispatch [:set outline-path true])
                        :colours (rf/dispatch [:set outline-path false])))]
       (when (= @(rf/subscribe [:get mode-path]) :colours)
-        [select (conj db-path :theme) "Colour Theme" tincture/theme-choices
+        [select (conj db-path :theme) "Colour Theme" tincture/theme-options
          :on-change #(do
                        (rf/dispatch [:set (conj db-path :theme) %])
                        (rf/dispatch [:set ui-render-options-theme-path %]))
@@ -528,17 +528,13 @@
 (defn form-for-tincture [path & {:keys [label] :or {label "Tincture"}}]
   (let [value (or @(rf/subscribe [:get path])
                   :none)
-        names (->> (into [["None" :none]]
-                         (->> tincture/choices
-                              (map #(drop 1 %))
-                              (apply concat)))
-                   (map (comp vec reverse))
-                   (into {}))]
+        names (-> tincture/tincture-map
+                  (assoc :none "None"))]
     [:div.setting
      [:label label]
      " "
      [submenu path "Select Tincture" (get names value) {:min-width "22em"}
-      (for [[group-name & group] tincture/choices]
+      (for [[group-name & group] tincture/tincture-options]
         ^{:key group-name}
         [:<>
          (if (= group-name "Metal")
