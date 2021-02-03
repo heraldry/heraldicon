@@ -42,9 +42,11 @@
                                       :reguardant
                                       :salient
                                       :in-trian-aspect})
-(s/def :heraldry.charge-data/attributes #{:coward
-                                          :pierced
-                                          :voided})
+(s/def :heraldry.charge-data/attributes #(every? (fn [[k v]]
+                                                   (and (get #{:coward
+                                                               :pierced
+                                                               :voided} k)
+                                                        (boolean? v))) %))
 (s/def :heraldry.charge-data/spec-version number?)
 (s/def :heraldry/charge-data (s/keys :req-un [:heraldry.charge-data/name
                                               :heraldry.charge-data/type
