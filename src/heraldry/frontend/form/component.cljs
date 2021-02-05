@@ -1065,6 +1065,8 @@
                               (:type defaults))
         line-eccentricity (or (:eccentricity line)
                               (:eccentricity defaults))
+        line-height       (or (:height line)
+                              (:height defaults))
         line-width        (or (:width line)
                               (:width defaults))
         line-offset       (or (:offset line)
@@ -1084,6 +1086,13 @@
          :step 0.01
          :default (or (:eccentricity defaults)
                       (options/get-value line-eccentricity (:eccentricity options)))])
+      (when (:height options)
+        [range-input (conj path :height) "Height"
+         (-> options :height :min)
+         (-> options :height :max)
+         :step 0.01
+         :default (or (:height defaults)
+                      (options/get-value line-height (:height options)))])
       (when (:width options)
         [range-input (conj path :width) "Width"
          (-> options :width :min)
