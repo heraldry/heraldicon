@@ -286,6 +286,39 @@
       [component/form-render-options [:example-coa :render-options]]
       [component/form-for-coat-of-arms [:example-coa :coat-of-arms]]]]))
 
+(defn charge-properties [charge]
+  [:div.properties {:style {:display        "inline-block"
+                            :line-height    "1.5em"
+                            :vertical-align "middle"
+                            :white-space    "normal"}}
+   (when-let [attitude (-> charge
+                           :attitude
+                           (#(when (not= % :none) %)))]
+     [:div.tag.attitude (util/translate attitude)])
+   (when-let [facing (-> charge
+                         :facing
+                         (#(when (not= % :none) %)))]
+     [:div.tag.facing (util/translate facing)])
+   (for [attribute (->> charge
+                        :attributes
+                        (filter second)
+                        (map first)
+                        sort)]
+     ^{:key attribute}
+     [:div.tag.attribute (util/translate attribute)])
+   (for [modifier (->> charge
+                       :colours
+                       (map second)
+                       (filter #(-> %
+                                    #{:primary
+                                      :keep
+                                      :outline
+                                      :eyes-and-teeth}
+                                    not))
+                       sort)]
+     ^{:key modifier}
+     [:div.tag.modifier (util/translate modifier)])])
+
 (defn charge-display [charge-id version]
   (let [user-data            (user/data)
         [status charge-data] (state/async-fetch-data
@@ -305,6 +338,7 @@
                                  :width       "45%"}}
         [:div.credits
          [credits/for-charge charge-data]]
+        [charge-properties charge-data]
         (when (= (:username charge-data)
                  (:username user-data))
           [:div.pure-control-group {:style {:text-align    "right"
@@ -341,21 +375,7 @@
                                  (rf/dispatch-sync [:clear-form-message form-db-path])
                                  (reife/push-state :view-charge-by-id {:id charge-id}))}
                 (:name charge)]
-               [:div.details {:style {:display        "inline-block"
-                                      :line-height    "1.5em"
-                                      :vertical-align "middle"
-                                      :white-space    "normal"}}
-                (when-let [attitude (:attitude charge)]
-                  [:div.tag.attitude (util/translate attitude)])
-                (when-let [facing (:facing charge)]
-                  [:div.tag.facing (util/translate facing)])
-                (for [attribute (->> charge
-                                     :attributes
-                                     (filter second)
-                                     (map first)
-                                     sort)]
-                  ^{:key attribute}
-                  [:div.tag.attribute (util/translate attribute)])]])))]))))
+               [charge-properties charge]])))]))))
 
 (defn list-my-charges []
   (let [user-data (user/data)]
