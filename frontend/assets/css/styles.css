@@ -171,6 +171,11 @@ label div {
   line-height: 1.2em;
 }
 
+.tag.private {
+  background-color: #e55;
+  color: #fff;
+}
+
 .tag.attitude {
   background-color: #fdd;
   color: #933;

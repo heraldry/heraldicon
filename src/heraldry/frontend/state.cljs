@@ -50,7 +50,9 @@
                                   [:arms-form :coat-of-arms :field] true
                                   [:example-coa :render-options] true
                                   [:example-coa :coat-of-arms] true
-                                  [:example-coa :coat-of-arms :field] true}}} db)))
+                                  [:example-coa :coat-of-arms :field] true}
+                :charge-tree {:show-public? true
+                              :show-own? true}}} db)))
 
 (rf/reg-event-db
  :set
