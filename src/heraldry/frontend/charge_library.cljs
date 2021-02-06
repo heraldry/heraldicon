@@ -9,11 +9,11 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
-            [heraldry.frontend.http :as http]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [id-for-url]]
@@ -41,42 +41,6 @@
        (map svg/normalize-colour)
        (map s/lower-case)
        set))
-
-(defn fetch-charges-for-user [user-id]
-  (go
-    (try
-      (let [user-data (user/data)]
-        (-> (api-request/call :fetch-charges-for-user {:user-id user-id}
-                              user-data)
-            <?
-            :charges))
-      (catch :default e
-        (println "fetch-charges-for-user error:" e)))))
-
-(defn fetch-charges []
-  (go
-    (try
-      (let [user-data (user/data)]
-        (-> (api-request/call :fetch-charges {}
-                              user-data)
-            <?
-            :charges))
-      (catch :default e
-        (println "fetch-charges error:" e)))))
-
-(defn fetch-charge [charge-id version]
-  (go
-    (try
-      (let [user-data (user/data)
-            response  (<? (api-request/call :fetch-charge {:id      charge-id
-                                                           :version version} user-data))
-            edn-data  (<? (http/fetch (:edn-data-url response)))
-            svg-data  (<? (http/fetch (:svg-data-url response)))]
-        (-> response
-            (assoc-in [:data :edn-data] edn-data)
-            (assoc-in [:data :svg-data] svg-data)))
-      (catch :default e
-        (println "fetch-charge error:" e)))))
 
 (defn optimize-svg [data]
   (go-catch
@@ -312,7 +276,7 @@
         [status charge-data] (state/async-fetch-data
                               form-db-path
                               [charge-id version]
-                              #(fetch-charge charge-id version))
+                              #(charge/fetch-charge charge-id version))
         charge-id            (-> charge-data
                                  :id
                                  id-for-url)]
@@ -356,7 +320,7 @@
   (let [[status charge-list] (state/async-fetch-data
                               list-db-path
                               user-id
-                              #(fetch-charges-for-user user-id))]
+                              #(charge/fetch-charges-for-user user-id))]
     (when (= status :done)
       (if (empty? charge-list)
         (when user-id
@@ -384,7 +348,7 @@
   (let [[status _charge-form-data] (state/async-fetch-data
                                     form-db-path
                                     [charge-id version]
-                                    #(fetch-charge charge-id version))]
+                                    #(charge/fetch-charge charge-id version))]
     (when (= status :done)
       [charge-form])))
 
@@ -392,7 +356,7 @@
   (let [[status charges] (state/async-fetch-data
                           [:all-charges]
                           :all-charges
-                          fetch-charges)]
+                          charge/fetch-charges)]
     [:div {:style {:padding "15px"}}
      [:button.pure-button.pure-button-primary
       {:on-click #(do
@@ -402,7 +366,6 @@
       "Create"]
 
      [:h4 "Available Charges"]
-
      (if (= status :done)
        [component/charge-tree charges :link-to-charge link-to-charge]
        [:div "loading..."])]))
