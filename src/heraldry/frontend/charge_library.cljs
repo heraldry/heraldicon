@@ -9,7 +9,6 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.component :as component]
@@ -17,8 +16,7 @@
             [heraldry.frontend.http :as http]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
-            [heraldry.frontend.util :as util]
-            [heraldry.util :refer [id-for-url full-url-for-username]]
+            [heraldry.util :refer [id-for-url]]
             [hickory.core :as hickory]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]))
@@ -309,41 +307,6 @@
       [component/form-render-options [:example-coa :render-options]]
       [component/form-for-coat-of-arms [:example-coa :coat-of-arms]]]]))
 
-(defn charge-properties [charge]
-  [:div.properties {:style {:display        "inline-block"
-                            :line-height    "1.5em"
-                            :vertical-align "middle"
-                            :white-space    "normal"}}
-   (when (-> charge :is-public not)
-     [:div.tag.private [:i.fas.fa-lock] "private"])
-   (when-let [attitude (-> charge
-                           :attitude
-                           (#(when (not= % :none) %)))]
-     [:div.tag.attitude (util/translate attitude)])
-   (when-let [facing (-> charge
-                         :facing
-                         (#(when (-> % #{:none :to-dexter} not) %)))]
-     [:div.tag.facing (util/translate facing)])
-   (for [attribute (->> charge
-                        :attributes
-                        (filter second)
-                        (map first)
-                        sort)]
-     ^{:key attribute}
-     [:div.tag.attribute (util/translate attribute)])
-   (for [modifier (->> charge
-                       :colours
-                       (map second)
-                       (filter #(-> %
-                                    #{:primary
-                                      :keep
-                                      :outline
-                                      :eyes-and-teeth}
-                                    not))
-                       sort)]
-     ^{:key modifier}
-     [:div.tag.modifier (util/translate modifier)])])
-
 (defn charge-display [charge-id version]
   (let [user-data            (user/data)
         [status charge-data] (state/async-fetch-data
@@ -363,7 +326,7 @@
                                  :width       "45%"}}
         [:div.credits
          [credits/for-charge charge-data]]
-        [charge-properties charge-data]
+        [component/charge-properties charge-data]
         (when (= (:username charge-data)
                  (:username user-data))
           [:div.pure-control-group {:style {:text-align    "right"
@@ -404,7 +367,7 @@
             ^{:key (:id charge)}
             [:li.charge {:style {:white-space "nowrap"}}
              [link-to-charge charge]
-             [charge-properties charge]]))]))))
+             [component/charge-properties charge]]))]))))
 
 (defn create-charge [match]
   (rf/dispatch [:set [:route-match] match])
@@ -425,85 +388,6 @@
     (when (= status :done)
       [charge-form])))
 
-(defn matches-word [data word]
-  (cond
-    (keyword? data) (-> data name s/lower-case (s/includes? word))
-    (string? data)  (-> data s/lower-case (s/includes? word))
-    (map? data)     (some (fn [[k v]]
-                            (or (and (keyword? k)
-                                     (matches-word k word)
-                                     ;; this would be an attribute entry, the value
-                                     ;; must be truthy as well
-                                     v)
-                                (matches-word v word))) data)))
-
-(defn filter-charges [charges filter-string]
-  (if (or (not filter-string)
-          (-> filter-string s/trim count zero?))
-    charges
-    (let [words (-> filter-string
-                    (s/split #" +")
-                    (->> (map s/lower-case)))]
-      (filterv (fn [charge]
-                 (every? (fn [word]
-                           (some (fn [attribute]
-                                   (-> charge
-                                       (get attribute)
-                                       (matches-word word)))
-                                 [:name :type :attitude :facing :attributes :colours :username]))
-                         words))
-               charges))))
-
-(defn show-charge-tree [charges & {:keys [remove-empty-groups? hide-access-filters?]}]
-  [:div.tree
-   (let [user-data            (user/data)
-         filter-db-path       [:ui :charge-tree :filter-string]
-         show-public-db-path  [:ui :charge-tree :show-public?]
-         show-own-db-path     [:ui :charge-tree :show-own?]
-         show-public?         @(rf/subscribe [:get show-public-db-path])
-         show-own?            @(rf/subscribe [:get show-own-db-path])
-         filter-string        @(rf/subscribe [:get filter-db-path])
-         filtered-charges     (-> charges
-                                  (filter-charges filter-string)
-                                  (cond->>
-                                      (not hide-access-filters?) (filter (fn [charge]
-                                                                           (or (and show-public?
-                                                                                    (:is-public charge))
-                                                                               (and show-own?
-                                                                                    (= (:username charge)
-                                                                                       (:username user-data))))))))
-         remove-empty-groups? (or remove-empty-groups?
-                                  (and (not hide-access-filters?)
-                                       (not show-public?))
-                                  (-> filter-string count pos?))
-         charge-map           (charge-map/build-charge-map
-                               filtered-charges
-                               :remove-empty-groups? remove-empty-groups?)]
-     [:<>
-      [component/search-field filter-db-path]
-      (when (not hide-access-filters?)
-        [:div {:style {:margin-top "5px"}}
-         [component/checkbox show-public-db-path "Public charges" :style {:display "inline-block"}]
-         [component/checkbox show-own-db-path "Own charges" :style {:display     "inline-block"
-                                                                    :margin-left "1em"}]])
-      (if (empty? filtered-charges)
-        [:div "None"]
-        [component/tree-for-charge-map-new charge-map [] nil nil
-         {:render-variant (fn [node]
-                            (let [charge   (-> node :data)
-                                  username (-> charge :username)]
-                              [:div {:style {:display        "inline-block"
-                                             :white-space    "normal"
-                                             :vertical-align "top"
-                                             :line-height    "1.5em"}}
-                               [:div {:style {:display        "inline-block"
-                                              :vertical-align "top"}}
-                                [link-to-charge (-> node :data)]
-                                " by "
-                                [:a {:href   (full-url-for-username username)
-                                     :target "_blank"} username]]
-                               [charge-properties charge]]))}])])])
-
 (defn view-list-charges []
   (let [[status charges] (state/async-fetch-data
                           [:all-charges]
@@ -520,8 +404,7 @@
      [:h4 "Available Charges"]
 
      (if (= status :done)
-
-       [show-charge-tree charges]
+       [component/charge-tree charges :link-to-charge link-to-charge]
        [:div "loading..."])]))
 
 (defn edit-charge-by-id [{:keys [parameters] :as match}]

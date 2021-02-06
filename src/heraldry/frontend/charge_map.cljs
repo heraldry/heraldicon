@@ -141,8 +141,8 @@
                                            nil
                                            data))
                      (map? data)       (->> data
-                                      (filter second)
-                                      (into {}))
+                                            (filter second)
+                                            (into {}))
                      :else             data)) charge-map))
 
 (defn build-map [charges-by-type group-map & {:keys [remove-empty-groups?]}]
