@@ -103,10 +103,10 @@
                                    (map (fn [c]
                                           [c :keep]) (find-colours
                                                       edn-data)))]
+                 (rf/dispatch [:set (conj db-path :colours) colours])
                  (rf/dispatch [:set (conj db-path :data) {:edn-data {:data edn-data
                                                                      :width width
-                                                                     :height height
-                                                                     :colours colours}
+                                                                     :height height}
                                                           :svg-data data}]))))
      (catch :default e
        (println "error:" e)))))
@@ -235,7 +235,7 @@
         [:div.pure-control-group
          [:h4 {:style {:margin-top "1em"
                        :margin-bottom "0.5em"}} "Colours"]
-         (let [colours-path (conj form-db-path :data :edn-data :colours)
+         (let [colours-path (conj form-db-path :colours)
                colours @(rf/subscribe [:get colours-path])]
            (for [[k _] (sort-by first colours)]
              ^{:key k}
