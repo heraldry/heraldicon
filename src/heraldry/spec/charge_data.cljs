@@ -4,10 +4,6 @@
 
 (s/def :heraldry.charge-data.data.edn-data/width number?)
 (s/def :heraldry.charge-data.data.edn-data/height number?)
-(s/def :heraldry.charge-data.data.edn-data.colour/type attributes/tincture-modifier-for-charge-map)
-(s/def :heraldry.charge-data.data.edn-data/colours #(every? (fn [k v]
-                                                              (and (re-matches #"^#[a-z0-9]{6}$" k)
-                                                                   (s/valid? :heraldry.charge-data.colour/type v))) %))
 (s/def :heraldry.charge-data.data/edn-data (s/keys :req-un [:heraldry.charge-data.data.edn-data/width
                                                             :heraldry.charge-data.data.edn-data/height
                                                             :heraldry.charge-data.data.edn-data/data]))
@@ -21,6 +17,11 @@
 (s/def :heraldry.charge-data/attributes #(every? (fn [[k v]]
                                                    (and (get attributes/attribute-map k)
                                                         (boolean? v))) %))
+(s/def :heraldry.charge-data.colour/type attributes/tincture-modifier-for-charge-map)
+(s/def :heraldry.charge-data/colours #(every? (fn [[k v]]
+                                                (and (string? k)
+                                                     (re-matches #"^#[a-z0-9]{6}$" k)
+                                                     (s/valid? :heraldry.charge-data.colour/type v))) %))
 (s/def :heraldry.charge-data/spec-version number?)
 (s/def :heraldry/charge-data (s/keys :req-un [:heraldry.charge-data/name
                                               :heraldry.charge-data/type
@@ -28,4 +29,5 @@
                                               :heraldry.charge-data/spec-version]
                                      :opt-un [:heraldry.charge-data/attitude
                                               :heraldry.charge-data/facing
-                                              :heraldry.charge-data/attributes]))
+                                              :heraldry.charge-data/attributes
+                                              :heraldry.charge-data/colours]))

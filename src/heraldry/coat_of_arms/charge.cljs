@@ -486,7 +486,7 @@
                           (/ target-height positional-charge-height)))
           scale-y (* (if reversed? -1 1)
                      (* (Math/abs scale-x) stretch))
-          placeholder-colours (-> charge-data
+          placeholder-colours (-> full-charge-data
                                   :colours
                                   (cond->>
                                    (:preview-original? render-options)
