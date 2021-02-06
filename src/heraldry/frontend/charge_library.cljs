@@ -2,6 +2,7 @@
   (:require ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
             [cljs.core.async :refer [go]]
             [cljs.core.async.interop :refer-macros [<p!]]
+            [clojure.set :as set]
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.api.request :as api-request]
@@ -103,7 +104,17 @@
                                    (map (fn [c]
                                           [c :keep]) (find-colours
                                                       edn-data)))]
-                 (rf/dispatch [:set (conj db-path :colours) colours])
+                 (let [existing-colours @(rf/subscribe [:get (conj db-path :colours)])
+                       new-colours (merge colours
+                                          (select-keys existing-colours
+                                                       (set/intersection
+                                                        (-> colours
+                                                            keys
+                                                            set)
+                                                        (-> existing-colours
+                                                            keys
+                                                            set))))]
+                   (rf/dispatch [:set (conj db-path :colours) new-colours]))
                  (rf/dispatch [:set (conj db-path :data) {:edn-data {:data edn-data
                                                                      :width width
                                                                      :height height}
