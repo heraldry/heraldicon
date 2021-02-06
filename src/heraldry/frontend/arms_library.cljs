@@ -249,7 +249,7 @@
                         (= route :create-arms)     #(reife/push-state :arms params)
                         :else                      nil))
           :style    {:margin-right "5px"}}
-         "Cancel"]
+         "View"]
         (let [disabled? (not logged-in?)]
           [:button.pure-button.pure-button-primary {:type  "submit"
                                                     :class (when disabled? "disabled")}

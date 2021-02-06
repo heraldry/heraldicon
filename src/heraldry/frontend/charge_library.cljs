@@ -288,7 +288,7 @@
                         (= route :create-charge)     #(reife/push-state :charges params)
                         :else                        nil))
           :style    {:margin-right "5px"}}
-         "Cancel"]
+         "View"]
         (let [disabled? (not logged-in?)]
           [:button.pure-button.pure-button-primary {:type  "submit"
                                                     :class (when disabled?
