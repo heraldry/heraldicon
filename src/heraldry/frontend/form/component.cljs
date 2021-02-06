@@ -685,19 +685,6 @@
               :open   "fa-minus-square"}
    :variant  {:normal "fa-image"}})
 
-(defn count-variants [node]
-  (cond
-    (-> node nil?)                    0
-    (-> node :node-type (= :variant)) 1
-    :else                             (->> [:groups :charges :attitudes :facings :variants]
-                                           (map (fn [key]
-                                                  (-> node
-                                                      (get key)
-                                                      (->> (map (fn [[_ v]]
-                                                                  (count-variants v)))
-                                                           (reduce +)))))
-                                           (reduce +))))
-
 (defn tree-for-charge-map [{:keys [node-type name groups charges attitudes facings variants] :as node}
                            tree-path db-path
                            selected-charge remaining-path-to-charge & {:keys [still-on-path?]}]
@@ -737,7 +724,7 @@
                            (= node-type :facing)   :em
                            :else                   :<>) name (if (= node-type :variant)
                                                                (str " by " (-> node :data :username))
-                                                               (str " (" (count-variants node) ")"))]])
+                                                               (str " (" (charge-map/count-variants node) ")"))]])
       (and open?
            groups)    (conj [:ul
                              (for [[key group] (sort-by first groups)]
@@ -855,7 +842,7 @@
                                 (= node-type :facing)   :em
                                 :else                   :<>) name]
                              [:span.count-badge
-                              (count-variants node)]]])
+                              (charge-map/count-variants node)]]])
       (and open?
            groups)        (conj [:ul
                                  (for [[key group] (sort-by first groups)]

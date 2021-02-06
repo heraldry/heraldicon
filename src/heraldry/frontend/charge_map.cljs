@@ -81,6 +81,19 @@
                                           (apply set/union))
                      :else           data)) group-map))
 
+(defn count-variants [node]
+  (cond
+    (-> node nil?)                    0
+    (-> node :node-type (= :variant)) 1
+    :else                             (->> [:groups :charges :attitudes :variants]
+                                           (map (fn [key]
+                                                  (-> node
+                                                      (get key)
+                                                      (->> (map (fn [[_ v]]
+                                                                  (count-variants v)))
+                                                           (reduce +)))))
+                                           (reduce +))))
+
 (defn build-charge-variants [node groupable-types charges]
   (let [type            (first groupable-types)
         remaining-types (drop 1 groupable-types)
@@ -120,7 +133,19 @@
                                                                           :data      charge}]))
                                                     (into {})))))))
 
-(defn build-map [group-map charges-by-type]
+(defn remove-empty-groups [charge-map]
+  (walk/postwalk (fn [data]
+                   (cond
+                     (:node-type data) (let [c (count-variants data)]
+                                         (if (zero? c)
+                                           nil
+                                           data))
+                     (map? data)       (->> data
+                                      (filter second)
+                                      (into {}))
+                     :else             data)) charge-map))
+
+(defn build-map [charges-by-type group-map & {:keys [remove-empty-groups?]}]
   (let [charge-map (walk/postwalk
                     (fn [data]
                       (if (and (-> data seqable?)
@@ -153,9 +178,10 @@
                                                                       :name      (name type)}
                                                                      [:attitude]
                                                                      (get charges-by-type type))]))
-                                                       (into {}))}))))
+                                                       (into {}))})
+      remove-empty-groups?  remove-empty-groups)))
 
-(defn build-charge-map [charges]
-  (->> charges
-       (group-by :type)
-       (build-map group-map)))
+(defn build-charge-map [charges & {:keys [remove-empty-groups?]}]
+  (-> charges
+      (->> (group-by :type))
+      (build-map group-map :remove-empty-groups? remove-empty-groups?)))

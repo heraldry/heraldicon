@@ -44,7 +44,7 @@
        (map s/lower-case)
        set))
 
-(defn fetch-charge-list-by-user [user-id]
+(defn fetch-charges-for-user [user-id]
   (go
     (try
       (let [user-data (user/data)]
@@ -53,7 +53,7 @@
             <?
             :charges))
       (catch :default e
-        (println "fetch-charges-by-user error:" e)))))
+        (println "fetch-charges-for-user error:" e)))))
 
 (defn fetch-charges []
   (go
@@ -391,7 +391,7 @@
   (let [[status charge-list] (state/async-fetch-data
                               list-db-path
                               user-id
-                              #(fetch-charge-list-by-user user-id))]
+                              #(fetch-charges-for-user user-id))]
     (when (= status :done)
       (if (empty? charge-list)
         (when user-id
@@ -403,21 +403,6 @@
             [:li.charge {:style {:white-space "nowrap"}}
              [link-to-charge charge]
              [charge-properties charge]]))]))))
-
-(defn list-my-charges []
-  (let [user-data (user/data)]
-    [:div {:style {:padding "15px"}}
-     [:button.pure-button.pure-button-primary
-      {:on-click #(do
-                    (rf/dispatch-sync [:clear-form-errors form-db-path])
-                    (rf/dispatch-sync [:clear-form-message form-db-path])
-                    (reife/push-state :create-charge))}
-      "Create"]
-
-     (when-let [user-id (:user-id user-data)]
-       [:<>
-        [:h4 "My charges"]
-        [list-charges-for-user user-id]])]))
 
 (defn create-charge [match]
   (rf/dispatch [:set [:route-match] match])
@@ -438,33 +423,35 @@
     (when (= status :done)
       [charge-form])))
 
-(defn show-charge-tree []
-  (let [[status all-charges] (state/async-fetch-data
-                              [:all-charges]
-                              :all-charges
-                              fetch-charges)]
-    (if (= status :done)
-      [:div.tree
-       (let [charge-map (charge-map/build-charge-map all-charges)]
-         [component/tree-for-charge-map-new charge-map [] nil nil
-          {:render-variant (fn [node]
-                             (let [charge   (-> node :data)
-                                   username (-> charge :username)]
-                               [:div {:style {:display        "inline-block"
-                                              :white-space    "normal"
-                                              :vertical-align "top"
-                                              :line-height    "1.5em"}}
-                                [:div {:style {:display        "inline-block"
-                                               :vertical-align "top"}}
-                                 [link-to-charge (-> node :data)]
-                                 " by "
-                                 [:a {:href   (full-url-for-username username)
-                                      :target "_blank"} username]]
-                                [charge-properties charge]]))}])]
-      [:div "loading..."])))
+(defn show-charge-tree [charges & {:keys [remove-empty-groups?]}]
+  [:div.tree
+   (let [charge-map (charge-map/build-charge-map
+                     charges
+                     :remove-empty-groups? remove-empty-groups?)]
+     [component/tree-for-charge-map-new charge-map [] nil nil
+      {:render-variant (fn [node]
+                         (let [charge   (-> node :data)
+                               username (-> charge :username)]
+                           [:div {:style {:display        "inline-block"
+                                          :white-space    "normal"
+                                          :vertical-align "top"
+                                          :line-height    "1.5em"}}
+                            [:div {:style {:display        "inline-block"
+                                           :vertical-align "top"}}
+                             [link-to-charge (-> node :data)]
+                             " by "
+                             [:a {:href   (full-url-for-username username)
+                                  :target "_blank"} username]]
+                            [charge-properties charge]]))}])])
 
 (defn view-list-charges []
-  [show-charge-tree])
+  (let [[status charges] (state/async-fetch-data
+                          [:all-charges]
+                          :all-charges
+                          fetch-charges)]
+    (if (= status :done)
+      [show-charge-tree charges]
+      [:div "loading..."])))
 
 (defn edit-charge-by-id [{:keys [parameters] :as match}]
   (rf/dispatch [:set [:route-match] match])

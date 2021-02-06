@@ -1,6 +1,6 @@
 (ns heraldry.frontend.user-library
   (:require [cljs.core.async :refer [go]]
-            [com.wsscode.common.async-cljs :refer [<? go-catch]]
+            [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.api.request :as api-request]
             [heraldry.frontend.arms-library :as arms-library]
             [heraldry.frontend.charge-library :as charge-library]
@@ -19,21 +19,29 @@
       (catch :default e
         (println "fetch-user error:" e)))))
 
+(defn view-charges-for-user [user-id]
+  (let [[status charges] (state/async-fetch-data
+                          [:my-charges]
+                          user-id
+                          #(charge-library/fetch-charges-for-user user-id))]
+    (if (= status :done)
+      [charge-library/show-charge-tree charges :remove-empty-groups? true]
+      [:div "loading..."])))
+
 (defn user-display []
-  (let [charge-info-data @(rf/subscribe [:get user-info-db-path])]
+  (let [user-info-data @(rf/subscribe [:get user-info-db-path])]
     [:<>
      [:div {:style {:padding-left "15px"}}
-      [:h3 (str "User: " (:username charge-info-data))]]
+      [:h3 (str "User: " (:username user-info-data))]]
      [:div.pure-g
-      [:div.pure-u-1-2 {:style {:position "fixed"}}
+      [:div.pure-u-1-4
        [:div {:style {:padding-left "15px"}}
         [:h4 "Arms"]
-        [arms-library/list-arms-for-user (:id charge-info-data)]]]
-      [:div.pure-u-1-2 {:style {:margin-left "50%"
-                                :width       "45%"}}
+        [arms-library/list-arms-for-user (:id user-info-data)]]]
+      [:div.pure-u-3-4
        [:div {:style {:padding-left "15px"}}
         [:h4 "Charges"]
-        [charge-library/list-charges-for-user (:id charge-info-data)]]]]]))
+        [view-charges-for-user (:id user-info-data)]]]]]))
 
 (defn view-user [username]
   (let [[status _user-form-data] (state/async-fetch-data
