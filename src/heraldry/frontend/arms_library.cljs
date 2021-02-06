@@ -312,8 +312,7 @@
                [:a {:href (reife/href :view-arms-by-id {:id arms-id})
                     :on-click #(do
                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                 (rf/dispatch-sync [:clear-form-message form-db-path])
-                                 (reife/href :view-arms-by-id {:id arms-id}))}
+                                 (rf/dispatch-sync [:clear-form-message form-db-path]))}
                 (:name arms)])]))]))))
 
 (defn list-my-arms []
