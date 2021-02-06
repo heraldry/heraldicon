@@ -1412,3 +1412,25 @@
         [text-field (conj db-path :source-creator-name) "Creator name"]
         [text-field (conj db-path :source-creator-link) "Creator link"]])
      [:div {:style {:margin-bottom "1em"}} " "]]))
+
+(defn search-field [db-path]
+  (let [current-value @(rf/subscribe [:get db-path])
+        input-id      (id "input")]
+    [:div {:style {:display       "inline-block"
+                   :border-radius "999px"
+                   :border        "1px solid #ccc"
+                   :padding       "3px 6px"
+                   :min-width     "10em"
+                   :width         "50%"}}
+     [:i.fas.fa-search]
+     [:input {:id           input-id
+              :name         "search"
+              :type         "text"
+              :value        current-value
+              :autocomplete "off"
+              :on-change    #(let [value (-> % .-target .-value)]
+                               (rf/dispatch-sync [:set db-path value]))
+              :style        {:outline     "none"
+                             :border      "0"
+                             :margin-left "0.5em"
+                             :width       "calc(100% - 12px - 1.5em)"}}]]))

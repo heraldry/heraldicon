@@ -423,26 +423,64 @@
     (when (= status :done)
       [charge-form])))
 
+(defn matches-word [data word]
+  (cond
+    (keyword? data) (-> data name s/lower-case (s/includes? word))
+    (string? data)  (-> data s/lower-case (s/includes? word))
+    (map? data)     (some (fn [[k v]]
+                            (or (and (keyword? k)
+                                     (matches-word k word)
+                                     ;; this would be an attribute entry, the value
+                                     ;; must be truthy as well
+                                     v)
+                                (matches-word v word))) data)))
+
+(defn filter-charges [charges filter-string]
+  (if (or (not filter-string)
+          (-> filter-string s/trim count zero?))
+    charges
+    (let [words (-> filter-string
+                    (s/split #" +")
+                    (->> (map s/lower-case)))]
+      (filterv (fn [charge]
+                 (every? (fn [word]
+                           (some (fn [attribute]
+                                   (-> charge
+                                       (get attribute)
+                                       (matches-word word)))
+                                 [:name :type :attitude :facing :attributes :colours :username]))
+                         words))
+               charges))))
+
 (defn show-charge-tree [charges & {:keys [remove-empty-groups?]}]
   [:div.tree
-   (let [charge-map (charge-map/build-charge-map
-                     charges
-                     :remove-empty-groups? remove-empty-groups?)]
-     [component/tree-for-charge-map-new charge-map [] nil nil
-      {:render-variant (fn [node]
-                         (let [charge   (-> node :data)
-                               username (-> charge :username)]
-                           [:div {:style {:display        "inline-block"
-                                          :white-space    "normal"
-                                          :vertical-align "top"
-                                          :line-height    "1.5em"}}
-                            [:div {:style {:display        "inline-block"
-                                           :vertical-align "top"}}
-                             [link-to-charge (-> node :data)]
-                             " by "
-                             [:a {:href   (full-url-for-username username)
-                                  :target "_blank"} username]]
-                            [charge-properties charge]]))}])])
+   (let [filter-db-path       [:ui :charge-tree-filter]
+         filter-string        @(rf/subscribe [:get filter-db-path])
+         filtered-charges     (filter-charges charges filter-string)
+         remove-empty-groups? (or remove-empty-groups?
+                                  (not= charges filtered-charges))
+         charge-map           (charge-map/build-charge-map
+                               filtered-charges
+                               :remove-empty-groups? remove-empty-groups?)]
+     [:<>
+      [component/search-field filter-db-path]
+      (if (empty? filtered-charges)
+        [:div "None"]
+        [component/tree-for-charge-map-new charge-map [] nil nil
+         {:render-variant (fn [node]
+                            (let [charge   (-> node :data)
+                                  username (-> charge :username)]
+                              [:div {:style {:display        "inline-block"
+                                             :white-space    "normal"
+                                             :vertical-align "top"
+                                             :line-height    "1.5em"}}
+                               [:div {:style {:display        "inline-block"
+                                              :vertical-align "top"}}
+                                [link-to-charge (-> node :data)]
+                                " by "
+                                [:a {:href   (full-url-for-username username)
+                                     :target "_blank"} username]]
+                               [charge-properties charge]]))}])])])
 
 (defn view-list-charges []
   (let [[status charges] (state/async-fetch-data
