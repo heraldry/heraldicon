@@ -114,11 +114,12 @@
 
 .tree .node-name {
   white-space: nowrap;
+  line-height: 1.5em;
 }
 
 .tree .node-name i {
   width: 1.25em;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 .clickable {
