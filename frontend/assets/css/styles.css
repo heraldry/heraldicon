@@ -165,7 +165,7 @@ label div {
   font-size: 0.8em;
   margin-left: 0.5em;
   height: 1.2em;
-  border-radius: 0.6em;
+  border-radius: 999px;
   padding: 4px 8px;
   white-space: nowrap;
   line-height: 1.2em;
@@ -196,7 +196,7 @@ label div {
   font-size: 0.8em;
   margin-left: 0.5em;
   height: 1em;
-  border-radius: 0.7em;
+  border-radius: 999px;
   white-space: nowrap;
   line-height: 1em;
   background-color: #ddd;
