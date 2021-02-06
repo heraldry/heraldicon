@@ -841,8 +841,9 @@
                                 (= node-type :attitude) :em
                                 (= node-type :facing)   :em
                                 :else                   :<>) name]
-                             [:span.count-badge
-                              (charge-map/count-variants node)]]])
+                             (let [c (charge-map/count-variants node)]
+                               (when (pos? c)
+                                 [:span.count-badge c]))]])
       (and open?
            groups)        (conj [:ul
                                  (for [[key group] (sort-by first groups)]
