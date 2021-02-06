@@ -823,7 +823,7 @@
                 [:div.node-name {:on-click nil
                                  :style {:color (when still-on-path? "#1b6690")
                                          :left 0}}
-                 [render-variant node]])
+                 "\u2022 " [render-variant node]])
       (and (not variant?)
            (not= node-type
                  :_root)) (conj
