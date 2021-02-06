@@ -145,30 +145,6 @@ label div {
   color: #aaa;
 }
 
-.tree {
-  margin-bottom: 0.5em;
-  border: solid 1px #bbb;
-  border-radius: 10px;
-  padding: 5px 10px;
-}
-
-.tree ul {
-  list-style: none;
-  padding-left: 1.5em;
-  margin: 0;
-}
-
-.tree > ul {
-  padding-left: 0;
-}
-
-.tree ul li {
-}
-
-.tree span.node-name i {
-  width: 1.5em;
-}
-
 .credits {
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -213,4 +189,17 @@ label div {
 .tag.modifier {
   background-color: #eeb;
   color: #771;
+}
+
+.count-badge {
+  display: inline-block;
+  font-size: 0.8em;
+  margin-left: 0.5em;
+  height: 1em;
+  border-radius: 0.7em;
+  white-space: nowrap;
+  line-height: 1em;
+  background-color: #ddd;
+  color: #555;
+  padding: 0.2em 0.4em;
 }

@@ -100,8 +100,6 @@
 
 .tree {
   margin-bottom: 0.5em;
-  border: solid 1px #bbb;
-  border-radius: 10px;
   padding: 5px 10px;
 }
 
@@ -116,10 +114,16 @@
 }
 
 .tree ul li {
+  vertical-align: top;
 }
 
-.tree span.node-name i {
-  width: 1.5em;
+.tree .node-name {
+  white-space: nowrap;
+}
+
+.tree .node-name i {
+  width: 1.25em;
+  vertical-align: top;
 }
 
 .clickable {
