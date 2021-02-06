@@ -209,3 +209,8 @@ label div {
   background-color: #beb;
   color: #171;
 }
+
+.tag.modifier {
+  background-color: #eeb;
+  color: #771;
+}
