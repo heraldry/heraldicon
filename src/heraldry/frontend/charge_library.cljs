@@ -315,7 +315,7 @@
                             :vertical-align "middle"
                             :white-space    "normal"}}
    (when (-> charge :is-public not)
-     [:div.tag.private "private"])
+     [:div.tag.private [:i.fas.fa-lock] "private"])
    (when-let [attitude (-> charge
                            :attitude
                            (#(when (not= % :none) %)))]
