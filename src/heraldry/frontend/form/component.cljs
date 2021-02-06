@@ -819,6 +819,129 @@
                                   remaining-path-to-charge
                                   :still-on-path? following-path?]]))]))))
 
+(defn tree-for-charge-map-new [{:keys [node-type name groups charges attitudes facings variants] :as node}
+                               tree-path
+                               selected-charge remaining-path-to-charge
+                               {:keys [still-on-path? render-variant]
+                                :as opts}]
+  (let [flag-path (conj [:ui :charge-map] tree-path)
+        db-open? @(rf/subscribe [:get flag-path])
+        open? (or (= node-type :_root)
+                  (and (nil? db-open?)
+                       still-on-path?)
+                  db-open?)
+        variant? (= node-type :variant)]
+    (cond-> [:<>]
+      variant? (conj
+                [:div.node-name {:on-click nil
+                                 :style {:color (when still-on-path? "#1b6690")
+                                         :left 0}}
+                 [render-variant node]])
+      (and (not variant?)
+           (not= node-type
+                 :_root)) (conj
+                           [:div.node-name.clickable
+                            {:on-click #(state/dispatch-on-event % [:toggle flag-path])
+                             :style {:color (when still-on-path? "#1b6690")}}
+                            (if open?
+                              [:i.far {:class (-> node-icons (get node-type) :open)}]
+                              [:i.far {:class (-> node-icons (get node-type) :closed)}])
+                            [:<>
+                             [(cond
+                                (and (= node-type :variant)
+                                     still-on-path?) :b
+                                (= node-type :charge) :b
+                                (= node-type :attitude) :em
+                                (= node-type :facing) :em
+                                :else :<>) name]
+                             [:span.count-badge
+                              (count-variants node)]]])
+      (and open?
+           groups) (conj [:ul
+                          (for [[key group] (sort-by first groups)]
+                            (let [following-path? (and still-on-path?
+                                                       (= (first remaining-path-to-charge)
+                                                          key))
+                                  remaining-path-to-charge (when following-path?
+                                                             (drop 1 remaining-path-to-charge))]
+                              ^{:key key}
+                              [:li.group
+                               [tree-for-charge-map-new
+                                group
+                                (conj tree-path :groups key)
+                                selected-charge
+                                remaining-path-to-charge
+                                (-> opts
+                                    (assoc :still-on-path? following-path?))]]))])
+      (and open?
+           charges) (conj [:ul
+                           (for [[key charge] (sort-by first charges)]
+                             (let [following-path? (and still-on-path?
+                                                        (-> remaining-path-to-charge
+                                                            count zero?)
+                                                        (= (:type charge)
+                                                           (:type selected-charge)))]
+                               ^{:key key}
+                               [:li.charge
+                                [tree-for-charge-map-new
+                                 charge
+                                 (conj tree-path :charges key)
+                                 selected-charge
+                                 remaining-path-to-charge
+                                 (-> opts
+                                     (assoc :still-on-path? following-path?))]]))])
+      (and open?
+           attitudes) (conj [:ul
+                             (for [[key attitude] (sort-by first attitudes)]
+                               (let [following-path? (and still-on-path?
+                                                          (-> remaining-path-to-charge
+                                                              count zero?)
+                                                          (= (:key attitude)
+                                                             (:attitude selected-charge)))]
+                                 ^{:key key}
+                                 [:li.attitude
+                                  [tree-for-charge-map-new
+                                   attitude
+                                   (conj tree-path :attitudes key)
+                                   selected-charge
+                                   remaining-path-to-charge
+                                   (-> opts
+                                       (assoc :still-on-path? following-path?))]]))])
+      (and open?
+           facings) (conj [:ul
+                           (for [[key facing] (sort-by first facings)]
+                             (let [following-path? (and still-on-path?
+                                                        (-> remaining-path-to-charge
+                                                            count zero?)
+                                                        (= (:key facing)
+                                                           (:facing selected-charge)))]
+                               ^{:key key}
+                               [:li.variant
+                                [tree-for-charge-map-new
+                                 facing
+                                 (conj tree-path :facings key)
+                                 selected-charge
+                                 remaining-path-to-charge
+                                 (-> opts
+                                     (assoc :still-on-path? following-path?))]]))])
+      (and open?
+           variants) (conj [:ul
+                            (for [[key variant] (sort-by (comp :name second) variants)]
+                              (let [following-path? (and still-on-path?
+                                                         (-> remaining-path-to-charge
+                                                             count zero?)
+                                                         (= (:key variant)
+                                                            (:facing selected-charge)))]
+                                ^{:key key}
+                                [:li.variant
+                                 [tree-for-charge-map-new
+                                  variant
+                                  (conj tree-path :variants key)
+                                  selected-charge
+                                  remaining-path-to-charge
+                                  (-> opts
+                                      (assoc :still-on-path? following-path?))]]))]))))
+
 (defn charge-type-more-choice [path charge]
   [submenu path "Select Other Charge"
    (let [{:keys [result]} (render/coat-of-arms
