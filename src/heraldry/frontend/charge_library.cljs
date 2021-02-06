@@ -385,7 +385,7 @@
                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
                                  (rf/dispatch-sync [:clear-form-message form-db-path])
                                  (reife/push-state :view-charge-by-id {:id charge-id}))}
-                (:name charge)]
+                (str (-> charge :type name) ": " (:name charge))]
                [charge-properties charge]])))]))))
 
 (defn list-my-charges []
