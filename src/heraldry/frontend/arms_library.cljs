@@ -298,7 +298,7 @@
                             list-db-path
                             user-id
                             #(fetch-arms-list-by-user user-id))]
-    (when (= status :done)
+    (if (= status :done)
       (if (empty? arms-list)
         [:div "None"]
         [:ul.arms-list
@@ -313,7 +313,8 @@
                     :on-click #(do
                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
                                  (rf/dispatch-sync [:clear-form-message form-db-path]))}
-                (:name arms)])]))]))))
+                (:name arms)])]))])
+      [:div "loading..."])))
 
 (defn list-my-arms []
   (let [user-data (user/data)]
