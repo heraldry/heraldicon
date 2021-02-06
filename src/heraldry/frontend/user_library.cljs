@@ -3,6 +3,7 @@
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.api.request :as api-request]
             [heraldry.frontend.arms-library :as arms-library]
+            [heraldry.frontend.charge :as charge]
             [heraldry.frontend.charge-library :as charge-library]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.state :as state]
@@ -24,7 +25,7 @@
   (let [[status charges] (state/async-fetch-data
                           [:my-charges]
                           user-id
-                          #(charge-library/fetch-charges-for-user user-id))]
+                          #(charge/fetch-charges-for-user user-id))]
     (if (= status :done)
       [component/charge-tree
        charges
