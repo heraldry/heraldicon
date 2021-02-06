@@ -4,6 +4,7 @@
             [heraldry.api.request :as api-request]
             [heraldry.frontend.arms-library :as arms-library]
             [heraldry.frontend.charge-library :as charge-library]
+            [heraldry.frontend.form.component :as component]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [re-frame.core :as rf]))
@@ -25,8 +26,9 @@
                           user-id
                           #(charge-library/fetch-charges-for-user user-id))]
     (if (= status :done)
-      [charge-library/show-charge-tree
+      [component/charge-tree
        charges
+       :link-to-charge charge-library/link-to-charge
        :remove-empty-groups? true
        :hide-access-filters? true]
       [:div "loading..."])))
@@ -47,10 +49,10 @@
         [view-charges-for-user (:id user-info-data)]]]]]))
 
 (defn view-user [username]
-  (let [[status _user-form-data] (state/async-fetch-data
-                                  user-info-db-path
-                                  username
-                                  #(fetch-user username))]
+  (let [[status _userform-data] (state/async-fetch-data
+                                 user-info-db-path
+                                 username
+                                 #(fetch-user username))]
     (when (= status :done)
       [user-display])))
 

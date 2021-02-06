@@ -13,8 +13,9 @@
             [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
-            [heraldry.util :refer [id]]
+            [heraldry.util :refer [id full-url-for-username]]
             [re-frame.core :as rf]))
 
 (def coa-select-option-context
@@ -242,6 +243,28 @@
 ;; components
 
 (declare form-for-field)
+
+(defn search-field [db-path]
+  (let [current-value @(rf/subscribe [:get db-path])
+        input-id (id "input")]
+    [:div {:style {:display "inline-block"
+                   :border-radius "999px"
+                   :border "1px solid #ccc"
+                   :padding "3px 6px"
+                   :min-width "10em"
+                   :width "50%"}}
+     [:i.fas.fa-search]
+     [:input {:id input-id
+              :name "search"
+              :type "text"
+              :value current-value
+              :autoComplete "off"
+              :on-change #(let [value (-> % .-target .-value)]
+                            (rf/dispatch-sync [:set db-path value]))
+              :style {:outline "none"
+                      :border "0"
+                      :margin-left "0.5em"
+                      :width "calc(100% - 12px - 1.5em)"}}]]))
 
 (defn checkbox [path label & {:keys [on-change disabled? checked? style]}]
   (let [component-id (id "checkbox")
@@ -930,6 +953,121 @@
                                   (-> opts
                                       (assoc :still-on-path? following-path?))]]))]))))
 
+(defn charge-properties [charge]
+  [:div.properties {:style {:display "inline-block"
+                            :line-height "1.5em"
+                            :vertical-align "middle"
+                            :white-space "normal"}}
+   (when (-> charge :is-public not)
+     [:div.tag.private [:i.fas.fa-lock] "private"])
+   (when-let [attitude (-> charge
+                           :attitude
+                           (#(when (not= % :none) %)))]
+     [:div.tag.attitude (util/translate attitude)])
+   (when-let [facing (-> charge
+                         :facing
+                         (#(when (-> % #{:none :to-dexter} not) %)))]
+     [:div.tag.facing (util/translate facing)])
+   (for [attribute (->> charge
+                        :attributes
+                        (filter second)
+                        (map first)
+                        sort)]
+     ^{:key attribute}
+     [:div.tag.attribute (util/translate attribute)])
+   (for [modifier (->> charge
+                       :colours
+                       (map second)
+                       (filter #(-> %
+                                    #{:primary
+                                      :keep
+                                      :outline
+                                      :eyes-and-teeth}
+                                    not))
+                       sort)]
+     ^{:key modifier}
+     [:div.tag.modifier (util/translate modifier)])])
+
+(defn matches-word [data word]
+  (cond
+    (keyword? data) (-> data name s/lower-case (s/includes? word))
+    (string? data) (-> data s/lower-case (s/includes? word))
+    (map? data) (some (fn [[k v]]
+                        (or (and (keyword? k)
+                                 (matches-word k word)
+                                     ;; this would be an attribute entry, the value
+                                     ;; must be truthy as well
+                                 v)
+                            (matches-word v word))) data)))
+
+(defn filter-charges [charges filter-string]
+  (if (or (not filter-string)
+          (-> filter-string s/trim count zero?))
+    charges
+    (let [words (-> filter-string
+                    (s/split #" +")
+                    (->> (map s/lower-case)))]
+      (filterv (fn [charge]
+                 (every? (fn [word]
+                           (some (fn [attribute]
+                                   (-> charge
+                                       (get attribute)
+                                       (matches-word word)))
+                                 [:name :type :attitude :facing :attributes :colours :username]))
+                         words))
+               charges))))
+
+(defn charge-tree [charges & {:keys [remove-empty-groups? hide-access-filters?
+                                     link-to-charge]}]
+  [:div.tree
+   (let [user-data (user/data)
+         filter-db-path [:ui :charge-tree :filter-string]
+         show-public-db-path [:ui :charge-tree :show-public?]
+         show-own-db-path [:ui :charge-tree :show-own?]
+         show-public? @(rf/subscribe [:get show-public-db-path])
+         show-own? @(rf/subscribe [:get show-own-db-path])
+         filter-string @(rf/subscribe [:get filter-db-path])
+         filtered-charges (-> charges
+                              (filter-charges filter-string)
+                              (cond->>
+                               (not hide-access-filters?) (filter (fn [charge]
+                                                                    (or (and show-public?
+                                                                             (:is-public charge))
+                                                                        (and show-own?
+                                                                             (= (:username charge)
+                                                                                (:username user-data))))))))
+         remove-empty-groups? (or remove-empty-groups?
+                                  (and (not hide-access-filters?)
+                                       (not show-public?))
+                                  (-> filter-string count pos?))
+         charge-map (charge-map/build-charge-map
+                     filtered-charges
+                     :remove-empty-groups? remove-empty-groups?)]
+     [:<>
+      [search-field filter-db-path]
+      (when (not hide-access-filters?)
+        [:div {:style {:margin-top "5px"}}
+         [checkbox show-public-db-path "Public charges" :style {:display "inline-block"}]
+         [checkbox show-own-db-path "Own charges" :style {:display "inline-block"
+                                                          :margin-left "1em"}]])
+      (if (empty? filtered-charges)
+        [:div "None"]
+        [tree-for-charge-map-new charge-map [] nil nil
+         {:render-variant (fn [node]
+                            (let [charge (-> node :data)
+                                  username (-> charge :username)]
+                              [:div {:style {:display "inline-block"
+                                             :white-space "normal"
+                                             :vertical-align "top"
+                                             :line-height "1.5em"}}
+                               [:div {:style {:display "inline-block"
+                                              :vertical-align "top"}}
+                                [link-to-charge (-> node :data)]
+                                " by "
+                                [:a {:href (full-url-for-username username)
+                                     :target "_blank"} username]]
+                               [charge-properties charge]]))}])])])
+
 (defn charge-type-more-choice [path charge]
   [submenu path "Select Other Charge"
    (let [{:keys [result]} (render/coat-of-arms
@@ -1412,25 +1550,3 @@
         [text-field (conj db-path :source-creator-name) "Creator name"]
         [text-field (conj db-path :source-creator-link) "Creator link"]])
      [:div {:style {:margin-bottom "1em"}} " "]]))
-
-(defn search-field [db-path]
-  (let [current-value @(rf/subscribe [:get db-path])
-        input-id (id "input")]
-    [:div {:style {:display "inline-block"
-                   :border-radius "999px"
-                   :border "1px solid #ccc"
-                   :padding "3px 6px"
-                   :min-width "10em"
-                   :width "50%"}}
-     [:i.fas.fa-search]
-     [:input {:id input-id
-              :name "search"
-              :type "text"
-              :value current-value
-              :autoComplete "off"
-              :on-change #(let [value (-> % .-target .-value)]
-                            (rf/dispatch-sync [:set db-path value]))
-              :style {:outline "none"
-                      :border "0"
-                      :margin-left "0.5em"
-                      :width "calc(100% - 12px - 1.5em)"}}]]))
