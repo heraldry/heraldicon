@@ -1427,7 +1427,7 @@
               :name "search"
               :type "text"
               :value current-value
-              :autocomplete "off"
+              :autoComplete "off"
               :on-change #(let [value (-> % .-target .-value)]
                             (rf/dispatch-sync [:set db-path value]))
               :style {:outline "none"
