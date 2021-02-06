@@ -1285,7 +1285,7 @@
                              ["CC Attribution-ShareAlike" :cc-attribution-share-alike]
                              ["Public Domain" :public-domain]]
         license-nature @(rf/subscribe [:get (conj db-path :nature)])]
-    [component db-path :attribution "Attribution" nil
+    [component db-path :attribution "Attribution / License" nil
      [select (conj db-path :license) "License" attribution-options]
      [radio-select (conj db-path :nature) [["Own work" :own-work]
                                            ["Derivative" :derivative]]
