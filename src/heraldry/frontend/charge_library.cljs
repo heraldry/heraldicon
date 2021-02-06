@@ -424,25 +424,34 @@
       [charge-form])))
 
 (defn show-charge-tree [charges & {:keys [remove-empty-groups?]}]
-  [:div.tree
-   (let [charge-map (charge-map/build-charge-map
-                     charges
-                     :remove-empty-groups? remove-empty-groups?)]
-     [component/tree-for-charge-map-new charge-map [] nil nil
-      {:render-variant (fn [node]
-                         (let [charge (-> node :data)
-                               username (-> charge :username)]
-                           [:div {:style {:display "inline-block"
-                                          :white-space "normal"
-                                          :vertical-align "top"
-                                          :line-height "1.5em"}}
+  [:div {:style {:padding "15px"}}
+   [:button.pure-button.pure-button-primary
+    {:on-click #(do
+                  (rf/dispatch-sync [:clear-form-errors form-db-path])
+                  (rf/dispatch-sync [:clear-form-message form-db-path])
+                  (reife/push-state :create-charge))}
+    "Create"]
+
+   [:h4 "Available Charges"]
+   [:div.tree
+    (let [charge-map (charge-map/build-charge-map
+                      charges
+                      :remove-empty-groups? remove-empty-groups?)]
+      [component/tree-for-charge-map-new charge-map [] nil nil
+       {:render-variant (fn [node]
+                          (let [charge (-> node :data)
+                                username (-> charge :username)]
                             [:div {:style {:display "inline-block"
-                                           :vertical-align "top"}}
-                             [link-to-charge (-> node :data)]
-                             " by "
-                             [:a {:href (full-url-for-username username)
-                                  :target "_blank"} username]]
-                            [charge-properties charge]]))}])])
+                                           :white-space "normal"
+                                           :vertical-align "top"
+                                           :line-height "1.5em"}}
+                             [:div {:style {:display "inline-block"
+                                            :vertical-align "top"}}
+                              [link-to-charge (-> node :data)]
+                              " by "
+                              [:a {:href (full-url-for-username username)
+                                   :target "_blank"} username]]
+                             [charge-properties charge]]))}])]])
 
 (defn view-list-charges []
   (let [[status charges] (state/async-fetch-data
