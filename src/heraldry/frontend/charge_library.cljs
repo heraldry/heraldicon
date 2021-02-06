@@ -9,6 +9,7 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.component :as component]
@@ -17,7 +18,7 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
-            [heraldry.util :refer [id-for-url]]
+            [heraldry.util :refer [id-for-url full-url-for-username]]
             [hickory.core :as hickory]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]))
@@ -53,6 +54,17 @@
             :charges))
       (catch :default e
         (println "fetch-charges-by-user error:" e)))))
+
+(defn fetch-charges []
+  (go
+    (try
+      (let [user-data (user/data)]
+        (-> (api-request/call :fetch-charges {}
+                              user-data)
+            <?
+            :charges))
+      (catch :default e
+        (println "fetch-charges error:" e)))))
 
 (defn fetch-charge [charge-id version]
   (go
@@ -308,7 +320,7 @@
      [:div.tag.attitude (util/translate attitude)])
    (when-let [facing (-> charge
                          :facing
-                         (#(when (not= % :none) %)))]
+                         (#(when (-> % #{:none :to-dexter} not) %)))]
      [:div.tag.facing (util/translate facing)])
    (for [attribute (->> charge
                         :attributes
@@ -363,6 +375,18 @@
             "Edit"]])
         [component/form-render-options [:example-coa :render-options]]]])))
 
+(defn link-to-charge [charge & {:keys [type-prefix?]}]
+  (let [charge-id (-> charge
+                      :id
+                      id-for-url)]
+    [:a {:href (reife/href :view-charge-by-id {:id charge-id})
+         :on-click #(do
+                      (rf/dispatch-sync [:clear-form-errors form-db-path])
+                      (rf/dispatch-sync [:clear-form-message form-db-path]))}
+     (when type-prefix?
+       (str (-> charge :type name) ": "))
+     (:name charge)]))
+
 (defn list-charges-for-user [user-id]
   (let [[status charge-list] (state/async-fetch-data
                               list-db-path
@@ -375,18 +399,10 @@
         [:ul.charge-list
          (doall
           (for [charge charge-list]
-            (let [charge-id (-> charge
-                                :id
-                                id-for-url)]
-              ^{:key charge-id}
-              [:li.charge {:style {:white-space "nowrap"}}
-               [:a {:href (reife/href :view-charge-by-id {:id charge-id})
-                    :on-click #(do
-                                 (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                 (rf/dispatch-sync [:clear-form-message form-db-path])
-                                 (reife/push-state :view-charge-by-id {:id charge-id}))}
-                (str (-> charge :type name) ": " (:name charge))]
-               [charge-properties charge]])))]))))
+            ^{:key (:id charge)}
+            [:li.charge {:style {:white-space "nowrap"}}
+             [link-to-charge charge]
+             [charge-properties charge]]))]))))
 
 (defn list-my-charges []
   (let [user-data (user/data)]
@@ -422,8 +438,33 @@
     (when (= status :done)
       [charge-form])))
 
+(defn show-charge-tree []
+  (let [[status all-charges] (state/async-fetch-data
+                              [:all-charges]
+                              :all-charges
+                              fetch-charges)]
+    (if (= status :done)
+      [:div.tree
+       (let [charge-map (charge-map/build-charge-map all-charges)]
+         [component/tree-for-charge-map-new charge-map [] nil nil
+          {:render-variant (fn [node]
+                             (let [charge (-> node :data)
+                                   username (-> charge :username)]
+                               [:div {:style {:display "inline-block"
+                                              :white-space "normal"
+                                              :vertical-align "top"
+                                              :line-height "1.5em"}}
+                                [:div {:style {:display "inline-block"
+                                               :vertical-align "top"}}
+                                 [link-to-charge (-> node :data)]
+                                 " by "
+                                 [:a {:href (full-url-for-username username)
+                                      :target "_blank"} username]]
+                                [charge-properties charge]]))}])]
+      [:div "loading..."])))
+
 (defn view-list-charges []
-  [list-my-charges])
+  [show-charge-tree])
 
 (defn edit-charge-by-id [{:keys [parameters] :as match}]
   (rf/dispatch [:set [:route-match] match])
