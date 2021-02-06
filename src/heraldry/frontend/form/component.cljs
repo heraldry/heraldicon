@@ -11,6 +11,7 @@
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.frontend.charge-map :as charge-map]
+            [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
@@ -709,131 +710,10 @@
    :variant {:normal "fa-image"}})
 
 (defn tree-for-charge-map [{:keys [node-type name groups charges attitudes facings variants] :as node}
-                           tree-path db-path
-                           selected-charge remaining-path-to-charge & {:keys [still-on-path?]}]
-  (let [flag-path (conj [:ui :charge-map] tree-path)
-        db-open? @(rf/subscribe [:get flag-path])
-        open? (or (= node-type :_root)
-                  (and (nil? db-open?)
-                       still-on-path?)
-                  db-open?)]
-    (cond-> [:<>]
-      (not= node-type
-            :_root) (conj
-                     [:span.node-name.clickable
-                      {:on-click (if (= node-type :variant)
-                                   #(state/dispatch-on-event
-                                     %
-                                     [:update-charge
-                                      db-path
-                                      (let [charge-data (:data node)]
-                                        (merge {:type (:type charge-data)
-                                                :variant {:id (:id charge-data)
-                                                          :version (:version charge-data)}}
-                                               (select-keys charge-data
-                                                            [:attitude :facing])))])
-                                   #(state/dispatch-on-event % [:toggle flag-path]))
-                       :style {:color (when still-on-path? "#1b6690")}}
-                      (if (= node-type :variant)
-                        [:i.far {:class (-> node-icons (get node-type) :normal)}]
-                        (if open?
-                          [:i.far {:class (-> node-icons (get node-type) :open)}]
-                          [:i.far {:class (-> node-icons (get node-type) :closed)}]))
-                      [(cond
-                         (and (= node-type :variant)
-                              still-on-path?) :b
-                         (= node-type :charge) :b
-                         (= node-type :attitude) :em
-                         (= node-type :facing) :em
-                         :else :<>) name (if (= node-type :variant)
-                                           (str " by " (-> node :data :username))
-                                           (str " (" (charge-map/count-variants node) ")"))]])
-      (and open?
-           groups) (conj [:ul
-                          (for [[key group] (sort-by first groups)]
-                            (let [following-path? (and still-on-path?
-                                                       (= (first remaining-path-to-charge)
-                                                          key))
-                                  remaining-path-to-charge (when following-path?
-                                                             (drop 1 remaining-path-to-charge))]
-                              ^{:key key}
-                              [:li.group
-                               [tree-for-charge-map
-                                group
-                                (conj tree-path :groups key)
-                                db-path selected-charge
-                                remaining-path-to-charge
-                                :still-on-path? following-path?]]))])
-      (and open?
-           charges) (conj [:ul
-                           (for [[key charge] (sort-by first charges)]
-                             (let [following-path? (and still-on-path?
-                                                        (-> remaining-path-to-charge
-                                                            count zero?)
-                                                        (= (:type charge)
-                                                           (:type selected-charge)))]
-                               ^{:key key}
-                               [:li.charge
-                                [tree-for-charge-map
-                                 charge
-                                 (conj tree-path :charges key)
-                                 db-path selected-charge
-                                 remaining-path-to-charge
-                                 :still-on-path? following-path?]]))])
-      (and open?
-           attitudes) (conj [:ul
-                             (for [[key attitude] (sort-by first attitudes)]
-                               (let [following-path? (and still-on-path?
-                                                          (-> remaining-path-to-charge
-                                                              count zero?)
-                                                          (= (:key attitude)
-                                                             (:attitude selected-charge)))]
-                                 ^{:key key}
-                                 [:li.attitude
-                                  [tree-for-charge-map
-                                   attitude
-                                   (conj tree-path :attitudes key)
-                                   db-path selected-charge
-                                   remaining-path-to-charge
-                                   :still-on-path? following-path?]]))])
-      (and open?
-           facings) (conj [:ul
-                           (for [[key facing] (sort-by first facings)]
-                             (let [following-path? (and still-on-path?
-                                                        (-> remaining-path-to-charge
-                                                            count zero?)
-                                                        (= (:key facing)
-                                                           (:facing selected-charge)))]
-                               ^{:key key}
-                               [:li.variant
-                                [tree-for-charge-map
-                                 facing
-                                 (conj tree-path :facings key)
-                                 db-path selected-charge
-                                 remaining-path-to-charge
-                                 :still-on-path? following-path?]]))])
-      (and open?
-           variants) (conj [:ul
-                            (for [[key variant] (sort-by (comp :name second) variants)]
-                              (let [following-path? (and still-on-path?
-                                                         (-> remaining-path-to-charge
-                                                             count zero?)
-                                                         (= (:key variant)
-                                                            (:facing selected-charge)))]
-                                ^{:key key}
-                                [:li.variant
-                                 [tree-for-charge-map
-                                  variant
-                                  (conj tree-path :variants key)
-                                  db-path selected-charge
-                                  remaining-path-to-charge
-                                  :still-on-path? following-path?]]))]))))
-
-(defn tree-for-charge-map-new [{:keys [node-type name groups charges attitudes facings variants] :as node}
-                               tree-path
-                               selected-charge remaining-path-to-charge
-                               {:keys [still-on-path? render-variant]
-                                :as opts}]
+                           tree-path
+                           selected-charge remaining-path-to-charge
+                           {:keys [still-on-path? render-variant]
+                            :as opts}]
   (let [flag-path (conj [:ui :charge-map] tree-path)
         db-open? @(rf/subscribe [:get flag-path])
         open? (or (= node-type :_root)
@@ -877,7 +757,7 @@
                                                              (drop 1 remaining-path-to-charge))]
                               ^{:key key}
                               [:li.group
-                               [tree-for-charge-map-new
+                               [tree-for-charge-map
                                 group
                                 (conj tree-path :groups key)
                                 selected-charge
@@ -894,7 +774,7 @@
                                                            (:type selected-charge)))]
                                ^{:key key}
                                [:li.charge
-                                [tree-for-charge-map-new
+                                [tree-for-charge-map
                                  charge
                                  (conj tree-path :charges key)
                                  selected-charge
@@ -911,7 +791,7 @@
                                                              (:attitude selected-charge)))]
                                  ^{:key key}
                                  [:li.attitude
-                                  [tree-for-charge-map-new
+                                  [tree-for-charge-map
                                    attitude
                                    (conj tree-path :attitudes key)
                                    selected-charge
@@ -928,7 +808,7 @@
                                                            (:facing selected-charge)))]
                                ^{:key key}
                                [:li.variant
-                                [tree-for-charge-map-new
+                                [tree-for-charge-map
                                  facing
                                  (conj tree-path :facings key)
                                  selected-charge
@@ -945,7 +825,7 @@
                                                             (:facing selected-charge)))]
                                 ^{:key key}
                                 [:li.variant
-                                 [tree-for-charge-map-new
+                                 [tree-for-charge-map
                                   variant
                                   (conj tree-path :variants key)
                                   selected-charge
@@ -1018,7 +898,7 @@
                charges))))
 
 (defn charge-tree [charges & {:keys [remove-empty-groups? hide-access-filters?
-                                     link-to-charge]}]
+                                     link-to-charge render-variant]}]
   [:div.tree
    (let [user-data (user/data)
          filter-db-path [:ui :charge-tree :filter-string]
@@ -1052,66 +932,22 @@
                                                           :margin-left "1em"}]])
       (if (empty? filtered-charges)
         [:div "None"]
-        [tree-for-charge-map-new charge-map [] nil nil
-         {:render-variant (fn [node]
-                            (let [charge (-> node :data)
-                                  username (-> charge :username)]
-                              [:div {:style {:display "inline-block"
-                                             :white-space "normal"
-                                             :vertical-align "top"
-                                             :line-height "1.5em"}}
-                               [:div {:style {:display "inline-block"
-                                              :vertical-align "top"}}
-                                [link-to-charge (-> node :data)]
-                                " by "
-                                [:a {:href (full-url-for-username username)
-                                     :target "_blank"} username]]
-                               [charge-properties charge]]))}])])])
-
-(defn charge-type-more-choice [path charge]
-  [submenu path "Select Other Charge"
-   (let [{:keys [result]} (render/coat-of-arms
-                           {:escutcheon :rectangle
-                            :field {:component :field
-                                    :content {:tincture :argent}
-                                    :components [{:component :charge
-                                                  :type :roundel
-                                                  :geometry {:size 10}
-                                                  :field {:content {:tincture :azure}}}
-                                                 {:component :charge
-                                                  :type :roundel
-                                                  :geometry {:size 10}
-                                                  :position {:offset-x -15}
-                                                  :field {:content {:tincture :azure}}}
-                                                 {:component :charge
-                                                  :type :roundel
-                                                  :geometry {:size 10}
-                                                  :position {:offset-x 15}
-                                                  :field {:content {:tincture :azure}}}]}}
-                           100
-                           (-> coa-select-option-context
-                               (assoc-in [:render-options :outline?] true)
-                               (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
-     [:div.choice.tooltip
-      [:svg {:style {:width "4em"
-                     :height "4.5em"}
-             :viewBox "0 0 120 200"
-             :preserveAspectRatio "xMidYMin slice"}
-       [:g {:filter "url(#shadow)"}
-        [:g {:transform "translate(10,10)"}
-         result]]]
-      [:div.bottom
-       [:h3 {:style {:text-align "center"}} "more"]
-       [:i]]])
-   {}
-   [:div.tree
-    (let [charge-map (charge-map/get-charge-map)]
-      (if charge-map
-        [tree-for-charge-map charge-map [] path charge
-         (get-in charge-map
-                 [:lookup (:type charge)])
-         :still-on-path? true]
-        [:div "loading..."]))]])
+        [tree-for-charge-map charge-map [] nil nil
+         {:render-variant (or render-variant
+                              (fn [node]
+                                (let [charge (-> node :data)
+                                      username (-> charge :username)]
+                                  [:div {:style {:display "inline-block"
+                                                 :white-space "normal"
+                                                 :vertical-align "top"
+                                                 :line-height "1.5em"}}
+                                   [:div {:style {:display "inline-block"
+                                                  :vertical-align "top"}}
+                                    [link-to-charge (-> node :data)]
+                                    " by "
+                                    [:a {:href (full-url-for-username username)
+                                         :target "_blank"} username]]
+                                   [charge-properties charge]])))}])])])
 
 (defn form-for-charge-type [path]
   (let [charge @(rf/subscribe [:get path])
@@ -1126,13 +962,44 @@
     [:div.setting
      [:label "Type"]
      " "
-     [submenu path "Select Charge" title {:min-width "17.5em"}
+     [submenu path "Select Charge" title {:min-width "22em"}
       (for [[display-name key] charge/choices]
         ^{:key key}
         [charge-type-choice path key display-name :current charge-type])
       (when (-> names (contains? charge-type) not)
         [charge-type-selected-choice charge title])
-      [charge-type-more-choice path charge]]]))
+      (let [[status charges] (state/async-fetch-data
+                              [:all-charges]
+                              :all-charges
+                              frontend-charge/fetch-charges)]
+        [:div {:style {:padding "15px"}}
+         (if (= status :done)
+           [charge-tree charges
+            :render-variant (fn [node]
+                              (let [charge-data (:data node)
+                                    username (:username charge-data)]
+                                [:div {:style {:display "inline-block"
+                                               :white-space "normal"
+                                               :vertical-align "top"
+                                               :line-height "1.5em"}}
+                                 [:div {:style {:display "inline-block"
+                                                :vertical-align "top"}}
+                                  [:a.clickable
+                                   {:on-click #(state/dispatch-on-event
+                                                %
+                                                [:update-charge
+                                                 path
+                                                 (merge {:type (:type charge-data)
+                                                         :variant {:id (:id charge-data)
+                                                                   :version (:latest-version charge-data)}}
+                                                        (select-keys charge-data
+                                                                     [:attitude :facing]))])}
+                                   (:name charge-data)]
+                                  " by "
+                                  [:a {:href (full-url-for-username username)
+                                       :target "_blank"} username]]
+                                 [charge-properties charge-data]]))]
+           [:div "loading..."])])]]))
 
 (defn form-for-charge [path & {:keys [parent-field]}]
   (let [charge @(rf/subscribe [:get path])
