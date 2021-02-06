@@ -98,11 +98,6 @@
   display: table-cell;
 }
 
-.tree {
-  margin-bottom: 0.5em;
-  padding: 5px 10px;
-}
-
 .tree ul {
   list-style: none;
   padding-left: 1.5em;
