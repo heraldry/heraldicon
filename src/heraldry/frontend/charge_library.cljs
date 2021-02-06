@@ -314,6 +314,8 @@
                             :line-height    "1.5em"
                             :vertical-align "middle"
                             :white-space    "normal"}}
+   (when (-> charge :is-public not)
+     [:div.tag.private "private"])
    (when-let [attitude (-> charge
                            :attitude
                            (#(when (not= % :none) %)))]
@@ -452,18 +454,38 @@
                          words))
                charges))))
 
-(defn show-charge-tree [charges & {:keys [remove-empty-groups?]}]
+(defn show-charge-tree [charges & {:keys [remove-empty-groups? hide-access-filters?]}]
   [:div.tree
-   (let [filter-db-path       [:ui :charge-tree-filter]
+   (let [user-data            (user/data)
+         filter-db-path       [:ui :charge-tree :filter-string]
+         show-public-db-path  [:ui :charge-tree :show-public?]
+         show-own-db-path     [:ui :charge-tree :show-own?]
+         show-public?         @(rf/subscribe [:get show-public-db-path])
+         show-own?            @(rf/subscribe [:get show-own-db-path])
          filter-string        @(rf/subscribe [:get filter-db-path])
-         filtered-charges     (filter-charges charges filter-string)
+         filtered-charges     (-> charges
+                                  (filter-charges filter-string)
+                                  (cond->>
+                                      (not hide-access-filters?) (filter (fn [charge]
+                                                                           (or (and show-public?
+                                                                                    (:is-public charge))
+                                                                               (and show-own?
+                                                                                    (= (:username charge)
+                                                                                       (:username user-data))))))))
          remove-empty-groups? (or remove-empty-groups?
-                                  (not= charges filtered-charges))
+                                  (and (not hide-access-filters?)
+                                       (not show-public?))
+                                  (-> filter-string count pos?))
          charge-map           (charge-map/build-charge-map
                                filtered-charges
                                :remove-empty-groups? remove-empty-groups?)]
      [:<>
       [component/search-field filter-db-path]
+      (when (not hide-access-filters?)
+        [:div {:style {:margin-top "5px"}}
+         [component/checkbox show-public-db-path "Public charges" :style {:display "inline-block"}]
+         [component/checkbox show-own-db-path "Own charges" :style {:display     "inline-block"
+                                                                    :margin-left "1em"}]])
       (if (empty? filtered-charges)
         [:div "None"]
         [component/tree-for-charge-map-new charge-map [] nil nil

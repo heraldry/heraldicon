@@ -25,7 +25,10 @@
                           user-id
                           #(charge-library/fetch-charges-for-user user-id))]
     (if (= status :done)
-      [charge-library/show-charge-tree charges :remove-empty-groups? true]
+      [charge-library/show-charge-tree
+       charges
+       :remove-empty-groups? true
+       :hide-access-filters? true]
       [:div "loading..."])))
 
 (defn user-display []

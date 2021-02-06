@@ -243,14 +243,14 @@
 
 (declare form-for-field)
 
-(defn checkbox [path label & {:keys [on-change disabled? checked?]}]
+(defn checkbox [path label & {:keys [on-change disabled? checked? style]}]
   (let [component-id (id "checkbox")
         checked?     (-> (and path
                               @(rf/subscribe [:get path]))
                          (or checked?)
                          boolean
                          (and (not disabled?)))]
-    [:div.setting
+    [:div.setting {:style style}
      [:input {:type      "checkbox"
               :id        component-id
               :checked   checked?
