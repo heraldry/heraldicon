@@ -901,7 +901,7 @@
                charges))))
 
 (defn charge-tree [charges & {:keys [remove-empty-groups? hide-access-filters?
-                                     link-to-charge render-variant]}]
+                                     link-to-charge render-variant refresh-action]}]
   [:div.tree
    (let [user-data            (user/data)
          filter-db-path       [:ui :charge-tree :filter-string]
@@ -930,6 +930,11 @@
                                :remove-empty-groups? remove-empty-groups?)]
      [:<>
       [search-field filter-db-path]
+      (when refresh-action
+        [:a {:style    {:margin-left "0.5em"}
+             :on-click #(do
+                          (refresh-action)
+                          (.stopPropagation %))} [:i.fas.fa-sync-alt]])
       (when (not hide-access-filters?)
         [:div
          [checkbox show-public-db-path "Public charges" :style {:display "inline-block"}]
@@ -981,6 +986,7 @@
         [:div {:style {:padding "15px"}}
          (if (= status :done)
            [charge-tree charges
+            :refresh-action #(state/invalidate-cache [:all-charges] :all-charges)
             :render-variant (fn [node]
                               (let [charge-data (:data node)
                                     username    (:username charge-data)]
