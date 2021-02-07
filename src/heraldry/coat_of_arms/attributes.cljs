@@ -13,6 +13,7 @@
     ["Salient" :salient]
     ["Segreant" :segreant]
     ["Sejant" :sejant]
+    ["Sejant erect" :sejant-erect]
     ["Statant" :statant]]
    ["Two beasts"
     ["Addorsed" :addorsed]
