@@ -9,6 +9,10 @@ a:visited {
   cursor: pointer;
 }
 
+p {
+  margin-top: 0;
+}
+
 @media (min-width: 48em) {
   body {
     font-size: 16px;

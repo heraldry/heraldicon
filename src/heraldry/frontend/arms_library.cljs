@@ -322,6 +322,15 @@
 (defn list-my-arms []
   (let [user-data (user/data)]
     [:div {:style {:padding "15px"}}
+     [:div.pure-u-1-2 {:style {:display "block"
+                               :text-align "justify"
+                               :min-width "30em"}}
+      [:p
+       "Here you can create coats of arms. Right now you can only browse your own coats of arms, "
+       "but armories/collections are planned. You explicitly have to save your coat of arms as "
+       [:b "public"] ", if you want to share the link and allow others to view it."]
+      [:p
+       "However, SVG/PNG links can be viewed by anyone."]]
      [:button.pure-button.pure-button-primary
       {:on-click #(do
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
