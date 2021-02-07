@@ -6,7 +6,7 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.render :as render]
-            [heraldry.frontend.charge-map :as charge-map]
+            [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.component :as component]
@@ -70,7 +70,7 @@
                                   (map :variant)
                                   set)
         charges-data         (->> used-charges
-                                  (map charge-map/fetch-charge-data))]
+                                  (map charge/fetch-charge-data))]
     (when (-> charges-data first :id)
       [:div.credits
        [:span.credits-heading "Charge attribution"]
