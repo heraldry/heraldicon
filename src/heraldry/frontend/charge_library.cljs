@@ -185,19 +185,32 @@
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
             [:label {:for "name"
-                     :style {:width "6em"}} "Name"]
+                     :style {:width "6em"}}
+             [:div.tooltip.info {:style {:display "inline-block"}}
+              [:i.fas.fa-question-circle]
+              [:div.bottom
+               [:h3 {:style {:text-align "center"}} "A variant name that identifies the charge for you and others, if it is public."]
+               [:i]]]
+             " Name"]
             [:input {:id "name"
                      :value value
                      :on-change on-change
                      :type "text"
                      :style {:margin-right "0.5em"}}]
+
             [form/checkbox (conj form-db-path :is-public) "Make public"
              :style {:width "7em"}]])]
         [form/field (conj form-db-path :type)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
             [:label {:for "type"
-                     :style {:width "6em"}} "Charge type"]
+                     :style {:width "6em"}}
+             [:div.tooltip.info {:style {:display "inline-block"}}
+              [:i.fas.fa-question-circle]
+              [:div.bottom
+               [:h3 {:style {:text-align "center"}} "The heraldic name of the charge, the name it would be blazoned as. E.g. lion, mullet, wolf"]
+               [:i]]]
+             " Charge type"]
             [:input {:id "type"
                      :value value
                      :on-change on-change
@@ -210,7 +223,13 @@
          :label-style {:width "6em"}]
         [:div.pure-control-group
          [:h4 {:style {:margin-top "1em"
-                       :margin-bottom "0.5em"}} "Attributes"]
+                       :margin-bottom "0.5em"}}
+          "Attributes "
+          [:div.tooltip.info {:style {:display "inline-block"}}
+           [:i.fas.fa-question-circle]
+           [:div.bottom
+            [:h3 {:style {:text-align "center"}} "Other optional heraldic attributes that describe your charge."]
+            [:i]]]]
          (for [[group-name & attributes] attributes/attribute-choices]
            ^{:key group-name}
            [:div {:style {:display "inline-block"}}
@@ -219,7 +238,13 @@
               [form/checkbox (conj form-db-path :attributes key) display-name])])]
         [:div.pure-control-group
          [:h4 {:style {:margin-top "1em"
-                       :margin-bottom "0.5em"}} "Colours"]
+                       :margin-bottom "0.5em"}}
+          "Colours "
+          [:div.tooltip.info {:style {:display "inline-block"}}
+           [:i.fas.fa-question-circle]
+           [:div.bottom
+            [:h3 {:style {:text-align "center"}} "Colour replacements in the SVG that allow tincture overrides or identify the outline, etc.."]
+            [:i]]]]
          (let [colours-path (conj form-db-path :colours)
                colours @(rf/subscribe [:get colours-path])]
            (for [[k _] (sort-by first colours)]

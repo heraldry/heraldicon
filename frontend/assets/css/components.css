@@ -204,6 +204,11 @@ button:hover {
   pointer-events: none;
 }
 
+.tooltip.info .bottom {
+  top: 30px;
+  font-weight: normal;
+}
+
 .tooltip:hover .bottom {
   visibility: visible;
   opacity: 1;
