@@ -50,7 +50,13 @@
             svg-data    (<? (http/fetch (:svg-data-url charge-data)))]
         (-> charge-data
             (assoc-in [:data :edn-data] edn-data)
-            (assoc-in [:data :svg-data] svg-data)))
+            (assoc-in [:data :svg-data] svg-data)
+            (assoc-in [:data :edn-data] edn-data)
+            (cond->
+                (and (-> edn-data :colours)
+                     (-> charge-data :colours not)) (->
+                                                     (update-in [:data :edn-data] dissoc :colours)
+                                                     (assoc :colours (-> edn-data :colours))))))
       (catch :default e
         (println "fetch-charge-for-editing error:" e)))))
 
