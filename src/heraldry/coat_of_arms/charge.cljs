@@ -592,8 +592,10 @@
            coloured-charge]])])
     [:<>]))
 
-(defn render [{:keys [type] :as charge} parent environment context]
+(defn render [{:keys [type variant data] :as charge} parent environment context]
   (let [function (get kinds-function-map type)]
-    (if function
+    (if (and function
+             (not data)
+             (not variant))
       [function charge parent environment context]
       [render-other-charge charge parent environment context])))
