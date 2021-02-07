@@ -36,7 +36,12 @@
                                                              :version version} user-data))
             edn-data (<? (http/fetch (:edn-data-url charge-data)))]
         (-> charge-data
-            (assoc-in [:data :edn-data] edn-data)))
+            (assoc-in [:data :edn-data] edn-data)
+            (cond->
+             (and (-> edn-data :colours)
+                  (-> charge-data :colours not)) (->
+                                                  (update-in [:data :edn-data] dissoc :colours)
+                                                  (assoc :colours (-> edn-data :colours))))))
       (catch :default e
         (println "fetch-charge error:" e)))))
 
