@@ -136,9 +136,12 @@
                                             (println "async-fetch-data error:" db-path query-id e))))
                                       [:loading nil]))))
 
+(defn invalidate-cache-without-current [db-path query-id]
+  (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id] nil]))
+
 (defn invalidate-cache [db-path query-id]
+  (invalidate-cache-without-current db-path query-id)
   (let [current-query @(rf/subscribe [:get [:async-fetch-data db-path :current]])]
-    (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id] nil])
     (when (= current-query query-id)
       (rf/dispatch-sync [:set [:async-fetch-data db-path :current] nil])
       (rf/dispatch-sync [:set db-path nil]))))
