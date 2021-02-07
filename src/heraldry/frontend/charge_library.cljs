@@ -143,8 +143,8 @@
               charge-id (-> response :charge-id)]
           (println "save charge response" response)
           (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
-          (state/invalidate-cache form-db-path [charge-id nil])
-          (state/invalidate-cache form-db-path [charge-id 0])
+          (state/invalidate-cache-without-current form-db-path [charge-id nil])
+          (state/invalidate-cache-without-current form-db-path [charge-id 0])
           (rf/dispatch-sync [:set list-db-path nil])
           (state/invalidate-cache list-db-path (:user-id user-data))
           (rf/dispatch-sync [:set-form-message form-db-path (str "Charge saved, new version: " (:version response))])
