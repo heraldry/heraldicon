@@ -4,6 +4,7 @@
 (def attitude-choices
   [["None" :none]
    ["Beasts"
+    ["Cadent" :cadent]
     ["Couchant" :couchant]
     ["Courant" :courant]
     ["Dormant" :dormant]
