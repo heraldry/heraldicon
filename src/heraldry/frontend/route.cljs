@@ -117,10 +117,12 @@
         to))))
 
 (defn link
-  [{:keys [to path-params query-params]} & children]
+  [{:keys [to path-params query-params class style]} & children]
   (let [href (resolve-href to path-params query-params)]
     (into
-     [:a.pure-menu-link {:href href}]
+     [:a {:href href
+          :class class
+          :style style}]
      children)))
 
 (defn- name-matches?
@@ -139,7 +141,9 @@
   (let [active (or (name-matches? to path-params @current-match)
                    (url-matches? to @current-match))]
     [:li.pure-menu-item {:class (when active "pure-menu-selected")}
-     [link (assoc props :active active) children]]))
+     [link (-> props
+               (assoc :active active)
+               (assoc :class "pure-menu-link")) children]]))
 
 (defn view []
   (when @current-match
