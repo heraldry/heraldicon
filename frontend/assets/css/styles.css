@@ -171,6 +171,10 @@ label div {
   line-height: 1.2em;
 }
 
+.tag i.fas {
+  width: 1.25em;
+}
+
 .tag.private {
   background-color: #e55;
   color: #fff;
