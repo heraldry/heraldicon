@@ -137,4 +137,8 @@
               [:loading nil]))))
 
 (defn invalidate-cache [db-path query-id]
-  (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id] nil]))
+  (let [current-query @(rf/subscribe [:get [:async-fetch-data db-path :current]])]
+    (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id] nil])
+    (when (= current-query query-id)
+      (rf/dispatch-sync [:set [:async-fetch-data db-path :current] nil])
+      (rf/dispatch-sync [:set db-path nil]))))

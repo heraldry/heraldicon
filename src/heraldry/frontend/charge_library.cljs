@@ -316,23 +316,6 @@
        (str (-> charge :type name) ": "))
      (:name charge)]))
 
-(defn list-charges-for-user [user-id]
-  (let [[status charge-list] (state/async-fetch-data
-                              list-db-path
-                              user-id
-                              #(charge/fetch-charges-for-user user-id))]
-    (when (= status :done)
-      (if (empty? charge-list)
-        (when user-id
-          [:div "None"])
-        [:ul.charge-list
-         (doall
-          (for [charge charge-list]
-            ^{:key (:id charge)}
-            [:li.charge {:style {:white-space "nowrap"}}
-             [link-to-charge charge]
-             [component/charge-properties charge]]))]))))
-
 (defn create-charge [match]
   (rf/dispatch [:set [:route-match] match])
   (let [[status _charge-form-data] (state/async-fetch-data
@@ -352,6 +335,9 @@
     (when (= status :done)
       [charge-form])))
 
+(defn invalidate-charges-cache []
+  (state/invalidate-cache [:all-charges] :all-charges))
+
 (defn view-list-charges []
   (let [[status charges] (state/async-fetch-data
                           [:all-charges]
@@ -365,7 +351,9 @@
                     (reife/push-state :create-charge))}
       "Create"]
 
-     [:h4 "Available Charges"]
+     [:h4 "Available Charges " [:a {:on-click #(do
+                                                 (invalidate-charges-cache)
+                                                 (.stopPropagation %))} [:i.fas.fa-sync-alt]]]
      (if (= status :done)
        [component/charge-tree charges :link-to-charge link-to-charge]
        [:div "loading..."])]))

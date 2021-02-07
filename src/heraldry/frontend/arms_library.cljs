@@ -316,6 +316,9 @@
                 (:name arms)])]))])
       [:div "loading..."])))
 
+(defn invalidate-arms-cache [user-id]
+  (state/invalidate-cache list-db-path user-id))
+
 (defn list-my-arms []
   (let [user-data (user/data)]
     [:div {:style {:padding "15px"}}
@@ -327,7 +330,9 @@
       "Create"]
      (when-let [user-id (:user-id user-data)]
        [:<>
-        [:h4 "My arms"]
+        [:h4 "My arms " [:a {:on-click #(do
+                                          (invalidate-arms-cache user-id)
+                                          (.stopPropagation %))} [:i.fas.fa-sync-alt]]]
         [list-arms-for-user user-id]])]))
 
 (defn create-arms [match]
