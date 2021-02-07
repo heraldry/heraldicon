@@ -370,6 +370,13 @@
                           :all-charges
                           charge/fetch-charges)]
     [:div {:style {:padding "15px"}}
+     [:div.pure-u-1-2 {:style {:display "block"
+                               :text-align "justify"
+                               :min-width "30em"}}
+      [:p
+       "Here you can view and create charges to be used in coats of arms. By default your charges "
+       "are private, so only you can see and use them. If you want to make them public, then you "
+       [:b "must"] " provide a license and attribution, if it is based on previous work."]]
      [:button.pure-button.pure-button-primary
       {:on-click #(do
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
