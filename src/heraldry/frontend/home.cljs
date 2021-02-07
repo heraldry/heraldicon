@@ -2,7 +2,8 @@
 
 (defn view []
   [:div.pure-u-1-2 {:style {:padding "10px"
-                            :text-align "justify"}}
+                            :text-align "justify"
+                            :min-width "30em"}}
    [:h2 "Welcome to this thing"]
    [:h3 "Why is this thing?"]
    [:p
