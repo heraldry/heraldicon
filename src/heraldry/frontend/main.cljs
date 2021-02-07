@@ -10,7 +10,9 @@
     [:div.header
      [:div.home-menu.pure-menu.pure-menu-horizontal.pure-menu-fixed
       [:span [route/link {:to :home
-                          :class "pure-menu-heading pure-float-right"} "Heraldry"]]
+                          :class "pure-menu-heading pure-float-right"
+                          :style {:padding-right "5px"}} "Heraldry"]
+       [:sup {:style {:color "#d82"}} "beta"]]
       [:ul.pure-menu-list
        [route/nav-link {:to :home} "Home"]
        [route/nav-link {:to :arms} "Arms"]
