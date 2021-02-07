@@ -1,5 +1,6 @@
 (ns heraldry.util
-  (:require [clojure.string :as s]
+  (:require [clojure.pprint :refer [pprint]]
+            [clojure.string :as s]
             [heraldry.config :as config]))
 
 (def -current-id
@@ -48,3 +49,8 @@
                      (map (comp vec reverse))))))
        (apply concat)
        (into {})))
+
+(defn spy [value msg]
+  (println msg)
+  (pprint value)
+  value)
