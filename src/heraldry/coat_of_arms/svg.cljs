@@ -264,7 +264,7 @@
       nil)))
 
 (defn normalize-colour [colour]
-  (or (get html-colours (:keyword colour))
+  (or (get html-colours (keyword colour))
       (-expand-three-hex colour)
       (-convert-rgb colour)
       colour))

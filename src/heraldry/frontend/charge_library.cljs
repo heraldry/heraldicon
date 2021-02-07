@@ -38,6 +38,7 @@
        (map second)
        (filter #(and (string? %)
                      (not= % "none")))
+       (map s/lower-case)
        (map svg/normalize-colour)
        (map s/lower-case)
        set))
