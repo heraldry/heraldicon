@@ -82,6 +82,8 @@
     ["Jelloped" :jelloped]
     ["Langued" :langued]
     ["Legged" :legged]
+    ["Maned" :maned]
+    ["Tailed" :tailed]
     ["Unguled" :unguled]
     ["Winged" :winged]]
    ["Flora"
