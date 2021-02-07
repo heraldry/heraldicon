@@ -253,7 +253,9 @@
                    :border        "1px solid #ccc"
                    :padding       "3px 6px"
                    :min-width     "10em"
-                   :width         "50%"}}
+                   :max-width     "20em"
+                   :width         "50%"
+                   :margin-bottom "0.5em"}}
      [:i.fas.fa-search]
      [:input {:id           input-id
               :name         "search"
@@ -712,15 +714,16 @@
 (defn tree-for-charge-map [{:keys [node-type name groups charges attitudes facings variants] :as node}
                            tree-path
                            selected-charge remaining-path-to-charge
-                           {:keys [still-on-path? render-variant]
+                           {:keys [still-on-path? render-variant open-all?]
                             :as   opts}]
-  (let [flag-path (conj [:ui :charge-map] tree-path)
-        db-open?  @(rf/subscribe [:get flag-path])
-        open?     (or (= node-type :_root)
-                      (and (nil? db-open?)
-                           still-on-path?)
-                      db-open?)
-        variant?  (= node-type :variant)]
+  (let [flag-path     (conj [:ui :charge-map] tree-path)
+        db-open?-path @(rf/subscribe [:get flag-path])
+        open?         (or open-all?
+                          (= node-type :_root)
+                          (and (nil? db-open?-path)
+                               still-on-path?)
+                          db-open?-path)
+        variant?      (= node-type :variant)]
     (cond-> [:<>]
       variant?            (conj
                            [:div.node-name {:on-click nil
@@ -916,24 +919,27 @@
                                                                                (and show-own?
                                                                                     (= (:username charge)
                                                                                        (:username user-data))))))))
-         remove-empty-groups? (or remove-empty-groups?
-                                  (and (not hide-access-filters?)
+         filtered?            (or (and (not hide-access-filters?)
                                        (not show-public?))
                                   (-> filter-string count pos?))
+         remove-empty-groups? (or remove-empty-groups?
+                                  filtered?)
+         open-all?            filtered?
          charge-map           (charge-map/build-charge-map
                                filtered-charges
                                :remove-empty-groups? remove-empty-groups?)]
      [:<>
       [search-field filter-db-path]
       (when (not hide-access-filters?)
-        [:div {:style {:margin-top "5px"}}
+        [:div
          [checkbox show-public-db-path "Public charges" :style {:display "inline-block"}]
          [checkbox show-own-db-path "Own charges" :style {:display     "inline-block"
                                                           :margin-left "1em"}]])
       (if (empty? filtered-charges)
         [:div "None"]
         [tree-for-charge-map charge-map [] nil nil
-         {:render-variant (or render-variant
+         {:open-all?      open-all?
+          :render-variant (or render-variant
                               (fn [node]
                                 (let [charge   (-> node :data)
                                       username (-> charge :username)]
