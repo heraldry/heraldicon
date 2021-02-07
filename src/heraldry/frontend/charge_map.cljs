@@ -11,7 +11,7 @@
                                           :charges #{:lion :wolf :bear}}
                               :ungulates {:node-type :group
                                           :name "ungulates"
-                                          :charges #{:antelope :deer :boar}}
+                                          :charges #{:antelope :deer :boar :horse}}
                               :reptiles {:node-type :group
                                          :name "reptiles"
                                          :charges #{:lizard :serpent}}
