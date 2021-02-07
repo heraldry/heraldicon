@@ -65,7 +65,7 @@
     ["Defamed" :defamed]
     ["Double queued" :double-queued]
     ["Nowed" :tail-nowed]
-    ["Queue fourché saltire reversed" :queue-fourche-saltire-reversed]
+    ["Queue fourché saltire reverse" :queue-fourche-saltire-reverse]
     ["Queue fourché saltire" :queue-fourche-saltire]
     ["Queue fourché" :queue-fourche]]])
 
