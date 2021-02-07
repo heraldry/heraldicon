@@ -64,9 +64,9 @@
     ["Defamed" :defamed]
     ["Double queued" :double-queued]
     ["Nowed" :tail-nowed]
-    ["Queue fourchée saltire reversed" :queue-fourchee-saltire-reversed]
-    ["Queue fourchée saltire" :queue-fourchee-saltire]
-    ["Queue fourchée" :queue-fourchee]]])
+    ["Queue fourché saltire reversed" :queue-fourche-saltire-reversed]
+    ["Queue fourché saltire" :queue-fourche-saltire]
+    ["Queue fourché" :queue-fourche]]])
 
 (def attribute-map
   (util/choices->map attribute-choices))
