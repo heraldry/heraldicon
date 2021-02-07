@@ -9,7 +9,8 @@
   (let [user-data (user/data)]
     [:div.header
      [:div.home-menu.pure-menu.pure-menu-horizontal.pure-menu-fixed
-      [:a.pure-menu-heading.pure-float-right {} "Heraldry"]
+      [:span [route/link {:to    :home
+                          :class "pure-menu-heading pure-float-right"} "Heraldry"]]
       [:ul.pure-menu-list
        [route/nav-link {:to :home} "Home"]
        [route/nav-link {:to :arms} "Arms"]
