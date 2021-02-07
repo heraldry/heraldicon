@@ -28,7 +28,7 @@
       (catch :default e
         (println "fetch-charges error:" e)))))
 
-(defn fetch-charge [charge-id version]
+(defn fetch-charge-for-rendering [charge-id version]
   (go
     (try
       (let [user-data (user/data)
@@ -36,14 +36,23 @@
                                                              :version version} user-data))
             edn-data (<? (http/fetch (:edn-data-url charge-data)))]
         (-> charge-data
-            (assoc-in [:data :edn-data] edn-data)
-            (cond->
-             (and (-> edn-data :colours)
-                  (-> charge-data :colours not)) (->
-                                                  (update-in [:data :edn-data] dissoc :colours)
-                                                  (assoc :colours (-> edn-data :colours))))))
+            (assoc-in [:data] edn-data)))
       (catch :default e
-        (println "fetch-charge error:" e)))))
+        (println "fetch-charge-for-rendering error:" e)))))
+
+(defn fetch-charge-for-editing [charge-id version]
+  (go
+    (try
+      (let [user-data (user/data)
+            charge-data (<? (api-request/call :fetch-charge {:id charge-id
+                                                             :version version} user-data))
+            edn-data (<? (http/fetch (:edn-data-url charge-data)))
+            svg-data (<? (http/fetch (:svg-data-url charge-data)))]
+        (-> charge-data
+            (assoc-in [:data :edn-data] edn-data)
+            (assoc-in [:data :svg-data] svg-data)))
+      (catch :default e
+        (println "fetch-charge-for-editing error:" e)))))
 
 (defn fetch-charge-data [{:keys [id version] :as variant}]
   (if (and id version)
@@ -51,7 +60,7 @@
           [status charge-data] (state/async-fetch-data
                                 db-path
                                 variant
-                                #(fetch-charge id version))]
+                                #(fetch-charge-for-rendering id version))]
       (when (= status :done)
         charge-data))
     (println "error fetching charge data, variant:" variant)))

@@ -301,7 +301,7 @@
         [status charge-data] (state/async-fetch-data
                               form-db-path
                               [charge-id version]
-                              #(charge/fetch-charge charge-id version))
+                              #(charge/fetch-charge-for-editing charge-id version))
         charge-id (-> charge-data
                       :id
                       id-for-url)]
@@ -356,7 +356,7 @@
   (let [[status _charge-form-data] (state/async-fetch-data
                                     form-db-path
                                     [charge-id version]
-                                    #(charge/fetch-charge charge-id version))]
+                                    #(charge/fetch-charge-for-editing charge-id version))]
     (when (= status :done)
       [charge-form])))
 
