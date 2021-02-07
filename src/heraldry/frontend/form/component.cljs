@@ -1,5 +1,6 @@
 (ns heraldry.frontend.form.component
-  (:require [clojure.string :as s]
+  (:require [clojure.set :as set]
+            [clojure.string :as s]
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.charge :as charge]
             [heraldry.coat-of-arms.default :as default]
@@ -10,8 +11,8 @@
             [heraldry.coat-of-arms.ordinary :as ordinary]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.tincture :as tincture]
-            [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.charge :as frontend-charge]
+            [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
@@ -1015,11 +1016,19 @@
 
 (defn form-for-charge [path & {:keys [parent-field]}]
   (let [charge                     @(rf/subscribe [:get path])
+        charge-data                (when-let [variant (:variant charge)]
+                                     (frontend-charge/fetch-charge-data variant))
         supported-tinctures        (-> attributes/tincture-modifier-map
                                        keys
                                        set
-                                       (conj :eyes-and-teeth))
+                                       (conj :eyes-and-teeth)
+                                       (set/intersection
+                                        (-> charge-data
+                                            :colours
+                                            (->> (map second))
+                                            set)))
         sorted-supported-tinctures (-> supported-tinctures
+                                       (disj :eyes-and-teeth)
                                        sort
                                        vec)
         tinctures-set              (-> charge
@@ -1044,30 +1053,33 @@
       (when (and (:type charge)
                  (-> charge :type :map? not))
         [form-for-charge-type path])
-      [:div.setting
-       [:label "Tinctures"]
-       " "
-       [submenu (conj path :tincture) "Tinctures" tinctures-title {}
-        (when sorted-supported-tinctures
-          [:div.placeholders
+      (when (-> supported-tinctures
+                count
+                pos?)
+        [:div.setting
+         [:label "Tinctures"]
+         " "
+         [submenu (conj path :tincture) "Tinctures" tinctures-title {}
+          (when sorted-supported-tinctures
+            [:div.placeholders
+             {:style {:width "50%"
+                      :float "left"}}
+             (for [t sorted-supported-tinctures]
+               ^{:key t}
+               [form-for-tincture
+                (conj path :tincture t)
+                :label (util/translate-cap-first t)])])
+          [:div
            {:style {:width "50%"
                     :float "left"}}
-           (for [t sorted-supported-tinctures]
-             ^{:key t}
-             [form-for-tincture
-              (conj path :tincture t)
-              :label (util/translate-cap-first t)])])
-        [:div
-         {:style {:width "50%"
-                  :float "left"}}
-         (when (get supported-tinctures :eyes-and-teeth)
-           [checkbox
-            (conj path :tincture :eyes-and-teeth)
-            "White eyes and teeth"
-            :on-change #(rf/dispatch [:set
-                                      (conj path :tincture :eyes-and-teeth)
-                                      (if % :argent nil)])])]
-        [:div.spacer]]]
+           (when (get supported-tinctures :eyes-and-teeth)
+             [checkbox
+              (conj path :tincture :eyes-and-teeth)
+              "White eyes and teeth"
+              :on-change #(rf/dispatch [:set
+                                        (conj path :tincture :eyes-and-teeth)
+                                        (if % :argent nil)])])]
+          [:div.spacer]]])
       (let [charge-options (charge/options charge)]
         [:<>
          (when (:position charge-options)
