@@ -1202,7 +1202,7 @@
                                  (rf/dispatch [:set (conj path :type) default])
                                  (rf/dispatch [:remove (conj path :type)])))}])
       (if (some? (:type line))
-        [submenu (conj path :type) "Select Line Type" (get line/line-map value) {:min-width "21em"}
+        [submenu (conj path :type) "Select Line Type" (get line/line-map value) {:min-width "25em"}
          (for [[display-name key] (-> options :type :choices)]
            ^{:key display-name}
            [line-type-choice (conj path :type) key display-name :current value])]
