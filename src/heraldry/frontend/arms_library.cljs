@@ -219,10 +219,6 @@
                         (when (-> event .-code (= "Enter"))
                           (on-submit event)))
         :on-submit    on-submit}
-       (when form-message
-         [:div.form-message form-message])
-       (when error-message
-         [:div.error-message error-message])
        [:fieldset
         [form/field (conj form-db-path :name)
          (fn [& {:keys [value on-change]}]
@@ -236,6 +232,10 @@
                      :style     {:margin-right "0.5em"}}]
             [form/checkbox (conj form-db-path :is-public) "Make public"
              :style {:width "7em"}]])]]
+       (when form-message
+         [:div.form-message form-message])
+       (when error-message
+         [:div.error-message error-message])
        [:div.pure-control-group {:style {:text-align "right"
                                          :margin-top "10px"}}
         [export-buttons :form]
