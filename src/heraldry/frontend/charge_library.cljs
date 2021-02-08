@@ -9,6 +9,7 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
@@ -260,7 +261,10 @@
                       :margin-right "0.5em"}]))
          [form/checkbox [:example-coa :render-options :preview-original?]
           "Preview original (don't replace colours)" :style {:margin-right "0.5em"
-                                                             :width        "20em"}]]]
+                                                             :width        "20em"}]]
+        [form/select (conj form-db-path :fixed-tincture) "Fixed tincture" tincture/fixed-tincture-choices
+         :grouped? true
+         :label-style {:width "6em"}]]
        (when form-message
          [:div.form-message form-message])
        (when error-message

@@ -407,6 +407,14 @@
 (def tincture-map
   (util/choices->map choices))
 
+(def fixed-tincture-choices
+  (concat [["None (can be changed)" :none]
+           ["Proper" :proper]]
+          choices))
+
+(def fixed-tincture-map
+  (util/choices->map fixed-tincture-choices))
+
 (defn lookup-colour [tincture theme]
   (let [theme-colours (merge
                        (get theme-data-map default-theme)

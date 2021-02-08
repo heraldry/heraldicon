@@ -1,6 +1,7 @@
 (ns heraldry.spec.charge-data
   (:require [cljs.spec.alpha :as s]
-            [heraldry.coat-of-arms.attributes :as attributes]))
+            [heraldry.coat-of-arms.attributes :as attributes]
+            [heraldry.coat-of-arms.tincture :as tincture]))
 
 (s/def :heraldry.charge-data.data.edn-data/width number?)
 (s/def :heraldry.charge-data.data.edn-data/height number?)
@@ -23,6 +24,7 @@
                                                      (re-matches #"^#[a-z0-9]{6}$" k)
                                                      (s/valid? :heraldry.charge-data.colour/type v))) %))
 (s/def :heraldry.charge-data/spec-version number?)
+(s/def :heraldry.charge-data/fixed-tincture tincture/fixed-tincture-map)
 (s/def :heraldry/charge-data (s/keys :req-un [:heraldry.charge-data/name
                                               :heraldry.charge-data/type
                                               :heraldry.charge-data/data
@@ -30,4 +32,5 @@
                                      :opt-un [:heraldry.charge-data/attitude
                                               :heraldry.charge-data/facing
                                               :heraldry.charge-data/attributes
-                                              :heraldry.charge-data/colours]))
+                                              :heraldry.charge-data/colours
+                                              :heraldry.charge-data/fixed-tincture]))
