@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.blazon
   (:require [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.division :as division]
+            [heraldry.frontend.charge :as charge]
             [heraldry.frontend.util :as util]))
 
 (declare encode-field)
@@ -14,18 +15,26 @@
                   "a")]
     (util/combine " " [article rest])))
 
-(defn encode-charge [{:keys [type attitude field tincture]}]
-  (util/combine " " ["a" (util/translate type)
-                     (util/translate attitude)
-                     (encode-field field)
-                     (util/combine " and " (map (fn [colour-key]
-                                                  (when-let [t (get tincture colour-key)]
-                                                    (when (not= t :none)
-                                                      (util/combine " " [(util/translate colour-key)
-                                                                         (util/translate t)]))))
-                                                (-> attributes/tincture-modifier-map
-                                                    keys
-                                                    sort)))]))
+(defn encode-charge [{:keys [type attitude field tincture variant]}]
+  (let [charge-data    (when variant
+                         (charge/fetch-charge-data variant))
+        fixed-tincture (-> charge-data
+                           :fixed-tincture
+                           (or :none)
+                           (#(when (not= :none %) %)))]
+    (util/combine " " ["a" (util/translate type)
+                       (util/translate attitude)
+                       (if fixed-tincture
+                         (util/translate fixed-tincture)
+                         (encode-field field))
+                       (util/combine " and " (map (fn [colour-key]
+                                                    (when-let [t (get tincture colour-key)]
+                                                      (when (not= t :none)
+                                                        (util/combine " " [(util/translate colour-key)
+                                                                           (util/translate t)]))))
+                                                  (-> attributes/tincture-modifier-map
+                                                      keys
+                                                      sort)))])))
 
 (defn encode-component [component]
   (case (:component component)
@@ -35,7 +44,7 @@
 (defn encode-field [{:keys [division components counterchanged?] :as field} & {:keys [root?]}]
   (if counterchanged?
     "counterchanged"
-    (let [tincture               (get-in  field [:content :tincture])
+    (let [tincture               (get-in field [:content :tincture])
           field-description      (cond
                                    tincture (util/translate-tincture tincture)
                                    division (let [{:keys [type line fields]} division
