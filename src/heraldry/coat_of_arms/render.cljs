@@ -5,6 +5,7 @@
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
+            [heraldry.coat-of-arms.line :as line]
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.util :as util]))
 
@@ -16,7 +17,9 @@
                      (:escutcheon-override render-options)
                      (:escutcheon coat-of-arms))
         shield (escutcheon/field escutcheon)
-        environment (field-environment/transform-to-width shield width)
+        environment (-> (field-environment/transform-to-width shield width)
+                        (cond->
+                         (:squiggly? render-options) (update :shape line/squiggly-path)))
         field (:field coat-of-arms)
         mask-id (util/id "mask")]
     {:environment environment
