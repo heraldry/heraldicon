@@ -177,10 +177,6 @@
                         (when (-> event .-code (= "Enter"))
                           (on-submit event)))
         :on-submit on-submit}
-       (when form-message
-         [:div.form-message form-message])
-       (when error-message
-         [:div.error-message error-message])
        [:fieldset
         [form/field (conj form-db-path :name)
          (fn [& {:keys [value on-change]}]
@@ -265,6 +261,10 @@
          [form/checkbox [:example-coa :render-options :preview-original?]
           "Preview original (don't replace colours)" :style {:margin-right "0.5em"
                                                              :width "20em"}]]]
+       (when form-message
+         [:div.form-message form-message])
+       (when error-message
+         [:div.error-message error-message])
        [:div.pure-control-group {:style {:text-align "right"
                                          :margin-top "10px"}}
         [form/field-without-error (conj form-db-path :data)
