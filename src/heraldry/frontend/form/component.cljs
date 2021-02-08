@@ -1023,6 +1023,9 @@
   (let [charge @(rf/subscribe [:get path])
         charge-data (when-let [variant (:variant charge)]
                       (frontend-charge/fetch-charge-data variant))
+        fixed-tincture (-> charge-data
+                           :fixed-tincture
+                           (or :none))
         supported-tinctures (-> attributes/tincture-modifier-map
                                 keys
                                 set
@@ -1103,7 +1106,10 @@
                                                           ["Primary" :primary]
                                                           ["Transparent" :transparent]]
        :default :keep]]
-     [form-for-field (conj path :field) :parent-field parent-field]]))
+     (if (not= fixed-tincture :none)
+       [:div {:style {:margin-bottom "0.5em"}}
+        "Fixed tincture:" [:span.tag.fixed-tincture fixed-tincture]]
+       [form-for-field (conj path :field) :parent-field parent-field])]))
 
 (defn division-choice [path key display-name]
   (let [value (-> @(rf/subscribe [:get path])
