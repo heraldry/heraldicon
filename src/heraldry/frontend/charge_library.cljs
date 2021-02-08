@@ -316,7 +316,8 @@
                                  :width       "45%"}}
         [:div.credits
          [credits/for-charge charge-data]]
-        [component/charge-properties charge-data]
+        [:div {:style {:margin-bottom "0.5em"}}
+         [component/charge-properties charge-data]]
         (when (= (:username charge-data)
                  (:username user-data))
           [:div.pure-control-group {:style {:text-align    "right"
