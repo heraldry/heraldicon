@@ -2,7 +2,7 @@
                                   :prod "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/api"}
  :stage #profile {:local "local"
                   :prod "prod"}
- :heraldry-url #profile {:local "http://localhost:8181"
+ :heraldry-url #profile {:local "http://localhost:8081"
                          :prod "https://heraldry.digital"}
  :cognito-pool-config #profile {:local {:UserPoolId "eu-central-1_eHwF2byeJ"
                                         :ClientId "2v90eij0l4aluf2amqumqh9gko"
