@@ -204,6 +204,11 @@ label div {
   color: #771;
 }
 
+.tag.fixed-tincture {
+  background-color: #888;
+  color: #fff;
+}
+
 .count-badge {
   display: inline-block;
   font-size: 0.8em;
