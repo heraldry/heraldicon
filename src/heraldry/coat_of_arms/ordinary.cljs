@@ -343,7 +343,8 @@
         diagonal-start                               (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
         diagonal-end                                 (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
         angle                                        (division/angle-to-point diagonal-start diagonal-end)
-        line-length                                  (v/abs (v/- diagonal-end diagonal-start))
+        bend-length                                  (v/abs (v/- diagonal-end diagonal-start))
+        line-length                                  (* bend-length 1.5)
         offset                                       -40
         row1                                         (- (/ band-height 2))
         row2                                         (+ row1 band-height)
@@ -371,7 +372,7 @@
                                                                        [:left :left]
                                                                        [second-left first-left])
                                                         "z"]
-                                                       [(v/v 0 row1) (v/v line-length row2)]]]
+                                                       [(v/v 0 row1) (v/v bend-length row2)]]]
         counterchanged?                              (charge/counterchangable? field parent)
         field                                        (if counterchanged?
                                                        (charge/counterchange-field field parent)
@@ -415,7 +416,8 @@
         diagonal-start                               (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
         diagonal-end                                 (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
         angle                                        (division/angle-to-point diagonal-start diagonal-end)
-        line-length                                  (v/abs (v/- diagonal-end diagonal-start))
+        bend-length                                  (v/abs (v/- diagonal-end diagonal-start))
+        line-length                                  (* bend-length 1.5)
         row1                                         (- (/ band-height 2))
         row2                                         (+ row1 band-height)
         offset                                       -40
@@ -443,7 +445,7 @@
                                                                        [:left :left]
                                                                        [second-left first-left])
                                                         "z"]
-                                                       [(v/v 0 row1) (v/v line-length row2)]]]
+                                                       [(v/v 0 row1) (v/v bend-length row2)]]]
         counterchanged?                              (charge/counterchangable? field parent)
         field                                        (if counterchanged?
                                                        (charge/counterchange-field field parent)
