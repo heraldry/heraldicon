@@ -859,6 +859,11 @@
                         sort)]
      ^{:key attribute}
      [:div.tag.attribute (util/translate attribute)])
+   (when-let [fixed-tincture (-> charge
+                                 :fixed-tincture
+                                 (or :none)
+                                 (#(when (not= % :none) %)))]
+     [:div.tag.fixed-tincture (util/translate fixed-tincture)])
    (for [modifier (->> charge
                        :colours
                        (map second)
