@@ -1350,7 +1350,7 @@
         [checkbox (conj path :inherit-environment?) "Inherit environment (dimidiation)"])
       (when (and (not= path [:coat-of-arms :field])
                  parent-field)
-        [checkbox (conj path :counterchanged?) "Counterchange"
+        [checkbox (conj path :counterchanged?) "Counterchanged"
          :disabled? (not (division/counterchangable? (-> parent-field :division)))])
       (when (not counterchanged?)
         [:<>
