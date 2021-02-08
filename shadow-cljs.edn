@@ -32,7 +32,7 @@
            :devtools {:before-load heraldry.frontend.main/stop
                       :after-load heraldry.frontend.main/start
                       :http-root "./frontend/assets"
-                      :http-port 8181
+                      :http-port 8081
                       :preloads [devtools.preload
                                  day8.re-frame-10x.preload]
                       :repl-pprint true}
