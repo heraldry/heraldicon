@@ -5,6 +5,7 @@
             [heraldry.aws.cognito :as cognito]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.modal :as modal]
+            [heraldry.frontend.state :as state]
             [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
             [re-frame.core :as rf]))
 
@@ -50,7 +51,8 @@
         (set-item local-storage local-storage-username-name username)
         (set-item local-storage local-storage-user-id-name user-id)
         (read-session-data)
-        (rf/dispatch [:clear-form db-path])
+        (rf/dispatch-sync [:clear-form db-path])
+        (state/invalidate-cache-all)
         (modal/clear))
       (catch :default e
         (println "error:" e)
@@ -421,6 +423,7 @@
   (remove-item local-storage local-storage-session-id-name)
   (remove-item local-storage local-storage-user-id-name)
   (remove-item local-storage local-storage-username-name)
+  (state/invalidate-cache-all)
   (rf/dispatch [:remove user-db-path]))
 
 (defn load-session-user-data []

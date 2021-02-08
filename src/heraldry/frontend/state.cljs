@@ -145,3 +145,6 @@
     (when (= current-query query-id)
       (rf/dispatch-sync [:set [:async-fetch-data db-path :current] nil])
       (rf/dispatch-sync [:set db-path nil]))))
+
+(defn invalidate-cache-all []
+  (rf/dispatch-sync [:set [:async-fetch-data] nil]))
