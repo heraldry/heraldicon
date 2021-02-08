@@ -452,6 +452,10 @@
                   mirrored? reversed?
                   rotation]} geometry
           charge-data (:data full-charge-data)
+          render-field? (-> charge-data
+                            :fixed-tincture
+                            (or :none)
+                            (= :none))
           ;; since size now is filled with a default, check whether it was set at all,
           ;; if not, then use nil
           ;; TODO: this probably needs a better mechanism and form representation
@@ -577,11 +581,12 @@
               :clip-path (when-not svg-export?
                            (str "url(#" clip-path-id ")"))}
           [metadata/attribution charge-name username (util/full-url-for-username username) charge-url attribution]
-          [:g {:mask (str "url(#" mask-inverted-id ")")}
-           [:g {:transform reverse-transform}
-            [render-field field charge-environment (-> context
-                                                       (update :db-path conj :field)
-                                                       (dissoc :fn-select-component))]]]
+          (when render-field?
+            [:g {:mask (str "url(#" mask-inverted-id ")")}
+             [:g {:transform reverse-transform}
+              [render-field field charge-environment (-> context
+                                                         (update :db-path conj :field)
+                                                         (dissoc :fn-select-component))]]])
           [:g {:mask (str "url(#" mask-id ")")
                :on-click (when fn-select-component
                            (fn [event]
