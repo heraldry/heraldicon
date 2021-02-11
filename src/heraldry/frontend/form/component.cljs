@@ -132,7 +132,7 @@
 
 (rf/reg-event-db
  :set-division-type
- (fn [db [_ path new-type]]
+ (fn [db [_ path new-type num-fields num-base-fields]]
    (if (= new-type :none)
      (-> db
          (update-in path dissoc :division)
@@ -140,24 +140,24 @@
      (-> db
          (assoc-in (conj path :division :type) new-type)
          (update-in (conj path :division :line :type) #(or % :straight))
+         (assoc-in (conj path :division :num-fields) num-fields)
+         (assoc-in (conj path :division :num-base-fields) num-base-fields)
          (update-in (conj path :division :fields)
                     (fn [current-value]
-                      (let [current                      (or current-value [])
-                            current-type                 (get-in db (conj path :division :type))
-                            current-mandatory-part-count (division/mandatory-part-count current-type)
-                            new-mandatory-part-count     (division/mandatory-part-count new-type)
-                            min-mandatory-part-count     (min current-mandatory-part-count
-                                                              new-mandatory-part-count)
-                            current                      (if (or (= current-mandatory-part-count
-                                                                    new-mandatory-part-count)
-                                                                 (<= (count current) min-mandatory-part-count))
-                                                           current
-                                                           (subvec current 0 min-mandatory-part-count))
-                            default                      (division/default-fields new-type)]
-                        (cond
-                          (< (count current) (count default)) (into current (subvec default (count current)))
-                          (> (count current) (count default)) (subvec current 0 (count default))
-                          :else                               current))))
+                      (let [current (or current-value [])
+                            default (division/default-fields {:type            new-type
+                                                              :num-fields      num-fields
+                                                              :num-base-fields num-base-fields})
+                            merged  (cond
+                                      (< (count current) (count default)) (into current (subvec default (count current)))
+                                      (> (count current) (count default)) (subvec current 0 (count default))
+                                      :else                               current)]
+                        (->> (map vector merged default)
+                             (map (fn [[cur def]]
+                                    (if (-> cur :ref not)
+                                      cur
+                                      def)))
+                             vec))))
          (update-in (conj path :division) #(merge %
                                                   (options/sanitize-or-nil % (division/options %))))
          (update-in path dissoc :content)
@@ -339,6 +339,31 @@
 
 (defn range-input [path label min-value max-value & {:keys [value on-change default display-function step
                                                             disabled?]}]
+  (let [component-id  (id "range")
+        current-value @(rf/subscribe [:get path])
+        value         (or value
+                          current-value
+                          default
+                          min-value)]
+    [:div.setting
+     [:label {:for component-id} label]
+     [:div.slider
+      [:input {:type      "range"
+               :id        component-id
+               :min       min-value
+               :max       max-value
+               :step      step
+               :value     value
+               :disabled  disabled?
+               :on-change #(let [value (-> % .-target .-value js/parseFloat)]
+                             (if on-change
+                               (on-change value)
+                               (rf/dispatch [:set path value])))}]
+      [:span {:style {:margin-left "1em"}} (cond-> value
+                                             display-function display-function)]]]))
+
+(defn range-input-with-checkbox [path label min-value max-value & {:keys [value on-change default display-function step
+                                                                          disabled?]}]
   (let [component-id   (id "range")
         checkbox-id    (id "checkbox")
         current-value  @(rf/subscribe [:get path])
@@ -591,13 +616,13 @@
                      (rf/dispatch [:set offset-x-path nil])
                      (rf/dispatch [:set offset-y-path nil]))]
       (when (:offset-x options)
-        [range-input offset-x-path "Offset x"
+        [range-input-with-checkbox offset-x-path "Offset x"
          (-> options :offset-x :min)
          (-> options :offset-x :max)
          :default (options/get-value (:offset-x position) (:offset-x options))
          :display-function #(str % "%")])
       (when (:offset-y options)
-        [range-input offset-y-path "Offset y"
+        [range-input-with-checkbox offset-y-path "Offset y"
          (-> options :offset-y :min)
          (-> options :offset-y :max)
          :default (options/get-value (:offset-y position) (:offset-y options))
@@ -624,19 +649,19 @@
      [submenu path "Geometry" current-display {}
       [:div.settings
        (when (:size options)
-         [range-input (conj path :size) "Size"
+         [range-input-with-checkbox (conj path :size) "Size"
           (-> options :size :min)
           (-> options :size :max)
           :default (options/get-value (:size current) (:size options))
           :display-function #(str % "%")])
        (when (:stretch options)
-         [range-input (conj path :stretch) "Stretch"
+         [range-input-with-checkbox (conj path :stretch) "Stretch"
           (-> options :stretch :min)
           (-> options :stretch :max)
           :step 0.01
           :default (options/get-value (:stretch current) (:stretch options))])
        (when (:rotation options)
-         [range-input (conj path :rotation) "Rotation"
+         [range-input-with-checkbox (conj path :rotation) "Rotation"
           (-> options :rotation :min)
           (-> options :rotation :max)
           :step 5
@@ -1112,26 +1137,30 @@
        [form-for-field (conj path :field) :parent-field parent-field])]))
 
 (defn division-choice [path key display-name]
-  (let [value            (-> @(rf/subscribe [:get path])
-                             :division
-                             :type
-                             (or :none))
-        {:keys [result]} (render/coat-of-arms
-                          {:escutcheon :rectangle
-                           :field      (if (= key :none)
-                                         {:component :field
-                                          :content   {:tincture (if (= value key) :or :azure)}}
-                                         {:component :field
-                                          :division  {:type   key
-                                                      :fields (-> (division/default-fields key)
-                                                                  (util/replace-recursively :none :argent)
-                                                                  (cond->
-                                                                      (= value key) (util/replace-recursively :azure :or)))}})}
-                          100
-                          (-> coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
-    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-division-type path key])}
+  (let [division                             (-> @(rf/subscribe [:get path])
+                                                 :division)
+        {:keys [num-fields num-base-fields]} (options/sanitize division (division/options division))
+        value                                (-> division
+                                                 :type
+                                                 (or :none))
+        {:keys [result]}                     (render/coat-of-arms
+                                              {:escutcheon :rectangle
+                                               :field      (if (= key :none)
+                                                             {:component :field
+                                                              :content   {:tincture (if (= value key) :or :azure)}}
+                                                             {:component :field
+                                                              :division  {:type   key
+                                                                          :fields (-> (division/default-fields {:type            key
+                                                                                                                :num-fields      6
+                                                                                                                :num-base-fields 2})
+                                                                                      (util/replace-recursively :none :argent)
+                                                                                      (cond->
+                                                                                          (= value key) (util/replace-recursively :azure :or)))}})}
+                                              100
+                                              (-> coa-select-option-context
+                                                  (assoc-in [:render-options :outline?] true)
+                                                  (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
+    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-division-type path key num-fields num-base-fields])}
      [:svg {:style               {:width  "4em"
                                   :height "4.5em"}
             :viewBox             "0 0 120 200"
@@ -1231,28 +1260,28 @@
        :value line-type
        :default (:type defaults)]
       (when (:eccentricity options)
-        [range-input (conj path :eccentricity) "Eccentricity"
+        [range-input-with-checkbox (conj path :eccentricity) "Eccentricity"
          (-> options :eccentricity :min)
          (-> options :eccentricity :max)
          :step 0.01
          :default (or (:eccentricity defaults)
                       (options/get-value line-eccentricity (:eccentricity options)))])
       (when (:height options)
-        [range-input (conj path :height) "Height"
+        [range-input-with-checkbox (conj path :height) "Height"
          (-> options :height :min)
          (-> options :height :max)
          :step 0.01
          :default (or (:height defaults)
                       (options/get-value line-height (:height options)))])
       (when (:width options)
-        [range-input (conj path :width) "Width"
+        [range-input-with-checkbox (conj path :width) "Width"
          (-> options :width :min)
          (-> options :width :max)
          :default (or (:width defaults)
                       (options/get-value line-width (:width options)))
          :display-function #(str % "%")])
       (when (:offset options)
-        [range-input (conj path :offset) "Offset"
+        [range-input-with-checkbox (conj path :offset) "Offset"
          (-> options :offset :min)
          (-> options :offset :max)
          :step 0.01
@@ -1333,8 +1362,9 @@
      [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn form-for-field [path & {:keys [parent-field title-prefix]}]
-  (let [division-type   (-> @(rf/subscribe [:get path])
-                            :division
+  (let [division        (-> @(rf/subscribe [:get path])
+                            :division)
+        division-type   (-> division
                             :type
                             (or :none))
         field           @(rf/subscribe [:get path])
@@ -1357,6 +1387,30 @@
          [form-for-division path]
          (let [division-options (division/options (:division field))]
            [:<>
+            (when (:num-fields division-options)
+              (let [num-fields-path (conj path :division :num-fields)]
+                [range-input num-fields-path "Subfields"
+                 (-> division-options :num-fields :min)
+                 (-> division-options :num-fields :max)
+                 :on-change (fn [value]
+                              (rf/dispatch [:set-division-type
+                                            path
+                                            division-type
+                                            value
+                                            (:num-base-fields
+                                             (options/sanitize division (division/options division)))]))]))
+            (when (:num-base-fields division-options)
+              (let [num-base-fields-path (conj path :division :num-base-fields)]
+                [range-input num-base-fields-path "Base fields"
+                 (-> division-options :num-base-fields :min)
+                 (-> division-options :num-base-fields :max)
+                 :on-change (fn [value]
+                              (rf/dispatch [:set-division-type
+                                            path
+                                            division-type
+                                            (:num-fields
+                                             (options/sanitize division (division/options division)))
+                                            value]))]))
             (when (:line division-options)
               [form-for-line (conj path :division :line) :options (:line division-options)])
             (when (:diagonal-mode division-options)
@@ -1374,7 +1428,7 @@
        [:div.parts.components
         [:ul
          (let [content              @(rf/subscribe [:get (conj path :division :fields)])
-               mandatory-part-count (division/mandatory-part-count division-type)]
+               mandatory-part-count (division/mandatory-part-count division)]
            (for [[idx part] (map-indexed vector content)]
              (let [part-path (conj path :division :fields idx)
                    part-name (division/part-name division-type idx)
@@ -1392,7 +1446,7 @@
                     [:i.far.fa-edit]]
                    (when (>= idx mandatory-part-count)
                      [:a {:on-click #(state/dispatch-on-event % [:set (conj part-path :ref)
-                                                                 (-> (division/default-fields division-type)
+                                                                 (-> (division/default-fields division)
                                                                      (get idx)
                                                                      :ref)])}
                       [:i.far.fa-times-circle]]))]])))]])

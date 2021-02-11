@@ -48,7 +48,7 @@
           field-description      (cond
                                    tincture (util/translate-tincture tincture)
                                    division (let [{:keys [type line fields]} division
-                                                  mandatory-part-count       (division/mandatory-part-count type)]
+                                                  mandatory-part-count       (division/mandatory-part-count division)]
                                               (util/combine
                                                " "
                                                [(util/translate type)
