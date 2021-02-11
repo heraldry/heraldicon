@@ -20,30 +20,6 @@
    :stroke-linecap "round"
    :stroke-linejoin "round"})
 
-(defn default-fields [type]
-  (into [default/field
-         (-> default/field
-             (assoc-in [:content :tincture] :azure))]
-        (cond
-          (= :per-saltire type) [{:ref 1} {:ref 0}]
-          (= :quarterly type) [{:ref 1} {:ref 0}]
-          (= :gyronny type) [{:ref 1} {:ref 0} {:ref 0} {:ref 1} {:ref 1} {:ref 0}]
-          (= :paly type) [{:ref 0} {:ref 1} {:ref 0} {:ref 1} {:ref 0} {:ref 1} {:ref 1} {:ref 0} {:ref 0} {:ref 1}]
-          (#{:tierced-per-pale
-             :tierced-per-fess
-             :tierced-per-pairle
-             :tierced-per-pairle-reversed} type) [(-> default/field
-                                                      (assoc-in [:content :tincture] :sable))])))
-
-(defn mandatory-part-count [type]
-  (case type
-    nil 0
-    :tierced-per-pale 3
-    :tierced-per-fess 3
-    :tierced-per-pairle 3
-    :tierced-per-pairle-reversed 3
-    2))
-
 (defn diagonal-mode-choices [type]
   (let [options {:forty-five-degrees "45°"
                  :top-left-fess "Top-left to origin"
@@ -77,22 +53,21 @@
          (map (fn [key]
                 [(get options key) key])))))
 
-(defn counterchangable? [division]
-  ;; TODO: potentially also should look at the parts, maybe demand no
-  ;; ordinaries and charges as well, but for now this check suffices
-  (and (-> division :type mandatory-part-count (= 2))
-       (-> division :fields (get 0) :division :type not)
-       (-> division :fields (get 1) :division :type not)))
-
 (def default-options
   {:origin position/default-options
    :diagonal-mode {:type :choice
                    :default :top-left-fess}
    :line line/default-options
-   :number {:type :range
-            :min 3
-            :max 20
-            :default 6}})
+   :num-fields {:type :range
+                :min 4
+                :max 20
+                :default 6
+                :integer? true}
+   :num-base-fields {:type :range
+                     :min 2
+                     :max 4
+                     :default 2
+                     :integer? true}})
 
 (defn options [division]
   (when division
@@ -140,9 +115,57 @@
        (-> division
            :type
            #{:paly}
-           not) (assoc :number nil))
+           not) (->
+                 (assoc :num-fields nil)
+                 (assoc :num-base-fields nil)))
       (update-in [:line] #(options/merge (line/options (get-in division [:line]))
                                          %))))))
+
+(defn mandatory-part-count [{:keys [type] :as division}]
+  (let [{:keys [num-base-fields]} (options/sanitize division (options division))]
+    (if (get #{:paly} type)
+      num-base-fields
+      (case type
+        nil 0
+        :tierced-per-pale 3
+        :tierced-per-fess 3
+        :tierced-per-pairle 3
+        :tierced-per-pairle-reversed 3
+        2))))
+
+(defn counterchangable? [division]
+  ;; TODO: potentially also should look at the parts, maybe demand no
+  ;; ordinaries and charges as well, but for now this check suffices
+  (and (-> division mandatory-part-count (= 2))
+       (-> division :fields (get 0) :division :type not)
+       (-> division :fields (get 1) :division :type not)))
+
+(defn default-fields [{:keys [type] :as division}]
+  (let [{:keys [num-fields num-base-fields]} (options/sanitize division (options division))
+        defaults [default/field
+                  (-> default/field
+                      (assoc-in [:content :tincture] :azure))
+                  (-> default/field
+                      (assoc-in [:content :tincture] :sable))
+                  (-> default/field
+                      (assoc-in [:content :tincture] :gules))
+                  (-> default/field
+                      (assoc-in [:content :tincture] :vert))]]
+    (into (subvec defaults 0 2)
+          (cond
+            (= :per-saltire type) [{:ref 1} {:ref 0}]
+            (= :quarterly type) [{:ref 1} {:ref 0}]
+            (= :gyronny type) [{:ref 1} {:ref 0} {:ref 0} {:ref 1} {:ref 1} {:ref 0}]
+            (= :paly type) (-> []
+                               (into (map (fn [i]
+                                            (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
+                               (into (map (fn [i]
+                                            {:ref (mod i num-base-fields)}) (range (- num-fields num-base-fields)))))
+            (#{:tierced-per-pale
+               :tierced-per-fess
+               :tierced-per-pairle
+               :tierced-per-pairle-reversed} type) [(-> default/field
+                                                        (assoc-in [:content :tincture] :sable))]))))
 
 (defn get-field [fields index]
   (let [part (get fields index)
@@ -918,8 +941,7 @@
   {:display-name "Paly"
    :parts []}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line number]} (options/sanitize division (options division))
-        number 8
+  (let [{:keys [line num-fields]} (options/sanitize division (options division))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
@@ -927,7 +949,7 @@
         y2 (:y bottom-right)
         width (:width environment)
         pallet-height (- y2 y1)
-        pallet-width (/ width number)
+        pallet-width (/ width num-fields)
         {line-down :line} (line/create line
                                        pallet-height
                                        :flipped? true
@@ -940,11 +962,11 @@
                                               :reversed? true
                                               :render-options render-options)
         line-up-origin (v/extend (v/v 0 y1) (v/v 0 y2) line-up-length)
-        parts (->> (range number)
+        parts (->> (range num-fields)
                    (map (fn [i]
                           (let [x1 (* i pallet-width)
                                 x2 (+ x1 pallet-width)
-                                last-part? (-> i inc (= number))]
+                                last-part? (-> i inc (= num-fields))]
                             [(cond
                                (zero? i) ["M" [x2 y1]
                                           (line/stitch line-down)
@@ -988,7 +1010,7 @@
                                                           "z"])))
                              [(v/v x1 y1) (v/v x2 y2)]])))
                    vec)
-        edges (->> (range number)
+        edges (->> (range num-fields)
                    (map (fn [i]
                           (let [x1 (* i pallet-width)
                                 x2 (+ x1 pallet-width)]
@@ -1000,11 +1022,11 @@
                    vec)]
     [make-division
      (division-context-key type) fields parts
-     edges
+     (map (fn [e] [e]) edges)
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline-style
-        (for [i (range (dec number))]
+        (for [i (range (dec num-fields))]
           ^{:key i}
           [:path {:d (nth edges i)}])])
      environment division context]))

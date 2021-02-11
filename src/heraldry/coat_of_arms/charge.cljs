@@ -95,15 +95,14 @@
     [mask-id mask mask-inverted-id mask-inverted]))
 
 (defn counterchange-field [field {:keys [division]}]
-  (let [type (:type division)]
-    (-> field
-        (dissoc :content)
-        (assoc :division {:type type
-                          :line (:line division)
-                          :origin (:origin division)
-                          :fields (-> (division/default-fields type)
-                                      (assoc-in [0 :content :tincture] (get-in division [:fields 1 :content :tincture]))
-                                      (assoc-in [1 :content :tincture] (get-in division [:fields 0 :content :tincture])))}))))
+  (-> field
+      (dissoc :content)
+      (assoc :division {:type (:type division)
+                        :line (:line division)
+                        :origin (:origin division)
+                        :fields (-> (division/default-fields division)
+                                    (assoc-in [0 :content :tincture] (get-in division [:fields 1 :content :tincture]))
+                                    (assoc-in [1 :content :tincture] (get-in division [:fields 0 :content :tincture])))})))
 
 (defn counterchangable? [field parent]
   (and (:counterchanged? field)
