@@ -28,6 +28,7 @@
           (= :per-saltire type) [{:ref 1} {:ref 0}]
           (= :quarterly type) [{:ref 1} {:ref 0}]
           (= :gyronny type) [{:ref 1} {:ref 0} {:ref 0} {:ref 1} {:ref 1} {:ref 0}]
+          (= :paly type) [{:ref 0} {:ref 1} {:ref 0} {:ref 1} {:ref 0} {:ref 1} {:ref 1} {:ref 0} {:ref 0} {:ref 1}]
           (#{:tierced-per-pale
              :tierced-per-fess
              :tierced-per-pairle
@@ -87,7 +88,11 @@
   {:origin position/default-options
    :diagonal-mode {:type :choice
                    :default :top-left-fess}
-   :line line/default-options})
+   :line line/default-options
+   :number {:type :range
+            :min 3
+            :max 20
+            :default 6}})
 
 (defn options [division]
   (when division
@@ -117,6 +122,8 @@
             :gyronny {:diagonal-mode {:choices (diagonal-mode-choices
                                                 :gyronny)}
                       :line {:offset {:min 0}}}
+            :paly {:origin nil
+                   :diagonal-mode nil}
             :tierced-per-pale {:origin {:offset-y nil}
                                :diagonal-mode nil}
             :tierced-per-fess {:origin {:offset-x nil}
@@ -129,6 +136,11 @@
                                                           :default :forty-five-degrees}
                                           :line {:offset {:min 0}}}}
            (:type division))
+      (cond->
+       (-> division
+           :type
+           #{:paly}
+           not) (assoc :number nil))
       (update-in [:line] #(options/merge (line/options (get-in division [:line]))
                                          %))))))
 
@@ -902,6 +914,101 @@
                      (line/stitch line-left)])}]])
      environment division context]))
 
+(defn paly
+  {:display-name "Paly"
+   :parts []}
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
+  (let [{:keys [line number]} (options/sanitize division (options division))
+        number 8
+        points (:points environment)
+        top-left (:top-left points)
+        bottom-right (:bottom-right points)
+        y1 (:y top-left)
+        y2 (:y bottom-right)
+        width (:width environment)
+        pallet-height (- y2 y1)
+        pallet-width (/ width number)
+        {line-down :line} (line/create line
+                                       pallet-height
+                                       :flipped? true
+                                       :angle 90
+                                       :render-options render-options)
+        {line-up :line
+         line-up-length :length} (line/create line
+                                              pallet-height
+                                              :angle -90
+                                              :reversed? true
+                                              :render-options render-options)
+        line-up-origin (v/extend (v/v 0 y1) (v/v 0 y2) line-up-length)
+        parts (->> (range number)
+                   (map (fn [i]
+                          (let [x1 (* i pallet-width)
+                                x2 (+ x1 pallet-width)
+                                last-part? (-> i inc (= number))]
+                            [(cond
+                               (zero? i) ["M" [x2 y1]
+                                          (line/stitch line-down)
+                                          (infinity/path :clockwise
+                                                         [:bottom :top]
+                                                         [(v/v x2 y2) (v/v x2 y1)])
+                                          "z"]
+                               (even? i) (cond-> ["M" [x1 (:y line-up-origin)]
+                                                  (line/stitch line-up)]
+                                           last-part? (concat
+                                                       [(infinity/path :clockwise
+                                                                       [:top :bottom]
+                                                                       [(v/v x1 y1) (v/v x1 y2)])
+                                                        "z"])
+                                           (not last-part?) (concat
+                                                             [(infinity/path :clockwise
+                                                                             [:top :top]
+                                                                             [(v/v x1 y1) (v/v x2 y1)])
+                                                              "L" [x2 y1]
+                                                              (line/stitch line-down)
+                                                              (infinity/path :clockwise
+                                                                             [:bottom :bottom]
+                                                                             [(v/v x2 y2) (v/v x1 y2)])
+                                                              "z"]))
+                               :else (cond-> ["M" [x1 y1]
+                                              (line/stitch line-down)]
+                                       last-part? (concat
+                                                   [(infinity/path :counter-clockwise
+                                                                   [:bottom :top]
+                                                                   [(v/v x1 y2) (v/v x1 y1)])
+                                                    "z"])
+                                       (not last-part?) (concat
+                                                         [(infinity/path :counter-clockwise
+                                                                         [:bottom :bottom]
+                                                                         [(v/v x1 y2) (v/v x2 y2)])
+                                                          "L" [x2 (:y line-up-origin)]
+                                                          (line/stitch line-up)
+                                                          (infinity/path :clockwise
+                                                                         [:top :top]
+                                                                         [(v/v x2 y1) (v/v x1 y1)])
+                                                          "z"])))
+                             [(v/v x1 y1) (v/v x2 y2)]])))
+                   vec)
+        edges (->> (range number)
+                   (map (fn [i]
+                          (let [x1 (* i pallet-width)
+                                x2 (+ x1 pallet-width)]
+                            (if (even? i)
+                              (svg/make-path ["M" [x2 y1]
+                                              (line/stitch line-down)])
+                              (svg/make-path ["M" [x2 (:y line-up-origin)]
+                                              (line/stitch line-up)])))))
+                   vec)]
+    [make-division
+     (division-context-key type) fields parts
+     edges
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g outline-style
+        (for [i (range (dec number))]
+          ^{:key i}
+          [:path {:d (nth edges i)}])])
+     environment division context]))
+
 (defn tierced-per-pale
   {:display-name "Tierced per pale"
    :parts ["dexter" "fess" "sinister"]}
@@ -1258,6 +1365,7 @@
    #'per-saltire
    #'quarterly
    #'gyronny
+   #'paly
    #'tierced-per-pale
    #'tierced-per-fess
    #'tierced-per-pairle
