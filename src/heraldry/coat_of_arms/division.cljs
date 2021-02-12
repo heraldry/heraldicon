@@ -54,25 +54,25 @@
                 [(get options key) key])))))
 
 (def default-options
-  {:origin          position/default-options
-   :diagonal-mode   {:type    :choice
-                     :default :top-left-fess}
-   :line            line/default-options
-   :num-fields-x    {:type     :range
-                     :min      4
-                     :max      20
-                     :default  6
-                     :integer? true}
-   :num-fields-y    {:type     :range
-                     :min      4
-                     :max      20
-                     :default  6
-                     :integer? true}
-   :num-base-fields {:type     :range
-                     :min      2
-                     :max      6
-                     :default  2
-                     :integer? true}})
+  {:origin        position/default-options
+   :diagonal-mode {:type    :choice
+                   :default :top-left-fess}
+   :line          line/default-options
+   :layout        {:num-fields-x    {:type     :range
+                                     :min      4
+                                     :max      20
+                                     :default  6
+                                     :integer? true}
+                   :num-fields-y    {:type     :range
+                                     :min      4
+                                     :max      20
+                                     :default  6
+                                     :integer? true}
+                   :num-base-fields {:type     :range
+                                     :min      2
+                                     :max      6
+                                     :default  2
+                                     :integer? true}}})
 
 (defn options [division]
   (when division
@@ -119,10 +119,12 @@
                                           :line          {:offset {:min 0}}}}
            (:type division))
       (cond->
-          (-> division :type #{:paly} not)  (assoc :num-fields-x nil)
-          (-> division :type #{:barry} not) (assoc :num-fields-y nil)
+          (-> division :type #{:paly} not)  (assoc-in [:layout :num-fields-x] nil)
+          (-> division :type #{:barry} not) (assoc-in [:layout :num-fields-y] nil)
           (-> division :type #{:paly
-                               :barry} not) (assoc :num-base-fields nil))
+                               :barry} not) (assoc-in [:layout :num-base-fields] nil)
+          (-> division :type #{:paly
+                               :barry} not) (assoc-in [:layout] nil))
       (update-in [:line] #(options/merge (line/options (get-in division [:line]))
                                          %))))))
 
@@ -146,7 +148,8 @@
        (-> division :fields (get 1) :division :type not)))
 
 (defn default-fields [{:keys [type] :as division}]
-  (let [{:keys [num-fields-x num-fields-y num-base-fields]} (options/sanitize division (options division))
+  (let [{:keys [layout]}                                    (options/sanitize division (options division))
+        {:keys [num-fields-x num-fields-y num-base-fields]} layout
         defaults                                            [default/field
                                                              (-> default/field
                                                                  (assoc-in [:content :tincture] :azure))
@@ -1045,11 +1048,11 @@
   {:display-name "Paly"
    :parts        []}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line num-fields-x]} (options/sanitize division (options division))
-        points                      (:points environment)
-        top-left                    (:top-left points)
-        bottom-right                (:bottom-right points)
-        [parts overlap outlines]    (paly-parts num-fields-x top-left bottom-right line hints render-options)]
+  (let [{:keys [line layout]}    (options/sanitize division (options division))
+        points                   (:points environment)
+        top-left                 (:top-left points)
+        bottom-right             (:bottom-right points)
+        [parts overlap outlines] (paly-parts (:num-fields-x layout) top-left bottom-right line hints render-options)]
     [make-division
      (division-context-key type) fields parts
      overlap
@@ -1065,11 +1068,11 @@
         width                      (- x2 x1)
         bar-height                 (/ height num-fields-y)
         {line-right :line}         (line/create line
-                                                height
+                                                width
                                                 :render-options render-options)
         {line-left        :line
          line-left-length :length} (line/create line
-                                                height
+                                                width
                                                 :flipped? true
                                                 :reversed? true
                                                 :render-options render-options)
@@ -1150,11 +1153,11 @@
   {:display-name "Barry"
    :parts        []}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line num-fields-y]} (options/sanitize division (options division))
-        points                      (:points environment)
-        top-left                    (:top-left points)
-        bottom-right                (:bottom-right points)
-        [parts overlap outlines]    (barry-parts num-fields-y top-left bottom-right line hints render-options)]
+  (let [{:keys [line layout]}    (options/sanitize division (options division))
+        points                   (:points environment)
+        top-left                 (:top-left points)
+        bottom-right             (:bottom-right points)
+        [parts overlap outlines] (barry-parts (:num-fields-y layout) top-left bottom-right line hints render-options)]
     [make-division
      (division-context-key type) fields parts
      overlap

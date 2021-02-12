@@ -140,9 +140,9 @@
      (-> db
          (assoc-in (conj path :division :type) new-type)
          (update-in (conj path :division :line :type) #(or % :straight))
-         (assoc-in (conj path :division :num-fields-x) num-fields-x)
-         (assoc-in (conj path :division :num-fields-y) num-fields-y)
-         (assoc-in (conj path :division :num-base-fields) num-base-fields)
+         (assoc-in (conj path :division :layout :num-fields-x) num-fields-x)
+         (assoc-in (conj path :division :layout :num-fields-y) num-fields-y)
+         (assoc-in (conj path :division :layout :num-base-fields) num-base-fields)
          (update-in (conj path :division)
                     (fn [prepared-division]
                       (let [current          (or (:fields prepared-division) [])
@@ -1155,10 +1155,7 @@
                                           :content   {:tincture (if (= value key) :or :azure)}}
                                          {:component :field
                                           :division  {:type   key
-                                                      :fields (-> (division/default-fields {:type            key
-                                                                                            :num-fields-x    6
-                                                                                            :num-fields-y    6
-                                                                                            :num-base-fields 2})
+                                                      :fields (-> (division/default-fields {:type key})
                                                                   (util/replace-recursively :none :argent)
                                                                   (cond->
                                                                       (= value key) (util/replace-recursively :azure :or)))}})}
@@ -1169,9 +1166,9 @@
     [:div.choice.tooltip {:on-click #(let [new-division              (assoc division :type key)
                                            {:keys [num-fields-x
                                                    num-fields-y
-                                                   num-base-fields]} (options/sanitize-or-nil
-                                                                      new-division
-                                                                      (division/options new-division))]
+                                                   num-base-fields]} (:layout (options/sanitize-or-nil
+                                                                               new-division
+                                                                               (division/options new-division)))]
                                        (state/dispatch-on-event % [:set-division-type path key num-fields-x num-fields-y num-base-fields]))}
      [:svg {:style               {:width  "4em"
                                   :height "4.5em"}
@@ -1399,39 +1396,39 @@
          [form-for-division path]
          (let [division-options (division/options (:division field))]
            [:<>
-            (when (:num-fields-x division-options)
-              [range-input (conj path :division :num-fields-x) "x-Subfields"
-               (-> division-options :num-fields-x :min)
-               (-> division-options :num-fields-x :max)
+            (when (-> division-options :layout :num-fields-x)
+              [range-input (conj path :division :layout :num-fields-x) "x-Subfields"
+               (-> division-options :layout :num-fields-x :min)
+               (-> division-options :layout :num-fields-x :max)
                :on-change (fn [value]
                             (rf/dispatch [:set-division-type
                                           path
                                           division-type
                                           value
-                                          (:num-fields-y division)
-                                          (:num-base-fields division)]))])
-            (when (:num-fields-y division-options)
-              [range-input (conj path :division :num-fields-y) "y-Subfields"
-               (-> division-options :num-fields-y :min)
-               (-> division-options :num-fields-y :max)
+                                          (-> division :layout :num-fields-y)
+                                          (-> division :layout :num-base-fields)]))])
+            (when (-> division-options :layout :num-fields-y)
+              [range-input (conj path :division :layout :num-fields-y) "y-Subfields"
+               (-> division-options :layout :num-fields-y :min)
+               (-> division-options :layout :num-fields-y :max)
                :on-change (fn [value]
                             (rf/dispatch [:set-division-type
                                           path
                                           division-type
-                                          (:num-fields-x division)
+                                          (-> division :layout :num-fields-x)
                                           value
-                                          (:num-base-fields division)]))])
-            (when (:num-base-fields division-options)
-              (let [num-base-fields-path (conj path :division :num-base-fields)]
+                                          (-> division :layout :num-base-fields)]))])
+            (when (-> division-options :layout :num-base-fields)
+              (let [num-base-fields-path (conj path :division :layout :num-base-fields)]
                 [range-input num-base-fields-path "Base fields"
-                 (-> division-options :num-base-fields :min)
-                 (-> division-options :num-base-fields :max)
+                 (-> division-options :layout :num-base-fields :min)
+                 (-> division-options :layout :num-base-fields :max)
                  :on-change (fn [value]
                               (rf/dispatch [:set-division-type
                                             path
                                             division-type
-                                            (:num-fields-x division)
-                                            (:num-fields-y division)
+                                            (-> division :layout :num-fields-x)
+                                            (-> division :layout :num-fields-y)
                                             value]))]))
             (when (:line division-options)
               [form-for-line (conj path :division :line) :options (:line division-options)])
