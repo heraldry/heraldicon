@@ -75,3 +75,10 @@
                        (clojure.core/* y (Math/sin rad)))
        (clojure.core/+ (clojure.core/* x (Math/sin rad))
                        (clojure.core/* y (Math/cos rad))))))
+
+(defn distance-point-to-line [{x0 :x y0 :y} {x1 :x y1 :y :as p1} {x2 :x y2 :y :as p2}]
+  (cljs.core// (Math/abs (cljs.core/- (cljs.core/* (cljs.core/- x2 x1)
+                                                   (cljs.core/- y1 y0))
+                                      (cljs.core/* (cljs.core/- x1 x0)
+                                                   (cljs.core/- y2 y1))))
+               (abs (- p1 p2))))

@@ -29,8 +29,12 @@
     (->> type
          (get {:per-bend [:forty-five-degrees
                           :top-left-fess]
+               :bendy [:forty-five-degrees
+                       :top-left-fess]
                :per-bend-sinister [:forty-five-degrees
                                    :top-right-fess]
+               :bendy-sinister [:forty-five-degrees
+                                :top-right-fess]
                :per-chevron [:forty-five-degrees
                              :bottom-left-fess
                              :bottom-right-fess]
@@ -58,7 +62,10 @@
    :diagonal-mode {:type :choice
                    :default :top-left-fess}
    :line line/default-options
-   :layout {:num-fields-x {:type :range
+   :layout {:origin position/default-options
+            :diagonal-mode {:type :choice
+                            :default :top-left-fess}
+            :num-fields-x {:type :range
                            :min 4
                            :max 20
                            :default 6
@@ -122,6 +129,13 @@
                     :diagonal-mode nil}
             :paly {:origin nil
                    :diagonal-mode nil}
+            :bendy {:layout {:origin {:offset-x nil}
+                             :diagonal-mode {:choices (diagonal-mode-choices
+                                                       :bendy)}}}
+            :bendy-sinister {:layout {:origin {:offset-x nil}
+                                      :diagonal-mode {:choices (diagonal-mode-choices
+                                                                :bendy-sinister)
+                                                      :default :top-right-fess}}}
             :tierced-per-pale {:origin nil
                                :diagonal-mode nil}
             :tierced-per-fess {:origin {:offset-x nil}
@@ -135,21 +149,31 @@
                                           :line {:offset {:min 0}}}}
            (:type division))
       (cond->
+       (-> division :type #{:bendy :bendy-sinister} not) (assoc-in [:layout :origin] nil)
+       (-> division :type #{:bendy :bendy-sinister} not) (assoc-in [:layout :diagonal-mode] nil)
        (-> division :type #{:paly} not) (assoc-in [:layout :num-fields-x] nil)
        (-> division :type #{:per-pale
                             :paly
                             :tierced-per-pale} not) (assoc-in [:layout :offset-x] nil)
        (-> division :type #{:paly
                             :tierced-per-pale} not) (assoc-in [:layout :stretch-x] nil)
-       (-> division :type #{:barry} not) (assoc-in [:layout :num-fields-y] nil)
-       (-> division :type #{:barry} not) (assoc-in [:layout :offset-y] nil)
-       (-> division :type #{:barry} not) (assoc-in [:layout :stretch-y] nil)
+       (-> division :type #{:barry :bendy :bendy-sinister} not) (assoc-in [:layout :num-fields-y] nil)
+       (-> division :type #{:barry :bendy :bendy-sinister} not) (assoc-in [:layout :offset-y] nil)
+       (-> division :type #{:barry :bendy :bendy-sinister} not) (assoc-in [:layout :stretch-y] nil)
        (-> division :type #{:paly
-                            :barry} not) (assoc-in [:layout :num-base-fields] nil)
+                            :barry
+                            :bendy
+                            :bendy-sinister} not) (assoc-in [:layout :num-base-fields] nil)
+       (-> division :type #{:bendy
+                            :bendy-sinister} not) (->
+                                                   (assoc-in [:layout :origin] nil)
+                                                   (assoc-in [:layout :diagonal-mode] nil))
        (-> division :type #{:per-pale
                             :tierced-per-pale
                             :paly
-                            :barry} not) (assoc-in [:layout] nil))
+                            :barry
+                            :bendy
+                            :bendy-sinister} not) (assoc-in [:layout] nil))
       (update-in [:line] #(options/merge (line/options (get-in division [:line]))
                                          %))))))
 
@@ -201,11 +225,16 @@
                                              (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
                                 (into (map (fn [i]
                                              {:ref (mod i num-base-fields)}) (range (- num-fields-y num-base-fields)))))
+            (#{:bendy
+               :bendy-sinister} type) (-> []
+                                          (into (map (fn [i]
+                                                       (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
+                                          (into (map (fn [i]
+                                                       {:ref (mod i num-base-fields)}) (range (- num-fields-y num-base-fields)))))
             (#{:tierced-per-pale
                :tierced-per-fess
                :tierced-per-pairle
-               :tierced-per-pairle-reversed} type) [(-> default/field
-                                                        (assoc-in [:content :tincture] :sable))]))))
+               :tierced-per-pairle-reversed} type) [(nth defaults 2)]))))
 
 (defn get-field [fields index]
   (let [part (get fields index)
@@ -1188,6 +1217,65 @@
      outlines
      environment division context]))
 
+(defn bendy
+  {:display-name "Bendy"
+   :parts []}
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
+  (let [{:keys [line layout]} (options/sanitize division (options division))
+        points (:points environment)
+        top-left (:top-left points)
+        top-right (:top-right points)
+        origin-point (position/calculate (:origin layout) environment :fess)
+        direction (direction (:diagonal-mode layout) points origin-point)
+        angle (angle-to-point (v/v 0 0) direction)
+        right-x (-> points :right :x)
+        diagonal-end (v/project-x origin-point (v/dot direction (v/v 1 1)) right-x)
+        required-half-height (v/distance-point-to-line top-right origin-point top-right)
+        ;; TODO: there probably is a better value for this, since this might be in 45° mode, where
+        ;; the here used diagonal isn't relevant, but right now I can't think of a better way
+        required-width (-> (v/- diagonal-end top-left)
+                           v/abs)
+        padding 0
+        [parts overlap outlines] (barry-parts layout
+                                              (v/v (- padding) (- required-half-height))
+                                              (v/v (+ required-width padding padding) (+ required-half-height))
+                                              line hints render-options)]
+    [:g {:transform (str "rotate(" angle ")")}
+     [make-division
+      (division-context-key type) fields parts
+      overlap
+      outlines
+      environment division context]]))
+
+(defn bendy-sinister
+  {:display-name "Bendy sinister"
+   :parts []}
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
+  (let [{:keys [line layout]} (options/sanitize division (options division))
+        points (:points environment)
+        top-left (:top-left points)
+        top-right (:top-right points)
+        origin-point (position/calculate (:origin layout) environment :fess)
+        direction (direction (:diagonal-mode layout) points origin-point)
+        required-half-height (v/distance-point-to-line top-left origin-point top-right)
+        left-x (-> points :left :x)
+        diagonal-start (v/project-x origin-point (v/dot direction (v/v -1 1)) left-x)
+        angle (angle-to-point (v/v 0 0) (v/dot direction (v/v 1 -1)))
+        required-width (-> (v/- diagonal-start top-right)
+                           v/abs)
+        padding 0
+        [parts overlap outlines] (barry-parts layout
+                                              (v/v (- padding) (- required-half-height))
+                                              (v/v (+ required-width padding padding) (+ required-half-height))
+                                              line hints render-options)]
+    [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
+                         "rotate(" angle ")")}
+     [make-division
+      (division-context-key type) fields parts
+      overlap
+      outlines
+      environment division context]]))
+
 (defn tierced-per-pale
   {:display-name "Tierced per pale"
    :parts ["dexter" "fess" "sinister"]}
@@ -1487,6 +1575,8 @@
    #'gyronny
    #'paly
    #'barry
+   #'bendy
+   #'bendy-sinister
    #'tierced-per-pale
    #'tierced-per-fess
    #'tierced-per-pairle
