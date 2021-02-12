@@ -65,7 +65,7 @@
                 :integer? true}
    :num-base-fields {:type :range
                      :min 2
-                     :max 4
+                     :max 6
                      :default 2
                      :integer? true}})
 
@@ -149,6 +149,8 @@
                       (assoc-in [:content :tincture] :sable))
                   (-> default/field
                       (assoc-in [:content :tincture] :gules))
+                  (-> default/field
+                      (assoc-in [:content :tincture] :or))
                   (-> default/field
                       (assoc-in [:content :tincture] :vert))]]
     (into (subvec defaults 0 2)
