@@ -1370,6 +1370,57 @@
       [checkbox (conj path :hints :outline?) "Outline"]]
      [form-for-field (conj path :field) :parent-field parent-field]]))
 
+(defn form-for-layout [field-path & {:keys [title options] :or {title "Layout"}}]
+  (let [layout-path   (conj field-path :division :layout)
+        division      @(rf/subscribe [:get (conj field-path :division)])
+        layout        (:layout division)
+        division-type (:type division)
+        current-data  (:layout (options/sanitize division (division/options division)))
+        link-name     (util/combine
+                       ", "
+                       [(cond
+                          (= division-type :paly)  (str (:num-fields-x current-data) " fields")
+                          (= division-type :barry) (str (:num-fields-y current-data) " fields"))
+                        (when (not= (:num-base-fields current-data) 2)
+                          (str (:num-base-fields current-data) " base fields"))])]
+    [:div.setting
+     [:label title]
+     " "
+     [submenu layout-path title link-name {}
+      (when (-> options :num-fields-x)
+        [range-input (conj layout-path :num-fields-x) "x-Subfields"
+         (-> options :num-fields-x :min)
+         (-> options :num-fields-x :max)
+         :on-change (fn [value]
+                      (rf/dispatch [:set-division-type
+                                    field-path
+                                    division-type
+                                    value
+                                    (:num-fields-y layout)
+                                    (:num-base-fields layout)]))])
+      (when (-> options :num-fields-y)
+        [range-input (conj layout-path :num-fields-y) "y-Subfields"
+         (-> options :num-fields-y :min)
+         (-> options :num-fields-y :max)
+         :on-change (fn [value]
+                      (rf/dispatch [:set-division-type
+                                    field-path
+                                    division-type
+                                    (:num-fields-x layout)
+                                    value
+                                    (:num-base-fields layout)]))])
+      (when (-> options :num-base-fields)
+        [range-input (conj layout-path :num-base-fields) "Base fields"
+         (-> options :num-base-fields :min)
+         (-> options :num-base-fields :max)
+         :on-change (fn [value]
+                      (rf/dispatch [:set-division-type
+                                    field-path
+                                    division-type
+                                    (:num-fields-x layout)
+                                    (:num-fields-y layout)
+                                    value]))])]]))
+
 (defn form-for-field [path & {:keys [parent-field title-prefix]}]
   (let [division        (-> @(rf/subscribe [:get path])
                             :division)
@@ -1396,40 +1447,8 @@
          [form-for-division path]
          (let [division-options (division/options (:division field))]
            [:<>
-            (when (-> division-options :layout :num-fields-x)
-              [range-input (conj path :division :layout :num-fields-x) "x-Subfields"
-               (-> division-options :layout :num-fields-x :min)
-               (-> division-options :layout :num-fields-x :max)
-               :on-change (fn [value]
-                            (rf/dispatch [:set-division-type
-                                          path
-                                          division-type
-                                          value
-                                          (-> division :layout :num-fields-y)
-                                          (-> division :layout :num-base-fields)]))])
-            (when (-> division-options :layout :num-fields-y)
-              [range-input (conj path :division :layout :num-fields-y) "y-Subfields"
-               (-> division-options :layout :num-fields-y :min)
-               (-> division-options :layout :num-fields-y :max)
-               :on-change (fn [value]
-                            (rf/dispatch [:set-division-type
-                                          path
-                                          division-type
-                                          (-> division :layout :num-fields-x)
-                                          value
-                                          (-> division :layout :num-base-fields)]))])
-            (when (-> division-options :layout :num-base-fields)
-              (let [num-base-fields-path (conj path :division :layout :num-base-fields)]
-                [range-input num-base-fields-path "Base fields"
-                 (-> division-options :layout :num-base-fields :min)
-                 (-> division-options :layout :num-base-fields :max)
-                 :on-change (fn [value]
-                              (rf/dispatch [:set-division-type
-                                            path
-                                            division-type
-                                            (-> division :layout :num-fields-x)
-                                            (-> division :layout :num-fields-y)
-                                            value]))]))
+            (when (:layout division-options)
+              [form-for-layout path :options (:layout division-options)])
             (when (:line division-options)
               [form-for-line (conj path :division :line) :options (:line division-options)])
             (when (:diagonal-mode division-options)
