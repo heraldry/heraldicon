@@ -95,7 +95,7 @@
     (options/merge
      default-options
      (->
-      (get {:per-pale                    {:origin        {:offset-y nil}
+      (get {:per-pale                    {:origin        nil
                                           :diagonal-mode nil}
             :per-fess                    {:origin        {:offset-x nil}
                                           :diagonal-mode nil}
@@ -122,7 +122,7 @@
                                           :diagonal-mode nil}
             :paly                        {:origin        nil
                                           :diagonal-mode nil}
-            :tierced-per-pale            {:origin        {:offset-y nil}
+            :tierced-per-pale            {:origin        nil
                                           :diagonal-mode nil}
             :tierced-per-fess            {:origin        {:offset-x nil}
                                           :diagonal-mode nil}
@@ -135,18 +135,21 @@
                                           :line          {:offset {:min 0}}}}
            (:type division))
       (cond->
-          (-> division :type #{:paly} not)  (->
-                                             (assoc-in [:layout :num-fields-x] nil)
-                                             (assoc-in [:layout :offset-x] nil)
-                                             (assoc-in [:layout :stretch-x] nil))
-          (-> division :type #{:barry} not) (->
-                                             (assoc-in [:layout :num-fields-y] nil)
-                                             (assoc-in [:layout :offset-y] nil)
-                                             (assoc-in [:layout :stretch-y] nil))
+          (-> division :type #{:paly} not)             (assoc-in [:layout :num-fields-x] nil)
+          (-> division :type #{:per-pale
+                               :paly
+                               :tierced-per-pale} not) (assoc-in [:layout :offset-x] nil)
           (-> division :type #{:paly
-                               :barry} not) (assoc-in [:layout :num-base-fields] nil)
+                               :tierced-per-pale} not) (assoc-in [:layout :stretch-x] nil)
+          (-> division :type #{:barry} not)            (assoc-in [:layout :num-fields-y] nil)
+          (-> division :type #{:barry} not)            (assoc-in [:layout :offset-y] nil)
+          (-> division :type #{:barry} not)            (assoc-in [:layout :stretch-y] nil)
           (-> division :type #{:paly
-                               :barry} not) (assoc-in [:layout] nil))
+                               :barry} not)            (assoc-in [:layout :num-base-fields] nil)
+          (-> division :type #{:per-pale
+                               :tierced-per-pale
+                               :paly
+                               :barry} not)            (assoc-in [:layout] nil))
       (update-in [:line] #(options/merge (line/options (get-in division [:line]))
                                          %))))))
 
@@ -288,7 +291,9 @@
 (defn paly-parts [{:keys [num-fields-x
                           offset-x
                           stretch-x]} top-left bottom-right line hints render-options]
-  (let [width                    (- (:x bottom-right)
+  (let [offset-x                 (or offset-x 0)
+        stretch-x                (or stretch-x 1)
+        width                    (- (:x bottom-right)
                                     (:x top-left))
         pallet-width             (-> width
                                      (/ num-fields-x)
@@ -392,7 +397,9 @@
 (defn barry-parts [{:keys [num-fields-y
                            offset-y
                            stretch-y]} top-left bottom-right line hints render-options]
-  (let [height                     (- (:y bottom-right)
+  (let [offset-y                   (or offset-y 0)
+        stretch-y                  (or stretch-y 1)
+        height                     (- (:y bottom-right)
                                       (:y top-left))
         bar-height                 (-> height
                                        (/ num-fields-y)
@@ -495,45 +502,16 @@
   {:display-name "Per pale"
    :parts        ["dexter" "sinister"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin]}      (options/sanitize division (options division))
-        points                     (:points environment)
-        origin-point               (position/calculate origin environment :fess)
-        top-left                   (:top-left points)
-        top                        (assoc (:top points) :x (:x origin-point))
-        bottom                     (assoc (:bottom points) :x (:x origin-point))
-        bottom-right               (:bottom-right points)
-        {line-one    :line
-         line-length :line-length} (line/create line
-                                                (:y (v/- bottom top))
-                                                :angle 90
-                                                :reversed? true
-                                                :render-options render-options)
-        bottom-adjusted            (v/extend top bottom line-length)
-        parts                      [[["M" bottom-adjusted
-                                      (line/stitch line-one)
-                                      (infinity/path :clockwise
-                                                     [:bottom :top]
-                                                     [bottom-adjusted top])
-                                      "z"]
-                                     [top-left bottom]]
-
-                                    [["M" bottom-adjusted
-                                      (line/stitch line-one)
-                                      (infinity/path :counter-clockwise
-                                                     [:bottom :top]
-                                                     [bottom-adjusted top])
-                                      "z"]
-                                     [top bottom-right]]]]
+  (let [{:keys [line layout]}    (options/sanitize division (options division))
+        points                   (:points environment)
+        top-left                 (:top-left points)
+        bottom-right             (:bottom-right points)
+        [parts overlap outlines] (paly-parts (-> layout
+                                                 (assoc :num-fields-x 2)) top-left bottom-right line hints render-options)]
     [make-division
      (division-context-key type) fields parts
-     [:all nil]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline-style
-        [:path {:d (svg/make-path
-                    ["M" bottom-adjusted
-                     (line/stitch line-one)])}]])
-
+     overlap
+     outlines
      environment division context]))
 
 (defn per-fess
@@ -1214,75 +1192,16 @@
   {:display-name "Tierced per pale"
    :parts        ["dexter" "fess" "sinister"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin]}          (options/sanitize division (options division))
-        points                         (:points environment)
-        origin-point                   (position/calculate origin environment :fess)
-        top                            (assoc (:top points) :x (:x origin-point))
-        top-left                       (:top-left points)
-        bottom                         (assoc (:bottom points) :x (:x origin-point))
-        bottom-right                   (:bottom-right points)
-        width                          (:width environment)
-        col1                           (- (:x origin-point) (/ width 6))
-        col2                           (+ (:x origin-point) (/ width 6))
-        first-top                      (v/v col1 (:y top))
-        first-bottom                   (v/v col1 (:y bottom))
-        second-top                     (v/v col2 (:y top))
-        second-bottom                  (v/v col2 (:y bottom))
-        {line-one :line}               (line/create line
-                                                    (:y (v/- bottom top))
-                                                    :flipped? true
-                                                    :angle 90
-                                                    :render-options render-options)
-        {line-reversed        :line
-         line-reversed-length :length} (line/create line
-                                                    (:y (v/- bottom top))
-                                                    :angle -90
-                                                    :reversed? true
-                                                    :render-options render-options)
-        second-bottom-adjusted         (v/extend second-top second-bottom line-reversed-length)
-        parts                          [[["M" first-top
-                                          (line/stitch line-one)
-                                          (infinity/path :clockwise
-                                                         [:bottom :top]
-                                                         [first-bottom first-top])
-                                          "z"]
-                                         [top-left first-bottom]]
-
-                                        [["M" second-bottom-adjusted
-                                          (line/stitch line-reversed)
-                                          (infinity/path :counter-clockwise
-                                                         [:top :top]
-                                                         [second-top first-top])
-                                          (line/stitch line-one)
-                                          (infinity/path :counter-clockwise
-                                                         [:bottom :bottom]
-                                                         [first-bottom second-bottom])
-                                          "z"]
-                                         [first-top second-bottom]]
-
-                                        [["M" second-bottom-adjusted
-                                          (line/stitch line-reversed)
-                                          (infinity/path :clockwise
-                                                         [:top :bottom]
-                                                         [second-top second-bottom])
-                                          "z"]
-                                         [second-top bottom-right]]]]
+  (let [{:keys [line layout]}    (options/sanitize division (options division))
+        points                   (:points environment)
+        top-left                 (:top-left points)
+        bottom-right             (:bottom-right points)
+        [parts overlap outlines] (paly-parts (-> layout
+                                                 (assoc :num-fields-x 3)) top-left bottom-right line hints render-options)]
     [make-division
      (division-context-key type) fields parts
-     [:all
-      [(svg/make-path
-        ["M" second-bottom-adjusted
-         (line/stitch line-reversed)])]
-      nil]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline-style
-        [:path {:d (svg/make-path
-                    ["M" first-top
-                     (line/stitch line-one)])}]
-        [:path {:d (svg/make-path
-                    ["M" second-bottom-adjusted
-                     (line/stitch line-reversed)])}]])
+     overlap
+     outlines
      environment division context]))
 
 (defn tierced-per-fess
