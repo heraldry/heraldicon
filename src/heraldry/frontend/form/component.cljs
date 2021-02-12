@@ -1385,8 +1385,18 @@
                        [(cond
                           (= division-type :paly)  (str (:num-fields-x current-data) " fields")
                           (= division-type :barry) (str (:num-fields-y current-data) " fields"))
-                        (when (not= (:num-base-fields current-data) 2)
-                          (str (:num-base-fields current-data) " base fields"))])]
+                        (when (and (:num-base-fields current-data)
+                                   (not= (:num-base-fields current-data) 2))
+                          (str (:num-base-fields current-data) " base fields"))
+                        (when (or (:offset-x layout)
+                                  (:offset-y layout))
+                          (str "shifted"))
+                        (when (or (:stretch-x layout)
+                                  (:stretch-y layout))
+                          (str "stretched"))])
+        link-name     (if (-> link-name count (= 0))
+                        "Set"
+                        link-name)]
     [:div.setting
      [:label title]
      " "
