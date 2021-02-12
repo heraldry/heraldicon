@@ -961,7 +961,7 @@
         line-up-origin (v/extend (v/v 0 y1) (v/v 0 y2) line-up-length)
         parts (->> (range num-fields)
                    (map (fn [i]
-                          (let [x1 (* i pallet-width)
+                          (let [x1 (+ x0 (* i pallet-width))
                                 x2 (+ x1 pallet-width)
                                 last-part? (-> i inc (= num-fields))]
                             [(cond
@@ -1011,7 +1011,7 @@
                    dec
                    range
                    (map (fn [i]
-                          (let [x1 (* i pallet-width)
+                          (let [x1 (+ x0 (* i pallet-width))
                                 x2 (+ x1 pallet-width)]
                             (if (even? i)
                               (svg/make-path ["M" [x2 y1]
