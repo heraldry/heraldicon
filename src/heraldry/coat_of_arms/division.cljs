@@ -97,6 +97,8 @@
             :gyronny                     {:diagonal-mode {:choices (diagonal-mode-choices
                                                                     :gyronny)}
                                           :line          {:offset {:min 0}}}
+            :barry                       {:origin        nil
+                                          :diagonal-mode nil}
             :paly                        {:origin        nil
                                           :diagonal-mode nil}
             :tierced-per-pale            {:origin        {:offset-y nil}
@@ -114,7 +116,7 @@
       (cond->
           (-> division
               :type
-              #{:paly}
+              #{:paly :barry}
               not) (->
                     (assoc :num-fields nil)
                     (assoc :num-base-fields nil)))
@@ -123,7 +125,7 @@
 
 (defn mandatory-part-count [{:keys [type] :as division}]
   (let [{:keys [num-base-fields]} (options/sanitize division (options division))]
-    (if (get #{:paly} type)
+    (if (get #{:paly :barry} type)
       num-base-fields
       (case type
         nil                          0
@@ -158,7 +160,7 @@
             (= :per-saltire type)                  [{:ref 1} {:ref 0}]
             (= :quarterly type)                    [{:ref 1} {:ref 0}]
             (= :gyronny type)                      [{:ref 1} {:ref 0} {:ref 0} {:ref 1} {:ref 1} {:ref 0}]
-            (= :paly type)                         (-> []
+            (get #{:paly :barry} type)             (-> []
                                                        (into (map (fn [i]
                                                                     (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
                                                        (into (map (fn [i]
@@ -1046,6 +1048,111 @@
      outlines
      environment division context]))
 
+(defn barry-parts [num-fields top-left bottom-right line hints render-options]
+  (let [y0                         (:y top-left)
+        height                     (- (:y bottom-right)
+                                      y0)
+        x1                         (:x top-left)
+        x2                         (:x bottom-right)
+        width                      (- x2 x1)
+        bar-height                 (/ height num-fields)
+        {line-right :line}         (line/create line
+                                                height
+                                                :render-options render-options)
+        {line-left        :line
+         line-left-length :length} (line/create line
+                                                height
+                                                :flipped? true
+                                                :reversed? true
+                                                :render-options render-options)
+        line-left-origin           (v/extend (v/v x1 0) (v/v x2 0) line-left-length)
+        parts                      (->> (range num-fields)
+                                        (map (fn [i]
+                                               (let [y1         (+ y0 (* i bar-height))
+                                                     y2         (+ y1 bar-height)
+                                                     last-part? (-> i inc (= num-fields))]
+                                                 [(cond
+                                                    (zero? i) ["M" [x1 y2]
+                                                               (line/stitch line-right)
+                                                               (infinity/path :counter-clockwise
+                                                                              [:right :left]
+                                                                              [(v/v x2 y2) (v/v x1 y2)])
+                                                               "z"]
+                                                    (even? i) (cond-> ["M" [(:x line-left-origin) y1]
+                                                                       (line/stitch line-left)]
+                                                                last-part?       (concat
+                                                                                  [(infinity/path :counter-clockwise
+                                                                                                  [:left :right]
+                                                                                                  [(v/v x1 y1) (v/v x2 y1)])
+                                                                                   "z"])
+                                                                (not last-part?) (concat
+                                                                                  [(infinity/path :counter-clockwise
+                                                                                                  [:left :left]
+                                                                                                  [(v/v x1 y1) (v/v x1 y2)])
+                                                                                   "L" [x1 y2]
+                                                                                   (line/stitch line-right)
+                                                                                   (infinity/path :clockwise
+                                                                                                  [:right :right]
+                                                                                                  [(v/v x2 y2) (v/v x2 y1)])
+                                                                                   "z"]))
+                                                    :else     (cond-> ["M" [x1 y1]
+                                                                       (line/stitch line-right)]
+                                                                last-part?       (concat
+                                                                                  [(infinity/path :clockwise
+                                                                                                  [:right :left]
+                                                                                                  [(v/v x2 y1) (v/v x1 y1)])
+                                                                                   "z"])
+                                                                (not last-part?) (concat
+                                                                                  [(infinity/path :clockwise
+                                                                                                  [:right :right]
+                                                                                                  [(v/v x2 y1) (v/v x1 y2)])
+                                                                                   "L" [(:x line-left-origin) y2]
+                                                                                   (line/stitch line-left)
+                                                                                   (infinity/path :clockwise
+                                                                                                  [:left :left]
+                                                                                                  [(v/v x1 y2) (v/v x1 y1)])
+                                                                                   "z"])))
+                                                  [(v/v x1 y1) (v/v x2 y2)]])))
+                                        vec)
+        edges                      (->> num-fields
+                                        dec
+                                        range
+                                        (map (fn [i]
+                                               (let [y1 (+ y0 (* i bar-height))
+                                                     y2 (+ y1 bar-height)]
+                                                 (if (even? i)
+                                                   (svg/make-path ["M" [x1 y2]
+                                                                   (line/stitch line-right)])
+                                                   (svg/make-path ["M" [(:x line-left-origin) y2]
+                                                                   (line/stitch line-left)])))))
+                                        vec)
+        overlap                    (-> edges
+                                       (->> (map vector))
+                                       vec
+                                       (conj nil))
+        outlines                   (when (or (:outline? render-options)
+                                             (:outline? hints))
+                                     [:g outline-style
+                                      (for [i (range (dec num-fields))]
+                                        ^{:key i}
+                                        [:path {:d (nth edges i)}])])]
+    [parts overlap outlines]))
+
+(defn barry
+  {:display-name "Barry"
+   :parts        []}
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
+  (let [{:keys [line num-fields]} (options/sanitize division (options division))
+        points                    (:points environment)
+        top-left                  (:top-left points)
+        bottom-right              (:bottom-right points)
+        [parts overlap outlines]  (barry-parts num-fields top-left bottom-right line hints render-options)]
+    [make-division
+     (division-context-key type) fields parts
+     overlap
+     outlines
+     environment division context]))
+
 (defn tierced-per-pale
   {:display-name "Tierced per pale"
    :parts        ["dexter" "fess" "sinister"]}
@@ -1403,6 +1510,7 @@
    #'quarterly
    #'gyronny
    #'paly
+   #'barry
    #'tierced-per-pale
    #'tierced-per-fess
    #'tierced-per-pairle
