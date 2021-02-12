@@ -388,8 +388,12 @@
                :disabled? disabled?
                :on-change #(let [new-checked? (-> % .-target .-checked)]
                              (if new-checked?
-                               (rf/dispatch [:set path default])
-                               (rf/dispatch [:remove path])))}]
+                               (if on-change
+                                 (on-change value)
+                                 (rf/dispatch [:set path value]))
+                               (if on-change
+                                 (on-change nil)
+                                 (rf/dispatch [:remove path]))))}]
       [:input {:type      "range"
                :id        component-id
                :min       min-value
@@ -1387,10 +1391,23 @@
      [:label title]
      " "
      [submenu layout-path title link-name {}
+      (when (-> options :num-base-fields)
+        [range-input-with-checkbox (conj layout-path :num-base-fields) "Base fields"
+         (-> options :num-base-fields :min)
+         (-> options :num-base-fields :max)
+         :default (options/get-value (:num-base-fields layout) (:num-base-fields options))
+         :on-change (fn [value]
+                      (rf/dispatch [:set-division-type
+                                    field-path
+                                    division-type
+                                    (:num-fields-x layout)
+                                    (:num-fields-y layout)
+                                    value]))])
       (when (-> options :num-fields-x)
-        [range-input (conj layout-path :num-fields-x) "x-Subfields"
+        [range-input-with-checkbox (conj layout-path :num-fields-x) "x-Subfields"
          (-> options :num-fields-x :min)
          (-> options :num-fields-x :max)
+         :default (options/get-value (:num-fields-x layout) (:num-fields-x options))
          :on-change (fn [value]
                       (rf/dispatch [:set-division-type
                                     field-path
@@ -1399,9 +1416,10 @@
                                     (:num-fields-y layout)
                                     (:num-base-fields layout)]))])
       (when (-> options :num-fields-y)
-        [range-input (conj layout-path :num-fields-y) "y-Subfields"
+        [range-input-with-checkbox (conj layout-path :num-fields-y) "y-Subfields"
          (-> options :num-fields-y :min)
          (-> options :num-fields-y :max)
+         :default (options/get-value (:num-fields-y layout) (:num-fields-y options))
          :on-change (fn [value]
                       (rf/dispatch [:set-division-type
                                     field-path
@@ -1409,17 +1427,30 @@
                                     (:num-fields-x layout)
                                     value
                                     (:num-base-fields layout)]))])
-      (when (-> options :num-base-fields)
-        [range-input (conj layout-path :num-base-fields) "Base fields"
-         (-> options :num-base-fields :min)
-         (-> options :num-base-fields :max)
-         :on-change (fn [value]
-                      (rf/dispatch [:set-division-type
-                                    field-path
-                                    division-type
-                                    (:num-fields-x layout)
-                                    (:num-fields-y layout)
-                                    value]))])]]))
+      (when (-> options :offset-x)
+        [range-input-with-checkbox (conj layout-path :offset-x) "Offset x"
+         (-> options :offset-x :min)
+         (-> options :offset-x :max)
+         :step 0.01
+         :default (options/get-value (:offset-x layout) (:offset-x options))])
+      (when (-> options :offset-y)
+        [range-input-with-checkbox (conj layout-path :offset-y) "Offset y"
+         (-> options :offset-y :min)
+         (-> options :offset-y :max)
+         :step 0.01
+         :default (options/get-value (:offset-y layout) (:offset-y options))])
+      (when (-> options :stretch-x)
+        [range-input-with-checkbox (conj layout-path :stretch-x) "Stretch x"
+         (-> options :stretch-x :min)
+         (-> options :stretch-x :max)
+         :step 0.01
+         :default (options/get-value (:stretch-x layout) (:stretch-x options))])
+      (when (-> options :stretch-y)
+        [range-input-with-checkbox (conj layout-path :stretch-y) "Stretch y"
+         (-> options :stretch-y :min)
+         (-> options :stretch-y :max)
+         :step 0.01
+         :default (options/get-value (:stretch-y layout) (:stretch-y options))])]]))
 
 (defn form-for-field [path & {:keys [parent-field title-prefix]}]
   (let [division        (-> @(rf/subscribe [:get path])
