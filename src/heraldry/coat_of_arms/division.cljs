@@ -939,27 +939,22 @@
                      (line/stitch line-left)])}]])
      environment division context]))
 
-(defn paly
-  {:display-name "Paly"
-   :parts []}
-  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line num-fields]} (options/sanitize division (options division))
-        points (:points environment)
-        top-left (:top-left points)
-        bottom-right (:bottom-right points)
+(defn paly-parts [num-fields top-left bottom-right line hints render-options]
+  (let [x0 (:x top-left)
+        width (- (:x bottom-right)
+                 x0)
         y1 (:y top-left)
         y2 (:y bottom-right)
-        width (:width environment)
-        pallet-height (- y2 y1)
+        height (- y2 y1)
         pallet-width (/ width num-fields)
         {line-down :line} (line/create line
-                                       pallet-height
+                                       height
                                        :flipped? true
                                        :angle 90
                                        :render-options render-options)
         {line-up :line
          line-up-length :length} (line/create line
-                                              pallet-height
+                                              height
                                               :angle -90
                                               :reversed? true
                                               :render-options render-options)
@@ -1023,19 +1018,32 @@
                                               (line/stitch line-down)])
                               (svg/make-path ["M" [x2 (:y line-up-origin)]
                                               (line/stitch line-up)])))))
-                   vec)]
+                   vec)
+        overlap (-> edges
+                    (->> (map vector))
+                    vec
+                    (conj nil))
+        outlines (when (or (:outline? render-options)
+                           (:outline? hints))
+                   [:g outline-style
+                    (for [i (range (dec num-fields))]
+                      ^{:key i}
+                      [:path {:d (nth edges i)}])])]
+    [parts overlap outlines]))
+
+(defn paly
+  {:display-name "Paly"
+   :parts []}
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
+  (let [{:keys [line num-fields]} (options/sanitize division (options division))
+        points (:points environment)
+        top-left (:top-left points)
+        bottom-right (:bottom-right points)
+        [parts overlap outlines] (paly-parts num-fields top-left bottom-right line hints render-options)]
     [make-division
      (division-context-key type) fields parts
-     (-> edges
-         (->> (map vector))
-         vec
-         (conj nil))
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline-style
-        (for [i (range (dec num-fields))]
-          ^{:key i}
-          [:path {:d (nth edges i)}])])
+     overlap
+     outlines
      environment division context]))
 
 (defn tierced-per-pale
