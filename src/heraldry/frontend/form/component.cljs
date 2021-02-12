@@ -144,17 +144,19 @@
          (assoc-in (conj path :division :num-base-fields) num-base-fields)
          (update-in (conj path :division :fields)
                     (fn [current-value]
-                      (let [current (or current-value [])
-                            default (division/default-fields {:type            new-type
-                                                              :num-fields      num-fields
-                                                              :num-base-fields num-base-fields})
-                            merged  (cond
-                                      (< (count current) (count default)) (into current (subvec default (count current)))
-                                      (> (count current) (count default)) (subvec current 0 (count default))
-                                      :else                               current)]
-                        (->> (map vector merged default)
-                             (map (fn [[cur def]]
-                                    (if (-> cur :ref not)
+                      (let [current          (or current-value [])
+                            previous-default (division/default-fields (get-in db (conj path :division)))
+                            default          (division/default-fields {:type            new-type
+                                                                       :num-fields      num-fields
+                                                                       :num-base-fields num-base-fields})
+                            merged           (cond
+                                               (< (count current) (count default)) (into current (subvec default (count current)))
+                                               (> (count current) (count default)) (subvec current 0 (count default))
+                                               :else                               current)]
+                        (->> (map vector merged previous-default default)
+                             (map (fn [[cur old-def def]]
+                                    (if (and (-> cur :ref not)
+                                             (not= cur old-def))
                                       cur
                                       def)))
                              vec))))
