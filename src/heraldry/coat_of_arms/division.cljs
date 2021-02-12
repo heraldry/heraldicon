@@ -1012,7 +1012,9 @@
                                                           "z"])))
                              [(v/v x1 y1) (v/v x2 y2)]])))
                    vec)
-        edges (->> (range num-fields)
+        edges (->> num-fields
+                   dec
+                   range
                    (map (fn [i]
                           (let [x1 (* i pallet-width)
                                 x2 (+ x1 pallet-width)]
@@ -1024,7 +1026,10 @@
                    vec)]
     [make-division
      (division-context-key type) fields parts
-     (map (fn [e] [e]) edges)
+     (-> edges
+         (->> (map vector))
+         vec
+         (conj nil))
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline-style
