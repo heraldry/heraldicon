@@ -72,7 +72,23 @@
                               :min 2
                               :max 6
                               :default 2
-                              :integer? true}}})
+                              :integer? true}
+            :offset-x {:type :range
+                       :min -1
+                       :max 1
+                       :default 0}
+            :offset-y {:type :range
+                       :min -1
+                       :max 1
+                       :default 0}
+            :stretch-x {:type :range
+                        :min 0.8
+                        :max 1.2
+                        :default 1}
+            :stretch-y {:type :range
+                        :min 0.8
+                        :max 1.2
+                        :default 1}}})
 
 (defn options [division]
   (when division
@@ -119,8 +135,14 @@
                                           :line {:offset {:min 0}}}}
            (:type division))
       (cond->
-       (-> division :type #{:paly} not) (assoc-in [:layout :num-fields-x] nil)
-       (-> division :type #{:barry} not) (assoc-in [:layout :num-fields-y] nil)
+       (-> division :type #{:paly} not) (->
+                                         (assoc-in [:layout :num-fields-x] nil)
+                                         (assoc-in [:layout :offset-x] nil)
+                                         (assoc-in [:layout :stretch-x] nil))
+       (-> division :type #{:barry} not) (->
+                                          (assoc-in [:layout :num-fields-y] nil)
+                                          (assoc-in [:layout :offset-y] nil)
+                                          (assoc-in [:layout :stretch-y] nil))
        (-> division :type #{:paly
                             :barry} not) (assoc-in [:layout :num-base-fields] nil)
        (-> division :type #{:paly
@@ -952,14 +974,26 @@
                      (line/stitch line-left)])}]])
      environment division context]))
 
-(defn paly-parts [num-fields-x top-left bottom-right line hints render-options]
-  (let [x0 (:x top-left)
-        width (- (:x bottom-right)
-                 x0)
+(defn paly-parts [{:keys [num-fields-x
+                          offset-x
+                          stretch-x]} top-left bottom-right line hints render-options]
+  (let [width (- (:x bottom-right)
+                 (:x top-left))
+        pallet-width (-> width
+                         (/ num-fields-x)
+                         (* stretch-x))
+        required-width (* pallet-width
+                          num-fields-x)
+        middle (-> width
+                   (/ 2)
+                   (+ (:x top-left)))
+        x0 (-> middle
+               (- (/ required-width 2))
+               (+ (* offset-x
+                     pallet-width)))
         y1 (:y top-left)
         y2 (:y bottom-right)
         height (- y2 y1)
-        pallet-width (/ width num-fields-x)
         {line-down :line} (line/create line
                                        height
                                        :flipped? true
@@ -1052,21 +1086,33 @@
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (paly-parts (:num-fields-x layout) top-left bottom-right line hints render-options)]
+        [parts overlap outlines] (paly-parts layout top-left bottom-right line hints render-options)]
     [make-division
      (division-context-key type) fields parts
      overlap
      outlines
      environment division context]))
 
-(defn barry-parts [num-fields-y top-left bottom-right line hints render-options]
-  (let [y0 (:y top-left)
-        height (- (:y bottom-right)
-                  y0)
+(defn barry-parts [{:keys [num-fields-y
+                           offset-y
+                           stretch-y]} top-left bottom-right line hints render-options]
+  (let [height (- (:y bottom-right)
+                  (:y top-left))
+        bar-height (-> height
+                       (/ num-fields-y)
+                       (* stretch-y))
+        required-height (* bar-height
+                           num-fields-y)
+        middle (-> height
+                   (/ 2)
+                   (+ (:y top-left)))
+        y0 (-> middle
+               (- (/ required-height 2))
+               (+ (* offset-y
+                     bar-height)))
         x1 (:x top-left)
         x2 (:x bottom-right)
         width (- x2 x1)
-        bar-height (/ height num-fields-y)
         {line-right :line} (line/create line
                                         width
                                         :render-options render-options)
@@ -1157,7 +1203,7 @@
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (barry-parts (:num-fields-y layout) top-left bottom-right line hints render-options)]
+        [parts overlap outlines] (barry-parts layout top-left bottom-right line hints render-options)]
     [make-division
      (division-context-key type) fields parts
      overlap
