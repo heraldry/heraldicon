@@ -145,6 +145,7 @@
          (update-in (conj path :division :fields)
                     (fn [current-value]
                       (let [current (or current-value [])
+                            previous-default (division/default-fields (get-in db (conj path :division)))
                             default (division/default-fields {:type new-type
                                                               :num-fields num-fields
                                                               :num-base-fields num-base-fields})
@@ -152,9 +153,10 @@
                                      (< (count current) (count default)) (into current (subvec default (count current)))
                                      (> (count current) (count default)) (subvec current 0 (count default))
                                      :else current)]
-                        (->> (map vector merged default)
-                             (map (fn [[cur def]]
-                                    (if (-> cur :ref not)
+                        (->> (map vector merged previous-default default)
+                             (map (fn [[cur old-def def]]
+                                    (if (and (-> cur :ref not)
+                                             (not= cur old-def))
                                       cur
                                       def)))
                              vec))))
