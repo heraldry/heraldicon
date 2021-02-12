@@ -145,10 +145,14 @@
          (update-in (conj path :division :fields)
                     (fn [current-value]
                       (let [current (or current-value [])
-                            previous-default (division/default-fields (get-in db (conj path :division)))
                             default (division/default-fields {:type new-type
                                                               :num-fields num-fields
                                                               :num-base-fields num-base-fields})
+                            previous-default (division/default-fields (get-in db (conj path :division)))
+                            previous-default (cond
+                                               (< (count previous-default) (count default)) (into previous-default (subvec default (count previous-default)))
+                                               (> (count previous-default) (count default)) (subvec previous-default 0 (count default))
+                                               :else previous-default)
                             merged (cond
                                      (< (count current) (count default)) (into current (subvec default (count current)))
                                      (> (count current) (count default)) (subvec current 0 (count default))
@@ -1141,7 +1145,6 @@
 (defn division-choice [path key display-name]
   (let [division (-> @(rf/subscribe [:get path])
                      :division)
-        {:keys [num-fields num-base-fields]} (options/sanitize division (division/options division))
         value (-> division
                   :type
                   (or :none))
@@ -1162,7 +1165,12 @@
                           (-> coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
                               (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
-    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-division-type path key num-fields num-base-fields])}
+    [:div.choice.tooltip {:on-click #(let [new-division (assoc division :type key)
+                                           {:keys [num-fields
+                                                   num-base-fields]} (options/sanitize
+                                                                      new-division
+                                                                      (division/options new-division))]
+                                       (state/dispatch-on-event % [:set-division-type path key num-fields num-base-fields]))}
      [:svg {:style {:width "4em"
                     :height "4.5em"}
             :viewBox "0 0 120 200"
