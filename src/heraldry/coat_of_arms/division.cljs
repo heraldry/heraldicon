@@ -1227,20 +1227,16 @@
         top-right (:top-right points)
         origin-point (position/calculate (:origin layout) environment :fess)
         direction (direction (:diagonal-mode layout) points origin-point)
+        direction-orthogonal (v/v (-> direction :y) (-> direction :x -))
         angle (angle-to-point (v/v 0 0) direction)
-        right-x (-> points :right :x)
-        diagonal-end (v/project-x origin-point (v/dot direction (v/v 1 1)) right-x)
-        required-half-height (v/distance-point-to-line top-right origin-point top-right)
-        ;; TODO: there probably is a better value for this, since this might be in 45° mode, where
-        ;; the here used diagonal isn't relevant, but right now I can't think of a better way
-        required-width (-> (v/- diagonal-end top-left)
-                           v/abs)
-        padding 0
+        required-half-width (v/distance-point-to-line top-left origin-point (v/+ origin-point direction-orthogonal))
+        required-half-height (v/distance-point-to-line top-right origin-point (v/+ origin-point direction))
         [parts overlap outlines] (barry-parts layout
-                                              (v/v (- padding) (- required-half-height))
-                                              (v/v (+ required-width padding padding) (+ required-half-height))
+                                              (v/v (- required-half-width) (- required-half-height))
+                                              (v/v required-half-width required-half-height)
                                               line hints render-options)]
-    [:g {:transform (str "rotate(" angle ")")}
+    [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
+                         "rotate(" angle ")")}
      [make-division
       (division-context-key type) fields parts
       overlap
@@ -1257,18 +1253,15 @@
         top-right (:top-right points)
         origin-point (position/calculate (:origin layout) environment :fess)
         direction (direction (:diagonal-mode layout) points origin-point)
-        required-half-height (v/distance-point-to-line top-left origin-point top-right)
-        left-x (-> points :left :x)
-        diagonal-start (v/project-x origin-point (v/dot direction (v/v -1 1)) left-x)
+        direction-orthogonal (v/v (-> direction :y) (-> direction :x -))
         angle (angle-to-point (v/v 0 0) (v/dot direction (v/v 1 -1)))
-        required-width (-> (v/- diagonal-start top-right)
-                           v/abs)
-        padding 0
+        required-half-width (v/distance-point-to-line top-right origin-point (v/+ origin-point direction))
+        required-half-height (v/distance-point-to-line top-left origin-point (v/+ origin-point direction-orthogonal))
         [parts overlap outlines] (barry-parts layout
-                                              (v/v (- padding) (- required-half-height))
-                                              (v/v (+ required-width padding padding) (+ required-half-height))
+                                              (v/v (- required-half-width) (- required-half-height))
+                                              (v/v required-half-width required-half-height)
                                               line hints render-options)]
-    [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
+    [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
                          "rotate(" angle ")")}
      [make-division
       (division-context-key type) fields parts
