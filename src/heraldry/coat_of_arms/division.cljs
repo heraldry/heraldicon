@@ -58,11 +58,16 @@
    :diagonal-mode {:type :choice
                    :default :top-left-fess}
    :line line/default-options
-   :num-fields {:type :range
-                :min 4
-                :max 20
-                :default 6
-                :integer? true}
+   :num-fields-x {:type :range
+                  :min 4
+                  :max 20
+                  :default 6
+                  :integer? true}
+   :num-fields-y {:type :range
+                  :min 4
+                  :max 20
+                  :default 6
+                  :integer? true}
    :num-base-fields {:type :range
                      :min 2
                      :max 6
@@ -114,12 +119,10 @@
                                           :line {:offset {:min 0}}}}
            (:type division))
       (cond->
-       (-> division
-           :type
-           #{:paly :barry}
-           not) (->
-                 (assoc :num-fields nil)
-                 (assoc :num-base-fields nil)))
+       (-> division :type #{:paly} not) (assoc :num-fields-x nil)
+       (-> division :type #{:barry} not) (assoc :num-fields-y nil)
+       (-> division :type #{:paly
+                            :barry} not) (assoc :num-base-fields nil))
       (update-in [:line] #(options/merge (line/options (get-in division [:line]))
                                          %))))))
 
@@ -143,7 +146,7 @@
        (-> division :fields (get 1) :division :type not)))
 
 (defn default-fields [{:keys [type] :as division}]
-  (let [{:keys [num-fields num-base-fields]} (options/sanitize division (options division))
+  (let [{:keys [num-fields-x num-fields-y num-base-fields]} (options/sanitize division (options division))
         defaults [default/field
                   (-> default/field
                       (assoc-in [:content :tincture] :azure))
@@ -160,11 +163,16 @@
             (= :per-saltire type) [{:ref 1} {:ref 0}]
             (= :quarterly type) [{:ref 1} {:ref 0}]
             (= :gyronny type) [{:ref 1} {:ref 0} {:ref 0} {:ref 1} {:ref 1} {:ref 0}]
-            (get #{:paly :barry} type) (-> []
-                                           (into (map (fn [i]
-                                                        (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
-                                           (into (map (fn [i]
-                                                        {:ref (mod i num-base-fields)}) (range (- num-fields num-base-fields)))))
+            (= :paly type) (-> []
+                               (into (map (fn [i]
+                                            (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
+                               (into (map (fn [i]
+                                            {:ref (mod i num-base-fields)}) (range (- num-fields-x num-base-fields)))))
+            (= :barry type) (-> []
+                                (into (map (fn [i]
+                                             (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
+                                (into (map (fn [i]
+                                             {:ref (mod i num-base-fields)}) (range (- num-fields-y num-base-fields)))))
             (#{:tierced-per-pale
                :tierced-per-fess
                :tierced-per-pairle
@@ -941,14 +949,14 @@
                      (line/stitch line-left)])}]])
      environment division context]))
 
-(defn paly-parts [num-fields top-left bottom-right line hints render-options]
+(defn paly-parts [num-fields-x top-left bottom-right line hints render-options]
   (let [x0 (:x top-left)
         width (- (:x bottom-right)
                  x0)
         y1 (:y top-left)
         y2 (:y bottom-right)
         height (- y2 y1)
-        pallet-width (/ width num-fields)
+        pallet-width (/ width num-fields-x)
         {line-down :line} (line/create line
                                        height
                                        :flipped? true
@@ -961,11 +969,11 @@
                                               :reversed? true
                                               :render-options render-options)
         line-up-origin (v/extend (v/v 0 y1) (v/v 0 y2) line-up-length)
-        parts (->> (range num-fields)
+        parts (->> (range num-fields-x)
                    (map (fn [i]
                           (let [x1 (+ x0 (* i pallet-width))
                                 x2 (+ x1 pallet-width)
-                                last-part? (-> i inc (= num-fields))]
+                                last-part? (-> i inc (= num-fields-x))]
                             [(cond
                                (zero? i) ["M" [x2 y1]
                                           (line/stitch line-down)
@@ -1009,7 +1017,7 @@
                                                           "z"])))
                              [(v/v x1 y1) (v/v x2 y2)]])))
                    vec)
-        edges (->> num-fields
+        edges (->> num-fields-x
                    dec
                    range
                    (map (fn [i]
@@ -1028,7 +1036,7 @@
         outlines (when (or (:outline? render-options)
                            (:outline? hints))
                    [:g outline-style
-                    (for [i (range (dec num-fields))]
+                    (for [i (range (dec num-fields-x))]
                       ^{:key i}
                       [:path {:d (nth edges i)}])])]
     [parts overlap outlines]))
@@ -1037,25 +1045,25 @@
   {:display-name "Paly"
    :parts []}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line num-fields]} (options/sanitize division (options division))
+  (let [{:keys [line num-fields-x]} (options/sanitize division (options division))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (paly-parts num-fields top-left bottom-right line hints render-options)]
+        [parts overlap outlines] (paly-parts num-fields-x top-left bottom-right line hints render-options)]
     [make-division
      (division-context-key type) fields parts
      overlap
      outlines
      environment division context]))
 
-(defn barry-parts [num-fields top-left bottom-right line hints render-options]
+(defn barry-parts [num-fields-y top-left bottom-right line hints render-options]
   (let [y0 (:y top-left)
         height (- (:y bottom-right)
                   y0)
         x1 (:x top-left)
         x2 (:x bottom-right)
         width (- x2 x1)
-        bar-height (/ height num-fields)
+        bar-height (/ height num-fields-y)
         {line-right :line} (line/create line
                                         height
                                         :render-options render-options)
@@ -1066,11 +1074,11 @@
                                                 :reversed? true
                                                 :render-options render-options)
         line-left-origin (v/extend (v/v x1 0) (v/v x2 0) line-left-length)
-        parts (->> (range num-fields)
+        parts (->> (range num-fields-y)
                    (map (fn [i]
                           (let [y1 (+ y0 (* i bar-height))
                                 y2 (+ y1 bar-height)
-                                last-part? (-> i inc (= num-fields))]
+                                last-part? (-> i inc (= num-fields-y))]
                             [(cond
                                (zero? i) ["M" [x1 y2]
                                           (line/stitch line-right)
@@ -1114,7 +1122,7 @@
                                                           "z"])))
                              [(v/v x1 y1) (v/v x2 y2)]])))
                    vec)
-        edges (->> num-fields
+        edges (->> num-fields-y
                    dec
                    range
                    (map (fn [i]
@@ -1133,7 +1141,7 @@
         outlines (when (or (:outline? render-options)
                            (:outline? hints))
                    [:g outline-style
-                    (for [i (range (dec num-fields))]
+                    (for [i (range (dec num-fields-y))]
                       ^{:key i}
                       [:path {:d (nth edges i)}])])]
     [parts overlap outlines]))
@@ -1142,11 +1150,11 @@
   {:display-name "Barry"
    :parts []}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line num-fields]} (options/sanitize division (options division))
+  (let [{:keys [line num-fields-y]} (options/sanitize division (options division))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (barry-parts num-fields top-left bottom-right line hints render-options)]
+        [parts overlap outlines] (barry-parts num-fields-y top-left bottom-right line hints render-options)]
     [make-division
      (division-context-key type) fields parts
      overlap
