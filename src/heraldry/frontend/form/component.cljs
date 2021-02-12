@@ -1425,6 +1425,14 @@
                                     value
                                     (:num-fields-y layout)
                                     (:num-base-fields layout)]))])
+      (when (-> options :diagonal-mode)
+        [select (conj layout-path :diagonal-mode) "Diagonal"
+         (-> options :diagonal-mode :choices)
+         :default (-> options :diagonal-mode :default)])
+      (when (-> options :origin)
+        [form-for-position (conj layout-path :origin)
+         :title "Origin"
+         :options (:origin options)])
       (when (-> options :num-fields-y)
         [range-input-with-checkbox (conj layout-path :num-fields-y) "y-Subfields"
          (-> options :num-fields-y :min)
