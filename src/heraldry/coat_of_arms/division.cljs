@@ -86,12 +86,12 @@
                               :max     1
                               :default 0}
             :stretch-x       {:type    :range
-                              :min     0.8
-                              :max     1.2
+                              :min     0.5
+                              :max     2
                               :default 1}
             :stretch-y       {:type    :range
-                              :min     0.8
-                              :max     1.2
+                              :min     0.5
+                              :max     2
                               :default 1}}})
 
 (defn pick-options [paths & values]
