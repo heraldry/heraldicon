@@ -58,10 +58,7 @@
                 [(get options key) key])))))
 
 (def default-options
-  {:origin position/default-options
-   :diagonal-mode {:type :choice
-                   :default :top-left-fess}
-   :line line/default-options
+  {:line line/default-options
    :layout {:origin position/default-options
             :diagonal-mode {:type :choice
                             :default :top-left-fess}
@@ -97,85 +94,124 @@
                         :max 1.2
                         :default 1}}})
 
+(defn pick-options [paths & values]
+  (let [values (first values)
+        options (loop [options {}
+                       [path & rest] paths]
+                  (let [next-options (-> options
+                                         (assoc-in path (get-in default-options path)))]
+                    (if (nil? rest)
+                      next-options
+                      (recur next-options rest))))]
+    (loop [options options
+           [[key value] & rest] values]
+      (let [next-options (if key
+                           (assoc-in options key value)
+                           options)]
+        (if (nil? rest)
+          next-options
+          (recur next-options rest))))))
+
 (defn options [division]
   (when division
-    (options/merge
-     default-options
-     (->
-      (get {:per-pale {:origin nil
-                       :diagonal-mode nil}
-            :per-fess {:origin {:offset-x nil}
-                       :diagonal-mode nil}
-            :per-bend {:origin {:offset-x nil}
-                       :diagonal-mode {:choices (diagonal-mode-choices
-                                                 :per-bend)}}
-            :per-bend-sinister {:origin {:offset-x nil}
-                                :diagonal-mode {:choices (diagonal-mode-choices
-                                                          :per-bend-sinister)
-                                                :default :top-right-fess}}
-            :per-chevron {:diagonal-mode {:choices (diagonal-mode-choices
-                                                    :per-chevron)
-                                          :default :forty-five-degrees}
-                          :line {:offset {:min 0}}}
-            :per-saltire {:diagonal-mode {:choices (diagonal-mode-choices
-                                                    :per-saltire)}
-                          :line {:offset {:min 0}}}
-            :quarterly {:diagonal-mode nil
-                        :line {:offset {:min 0}}}
-            :gyronny {:diagonal-mode {:choices (diagonal-mode-choices
-                                                :gyronny)}
-                      :line {:offset {:min 0}}}
-            :barry {:origin nil
-                    :diagonal-mode nil}
-            :paly {:origin nil
-                   :diagonal-mode nil}
-            :bendy {:layout {:origin {:offset-x nil}
-                             :diagonal-mode {:choices (diagonal-mode-choices
-                                                       :bendy)}}}
-            :bendy-sinister {:layout {:origin {:offset-x nil}
-                                      :diagonal-mode {:choices (diagonal-mode-choices
-                                                                :bendy-sinister)
-                                                      :default :top-right-fess}}}
-            :tierced-per-pale {:origin nil
-                               :diagonal-mode nil}
-            :tierced-per-fess {:origin {:offset-x nil}
-                               :diagonal-mode nil}
-            :tierced-per-pairle {:diagonal-mode {:choices (diagonal-mode-choices
-                                                           :tierced-per-pairle)}
-                                 :line {:offset {:min 0}}}
-            :tierced-per-pairle-reversed {:diagonal-mode {:choices (diagonal-mode-choices
-                                                                    :tierced-per-pairle-reversed)
-                                                          :default :forty-five-degrees}
-                                          :line {:offset {:min 0}}}}
-           (:type division))
-      (cond->
-       (-> division :type #{:bendy :bendy-sinister} not) (assoc-in [:layout :origin] nil)
-       (-> division :type #{:bendy :bendy-sinister} not) (assoc-in [:layout :diagonal-mode] nil)
-       (-> division :type #{:paly} not) (assoc-in [:layout :num-fields-x] nil)
-       (-> division :type #{:per-pale
-                            :paly
-                            :tierced-per-pale} not) (assoc-in [:layout :offset-x] nil)
-       (-> division :type #{:paly
-                            :tierced-per-pale} not) (assoc-in [:layout :stretch-x] nil)
-       (-> division :type #{:barry :bendy :bendy-sinister} not) (assoc-in [:layout :num-fields-y] nil)
-       (-> division :type #{:barry :bendy :bendy-sinister} not) (assoc-in [:layout :offset-y] nil)
-       (-> division :type #{:barry :bendy :bendy-sinister} not) (assoc-in [:layout :stretch-y] nil)
-       (-> division :type #{:paly
-                            :barry
-                            :bendy
-                            :bendy-sinister} not) (assoc-in [:layout :num-base-fields] nil)
-       (-> division :type #{:bendy
-                            :bendy-sinister} not) (->
-                                                   (assoc-in [:layout :origin] nil)
-                                                   (assoc-in [:layout :diagonal-mode] nil))
-       (-> division :type #{:per-pale
-                            :tierced-per-pale
-                            :paly
-                            :barry
-                            :bendy
-                            :bendy-sinister} not) (assoc-in [:layout] nil))
-      (update-in [:line] #(options/merge (line/options (get-in division [:line]))
-                                         %))))))
+    (->
+     (case (:type division)
+       :per-pale (pick-options [[:line]
+                                [:layout :offset-x]])
+       :per-fess (pick-options [[:line]
+                                [:layout :origin :point]
+                                [:layout :origin :offset-y]])
+       :per-bend (pick-options [[:line]
+                                [:layout :origin :point]
+                                [:layout :origin :offset-y]
+                                [:layout :diagonal-mode]]
+                               {[:layout :diagonal-mode :choices] (diagonal-mode-choices :per-bend)})
+       :per-bend-sinister (pick-options [[:line]
+                                         [:layout :origin :point]
+                                         [:layout :origin :offset-y]
+                                         [:layout :diagonal-mode]]
+                                        {[:layout :diagonal-mode :choices] (diagonal-mode-choices :per-bend-sinister)
+                                         [:layout :diagonal-mode :default] :top-right-fess})
+       :per-chevron (pick-options [[:line]
+                                   [:layout :origin :point]
+                                   [:layout :origin :offset-x]
+                                   [:layout :origin :offset-y]
+                                   [:layout :diagonal-mode]]
+                                  {[:layout :diagonal-mode :choices] (diagonal-mode-choices :per-chevron)
+                                   [:layout :diagonal-mode :default] :forty-five-degrees
+                                   [:line :offset :min] 0})
+       :per-saltire (pick-options [[:line]
+                                   [:layout :origin :point]
+                                   [:layout :origin :offset-x]
+                                   [:layout :origin :offset-y]
+                                   [:layout :diagonal-mode]]
+                                  {[:layout :diagonal-mode :choices] (diagonal-mode-choices :per-saltire)
+                                   [:line :offset :min] 0})
+       :quarterly (pick-options [[:line]
+                                 [:layout :origin :point]
+                                 [:layout :origin :offset-x]
+                                 [:layout :origin :offset-y]]
+                                {[:line :offset :min] 0})
+       :gyronny (pick-options [[:line]
+                               [:layout :origin :point]
+                               [:layout :origin :offset-x]
+                               [:layout :origin :offset-y]
+                               [:layout :diagonal-mode]]
+                              {[:layout :diagonal-mode :choices] (diagonal-mode-choices :gyronny)
+                               [:line :offset :min] 0})
+       :paly (pick-options [[:line]
+                            [:layout :num-base-fields]
+                            [:layout :num-fields-x]
+                            [:layout :offset-x]
+                            [:layout :stretch-x]])
+       :barry (pick-options [[:line]
+                             [:layout :num-base-fields]
+                             [:layout :num-fields-y]
+                             [:layout :offset-y]
+                             [:layout :stretch-y]])
+       :bendy (pick-options [[:line]
+                             [:layout :num-base-fields]
+                             [:layout :num-fields-y]
+                             [:layout :offset-y]
+                             [:layout :stretch-y]
+                             [:layout :origin :point]
+                             [:layout :origin :offset-y]
+                             [:layout :diagonal-mode]]
+                            {[:layout :diagonal-mode :choices] (diagonal-mode-choices :bendy)})
+       :bendy-sinister (pick-options [[:line]
+                                      [:layout :num-base-fields]
+                                      [:layout :num-fields-y]
+                                      [:layout :offset-y]
+                                      [:layout :stretch-y]
+                                      [:layout :origin :point]
+                                      [:layout :origin :offset-y]
+                                      [:layout :diagonal-mode]]
+                                     {[:layout :diagonal-mode :choices] (diagonal-mode-choices :bendy)
+                                      [:layout :diagonal-mode :default] :top-right-fess})
+       :tierced-per-pale (pick-options [[:line]
+                                        [:layout :offset-x]
+                                        [:layout :stretch-x]])
+       :tierced-per-fess (pick-options [[:line]
+                                        [:layout :origin :point]
+                                        [:layout :origin :offset-y]])
+       :tierced-per-pairle (pick-options [[:line]
+                                          [:layout :origin :point]
+                                          [:layout :origin :offset-x]
+                                          [:layout :origin :offset-y]
+                                          [:layout :diagonal-mode]]
+                                         {[:layout :diagonal-mode :choices] (diagonal-mode-choices :tierced-per-pairle)
+                                          [:line :offset :min] 0})
+       :tierced-per-pairle-reversed (pick-options [[:line]
+                                                   [:layout :origin :point]
+                                                   [:layout :origin :offset-x]
+                                                   [:layout :origin :offset-y]
+                                                   [:layout :diagonal-mode]]
+                                                  {[:layout :diagonal-mode :choices] (diagonal-mode-choices :tierced-per-pairle-reversed)
+                                                   [:layout :diagonal-mode :default] :forty-five-debrees
+                                                   [:line :offset :min] 0})
+       {})
+     (update-in [:line] #(options/merge (line/options (get-in division [:line]))
+                                        %)))))
 
 (defn mandatory-part-count [{:keys [type] :as division}]
   (let [{:keys [num-base-fields]} (options/sanitize division (options division))]
@@ -547,7 +583,8 @@
   {:display-name "Per fess"
    :parts ["chief" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin]} (options/sanitize division (options division))
+  (let [{:keys [line layout]} (options/sanitize division (options division))
+        {:keys [origin]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -612,7 +649,8 @@
   {:display-name "Per bend"
    :parts ["chief" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
+  (let [{:keys [line layout]} (options/sanitize division (options division))
+        {:keys [origin diagonal-mode]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -657,7 +695,8 @@
   {:display-name "Per bend sinister"
    :parts ["chief" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
+  (let [{:keys [line layout]} (options/sanitize division (options division))
+        {:keys [origin diagonal-mode]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (:top points)
@@ -708,7 +747,8 @@
   {:display-name "Per chevron"
    :parts ["chief" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
+  (let [{:keys [line layout]} (options/sanitize division (options division))
+        {:keys [origin diagonal-mode]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -769,7 +809,8 @@
   {:display-name "Per saltire"
    :parts ["chief" "dexter" "sinister" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
+  (let [{:keys [line layout]} (options/sanitize division (options division))
+        {:keys [origin diagonal-mode]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -888,7 +929,8 @@
   {:display-name "Quarterly"
    :parts ["I" "II" "III" "IV"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin]} (options/sanitize division (options division))
+  (let [{:keys [line layout]} (options/sanitize division (options division))
+        {:keys [origin]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -992,7 +1034,8 @@
   {:display-name "Gyronny"
    :parts ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
+  (let [{:keys [line layout]} (options/sanitize division (options division))
+        {:keys [origin diagonal-mode]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -1289,7 +1332,8 @@
   {:display-name "Tierced per fess"
    :parts ["chief" "fess" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin]} (options/sanitize division (options division))
+  (let [{:keys [line layout]} (options/sanitize division (options division))
+        {:keys [origin]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -1363,7 +1407,8 @@
   {:display-name "Tierced per pairle"
    :parts ["chief" "dexter" "sinister"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
+  (let [{:keys [line layout]} (options/sanitize division (options division))
+        {:keys [origin diagonal-mode]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         bottom (assoc (:bottom points) :x (:x origin-point))
@@ -1460,7 +1505,8 @@
   {:display-name "Tierced per pairle reversed"
    :parts ["dexter" "sinister" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (options division))
+  (let [{:keys [line layout]} (options/sanitize division (options division))
+        {:keys [origin diagonal-mode]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))

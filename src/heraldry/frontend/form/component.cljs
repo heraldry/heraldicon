@@ -1499,15 +1499,7 @@
             (when (:layout division-options)
               [form-for-layout path :options (:layout division-options)])
             (when (:line division-options)
-              [form-for-line (conj path :division :line) :options (:line division-options)])
-            (when (:diagonal-mode division-options)
-              [select (conj path :division :diagonal-mode) "Diagonal"
-               (-> division-options :diagonal-mode :choices)
-               :default (-> division-options :diagonal-mode :default)])
-            (when (:origin division-options)
-              [form-for-position (conj path :division :origin)
-               :title "Origin"
-               :options (:origin division-options)])])
+              [form-for-line (conj path :division :line) :options (:line division-options)])])
          (if (= division-type :none)
            [form-for-content (conj path :content)]
            [checkbox (conj path :division :hints :outline?) "Outline"])])]
