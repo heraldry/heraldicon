@@ -42,14 +42,22 @@
 
 (s/def :heraldry.field.division/type division/division-map)
 (s/def :heraldry.field.division/line #(s/valid? :heraldry/line %))
-(s/def :heraldry.field.division/origin #(s/valid? :heraldry/position %))
+(s/def :heraldry.field.division.layout/origin #(s/valid? :heraldry/position %))
+(s/def :heraldry.field.division.layout/num-base-fields (s/nilable number?))
+(s/def :heraldry.field.division.layout/num-fields-x (s/nilable number?))
+(s/def :heraldry.field.division.layout/num-fields-y (s/nilable number?))
+(s/def :heraldry.field.division.layout/offset-x (s/nilable number?))
+(s/def :heraldry.field.division.layout/offset-y (s/nilable number?))
+(s/def :heraldry.field.division.layout/stretch-x (s/nilable number?))
+(s/def :heraldry.field.division.layout/stretch-y (s/nilable number?))
+(s/def :heraldry.field.division/layout (s/keys :opt-un [:heraldry.field.division.layout/origin]))
 (s/def :heraldry.field.division/fields (s/coll-of :heraldry/field-or-field-reference :into []))
 (s/def :heraldry.field.divison.hint/outline? boolean?)
 (s/def :heraldry.field.division/hints (s/keys :opt-un [:heraldry.division.hint/outline?]))
 (s/def :heraldry.field/division (s/keys :req-un [:heraldry.field.division/type
                                                  :heraldry.field.division/fields]
                                         :opt-un [:heraldry.field.division/line
-                                                 :heraldry.field.division/origin
+                                                 :heraldry.field.division/layout
                                                  :heraldry.field.division/hints]))
 (s/def :heraldry.field/content (s/keys :req-un [:heraldry/tincture]))
 (s/def :heraldry.field/inherit-environment? boolean?)
