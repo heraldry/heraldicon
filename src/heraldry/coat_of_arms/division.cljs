@@ -197,10 +197,12 @@
                                       [:layout :diagonal-mode :default] :top-right-fess
                                       [:layout :origin :point :choices] position/point-choices-y})
        :tierced-per-pale (pick-options [[:line]
+                                        [:layout :stretch-x]
                                         [:layout :origin :point]
                                         [:layout :origin :offset-x]]
                                        {[:layout :origin :point :choices] position/point-choices-x})
        :tierced-per-fess (pick-options [[:line]
+                                        [:layout :stretch-y]
                                         [:layout :origin :point]
                                         [:layout :origin :offset-y]]
                                        {[:layout :origin :point :choices] position/point-choices-y})
@@ -1357,7 +1359,7 @@
    :parts ["dexter" "fess" "sinister"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line layout]} (options/sanitize division (options division))
-        {:keys [origin]} layout
+        {:keys [origin stretch-x]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -1365,8 +1367,11 @@
         bottom (assoc (:bottom points) :x (:x origin-point))
         bottom-right (:bottom-right points)
         width (:width environment)
-        col1 (- (:x origin-point) (/ width 6))
-        col2 (+ (:x origin-point) (/ width 6))
+        middle-half-width (-> width
+                              (/ 6)
+                              (* stretch-x))
+        col1 (- (:x origin-point) middle-half-width)
+        col2 (+ (:x origin-point) middle-half-width)
         first-top (v/v col1 (:y top))
         first-bottom (v/v col1 (:y bottom))
         second-top (v/v col2 (:y top))
@@ -1433,7 +1438,7 @@
    :parts ["chief" "fess" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line layout]} (options/sanitize division (options division))
-        {:keys [origin]} layout
+        {:keys [origin stretch-y]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -1441,8 +1446,11 @@
         left (assoc (:left points) :y (:y origin-point))
         right (assoc (:right points) :y (:y origin-point))
         height (:height environment)
-        row1 (- (:y origin-point) (/ height 6))
-        row2 (+ (:y origin-point) (/ height 6))
+        middle-half-height (-> height
+                               (/ 6)
+                               (* stretch-y))
+        row1 (- (:y origin-point) middle-half-height)
+        row2 (+ (:y origin-point) middle-half-height)
         first-left (v/v (:x left) row1)
         first-right (v/v (:x right) row1)
         second-left (v/v (:x left) row2)
