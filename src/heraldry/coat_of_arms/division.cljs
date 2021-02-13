@@ -181,6 +181,7 @@
                                                    [:layout :offset-y]
                                                    [:layout :stretch-y]
                                                    [:layout :origin :point]
+                                                   [:layout :origin :offset-x]
                                                    [:layout :origin :offset-y]
                                                    [:layout :diagonal-mode]]
                                                   {[:layout :diagonal-mode :choices] (diagonal-mode-choices :bendy)
@@ -191,6 +192,7 @@
                                                    [:layout :offset-y]
                                                    [:layout :stretch-y]
                                                    [:layout :origin :point]
+                                                   [:layout :origin :offset-x]
                                                    [:layout :origin :offset-y]
                                                    [:layout :diagonal-mode]]
                                                   {[:layout :diagonal-mode :choices] (diagonal-mode-choices :bendy)
