@@ -99,7 +99,7 @@
       (dissoc :content)
       (assoc :division {:type (:type division)
                         :line (:line division)
-                        :origin (:origin division)
+                        :layout (:layout division)
                         :fields (-> (division/default-fields division)
                                     (assoc-in [0 :content :tincture] (get-in division [:fields 1 :content :tincture]))
                                     (assoc-in [1 :content :tincture] (get-in division [:fields 0 :content :tincture])))})))
