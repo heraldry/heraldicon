@@ -11,36 +11,36 @@
             [heraldry.util :as util]))
 
 (defn diagonal-mode-choices [type]
-  (let [options {:forty-five-degrees "45°"
-                 :top-left-fess      "Top-left to fess"
-                 :top-right-fess     "Top-right to fess"
-                 :bottom-left-fess   "Bottom-left to fess"
-                 :bottom-right-fess  "Bottom-right to fess"}]
+  (let [options {:forty-five-degrees  "45°"
+                 :top-left-origin     "Top-left to origin"
+                 :top-right-origin    "Top-right to origin"
+                 :bottom-left-origin  "Bottom-left to origin"
+                 :bottom-right-origin "Bottom-right to origin"}]
     (->> type
          (get {:bend          [:forty-five-degrees
-                               :top-left-fess]
+                               :top-left-origin]
                :bend-sinister [:forty-five-degrees
-                               :top-right-fess]
+                               :top-right-origin]
                :chevron       [:forty-five-degrees
-                               :bottom-left-fess
-                               :bottom-right-fess]
+                               :bottom-left-origin
+                               :bottom-right-origin]
                :saltire       [:forty-five-degrees
-                               :top-left-fess
-                               :top-right-fess
-                               :bottom-left-fess
-                               :bottom-right-fess]})
+                               :top-left-origin
+                               :top-right-origin
+                               :bottom-left-origin
+                               :bottom-right-origin]})
          (map (fn [key]
                 [(get options key) key])))))
 
 (defn diagonal-default [type]
-  (or (get {:bend-sinister :top-right-fess
+  (or (get {:bend-sinister :top-right-origin
             :chevron       :forty-five-degrees} type)
-      :top-left-fess))
+      :top-left-origin))
 
 (def default-options
   {:origin        position/default-options
    :diagonal-mode {:type    :choice
-                   :default :top-left-fess}
+                   :default :top-left-origin}
    :line          line/default-options
    :opposite-line line/default-options
    :geometry      (-> geometry/default-options
@@ -89,7 +89,7 @@
                                                                         vec)}}
                                :diagonal-mode {:choices (diagonal-mode-choices
                                                          :bend-sinister)
-                                               :default :top-right-fess}
+                                               :default :top-right-origin}
                                :geometry      {:size {:max 50}}}
                :chevron       {:diagonal-mode {:choices (diagonal-mode-choices
                                                          :chevron)
