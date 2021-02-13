@@ -1391,13 +1391,6 @@
                     (when (and (:num-base-fields current-data)
                                (not= (:num-base-fields current-data) 2))
                       (str (:num-base-fields effective-data) " base fields"))
-                    (when (or (and (-> current-data :origin :point)
-                                   (-> current-data :origin :point (not= :fess)))
-                              (and (-> current-data :origin :offset-x)
-                                   (-> current-data :origin :offset-x zero? not))
-                              (and (-> current-data :origin :offset-y)
-                                   (-> current-data :origin :offset-y zero? not)))
-                      (str "positioned"))
                     (when (or (:offset-x current-data)
                               (:offset-y current-data))
                       (str "shifted"))
@@ -1435,14 +1428,6 @@
                                     value
                                     (:num-fields-y layout)
                                     (:num-base-fields layout)]))])
-      (when (-> options :diagonal-mode)
-        [select (conj layout-path :diagonal-mode) "Diagonal"
-         (-> options :diagonal-mode :choices)
-         :default (-> options :diagonal-mode :default)])
-      (when (-> options :origin)
-        [form-for-position (conj layout-path :origin)
-         :title "Origin"
-         :options (:origin options)])
       (when (-> options :num-fields-y)
         [range-input-with-checkbox (conj layout-path :num-fields-y) "y-Subfields"
          (-> options :num-fields-y :min)
@@ -1506,6 +1491,14 @@
          [form-for-division path]
          (let [division-options (division/options (:division field))]
            [:<>
+            (when (-> division-options :origin)
+              [form-for-position (conj path :division :origin)
+               :title "Origin"
+               :options (:origin division-options)])
+            (when (-> division-options :diagonal-mode)
+              [select (conj path :division :diagonal-mode) "Diagonal"
+               (-> division-options :diagonal-mode :choices)
+               :default (-> division-options :diagonal-mode :default)])
             (when (:layout division-options)
               [form-for-layout path :options (:layout division-options)])
             (when (:line division-options)
