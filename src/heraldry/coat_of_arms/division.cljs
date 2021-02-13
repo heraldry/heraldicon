@@ -117,7 +117,9 @@
     (->
      (case (:type division)
        :per-pale (pick-options [[:line]
-                                [:layout :offset-x]])
+                                [:layout :origin :point]
+                                [:layout :origin :offset-x]]
+                               {[:layout :origin :point :choices] position/point-choices-x})
        :per-fess (pick-options [[:line]
                                 [:layout :origin :point]
                                 [:layout :origin :offset-y]]
@@ -195,8 +197,9 @@
                                       [:layout :diagonal-mode :default] :top-right-fess
                                       [:layout :origin :point :choices] position/point-choices-y})
        :tierced-per-pale (pick-options [[:line]
-                                        [:layout :offset-x]
-                                        [:layout :stretch-x]])
+                                        [:layout :origin :point]
+                                        [:layout :origin :offset-x]]
+                                       {[:layout :origin :point :choices] position/point-choices-x})
        :tierced-per-fess (pick-options [[:line]
                                         [:layout :origin :point]
                                         [:layout :origin :offset-y]]
@@ -575,15 +578,45 @@
    :parts ["dexter" "sinister"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line layout]} (options/sanitize division (options division))
+        {:keys [origin]} layout
         points (:points environment)
+        origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
+        top (assoc (:top points) :x (:x origin-point))
+        bottom (assoc (:bottom points) :x (:x origin-point))
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (paly-parts (-> layout
-                                                 (assoc :num-fields-x 2)) top-left bottom-right line hints render-options)]
+        {line-one :line
+         line-length :line-length} (line/create line
+                                                (:y (v/- bottom top))
+                                                :angle 90
+                                                :reversed? true
+                                                :render-options render-options)
+        bottom-adjusted (v/extend top bottom line-length)
+        parts [[["M" bottom-adjusted
+                 (line/stitch line-one)
+                 (infinity/path :clockwise
+                                [:bottom :top]
+                                [bottom-adjusted top])
+                 "z"]
+                [top-left bottom]]
+
+               [["M" bottom-adjusted
+                 (line/stitch line-one)
+                 (infinity/path :counter-clockwise
+                                [:bottom :top]
+                                [bottom-adjusted top])
+                 "z"]
+                [top bottom-right]]]]
     [make-division
      (division-context-key type) fields parts
-     overlap
-     outlines
+     [:all nil]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g outline-style
+        [:path {:d (svg/make-path
+                    ["M" bottom-adjusted
+                     (line/stitch line-one)])}]])
+
      environment division context]))
 
 (defn per-fess
@@ -1324,15 +1357,75 @@
    :parts ["dexter" "fess" "sinister"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line layout]} (options/sanitize division (options division))
+        {:keys [origin]} layout
         points (:points environment)
+        origin-point (position/calculate origin environment :fess)
+        top (assoc (:top points) :x (:x origin-point))
         top-left (:top-left points)
+        bottom (assoc (:bottom points) :x (:x origin-point))
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (paly-parts (-> layout
-                                                 (assoc :num-fields-x 3)) top-left bottom-right line hints render-options)]
+        width (:width environment)
+        col1 (- (:x origin-point) (/ width 6))
+        col2 (+ (:x origin-point) (/ width 6))
+        first-top (v/v col1 (:y top))
+        first-bottom (v/v col1 (:y bottom))
+        second-top (v/v col2 (:y top))
+        second-bottom (v/v col2 (:y bottom))
+        {line-one :line} (line/create line
+                                      (:y (v/- bottom top))
+                                      :flipped? true
+                                      :angle 90
+                                      :render-options render-options)
+        {line-reversed :line
+         line-reversed-length :length} (line/create line
+                                                    (:y (v/- bottom top))
+                                                    :angle -90
+                                                    :reversed? true
+                                                    :render-options render-options)
+        second-bottom-adjusted (v/extend second-top second-bottom line-reversed-length)
+        parts [[["M" first-top
+                 (line/stitch line-one)
+                 (infinity/path :clockwise
+                                [:bottom :top]
+                                [first-bottom first-top])
+                 "z"]
+                [top-left first-bottom]]
+
+               [["M" second-bottom-adjusted
+                 (line/stitch line-reversed)
+                 (infinity/path :counter-clockwise
+                                [:top :top]
+                                [second-top first-top])
+                 (line/stitch line-one)
+                 (infinity/path :counter-clockwise
+                                [:bottom :bottom]
+                                [first-bottom second-bottom])
+                 "z"]
+                [first-top second-bottom]]
+
+               [["M" second-bottom-adjusted
+                 (line/stitch line-reversed)
+                 (infinity/path :clockwise
+                                [:top :bottom]
+                                [second-top second-bottom])
+                 "z"]
+                [second-top bottom-right]]]]
     [make-division
      (division-context-key type) fields parts
-     overlap
-     outlines
+     [:all
+      [(svg/make-path
+        ["M" second-bottom-adjusted
+         (line/stitch line-reversed)])]
+      nil]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g outline-style
+        [:path {:d (svg/make-path
+                    ["M" first-top
+                     (line/stitch line-one)])}]
+        [:path {:d (svg/make-path
+                    ["M" second-bottom-adjusted
+                     (line/stitch line-reversed)])}]])
      environment division context]))
 
 (defn tierced-per-fess
