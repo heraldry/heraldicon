@@ -501,11 +501,7 @@
                                                fix-string-style-values
                                                (cond->
                                                    (not (or (-> hints :outline-mode (not= :remove))
-                                                            (:outline? render-options))) (remove-outlines placeholder-colours)
-                                                   (and (:squiggly? render-options)
-                                                        (get #{:roundel
-                                                               :fusil
-                                                               :billet} type)) line/squiggly-paths))
+                                                            (:outline? render-options))) (remove-outlines placeholder-colours)))
           [mask-id mask
            mask-inverted-id mask-inverted] (make-mask adjusted-charge
                                                       placeholder-colours
