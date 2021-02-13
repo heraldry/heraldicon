@@ -74,19 +74,11 @@
                                :opposite-line nil
                                :diagonal-mode nil
                                :geometry      {:size {:max 50}}}
-               :bend          {:origin        {:offset-x nil
-                                               :point    {:choices (->> (-> position/default-options :point :choices)
-                                                                        (filter (fn [[_ k]]
-                                                                                  (not= k :dexter)))
-                                                                        vec)}}
+               :bend          {:origin        {:point {:choices position/point-choices-y}}
                                :diagonal-mode {:choices (diagonal-mode-choices
                                                          :bend)}
                                :geometry      {:size {:max 50}}}
-               :bend-sinister {:origin        {:offset-x nil
-                                               :point    {:choices (->> (-> position/default-options :point :choices)
-                                                                        (filter (fn [[_ k]]
-                                                                                  (not= k :sinister)))
-                                                                        vec)}}
+               :bend-sinister {:origin        {:point {:choices position/point-choices-y}}
                                :diagonal-mode {:choices (diagonal-mode-choices
                                                          :bend-sinister)
                                                :default :top-right-origin}
@@ -332,20 +324,28 @@
         {:keys [size]}                               geometry
         opposite-line                                (sanitize-opposite-line ordinary line)
         points                                       (:points environment)
+        top-left                                     (:top-left points)
         origin-point                                 (position/calculate origin environment :fess)
-        left                                         (assoc (:left points) :y (:y origin-point))
-        right                                        (assoc (:right points) :y (:y origin-point))
+        left                                         (:left points)
+        right                                        (:right points)
         height                                       (:height environment)
         band-height                                  (-> height
                                                          (* size)
                                                          (/ 100))
         direction                                    (division/direction diagonal-mode points origin-point)
+        direction-orthogonal                         (v/v (-> direction :y) (-> direction :x -))
         diagonal-start                               (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
         diagonal-end                                 (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
         angle                                        (division/angle-to-point diagonal-start diagonal-end)
-        bend-length                                  (v/abs (v/- diagonal-end diagonal-start))
-        line-length                                  (* bend-length 1.5)
-        offset                                       -40
+        required-half-length                         (v/distance-point-to-line top-left origin-point (v/+ origin-point direction-orthogonal))
+        bend-length                                  (* required-half-length 2)
+        line-length                                  (-> diagonal-end
+                                                         (v/- diagonal-start)
+                                                         v/abs
+                                                         (* 4))
+        offset                                       (-> line-length
+                                                         (/ 2)
+                                                         -)
         row1                                         (- (/ band-height 2))
         row2                                         (+ row1 band-height)
         first-left                                   (v/v offset row1)
@@ -377,8 +377,9 @@
         field                                        (if counterchanged?
                                                        (charge/counterchange-field field parent)
                                                        field)]
-    [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
-                         "rotate(" angle ")")}
+    [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
+                         "rotate(" angle ")"
+                         "translate(" (- required-half-length) "," 0 ")")}
      [division/make-division
       :ordinary-fess [field] parts
       [:all]
@@ -405,22 +406,30 @@
         {:keys [size]}                               geometry
         opposite-line                                (sanitize-opposite-line ordinary line)
         points                                       (:points environment)
+        top-right                                    (:top-right points)
         origin-point                                 (position/calculate origin environment :fess)
-        left                                         (assoc (:left points) :y (:y origin-point))
-        right                                        (assoc (:right points) :y (:y origin-point))
+        left                                         (:left points)
+        right                                        (:right points)
         height                                       (:height environment)
         band-height                                  (-> height
                                                          (* size)
                                                          (/ 100))
         direction                                    (division/direction diagonal-mode points origin-point)
+        direction-orthogonal                         (v/v (-> direction :y) (-> direction :x))
         diagonal-start                               (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
         diagonal-end                                 (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
         angle                                        (division/angle-to-point diagonal-start diagonal-end)
-        bend-length                                  (v/abs (v/- diagonal-end diagonal-start))
-        line-length                                  (* bend-length 1.5)
+        required-half-length                         (v/distance-point-to-line top-right origin-point (v/+ origin-point direction-orthogonal))
+        bend-length                                  (* required-half-length 2)
+        line-length                                  (-> diagonal-end
+                                                         (v/- diagonal-start)
+                                                         v/abs
+                                                         (* 4))
         row1                                         (- (/ band-height 2))
         row2                                         (+ row1 band-height)
-        offset                                       -40
+        offset                                       (-> line-length
+                                                         (/ 2)
+                                                         -)
         first-left                                   (v/v offset row1)
         first-right                                  (v/v line-length row1)
         second-left                                  (v/v offset row2)
@@ -450,8 +459,9 @@
         field                                        (if counterchanged?
                                                        (charge/counterchange-field field parent)
                                                        field)]
-    [:g {:transform (str "translate(" (:x diagonal-start) "," (:y diagonal-start) ")"
-                         "rotate(" angle ")")}
+    [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
+                         "rotate(" angle ")"
+                         "translate(" (- required-half-length) "," 0 ")")}
      [division/make-division
       :ordinary-fess [field] parts
       [:all]
