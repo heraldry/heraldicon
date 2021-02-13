@@ -413,40 +413,40 @@
                                                                             [:bottom :top]
                                                                             [(v/v x2 y2) (v/v x2 y1)])
                                                              "z"]
-                                                  (even? i) (cond-> ["M" [x1 (:y line-up-origin)]
-                                                                     (line/stitch line-up)]
-                                                              last-part?       (concat
-                                                                                [(infinity/path :clockwise
-                                                                                                [:top :bottom]
-                                                                                                [(v/v x1 y1) (v/v x1 y2)])
-                                                                                 "z"])
-                                                              (not last-part?) (concat
-                                                                                [(infinity/path :clockwise
-                                                                                                [:top :top]
-                                                                                                [(v/v x1 y1) (v/v x2 y1)])
-                                                                                 "L" [x2 y1]
-                                                                                 (line/stitch line-down)
-                                                                                 (infinity/path :clockwise
-                                                                                                [:bottom :bottom]
-                                                                                                [(v/v x2 y2) (v/v x1 y2)])
-                                                                                 "z"]))
-                                                  :else     (cond-> ["M" [x1 y1]
-                                                                     (line/stitch line-down)]
-                                                              last-part?       (concat
-                                                                                [(infinity/path :counter-clockwise
-                                                                                                [:bottom :top]
-                                                                                                [(v/v x1 y2) (v/v x1 y1)])
-                                                                                 "z"])
-                                                              (not last-part?) (concat
-                                                                                [(infinity/path :counter-clockwise
-                                                                                                [:bottom :bottom]
-                                                                                                [(v/v x1 y2) (v/v x2 y2)])
-                                                                                 "L" [x2 (:y line-up-origin)]
-                                                                                 (line/stitch line-up)
-                                                                                 (infinity/path :clockwise
-                                                                                                [:top :top]
-                                                                                                [(v/v x2 y1) (v/v x1 y1)])
-                                                                                 "z"])))
+                                                  (even? i) (concat
+                                                             ["M" [x1 (:y line-up-origin)]
+                                                              (line/stitch line-up)]
+                                                             (cond
+                                                               last-part? [(infinity/path :clockwise
+                                                                                          [:top :bottom]
+                                                                                          [(v/v x1 y1) (v/v x1 y2)])
+                                                                           "z"]
+                                                               :else      [(infinity/path :clockwise
+                                                                                          [:top :top]
+                                                                                          [(v/v x1 y1) (v/v x2 y1)])
+                                                                           "L" [x2 y1]
+                                                                           (line/stitch line-down)
+                                                                           (infinity/path :clockwise
+                                                                                          [:bottom :bottom]
+                                                                                          [(v/v x2 y2) (v/v x1 y2)])
+                                                                           "z"]))
+                                                  :else     (concat
+                                                             ["M" [x1 y1]
+                                                              (line/stitch line-down)]
+                                                             (cond
+                                                               last-part? [(infinity/path :counter-clockwise
+                                                                                          [:bottom :top]
+                                                                                          [(v/v x1 y2) (v/v x1 y1)])
+                                                                           "z"]
+                                                               :else      [(infinity/path :counter-clockwise
+                                                                                          [:bottom :bottom]
+                                                                                          [(v/v x1 y2) (v/v x2 y2)])
+                                                                           "L" [x2 (:y line-up-origin)]
+                                                                           (line/stitch line-up)
+                                                                           (infinity/path :clockwise
+                                                                                          [:top :top]
+                                                                                          [(v/v x2 y1) (v/v x1 y1)])
+                                                                           "z"])))
                                                 [(v/v x1 y1) (v/v x2 y2)]])))
                                       vec)
         edges                    (->> num-fields-x
@@ -501,6 +501,7 @@
         {line-left        :line
          line-left-length :length} (line/create line
                                                 width
+                                                :angle 180
                                                 :flipped? true
                                                 :reversed? true
                                                 :render-options render-options)
@@ -517,40 +518,37 @@
                                                                               [:right :left]
                                                                               [(v/v x2 y2) (v/v x1 y2)])
                                                                "z"]
-                                                    (even? i) (cond-> ["M" [(:x line-left-origin) y1]
+                                                    (even? i) (concat ["M" [(:x line-left-origin) y1]
                                                                        (line/stitch line-left)]
-                                                                last-part?       (concat
-                                                                                  [(infinity/path :counter-clockwise
-                                                                                                  [:left :right]
-                                                                                                  [(v/v x1 y1) (v/v x2 y1)])
-                                                                                   "z"])
-                                                                (not last-part?) (concat
-                                                                                  [(infinity/path :counter-clockwise
-                                                                                                  [:left :left]
-                                                                                                  [(v/v x1 y1) (v/v x1 y2)])
-                                                                                   "L" [x1 y2]
-                                                                                   (line/stitch line-right)
-                                                                                   (infinity/path :clockwise
-                                                                                                  [:right :right]
-                                                                                                  [(v/v x2 y2) (v/v x2 y1)])
-                                                                                   "z"]))
-                                                    :else     (cond-> ["M" [x1 y1]
+                                                                      (cond
+                                                                        last-part? [(infinity/path :counter-clockwise
+                                                                                                   [:left :right]
+                                                                                                   [(v/v x1 y1) (v/v x2 y1)])
+                                                                                    "z"]
+                                                                        :else      [(infinity/path :counter-clockwise
+                                                                                                   [:left :left]
+                                                                                                   [(v/v x1 y1) (v/v x1 y2)])
+                                                                                    "L" [x1 y2]
+                                                                                    (line/stitch line-right)
+                                                                                    (infinity/path :counter-clockwise
+                                                                                                   [:right :right]
+                                                                                                   [(v/v x2 y2) (v/v x2 y1)])]))
+                                                    :else     (concat ["M" [x1 y1]
                                                                        (line/stitch line-right)]
-                                                                last-part?       (concat
-                                                                                  [(infinity/path :clockwise
-                                                                                                  [:right :left]
-                                                                                                  [(v/v x2 y1) (v/v x1 y1)])
-                                                                                   "z"])
-                                                                (not last-part?) (concat
-                                                                                  [(infinity/path :clockwise
-                                                                                                  [:right :right]
-                                                                                                  [(v/v x2 y1) (v/v x1 y2)])
-                                                                                   "L" [(:x line-left-origin) y2]
-                                                                                   (line/stitch line-left)
-                                                                                   (infinity/path :clockwise
-                                                                                                  [:left :left]
-                                                                                                  [(v/v x1 y2) (v/v x1 y1)])
-                                                                                   "z"])))
+                                                                      (cond
+                                                                        last-part? [(infinity/path :clockwise
+                                                                                                   [:right :left]
+                                                                                                   [(v/v x2 y1) (v/v x1 y1)])
+                                                                                    "z"]
+                                                                        :else      [(infinity/path :clockwise
+                                                                                                   [:right :right]
+                                                                                                   [(v/v x2 y1) (v/v x2 y2)])
+                                                                                    "L" [(:x line-left-origin) y2]
+                                                                                    (line/stitch line-left)
+                                                                                    (infinity/path :clockwise
+                                                                                                   [:left :left]
+                                                                                                   [(v/v x1 y2) (v/v x1 y1)])
+                                                                                    "z"])))
                                                   [(v/v x1 y1) (v/v x2 y2)]])))
                                         vec)
         edges                      (->> num-fields-y
