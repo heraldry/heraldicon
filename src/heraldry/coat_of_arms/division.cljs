@@ -22,38 +22,38 @@
 
 (defn diagonal-mode-choices [type]
   (let [options {:forty-five-degrees "45°"
-                 :top-left-fess "Top-left to origin"
-                 :top-right-fess "Top-right to origin"
-                 :bottom-left-fess "Bottom-left to origin"
-                 :bottom-right-fess "Bottom-right to origin"}]
+                 :top-left-origin "Top-left to origin"
+                 :top-right-origin "Top-right to origin"
+                 :bottom-left-origin "Bottom-left to origin"
+                 :bottom-right-origin "Bottom-right to origin"}]
     (->> type
          (get {:per-bend [:forty-five-degrees
-                          :top-left-fess]
+                          :top-left-origin]
                :bendy [:forty-five-degrees
-                       :top-left-fess]
+                       :top-left-origin]
                :per-bend-sinister [:forty-five-degrees
-                                   :top-right-fess]
+                                   :top-right-origin]
                :bendy-sinister [:forty-five-degrees
-                                :top-right-fess]
+                                :top-right-origin]
                :per-chevron [:forty-five-degrees
-                             :bottom-left-fess
-                             :bottom-right-fess]
+                             :bottom-left-origin
+                             :bottom-right-origin]
                :per-saltire [:forty-five-degrees
-                             :top-left-fess
-                             :top-right-fess
-                             :bottom-left-fess
-                             :bottom-right-fess]
+                             :top-left-origin
+                             :top-right-origin
+                             :bottom-left-origin
+                             :bottom-right-origin]
                :gyronny [:forty-five-degrees
-                         :top-left-fess
-                         :top-right-fess
-                         :bottom-left-fess
-                         :bottom-right-fess]
+                         :top-left-origin
+                         :top-right-origin
+                         :bottom-left-origin
+                         :bottom-right-origin]
                :tierced-per-pairle [:forty-five-degrees
-                                    :top-left-fess
-                                    :top-right-fess]
+                                    :top-left-origin
+                                    :top-right-origin]
                :tierced-per-pairle-reversed [:forty-five-degrees
-                                             :bottom-left-fess
-                                             :bottom-right-fess]})
+                                             :bottom-left-origin
+                                             :bottom-right-origin]})
          (map (fn [key]
                 [(get options key) key])))))
 
@@ -61,7 +61,7 @@
   {:line line/default-options
    :layout {:origin position/default-options
             :diagonal-mode {:type :choice
-                            :default :top-left-fess}
+                            :default :top-left-origin}
             :num-fields-x {:type :range
                            :min 4
                            :max 20
@@ -135,7 +135,7 @@
                                          [:layout :origin :offset-y]
                                          [:layout :diagonal-mode]]
                                         {[:layout :diagonal-mode :choices] (diagonal-mode-choices :per-bend-sinister)
-                                         [:layout :diagonal-mode :default] :top-right-fess
+                                         [:layout :diagonal-mode :default] :top-right-origin
                                          [:layout :origin :point :choices] position/point-choices-y})
        :per-chevron (pick-options [[:line]
                                    [:layout :origin :point]
@@ -196,7 +196,7 @@
                                       [:layout :origin :offset-y]
                                       [:layout :diagonal-mode]]
                                      {[:layout :diagonal-mode :choices] (diagonal-mode-choices :bendy)
-                                      [:layout :diagonal-mode :default] :top-right-fess
+                                      [:layout :diagonal-mode :default] :top-right-origin
                                       [:layout :origin :point :choices] position/point-choices-y})
        :tierced-per-pale (pick-options [[:line]
                                         [:layout :stretch-x]
@@ -681,10 +681,10 @@
                           (v/- top-left)
                           :y)
         dir (case diagonal-mode
-              :top-left-fess (v/- origin top-left)
-              :top-right-fess (v/- origin top-right)
-              :bottom-left-fess (v/- origin bottom-left)
-              :bottom-right-fess (v/- origin bottom-right)
+              :top-left-origin (v/- origin top-left)
+              :top-right-origin (v/- origin top-right)
+              :bottom-left-origin (v/- origin bottom-left)
+              :bottom-right-origin (v/- origin bottom-right)
               (v/v origin-height origin-height))]
     (v/v (-> dir :x Math/abs)
          (-> dir :y Math/abs))))
