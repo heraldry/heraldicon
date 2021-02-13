@@ -11,6 +11,18 @@
    ["Honour" :honour]
    ["Nombril" :nombril]])
 
+(def point-choices-x
+  (->> point-choices
+       (filter (fn [[_ k]]
+                 (#{:dexter :fess :sinister} k)))
+       vec))
+
+(def point-choices-y
+  (->> point-choices
+       (filter (fn [[_ k]]
+                 (#{:chief :honour :fess :nombril :base} k)))
+       vec))
+
 (def point-map
   (util/choices->map point-choices))
 

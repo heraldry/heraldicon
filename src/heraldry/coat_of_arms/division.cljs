@@ -120,18 +120,21 @@
                                                    [:layout :offset-x]])
        :per-fess                    (pick-options [[:line]
                                                    [:layout :origin :point]
-                                                   [:layout :origin :offset-y]])
+                                                   [:layout :origin :offset-y]]
+                                                  {[:layout :origin :point :choices] position/point-choices-y})
        :per-bend                    (pick-options [[:line]
                                                    [:layout :origin :point]
                                                    [:layout :origin :offset-y]
                                                    [:layout :diagonal-mode]]
-                                                  {[:layout :diagonal-mode :choices] (diagonal-mode-choices :per-bend)})
+                                                  {[:layout :diagonal-mode :choices] (diagonal-mode-choices :per-bend)
+                                                   [:layout :origin :point :choices] position/point-choices-y})
        :per-bend-sinister           (pick-options [[:line]
                                                    [:layout :origin :point]
                                                    [:layout :origin :offset-y]
                                                    [:layout :diagonal-mode]]
                                                   {[:layout :diagonal-mode :choices] (diagonal-mode-choices :per-bend-sinister)
-                                                   [:layout :diagonal-mode :default] :top-right-fess})
+                                                   [:layout :diagonal-mode :default] :top-right-fess
+                                                   [:layout :origin :point :choices] position/point-choices-y})
        :per-chevron                 (pick-options [[:line]
                                                    [:layout :origin :point]
                                                    [:layout :origin :offset-x]
@@ -139,6 +142,7 @@
                                                    [:layout :diagonal-mode]]
                                                   {[:layout :diagonal-mode :choices] (diagonal-mode-choices :per-chevron)
                                                    [:layout :diagonal-mode :default] :forty-five-degrees
+                                                   [:layout :origin :point :choices] position/point-choices-y
                                                    [:line :offset :min]              0})
        :per-saltire                 (pick-options [[:line]
                                                    [:layout :origin :point]
@@ -177,7 +181,8 @@
                                                    [:layout :origin :point]
                                                    [:layout :origin :offset-y]
                                                    [:layout :diagonal-mode]]
-                                                  {[:layout :diagonal-mode :choices] (diagonal-mode-choices :bendy)})
+                                                  {[:layout :diagonal-mode :choices] (diagonal-mode-choices :bendy)
+                                                   [:layout :origin :point :choices] position/point-choices-y})
        :bendy-sinister              (pick-options [[:line]
                                                    [:layout :num-base-fields]
                                                    [:layout :num-fields-y]
@@ -187,13 +192,15 @@
                                                    [:layout :origin :offset-y]
                                                    [:layout :diagonal-mode]]
                                                   {[:layout :diagonal-mode :choices] (diagonal-mode-choices :bendy)
-                                                   [:layout :diagonal-mode :default] :top-right-fess})
+                                                   [:layout :diagonal-mode :default] :top-right-fess
+                                                   [:layout :origin :point :choices] position/point-choices-y})
        :tierced-per-pale            (pick-options [[:line]
                                                    [:layout :offset-x]
                                                    [:layout :stretch-x]])
        :tierced-per-fess            (pick-options [[:line]
                                                    [:layout :origin :point]
-                                                   [:layout :origin :offset-y]])
+                                                   [:layout :origin :offset-y]]
+                                                  {[:layout :origin :point :choices] position/point-choices-y})
        :tierced-per-pairle          (pick-options [[:line]
                                                    [:layout :origin :point]
                                                    [:layout :origin :offset-x]
