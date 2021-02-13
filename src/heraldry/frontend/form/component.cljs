@@ -1375,28 +1375,36 @@
      [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn form-for-layout [field-path & {:keys [title options] :or {title "Layout"}}]
-  (let [layout-path   (conj field-path :division :layout)
-        division      @(rf/subscribe [:get (conj field-path :division)])
-        layout        (:layout division)
-        division-type (:type division)
-        current-data  (:layout (options/sanitize division (division/options division)))
-        link-name     (util/combine
-                       ", "
-                       [(cond
-                          (= division-type :paly)  (str (:num-fields-x current-data) " fields")
-                          (= division-type :barry) (str (:num-fields-y current-data) " fields"))
-                        (when (and (:num-base-fields current-data)
-                                   (not= (:num-base-fields current-data) 2))
-                          (str (:num-base-fields current-data) " base fields"))
-                        (when (or (:offset-x layout)
-                                  (:offset-y layout))
-                          (str "shifted"))
-                        (when (or (:stretch-x layout)
-                                  (:stretch-y layout))
-                          (str "stretched"))])
-        link-name     (if (-> link-name count (= 0))
-                        "Set"
-                        link-name)]
+  (let [layout-path    (conj field-path :division :layout)
+        division       @(rf/subscribe [:get (conj field-path :division)])
+        layout         (:layout division)
+        division-type  (:type division)
+        current-data   (:layout (options/sanitize-or-nil division (division/options division)))
+        effective-data (:layout (options/sanitize division (division/options division)))
+        link-name      (util/combine
+                        ", "
+                        [(cond
+                           (= division-type :paly)  (str (:num-fields-x effective-data) " fields")
+                           (= division-type :barry) (str (:num-fields-y effective-data) " fields"))
+                         (when (and (:num-base-fields current-data)
+                                    (not= (:num-base-fields current-data) 2))
+                           (str (:num-base-fields effective-data) " base fields"))
+                         (when (or (and (-> current-data :origin :point)
+                                        (-> current-data :origin :point (not= :fess)))
+                                   (and (-> current-data :origin :offset-x)
+                                        (-> current-data :origin :offset-x zero? not))
+                                   (and (-> current-data :origin :offset-y)
+                                        (-> current-data :origin :offset-y zero? not)))
+                           (str "positioned"))
+                         (when (or (:offset-x current-data)
+                                   (:offset-y current-data))
+                           (str "shifted"))
+                         (when (or (:stretch-x current-data)
+                                   (:stretch-y current-data))
+                           (str "stretched"))])
+        link-name      (if (-> link-name count (= 0))
+                         "Set"
+                         link-name)]
     [:div.setting
      [:label title]
      " "
