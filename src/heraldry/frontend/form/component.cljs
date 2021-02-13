@@ -1385,7 +1385,9 @@
                    ", "
                    [(cond
                       (= division-type :paly) (str (:num-fields-x effective-data) " fields")
-                      (= division-type :barry) (str (:num-fields-y effective-data) " fields"))
+                      (#{:barry
+                         :bendy
+                         :bendy-sinister} division-type) (str (:num-fields-y effective-data) " fields"))
                     (when (and (:num-base-fields current-data)
                                (not= (:num-base-fields current-data) 2))
                       (str (:num-base-fields effective-data) " base fields"))
