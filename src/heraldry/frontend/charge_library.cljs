@@ -56,6 +56,20 @@
 
 ;; views
 
+(defn parse-number-with-unit [s]
+  (let [[_ num unit] (re-matches #"(?i)^ *([0-9e.]*) *([a-z]*)$" s)
+        value (if (-> num count (= 0))
+                0
+                (js/parseFloat num))
+        factor (case (s/lower-case unit)
+                 "px" 1
+                 "in" 96
+                 "cm" 37.795
+                 "mm" 3.7795
+                 "pt" 1.3333
+                 "pc" 16
+                 1)]
+    (* value factor)))
 
 (defn load-svg-file [db-path data]
   (go-catch
@@ -72,10 +86,10 @@
                                   (assoc 1 {}))
                      width (-> parsed
                                (get-in [1 :width])
-                               js/parseFloat)
+                               parse-number-with-unit)
                      height (-> parsed
                                 (get-in [1 :height])
-                                js/parseFloat)
+                                parse-number-with-unit)
                      colours (into {}
                                    (map (fn [c]
                                           [c :keep]) (find-colours
