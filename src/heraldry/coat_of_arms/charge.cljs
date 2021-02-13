@@ -507,15 +507,25 @@
                                                       placeholder-colours
                                                       tincture
                                                       (:outline-mode hints))
+          ;; this is the one drawn on top of the masked field version, for the tincture replacements
+          ;; and outline; the primary colour has no replacement here, which might make it shine through
+          ;; around the edges, to prevent that, it is specifically replaced with black
+          ;; the same is true for tincture codes for which no replacement has been set, as those should
+          ;; become primary
+          ;; so only render things that have a replacement or explicitly are set to "keep",
+          ;; other things become black for the time being
+          ;; TODO: perhaps they can be removed entirely? there still is a faint dark edge in some cases,
+          ;; much less than before, however, and the dark edge is less obvious than the bright one
           coloured-charge                  (replace-colours
                                             adjusted-charge
                                             (fn [colour]
                                               (let [colour-lower (svg/normalize-colour colour)
                                                     kind         (get placeholder-colours colour-lower)
                                                     replacement  (get-replacement kind tincture)]
-                                                (if replacement
-                                                  (tincture/pick replacement render-options)
-                                                  colour))))
+                                                (cond
+                                                  replacement    (tincture/pick replacement render-options)
+                                                  (= kind :keep) colour
+                                                  :else          "#000000"))))
           clip-path-id                     (util/id "clip-path")
           shift                            (-> (v/v positional-charge-width positional-charge-height)
                                                (v// 2)
