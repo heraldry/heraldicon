@@ -26,6 +26,14 @@
                     version)]
       (str (config/get :heraldry-url) "/arms/" (id-for-url arms-id) "/" version))))
 
+(defn full-url-for-collection [collection-data]
+  (when-let [collection-id (:id collection-data)]
+    (let [version (:version collection-data)
+          version (if (zero? version)
+                    (:latest-version collection-data)
+                    version)]
+      (str (config/get :heraldry-url) "/collection/" (id-for-url collection-id) "/" version))))
+
 (defn full-url-for-charge [charge-data]
   (when-let [charge-id (:id charge-data)]
     (let [version (:version charge-data)
