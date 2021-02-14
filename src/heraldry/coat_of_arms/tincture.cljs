@@ -344,6 +344,198 @@
    :sanguine "#a41619"
    :tenne    "#9d5324"})
 
+(def theme-community-pastell-puffs
+  {;; metals
+   :argent   "#fefefe"
+   :or       "#ffe9c0"
+   ;; colours
+   :azure    "#74badd"
+   :vert     "#85caad"
+   :gules    "#e87b97"
+   :sable    "#44457e"
+   :purpure  "#b284d5"
+   ;; stains
+   :murrey   "#803db4" ;; 30% darkened purpure
+   :sanguine "#d32451" ;; 30% darkened gules
+   :tenne    "#b27400" ;; 60% darkened or
+   })
+
+(def theme-community-jewelicious
+  {;; metals
+   :argent   "#f8f7ec"
+   :or       "#fcdc90"
+   ;; colours
+   :azure    "#2a67aa"
+   :vert     "#3e8f4c"
+   :gules    "#9a2829"
+   :sable    "#000000"
+   :purpure  "#884e91"
+   ;; stains
+   :murrey   "#5f3665" ;; 30% darkened purpure
+   :sanguine "#6b1b1c" ;; 30% darkened gules
+   :tenne    "#9a6d04" ;; 60% darkened or
+   })
+
+(def theme-community-main-seven
+  {;; metals
+   :argent   "#fefefe"
+   :or       "#fcf7b2"
+   ;; colours
+   :azure    "#4587d3"
+   :vert     "#5cbc63"
+   :gules    "#ec1642"
+   :sable    "#241f21"
+   :purpure  "#aa72be"
+   ;; stains
+   :murrey   "#7c4391" ;; 30% darkened purpure
+   :sanguine "#a60d2d" ;; 30% darkened gules
+   :tenne    "#a59a06" ;; 60% darkened or
+   })
+
+(def theme-community-cmwhyk
+  {;; metals
+   :argent   "#fefefe"
+   :or       "#fff05a"
+   ;; colours
+   :azure    "#5af0ff"
+   :vert     "#5aff5a"
+   :gules    "#fa5aff"
+   :sable    "#000000"
+   :purpure  "#5a60ff"
+   ;; stains
+   :murrey   "#0008f1" ;; 30% darkened purpure
+   :sanguine "#ea00f1" ;; 30% darkened gules
+   :tenne    "#8a7d00" ;; 60% darkened or
+   })
+
+(def theme-community-mother-earth
+  {;; metals
+   :argent   "#fef8ed"
+   :or       "#f8d689"
+   ;; colours
+   :azure    "#4e7b78"
+   :vert     "#7d9732"
+   :gules    "#b7431b"
+   :sable    "#3c1e15"
+   :purpure  "#a04463"
+   ;; stains
+   :murrey   "#6f2f45" ;; 30% darkened purpure
+   :sanguine "#802e12" ;; 30% darkened gules
+   :tenne    "#916708" ;; 60% darkened or
+   })
+
+(def theme-community-home-world
+  {;; metals
+   :argent   "#fffff9"
+   :or       "#f5e73e"
+   ;; colours
+   :azure    "#5c90f5"
+   :vert     "#64de57"
+   :gules    "#ea3951"
+   :sable    "#000000"
+   :purpure  "#c797e7"
+   ;; stains
+   :murrey   "#9439d1" ;; 30% darkened purpure
+   :sanguine "#b81329" ;; 30% darkened gules
+   :tenne    "#746c06" ;; 60% darkened or
+   })
+
+(def theme-community-crystal-gems
+  {;; metals
+   :argent   "#fefefe"
+   :or       "#ffdd63"
+   ;; colours
+   :azure    "#3e76e0"
+   :vert     "#3ebc6f"
+   :gules    "#fb1d7b"
+   :sable    "#000000"
+   :purpure  "#b083cd"
+   ;; stains
+   :murrey   "#8043a7" ;; 30% darkened purpure
+   :sanguine "#c00353" ;; 30% darkened gules
+   :tenne    "#8d6e00" ;; 60% darkened or
+   })
+
+(def theme-community-pretty-soldier
+  {;; metals
+   :argent   "#fefefe"
+   :or       "#fff44b"
+   ;; colours
+   :azure    "#0e89db"
+   :vert     "#31a449"
+   :gules    "#da0012"
+   :sable    "#000000"
+   :purpure  "#77468e"
+   ;; stains
+   :murrey   "#533063" ;; 30% darkened purpure
+   :sanguine "#98000c" ;; 30% darkened gules
+   :tenne    "#847b00" ;; 60% darkened or
+   })
+
+(def theme-community-the-monet-maker
+  {;; metals
+   :argent   "#f2efec"
+   :or       "#f7d2a5"
+   ;; colours
+   :azure    "#566e93"
+   :vert     "#a2a050"
+   :gules    "#a3403d"
+   :sable    "#1c2f36"
+   :purpure  "#a56b99"
+   ;; stains
+   :murrey   "#76476c" ;; 30% darkened purpure
+   :sanguine "#722c2a" ;; 30% darkened gules
+   :tenne    "#97590d" ;; 60% darkened or
+   })
+
+(def theme-community-van-goes-vroem
+  {;; metals
+   :argent   "#eae8e3"
+   :or       "#f7d2a5"
+   ;; colours
+   :azure    "#4c7cad"
+   :vert     "#88934d"
+   :gules    "#ca6548"
+   :sable    "#191b21"
+   :purpure  "#955f81"
+   ;; stains
+   :murrey   "#68425a" ;; 30% darkened purpure
+   :sanguine "#94422b" ;; 30% darkened gules
+   :tenne    "#97590d" ;; 60% darkened or
+   })
+
+(def theme-community-cotton-candy
+  {;; metals
+   :argent   "#ffffff"
+   :or       "#fcf9d1"
+   ;; colours
+   :azure    "#75def3"
+   :vert     "#80ebba"
+   :gules    "#f78fa9"
+   :sable    "#4b6667"
+   :purpure  "#dba5f4"
+   ;; stains
+   :murrey   "#af37e6" ;; 30% darkened purpure
+   :sanguine "#ef2155" ;; 30% darkened gules
+   :tenne    "#ada10b" ;; 60% darkened or
+   })
+
+(def theme-community-rainbow-groom
+  {;; metals
+   :argent   "#f8f4db"
+   :or       "#ffd71b"
+   ;; colours
+   :azure    "#6179cf"
+   :vert     "#8fb63f"
+   :gules    "#ea3b0c"
+   :sable    "#342818"
+   :purpure  "#aa7aba"
+   ;; stains
+   :murrey   "#7c498d" ;; 30% darkened purpure
+   :sanguine "#a32908" ;; 30% darkened gules
+   :tenne    "#705d00" ;; 60% darkened or
+   })
+
 (def themes
   [["General"
     ["WappenWiki (default)" :wappenwiki theme-wappenwiki]
@@ -359,7 +551,20 @@
     ["Wikipedia Hungary" :wikipedia-hungary theme-wikipedia-hungary]
     ["Wikipedia Spain" :wikipedia-spain theme-wikipedia-spain]
     ["Wikipedia Sweden" :wikipedia-sweden theme-wikipedia-sweden]
-    ["Wikipedia Switzerland" :wikipedia-switzerland theme-wikipedia-switzerland]]])
+    ["Wikipedia Switzerland" :wikipedia-switzerland theme-wikipedia-switzerland]]
+   ["Community"
+    ["CMwhyK" :community-cmwhyk theme-community-cmwhyk]
+    ["Cotton Candy" :community-cotton-candy theme-community-cotton-candy]
+    ["Crystal Gems" :community-crystal-gems theme-community-crystal-gems]
+    ["Home World" :community-home-world theme-community-home-world]
+    ["Jewelicious" :community-jewelicious theme-community-jewelicious]
+    ["Main Seven" :community-main-seven theme-community-main-seven]
+    ["Mother Earth" :community-mother-earth theme-community-mother-earth]
+    ["Pastell Puffs" :community-pastell-puffs theme-community-pastell-puffs]
+    ["Pretty Soldier" :community-pretty-soldier theme-community-pretty-soldier]
+    ["Rainbow Groom" :community-rainbow-groom theme-community-rainbow-groom]
+    ["The Monet Maker" :community-the-monet-maker theme-community-the-monet-maker]
+    ["Van Goes Vroem" :community-van-goes-vroem theme-community-van-goes-vroem]]])
 
 (def default-theme
   :wappenwiki)
