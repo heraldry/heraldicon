@@ -56,3 +56,11 @@
           title (:name arms)
           url (util/full-url-for-arms arms)]
       [general title url username attribution])))
+
+(defn for-collection [collection]
+  (when (:id collection)
+    (let [attribution (-> collection :attribution)
+          username (:username collection)
+          title (:name collection)
+          url (util/full-url-for-collection collection)]
+      [general title url username attribution])))
