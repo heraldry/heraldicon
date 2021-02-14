@@ -3,6 +3,7 @@
             [heraldry.frontend.account :as account]
             [heraldry.frontend.arms-library :as arms-library]
             [heraldry.frontend.charge-library :as charge-library]
+            [heraldry.frontend.collection-library :as collection-library]
             [heraldry.frontend.home :as home]
             [heraldry.frontend.user-library :as user-library]
             [reagent.core :as rc]
@@ -16,6 +17,40 @@
   [["/"
     {:name :home
      :view home/view}]
+
+   ["/collections/"
+    {:name :collections
+     :view collection-library/view-list-collection}]
+
+   ["/collections/new"
+    {:name        :create-collection
+     :view        collection-library/create-collection
+     :conflicting true}]
+
+   ["/collections/:id"
+    {:name        :view-collection-by-id
+     :parameters  {:path {:id string?}}
+     :view        collection-library/view-collection-by-id
+     :conflicting true}]
+
+   ["/collections/:id/"
+    {:name        :view-collection-by-id-with-slash
+     :parameters  {:path {:id string?}}
+     :view        collection-library/view-collection-by-id
+     :conflicting true}]
+
+   ["/collections/:id/edit"
+    {:name        :edit-collection-by-id
+     :parameters  {:path {:id string?}}
+     :view        collection-library/edit-collection-by-id
+     :conflicting true}]
+
+   ["/collections/:id/:version"
+    {:name        :view-collection-by-id-and-version
+     :parameters  {:path {:id      string?
+                          :version number?}}
+     :view        collection-library/view-collection-by-id
+     :conflicting true}]
 
    ["/arms/"
     {:name :arms
