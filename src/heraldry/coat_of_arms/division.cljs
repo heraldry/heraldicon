@@ -175,6 +175,18 @@
                                                    [:layout :num-fields-y]
                                                    [:layout :offset-y]
                                                    [:layout :stretch-y]])
+       :chequy                      (pick-options [[:layout :num-base-fields]
+                                                   [:layout :num-fields-x]
+                                                   [:layout :offset-x]
+                                                   [:layout :stretch-x]
+                                                   [:layout :num-fields-y]
+                                                   [:layout :offset-y]
+                                                   [:layout :stretch-y]
+                                                   [:origin :point]
+                                                   [:origin :offset-x]
+                                                   [:origin :offset-y]]
+                                                  {[:layout :num-fields-y :default] nil
+                                                   [:origin :point :choices]        position/point-choices-y})
        :bendy                       (pick-options [[:line]
                                                    [:layout :num-base-fields]
                                                    [:layout :num-fields-y]
@@ -573,6 +585,82 @@
                                       (for [i (range (dec num-fields-y))]
                                         ^{:key i}
                                         [:path {:d (nth edges i)}])])]
+    [parts overlap outlines]))
+
+(defn chequy-parts [{:keys [num-fields-x
+                            offset-x
+                            stretch-x
+                            num-fields-y
+                            offset-y
+                            stretch-y]} top-left bottom-right hints render-options]
+  (let [offset-x        (or offset-x 0)
+        stretch-x       (or stretch-x 1)
+        width           (- (:x bottom-right)
+                           (:x top-left))
+        part-width      (-> width
+                            (/ num-fields-x)
+                            (* stretch-x))
+        required-width  (* part-width
+                           num-fields-x)
+        middle-x        (-> width
+                            (/ 2)
+                            (+ (:x top-left)))
+        x0              (-> middle-x
+                            (- (/ required-width 2))
+                            (+ (* offset-x
+                                  part-width)))
+        offset-y        (or offset-y 0)
+        stretch-y       (or stretch-y 1)
+        height          (- (:y bottom-right)
+                           (:y top-left))
+        part-height     (-> height
+                            (/ num-fields-y)
+                            (* stretch-y))
+        required-height (* part-height
+                           num-fields-y)
+        middle-y        (-> height
+                            (/ 2)
+                            (+ (:y top-left)))
+        y0              (-> middle-y
+                            (- (/ required-height 2))
+                            (+ (* offset-y
+                                  part-height)))
+        parts           (->> (for [j (range num-fields-y)
+                                   i (range num-fields-x)]
+                               (let [x1 (+ x0 (* i part-width))
+                                     x2 (+ x1 part-width)
+                                     y1 (+ y0 (* j part-height))
+                                     y2 (+ y1 part-height)]
+                                 [["M" [x1 y1]
+                                   "L" [x2 y1]
+                                   "L" [x2 y2]
+                                   "L" [x1 y2]
+                                   "z"]
+                                  [(v/v x1 y1) (v/v x2 y2)]]))
+                             vec)
+        overlap         (->> (for [j (range num-fields-y)
+                                   i (range num-fields-x)]
+                               (let [x1 (+ x0 (* i part-width))
+                                     x2 (+ x1 part-width)
+                                     y1 (+ y0 (* j part-height))
+                                     y2 (+ y1 part-height)]
+                                 [(svg/make-path ["M" [x2 y1]
+                                                  "L" [x2 y2]
+                                                  "L" [x1 y2]])]))
+                             vec)
+        outlines        (when (or (:outline? render-options)
+                                  (:outline? hints))
+                          [:g outline-style
+                           (for [i (range num-fields-x)]
+                             (let [x1 (+ x0 (* i part-width))]
+
+                               ^{:key [:x i]}
+                               [:path {:d (svg/make-path ["M" [x1 y0] "L" [x1 (+ y0 height)]])}]))
+                           (for [j (range num-fields-y)]
+                             (let [y1 (+ y0 (* j part-height))]
+
+                               ^{:key [:y j]}
+                               [:path {:d (svg/make-path ["M" [x0 y1] "L" [(+ x0 width) y1]])}]))])]
     [parts overlap outlines]))
 
 (defn per-pale
@@ -1294,6 +1382,21 @@
      outlines
      environment division context]))
 
+(defn chequy
+  {:display-name "Chequy"
+   :parts        []}
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
+  (let [{:keys [layout]}         (options/sanitize division (options division))
+        points                   (:points environment)
+        top-left                 (:top-left points)
+        bottom-right             (:bottom-right points)
+        [parts overlap outlines] (chequy-parts layout top-left bottom-right hints render-options)]
+    [make-division
+     (division-context-key type) fields parts
+     overlap
+     outlines
+     environment division context]))
+
 (defn bendy
   {:display-name "Bendy"
    :parts        []}
@@ -1710,14 +1813,15 @@
    #'per-saltire
    #'quarterly
    #'gyronny
+   #'tierced-per-pale
+   #'tierced-per-fess
+   #'tierced-per-pairle
+   #'tierced-per-pairle-reversed
    #'paly
    #'barry
    #'bendy
    #'bendy-sinister
-   #'tierced-per-pale
-   #'tierced-per-fess
-   #'tierced-per-pairle
-   #'tierced-per-pairle-reversed])
+   #'chequy])
 
 (def kinds-function-map
   (->> divisions
