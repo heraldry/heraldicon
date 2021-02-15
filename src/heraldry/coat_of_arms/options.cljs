@@ -12,11 +12,13 @@
                  (if (contains? choices value)
                    value
                    (-> options :choices first second)))
-      :range   (if (nil? value)
-                 (:min options)
-                 (-> value
-                     (max (:min options))
-                     (min (:max options))))
+      :range   (cond
+                 (and (nil? value)
+                      (-> options :default nil?)) nil
+                 (nil? value)                     (:min options)
+                 :else                            (-> value
+                                                      (max (:min options))
+                                                      (min (:max options))))
       value)))
 
 (defn get-sanitized-value-or-nil [value options]
