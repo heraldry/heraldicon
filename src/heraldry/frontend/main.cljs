@@ -15,7 +15,7 @@
        [:sup {:style {:color "#d82"}} "beta"]]
       [:ul.pure-menu-list
        [route/nav-link {:to :home} "Home"]
-       [route/nav-link {:to :collections} "Collections"]
+       #_[route/nav-link {:to :collections} "Collections"]
        [route/nav-link {:to :arms} "Arms"]
        [route/nav-link {:to :charges} "Charges"]
        [:span.horizontal-spacer {:style {:width "5em"}}]
