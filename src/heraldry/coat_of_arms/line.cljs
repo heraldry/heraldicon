@@ -330,8 +330,10 @@
     {:x (+ x dx)
      :y (+ y dy)}))
 
-(defn squiggly-path [path]
-  (random/seed path)
+(defn squiggly-path [path & {:keys [seed]}]
+  (random/seed (if seed
+                 [seed path]
+                 path))
   (let [points (-> path
                    svg/new-path
                    (svg/points :length))
@@ -350,7 +352,7 @@
                                      v))))
                  data))
 
-(defn create [{:keys [type] :or {type :straight} :as line} length & {:keys [angle flipped? extra render-options] :or {extra 50} :as line-options}]
+(defn create [{:keys [type] :or {type :straight} :as line} length & {:keys [angle flipped? extra render-options seed] :or {extra 50} :as line-options}]
   (let [line-data ((get kinds-function-map type)
                    line
                    (+ length extra) line-options)
@@ -361,7 +363,7 @@
                           (->>
                            (str "M 0,0 "))
                           (cond->
-                           (:squiggly? render-options) squiggly-path))]
+                           (:squiggly? render-options) (squiggly-path :seed seed)))]
     (assoc line-data :line
            (-> adjusted-path
                svgpath
