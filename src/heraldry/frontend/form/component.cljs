@@ -1398,7 +1398,9 @@
                            (str "shifted"))
                          (when (or (:stretch-x current-data)
                                    (:stretch-y current-data))
-                           (str "stretched"))])
+                           (str "stretched"))
+                         (when (:rotation current-data)
+                           (str "rotated"))])
         link-name      (if (-> link-name count (= 0))
                          "Default"
                          link-name)]
