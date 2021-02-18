@@ -29,7 +29,9 @@
                                   (#(when (not= % :none) %)))
         texture-displacement? (:texture-displacement? render-options)
         texture-id            (util/id "texture")
-        shiny-id              (util/id "shiny")]
+        shiny-id              (util/id "shiny")
+        use-texture?          (and texture
+                          (not svg-export?))]
     {:environment environment
      :result      [:g
                    metadata
@@ -49,7 +51,7 @@
                                       :k2       0
                                       :k3       0
                                       :k4       0}]])
-                    (when texture
+                    (when use-texture?
                       [:filter {:id texture-id}
                        [:feImage {:xlinkHref           (get texture/paths texture)
                                   :x                   0
@@ -92,7 +94,7 @@
                    [:g {(if svg-export?
                           :mask
                           :clip-path) (str "url(#" mask-id ")")}
-                    [:g {:filter (when texture (str "url(#" texture-id ")"))}
+                    [:g {:filter (when use-texture? (str "url(#" texture-id ")"))}
                      [:g {:filter (when (:shiny? render-options)
                                     (str "url(#" shiny-id ")"))}
                       [:path {:d    (:shape environment)
