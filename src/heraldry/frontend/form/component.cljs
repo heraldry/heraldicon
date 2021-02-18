@@ -550,6 +550,7 @@
                        (rf/dispatch [:set ui-render-options-theme-path %]))
          :grouped? true
          :default tincture/default-theme])])
+   [checkbox (conj db-path :shiny?) "Shiny"]
    [checkbox (conj db-path :outline?) "Draw outline"]
    [checkbox (conj db-path :squiggly?) "Squiggly lines (can be slow)"]])
 

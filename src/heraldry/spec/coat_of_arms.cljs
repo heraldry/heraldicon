@@ -156,11 +156,13 @@
                                                          (s/valid? :heraldry.coat-of-arms/escutcheon %)))
 (s/def :heraldry.render-options/mode #{:colours
                                        :hatching})
+(s/def :heraldry.render-options/shiny? boolean?)
 (s/def :heraldry.render-options/outline? boolean?)
 (s/def :heraldry.render-options/squiggly? boolean?)
 (s/def :heraldry.render-options/theme tincture/theme-map)
 (s/def :heraldry/render-options (s/and (s/keys :req-un [:heraldry/component]
                                                :opt-un [:heraldry.render-options/mode
+                                                        :heraldry.render-options/shiny?
                                                         :heraldry.render-options/outline?
                                                         :heraldry.render-options/squiggly?
                                                         :heraldry.render-options/theme
