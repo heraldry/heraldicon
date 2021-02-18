@@ -7,6 +7,7 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
@@ -164,8 +165,9 @@
                                  [:layout :stretch-x]
                                  [:layout :num-fields-y]
                                  [:layout :offset-y]
-                                 [:layout :stretch-y]
-                                 {[:layout :num-fields-y :default] 7}])
+                                 [:layout :stretch-y]]
+                                {[:layout :num-fields-x :default] 3
+                                 [:layout :num-fields-y :default] 4})
        :gyronny (pick-options [[:line]
                                [:origin :point]
                                [:origin :offset-x]
@@ -189,8 +191,8 @@
                               [:layout :stretch-x]
                               [:layout :num-fields-y]
                               [:layout :offset-y]
-                              [:layout :stretch-y]
-                              {[:layout :num-fields-y :default] 7}])
+                              [:layout :stretch-y]]
+                             {[:layout :num-fields-y :default] nil})
        :bendy (pick-options [[:line]
                              [:layout :num-base-fields]
                              [:layout :num-fields-y]
@@ -300,11 +302,7 @@
                                              {:ref (mod i num-base-fields)}) (range (- num-fields-y num-base-fields)))))
             (= :chequy type) (-> []
                                  (into (map (fn [i]
-                                              (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
-                                 (into (->> (for [j (range num-fields-y)
-                                                  i (range num-fields-x)]
-                                              {:ref (mod (+ i j) num-base-fields)})
-                                            (drop num-base-fields))))
+                                              (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2)))))
             (#{:bendy
                :bendy-sinister} type) (-> []
                                           (into (map (fn [i]
@@ -1487,17 +1485,76 @@
 (defn chequy
   {:display-name "Chequy"
    :parts []}
-  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
+  [{:keys [fields hints] :as division} environment {:keys [render-options]}]
   (let [{:keys [layout]} (options/sanitize division (options division))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (quarterly-parts layout top-left bottom-right hints render-options)]
-    [make-division
-     (division-context-key type) fields parts
-     overlap
-     outlines
-     environment division context]))
+        {:keys [num-fields-x
+                offset-x
+                stretch-x
+                num-fields-y
+                offset-y
+                stretch-y]} layout
+        offset-x (or offset-x 0)
+        stretch-x (or stretch-x 1)
+        width (- (:x bottom-right)
+                 (:x top-left))
+        unstretched-part-width (-> width
+                                   (/ num-fields-x))
+        part-width (-> unstretched-part-width
+                       (* stretch-x))
+        offset-y (or offset-y 0)
+        stretch-y (or stretch-y 1)
+        height (- (:y bottom-right)
+                  (:y top-left))
+        unstretched-part-height (if num-fields-y
+                                  (-> height
+                                      (/ num-fields-y))
+                                  part-width)
+        part-height (-> unstretched-part-height
+                        (* stretch-y))
+        middle-x (/ width 2)
+        middle-y (/ height 2)
+        pattern-id (util/id "chequy")
+        num-base-fields (count fields)]
+    [:g
+     [:defs
+      [:pattern {:id pattern-id
+                 :width (* part-width num-base-fields)
+                 :height (* part-height num-base-fields)
+                 :x (+ (* part-width offset-x) (- middle-x
+                                                  (* middle-x stretch-x)))
+                 :y (+ (* part-height offset-y) (- middle-y
+                                                   (* middle-y
+                                                      stretch-y
+                                                      (if num-fields-y 1 stretch-x))))
+                 :pattern-units "userSpaceOnUse"}
+       (for [j (range num-base-fields)
+             i (range num-base-fields)]
+         (let [tincture (-> fields
+                            (get (-> i (+ j) (mod num-base-fields)))
+                            :content
+                            :tincture)]
+           ^{:key [i j]}
+           [:rect {:x (* i part-width)
+                   :y (* j part-height)
+                   :width part-width
+                   :height part-height
+                   :fill (tincture/pick tincture render-options)}]))
+       (when (or (:outline? render-options)
+                 (:outline? hints))
+         [:g outline-style
+          (for [i (range (inc num-base-fields))]
+            ^{:key i}
+            [:<>
+             [:path {:d (str "M " (* i part-width) ",0 v " (* part-height num-base-fields))}]
+             [:path {:d (str "M 0," (* i part-height) " h " (* part-width num-base-fields))}]])])]]
+     [:rect {:x -500
+             :y -500
+             :width 1100
+             :height 1100
+             :fill (str "url(#" pattern-id ")")}]]))
 
 (defn bendy
   {:display-name "Bendy"
