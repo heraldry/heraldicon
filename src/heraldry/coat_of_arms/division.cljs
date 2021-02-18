@@ -63,12 +63,12 @@
    :diagonal-mode {:type :choice
                    :default :top-left-origin}
    :layout {:num-fields-x {:type :range
-                           :min 4
+                           :min 2
                            :max 20
                            :default 6
                            :integer? true}
             :num-fields-y {:type :range
-                           :min 4
+                           :min 2
                            :max 20
                            :default 6
                            :integer? true}
@@ -153,11 +153,19 @@
                                    [:diagonal-mode]]
                                   {[:diagonal-mode :choices] (diagonal-mode-choices :per-saltire)
                                    [:line :offset :min] 0})
-       :quarterly (pick-options [[:line]
+       :quartered (pick-options [[:line]
                                  [:origin :point]
                                  [:origin :offset-x]
                                  [:origin :offset-y]]
                                 {[:line :offset :min] 0})
+       :quarterly (pick-options [[:layout :num-base-fields]
+                                 [:layout :num-fields-x]
+                                 [:layout :offset-x]
+                                 [:layout :stretch-x]
+                                 [:layout :num-fields-y]
+                                 [:layout :offset-y]
+                                 [:layout :stretch-y]
+                                 {[:layout :num-fields-y :default] 7}])
        :gyronny (pick-options [[:line]
                                [:origin :point]
                                [:origin :offset-x]
@@ -271,7 +279,14 @@
     (into (subvec defaults 0 2)
           (cond
             (= :per-saltire type) [{:ref 1} {:ref 0}]
-            (= :quarterly type) [{:ref 1} {:ref 0}]
+            (= :quartered type) [{:ref 1} {:ref 0}]
+            (= :quarterly type) (-> []
+                                    (into (map (fn [i]
+                                                 (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
+                                    (into (->> (for [j (range num-fields-y)
+                                                     i (range num-fields-x)]
+                                                 {:ref (mod (+ i j) num-base-fields)})
+                                               (drop num-base-fields))))
             (= :gyronny type) [{:ref 1} {:ref 0} {:ref 0} {:ref 1} {:ref 1} {:ref 0}]
             (= :paly type) (-> []
                                (into (map (fn [i]
@@ -590,12 +605,12 @@
                       [:path {:d (nth edges i)}])])]
     [parts overlap outlines]))
 
-(defn chequy-parts [{:keys [num-fields-x
-                            offset-x
-                            stretch-x
-                            num-fields-y
-                            offset-y
-                            stretch-y]} top-left bottom-right hints render-options]
+(defn quarterly-parts [{:keys [num-fields-x
+                               offset-x
+                               stretch-x
+                               num-fields-y
+                               offset-y
+                               stretch-y]} top-left bottom-right hints render-options]
   (let [offset-x (or offset-x 0)
         stretch-x (or stretch-x 1)
         width (- (:x bottom-right)
@@ -1121,8 +1136,8 @@
                      (line/stitch line-bottom-left)])}]])
      environment division context]))
 
-(defn quarterly
-  {:display-name "Quarterly"
+(defn quartered
+  {:display-name "Quarterly 2x2"
    :parts ["I" "II" "III" "IV"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]} (options/sanitize division (options division))
@@ -1223,6 +1238,21 @@
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (line/stitch line-left)])}]])
+     environment division context]))
+
+(defn quarterly
+  {:display-name "Quarterly NxM"
+   :parts []}
+  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
+  (let [{:keys [layout]} (options/sanitize division (options division))
+        points (:points environment)
+        top-left (:top-left points)
+        bottom-right (:bottom-right points)
+        [parts overlap outlines] (quarterly-parts layout top-left bottom-right hints render-options)]
+    [make-division
+     (division-context-key type) fields parts
+     overlap
+     outlines
      environment division context]))
 
 (defn gyronny
@@ -1462,7 +1492,7 @@
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (chequy-parts layout top-left bottom-right hints render-options)]
+        [parts overlap outlines] (quarterly-parts layout top-left bottom-right hints render-options)]
     [make-division
      (division-context-key type) fields parts
      overlap
@@ -1871,6 +1901,7 @@
    #'per-bend-sinister
    #'per-chevron
    #'per-saltire
+   #'quartered
    #'quarterly
    #'gyronny
    #'tierced-per-pale
