@@ -6,6 +6,7 @@
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
             [heraldry.coat-of-arms.line :as line]
+            [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.util :as util]))
 
@@ -21,13 +22,20 @@
                         (cond->
                          (:squiggly? render-options) (update :shape line/squiggly-path)))
         field (:field coat-of-arms)
-        mask-id (util/id "mask")]
+        mask-id (util/id "mask")
+        texture (-> render-options
+                    :texture
+                    (or :none)
+                    (#(when (not= % :none) %)))
+        texture-displacement? (:texture-displacement? render-options)
+        texture-id (util/id "texture")
+        shiny-id (util/id "shiny")]
     {:environment environment
      :result [:g
               metadata
               [:defs
                (when (:shiny? render-options)
-                 [:filter#shiny
+                 [:filter {:id shiny-id}
                   [:feDiffuseLighting {:in "SourceGraphic"
                                        :result "light"
                                        :lighting-color "white"}
@@ -36,6 +44,31 @@
                                    :z 20}]]
                   [:feComposite {:in "SourceGraphic"
                                  :in2 "light"
+                                 :operator "arithmetic"
+                                 :k1 1
+                                 :k2 0
+                                 :k3 0
+                                 :k4 0}]])
+               (when texture
+                 [:filter {:id texture-id}
+                  [:feImage {:xlinkHref (get texture/paths texture)
+                             :x 0
+                             :y 0
+                             :width 150
+                             :height 150
+                             :preserveAspectRatio "none"
+                             :result "image"}]
+                  (when texture-displacement?
+                    [:feDisplacementMap {:in "SourceGraphic"
+                                         :in2 "image"
+                                         :scale (get texture/displacements texture)
+                                         :xChannelSelector "R"
+                                         :yChannelSelector "R"
+                                         :result "displaced"}])
+                  [:feComposite {:in (if texture-displacement?
+                                       "displaced"
+                                       "SourceGraphic")
+                                 :in2 "image"
                                  :operator "arithmetic"
                                  :k1 1
                                  :k2 0
@@ -59,13 +92,14 @@
               [:g {(if svg-export?
                      :mask
                      :clip-path) (str "url(#" mask-id ")")}
-               [:g {:filter (when (:shiny? render-options)
-                              "url(#shiny)")}
-                [:path {:d (:shape environment)
-                        :fill "#f0f0f0"}]
-                [field/render field environment (-> context
-                                                    (update :db-path conj :field)
-                                                    (assoc :root-escutcheon escutcheon))]]]
+               [:g {:filter (when texture (str "url(#" texture-id ")"))}
+                [:g {:filter (when (:shiny? render-options)
+                               (str "url(#" shiny-id ")"))}
+                 [:path {:d (:shape environment)
+                         :fill "#f0f0f0"}]
+                 [field/render field environment (-> context
+                                                     (update :db-path conj :field)
+                                                     (assoc :root-escutcheon escutcheon))]]]]
               (when (:outline? render-options)
                 [:g division/outline-style
                  [:path {:d (:shape environment)}]])]}))

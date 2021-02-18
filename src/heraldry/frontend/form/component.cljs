@@ -10,6 +10,7 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary :as ordinary]
             [heraldry.coat-of-arms.render :as render]
+            [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.charge-map :as charge-map]
@@ -550,6 +551,12 @@
                        (rf/dispatch [:set ui-render-options-theme-path %]))
          :grouped? true
          :default tincture/default-theme])])
+   [select (conj db-path :texture) "Texture" (concat [["None" :none]]
+                                                     texture/choices)]
+   (when (-> @(rf/subscribe [:get (conj db-path :texture)])
+             (or :none)
+             (#(when (not= % :none) %)))
+     [checkbox (conj db-path :texture-displacement?) "Apply texture"])
    [checkbox (conj db-path :shiny?) "Shiny"]
    [checkbox (conj db-path :outline?) "Draw outline"]
    [checkbox (conj db-path :squiggly?) "Squiggly lines (can be slow)"]])
