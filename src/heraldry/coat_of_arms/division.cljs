@@ -199,7 +199,8 @@
                                [:layout :num-fields-y]
                                [:layout :offset-y]
                                [:layout :stretch-y]]
-                              {[:layout :num-fields-y :default] nil})
+                              {[:layout :num-fields-y :default] nil
+                               [:layout :stretch-y :max] 3})
        :bendy (pick-options [[:line]
                              [:layout :num-base-fields]
                              [:layout :num-fields-y]
