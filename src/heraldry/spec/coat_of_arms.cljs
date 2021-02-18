@@ -6,6 +6,7 @@
             [heraldry.coat-of-arms.line :as line]
             [heraldry.coat-of-arms.ordinary :as ordinary]
             [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.spec.core :as core]))
 
@@ -160,12 +161,16 @@
 (s/def :heraldry.render-options/outline? boolean?)
 (s/def :heraldry.render-options/squiggly? boolean?)
 (s/def :heraldry.render-options/theme tincture/theme-map)
+(s/def :heraldry.render-options/texture texture/texture-map)
+(s/def :heraldry.render-options/texture-displacement? boolean?)
 (s/def :heraldry/render-options (s/and (s/keys :req-un [:heraldry/component]
                                                :opt-un [:heraldry.render-options/mode
                                                         :heraldry.render-options/shiny?
                                                         :heraldry.render-options/outline?
                                                         :heraldry.render-options/squiggly?
                                                         :heraldry.render-options/theme
+                                                        :heraldry.render-options/texture
+                                                        :heraldry.render-options/texture-displacement?
                                                         :heraldry.render-options/escutcheon-override])
                                        #(-> %
                                             (core/get-key :heraldry/component)
