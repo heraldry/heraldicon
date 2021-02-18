@@ -1509,14 +1509,15 @@
            [form-for-content (conj path :content)]
            [checkbox (conj path :division :hints :outline?) "Outline"])])]
      (cond
-       (= division-type :chequy) [:div.parts.components {:style {:margin-bottom "0.5em"}}
-                                  [:ul
-                                   (let [tinctures @(rf/subscribe [:get (conj path :division :fields)])]
-                                     (for [idx (range (count tinctures))]
-                                       ^{:key idx}
-                                       [:li
-                                        [form-for-tincture (conj path :division :fields idx :content :tincture)
-                                         :label (str "Tincture " (inc idx))]]))]]
+       (#{:chequy
+          :lozengy} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
+                                    [:ul
+                                     (let [tinctures @(rf/subscribe [:get (conj path :division :fields)])]
+                                       (for [idx (range (count tinctures))]
+                                         ^{:key idx}
+                                         [:li
+                                          [form-for-tincture (conj path :division :fields idx :content :tincture)
+                                           :label (str "Tincture " (inc idx))]]))]]
        (not counterchanged?) [:div.parts.components
                               [:ul
                                (let [content @(rf/subscribe [:get (conj path :division :fields)])
