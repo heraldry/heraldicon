@@ -26,6 +26,21 @@
      :result      [:g
                    metadata
                    [:defs
+                    (when (:shiny? render-options)
+                      [:filter#shiny
+                       [:feDiffuseLighting {:in             "SourceGraphic"
+                                            :result         "light"
+                                            :lighting-color "white"}
+                        [:fePointLight {:x 75
+                                        :y 20
+                                        :z 20}]]
+                       [:feComposite {:in       "SourceGraphic"
+                                      :in2      "light"
+                                      :operator "arithmetic"
+                                      :k1       1
+                                      :k2       0
+                                      :k3       0
+                                      :k4       0}]])
                     (when-not svg-export?
                       filter/shadow)
                     [tincture/patterns render-options]
@@ -44,11 +59,13 @@
                    [:g {(if svg-export?
                           :mask
                           :clip-path) (str "url(#" mask-id ")")}
-                    [:path {:d    (:shape environment)
-                            :fill "#f0f0f0"}]
-                    [field/render field environment (-> context
-                                                        (update :db-path conj :field)
-                                                        (assoc :root-escutcheon escutcheon))]]
+                    [:g {:filter (when (:shiny? render-options)
+                                   "url(#shiny)")}
+                     [:path {:d    (:shape environment)
+                             :fill "#f0f0f0"}]
+                     [field/render field environment (-> context
+                                                         (update :db-path conj :field)
+                                                         (assoc :root-escutcheon escutcheon))]]]
                    (when (:outline? render-options)
                      [:g division/outline-style
                       [:path {:d (:shape environment)}]])]}))
