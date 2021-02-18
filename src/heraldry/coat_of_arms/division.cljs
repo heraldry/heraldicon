@@ -920,10 +920,7 @@
                                                          :angle (+ angle 180)
                                                          :reversed? true
                                                          :render-options render-options)
-        diagonal-end-adjusted               (v/extend
-                                                diagonal-start
-                                              diagonal-end
-                                              line-length)
+        diagonal-end-adjusted               (v/extend diagonal-start diagonal-end line-length)
         parts                               [[["M" diagonal-end-adjusted
                                                (line/stitch line-one)
                                                (infinity/path :counter-clockwise
@@ -1055,14 +1052,8 @@
                                                          :angle angle-bottom-left
                                                          :flipped? true
                                                          :render-options render-options)
-        diagonal-top-left-adjusted          (v/extend
-                                                origin-point
-                                              diagonal-top-left
-                                              line-top-left-length)
-        diagonal-bottom-right-adjusted      (v/extend
-                                                origin-point
-                                              diagonal-bottom-right
-                                              line-bottom-right-length)
+        diagonal-top-left-adjusted          (v/extend origin-point diagonal-top-left line-top-left-length)
+        diagonal-bottom-right-adjusted      (v/extend origin-point diagonal-bottom-right line-bottom-right-length)
         parts                               [[["M" diagonal-top-left-adjusted
                                                (line/stitch line-top-left)
                                                "L" origin-point
@@ -1726,14 +1717,8 @@
                                                            :angle -90
                                                            :reversed? true
                                                            :render-options render-options)
-        diagonal-top-left-adjusted            (v/extend
-                                                  origin-point
-                                                diagonal-top-left
-                                                line-top-left-length)
-        bottom-adjusted                       (v/extend
-                                                  origin-point
-                                                bottom
-                                                line-bottom-reversed-length)
+        diagonal-top-left-adjusted            (v/extend origin-point diagonal-top-left line-top-left-length)
+        bottom-adjusted                       (v/extend origin-point bottom line-bottom-reversed-length)
         parts                                 [[["M" diagonal-top-left-adjusted
                                                  (line/stitch line-top-left)
                                                  "L" origin-point
@@ -1827,14 +1812,8 @@
                                                          :angle 90
                                                          :reversed? true
                                                          :render-options render-options)
-        diagonal-bottom-right-adjusted      (v/extend
-                                                origin-point
-                                              diagonal-bottom-right
-                                              line-bottom-right-length)
-        top-adjusted                        (v/extend
-                                                origin-point
-                                              top
-                                              line-top-reversed-length)
+        diagonal-bottom-right-adjusted      (v/extend origin-point diagonal-bottom-right line-bottom-right-length)
+        top-adjusted                        (v/extend origin-point top line-top-reversed-length)
         parts                               [[["M" top-adjusted
                                                (line/stitch line-top-reversed)
                                                "L" origin-point
