@@ -1085,7 +1085,7 @@
                           (->> (map util/translate-cap-first)))
         tinctures-title (if (-> tinctures-set count pos?)
                           (util/combine ", " tinctures-set)
-                          "Set")
+                          "Default")
         tinctures-title (if (-> tinctures-title count (> 30))
                           (str (subs tinctures-title 0 27) "...")
                           tinctures-title)
@@ -1400,7 +1400,7 @@
                               (:stretch-y current-data))
                       (str "stretched"))])
         link-name (if (-> link-name count (= 0))
-                    "Set"
+                    "Default"
                     link-name)]
     [:div.setting
      [:label title]
