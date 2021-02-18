@@ -93,7 +93,11 @@
                    :stretch-y       {:type    :range
                                      :min     0.5
                                      :max     2
-                                     :default 1}}})
+                                     :default 1}
+                   :rotation        {:type    :range
+                                     :min     -90
+                                     :max     90
+                                     :default 0}}})
 
 (defn pick-options [paths & values]
   (let [values  (first values)
@@ -198,7 +202,8 @@
                                                    [:layout :stretch-x]
                                                    [:layout :num-fields-y]
                                                    [:layout :offset-y]
-                                                   [:layout :stretch-y]]
+                                                   [:layout :stretch-y]
+                                                   [:layout :rotation]]
                                                   {[:layout :num-fields-y :default] nil
                                                    [:layout :stretch-y :max]        3})
        :bendy                       (pick-options [[:line]
@@ -1615,7 +1620,8 @@
                 stretch-x
                 num-fields-y
                 offset-y
-                stretch-y]}     layout
+                stretch-y
+                rotation]}      layout
         offset-x                (or offset-x 0)
         stretch-x               (or stretch-x 1)
         width                   (- (:x bottom-right)
@@ -1691,33 +1697,35 @@
                :fill   "#ffffff"}]
        [:path {:d    lozenge-shape
                :fill "#000000"}]]]
-     (for [idx (range 2)]
-       (let [mask-id  (util/id "mask")
-             tincture (-> fields
-                          (get idx)
-                          :content
-                          :tincture)]
-         ^{:key idx}
-         [:<>
-          [:mask {:id mask-id}
-           [:rect {:x      -500
-                   :y      -500
-                   :width  1100
-                   :height 1100
-                   :fill   (str "url(#" pattern-id "-" idx ")")}]]
-          [:rect {:x      -500
-                  :y      -500
-                  :width  1100
-                  :height 1100
-                  :mask   (str "url(#" mask-id ")")
-                  :fill   (tincture/pick tincture render-options)}]]))
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:rect {:x      -500
-               :y      -500
-               :width  1100
-               :height 1100
-               :fill   (str "url(#" pattern-id "-outline)")}])]))
+     [:g {:transform (str "rotate(" (- rotation) ")")}
+      (for [idx (range 2)]
+        (let [mask-id  (util/id "mask")
+              tincture (-> fields
+                           (get idx)
+                           :content
+                           :tincture)]
+          ^{:key idx}
+          [:<>
+           [:mask {:id mask-id}
+            [:rect {:x      -500
+                    :y      -500
+                    :width  1100
+                    :height 1100
+                    :fill   (str "url(#" pattern-id "-" idx ")")}]]
+           [:g {:mask (str "url(#" mask-id ")")}
+            [:rect {:x         -500
+                    :y         -500
+                    :width     1100
+                    :height    1100
+                    :transform (str "rotate(" rotation ")")
+                    :fill      (tincture/pick tincture render-options)}]]]))
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:rect {:x      -500
+                :y      -500
+                :width  1100
+                :height 1100
+                :fill   (str "url(#" pattern-id "-outline)")}])]]))
 
 (defn bendy
   {:display-name "Bendy"
