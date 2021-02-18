@@ -49,7 +49,15 @@
 (s/def :heraldry.field.division.layout/offset-y (s/nilable number?))
 (s/def :heraldry.field.division.layout/stretch-x (s/nilable number?))
 (s/def :heraldry.field.division.layout/stretch-y (s/nilable number?))
-(s/def :heraldry.field.division/layout (s/keys :opt-un [:heraldry.field.division.layout/origin]))
+(s/def :heraldry.field.division.layout/rotation (s/nilable number?))
+(s/def :heraldry.field.division/layout (s/keys :opt-un [:heraldry.field.division.layout/num-base-fields
+                                                        :heraldry.field.division.layout/num-fields-x
+                                                        :heraldry.field.division.layout/num-fields-y
+                                                        :heraldry.field.division.layout/offset-x
+                                                        :heraldry.field.division.layout/offset-y
+                                                        :heraldry.field.division.layout/stretch-x
+                                                        :heraldry.field.division.layout/stretch-y
+                                                        :heraldry.field.division.layout/rotation]))
 (s/def :heraldry.field.division/origin #(s/valid? :heraldry/position %))
 (s/def :heraldry.field.division/fields (s/coll-of :heraldry/field-or-field-reference :into []))
 (s/def :heraldry.field.divison.hint/outline? boolean?)
