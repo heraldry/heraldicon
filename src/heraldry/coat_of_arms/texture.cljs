@@ -5,7 +5,7 @@
   [["Cloth (rough)" :cloth-rough "/textures/cloth-rough.jpg" 1]
    ["Cloth (smooth)" :cloth-smooth "/textures/cloth-smooth.jpg" 1]
    ["Felt" :felt "/textures/felt.jpg" 1]
-   ["Glass (frosted)" :glass-frosted "/textures/glass-frosted.jpg" 0.5]
+   ["Glass (frosted)" :glass-frosted "/textures/glass-frosted.jpg" 1.5]
    ["Marble" :marble "/textures/marble.jpg" 1]
    ["Metal (brushed 1)" :metal-brushed-1 "/textures/metal-brushed-1.jpg" 1]
    ["Metal (brushed 2)" :metal-brushed-2 "/textures/metal-brushed-2.jpg" 1]
