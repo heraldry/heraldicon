@@ -1520,41 +1520,74 @@
         num-base-fields (count fields)]
     [:g
      [:defs
-      [:pattern {:id pattern-id
-                 :width (* part-width num-base-fields)
-                 :height (* part-height num-base-fields)
-                 :x (+ (* part-width offset-x) (- middle-x
-                                                  (* middle-x stretch-x)))
-                 :y (+ (* part-height offset-y) (- middle-y
-                                                   (* middle-y
-                                                      stretch-y
-                                                      (if num-fields-y 1 stretch-x))))
-                 :pattern-units "userSpaceOnUse"}
-       (for [j (range num-base-fields)
-             i (range num-base-fields)]
-         (let [tincture (-> fields
-                            (get (-> i (+ j) (mod num-base-fields)))
-                            :content
-                            :tincture)]
-           ^{:key [i j]}
-           [:rect {:x (* i part-width)
-                   :y (* j part-height)
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:pattern {:id (str pattern-id "-outline")
                    :width part-width
                    :height part-height
-                   :fill (tincture/pick tincture render-options)}]))
-       (when (or (:outline? render-options)
-                 (:outline? hints))
+                   :x (+ (* part-width offset-x) (- middle-x
+                                                    (* middle-x stretch-x)))
+                   :y (+ (* part-height offset-y) (- middle-y
+                                                     (* middle-y
+                                                        stretch-y
+                                                        (if num-fields-y 1 stretch-x))))
+                   :pattern-units "userSpaceOnUse"}
          [:g outline-style
-          (for [i (range (inc num-base-fields))]
-            ^{:key i}
-            [:<>
-             [:path {:d (str "M " (* i part-width) ",0 v " (* part-height num-base-fields))}]
-             [:path {:d (str "M 0," (* i part-height) " h " (* part-width num-base-fields))}]])])]]
-     [:rect {:x -500
-             :y -500
-             :width 1100
-             :height 1100
-             :fill (str "url(#" pattern-id ")")}]]))
+          [:path {:d (str "M 0,0 h " part-width)}]
+          [:path {:d (str "M 0,0 v " part-height)}]
+          [:path {:d (str "M 0," part-height " h " part-width)}]
+          [:path {:d (str "M " part-width ",0 v " part-height)}]]])
+      (for [idx (range num-base-fields)]
+        [:pattern {:id (str pattern-id "-" idx)
+                   :width (* part-width num-base-fields)
+                   :height (* part-height num-base-fields)
+                   :x (+ (* part-width offset-x) (- middle-x
+                                                    (* middle-x stretch-x)))
+                   :y (+ (* part-height offset-y) (- middle-y
+                                                     (* middle-y
+                                                        stretch-y
+                                                        (if num-fields-y 1 stretch-x))))
+                   :pattern-units "userSpaceOnUse"}
+         [:rect {:x 0
+                 :y 0
+                 :width (* part-width num-base-fields)
+                 :height (* part-height num-base-fields)
+                 :fill "#000000"}]
+         (for [j (range num-base-fields)
+               i (range num-base-fields)]
+           (when (-> i (+ j) (mod num-base-fields) (= idx))
+             ^{:key [i j]}
+             [:rect {:x (* i part-width)
+                     :y (* j part-height)
+                     :width part-width
+                     :height part-height
+                     :fill "#ffffff"}]))])]
+     (for [idx (range num-base-fields)]
+       (let [mask-id (util/id "mask")
+             tincture (-> fields
+                          (get idx)
+                          :content
+                          :tincture)]
+         [:<>
+          [:mask {:id mask-id}
+           [:rect {:x -500
+                   :y -500
+                   :width 1100
+                   :height 1100
+                   :fill (str "url(#" pattern-id "-" idx ")")}]]
+          [:rect {:x -500
+                  :y -500
+                  :width 1100
+                  :height 1100
+                  :mask (str "url(#" mask-id ")")
+                  :fill (tincture/pick tincture render-options)}]]))
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:rect {:x -500
+               :y -500
+               :width 1100
+               :height 1100
+               :fill (str "url(#" pattern-id "-outline)")}])]))
 
 (defn bendy
   {:display-name "Bendy"
