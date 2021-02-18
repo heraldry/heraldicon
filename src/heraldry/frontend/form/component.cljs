@@ -1163,8 +1163,8 @@
                                                                   (util/replace-recursively :none :argent)
                                                                   (cond->
                                                                    (= value key) (util/replace-recursively :azure :or)))
-                                                      :layout    {:num-fields-y (when (= key :chequy)
-                                                                                  7)}}})}
+                                                      :layout {:num-fields-y (when (= key :chequy)
+                                                                               7)}}})}
                           100
                           (-> coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
@@ -1509,39 +1509,40 @@
            [form-for-content (conj path :content)]
            [checkbox (conj path :division :hints :outline?) "Outline"])])]
      (cond
-       (= division-type :chequy) [:div.parts.components {:style {:margin-bottom "0.5em"}}
-                                  [:ul
-                                   (let [tinctures @(rf/subscribe [:get (conj path :division :fields)])]
-                                     (for [idx (range (count tinctures))]
-                                       ^{:key idx}
-                                       [:li
-                                        [form-for-tincture (conj path :division :fields idx :content :tincture)
-                                         :label (str "Tincture " (inc idx))]]))]]
-       (not counterchanged?)     [:div.parts.components
-                                  [:ul
-                                   (let [content              @(rf/subscribe [:get (conj path :division :fields)])
-                                         mandatory-part-count (division/mandatory-part-count division)]
-                                     (for [[idx part] (map-indexed vector content)]
-                                       (let [part-path (conj path :division :fields idx)
-                                             part-name (division/part-name division-type idx)
-                                             ref       (:ref part)]
+       (#{:chequy
+          :lozengy} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
+                                    [:ul
+                                     (let [tinctures @(rf/subscribe [:get (conj path :division :fields)])]
+                                       (for [idx (range (count tinctures))]
                                          ^{:key idx}
                                          [:li
-                                          [:div
-                                           (if ref
-                                             [component part-path :ref (str "Same as " (division/part-name division-type ref)) part-name]
-                                             [form-for-field part-path :title-prefix part-name])]
-                                          [:div {:style {:padding-left "10px"}}
-                                           (if ref
-                                             [:a {:on-click #(do (state/dispatch-on-event % [:set part-path (get content ref)])
-                                                                 (state/dispatch-on-event % [:ui-component-open part-path]))}
-                                              [:i.far.fa-edit]]
-                                             (when (>= idx mandatory-part-count)
-                                               [:a {:on-click #(state/dispatch-on-event % [:set (conj part-path :ref)
-                                                                                           (-> (division/default-fields division)
-                                                                                               (get idx)
-                                                                                               :ref)])}
-                                                [:i.far.fa-times-circle]]))]])))]])
+                                          [form-for-tincture (conj path :division :fields idx :content :tincture)
+                                           :label (str "Tincture " (inc idx))]]))]]
+       (not counterchanged?)       [:div.parts.components
+                                    [:ul
+                                     (let [content              @(rf/subscribe [:get (conj path :division :fields)])
+                                           mandatory-part-count (division/mandatory-part-count division)]
+                                       (for [[idx part] (map-indexed vector content)]
+                                         (let [part-path (conj path :division :fields idx)
+                                               part-name (division/part-name division-type idx)
+                                               ref       (:ref part)]
+                                           ^{:key idx}
+                                           [:li
+                                            [:div
+                                             (if ref
+                                               [component part-path :ref (str "Same as " (division/part-name division-type ref)) part-name]
+                                               [form-for-field part-path :title-prefix part-name])]
+                                            [:div {:style {:padding-left "10px"}}
+                                             (if ref
+                                               [:a {:on-click #(do (state/dispatch-on-event % [:set part-path (get content ref)])
+                                                                   (state/dispatch-on-event % [:ui-component-open part-path]))}
+                                                [:i.far.fa-edit]]
+                                               (when (>= idx mandatory-part-count)
+                                                 [:a {:on-click #(state/dispatch-on-event % [:set (conj part-path :ref)
+                                                                                             (-> (division/default-fields division)
+                                                                                                 (get idx)
+                                                                                                 :ref)])}
+                                                  [:i.far.fa-times-circle]]))]])))]])
      [:div {:style {:margin-bottom "0.5em"}}
       [:button {:on-click #(state/dispatch-on-event % [:add-component path default/ordinary])}
        [:i.fas.fa-plus] " Add ordinary"]

@@ -193,6 +193,13 @@
                                                    [:layout :offset-y]
                                                    [:layout :stretch-y]]
                                                   {[:layout :num-fields-y :default] nil})
+       :lozengy                     (pick-options [[:layout :num-fields-x]
+                                                   [:layout :offset-x]
+                                                   [:layout :stretch-x]
+                                                   [:layout :num-fields-y]
+                                                   [:layout :offset-y]
+                                                   [:layout :stretch-y]]
+                                                  {[:layout :num-fields-y :default] nil})
        :bendy                       (pick-options [[:line]
                                                    [:layout :num-base-fields]
                                                    [:layout :num-fields-y]
@@ -242,8 +249,10 @@
                                                    [:diagonal-mode :default] :forty-five-debrees
                                                    [:line :offset :min]      0})
        {})
-     (update-in [:line] #(options/merge (line/options (get-in division [:line]))
-                                        %)))))
+     (update-in [:line] (fn [line]
+                          (when line
+                            (options/merge (line/options (get-in division [:line]))
+                                           line)))))))
 
 (defn mandatory-part-count [{:keys [type] :as division}]
   (let [{:keys [num-base-fields]} (options/sanitize division (options division))]
@@ -1490,7 +1499,8 @@
         points                  (:points environment)
         top-left                (:top-left points)
         bottom-right            (:bottom-right points)
-        {:keys [num-fields-x
+        {:keys [num-base-fields
+                num-fields-x
                 offset-x
                 stretch-x
                 num-fields-y
@@ -1516,8 +1526,7 @@
                                     (* stretch-y))
         middle-x                (/ width 2)
         middle-y                (/ height 2)
-        pattern-id              (util/id "chequy")
-        num-base-fields         (count fields)]
+        pattern-id              (util/id "chequy")]
     [:g
      [:defs
       (when (or (:outline? render-options)
@@ -1538,6 +1547,7 @@
           [:path {:d (str "M 0," part-height " h " part-width)}]
           [:path {:d (str "M " part-width ",0 v " part-height)}]]])
       (for [idx (range num-base-fields)]
+        ^{:key idx}
         [:pattern {:id            (str pattern-id "-" idx)
                    :width         (* part-width num-base-fields)
                    :height        (* part-height num-base-fields)
@@ -1568,6 +1578,125 @@
                           (get idx)
                           :content
                           :tincture)]
+         ^{:key idx}
+         [:<>
+          [:mask {:id mask-id}
+           [:rect {:x      -500
+                   :y      -500
+                   :width  1100
+                   :height 1100
+                   :fill   (str "url(#" pattern-id "-" idx ")")}]]
+          [:rect {:x      -500
+                  :y      -500
+                  :width  1100
+                  :height 1100
+                  :mask   (str "url(#" mask-id ")")
+                  :fill   (tincture/pick tincture render-options)}]]))
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:rect {:x      -500
+               :y      -500
+               :width  1100
+               :height 1100
+               :fill   (str "url(#" pattern-id "-outline)")}])]))
+
+(defn lozengy
+  {:display-name "Lozengy"
+   :parts        []}
+  [{:keys [fields hints] :as division} environment {:keys [render-options]}]
+  (let [{:keys [layout]}        (options/sanitize division (options division))
+        points                  (:points environment)
+        top-left                (:top-left points)
+        bottom-right            (:bottom-right points)
+        {:keys [num-fields-x
+                offset-x
+                stretch-x
+                num-fields-y
+                offset-y
+                stretch-y]}     layout
+        offset-x                (or offset-x 0)
+        stretch-x               (or stretch-x 1)
+        width                   (- (:x bottom-right)
+                                   (:x top-left))
+        unstretched-part-width  (-> width
+                                    (/ num-fields-x))
+        part-width              (-> unstretched-part-width
+                                    (* stretch-x))
+        offset-y                (or offset-y 0)
+        stretch-y               (or stretch-y 1)
+        height                  (- (:y bottom-right)
+                                   (:y top-left))
+        unstretched-part-height (if num-fields-y
+                                  (-> height
+                                      (/ num-fields-y))
+                                  part-width)
+        part-height             (-> unstretched-part-height
+                                    (* stretch-y))
+        middle-x                (/ width 2)
+        middle-y                (/ height 2)
+        pattern-id              (util/id "lozengy")
+        lozenge-shape           (svg/make-path ["M" [(/ part-width 2) 0]
+                                                "L" [part-width (/ part-height 2)]
+                                                "L" [(/ part-width 2) part-height]
+                                                "L" [0 (/ part-height 2)]
+                                                "z"])]
+    [:g
+     [:defs
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:pattern {:id            (str pattern-id "-outline")
+                   :width         part-width
+                   :height        part-height
+                   :x             (+ (* part-width offset-x) (- middle-x
+                                                                (* middle-x stretch-x)))
+                   :y             (+ (* part-height offset-y) (- middle-y
+                                                                 (* middle-y
+                                                                    stretch-y
+                                                                    (if num-fields-y 1 stretch-x))))
+                   :pattern-units "userSpaceOnUse"}
+         [:g outline-style
+          [:path {:d lozenge-shape}]]])
+      [:pattern {:id            (str pattern-id "-0")
+                 :width         part-width
+                 :height        part-height
+                 :x             (+ (* part-width offset-x) (- middle-x
+                                                              (* middle-x stretch-x)))
+                 :y             (+ (* part-height offset-y) (- middle-y
+                                                               (* middle-y
+                                                                  stretch-y
+                                                                  (if num-fields-y 1 stretch-x))))
+                 :pattern-units "userSpaceOnUse"}
+       [:rect {:x      0
+               :y      0
+               :width  part-width
+               :height part-height
+               :fill   "#000000"}]
+       [:path {:d    lozenge-shape
+               :fill "#ffffff"}]]
+      [:pattern {:id            (str pattern-id "-1")
+                 :width         part-width
+                 :height        part-height
+                 :x             (+ (* part-width offset-x) (- middle-x
+                                                              (* middle-x stretch-x)))
+                 :y             (+ (* part-height offset-y) (- middle-y
+                                                               (* middle-y
+                                                                  stretch-y
+                                                                  (if num-fields-y 1 stretch-x))))
+                 :pattern-units "userSpaceOnUse"}
+       [:rect {:x      0
+               :y      0
+               :width  part-width
+               :height part-height
+               :fill   "#ffffff"}]
+       [:path {:d    lozenge-shape
+               :fill "#000000"}]]]
+     (for [idx (range 2)]
+       (let [mask-id  (util/id "mask")
+             tincture (-> fields
+                          (get idx)
+                          :content
+                          :tincture)]
+         ^{:key idx}
          [:<>
           [:mask {:id mask-id}
            [:rect {:x      -500
@@ -2002,7 +2131,8 @@
    #'barry
    #'bendy
    #'bendy-sinister
-   #'chequy])
+   #'chequy
+   #'lozengy])
 
 (def kinds-function-map
   (->> divisions
