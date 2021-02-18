@@ -1465,7 +1465,13 @@
          (-> options :stretch-y :min)
          (-> options :stretch-y :max)
          :step 0.01
-         :default (options/get-value (:stretch-y layout) (:stretch-y options))])]]))
+         :default (options/get-value (:stretch-y layout) (:stretch-y options))])
+      (when (-> options :rotation)
+        [range-input-with-checkbox (conj layout-path :rotation) "Rotation"
+         (-> options :rotation :min)
+         (-> options :rotation :max)
+         :step 5
+         :default (options/get-value (:rotation layout) (:rotation options))])]]))
 
 (defn form-for-field [path & {:keys [parent-field title-prefix]}]
   (let [division (-> @(rf/subscribe [:get path])
