@@ -75,7 +75,7 @@
                                      :integer? true}
                    :num-base-fields {:type     :range
                                      :min      2
-                                     :max      6
+                                     :max      8
                                      :default  2
                                      :integer? true}
                    :offset-x        {:type    :range
