@@ -57,19 +57,40 @@
 ;; views
 
 (defn parse-number-with-unit [s]
-  (let [[_ num unit] (re-matches #"(?i)^ *([0-9e.]*) *([a-z]*)$" s)
-        value (if (-> num count (= 0))
-                0
-                (js/parseFloat num))
-        factor (case (s/lower-case unit)
-                 "px" 1
-                 "in" 96
-                 "cm" 37.795
-                 "mm" 3.7795
-                 "pt" 1.3333
-                 "pc" 16
-                 1)]
-    (* value factor)))
+  (when s
+    (let [[_ num unit] (re-matches #"(?i)^ *([0-9e.]*) *([a-z]*)$" s)
+          value (if (-> num count (= 0))
+                  0
+                  (js/parseFloat num))
+          factor (case (s/lower-case unit)
+                   "px" 1
+                   "in" 96
+                   "cm" 37.795
+                   "mm" 3.7795
+                   "pt" 1.3333
+                   "pc" 16
+                   1)]
+      (* value factor))))
+
+(defn parse-width-height-from-viewbox [s]
+  (when s
+    (let [[_ x0 y0 x1 y1] (re-matches #"(?i)^ *([0-9e.]*) *([0-9e.]*) *([0-9e.]*) *([0-9e.]*)$" s)
+          x0 (if (-> x0 count (= 0))
+               0
+               (js/parseFloat x0))
+          y0 (if (-> y0 count (= 0))
+               0
+               (js/parseFloat y0))
+          x1 (if (-> x1 count (= 0))
+               0
+               (js/parseFloat x1))
+          y1 (if (-> y1 count (= 0))
+               0
+               (js/parseFloat y1))]
+      (if (and x0 y0 y0 y1)
+        [(- x1 x0)
+         (- y1 y0)]
+        [nil nil]))))
 
 (defn load-svg-file [db-path data]
   (go-catch
@@ -90,6 +111,14 @@
                      height (-> parsed
                                 (get-in [1 :height])
                                 parse-number-with-unit)
+                     [width height] (if (and width height)
+                                      [width height]
+                                      (-> parsed
+                                          (get-in [1 :viewbox])
+                                          parse-width-height-from-viewbox))
+                     [width height] (if (and width height)
+                                      [width height]
+                                      [100 100])
                      colours (into {}
                                    (map (fn [c]
                                           [c :keep]) (find-colours
