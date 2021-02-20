@@ -1318,17 +1318,33 @@
            " (inherited)"]))]]))
 
 (defn form-for-line [path & {:keys [title options defaults] :or {title "Line"}}]
-  (let [line              @(rf/subscribe [:get path])
-        line-type         (or (:type line)
-                              (:type defaults))
-        line-eccentricity (or (:eccentricity line)
-                              (:eccentricity defaults))
-        line-height       (or (:height line)
-                              (:height defaults))
-        line-width        (or (:width line)
-                              (:width defaults))
-        line-offset       (or (:offset line)
-                              (:offset defaults))]
+  (let [line                     @(rf/subscribe [:get path])
+        line-type                (or (:type line)
+                                     (:type defaults))
+        line-eccentricity        (or (:eccentricity line)
+                                     (:eccentricity defaults))
+        line-height              (or (:height line)
+                                     (:height defaults))
+        line-width               (or (:width line)
+                                     (:width defaults))
+        line-offset              (or (:offset line)
+                                     (:offset defaults))
+        fimbriation-mode         (or (-> line :fimbriation :mode)
+                                     (-> defaults :fimbriation :mode))
+        fimbriation-alignment    (or (-> line :fimbriation :alignment)
+                                     (-> defaults :fimbriation :alignment))
+        fimbriation-outline?     (or (-> line :fimbriation :outline?)
+                                     (-> defaults :fimbriation :outline?))
+        fimbriation-thickness-1  (or (-> line :fimbriation :thickness-1)
+                                     (-> defaults :fimbriation :thickness-1))
+        fimbriation-tincture-1   (or (-> line :fimbriation :tincture-1)
+                                     (-> defaults :fimbriation :tincture-1))
+        fimbriation-thickness-2  (or (-> line :fimbriation :thickness-2)
+                                     (-> defaults :fimbriation :thickness-2))
+        fimbriation-tincture-2   (or (-> line :fimbriation :tincture-2)
+                                     (-> defaults :fimbriation :tincture-2))
+        current-fimbriation-mode (options/get-value fimbriation-mode
+                                                    (-> options :fimbriation :mode))]
     [:div.setting
      [:label title]
      " "
@@ -1366,7 +1382,61 @@
          :default (or (:offset defaults)
                       (options/get-value line-offset (:offset options)))])
       (when (:flipped? options)
-        [checkbox (conj path :flipped?) "Flipped"])]]))
+        [checkbox (conj path :flipped?) "Flipped"])
+      (when (:fimbriation options)
+        (let [fimbriation-path (conj path :fimbriation)
+              link-name        (case fimbriation-mode
+                                 :single (util/combine ", " ["single"
+                                                             (util/translate-cap-first fimbriation-tincture-1)])
+                                 :double (util/combine ", " ["double"
+                                                             (util/translate-cap-first fimbriation-tincture-2)
+                                                             (util/translate-cap-first fimbriation-tincture-1)])
+                                 "None")]
+          [:div.setting
+           [:label "Fimbriation"]
+           " "
+           [submenu fimbriation-path "Fimbriation" link-name {}
+            (when (-> options :fimbriation :mode)
+              [select (conj fimbriation-path :mode) "Mode"
+               (-> options :fimbriation :mode :choices)
+               :default (-> options :fimbriation :mode :default)])
+            (when (and (not= current-fimbriation-mode :none)
+                       (-> options :fimbriation :alignment))
+              [select (conj fimbriation-path :alignment) "Alignment"
+               (-> options :fimbriation :alignment :choices)
+               :default (-> options :fimbriation :alignment :default)])
+            (when (and (not= current-fimbriation-mode :none)
+                       (-> options :fimbriation :outline?))
+              [checkbox (conj fimbriation-path :outline?) "Outline"])
+            (when (and (#{:single :double} current-fimbriation-mode)
+                       (-> options :fimbriation :thickness-1))
+              [range-input (conj fimbriation-path :thickness-1)
+               (str "Thickness"
+                    (when (#{:double} current-fimbriation-mode) " 1"))
+               (-> options :fimbriation :thickness-1 :min)
+               (-> options :fimbriation :thickness-1 :max)
+               :default (or (-> defaults :fimbriation :thickness-1)
+                            (options/get-value (-> line :fimbriation :thickness-1)
+                                               (-> options :fimbriation :thickness-1)))
+               :display-function #(str % "%")])
+            (when (and (#{:single :double} fimbriation-mode)
+                       (-> options :fimbriation :tincture-1))
+              [form-for-tincture (conj fimbriation-path :tincture-1)
+               :label (str "Tincture"
+                           (when (#{:double} current-fimbriation-mode) " 1"))])
+            (when (and (#{:double} current-fimbriation-mode)
+                       (-> options :fimbriation :thickness-2))
+              [range-input (conj fimbriation-path :thickness-2) "Thickness 2"
+               (-> options :fimbriation :thickness-2 :min)
+               (-> options :fimbriation :thickness-2 :max)
+               :default (or (-> defaults :fimbriation :thickness-2)
+                            (options/get-value (-> line :fimbriation :thickness-2)
+                                               (-> options :fimbriation :thickness-2)))
+               :display-function #(str % "%")])
+            (when (and (#{:double} current-fimbriation-mode)
+                       (-> options :fimbriation :tincture-2))
+              [form-for-tincture (conj fimbriation-path :tincture-2)
+               :label "Tincture 2"])]]))]]))
 
 (defn form-for-content [path]
   [:div.form-content
