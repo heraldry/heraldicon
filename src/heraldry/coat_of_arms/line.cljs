@@ -6,6 +6,7 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.random :as random]
             [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
@@ -276,6 +277,22 @@
 (def line-map
   (util/choices->map choices))
 
+(def fimbriation-choices
+  [["None" :none]
+   ["Single" :single]
+   ["Double" :double]])
+
+(def fimbriation-map
+  (util/choices->map fimbriation-choices))
+
+(def fimbriation-alignment-choices
+  [["Even" :even]
+   ["Outside" :outside]
+   ["Inside" :inside]])
+
+(def fimbriation-alignment-map
+  (util/choices->map fimbriation-alignment-choices))
+
 (def default-options
   {:type {:type :choice
           :choices choices
@@ -297,7 +314,31 @@
             :max 3
             :default 0}
    :flipped? {:type :boolean
-              :default false}})
+              :default false}
+   :fimbriation {:mode {:type :choice
+                        :choices fimbriation-choices
+                        :default :none}
+                 :alignment {:type :choice
+                             :choices fimbriation-alignment-choices
+                             :default :even}
+                 :outline? {:type :boolean
+                            :default false}
+                 :thickness-1 {:type :range
+                               :min 1
+                               :max 10
+                               :default 3}
+                 :tincture-1 {:type :choice
+                              :choices (-> [["None" :none]]
+                                           (into tincture/choices))
+                              :default :none}
+                 :thickness-2 {:type :range
+                               :min 1
+                               :max 10
+                               :default 3}
+                 :tincture-2 {:type :choice
+                              :choices (-> [["None" :none]]
+                                           (into tincture/choices))
+                              :default :none}}})
 
 (defn options [line]
   (options/merge
