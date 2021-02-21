@@ -462,7 +462,7 @@
                        (cond->
                         (or (and flipped? (not line-flipped?))
                             (and (not flipped?) line-flipped?)) (.scale 1 -1))
-                       (.rotate (+ angle 180))
+                       (.rotate angle)
                        .toString))
         (assoc :fimbriation-2
                (some-> adjusted-fimbriation-2
