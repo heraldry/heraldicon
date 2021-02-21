@@ -113,6 +113,20 @@
                          (not (:flipped? line))
                          (:flipped? line)))))
 
+(defn render-tinctured-area [tincture path render-options]
+  (let [mask-id (util/id "mask")]
+    [:<>
+     [:defs
+      [:mask {:id mask-id}
+       [:path {:d (svg/make-path path)
+               :fill "#ffffff"}]]]
+     [:rect {:x -500
+             :y -500
+             :width 1100
+             :height 1100
+             :mask (str "url(#" mask-id ")")
+             :fill (tincture/pick tincture render-options)}]]))
+
 (defn pale
   {:display-name "Pale"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
@@ -239,63 +253,45 @@
                 field)]
     [:<>
      (when line-one-fimbriation-1
-       (let [mask-id (util/id "mask")]
-         [:<>
-          [:defs
-           [:mask {:id mask-id}
-            [:path {:d (svg/make-path
-                        ["M" (v/+ first-left line-one-offset)
-                         (line/stitch line-one)
-                         (infinity/path :counter-clockwise
-                                        [:right :right]
-                                        [(v/+ first-right
-                                              line-one-offset)
-                                         (v/+ first-right
-                                              line-one-fimbriation-1-offset)])
-                         (line/stitch line-one-fimbriation-1)
-                         (infinity/path :counter-clockwise
-                                        [:left :left]
-                                        [(v/+ first-left
-                                              line-one-fimbriation-1-offset)
-                                         (v/+ first-left
-                                              line-one-offset)])
-                         "z"])
-                    :fill "#ffffff"}]]]
-          [:rect {:x -500
-                  :y -500
-                  :width 1100
-                  :height 1100
-                  :mask (str "url(#" mask-id ")")
-                  :fill (tincture/pick (-> line :fimbriation :tincture-1) render-options)}]]))
+       [render-tinctured-area
+        (-> line :fimbriation :tincture-1)
+        ["M" (v/+ first-left line-one-offset)
+         (line/stitch line-one)
+         (infinity/path :counter-clockwise
+                        [:right :right]
+                        [(v/+ first-right
+                              line-one-offset)
+                         (v/+ first-right
+                              line-one-fimbriation-1-offset)])
+         (line/stitch line-one-fimbriation-1)
+         (infinity/path :counter-clockwise
+                        [:left :left]
+                        [(v/+ first-left
+                              line-one-fimbriation-1-offset)
+                         (v/+ first-left
+                              line-one-offset)])
+         "z"]
+        render-options])
      (when line-one-fimbriation-2
-       (let [mask-id (util/id "mask")]
-         [:<>
-          [:defs
-           [:mask {:id mask-id}
-            [:path {:d (svg/make-path
-                        ["M" (v/+ first-left line-one-fimbriation-2-offset)
-                         (line/stitch line-one)
-                         (infinity/path :clockwise
-                                        [:right :right]
-                                        [(v/+ first-right
-                                              line-one-fimbriation-2-offset)
-                                         (v/+ first-right
-                                              line-one-fimbriation-1-offset)])
-                         (line/stitch line-one-fimbriation-1)
-                         (infinity/path :clockwise
-                                        [:left :left]
-                                        [(v/+ first-left
-                                              line-one-fimbriation-1-offset)
-                                         (v/+ first-left
-                                              line-one-fimbriation-2-offset)])
-                         "z"])
-                    :fill "#ffffff"}]]]
-          [:rect {:x -500
-                  :y -500
-                  :width 1100
-                  :height 1100
-                  :mask (str "url(#" mask-id ")")
-                  :fill (tincture/pick (-> line :fimbriation :tincture-2) render-options)}]]))
+       [render-tinctured-area
+        (-> line :fimbriation :tincture-2)
+        ["M" (v/+ first-left line-one-fimbriation-2-offset)
+         (line/stitch line-one)
+         (infinity/path :clockwise
+                        [:right :right]
+                        [(v/+ first-right
+                              line-one-fimbriation-2-offset)
+                         (v/+ first-right
+                              line-one-fimbriation-1-offset)])
+         (line/stitch line-one-fimbriation-1)
+         (infinity/path :clockwise
+                        [:left :left]
+                        [(v/+ first-left
+                              line-one-fimbriation-1-offset)
+                         (v/+ first-left
+                              line-one-fimbriation-2-offset)])
+         "z"]
+        render-options])
      [division/make-division
       :ordinary-fess [field] parts
       [:all]
@@ -307,7 +303,16 @@
                       (line/stitch line-one)])}]
          [:path {:d (svg/make-path
                      ["M" second-right-adjusted
-                      (line/stitch line-reversed)])}]])
+                      (line/stitch line-reversed)])}]
+         (when line-one-fimbriation-1
+           [:path {:d (svg/make-path
+                       ["M" (v/+ first-right line-one-fimbriation-1-offset)
+                        (line/stitch line-one-fimbriation-1)])}])
+         (when line-one-fimbriation-2
+           [:path {:d (svg/make-path
+                       ["M" (v/+ first-left line-one-fimbriation-2-offset)
+                        (line/stitch line-one-fimbriation-2)])}])])
+
       environment ordinary context]]))
 
 (defn chief
