@@ -188,6 +188,67 @@
                      (line/stitch line-reversed)])}]])
      environment ordinary context]))
 
+(defn render-fimbriation [start end [first second]
+                          {line :line
+                           line-offset :line-offset
+                           line-fimbriation-1 :fimbriation-1
+                           line-fimbriation-1-offset :fimbriation-1-offset
+                           line-fimbriation-2 :fimbriation-2
+                           line-fimbriation-2-offset :fimbriation-2-offset}
+                          {:keys [:tincture-1 :tincture-2]}
+                          render-options]
+  (let [fimbriation-elements [:<>
+                              (when line-fimbriation-1
+                                [render-tinctured-area
+                                 tincture-1
+                                 ["M" (v/+ start line-offset)
+                                  (line/stitch line)
+                                  (infinity/path :counter-clockwise
+                                                 [second second]
+                                                 [(v/+ end
+                                                       line-offset)
+                                                  (v/+ end
+                                                       line-fimbriation-1-offset)])
+                                  (line/stitch line-fimbriation-1)
+                                  (infinity/path :counter-clockwise
+                                                 [first first]
+                                                 [(v/+ start
+                                                       line-fimbriation-1-offset)
+                                                  (v/+ start
+                                                       line-offset)])
+                                  "z"]
+                                 render-options])
+                              (when line-fimbriation-2
+                                [render-tinctured-area
+                                 tincture-2
+                                 ["M" (v/+ start line-fimbriation-2-offset)
+                                  (line/stitch line)
+                                  (infinity/path :clockwise
+                                                 [second second]
+                                                 [(v/+ end
+                                                       line-fimbriation-2-offset)
+                                                  (v/+ end
+                                                       line-fimbriation-1-offset)])
+                                  (line/stitch line-fimbriation-1)
+                                  (infinity/path :clockwise
+                                                 [first first]
+                                                 [(v/+ start
+                                                       line-fimbriation-1-offset)
+                                                  (v/+ start
+                                                       line-fimbriation-2-offset)])
+                                  "z"]
+                                 render-options])]
+        fimbriation-outlines [:<>
+                              (when line-fimbriation-1
+                                [:path {:d (svg/make-path
+                                            ["M" (v/+ end line-fimbriation-1-offset)
+                                             (line/stitch line-fimbriation-1)])}])
+                              (when line-fimbriation-2
+                                [:path {:d (svg/make-path
+                                            ["M" (v/+ start line-fimbriation-2-offset)
+                                             (line/stitch line-fimbriation-2)])}])]]
+    [fimbriation-elements fimbriation-outlines]))
+
 (defn fess
   {:display-name "Fess"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
@@ -214,12 +275,9 @@
                  (update-in [:fimbriation :thickness-2] percent-of-height))
         {line-one :line
          line-one-offset :line-offset
-         line-one-fimbriation-1 :fimbriation-1
-         line-one-fimbriation-1-offset :fimbriation-1-offset
-         line-one-fimbriation-2 :fimbriation-2
-         line-one-fimbriation-2-offset :fimbriation-2-offset} (line/create line
-                                                                           (:x (v/- right left))
-                                                                           :render-options render-options)
+         :as line-one-data} (line/create line
+                                         (:x (v/- right left))
+                                         :render-options render-options)
         {line-reversed :line
          line-reversed-length :length} (line/create opposite-line
                                                     (:x (v/- right left))
@@ -250,48 +308,13 @@
                       line-one-offset) second-left]]]
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
-                field)]
+                field)
+        [fimbriation-elements fimbriation-outlines] (render-fimbriation first-left first-right [:left :right]
+                                                                        line-one-data
+                                                                        (:fimbriation line)
+                                                                        render-options)]
     [:<>
-     (when line-one-fimbriation-1
-       [render-tinctured-area
-        (-> line :fimbriation :tincture-1)
-        ["M" (v/+ first-left line-one-offset)
-         (line/stitch line-one)
-         (infinity/path :counter-clockwise
-                        [:right :right]
-                        [(v/+ first-right
-                              line-one-offset)
-                         (v/+ first-right
-                              line-one-fimbriation-1-offset)])
-         (line/stitch line-one-fimbriation-1)
-         (infinity/path :counter-clockwise
-                        [:left :left]
-                        [(v/+ first-left
-                              line-one-fimbriation-1-offset)
-                         (v/+ first-left
-                              line-one-offset)])
-         "z"]
-        render-options])
-     (when line-one-fimbriation-2
-       [render-tinctured-area
-        (-> line :fimbriation :tincture-2)
-        ["M" (v/+ first-left line-one-fimbriation-2-offset)
-         (line/stitch line-one)
-         (infinity/path :clockwise
-                        [:right :right]
-                        [(v/+ first-right
-                              line-one-fimbriation-2-offset)
-                         (v/+ first-right
-                              line-one-fimbriation-1-offset)])
-         (line/stitch line-one-fimbriation-1)
-         (infinity/path :clockwise
-                        [:left :left]
-                        [(v/+ first-left
-                              line-one-fimbriation-1-offset)
-                         (v/+ first-left
-                              line-one-fimbriation-2-offset)])
-         "z"]
-        render-options])
+     fimbriation-elements
      [division/make-division
       :ordinary-fess [field] parts
       [:all]
@@ -304,14 +327,7 @@
          [:path {:d (svg/make-path
                      ["M" second-right-adjusted
                       (line/stitch line-reversed)])}]
-         (when line-one-fimbriation-1
-           [:path {:d (svg/make-path
-                       ["M" (v/+ first-right line-one-fimbriation-1-offset)
-                        (line/stitch line-one-fimbriation-1)])}])
-         (when line-one-fimbriation-2
-           [:path {:d (svg/make-path
-                       ["M" (v/+ first-left line-one-fimbriation-2-offset)
-                        (line/stitch line-one-fimbriation-2)])}])])
+         fimbriation-outlines])
 
       environment ordinary context]]))
 
