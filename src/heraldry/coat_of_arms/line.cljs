@@ -12,23 +12,43 @@
 
 (declare options)
 
-(defn line-with-offset [length offset pattern-width pattern]
+(defn line-with-offset [length offset pattern-width pattern & {:keys [reversed?]}]
   (let [offset-length (* offset pattern-width)
         repetitions   (-> length
                           (- offset-length)
                           (/ pattern-width)
                           Math/ceil
                           int
-                          inc)]
-    {:line   (-> [["l" offset-length 0]]
-                 (into (->> pattern
-                            (repeat repetitions)))
-                 (->> (apply merge))
-                 (conj ["l" offset-length 0])
-                 vec)
-     :offset (min 0 offset-length)
-     :length (-> (* repetitions pattern-width)
-                 (+ (* offset-length 2)))}))
+                          inc)
+        actual-length (-> (* repetitions pattern-width)
+                          (cond->
+                           (pos? offset-length) (+ offset-length)))
+        start-offset  (v/v (min 0 offset-length) 0)
+        end-offset    (-> (v/v actual-length 0)
+                          (cond->
+                           (neg? offset-length) (v/+ (v/v offset-length 0)))
+                          (v/- (v/v length 0)))]
+    {:line         (-> []
+                       (cond->
+                        (and (not reversed?)
+                             (pos? offset-length)) (into [["l" offset-length 0]]))
+                       (into (repeat repetitions pattern))
+                       (cond->
+                        (and reversed?
+                             (pos? offset-length)) (into [["l" offset-length 0]]))
+                       (->> (apply merge))
+                       vec)
+     :offset       (min 0 offset-length)
+     :length       (-> (* repetitions pattern-width)
+                       (+ (* offset-length 2)))
+     :start-offset (if reversed?
+                     (v/- (v/v 0 0)
+                          end-offset)
+                     start-offset)
+     :end-offset   (if reversed?
+                     (v/- (v/v 0 0)
+                          start-offset)
+                     end-offset)}))
 
 (defn straight
   {:display-name "Straight"}
@@ -48,9 +68,8 @@
                                                                                             fimbriation-thickness-2)
                                                  :else                                   0)]
     {:line                 ["h" length]
-     :line-offset          (v/v 0 base-line)
-     :start                0
-     :length               length
+     :start-offset         (v/v 0 base-line)
+     :end-offset           (v/v length base-line)
      :fimbriation-1        (when (#{:single :double} fimbriation-mode)
                              ["h" length])
      :fimbriation-1-offset (when (#{:single :double} fimbriation-mode)
@@ -65,7 +84,7 @@
 
 (defn invected
   {:display-name "Invected"}
-  [values length _]
+  [values length line-options]
   (let [{:keys [eccentricity
                 height
                 offset
@@ -79,7 +98,8 @@
         radius-y        (* radius-x height)]
     (line-with-offset
      length offset width
-     ["a" radius-x radius-y 0 0 1 [width 0]])))
+     ["a" radius-x radius-y 0 0 1 [width 0]]
+     :reversed? (:reversed? line-options))))
 
 (defn engrailed
   {:display-name "Engrailed"}
@@ -423,7 +443,7 @@
   (let [line-function          (get kinds-function-map type)
         line-data              (line-function
                                 line
-                                (+ length extra) line-options)
+                                length line-options)
         line-options-values    (options/sanitize line (options line))
         line-flipped?          (:flipped? line-options-values)
         adjusted-path          (-> line-data
@@ -432,46 +452,48 @@
                                    (->>
                                     (str "M 0,0 "))
                                    (cond->
-                                       (:squiggly? render-options) (squiggly-path :seed seed)))
+                                    (:squiggly? render-options) (squiggly-path :seed seed)))
         adjusted-fimbriation-1 (some-> line-data
                                        :fimbriation-1
                                        svg/make-path
                                        (->>
                                         (str "M 0,0 "))
                                        (cond->
-                                           (:squiggly? render-options) (squiggly-path :seed [seed :fimbriation-1])))
+                                        (:squiggly? render-options) (squiggly-path :seed [seed :fimbriation-1])))
         adjusted-fimbriation-2 (some-> line-data
                                        :fimbriation-2
                                        svg/make-path
                                        (->>
                                         (str "M 0,0 "))
                                        (cond->
-                                           (:squiggly? render-options) (squiggly-path :seed [seed :fimbriation-2])))]
+                                        (:squiggly? render-options) (squiggly-path :seed [seed :fimbriation-2])))]
     (-> line-data
         (assoc :line
                (-> adjusted-path
                    svgpath
                    (cond->
-                       (or (and flipped? (not line-flipped?))
-                           (and (not flipped?) line-flipped?)) (.scale 1 -1))
+                    (or (and flipped? (not line-flipped?))
+                        (and (not flipped?) line-flipped?)) (.scale 1 -1))
                    (.rotate angle)
                    .toString))
         (assoc :fimbriation-1
                (some-> adjusted-fimbriation-1
                        svgpath
                        (cond->
-                           (or (and flipped? (not line-flipped?))
-                               (and (not flipped?) line-flipped?)) (.scale 1 -1))
+                        (or (and flipped? (not line-flipped?))
+                            (and (not flipped?) line-flipped?)) (.scale 1 -1))
                        (.rotate angle)
                        .toString))
         (assoc :fimbriation-2
                (some-> adjusted-fimbriation-2
                        svgpath
                        (cond->
-                           (or (and flipped? (not line-flipped?))
-                               (and (not flipped?) line-flipped?)) (.scale 1 -1))
+                        (or (and flipped? (not line-flipped?))
+                            (and (not flipped?) line-flipped?)) (.scale 1 -1))
                        (.rotate angle)
                        .toString))
+        (update :start-offset (fn [p] (when p (v/rotate p angle))))
+        (update :end-offset (fn [p] (when p (v/rotate p angle))))
         (update :line-offset (fn [p] (when p (v/rotate p angle))))
         (update :fimbriation-1-offset (fn [p] (when p (v/rotate p angle))))
         (update :fimbriation-2-offset (fn [p] (when p (v/rotate p angle)))))))
