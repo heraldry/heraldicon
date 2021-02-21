@@ -103,11 +103,11 @@
 
 (defn sanitize-opposite-line [ordinary line]
   (-> (options/sanitize
-       (merge line
-              (into {}
-                    (filter (fn [[_ v]]
-                              (some? v))
-                            (:opposite-line ordinary))))
+       (util/deep-merge-with second line
+                             (into {}
+                                   (filter (fn [[_ v]]
+                                             (some? v))
+                                           (:opposite-line ordinary))))
        (-> ordinary options :opposite-line))
       (assoc :flipped? (if (-> ordinary :opposite-line :flipped?)
                          (not (:flipped? line))
@@ -222,7 +222,7 @@
                                 [render-tinctured-area
                                  tincture-2
                                  ["M" (v/+ start line-fimbriation-2-offset)
-                                  (line/stitch line)
+                                  (line/stitch line-fimbriation-2)
                                   (infinity/path :clockwise
                                                  [second second]
                                                  [(v/+ end
@@ -279,11 +279,13 @@
                                          (:x (v/- right left))
                                          :render-options render-options)
         {line-reversed :line
-         line-reversed-length :length} (line/create opposite-line
-                                                    (:x (v/- right left))
-                                                    :reversed? true
-                                                    :angle 180
-                                                    :render-options render-options)
+         line-reversed-offset :line-offset
+         line-reversed-length :length
+         :as line-reversed-data} (line/create opposite-line
+                                              (:x (v/- right left))
+                                              :reversed? true
+                                              :angle 180
+                                              :render-options render-options)
         first-left (v/v (:x left) row1)
         first-right (v/v (:x right) row1)
         second-left (v/v (:x left) row2)
@@ -296,25 +298,36 @@
                                 [:right :right]
                                 [(v/+ first-right
                                       line-one-offset)
-                                 second-right-adjusted])
+                                 (v/+ second-right-adjusted
+                                      line-reversed-offset)])
                  (line/stitch line-reversed)
                  (infinity/path :clockwise
                                 [:left :left]
-                                [second-left
+                                [(v/+ second-left
+                                      line-reversed-offset)
                                  (v/+ first-left
                                       line-one-offset)])
                  "z"]
                 [(v/+ first-right
-                      line-one-offset) second-left]]]
+                      line-one-offset)
+                 (v/+ second-left
+                      line-reversed-offset)]]]
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)
-        [fimbriation-elements fimbriation-outlines] (render-fimbriation first-left first-right [:left :right]
-                                                                        line-one-data
-                                                                        (:fimbriation line)
-                                                                        render-options)]
+        [fimbriation-elements-1 fimbriation-outlines-1] (render-fimbriation first-left first-right
+                                                                            [:left :right]
+                                                                            line-one-data
+                                                                            (:fimbriation line)
+                                                                            render-options)
+        [fimbriation-elements-2 fimbriation-outlines-2] (render-fimbriation second-right-adjusted second-left
+                                                                            [:right :left]
+                                                                            line-reversed-data
+                                                                            (:fimbriation opposite-line)
+                                                                            render-options)]
     [:<>
-     fimbriation-elements
+     fimbriation-elements-1
+     fimbriation-elements-2
      [division/make-division
       :ordinary-fess [field] parts
       [:all]
@@ -325,10 +338,10 @@
                      ["M" (v/+ first-left line-one-offset)
                       (line/stitch line-one)])}]
          [:path {:d (svg/make-path
-                     ["M" second-right-adjusted
+                     ["M" (v/+ second-right-adjusted line-reversed-offset)
                       (line/stitch line-reversed)])}]
-         fimbriation-outlines])
-
+         fimbriation-outlines-1
+         fimbriation-outlines-2])
       environment ordinary context]]))
 
 (defn chief
