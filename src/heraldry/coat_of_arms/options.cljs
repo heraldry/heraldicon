@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.options
-  (:require [clojure.walk :as walk]))
+  (:require [clojure.walk :as walk]
+            [heraldry.util :as util]))
 
 (def types #{:range :choice :boolean})
 
@@ -7,8 +8,7 @@
   (let [value (or value (:default options))]
     (case (:type options)
       :boolean (boolean value)
-      :choice  (let [choices (into #{}
-                                   (map second (:choices options)))]
+      :choice  (let [choices (util/choices->map (:choices options))]
                  (if (contains? choices value)
                    value
                    (-> options :choices first second)))

@@ -7,6 +7,7 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
@@ -176,60 +177,138 @@
 (defn fess
   {:display-name "Fess"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
-        {:keys [size]}                 geometry
-        opposite-line                  (sanitize-opposite-line ordinary line)
-        points                         (:points environment)
-        origin-point                   (position/calculate origin environment :fess)
-        left                           (assoc (:left points) :y (:y origin-point))
-        right                          (assoc (:right points) :y (:y origin-point))
-        height                         (:height environment)
-        band-height                    (-> height
-                                           (* size)
-                                           (/ 100))
-        row1                           (- (:y origin-point) (/ band-height 2))
-        row2                           (+ row1 band-height)
-        first-left                     (v/v (:x left) row1)
-        first-right                    (v/v (:x right) row1)
-        second-left                    (v/v (:x left) row2)
-        second-right                   (v/v (:x right) row2)
-        {line-one :line}               (line/create line
-                                                    (:x (v/- right left))
-                                                    :render-options render-options)
+  (let [{:keys [line origin geometry]}                        (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                                        geometry
+        opposite-line                                         (sanitize-opposite-line ordinary line)
+        points                                                (:points environment)
+        origin-point                                          (position/calculate origin environment :fess)
+        left                                                  (assoc (:left points) :y (:y origin-point))
+        right                                                 (assoc (:right points) :y (:y origin-point))
+        height                                                (:height environment)
+        band-height                                           (-> height
+                                                                  (* size)
+                                                                  (/ 100))
+        row1                                                  (- (:y origin-point) (/ band-height 2))
+        row2                                                  (+ row1 band-height)
+        percent-of-height                                     (fn [v]
+                                                                (when v
+                                                                  (-> v
+                                                                      (* 100)
+                                                                      (/ height))))
+        line                                                  (-> line
+                                                                  (update-in [:fimbriation :thickness-1] percent-of-height)
+                                                                  (update-in [:fimbriation :thickness-2] percent-of-height))
+        {line-one                      :line
+         line-one-offset               :line-offset
+         line-one-fimbriation-1        :fimbriation-1
+         line-one-fimbriation-1-offset :fimbriation-1-offset
+         line-one-fimbriation-2        :fimbriation-2
+         line-one-fimbriation-2-offset :fimbriation-2-offset} (line/create line
+                                                                           (:x (v/- right left))
+                                                                           :render-options render-options)
         {line-reversed        :line
-         line-reversed-length :length} (line/create opposite-line
-                                                    (:x (v/- right left))
-                                                    :reversed? true
-                                                    :angle 180
-                                                    :render-options render-options)
-        second-right-adjusted          (v/extend second-left second-right line-reversed-length)
-        parts                          [[["M" first-left
-                                          (line/stitch line-one)
-                                          (infinity/path :clockwise
-                                                         [:right :right]
-                                                         [first-right second-right-adjusted])
-                                          (line/stitch line-reversed)
-                                          (infinity/path :clockwise
-                                                         [:left :left]
-                                                         [second-left first-left])
-                                          "z"]
-                                         [first-right second-left]]]
-        field                          (if (charge/counterchangable? field parent)
-                                         (charge/counterchange-field field parent)
-                                         field)]
-    [division/make-division
-     :ordinary-fess [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g division/outline-style
-        [:path {:d (svg/make-path
-                    ["M" first-left
-                     (line/stitch line-one)])}]
-        [:path {:d (svg/make-path
-                    ["M" second-right-adjusted
-                     (line/stitch line-reversed)])}]])
-     environment ordinary context]))
+         line-reversed-length :length}                        (line/create opposite-line
+                                                                           (:x (v/- right left))
+                                                                           :reversed? true
+                                                                           :angle 180
+                                                                           :render-options render-options)
+        first-left                                            (v/v (:x left) row1)
+        first-right                                           (v/v (:x right) row1)
+        second-left                                           (v/v (:x left) row2)
+        second-right                                          (v/v (:x right) row2)
+        second-right-adjusted                                 (v/extend second-left second-right line-reversed-length)
+        parts                                                 [[["M" (v/+ first-left
+                                                                          line-one-offset)
+                                                                 (line/stitch line-one)
+                                                                 (infinity/path :clockwise
+                                                                                [:right :right]
+                                                                                [(v/+ first-right
+                                                                                      line-one-offset)
+                                                                                 second-right-adjusted])
+                                                                 (line/stitch line-reversed)
+                                                                 (infinity/path :clockwise
+                                                                                [:left :left]
+                                                                                [second-left
+                                                                                 (v/+ first-left
+                                                                                      line-one-offset)])
+                                                                 "z"]
+                                                                [(v/+ first-right
+                                                                      line-one-offset) second-left]]]
+        field                                                 (if (charge/counterchangable? field parent)
+                                                                (charge/counterchange-field field parent)
+                                                                field)]
+    [:<>
+     (when line-one-fimbriation-1
+       (let [mask-id (util/id "mask")]
+         [:<>
+          [:defs
+           [:mask {:id mask-id}
+            [:path {:d    (svg/make-path
+                           ["M" (v/+ first-left line-one-offset)
+                            (line/stitch line-one)
+                            (infinity/path :counter-clockwise
+                                           [:right :right]
+                                           [(v/+ first-right
+                                                 line-one-offset)
+                                            (v/+ first-right
+                                                 line-one-fimbriation-1-offset)])
+                            (line/stitch line-one-fimbriation-1)
+                            (infinity/path :counter-clockwise
+                                           [:left :left]
+                                           [(v/+ first-left
+                                                 line-one-fimbriation-1-offset)
+                                            (v/+ first-left
+                                                 line-one-offset)])
+                            "z"])
+                    :fill "#ffffff"}]]]
+          [:rect {:x      -500
+                  :y      -500
+                  :width  1100
+                  :height 1100
+                  :mask   (str "url(#" mask-id ")")
+                  :fill   (tincture/pick (-> line :fimbriation :tincture-1) render-options)}]]))
+     (when line-one-fimbriation-2
+       (let [mask-id (util/id "mask")]
+         [:<>
+          [:defs
+           [:mask {:id mask-id}
+            [:path {:d    (svg/make-path
+                           ["M" (v/+ first-left line-one-fimbriation-2-offset)
+                            (line/stitch line-one)
+                            (infinity/path :clockwise
+                                           [:right :right]
+                                           [(v/+ first-right
+                                                 line-one-fimbriation-2-offset)
+                                            (v/+ first-right
+                                                 line-one-fimbriation-1-offset)])
+                            (line/stitch line-one-fimbriation-1)
+                            (infinity/path :clockwise
+                                           [:left :left]
+                                           [(v/+ first-left
+                                                 line-one-fimbriation-1-offset)
+                                            (v/+ first-left
+                                                 line-one-fimbriation-2-offset)])
+                            "z"])
+                    :fill "#ffffff"}]]]
+          [:rect {:x      -500
+                  :y      -500
+                  :width  1100
+                  :height 1100
+                  :mask   (str "url(#" mask-id ")")
+                  :fill   (tincture/pick (-> line :fimbriation :tincture-2) render-options)}]]))
+     [division/make-division
+      :ordinary-fess [field] parts
+      [:all]
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:g division/outline-style
+         [:path {:d (svg/make-path
+                     ["M" (v/+ first-left line-one-offset)
+                      (line/stitch line-one)])}]
+         [:path {:d (svg/make-path
+                     ["M" second-right-adjusted
+                      (line/stitch line-reversed)])}]])
+      environment ordinary context]]))
 
 (defn chief
   {:display-name "Chief"}
