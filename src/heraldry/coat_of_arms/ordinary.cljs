@@ -198,6 +198,26 @@
                           {:keys [:tincture-1 :tincture-2]}
                           render-options]
   (let [fimbriation-elements [:<>
+                              (when line-fimbriation-2
+                                [render-tinctured-area
+                                 tincture-2
+                                 ["M" (v/+ start line-offset)
+                                  (line/stitch line)
+                                  (infinity/path :counter-clockwise
+                                                 [second second]
+                                                 [(v/+ end
+                                                       line-offset)
+                                                  (v/+ end
+                                                       line-fimbriation-2-offset)])
+                                  (line/stitch line-fimbriation-1)
+                                  (infinity/path :counter-clockwise
+                                                 [first first]
+                                                 [(v/+ start
+                                                       line-fimbriation-2-offset)
+                                                  (v/+ start
+                                                       line-offset)])
+                                  "z"]
+                                 render-options])
                               (when line-fimbriation-1
                                 [render-tinctured-area
                                  tincture-1
@@ -217,31 +237,11 @@
                                                   (v/+ start
                                                        line-offset)])
                                   "z"]
-                                 render-options])
-                              (when line-fimbriation-2
-                                [render-tinctured-area
-                                 tincture-2
-                                 ["M" (v/+ start line-fimbriation-2-offset)
-                                  (line/stitch line-fimbriation-2)
-                                  (infinity/path :clockwise
-                                                 [second second]
-                                                 [(v/+ end
-                                                       line-fimbriation-2-offset)
-                                                  (v/+ end
-                                                       line-fimbriation-1-offset)])
-                                  (line/stitch line-fimbriation-1)
-                                  (infinity/path :clockwise
-                                                 [first first]
-                                                 [(v/+ start
-                                                       line-fimbriation-1-offset)
-                                                  (v/+ start
-                                                       line-fimbriation-2-offset)])
-                                  "z"]
                                  render-options])]
         fimbriation-outlines [:<>
                               (when line-fimbriation-1
                                 [:path {:d (svg/make-path
-                                            ["M" (v/+ end line-fimbriation-1-offset)
+                                            ["M" (v/+ start line-fimbriation-1-offset)
                                              (line/stitch line-fimbriation-1)])}])
                               (when line-fimbriation-2
                                 [:path {:d (svg/make-path
