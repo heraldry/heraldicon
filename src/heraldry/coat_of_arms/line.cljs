@@ -352,7 +352,7 @@
                   :thickness-1 {:type    :range
                                 :min     1
                                 :max     10
-                                :default 3}
+                                :default 6}
                   :tincture-1  {:type    :choice
                                 :choices (-> [["None" :none]]
                                              (into tincture/choices))
