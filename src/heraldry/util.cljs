@@ -62,3 +62,11 @@
   (println msg)
   (pprint value)
   value)
+
+(defn deep-merge-with [f & maps]
+  (apply
+   (fn m [& maps]
+     (if (every? map? maps)
+       (apply merge-with m maps)
+       (apply f maps)))
+   maps))
