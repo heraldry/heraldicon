@@ -380,176 +380,219 @@
 (defn chief
   {:display-name "Chief"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line geometry]}              (options/sanitize ordinary (options ordinary))
-        {:keys [size]}                       geometry
-        points                               (:points environment)
-        top                                  (:top points)
-        top-left                             (:top-left points)
-        left                                 (:left points)
-        right                                (:right points)
-        height                               (:height environment)
-        band-height                          (-> height
-                                                 (* size)
-                                                 (/ 100))
-        row                                  (+ (:y top) band-height)
-        row-left                             (v/v (:x left) row)
-        row-right                            (v/v (:x right) row)
+  (let [{:keys [line geometry]}                         (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                                  geometry
+        points                                          (:points environment)
+        top                                             (:top points)
+        top-left                                        (:top-left points)
+        left                                            (:left points)
+        right                                           (:right points)
+        height                                          (:height environment)
+        band-height                                     (-> height
+                                                            (* size)
+                                                            (/ 100))
+        row                                             (+ (:y top) band-height)
+        row-left                                        (v/v (:x left) row)
+        row-right                                       (v/v (:x right) row)
+        line                                            (-> line
+                                                            (update-in [:fimbriation :thickness-1] (percent-of height))
+                                                            (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-reversed        :line
-         line-reversed-offset :start-offset} (line/create line
-                                                          (:x (v/- right left))
-                                                          :reversed? true
-                                                          :angle 180
-                                                          :render-options render-options)
-        parts                                [[["M" (v/+ row-right
-                                                         line-reversed-offset)
-                                                (line/stitch line-reversed)
-                                                (infinity/path :clockwise
-                                                               [:left :right]
-                                                               [(v/+ row-left
-                                                                     line-reversed-offset)
-                                                                (v/+ row-right
-                                                                     line-reversed-offset)])
-                                                "z"]
-                                               [top-left (v/+ row-right
-                                                              line-reversed-offset)]]]
-        field                                (if (charge/counterchangable? field parent)
-                                               (charge/counterchange-field field parent)
-                                               field)]
-    [division/make-division
-     :ordinary-chief [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g division/outline-style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ row-right
-                              line-reversed-offset)
-                     (line/stitch line-reversed)])}]])
-     environment ordinary context]))
+         line-reversed-offset :start-offset
+         :as                  line-reversed-data}       (line/create line
+                                                                     (:x (v/- right left))
+                                                                     :reversed? true
+                                                                     :angle 180
+                                                                     :render-options render-options)
+        parts                                           [[["M" (v/+ row-right
+                                                                    line-reversed-offset)
+                                                           (line/stitch line-reversed)
+                                                           (infinity/path :clockwise
+                                                                          [:left :right]
+                                                                          [(v/+ row-left
+                                                                                line-reversed-offset)
+                                                                           (v/+ row-right
+                                                                                line-reversed-offset)])
+                                                           "z"]
+                                                          [top-left (v/+ row-right
+                                                                         line-reversed-offset)]]]
+        field                                           (if (charge/counterchangable? field parent)
+                                                          (charge/counterchange-field field parent)
+                                                          field)
+        [fimbriation-elements-1 fimbriation-outlines-1] (render-fimbriation row-right row-left
+                                                                            [:right :left]
+                                                                            line-reversed-data
+                                                                            (:fimbriation line)
+                                                                            render-options)]
+    [:<>
+     fimbriation-elements-1
+     [division/make-division
+      :ordinary-chief [field] parts
+      [:all]
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:g division/outline-style
+         [:path {:d (svg/make-path
+                     ["M" (v/+ row-right
+                               line-reversed-offset)
+                      (line/stitch line-reversed)])}]
+         fimbriation-outlines-1])
+      environment ordinary context]]))
 
 (defn base
   {:display-name "Base"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line geometry]}         (options/sanitize ordinary (options ordinary))
-        {:keys [size]}                  geometry
-        points                          (:points environment)
-        bottom                          (:bottom points)
-        bottom-right                    (:bottom-right points)
-        left                            (:left points)
-        right                           (:right points)
-        height                          (:height environment)
-        band-height                     (-> height
-                                            (* size)
-                                            (/ 100))
-        row                             (- (:y bottom) band-height)
-        row-left                        (v/v (:x left) row)
-        row-right                       (v/v  (:x right) row)
+  (let [{:keys [line geometry]}                         (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                                  geometry
+        points                                          (:points environment)
+        bottom                                          (:bottom points)
+        bottom-right                                    (:bottom-right points)
+        left                                            (:left points)
+        right                                           (:right points)
+        height                                          (:height environment)
+        band-height                                     (-> height
+                                                            (* size)
+                                                            (/ 100))
+        row                                             (- (:y bottom) band-height)
+        row-left                                        (v/v (:x left) row)
+        row-right                                       (v/v  (:x right) row)
+        line                                            (-> line
+                                                            (update-in [:fimbriation :thickness-1] (percent-of height))
+                                                            (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-one        :line
-         line-one-offset :start-offset} (line/create line
-                                                     (:x (v/- right left))
-                                                     :render-options render-options)
-        parts                           [[["M" (v/+ row-left
-                                                    line-one-offset)
-                                           (line/stitch line-one)
-                                           (infinity/path :clockwise
-                                                          [:right :left]
-                                                          [(v/+ row-right
-                                                                line-one-offset)
-                                                           (v/+ row-left
-                                                                line-one-offset)])
-                                           "z"]
-                                          [(v/+ row-left
-                                                line-one-offset) bottom-right]]]
-        field                           (if (charge/counterchangable? field parent)
-                                          (charge/counterchange-field field parent)
-                                          field)]
-    [division/make-division
-     :ordinary-base [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g division/outline-style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ row-left
-                              line-one-offset)
-                     (line/stitch line-one)])}]])
-     environment ordinary context]))
+         line-one-offset :start-offset
+         :as             line-one-data}                 (line/create line
+                                                                     (:x (v/- right left))
+                                                                     :render-options render-options)
+        parts                                           [[["M" (v/+ row-left
+                                                                    line-one-offset)
+                                                           (line/stitch line-one)
+                                                           (infinity/path :clockwise
+                                                                          [:right :left]
+                                                                          [(v/+ row-right
+                                                                                line-one-offset)
+                                                                           (v/+ row-left
+                                                                                line-one-offset)])
+                                                           "z"]
+                                                          [(v/+ row-left
+                                                                line-one-offset) bottom-right]]]
+        field                                           (if (charge/counterchangable? field parent)
+                                                          (charge/counterchange-field field parent)
+                                                          field)
+        [fimbriation-elements-1 fimbriation-outlines-1] (render-fimbriation row-left row-right
+                                                                            [:left :right]
+                                                                            line-one-data
+                                                                            (:fimbriation line)
+                                                                            render-options)]
+    [:<>
+     fimbriation-elements-1
+     [division/make-division
+      :ordinary-base [field] parts
+      [:all]
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:g division/outline-style
+         [:path {:d (svg/make-path
+                     ["M" (v/+ row-left
+                               line-one-offset)
+                      (line/stitch line-one)])}]
+         fimbriation-outlines-1])
+      environment ordinary context]]))
 
 (defn bend
   {:display-name "Bend"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
-        {:keys [size]}                               geometry
-        opposite-line                                (sanitize-opposite-line ordinary line)
-        points                                       (:points environment)
-        top-left                                     (:top-left points)
-        origin-point                                 (position/calculate origin environment :fess)
-        left                                         (:left points)
-        right                                        (:right points)
-        height                                       (:height environment)
-        band-height                                  (-> height
-                                                         (* size)
-                                                         (/ 100))
-        direction                                    (division/direction diagonal-mode points origin-point)
-        direction-orthogonal                         (v/v (-> direction :y) (-> direction :x -))
-        diagonal-start                               (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
-        diagonal-end                                 (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
-        angle                                        (division/angle-to-point diagonal-start diagonal-end)
-        required-half-length                         (v/distance-point-to-line top-left origin-point (v/+ origin-point direction-orthogonal))
-        bend-length                                  (* required-half-length 2)
-        line-length                                  (-> diagonal-end
-                                                         (v/- diagonal-start)
-                                                         v/abs
-                                                         (* 4))
-        offset                                       (-> line
-                                                         :width
-                                                         (* (-> line-length
-                                                                (/ 4)
-                                                                (/ (:width line))
-                                                                Math/ceil
-                                                                inc))
-                                                         -)
-        row1                                         (- (/ band-height 2))
-        row2                                         (+ row1 band-height)
-        first-left                                   (v/v offset row1)
-        first-right                                  (v/v (+ offset line-length) row1)
-        second-left                                  (v/v offset row2)
-        second-right                                 (v/v (+ offset line-length) row2)
+  (let [{:keys [line origin diagonal-mode geometry]}    (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                                  geometry
+        opposite-line                                   (sanitize-opposite-line ordinary line)
+        points                                          (:points environment)
+        top-left                                        (:top-left points)
+        origin-point                                    (position/calculate origin environment :fess)
+        left                                            (:left points)
+        right                                           (:right points)
+        height                                          (:height environment)
+        band-height                                     (-> height
+                                                            (* size)
+                                                            (/ 100))
+        direction                                       (division/direction diagonal-mode points origin-point)
+        direction-orthogonal                            (v/v (-> direction :y) (-> direction :x -))
+        diagonal-start                                  (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
+        diagonal-end                                    (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
+        angle                                           (division/angle-to-point diagonal-start diagonal-end)
+        required-half-length                            (v/distance-point-to-line top-left origin-point (v/+ origin-point direction-orthogonal))
+        bend-length                                     (* required-half-length 2)
+        line-length                                     (-> diagonal-end
+                                                            (v/- diagonal-start)
+                                                            v/abs
+                                                            (* 4))
+        period                                          (-> line
+                                                            :width
+                                                            (or 1))
+        offset                                          (-> period
+                                                            (* (-> line-length
+                                                                   (/ 4)
+                                                                   (/ period)
+                                                                   Math/ceil
+                                                                   inc))
+                                                            -)
+        row1                                            (- (/ band-height 2))
+        row2                                            (+ row1 band-height)
+        first-left                                      (v/v offset row1)
+        first-right                                     (v/v (+ offset line-length) row1)
+        second-left                                     (v/v offset row2)
+        second-right                                    (v/v (+ offset line-length) row2)
+        line                                            (-> line
+                                                            (update-in [:fimbriation :thickness-1] (percent-of height))
+                                                            (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-one        :line
-         line-one-offset :start-offset}              (line/create line
-                                                                  line-length
-                                                                  :render-options render-options)
+         line-one-offset :start-offset
+         :as             line-one-data}                 (line/create line
+                                                                     line-length
+                                                                     :render-options render-options)
         {line-reversed        :line
-         line-reversed-offset :start-offset}         (line/create opposite-line
-                                                                  line-length
-                                                                  :reversed? true
-                                                                  :angle 180
-                                                                  :render-options render-options)
-        parts                                        [[["M" (v/+ first-left
-                                                                 line-one-offset)
-                                                        (line/stitch line-one)
-                                                        (infinity/path :clockwise
-                                                                       [:right :right]
-                                                                       [(v/+ first-right
-                                                                             line-one-offset)
-                                                                        (v/+ second-right
-                                                                             line-reversed-offset)])
-                                                        (line/stitch line-reversed)
-                                                        (infinity/path :clockwise
-                                                                       [:left :left]
-                                                                       [(v/+ second-left
-                                                                             line-reversed-offset)
-                                                                        (v/+ first-left
-                                                                             line-one-offset)])
-                                                        "z"]
-                                                       [(v/v 0 row1) (v/v bend-length row2)]]]
-        counterchanged?                              (charge/counterchangable? field parent)
-        field                                        (if counterchanged?
-                                                       (charge/counterchange-field field parent)
-                                                       field)]
+         line-reversed-offset :start-offset
+         :as                  line-reversed-data}       (line/create opposite-line
+                                                                     line-length
+                                                                     :reversed? true
+                                                                     :angle 180
+                                                                     :render-options render-options)
+        parts                                           [[["M" (v/+ first-left
+                                                                    line-one-offset)
+                                                           (line/stitch line-one)
+                                                           (infinity/path :clockwise
+                                                                          [:right :right]
+                                                                          [(v/+ first-right
+                                                                                line-one-offset)
+                                                                           (v/+ second-right
+                                                                                line-reversed-offset)])
+                                                           (line/stitch line-reversed)
+                                                           (infinity/path :clockwise
+                                                                          [:left :left]
+                                                                          [(v/+ second-left
+                                                                                line-reversed-offset)
+                                                                           (v/+ first-left
+                                                                                line-one-offset)])
+                                                           "z"]
+                                                          [(v/v 0 row1) (v/v bend-length row2)]]]
+        counterchanged?                                 (charge/counterchangable? field parent)
+        field                                           (if counterchanged?
+                                                          (charge/counterchange-field field parent)
+                                                          field)
+        [fimbriation-elements-1 fimbriation-outlines-1] (render-fimbriation first-left first-right
+                                                                            [:left :right]
+                                                                            line-one-data
+                                                                            (:fimbriation line)
+                                                                            render-options)
+        [fimbriation-elements-2 fimbriation-outlines-2] (render-fimbriation second-right second-left
+                                                                            [:right :left]
+                                                                            line-reversed-data
+                                                                            (:fimbriation opposite-line)
+                                                                            render-options)]
     [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
                          "rotate(" angle ")"
                          "translate(" (- required-half-length) "," 0 ")")}
+     fimbriation-elements-1
+     fimbriation-elements-2
      [division/make-division
       :ordinary-fess [field] parts
       [:all]
@@ -563,7 +606,9 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ second-right
                                line-reversed-offset)
-                      (line/stitch line-reversed)])}]])
+                      (line/stitch line-reversed)])}]
+         fimbriation-outlines-1
+         fimbriation-outlines-2])
       environment ordinary (-> context
                                (assoc :transform (when (or counterchanged?
                                                            (:inherit-environment? field))
@@ -574,78 +619,97 @@
 (defn bend-sinister
   {:display-name "Bend sinister"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
-        {:keys [size]}                               geometry
-        opposite-line                                (sanitize-opposite-line ordinary line)
-        points                                       (:points environment)
-        top-right                                    (:top-right points)
-        origin-point                                 (position/calculate origin environment :fess)
-        left                                         (:left points)
-        right                                        (:right points)
-        height                                       (:height environment)
-        band-height                                  (-> height
-                                                         (* size)
-                                                         (/ 100))
-        direction                                    (division/direction diagonal-mode points origin-point)
-        direction-orthogonal                         (v/v (-> direction :y) (-> direction :x))
-        diagonal-start                               (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
-        diagonal-end                                 (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
-        angle                                        (division/angle-to-point diagonal-start diagonal-end)
-        required-half-length                         (v/distance-point-to-line top-right origin-point (v/+ origin-point direction-orthogonal))
-        bend-length                                  (* required-half-length 2)
-        line-length                                  (-> diagonal-end
-                                                         (v/- diagonal-start)
-                                                         v/abs
-                                                         (* 4))
-        row1                                         (- (/ band-height 2))
-        row2                                         (+ row1 band-height)
-        offset                                       (-> line
-                                                         :width
-                                                         (* (-> line-length
-                                                                (/ 4)
-                                                                (/ (:width line))
-                                                                Math/ceil
-                                                                inc))
-                                                         -)
-        first-left                                   (v/v offset row1)
-        first-right                                  (v/v (+ offset line-length) row1)
-        second-left                                  (v/v offset row2)
-        second-right                                 (v/v (+ offset line-length) row2)
+  (let [{:keys [line origin diagonal-mode geometry]}    (options/sanitize ordinary (options ordinary))
+        {:keys [size]}                                  geometry
+        opposite-line                                   (sanitize-opposite-line ordinary line)
+        points                                          (:points environment)
+        top-right                                       (:top-right points)
+        origin-point                                    (position/calculate origin environment :fess)
+        left                                            (:left points)
+        right                                           (:right points)
+        height                                          (:height environment)
+        band-height                                     (-> height
+                                                            (* size)
+                                                            (/ 100))
+        direction                                       (division/direction diagonal-mode points origin-point)
+        direction-orthogonal                            (v/v (-> direction :y) (-> direction :x))
+        diagonal-start                                  (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-end                                    (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
+        angle                                           (division/angle-to-point diagonal-start diagonal-end)
+        required-half-length                            (v/distance-point-to-line top-right origin-point (v/+ origin-point direction-orthogonal))
+        bend-length                                     (* required-half-length 2)
+        line-length                                     (-> diagonal-end
+                                                            (v/- diagonal-start)
+                                                            v/abs
+                                                            (* 4))
+        row1                                            (- (/ band-height 2))
+        row2                                            (+ row1 band-height)
+        period                                          (-> line
+                                                            :width
+                                                            (or 1))
+        offset                                          (-> period
+                                                            (* (-> line-length
+                                                                   (/ 4)
+                                                                   (/ period)
+                                                                   Math/ceil
+                                                                   inc))
+                                                            -)
+        first-left                                      (v/v offset row1)
+        first-right                                     (v/v (+ offset line-length) row1)
+        second-left                                     (v/v offset row2)
+        second-right                                    (v/v (+ offset line-length) row2)
+        line                                            (-> line
+                                                            (update-in [:fimbriation :thickness-1] (percent-of height))
+                                                            (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-one        :line
-         line-one-offset :start-offset}              (line/create line
-                                                                  line-length
-                                                                  :render-options render-options)
+         line-one-offset :start-offset
+         :as             line-one-data}                 (line/create line
+                                                                     line-length
+                                                                     :render-options render-options)
         {line-reversed        :line
-         line-reversed-offset :start-offset}         (line/create opposite-line
-                                                                  line-length
-                                                                  :reversed? true
-                                                                  :angle 180
-                                                                  :render-options render-options)
-        parts                                        [[["M" (v/+ first-left
-                                                                 line-one-offset)
-                                                        (line/stitch line-one)
-                                                        (infinity/path :clockwise
-                                                                       [:right :right]
-                                                                       [(v/+ first-right
-                                                                             line-one-offset)
-                                                                        (v/+ second-right
-                                                                             line-reversed-offset)])
-                                                        (line/stitch line-reversed)
-                                                        (infinity/path :clockwise
-                                                                       [:left :left]
-                                                                       [(v/+ second-left
-                                                                             line-reversed-offset)
-                                                                        (v/+ first-left
-                                                                             line-one-offset)])
-                                                        "z"]
-                                                       [(v/v 0 row1) (v/v bend-length row2)]]]
-        counterchanged?                              (charge/counterchangable? field parent)
-        field                                        (if counterchanged?
-                                                       (charge/counterchange-field field parent)
-                                                       field)]
+         line-reversed-offset :start-offset
+         :as                  line-reversed-data}       (line/create opposite-line
+                                                                     line-length
+                                                                     :reversed? true
+                                                                     :angle 180
+                                                                     :render-options render-options)
+        parts                                           [[["M" (v/+ first-left
+                                                                    line-one-offset)
+                                                           (line/stitch line-one)
+                                                           (infinity/path :clockwise
+                                                                          [:right :right]
+                                                                          [(v/+ first-right
+                                                                                line-one-offset)
+                                                                           (v/+ second-right
+                                                                                line-reversed-offset)])
+                                                           (line/stitch line-reversed)
+                                                           (infinity/path :clockwise
+                                                                          [:left :left]
+                                                                          [(v/+ second-left
+                                                                                line-reversed-offset)
+                                                                           (v/+ first-left
+                                                                                line-one-offset)])
+                                                           "z"]
+                                                          [(v/v 0 row1) (v/v bend-length row2)]]]
+        counterchanged?                                 (charge/counterchangable? field parent)
+        field                                           (if counterchanged?
+                                                          (charge/counterchange-field field parent)
+                                                          field)
+        [fimbriation-elements-1 fimbriation-outlines-1] (render-fimbriation first-left first-right
+                                                                            [:left :right]
+                                                                            line-one-data
+                                                                            (:fimbriation line)
+                                                                            render-options)
+        [fimbriation-elements-2 fimbriation-outlines-2] (render-fimbriation second-right second-left
+                                                                            [:right :left]
+                                                                            line-reversed-data
+                                                                            (:fimbriation opposite-line)
+                                                                            render-options)]
     [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
                          "rotate(" angle ")"
                          "translate(" (- required-half-length) "," 0 ")")}
+     fimbriation-elements-1
+     fimbriation-elements-2
      [division/make-division
       :ordinary-fess [field] parts
       [:all]
@@ -659,7 +723,9 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ second-right
                                line-reversed-offset)
-                      (line/stitch line-reversed)])}]])
+                      (line/stitch line-reversed)])}]
+         fimbriation-outlines-1
+         fimbriation-outlines-2])
       environment ordinary (-> context
                                (assoc :transform (when (or counterchanged?
                                                            (:inherit-environment? field))
