@@ -18,7 +18,7 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
-            [heraldry.util :refer [id full-url-for-username]]
+            [heraldry.util :refer [deep-merge-with id full-url-for-username]]
             [re-frame.core :as rf]))
 
 (def coa-select-option-context
@@ -180,15 +180,19 @@
  (fn [db [_ path new-type]]
    (-> db
        (assoc-in (conj path :type) new-type)
-       (update-in path #(merge %
-                               (options/sanitize-or-nil % (ordinary/options %)))))))
+       (update-in path #(deep-merge-with (fn [_current-value new-value]
+                                           new-value)
+                                         %
+                                         (options/sanitize-or-nil % (ordinary/options %)))))))
 (rf/reg-event-db
  :set-charge-type
  (fn [db [_ path new-type]]
    (-> db
        (assoc-in (conj path :type) new-type)
-       (update-in path #(merge %
-                               (options/sanitize-or-nil % (charge/options %)))))))
+       (update-in path #(deep-merge-with (fn [_current-value new-value]
+                                           new-value)
+                                         %
+                                         (options/sanitize-or-nil % (charge/options %)))))))
 
 (rf/reg-event-fx
  :add-component
