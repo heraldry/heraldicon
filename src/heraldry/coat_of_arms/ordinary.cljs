@@ -128,82 +128,16 @@
              :mask (str "url(#" mask-id ")")
              :fill (tincture/pick tincture render-options)}]]))
 
-(defn pale
-  {:display-name "Pale"}
-  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
-        opposite-line (sanitize-opposite-line ordinary line)
-        {:keys [size]} geometry
-        points (:points environment)
-        origin-point (position/calculate origin environment :fess)
-        top (assoc (:top points) :x (:x origin-point))
-        bottom (assoc (:bottom points) :x (:x origin-point))
-        width (:width environment)
-        band-width (-> width
-                       (* size)
-                       (/ 100))
-        col1 (- (:x origin-point) (/ band-width 2))
-        col2 (+ col1 band-width)
-        first-top (v/v col1 (:y top))
-        first-bottom (v/v col1 (:y bottom))
-        second-top (v/v col2 (:y top))
-        second-bottom (v/v col2 (:y bottom))
-        {line-one :line
-         line-one-offset :start-offset} (line/create line
-                                                     (:y (v/- bottom top))
-                                                     :flipped? true
-                                                     :angle 90
-                                                     :render-options render-options)
-        {line-reversed :line
-         line-reversed-offset :start-offset} (line/create opposite-line
-                                                          (:y (v/- bottom top))
-                                                          :angle -90
-                                                          :flipped? true
-                                                          :reversed? true
-                                                          :render-options render-options)
-        parts [[["M" (v/+ first-top
-                          line-one-offset)
-                 (line/stitch line-one)
-                 (infinity/path :counter-clockwise
-                                [:bottom :bottom]
-                                [(v/+ first-bottom
-                                      line-one-offset)
-                                 (v/+ second-bottom
-                                      line-reversed-offset)])
-                 (line/stitch line-reversed)
-                 (infinity/path :counter-clockwise
-                                [:top :top]
-                                [(v/+ second-top
-                                      line-reversed-offset)
-                                 (v/+ first-top
-                                      line-one-offset)])
-                 "z"]
-                [(v/+ first-top
-                      line-one-offset)
-                 (v/+ second-bottom
-                      line-reversed-offset)]]]
-        field (if (charge/counterchangable? field parent)
-                (charge/counterchange-field field parent)
-                field)]
-    [division/make-division
-     :ordinary-pale [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g division/outline-style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ first-top
-                              line-one-offset)
-                     (line/stitch line-one)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ second-bottom
-                              line-reversed-offset)
-                     (line/stitch line-reversed)])}]])
-     environment ordinary context]))
+(defn percent-of [value]
+  (fn [v]
+    (when v
+      (-> v
+          (* 100)
+          (/ value)))))
 
 (defn render-fimbriation [start end [first second]
                           {line :line
-                           line-offset :line-offset
+                           line-offset :start-offset
                            line-fimbriation-1 :fimbriation-1
                            line-fimbriation-1-offset :fimbriation-1-offset
                            line-fimbriation-2 :fimbriation-2
@@ -262,6 +196,99 @@
                                              (line/stitch line-fimbriation-2)])}])]]
     [fimbriation-elements fimbriation-outlines]))
 
+(defn pale
+  {:display-name "Pale"}
+  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
+        opposite-line (sanitize-opposite-line ordinary line)
+        {:keys [size]} geometry
+        points (:points environment)
+        origin-point (position/calculate origin environment :fess)
+        top (assoc (:top points) :x (:x origin-point))
+        bottom (assoc (:bottom points) :x (:x origin-point))
+        width (:width environment)
+        band-width (-> width
+                       (* size)
+                       (/ 100))
+        col1 (- (:x origin-point) (/ band-width 2))
+        col2 (+ col1 band-width)
+        first-top (v/v col1 (:y top))
+        first-bottom (v/v col1 (:y bottom))
+        second-top (v/v col2 (:y top))
+        second-bottom (v/v col2 (:y bottom))
+        line (-> line
+                 (update-in [:fimbriation :thickness-1] (percent-of width))
+                 (update-in [:fimbriation :thickness-2] (percent-of width)))
+        {line-one :line
+         line-one-offset :start-offset
+         :as line-one-data} (line/create line
+                                         (:y (v/- bottom top))
+                                         :angle -90
+                                         :reversed? true
+                                         :flipped? true
+                                         :render-options render-options)
+        {line-reversed :line
+         line-reversed-offset :start-offset
+         :as line-reversed-data} (line/create opposite-line
+                                              (:y (v/- bottom top))
+                                              :angle 90
+                                              :flipped? true
+                                              :render-options render-options)
+        parts [[["M" (v/+ first-bottom
+                          line-one-offset)
+                 (line/stitch line-one)
+                 (infinity/path :clockwise
+                                [:top :top]
+                                [(v/+ first-top
+                                      line-one-offset)
+                                 (v/+ second-top
+                                      line-reversed-offset)])
+                 (line/stitch line-reversed)
+                 (infinity/path :clockwise
+                                [:bottom :bottom]
+                                [(v/+ second-bottom
+                                      line-reversed-offset)
+                                 (v/+ first-bottom
+                                      line-one-offset)])
+                 "z"]
+                [(v/+ first-bottom
+                      line-one-offset)
+                 (v/+ second-top
+                      line-reversed-offset)]]]
+        field (if (charge/counterchangable? field parent)
+                (charge/counterchange-field field parent)
+                field)
+        [fimbriation-elements-1 fimbriation-outlines-1] (render-fimbriation first-bottom first-top
+                                                                            [:bottom :top]
+                                                                            line-one-data
+                                                                            (:fimbriation line)
+                                                                            render-options)
+        [fimbriation-elements-2 fimbriation-outlines-2] (render-fimbriation second-top second-bottom
+                                                                            [:top :bottom]
+                                                                            line-reversed-data
+                                                                            (:fimbriation opposite-line)
+                                                                            render-options)]
+    [:<>
+     fimbriation-elements-1
+     fimbriation-elements-2
+     [division/make-division
+      :ordinary-pale [field] parts
+      [:all]
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:g division/outline-style
+         [:path {:d (svg/make-path
+                     ["M" (v/+ first-bottom
+                               line-one-offset)
+                      (line/stitch line-one)])}]
+         [:path {:d (svg/make-path
+                     ["M" (v/+ second-top
+                               line-reversed-offset)
+                      (line/stitch line-reversed)])}]
+         fimbriation-outlines-1
+         fimbriation-outlines-2])
+      environment ordinary context]]))
+
 (defn fess
   {:display-name "Fess"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
@@ -278,14 +305,9 @@
                         (/ 100))
         row1 (- (:y origin-point) (/ band-height 2))
         row2 (+ row1 band-height)
-        percent-of-height (fn [v]
-                            (when v
-                              (-> v
-                                  (* 100)
-                                  (/ height))))
         line (-> line
-                 (update-in [:fimbriation :thickness-1] percent-of-height)
-                 (update-in [:fimbriation :thickness-2] percent-of-height))
+                 (update-in [:fimbriation :thickness-1] (percent-of height))
+                 (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-one :line
          line-one-offset :start-offset
          :as line-one-data} (line/create line
