@@ -103,7 +103,8 @@
 
 (defn sanitize-opposite-line [ordinary line]
   (-> (options/sanitize
-       (util/deep-merge-with second line
+       (util/deep-merge-with (fn [_current-value new-value]
+                               new-value) line
                              (into {}
                                    (filter (fn [[_ v]]
                                              (some? v))
