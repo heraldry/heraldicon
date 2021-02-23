@@ -60,6 +60,8 @@
         base-line (cond
                     (and (not= fimbriation-mode :none)
                          (= fimbriation-alignment :even)) (-> fimbriation-thickness-1
+                                                              (cond->
+                                                               (#{:double} fimbriation-mode) (+ fimbriation-thickness-2))
                                                               (/ 2))
                     (and (= fimbriation-mode :single)
                          (= fimbriation-alignment :inside)) fimbriation-thickness-1
