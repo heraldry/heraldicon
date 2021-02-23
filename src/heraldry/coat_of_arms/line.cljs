@@ -504,7 +504,6 @@
                        .toString))
         (update :start-offset (fn [p] (when p (v/rotate p angle))))
         (update :end-offset (fn [p] (when p (v/rotate p angle))))
-        (update :line-offset (fn [p] (when p (v/rotate p angle))))
         (update :fimbriation-1-offset (fn [p] (when p (v/rotate p angle))))
         (update :fimbriation-2-offset (fn [p] (when p (v/rotate p angle)))))))
 
