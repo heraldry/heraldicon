@@ -52,7 +52,7 @@
 
 (defn straight
   {:display-name "Straight"}
-  [line length _]
+  [line length {:keys [joint-angle reversed?]}]
   (let [{fimbriation-mode :mode
          fimbriation-alignment :alignment
          fimbriation-thickness-1 :thickness-1
@@ -68,21 +68,42 @@
                     (and (= fimbriation-mode :double)
                          (= fimbriation-alignment :inside)) (+ fimbriation-thickness-1
                                                                fimbriation-thickness-2)
-                    :else 0)]
+                    :else 0)
+        fimbriation-1-line (- base-line
+                              fimbriation-thickness-1)
+        fimbriation-2-line (- base-line
+                              fimbriation-thickness-1
+                              fimbriation-thickness-2)
+        offset-x-factor (if joint-angle
+                          (-> joint-angle
+                              (/ 2)
+                              (* Math/PI)
+                              (/ 180)
+                              Math/tan
+                              (->> (/ 1)))
+                          0)
+        offset-x-factor (if reversed?
+                          (- offset-x-factor)
+                          offset-x-factor)
+        start-offset-x (* base-line
+                          offset-x-factor)
+        fimbriation-1-offset-x (* fimbriation-1-line
+                                  offset-x-factor)
+        fimbriation-2-offset-x (* fimbriation-2-line
+                                  offset-x-factor)]
     {:line ["h" length]
-     :start-offset (v/v 0 base-line)
-     :end-offset (v/v length base-line)
+     :start-offset (v/v (- start-offset-x)
+                        base-line)
      :fimbriation-1 (when (#{:single :double} fimbriation-mode)
-                      ["h" length])
+                      ["h" (- length)])
      :fimbriation-1-offset (when (#{:single :double} fimbriation-mode)
-                             (v/v 0 (- base-line
-                                       fimbriation-thickness-1)))
+                             (v/v (- fimbriation-1-offset-x)
+                                  fimbriation-1-line))
      :fimbriation-2 (when (#{:double} fimbriation-mode)
-                      ["h" length])
+                      ["h" (- length)])
      :fimbriation-2-offset (when (#{:double} fimbriation-mode)
-                             (v/v 0 (- base-line
-                                       fimbriation-thickness-1
-                                       fimbriation-thickness-2)))}))
+                             (v/v (- fimbriation-2-offset-x)
+                                  fimbriation-2-line))}))
 
 (defn invected
   {:display-name "Invected"}
@@ -449,7 +470,7 @@
                                      v))))
                  data))
 
-(defn create [{:keys [type] :or {type :straight} :as line} length & {:keys [angle flipped? extra render-options seed] :or {extra 50} :as line-options}]
+(defn create [{:keys [type] :or {type :straight} :as line} length & {:keys [angle flipped? render-options seed] :as line-options}]
   (let [line-function (get kinds-function-map type)
         line-data (line-function
                    line
