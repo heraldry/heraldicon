@@ -128,12 +128,12 @@
              :mask (str "url(#" mask-id ")")
              :fill (tincture/pick tincture render-options)}]]))
 
-(defn percent-of [value]
+(defn percent-of [base-value]
   (fn [v]
     (when v
       (-> v
-          (* 100)
-          (/ value)))))
+          (* base-value)
+          (/ 100)))))
 
 (defn render-fimbriation [[start start-direction]
                           [end end-direction]
