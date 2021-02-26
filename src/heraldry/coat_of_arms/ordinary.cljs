@@ -166,7 +166,7 @@
                                                  last-fimbriation-2-end-offset)]))
                           (for [{:keys [fimbriation-2]} (reverse lines)]
                             (line/stitch fimbriation-2))
-                          (if (= first :none)
+                          (if (= start-direction :none)
                             ["L" (v/+ start
                                       first-line-start-offset)]
                             (infinity/path :counter-clockwise
@@ -195,7 +195,7 @@
                                              last-fimbriation-1-end-offset)]))
                       (for [{:keys [fimbriation-1]} (reverse lines)]
                         (line/stitch fimbriation-1))
-                      (if (= first :none)
+                      (if (= start-direction :none)
                         ["L" (v/+ start
                                   first-line-start-offset)]
                         (infinity/path :counter-clockwise
