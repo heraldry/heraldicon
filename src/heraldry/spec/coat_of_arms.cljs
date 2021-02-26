@@ -161,7 +161,8 @@
 (s/def :heraldry.render-options/outline? boolean?)
 (s/def :heraldry.render-options/squiggly? boolean?)
 (s/def :heraldry.render-options/theme tincture/theme-map)
-(s/def :heraldry.render-options/texture texture/texture-map)
+(s/def :heraldry.render-options/texture #(or (= % :none)
+                                             (texture/texture-map %)))
 (s/def :heraldry.render-options/texture-displacement? boolean?)
 (s/def :heraldry/render-options (s/and (s/keys :req-un [:heraldry/component]
                                                :opt-un [:heraldry.render-options/mode
