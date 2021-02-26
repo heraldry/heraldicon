@@ -788,48 +788,67 @@
         corner-top-right (v/v col2 row1)
         corner-bottom-left (v/v col1 row2)
         corner-bottom-right (v/v col2 row2)
+        line (-> line
+                 (update-in [:fimbriation :thickness-1] (percent-of width))
+                 (update-in [:fimbriation :thickness-2] (percent-of width)))
         {line-pale-top-left :line
-         line-pale-top-left-offset :start-offset} (line/create line
-                                                               (v/abs (v/- corner-top-left pale-top-left))
-                                                               :angle -90
-                                                               :render-options render-options)
+         line-pale-top-left-offset :start-offset
+         :as line-pale-top-left-data} (line/create line
+                                                   (v/abs (v/- corner-top-left pale-top-left))
+                                                   :angle -90
+                                                   :joint-angle 90
+                                                   :render-options render-options)
         {line-pale-top-right :line
-         line-pale-top-right-offset :start-offset} (line/create line
-                                                                (v/abs (v/- corner-top-right pale-top-right))
-                                                                :angle 90
-                                                                :reversed? true
-                                                                :render-options render-options)
+         line-pale-top-right-offset :start-offset
+         :as line-pale-top-right-data} (line/create line
+                                                    (v/abs (v/- corner-top-right pale-top-right))
+                                                    :angle 90
+                                                    :reversed? true
+                                                    :joint-angle 90
+                                                    :render-options render-options)
         {line-fess-top-right :line
-         line-fess-top-right-offset :start-offset} (line/create line
-                                                                (v/abs (v/- corner-top-right fess-top-right))
-                                                                :render-options render-options)
+         line-fess-top-right-offset :start-offset
+         :as line-fess-top-right-data} (line/create line
+                                                    (v/abs (v/- corner-top-right fess-top-right))
+                                                    :joint-angle 90
+                                                    :render-options render-options)
         {line-fess-bottom-right :line
-         line-fess-bottom-right-offset :start-offset} (line/create line
-                                                                   (v/abs (v/- corner-bottom-right fess-bottom-right))
-                                                                   :angle 180
-                                                                   :reversed? true
-                                                                   :render-options render-options)
+         line-fess-bottom-right-offset :start-offset
+         :as line-fess-bottom-right-data} (line/create line
+                                                       (v/abs (v/- corner-bottom-right fess-bottom-right))
+                                                       :angle 180
+                                                       :reversed? true
+                                                       :joint-angle 90
+                                                       :render-options render-options)
         {line-pale-bottom-right :line
-         line-pale-bottom-right-offset :start-offset} (line/create line
-                                                                   (v/abs (v/- corner-bottom-right pale-bottom-right))
-                                                                   :angle 90
-                                                                   :render-options render-options)
+         line-pale-bottom-right-offset :start-offset
+         :as line-pale-bottom-right-data} (line/create line
+                                                       (v/abs (v/- corner-bottom-right pale-bottom-right))
+                                                       :angle 90
+                                                       :joint-angle 90
+                                                       :render-options render-options)
         {line-pale-bottom-left :line
-         line-pale-bottom-left-offset :start-offset} (line/create line
-                                                                  (v/abs (v/- corner-bottom-left pale-bottom-left))
-                                                                  :angle -90
-                                                                  :reversed? true
-                                                                  :render-options render-options)
+         line-pale-bottom-left-offset :start-offset
+         :as line-pale-bottom-left-data} (line/create line
+                                                      (v/abs (v/- corner-bottom-left pale-bottom-left))
+                                                      :angle -90
+                                                      :reversed? true
+                                                      :joint-angle 90
+                                                      :render-options render-options)
         {line-fess-bottom-left :line
-         line-fess-bottom-left-offset :start-offset} (line/create line
-                                                                  (v/abs (v/- corner-bottom-left fess-bottom-left))
-                                                                  :angle 180
-                                                                  :render-options render-options)
+         line-fess-bottom-left-offset :start-offset
+         :as line-fess-bottom-left-data} (line/create line
+                                                      (v/abs (v/- corner-bottom-left fess-bottom-left))
+                                                      :angle 180
+                                                      :joint-angle 90
+                                                      :render-options render-options)
         {line-fess-top-left :line
-         line-fess-top-left-offset :start-offset} (line/create line
-                                                               (v/abs (v/- corner-top-left fess-top-left))
-                                                               :reversed? true
-                                                               :render-options render-options)
+         line-fess-top-left-offset :start-offset
+         :as line-fess-top-left-data} (line/create line
+                                                   (v/abs (v/- corner-top-left fess-top-left))
+                                                   :reversed? true
+                                                   :joint-angle 90
+                                                   :render-options render-options)
         parts [[["M" (v/+ corner-top-left
                           line-pale-top-left-offset)
                  (line/stitch line-pale-top-left)
@@ -874,46 +893,111 @@
                 [top bottom left right]]]
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
-                field)]
-    [division/make-division
-     :ordinary-pale [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g division/outline-style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-top-left
-                              line-pale-top-left-offset)
-                     (line/stitch line-pale-top-left)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ pale-top-right
-                              line-pale-top-right-offset)
-                     (line/stitch line-pale-top-right)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-top-right
-                              line-fess-top-right-offset)
-                     (line/stitch line-fess-top-right)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ fess-bottom-right
-                              line-fess-bottom-right-offset)
-                     (line/stitch line-fess-bottom-right)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-bottom-right
-                              line-pale-bottom-right-offset)
-                     (line/stitch line-pale-bottom-right)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ pale-bottom-left
-                              line-pale-bottom-left-offset)
-                     (line/stitch line-pale-bottom-left)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-bottom-left
-                              line-fess-bottom-left-offset)
-                     (line/stitch line-fess-bottom-left)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ fess-top-left
-                              line-fess-top-left-offset)
-                     (line/stitch line-fess-top-left)])}]])
-     environment ordinary context]))
+                field)
+        [fimbriation-elements-1 fimbriation-outlines-1] (render-fimbriation corner-top-left
+                                                                            pale-top-left
+                                                                            [:none :top]
+                                                                            line-pale-top-left-data
+                                                                            (:fimbriation line)
+                                                                            render-options)
+        [fimbriation-elements-2 fimbriation-outlines-2] (render-fimbriation pale-top-right
+                                                                            corner-top-right
+                                                                            [:top :none]
+                                                                            line-pale-top-right-data
+                                                                            (:fimbriation line)
+                                                                            render-options)
+        [fimbriation-elements-3 fimbriation-outlines-3] (render-fimbriation corner-top-right
+                                                                            fess-top-right
+                                                                            [:none :right]
+                                                                            line-fess-top-right-data
+                                                                            (:fimbriation line)
+                                                                            render-options)
+        [fimbriation-elements-4 fimbriation-outlines-4] (render-fimbriation fess-bottom-right
+                                                                            corner-bottom-right
+                                                                            [:right :none]
+                                                                            line-fess-bottom-right-data
+                                                                            (:fimbriation line)
+                                                                            render-options)
+        [fimbriation-elements-5 fimbriation-outlines-5] (render-fimbriation corner-bottom-right
+                                                                            pale-bottom-right
+                                                                            [:none :bottom]
+                                                                            line-pale-bottom-right-data
+                                                                            (:fimbriation line)
+                                                                            render-options)
+        [fimbriation-elements-6 fimbriation-outlines-6] (render-fimbriation pale-bottom-left
+                                                                            corner-bottom-left
+                                                                            [:bottom :none]
+                                                                            line-pale-bottom-left-data
+                                                                            (:fimbriation line)
+                                                                            render-options)
+        [fimbriation-elements-7 fimbriation-outlines-7] (render-fimbriation corner-bottom-left
+                                                                            fess-bottom-left
+                                                                            [:none :left]
+                                                                            line-fess-bottom-left-data
+                                                                            (:fimbriation line)
+                                                                            render-options)
+        [fimbriation-elements-8 fimbriation-outlines-8] (render-fimbriation fess-top-left
+                                                                            corner-top-left
+                                                                            [:left :none]
+                                                                            line-fess-top-left-data
+                                                                            (:fimbriation line)
+                                                                            render-options)]
+    [:<>
+     fimbriation-elements-1
+     fimbriation-elements-2
+     fimbriation-elements-3
+     fimbriation-elements-4
+     fimbriation-elements-5
+     fimbriation-elements-6
+     fimbriation-elements-7
+     fimbriation-elements-8
+     [division/make-division
+      :ordinary-pale [field] parts
+      [:all]
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:g division/outline-style
+         [:path {:d (svg/make-path
+                     ["M" (v/+ corner-top-left
+                               line-pale-top-left-offset)
+                      (line/stitch line-pale-top-left)])}]
+         [:path {:d (svg/make-path
+                     ["M" (v/+ pale-top-right
+                               line-pale-top-right-offset)
+                      (line/stitch line-pale-top-right)])}]
+         [:path {:d (svg/make-path
+                     ["M" (v/+ corner-top-right
+                               line-fess-top-right-offset)
+                      (line/stitch line-fess-top-right)])}]
+         [:path {:d (svg/make-path
+                     ["M" (v/+ fess-bottom-right
+                               line-fess-bottom-right-offset)
+                      (line/stitch line-fess-bottom-right)])}]
+         [:path {:d (svg/make-path
+                     ["M" (v/+ corner-bottom-right
+                               line-pale-bottom-right-offset)
+                      (line/stitch line-pale-bottom-right)])}]
+         [:path {:d (svg/make-path
+                     ["M" (v/+ pale-bottom-left
+                               line-pale-bottom-left-offset)
+                      (line/stitch line-pale-bottom-left)])}]
+         [:path {:d (svg/make-path
+                     ["M" (v/+ corner-bottom-left
+                               line-fess-bottom-left-offset)
+                      (line/stitch line-fess-bottom-left)])}]
+         [:path {:d (svg/make-path
+                     ["M" (v/+ fess-top-left
+                               line-fess-top-left-offset)
+                      (line/stitch line-fess-top-left)])}]
+         fimbriation-outlines-1
+         fimbriation-outlines-2
+         fimbriation-outlines-3
+         fimbriation-outlines-4
+         fimbriation-outlines-5
+         fimbriation-outlines-6
+         fimbriation-outlines-7
+         fimbriation-outlines-8])
+      environment ordinary context]]))
 
 (defn saltire
   {:display-name "Saltire"}
