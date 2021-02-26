@@ -1191,104 +1191,104 @@
                        (* size)
                        (/ 100))
         direction (division/direction diagonal-mode points origin-point)
-        diagonal-bottom-left (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
-        diagonal-bottom-right (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
-        angle-bottom-left (division/angle-to-point origin-point diagonal-bottom-left)
-        angle-bottom-right (division/angle-to-point origin-point diagonal-bottom-right)
-        angle (-> angle-bottom-right (* Math/PI) (/ 180))
-        joint-angle (- angle-bottom-left angle-bottom-right)
+        diagonal-left (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-right (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
+        angle-left (division/angle-to-point origin-point diagonal-left)
+        angle-right (division/angle-to-point origin-point diagonal-right)
+        angle (-> angle-right (* Math/PI) (/ 180))
+        joint-angle (- angle-left angle-right)
         dy (/ band-width 2 (Math/cos angle))
         offset-top (v/v 0 (- dy))
         offset-bottom (v/v 0 dy)
-        corner-top (v/+ origin-point offset-top)
-        corner-bottom (v/+ origin-point offset-bottom)
-        bottom-left-upper (v/+ diagonal-bottom-left offset-top)
-        bottom-left-lower (v/+ diagonal-bottom-left offset-bottom)
-        bottom-right-upper (v/+ diagonal-bottom-right offset-top)
-        bottom-right-lower (v/+ diagonal-bottom-right offset-bottom)
+        corner-upper (v/+ origin-point offset-top)
+        corner-lower (v/+ origin-point offset-bottom)
+        left-upper (v/+ diagonal-left offset-top)
+        left-lower (v/+ diagonal-left offset-bottom)
+        right-upper (v/+ diagonal-right offset-top)
+        right-lower (v/+ diagonal-right offset-bottom)
         line (-> line
                  (update-in [:fimbriation :thickness-1] (percent-of height))
                  (update-in [:fimbriation :thickness-2] (percent-of height)))
         opposite-line (-> opposite-line
                           (update-in [:fimbriation :thickness-1] (percent-of height))
                           (update-in [:fimbriation :thickness-2] (percent-of height)))
-        {line-bottom-right-upper :line
-         line-bottom-right-upper-offset :start-offset
-         :as line-bottom-right-upper-data} (line/create line
-                                                        (v/abs (v/- corner-top bottom-right-upper))
-                                                        :angle angle-bottom-right
-                                                        :render-options render-options
-                                                        :joint-angle (- joint-angle))
-        {line-bottom-right-lower :line
-         line-bottom-right-lower-offset :start-offset
-         :as line-bottom-right-lower-data} (line/create opposite-line
-                                                        (v/abs (v/- corner-bottom bottom-right-lower))
-                                                        :angle (- angle-bottom-right 180)
-                                                        :reversed? true
-                                                        :render-options render-options
-                                                        :joint-angle joint-angle)
-        {line-bottom-left-lower :line
-         line-bottom-left-lower-offset :start-offset
-         :as line-bottom-left-lower-data} (line/create opposite-line
-                                                       (v/abs (v/- corner-bottom bottom-left-lower))
-                                                       :angle angle-bottom-left
-                                                       :render-options render-options
-                                                       :joint-angle joint-angle)
-        {line-bottom-left-upper :line
-         line-bottom-left-upper-offset :start-offset
-         :as line-bottom-left-upper-data} (line/create line
-                                                       (v/abs (v/- corner-top bottom-left-upper))
-                                                       :angle (- angle-bottom-left 180)
-                                                       :reversed? true
-                                                       :render-options render-options
-                                                       :joint-angle (- joint-angle))
-        parts [[["M" (v/+ corner-top
-                          line-bottom-right-upper-offset)
-                 (line/stitch line-bottom-right-upper)
+        {line-right-upper :line
+         line-right-upper-offset :start-offset
+         :as line-right-upper-data} (line/create line
+                                                 (v/abs (v/- corner-upper right-upper))
+                                                 :angle angle-right
+                                                 :render-options render-options
+                                                 :joint-angle (- joint-angle))
+        {line-right-lower :line
+         line-right-lower-offset :start-offset
+         :as line-right-lower-data} (line/create opposite-line
+                                                 (v/abs (v/- corner-lower right-lower))
+                                                 :angle (- angle-right 180)
+                                                 :reversed? true
+                                                 :render-options render-options
+                                                 :joint-angle joint-angle)
+        {line-left-lower :line
+         line-left-lower-offset :start-offset
+         :as line-left-lower-data} (line/create opposite-line
+                                                (v/abs (v/- corner-lower left-lower))
+                                                :angle angle-left
+                                                :render-options render-options
+                                                :joint-angle joint-angle)
+        {line-left-upper :line
+         line-left-upper-offset :start-offset
+         :as line-left-upper-data} (line/create line
+                                                (v/abs (v/- corner-upper left-upper))
+                                                :angle (- angle-left 180)
+                                                :reversed? true
+                                                :render-options render-options
+                                                :joint-angle (- joint-angle))
+        parts [[["M" (v/+ corner-upper
+                          line-right-upper-offset)
+                 (line/stitch line-right-upper)
                  (infinity/path :clockwise
                                 [:right :right]
-                                [(v/+ bottom-right-upper
-                                      line-bottom-right-upper-offset)
-                                 (v/+ bottom-right-lower
-                                      line-bottom-right-lower-offset)])
-                 (line/stitch line-bottom-right-lower)
-                 "L" (v/+ corner-bottom
-                          line-bottom-left-lower-offset)
-                 (line/stitch line-bottom-left-lower)
+                                [(v/+ right-upper
+                                      line-right-upper-offset)
+                                 (v/+ right-lower
+                                      line-right-lower-offset)])
+                 (line/stitch line-right-lower)
+                 "L" (v/+ corner-lower
+                          line-left-lower-offset)
+                 (line/stitch line-left-lower)
                  (infinity/path :clockwise
                                 [:left :left]
-                                [(v/+ bottom-left-lower
-                                      line-bottom-left-lower-offset)
-                                 (v/+ bottom-left-upper
-                                      line-bottom-left-upper-offset)])
-                 (line/stitch line-bottom-left-upper)
+                                [(v/+ left-lower
+                                      line-left-lower-offset)
+                                 (v/+ left-upper
+                                      line-left-upper-offset)])
+                 (line/stitch line-left-upper)
                  "z"]
                 [top bottom left right]]]
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)
-        [fimbriation-elements-1 fimbriation-outlines-1] (render-fimbriation corner-top
-                                                                            bottom-right-upper
+        [fimbriation-elements-1 fimbriation-outlines-1] (render-fimbriation corner-upper
+                                                                            right-upper
                                                                             [:none :bottom]
-                                                                            line-bottom-right-upper-data
+                                                                            line-right-upper-data
                                                                             (:fimbriation line)
                                                                             render-options)
-        [fimbriation-elements-2 fimbriation-outlines-2] (render-fimbriation bottom-right-lower
-                                                                            corner-bottom
+        [fimbriation-elements-2 fimbriation-outlines-2] (render-fimbriation right-lower
+                                                                            corner-lower
                                                                             [:bottom :none]
-                                                                            line-bottom-right-lower-data
+                                                                            line-right-lower-data
                                                                             (:fimbriation opposite-line)
                                                                             render-options)
-        [fimbriation-elements-3 fimbriation-outlines-3] (render-fimbriation corner-bottom
-                                                                            bottom-left-lower
+        [fimbriation-elements-3 fimbriation-outlines-3] (render-fimbriation corner-lower
+                                                                            left-lower
                                                                             [:none :bottom]
-                                                                            line-bottom-left-lower-data
+                                                                            line-left-lower-data
                                                                             (:fimbriation opposite-line)
                                                                             render-options)
-        [fimbriation-elements-4 fimbriation-outlines-4] (render-fimbriation bottom-left-upper
-                                                                            corner-top
+        [fimbriation-elements-4 fimbriation-outlines-4] (render-fimbriation left-upper
+                                                                            corner-upper
                                                                             [:bottom :none]
-                                                                            line-bottom-left-upper-data
+                                                                            line-left-upper-data
                                                                             (:fimbriation line)
                                                                             render-options)]
     [:<>
@@ -1303,21 +1303,21 @@
                 (:outline? hints))
         [:g division/outline-style
          [:path {:d (svg/make-path
-                     ["M" (v/+ corner-top
-                               line-bottom-right-upper-offset)
-                      (line/stitch line-bottom-right-upper)])}]
+                     ["M" (v/+ corner-upper
+                               line-right-upper-offset)
+                      (line/stitch line-right-upper)])}]
          [:path {:d (svg/make-path
-                     ["M" (v/+ bottom-right-lower
-                               line-bottom-right-lower-offset)
-                      (line/stitch line-bottom-right-lower)])}]
+                     ["M" (v/+ right-lower
+                               line-right-lower-offset)
+                      (line/stitch line-right-lower)])}]
          [:path {:d (svg/make-path
-                     ["M" (v/+ corner-bottom
-                               line-bottom-left-lower-offset)
-                      (line/stitch line-bottom-left-lower)])}]
+                     ["M" (v/+ corner-lower
+                               line-left-lower-offset)
+                      (line/stitch line-left-lower)])}]
          [:path {:d (svg/make-path
-                     ["M" (v/+ bottom-left-upper
-                               line-bottom-left-upper-offset)
-                      (line/stitch line-bottom-left-upper)])}]
+                     ["M" (v/+ left-upper
+                               line-left-upper-offset)
+                      (line/stitch line-left-upper)])}]
          fimbriation-outlines-1
          fimbriation-outlines-2
          fimbriation-outlines-3
