@@ -137,74 +137,77 @@
 
 (defn render-fimbriation [start end [first second]
                           {line :line
-                           line-offset :start-offset
+                           line-start-offset :start-offset
+                           line-end-offset :end-offset
                            line-fimbriation-1 :fimbriation-1
-                           line-fimbriation-1-offset :fimbriation-1-offset
+                           line-fimbriation-1-start-offset :fimbriation-1-start-offset
+                           line-fimbriation-1-end-offset :fimbriation-1-end-offset
                            line-fimbriation-2 :fimbriation-2
-                           line-fimbriation-2-offset :fimbriation-2-offset}
+                           line-fimbriation-2-start-offset :fimbriation-2-start-offset
+                           line-fimbriation-2-end-offset :fimbriation-2-end-offset}
                           {:keys [:tincture-1 :tincture-2]}
                           render-options]
   (let [fimbriation-elements [:<>
                               (when line-fimbriation-2
                                 [render-tinctured-area
                                  tincture-2
-                                 ["M" (v/+ start line-offset)
+                                 ["M" (v/+ start line-start-offset)
                                   (line/stitch line)
                                   (if (= second :none)
                                     ["L" (v/+ end
-                                              line-fimbriation-2-offset)]
+                                              line-fimbriation-2-end-offset)]
                                     (infinity/path :counter-clockwise
                                                    [second second]
                                                    [(v/+ end
-                                                         line-offset)
+                                                         line-end-offset)
                                                     (v/+ end
-                                                         line-fimbriation-2-offset)]))
+                                                         line-fimbriation-2-end-offset)]))
                                   (line/stitch line-fimbriation-2)
                                   (if (= first :none)
                                     ["L" (v/+ start
-                                              line-offset)]
+                                              line-start-offset)]
                                     (infinity/path :counter-clockwise
                                                    [first first]
                                                    [(v/+ start
-                                                         line-fimbriation-2-offset)
+                                                         line-fimbriation-2-start-offset)
                                                     (v/+ start
-                                                         line-offset)]))
+                                                         line-start-offset)]))
                                   "z"]
                                  render-options])
                               (when line-fimbriation-1
                                 [render-tinctured-area
                                  tincture-1
-                                 ["M" (v/+ start line-offset)
+                                 ["M" (v/+ start line-start-offset)
                                   (line/stitch line)
                                   (if (= second :none)
                                     ["L" (v/+ end
-                                              line-fimbriation-1-offset)]
+                                              line-fimbriation-1-end-offset)]
                                     (infinity/path :counter-clockwise
                                                    [second second]
                                                    [(v/+ end
-                                                         line-offset)
+                                                         line-end-offset)
                                                     (v/+ end
-                                                         line-fimbriation-1-offset)]))
+                                                         line-fimbriation-1-end-offset)]))
                                   (line/stitch line-fimbriation-1)
                                   (if (= first :none)
                                     ["L" (v/+ start
-                                              line-offset)]
+                                              line-start-offset)]
                                     (infinity/path :counter-clockwise
                                                    [first first]
                                                    [(v/+ start
-                                                         line-fimbriation-1-offset)
+                                                         line-fimbriation-1-start-offset)
                                                     (v/+ start
-                                                         line-offset)]))
+                                                         line-start-offset)]))
                                   "z"]
                                  render-options])]
         fimbriation-outlines [:<>
                               (when line-fimbriation-1
                                 [:path {:d (svg/make-path
-                                            ["M" (v/+ end line-fimbriation-1-offset)
+                                            ["M" (v/+ end line-fimbriation-1-end-offset)
                                              (line/stitch line-fimbriation-1)])}])
                               (when line-fimbriation-2
                                 [:path {:d (svg/make-path
-                                            ["M" (v/+ end line-fimbriation-2-offset)
+                                            ["M" (v/+ end line-fimbriation-2-end-offset)
                                              (line/stitch line-fimbriation-2)])}])]]
     [fimbriation-elements fimbriation-outlines]))
 
