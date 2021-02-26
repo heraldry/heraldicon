@@ -792,6 +792,7 @@
         left                                                        (assoc (:left points) :y (:y origin-point))
         right                                                       (assoc (:right points) :y (:y origin-point))
         width                                                       (:width environment)
+        height                                                      (:height environment)
         band-width                                                  (-> width
                                                                         (* size)
                                                                         (/ 100))
@@ -812,8 +813,8 @@
         corner-bottom-left                                          (v/v col1 row2)
         corner-bottom-right                                         (v/v col2 row2)
         line                                                        (-> line
-                                                                        (update-in [:fimbriation :thickness-1] (percent-of width))
-                                                                        (update-in [:fimbriation :thickness-2] (percent-of width)))
+                                                                        (update-in [:fimbriation :thickness-1] (percent-of height))
+                                                                        (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-pale-top-left        :line
          line-pale-top-left-offset :start-offset
          :as                       line-pale-top-left-data}         (line/create line
