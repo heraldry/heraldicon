@@ -231,6 +231,9 @@
         line                                            (-> line
                                                             (update-in [:fimbriation :thickness-1] (percent-of width))
                                                             (update-in [:fimbriation :thickness-2] (percent-of width)))
+        opposite-line                                   (-> opposite-line
+                                                            (update-in [:fimbriation :thickness-1] (percent-of width))
+                                                            (update-in [:fimbriation :thickness-2] (percent-of width)))
         {line-one        :line
          line-one-offset :start-offset
          :as             line-one-data}                 (line/create line
@@ -318,6 +321,9 @@
         row1                                            (- (:y origin-point) (/ band-height 2))
         row2                                            (+ row1 band-height)
         line                                            (-> line
+                                                            (update-in [:fimbriation :thickness-1] (percent-of height))
+                                                            (update-in [:fimbriation :thickness-2] (percent-of height)))
+        opposite-line                                   (-> opposite-line
                                                             (update-in [:fimbriation :thickness-1] (percent-of height))
                                                             (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-one        :line
@@ -556,6 +562,9 @@
         line                                            (-> line
                                                             (update-in [:fimbriation :thickness-1] (percent-of height))
                                                             (update-in [:fimbriation :thickness-2] (percent-of height)))
+        opposite-line                                   (-> opposite-line
+                                                            (update-in [:fimbriation :thickness-1] (percent-of height))
+                                                            (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-one        :line
          line-one-offset :start-offset
          :as             line-one-data}                 (line/create line
@@ -671,6 +680,9 @@
         second-left                                     (v/v offset row2)
         second-right                                    (v/v (+ offset line-length) row2)
         line                                            (-> line
+                                                            (update-in [:fimbriation :thickness-1] (percent-of height))
+                                                            (update-in [:fimbriation :thickness-2] (percent-of height)))
+        opposite-line                                   (-> opposite-line
                                                             (update-in [:fimbriation :thickness-1] (percent-of height))
                                                             (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-one        :line
@@ -1108,6 +1120,9 @@
         bottom-right-upper                                            (v/+ diagonal-bottom-right offset-top)
         bottom-right-lower                                            (v/+ diagonal-bottom-right offset-bottom)
         line                                                          (-> line
+                                                                          (update-in [:fimbriation :thickness-1] (percent-of height))
+                                                                          (update-in [:fimbriation :thickness-2] (percent-of height)))
+        opposite-line                                                 (-> opposite-line
                                                                           (update-in [:fimbriation :thickness-1] (percent-of height))
                                                                           (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-bottom-right-upper        :line
