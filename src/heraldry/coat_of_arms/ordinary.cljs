@@ -211,6 +211,92 @@
                                              (line/stitch line-fimbriation-2)])}])]]
     [fimbriation-elements fimbriation-outlines]))
 
+(defn render-fimbriation2 [[start start-direction]
+                           [end end-direction]
+                           lines
+                           {:keys [:tincture-1 :tincture-2]}
+                           render-options]
+  (let [{fimbriation-1 :fimbriation-1
+         fimbriation-2 :fimbriation-2
+         first-line-start-offset :start-offset
+         first-fimbriation-1-start-offset :fimbriation-1-start-offset
+         first-fimbriation-2-start-offset :fimbriation-2-start-offset} (first lines)
+        {last-line-end-offset :end-offset
+         last-fimbriation-1-end-offset :fimbriation-1-end-offset
+         last-fimbriation-2-end-offset :fimbriation-2-end-offset} (last lines)
+
+        elements [:<> (when fimbriation-2
+                        [render-tinctured-area
+                         tincture-2
+                         ["M" (v/+ start first-line-start-offset)
+                          (for [{:keys [line]} lines]
+                            (line/stitch line))
+                          (if (= end-direction :none)
+                            ["L" (v/+ end
+                                      last-fimbriation-2-end-offset)]
+                            (infinity/path :counter-clockwise
+                                           [end-direction end-direction]
+                                           [(v/+ end
+                                                 last-line-end-offset)
+                                            (v/+ end
+                                                 last-fimbriation-2-end-offset)]))
+                          (for [{:keys [fimbriation-2]} (reverse lines)]
+                            (line/stitch fimbriation-2))
+                          (if (= first :none)
+                            ["L" (v/+ start
+                                      first-line-start-offset)]
+                            (infinity/path :counter-clockwise
+                                           [start-direction start-direction]
+                                           [(v/+ start
+                                                 first-fimbriation-2-start-offset)
+                                            (v/+ start
+                                                 first-line-start-offset)]))
+                          "z"]
+                         render-options])
+
+                  (when fimbriation-1
+                    [render-tinctured-area
+                     tincture-1
+                     ["M" (v/+ start first-line-start-offset)
+                      (for [{:keys [line]} lines]
+                        (line/stitch line))
+                      (if (= end-direction :none)
+                        ["L" (v/+ end
+                                  last-fimbriation-1-end-offset)]
+                        (infinity/path :counter-clockwise
+                                       [end-direction end-direction]
+                                       [(v/+ end
+                                             last-line-end-offset)
+                                        (v/+ end
+                                             last-fimbriation-1-end-offset)]))
+                      (for [{:keys [fimbriation-1]} (reverse lines)]
+                        (line/stitch fimbriation-1))
+                      (if (= first :none)
+                        ["L" (v/+ start
+                                  first-line-start-offset)]
+                        (infinity/path :counter-clockwise
+                                       [start-direction start-direction]
+                                       [(v/+ start
+                                             first-fimbriation-1-start-offset)
+                                        (v/+ start
+                                             first-line-start-offset)]))
+                      "z"]
+                     render-options])]
+
+        outlines [:<>
+                  (when fimbriation-1
+                    [:path {:d (svg/make-path
+                                ["M" (v/+ end last-fimbriation-1-end-offset)
+                                 (for [{:keys [fimbriation-1]} (reverse lines)]
+                                   (line/stitch fimbriation-1))])}])
+
+                  (when fimbriation-2
+                    [:path {:d (svg/make-path
+                                ["M" (v/+ end last-fimbriation-2-end-offset)
+                                 (for [{:keys [fimbriation-2]} (reverse lines)]
+                                   (line/stitch fimbriation-2))])}])]]
+    [elements outlines]))
+
 (defn pale
   {:display-name "Pale"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
@@ -1267,35 +1353,23 @@
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)
-        [fimbriation-elements-1 fimbriation-outlines-1] (render-fimbriation corner-upper
-                                                                            right-upper
-                                                                            [:none :bottom]
-                                                                            line-right-upper-data
-                                                                            (:fimbriation line)
-                                                                            render-options)
-        [fimbriation-elements-2 fimbriation-outlines-2] (render-fimbriation right-lower
-                                                                            corner-lower
-                                                                            [:bottom :none]
-                                                                            line-right-lower-data
-                                                                            (:fimbriation opposite-line)
-                                                                            render-options)
-        [fimbriation-elements-3 fimbriation-outlines-3] (render-fimbriation corner-lower
-                                                                            left-lower
-                                                                            [:none :bottom]
-                                                                            line-left-lower-data
-                                                                            (:fimbriation opposite-line)
-                                                                            render-options)
-        [fimbriation-elements-4 fimbriation-outlines-4] (render-fimbriation left-upper
-                                                                            corner-upper
-                                                                            [:bottom :none]
-                                                                            line-left-upper-data
-                                                                            (:fimbriation line)
-                                                                            render-options)]
+        [fimbriation-elements-upper fimbriation-outlines-upper] (render-fimbriation2
+                                                                 [left-upper :left]
+                                                                 [right-upper :right]
+                                                                 [line-left-upper-data
+                                                                  line-right-upper-data]
+                                                                 (:fimbriation line)
+                                                                 render-options)
+        [fimbriation-elements-lower fimbriation-outlines-lower] (render-fimbriation2
+                                                                 [right-lower :bottom]
+                                                                 [left-lower :bottom]
+                                                                 [line-right-lower-data
+                                                                  line-left-lower-data]
+                                                                 (:fimbriation opposite-line)
+                                                                 render-options)]
     [:<>
-     fimbriation-elements-1
-     fimbriation-elements-2
-     fimbriation-elements-3
-     fimbriation-elements-4
+     fimbriation-elements-upper
+     fimbriation-elements-lower
      [division/make-division
       :ordinary-pale [field] parts
       [:all]
@@ -1318,10 +1392,8 @@
                      ["M" (v/+ left-upper
                                line-left-upper-offset)
                       (line/stitch line-left-upper)])}]
-         fimbriation-outlines-1
-         fimbriation-outlines-2
-         fimbriation-outlines-3
-         fimbriation-outlines-4])
+         fimbriation-outlines-upper
+         fimbriation-outlines-lower])
       environment ordinary context]]))
 
 (def ordinaries
