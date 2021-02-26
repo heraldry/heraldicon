@@ -231,6 +231,9 @@
         line (-> line
                  (update-in [:fimbriation :thickness-1] (percent-of width))
                  (update-in [:fimbriation :thickness-2] (percent-of width)))
+        opposite-line (-> opposite-line
+                          (update-in [:fimbriation :thickness-1] (percent-of width))
+                          (update-in [:fimbriation :thickness-2] (percent-of width)))
         {line-one :line
          line-one-offset :start-offset
          :as line-one-data} (line/create line
@@ -320,6 +323,9 @@
         line (-> line
                  (update-in [:fimbriation :thickness-1] (percent-of height))
                  (update-in [:fimbriation :thickness-2] (percent-of height)))
+        opposite-line (-> opposite-line
+                          (update-in [:fimbriation :thickness-1] (percent-of height))
+                          (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-one :line
          line-one-offset :start-offset
          :as line-one-data} (line/create line
@@ -556,6 +562,9 @@
         line (-> line
                  (update-in [:fimbriation :thickness-1] (percent-of height))
                  (update-in [:fimbriation :thickness-2] (percent-of height)))
+        opposite-line (-> opposite-line
+                          (update-in [:fimbriation :thickness-1] (percent-of height))
+                          (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-one :line
          line-one-offset :start-offset
          :as line-one-data} (line/create line
@@ -673,6 +682,9 @@
         line (-> line
                  (update-in [:fimbriation :thickness-1] (percent-of height))
                  (update-in [:fimbriation :thickness-2] (percent-of height)))
+        opposite-line (-> opposite-line
+                          (update-in [:fimbriation :thickness-1] (percent-of height))
+                          (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-one :line
          line-one-offset :start-offset
          :as line-one-data} (line/create line
@@ -1110,6 +1122,9 @@
         line (-> line
                  (update-in [:fimbriation :thickness-1] (percent-of height))
                  (update-in [:fimbriation :thickness-2] (percent-of height)))
+        opposite-line (-> opposite-line
+                          (update-in [:fimbriation :thickness-1] (percent-of height))
+                          (update-in [:fimbriation :thickness-2] (percent-of height)))
         {line-bottom-right-upper :line
          line-bottom-right-upper-offset :start-offset
          :as line-bottom-right-upper-data} (line/create line
