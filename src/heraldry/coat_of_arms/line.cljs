@@ -265,13 +265,13 @@
                                            (assoc :fimbriation-2-start (:fimbriation-2-end line-data))
                                            (assoc :fimbriation-2-end (:fimbriation-2-start line-data))))))
 
-(defn invected2
+(defn invected
   {:display-name "Invected"}
   [{:keys [eccentricity
            height
            width]}
-   fimbriation-offset
-   {:keys [reversed?]}]
+   _fimbriation-offset
+   line-options]
   (let [radius-x (-> width
                      (/ 2)
                      (* (-> eccentricity
@@ -281,33 +281,14 @@
         radius-y (* radius-x height)]
     ["a" radius-x radius-y 0 0 1 [width 0]]))
 
-(defn invected
-  {:display-name "Invected"}
-  [values length line-options]
-  (let [{:keys [eccentricity
-                height
-                offset
-                width]} (options/sanitize values (options values))
-        radius-x (-> width
-                     (/ 2)
-                     (* (-> eccentricity
-                            (min 1)
-                            (* -0.5)
-                            (+ 1.5))))
-        radius-y (* radius-x height)]
-    (line-with-offset
-     length offset width
-     ["a" radius-x radius-y 0 0 1 [width 0]]
-     line-options)))
-
 (defn engrailed
   {:display-name "Engrailed"}
-  [values length line-options]
-  (let [{:keys [eccentricity
-                height
-                offset
-                width]} (options/sanitize values (options values))
-        radius-x (-> width
+  [{:keys [eccentricity
+           height
+           width]}
+   _fimbriation-offset
+   line-options]
+  (let [radius-x (-> width
                      (/ 2)
                      (* (-> eccentricity
                             (min 1)
@@ -321,77 +302,65 @@
                Math/sqrt
                (* radius-y)
                (->> (- radius-y)))]
-    (line-with-offset
-     length offset width
-     ["a" radius-x radius-y 0 0 0 [tx (- ty)]
-      "a" radius-x radius-y 0 0 0 [tx ty]]
-     line-options)))
+    ["a" radius-x radius-y 0 0 0 [tx (- ty)]
+     "a" radius-x radius-y 0 0 0 [tx ty]]))
 
 (defn embattled
   {:display-name "Embattled"}
-  [values length line-options]
-  (let [{:keys [height
-                offset
-                width]} (options/sanitize values (options values))
-        half-width (/ width 2)
+  [{:keys [height
+           width]}
+   _fimbriation-offset
+   line-options]
+  (let [half-width (/ width 2)
         quarter-width (/ width 4)
         height (* half-width height)]
-    (line-with-offset
-     length offset width
-     ["l"
-      [quarter-width 0]
-      [0 (- height)]
-      [half-width 0]
-      [0 height]
-      [quarter-width 0]]
-     line-options)))
+    ["l"
+     [quarter-width 0]
+     [0 (- height)]
+     [half-width 0]
+     [0 height]
+     [quarter-width 0]]))
 
 (defn indented
   {:display-name "Indented"}
-  [values length line-options]
-  (let [{:keys [height
-                offset
-                width]} (options/sanitize values (options values))
-        half-width (/ width 2)
+  [{:keys [height
+           width]}
+   _fimbriation-offset
+   line-options]
+  (let [half-width (/ width 2)
         height (* half-width height)]
-    (line-with-offset
-     length offset width
-     ["l"
-      [half-width (- height)]
-      [half-width height]]
-     line-options)))
+    ["l"
+     [half-width (- height)]
+     [half-width height]]))
 
 (defn dancetty
   {:display-name "Dancetty"}
-  [values length {:keys [reversed?] :as line-options}]
-  (let [{:keys [height
-                offset
-                width]} (options/sanitize values (options values))
-        half-width (/ width 2)
+  [{:keys [height
+           width]}
+   _fimbriation-offset
+   {:keys [reversed?] :as line-options}]
+  (let [half-width (/ width 2)
         quarter-width (/ width 4)
         half-height (* quarter-width height)
         height (* half-height 2)]
-    (line-with-offset
-     length offset width
-     (if reversed?
-       ["l"
-        [quarter-width half-height]
-        [half-width (- height)]
-        [quarter-width half-height]]
-       ["l"
-        [quarter-width (- half-height)]
-        [half-width height]
-        [quarter-width (- half-height)]])
-     line-options)))
+    (if reversed?
+      ["l"
+       [quarter-width half-height]
+       [half-width (- height)]
+       [quarter-width half-height]]
+      ["l"
+       [quarter-width (- half-height)]
+       [half-width height]
+       [quarter-width (- half-height)]])))
 
 (defn wavy
   {:display-name "Wavy / undy"}
-  [values length {:keys [reversed?] :as line-options}]
-  (let [{:keys [eccentricity
-                height
-                offset
-                width]} (options/sanitize values (options values))
-        radius-x (-> width
+  [{:keys [eccentricity
+           height
+           width]}
+   _fimbriation-offset
+   {:keys [reversed?] :as line-options}]
+  (let [radius-x (-> width
                      (/ 4)
                      (* (-> eccentricity
                             (min 1)
@@ -400,20 +369,17 @@
         radius-y (* radius-x height)
         tx (-> width
                (/ 2))]
-    (line-with-offset
-     length offset width
-     ["a" radius-x radius-y 0 0 (if reversed? 0 1) [tx 0]
-      "a" radius-x radius-y 0 0 (if reversed? 1 0) [tx 0]]
-     line-options)))
+    ["a" radius-x radius-y 0 0 (if reversed? 0 1) [tx 0]
+     "a" radius-x radius-y 0 0 (if reversed? 1 0) [tx 0]]))
 
 (defn dovetailed
   {:display-name "Dovetailed"}
-  [values length line-options]
-  (let [{:keys [eccentricity
-                height
-                offset
-                width]} (options/sanitize values (options values))
-        half-width (/ width 2)
+  [{:keys [eccentricity
+           height
+           width]}
+   _fimbriation-offset
+   line-options]
+  (let [half-width (/ width 2)
         quarter-width (/ width 4)
         height (* half-width height)
         dx (-> width
@@ -421,28 +387,25 @@
                (* (-> eccentricity
                       (* 0.5)
                       (+ 0.2))))]
-    (line-with-offset
-     length offset width
-     ["l"
-      [(+ quarter-width
-          dx) 0]
-      [(* dx -2) (- height)]
-      [(+ half-width
-          dx
-          dx) 0]
-      [(* dx -2) height]
-      [(+ quarter-width
-          dx) 0]]
-     line-options)))
+    ["l"
+     [(+ quarter-width
+         dx) 0]
+     [(* dx -2) (- height)]
+     [(+ half-width
+         dx
+         dx) 0]
+     [(* dx -2) height]
+     [(+ quarter-width
+         dx) 0]]))
 
 (defn raguly
   {:display-name "Raguly"}
-  [values length {:keys [reversed?] :as line-options}]
-  (let [{:keys [eccentricity
-                height
-                offset
-                width]} (options/sanitize values (options values))
-        half-width (/ width 2)
+  [{:keys [eccentricity
+           height
+           width]}
+   _fimbriation-offset
+   {:keys [reversed?] :as line-options}]
+  (let [half-width (/ width 2)
         quarter-width (/ width 4)
         height (* half-width height)
         dx (-> width
@@ -450,31 +413,28 @@
                (* (-> eccentricity
                       (* 0.7)
                       (+ 0.3))))]
-    (line-with-offset
-     length offset width
-     (if reversed?
-       ["l"
-        [quarter-width 0]
-        [quarter-width (- height)]
-        [half-width 0]
-        [(- quarter-width) height]
-        [quarter-width 0]]
-       ["l"
-        [quarter-width 0]
-        [(- dx) (- height)]
-        [half-width 0]
-        [dx height]
-        [quarter-width 0]])
-     line-options)))
+    (if reversed?
+      ["l"
+       [quarter-width 0]
+       [quarter-width (- height)]
+       [half-width 0]
+       [(- quarter-width) height]
+       [quarter-width 0]]
+      ["l"
+       [quarter-width 0]
+       [(- dx) (- height)]
+       [half-width 0]
+       [dx height]
+       [quarter-width 0]])))
 
 (defn urdy
   {:display-name "Urdy"}
-  [values length {:keys [reversed?] :as line-options}]
-  (let [{:keys [eccentricity
-                height
-                offset
-                width]} (options/sanitize values (options values))
-        quarter-width (/ width 4)
+  [{:keys [eccentricity
+           height
+           width]}
+   _fimbriation-offset
+   {:keys [reversed?] :as line-options}]
+  (let [quarter-width (/ width 4)
         pointy-height (* quarter-width
                          (* 2)
                          (* (-> eccentricity
@@ -483,39 +443,35 @@
                          (* height))
         middle-height (* quarter-width height)
         half-height (/ middle-height 2)]
-    (line-with-offset
-     length offset width
-     (if reversed?
-       ["l"
-        [0 half-height]
-        [quarter-width pointy-height]
-        [quarter-width (- pointy-height)]
-        [0 (- middle-height)]
-        [quarter-width (- pointy-height)]
-        [quarter-width pointy-height]
-        [0 half-height]]
-       ["l"
-        [0 (- half-height)]
-        [quarter-width (- pointy-height)]
-        [quarter-width pointy-height]
-        [0 middle-height]
-        [quarter-width pointy-height]
-        [quarter-width (- pointy-height)]
-        [0 (- half-height)]])
-     line-options)))
+    (if reversed?
+      ["l"
+       [0 half-height]
+       [quarter-width pointy-height]
+       [quarter-width (- pointy-height)]
+       [0 (- middle-height)]
+       [quarter-width (- pointy-height)]
+       [quarter-width pointy-height]
+       [0 half-height]]
+      ["l"
+       [0 (- half-height)]
+       [quarter-width (- pointy-height)]
+       [quarter-width pointy-height]
+       [0 middle-height]
+       [quarter-width pointy-height]
+       [quarter-width (- pointy-height)]
+       [0 (- half-height)]])))
 
 (def lines
   [#'straight
-   #'invected2
-   ;; #'engrailed
-   ;; #'embattled
-   ;; #'indented
-   ;; #'dancetty
-   ;; #'wavy
-   ;; #'dovetailed
-   ;; #'raguly
-   ;; #'urdy
-   ])
+   #'invected
+   #'engrailed
+   #'embattled
+   #'indented
+   #'dancetty
+   #'wavy
+   #'dovetailed
+   #'raguly
+   #'urdy])
 
 (def kinds-function-map
   (->> lines
