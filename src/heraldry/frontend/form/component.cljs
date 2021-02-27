@@ -127,8 +127,8 @@
      {:db (-> db
               (update-in [:ui] dissoc :component-selected?)
               (cond->
-               path (as-> db
-                          (assoc-in db [:ui :component-selected? real-path] true))))
+                  path (as-> db
+                           (assoc-in db [:ui :component-selected? real-path] true))))
       :fx [[:dispatch [:ui-component-open real-path]]]})))
 
 (rf/reg-event-db
@@ -169,11 +169,11 @@
                                                   (options/sanitize-or-nil % (division/options %))))
          (update-in path dissoc :content)
          (cond->
-          (not (division/counterchangable? {:type new-type})) (update-in (conj path :components)
-                                                                         (fn [components]
-                                                                           (->> components
-                                                                                (map #(update % :field dissoc :counterchanged?))
-                                                                                vec))))))))
+             (not (division/counterchangable? {:type new-type})) (update-in (conj path :components)
+                                                                            (fn [components]
+                                                                              (->> components
+                                                                                   (map #(update % :field dissoc :counterchanged?))
+                                                                                   vec))))))))
 
 (rf/reg-event-db
  :set-ordinary-type
@@ -1021,12 +1021,12 @@
          filtered-charges     (-> charges
                                   (filter-charges filter-string)
                                   (cond->>
-                                   (not hide-access-filters?) (filter (fn [charge]
-                                                                        (or (and show-public?
-                                                                                 (:is-public charge))
-                                                                            (and show-own?
-                                                                                 (= (:username charge)
-                                                                                    (:username user-data))))))))
+                                      (not hide-access-filters?) (filter (fn [charge]
+                                                                           (or (and show-public?
+                                                                                    (:is-public charge))
+                                                                               (and show-own?
+                                                                                    (= (:username charge)
+                                                                                       (:username user-data))))))))
          filtered?            (or (and (not hide-access-filters?)
                                        (not show-public?))
                                   (-> filter-string count pos?))
@@ -1229,7 +1229,7 @@
                                                       :fields (-> (division/default-fields {:type key})
                                                                   (util/replace-recursively :none :argent)
                                                                   (cond->
-                                                                   (= value key) (util/replace-recursively :azure :or)))
+                                                                      (= value key) (util/replace-recursively :azure :or)))
                                                       :layout {:num-fields-y (when (= key :chequy)
                                                                                7)}}})}
                           100
@@ -1422,6 +1422,7 @@
                :default (or (-> defaults :fimbriation :thickness-1)
                             (options/get-value (-> line :fimbriation :thickness-1)
                                                (-> options :fimbriation :thickness-1)))
+               :step 0.1
                :display-function #(str % "%")])
             (when (and (#{:single :double} fimbriation-mode)
                        (-> options :fimbriation :tincture-1))
@@ -1436,6 +1437,7 @@
                :default (or (-> defaults :fimbriation :thickness-2)
                             (options/get-value (-> line :fimbriation :thickness-2)
                                                (-> options :fimbriation :thickness-2)))
+               :step 0.1
                :display-function #(str % "%")])
             (when (and (#{:double} current-fimbriation-mode)
                        (-> options :fimbriation :tincture-2))
