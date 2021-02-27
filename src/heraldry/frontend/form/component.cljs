@@ -1422,6 +1422,7 @@
                :default (or (-> defaults :fimbriation :thickness-1)
                             (options/get-value (-> line :fimbriation :thickness-1)
                                                (-> options :fimbriation :thickness-1)))
+               :step 0.1
                :display-function #(str % "%")])
             (when (and (#{:single :double} fimbriation-mode)
                        (-> options :fimbriation :tincture-1))
@@ -1436,6 +1437,7 @@
                :default (or (-> defaults :fimbriation :thickness-2)
                             (options/get-value (-> line :fimbriation :thickness-2)
                                                (-> options :fimbriation :thickness-2)))
+               :step 0.1
                :display-function #(str % "%")])
             (when (and (#{:double} current-fimbriation-mode)
                        (-> options :fimbriation :tincture-2))
