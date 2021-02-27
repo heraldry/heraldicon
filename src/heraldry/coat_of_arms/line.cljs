@@ -400,7 +400,7 @@
   [{:keys [eccentricity
            height
            width]}
-   _fimbriation-offset
+   fimbriation-offset
    line-options]
   (let [half-width (/ width 2)
         quarter-width (/ width 4)
@@ -409,18 +409,26 @@
                (/ 4)
                (* (-> eccentricity
                       (* 0.5)
-                      (+ 0.2))))]
-    {:pattern ["l"
-               [(+ quarter-width
-                   dx) 0]
-               [(* dx -2) (- height)]
-               [(+ half-width
-                   dx
-                   dx) 0]
-               [(* dx -2) height]
-               [(+ quarter-width
-                   dx) 0]]
-     :offset v/zero}))
+                      (+ 0.2))))
+        filled? (>= (Math/abs fimbriation-offset) (- quarter-width dx))]
+    {:pattern (if filled?
+                ["h" width]
+                ["l"
+                 [(+ quarter-width
+                     dx
+                     fimbriation-offset) 0]
+                 [(* dx -2) (- height)]
+                 [(+ half-width
+                     dx
+                     dx
+                     (* -2 fimbriation-offset)) 0]
+                 [(* dx -2) height]
+                 [(+ quarter-width
+                     dx
+                     fimbriation-offset) 0]])
+     :offset (if filled?
+               (v/v 0 (- height))
+               v/zero)}))
 
 (defn raguly
   {:display-name "Raguly"}
