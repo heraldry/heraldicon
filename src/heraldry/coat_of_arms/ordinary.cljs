@@ -253,14 +253,12 @@
                                          (:y (v/- bottom top))
                                          :angle -90
                                          :reversed? true
-                                         :flipped? true
                                          :render-options render-options)
         {line-reversed :line
          line-reversed-start :line-start
          :as line-reversed-data} (line/create opposite-line
                                               (:y (v/- bottom top))
                                               :angle 90
-                                              :flipped? true
                                               :render-options render-options)
         parts [[["M" (v/+ first-bottom
                           line-one-start)
