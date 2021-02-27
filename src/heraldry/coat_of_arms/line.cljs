@@ -94,26 +94,29 @@
         fimbriation-2-offset-x (* fimbriation-2-line
                                   offset-x-factor)
 
-        line-pattern          (line-function line 0 line-options)
-        fimbriation-1-pattern (line-function line fimbriation-1-line (-> line-options
-                                                                         (update :reversed? not)))
-        fimbriation-2-pattern (line-function line fimbriation-2-line (-> line-options
-                                                                         (update :reversed? not)))
-        offset-length         (* line-offset pattern-width)
-        repetitions           (-> length
-                                  (- offset-length)
-                                  (/ pattern-width)
-                                  Math/ceil
-                                  int
-                                  inc)
-        actual-length         (-> (* repetitions pattern-width)
-                                  (cond->
-                                      (pos? offset-length) (+ offset-length)))
-        line-start            (v/v (min 0 offset-length) 0)
-        line-end              (-> (v/v actual-length 0)
-                                  (cond->
-                                      (neg? offset-length) (v/+ (v/v offset-length 0)))
-                                  (v/- (v/v length 0)))
+        {line-pattern        :pattern
+         line-pattern-offset :offset}          (line-function line base-line line-options)
+        {fimbriation-1-pattern        :pattern
+         fimbriation-1-pattern-offset :offset} (line-function line fimbriation-1-line (-> line-options
+                                                                                          (update :reversed? not)))
+        {fimbriation-2-pattern        :pattern
+         fimbriation-2-pattern-offset :offset} (line-function line fimbriation-2-line (-> line-options
+                                                                                          (update :reversed? not)))
+        offset-length                          (* line-offset pattern-width)
+        repetitions                            (-> length
+                                                   (- offset-length)
+                                                   (/ pattern-width)
+                                                   Math/ceil
+                                                   int
+                                                   inc)
+        actual-length                          (-> (* repetitions pattern-width)
+                                                   (cond->
+                                                       (pos? offset-length) (+ offset-length)))
+        line-start                             (v/v (min 0 offset-length) 0)
+        line-end                               (-> (v/v actual-length 0)
+                                                   (cond->
+                                                       (neg? offset-length) (v/+ (v/v offset-length 0)))
+                                                   (v/- (v/v length 0)))
 
         line-start         (if reversed?
                              (v/* line-start -1)
@@ -133,9 +136,11 @@
                                             vec)
                             :line-start (v/+ (v/v (- line-start-x)
                                                   base-line)
-                                             line-start)
+                                             line-start
+                                             line-pattern-offset)
                             :line-end   (v/+ (v/v 0 base-line)
-                                             line-end)}
+                                             line-end
+                                             line-pattern-offset)}
         fimbriation-1-data (when (#{:single :double} fimbriation-mode)
                              {:fimbriation-1       (-> []
                                                        (cond->
@@ -151,10 +156,12 @@
                                                        vec)
                               :fimbriation-1-start (v/+ (v/v fimbriation-1-offset-x
                                                              fimbriation-1-line)
-                                                        line-start)
+                                                        line-start
+                                                        fimbriation-1-pattern-offset)
                               :fimbriation-1-end   (v/+ (v/v 0
                                                              fimbriation-1-line)
-                                                        line-end)})
+                                                        line-end
+                                                        fimbriation-1-pattern-offset)})
         fimbriation-2-data (when (#{:double} fimbriation-mode)
                              {:fimbriation-2       (-> []
                                                        (cond->
@@ -170,10 +177,12 @@
                                                        vec)
                               :fimbriation-2-start (v/+ (v/v fimbriation-2-offset-x
                                                              fimbriation-2-line)
-                                                        line-start)
+                                                        line-start
+                                                        fimbriation-2-pattern-offset)
                               :fimbriation-2-end   (v/+ (v/v 0
                                                              fimbriation-2-line)
-                                                        line-end)})
+                                                        line-end
+                                                        fimbriation-2-pattern-offset)})
         line-data          (merge line-data fimbriation-1-data fimbriation-2-data)]
     (cond-> line-data
       reversed?                                   (->
@@ -279,7 +288,8 @@
                             (* -0.5)
                             (+ 1.5))))
         radius-y (* radius-x height)]
-    ["a" radius-x radius-y 0 0 1 [width 0]]))
+    {:pattern ["a" radius-x radius-y 0 0 1 [width 0]]
+     :offset  v/zero}))
 
 (defn engrailed
   {:display-name "Engrailed"}
@@ -302,24 +312,34 @@
                      Math/sqrt
                      (* radius-y)
                      (->> (- radius-y)))]
-    ["a" radius-x radius-y 0 0 0 [tx (- ty)]
-     "a" radius-x radius-y 0 0 0 [tx ty]]))
+    {:pattern ["a" radius-x radius-y 0 0 0 [tx (- ty)]
+               "a" radius-x radius-y 0 0 0 [tx ty]]
+     :offset  v/zero}))
 
 (defn embattled
   {:display-name "Embattled"}
   [{:keys [height
            width]}
-   _fimbriation-offset
+   fimbriation-offset
    line-options]
   (let [half-width    (/ width 2)
         quarter-width (/ width 4)
-        height        (* half-width height)]
-    ["l"
-     [quarter-width 0]
-     [0 (- height)]
-     [half-width 0]
-     [0 height]
-     [quarter-width 0]]))
+        height        (* half-width height)
+        filled?       (>= (Math/abs fimbriation-offset) quarter-width)]
+    {:pattern (if filled?
+                ["h" width]
+                ["l"
+                 [(+ quarter-width
+                     fimbriation-offset) 0]
+                 [0 (- height)]
+                 [(- half-width
+                     (* 2 fimbriation-offset)) 0]
+                 [0 height]
+                 [(+ quarter-width
+                     fimbriation-offset) 0]])
+     :offset  (if filled?
+                (v/v 0 (- height))
+                (v/v 0 0))}))
 
 (defn indented
   {:display-name "Indented"}
@@ -329,9 +349,10 @@
    line-options]
   (let [half-width (/ width 2)
         height     (* half-width height)]
-    ["l"
-     [half-width (- height)]
-     [half-width height]]))
+    {:pattern ["l"
+               [half-width (- height)]
+               [half-width height]]
+     :offset  v/zero}))
 
 (defn dancetty
   {:display-name "Dancetty"}
@@ -343,15 +364,16 @@
         quarter-width (/ width 4)
         half-height   (* quarter-width height)
         height        (* half-height 2)]
-    (if reversed?
-      ["l"
-       [quarter-width half-height]
-       [half-width (- height)]
-       [quarter-width half-height]]
-      ["l"
-       [quarter-width (- half-height)]
-       [half-width height]
-       [quarter-width (- half-height)]])))
+    {:pattern (if reversed?
+                ["l"
+                 [quarter-width half-height]
+                 [half-width (- height)]
+                 [quarter-width half-height]]
+                ["l"
+                 [quarter-width (- half-height)]
+                 [half-width height]
+                 [quarter-width (- half-height)]])
+     :offset  v/zero}))
 
 (defn wavy
   {:display-name "Wavy / undy"}
@@ -369,8 +391,9 @@
         radius-y (* radius-x height)
         tx       (-> width
                      (/ 2))]
-    ["a" radius-x radius-y 0 0 (if reversed? 0 1) [tx 0]
-     "a" radius-x radius-y 0 0 (if reversed? 1 0) [tx 0]]))
+    {:pattern ["a" radius-x radius-y 0 0 (if reversed? 0 1) [tx 0]
+               "a" radius-x radius-y 0 0 (if reversed? 1 0) [tx 0]]
+     :offset  v/zero}))
 
 (defn dovetailed
   {:display-name "Dovetailed"}
@@ -387,16 +410,17 @@
                           (* (-> eccentricity
                                  (* 0.5)
                                  (+ 0.2))))]
-    ["l"
-     [(+ quarter-width
-         dx) 0]
-     [(* dx -2) (- height)]
-     [(+ half-width
-         dx
-         dx) 0]
-     [(* dx -2) height]
-     [(+ quarter-width
-         dx) 0]]))
+    {:pattern ["l"
+               [(+ quarter-width
+                   dx) 0]
+               [(* dx -2) (- height)]
+               [(+ half-width
+                   dx
+                   dx) 0]
+               [(* dx -2) height]
+               [(+ quarter-width
+                   dx) 0]]
+     :offset  v/zero}))
 
 (defn raguly
   {:display-name "Raguly"}
@@ -413,19 +437,20 @@
                           (* (-> eccentricity
                                  (* 0.7)
                                  (+ 0.3))))]
-    (if reversed?
-      ["l"
-       [quarter-width 0]
-       [quarter-width (- height)]
-       [half-width 0]
-       [(- quarter-width) height]
-       [quarter-width 0]]
-      ["l"
-       [quarter-width 0]
-       [(- dx) (- height)]
-       [half-width 0]
-       [dx height]
-       [quarter-width 0]])))
+    {:pattern (if reversed?
+                ["l"
+                 [quarter-width 0]
+                 [quarter-width (- height)]
+                 [half-width 0]
+                 [(- quarter-width) height]
+                 [quarter-width 0]]
+                ["l"
+                 [quarter-width 0]
+                 [(- dx) (- height)]
+                 [half-width 0]
+                 [dx height]
+                 [quarter-width 0]])
+     :offset  v/zero}))
 
 (defn urdy
   {:display-name "Urdy"}
@@ -443,23 +468,24 @@
                          (* height))
         middle-height (* quarter-width height)
         half-height   (/ middle-height 2)]
-    (if reversed?
-      ["l"
-       [0 half-height]
-       [quarter-width pointy-height]
-       [quarter-width (- pointy-height)]
-       [0 (- middle-height)]
-       [quarter-width (- pointy-height)]
-       [quarter-width pointy-height]
-       [0 half-height]]
-      ["l"
-       [0 (- half-height)]
-       [quarter-width (- pointy-height)]
-       [quarter-width pointy-height]
-       [0 middle-height]
-       [quarter-width pointy-height]
-       [quarter-width (- pointy-height)]
-       [0 (- half-height)]])))
+    {:pattern (if reversed?
+                ["l"
+                 [0 half-height]
+                 [quarter-width pointy-height]
+                 [quarter-width (- pointy-height)]
+                 [0 (- middle-height)]
+                 [quarter-width (- pointy-height)]
+                 [quarter-width pointy-height]
+                 [0 half-height]]
+                ["l"
+                 [0 (- half-height)]
+                 [quarter-width (- pointy-height)]
+                 [quarter-width pointy-height]
+                 [0 middle-height]
+                 [quarter-width pointy-height]
+                 [quarter-width (- pointy-height)]
+                 [0 (- half-height)]])
+     :offset  v/zero}))
 
 (def lines
   [#'straight
