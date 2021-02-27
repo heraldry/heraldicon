@@ -4,18 +4,18 @@
   {:x x
    :y y})
 
-#_{:clj-kondo/ignore [:redefined-var]}
-(defn + [{x1 :x y1 :y} {x2 :x y2 :y}]
-  {:x (cljs.core/+ x1 x2)
-   :y (cljs.core/+ y1 y2)})
+(def zero
+  (v 0 0))
 
 #_{:clj-kondo/ignore [:redefined-var]}
-(defn - [{x1 :x y1 :y} & [{x2 :x y2 :y :as second}]]
-  (if second
-    {:x (cljs.core/- x1 x2)
-     :y (cljs.core/- y1 y2)}
-    {:x (cljs.core/- x1)
-     :y (cljs.core/- y1)}))
+(defn + [& args]
+  {:x (apply cljs.core/+ (map :x args))
+   :y (apply cljs.core/+ (map :y args))})
+
+#_{:clj-kondo/ignore [:redefined-var]}
+(defn - [& args]
+  {:x (apply cljs.core/- (map :x args))
+   :y (apply cljs.core/- (map :y args))})
 
 #_{:clj-kondo/ignore [:redefined-var]}
 (defn * [{x :x y :y} f]
