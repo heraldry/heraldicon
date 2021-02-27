@@ -23,11 +23,11 @@
         actual-length (-> (* repetitions pattern-width)
                           (cond->
                            (pos? offset-length) (+ offset-length)))
-        start-offset  (v/v (min 0 offset-length) 0)
-        end-offset    (-> (v/v actual-length 0)
-                          (cond->
-                           (neg? offset-length) (v/+ (v/v offset-length 0)))
-                          (v/- (v/v length 0)))]
+        line-start  (v/v (min 0 offset-length) 0)
+        line-end    (-> (v/v actual-length 0)
+                        (cond->
+                         (neg? offset-length) (v/+ (v/v offset-length 0)))
+                        (v/- (v/v length 0)))]
     {:line         (-> []
                        (cond->
                         (and (not reversed?)
@@ -41,14 +41,14 @@
      :offset       (min 0 offset-length)
      :length       (-> (* repetitions pattern-width)
                        (+ (* offset-length 2)))
-     :start-offset (if reversed?
-                     (v/- (v/v 0 0)
-                          end-offset)
-                     start-offset)
-     :end-offset   (if reversed?
-                     (v/- (v/v 0 0)
-                          start-offset)
-                     end-offset)}))
+     :line-start (if reversed?
+                   (v/- (v/v 0 0)
+                        line-end)
+                   line-start)
+     :line-end   (if reversed?
+                   (v/- (v/v 0 0)
+                        line-start)
+                   line-end)}))
 
 (defn straight
   {:display-name "Straight"}
@@ -83,49 +83,49 @@
                                      Math/tan
                                      (->> (/ 1)))
                                  0)
-        start-offset-x         (* base-line
-                                  offset-x-factor)
+        line-start-x         (* base-line
+                                offset-x-factor)
         fimbriation-1-offset-x (* fimbriation-1-line
                                   offset-x-factor)
         fimbriation-2-offset-x (* fimbriation-2-line
                                   offset-x-factor)
 
-        line-data {:line                       ["h" (+ length
-                                                       start-offset-x)]
-                   :start-offset               (v/v (- start-offset-x)
-                                                    base-line)
-                   :end-offset                 (v/v 0
-                                                    base-line)
-                   :fimbriation-1              (when (#{:single :double} fimbriation-mode)
-                                                 ["h" (- (+ length
-                                                            fimbriation-1-offset-x))])
-                   :fimbriation-1-start-offset (when (#{:single :double} fimbriation-mode)
-                                                 (v/v fimbriation-1-offset-x
-                                                      fimbriation-1-line))
-                   :fimbriation-1-end-offset   (when (#{:single :double} fimbriation-mode)
-                                                 (v/v 0
-                                                      fimbriation-1-line))
-                   :fimbriation-2              (when (#{:double} fimbriation-mode)
-                                                 ["h" (- (+ length
-                                                            fimbriation-2-offset-x))])
-                   :fimbriation-2-start-offset (when (#{:double} fimbriation-mode)
-                                                 (v/v fimbriation-2-offset-x
-                                                      fimbriation-2-line))
-                   :fimbriation-2-end-offset   (when (#{:double} fimbriation-mode)
-                                                 (v/v 0
-                                                      fimbriation-2-line))}]
+        line-data {:line                ["h" (+ length
+                                                line-start-x)]
+                   :line-start          (v/v (- line-start-x)
+                                             base-line)
+                   :line-end            (v/v 0
+                                             base-line)
+                   :fimbriation-1       (when (#{:single :double} fimbriation-mode)
+                                          ["h" (- (+ length
+                                                     fimbriation-1-offset-x))])
+                   :fimbriation-1-start (when (#{:single :double} fimbriation-mode)
+                                          (v/v fimbriation-1-offset-x
+                                               fimbriation-1-line))
+                   :fimbriation-1-end   (when (#{:single :double} fimbriation-mode)
+                                          (v/v 0
+                                               fimbriation-1-line))
+                   :fimbriation-2       (when (#{:double} fimbriation-mode)
+                                          ["h" (- (+ length
+                                                     fimbriation-2-offset-x))])
+                   :fimbriation-2-start (when (#{:double} fimbriation-mode)
+                                          (v/v fimbriation-2-offset-x
+                                               fimbriation-2-line))
+                   :fimbriation-2-end   (when (#{:double} fimbriation-mode)
+                                          (v/v 0
+                                               fimbriation-2-line))}]
     (cond-> line-data
       reversed?                                   (->
-                                                   (assoc :start-offset (:end-offset line-data))
-                                                   (assoc :end-offset (:start-offset line-data)))
+                                                   (assoc :line-start (:line-end line-data))
+                                                   (assoc :line-end (:line-start line-data)))
       (and reversed?
            (#{:single :double} fimbriation-mode)) (->
-                                                   (assoc :fimbriation-1-start-offset (:fimbriation-1-end-offset line-data))
-                                                   (assoc :fimbriation-1-end-offset (:fimbriation-1-start-offset line-data)))
+                                                   (assoc :fimbriation-1-line-start (:fimbriation-1-line-end line-data))
+                                                   (assoc :fimbriation-1-line-end (:fimbriation-1-line-start line-data)))
       (and reversed?
            (#{:double} fimbriation-mode))         (->
-                                                   (assoc :fimbriation-2-start-offset (:fimbriation-2-end-offset line-data))
-                                                   (assoc :fimbriation-2-end-offset (:fimbriation-2-start-offset line-data))))))
+                                                   (assoc :fimbriation-2-line-start (:fimbriation-2-line-end line-data))
+                                                   (assoc :fimbriation-2-line-end (:fimbriation-2-line-start line-data))))))
 
 (defn invected
   {:display-name "Invected"}
@@ -545,12 +545,12 @@
                             (and (not flipped?) line-flipped?)) (.scale 1 -1))
                        (.rotate angle)
                        .toString))
-        (update :start-offset (fn [p] (when p (v/rotate p angle))))
-        (update :end-offset (fn [p] (when p (v/rotate p angle))))
-        (update :fimbriation-1-start-offset (fn [p] (when p (v/rotate p angle))))
-        (update :fimbriation-1-end-offset (fn [p] (when p (v/rotate p angle))))
-        (update :fimbriation-2-start-offset (fn [p] (when p (v/rotate p angle))))
-        (update :fimbriation-2-end-offset (fn [p] (when p (v/rotate p angle)))))))
+        (update :line-start (fn [p] (when p (v/rotate p angle))))
+        (update :line-end (fn [p] (when p (v/rotate p angle))))
+        (update :fimbriation-1-start (fn [p] (when p (v/rotate p angle))))
+        (update :fimbriation-1-end (fn [p] (when p (v/rotate p angle))))
+        (update :fimbriation-2-start (fn [p] (when p (v/rotate p angle))))
+        (update :fimbriation-2-end (fn [p] (when p (v/rotate p angle)))))))
 
 (defn translate [path dx dy]
   (-> path
