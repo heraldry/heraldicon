@@ -944,10 +944,11 @@
         diagonal-end (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
         angle (angle-to-point diagonal-start diagonal-end)
         {line-one :line
-         line-one-start :line-start} (line/create line
-                                                  (v/abs (v/- diagonal-end diagonal-start))
-                                                  :angle angle
-                                                  :render-options render-options)
+         line-one-start :line-start
+         :as line-one-data} (line/create line
+                                         (v/abs (v/- diagonal-end diagonal-start))
+                                         :angle angle
+                                         :render-options render-options)
         parts [[["M" (v/+ diagonal-start
                           line-one-start)
                  (line/stitch line-one)
@@ -977,18 +978,28 @@
                       line-one-start)
                  (v/+ diagonal-end
                       line-one-start)
-                 bottom-left]]]]
-    [make-division
-     (division-context-key type) fields parts
-     [:all nil]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline-style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ diagonal-start
-                              line-one-start)
-                     (line/stitch line-one)])}]])
-     environment division context]))
+                 bottom-left]]]
+        [fimbriation-elements
+         fimbriation-outlines] (line/render-fimbriation
+                                [diagonal-start :top]
+                                [diagonal-end :right]
+                                [line-one-data]
+                                (:fimbriation line)
+                                render-options)]
+    [:<>
+     [make-division
+      (division-context-key type) fields parts
+      [:all nil]
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:g outline-style
+         [:path {:d (svg/make-path
+                     ["M" (v/+ diagonal-start
+                               line-one-start)
+                      (line/stitch line-one)])}]
+         fimbriation-outlines])
+      environment division context]
+     fimbriation-elements]))
 
 (defn per-bend-sinister
   {:display-name "Per bend sinister"
@@ -1002,20 +1013,20 @@
         left (:left points)
         right (:right points)
         direction (direction diagonal-mode points origin-point)
-        diagonal-start (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
-        diagonal-end (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
+        diagonal-start (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x left))
+        diagonal-end (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x right))
         angle (angle-to-point diagonal-start diagonal-end)
         {line-one :line
-         line-one-start :line-start} (line/create line
-                                                  (v/abs (v/- diagonal-end diagonal-start))
-                                                  :angle angle
-                                                  :flipped? true
-                                                  :render-options render-options)
+         line-one-start :line-start
+         :as line-one-data} (line/create line
+                                         (v/abs (v/- diagonal-end diagonal-start))
+                                         :angle angle
+                                         :render-options render-options)
         parts [[["M" (v/+ diagonal-start
                           line-one-start)
                  (line/stitch line-one)
-                 (infinity/path :clockwise
-                                [:left :top]
+                 (infinity/path :counter-clockwise
+                                [:top :left]
                                 [(v/+ diagonal-end
                                       line-one-start)
                                  (v/+ diagonal-start
@@ -1030,8 +1041,8 @@
                [["M" (v/+ diagonal-start
                           line-one-start)
                  (line/stitch line-one)
-                 (infinity/path :counter-clockwise
-                                [:left :top]
+                 (infinity/path :clockwise
+                                [:top :left]
                                 [(v/+ diagonal-end
                                       line-one-start)
                                  (v/+ diagonal-start
@@ -1041,18 +1052,28 @@
                       line-one-start)
                  bottom-right
                  (v/+ diagonal-end
-                      line-one-start)]]]]
-    [make-division
-     (division-context-key type) fields parts
-     [:all nil]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline-style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ diagonal-start
-                              line-one-start)
-                     (line/stitch line-one)])}]])
-     environment division context]))
+                      line-one-start)]]]
+        [fimbriation-elements
+         fimbriation-outlines] (line/render-fimbriation
+                                [diagonal-start :left]
+                                [diagonal-end :right]
+                                [line-one-data]
+                                (:fimbriation line)
+                                render-options)]
+    [:<>
+     [make-division
+      (division-context-key type) fields parts
+      [:all nil]
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:g outline-style
+         [:path {:d (svg/make-path
+                     ["M" (v/+ diagonal-start
+                               line-one-start)
+                      (line/stitch line-one)])}]
+         fimbriation-outlines])
+      environment division context]
+     fimbriation-elements]))
 
 (defn per-chevron
   {:display-name "Per chevron"
