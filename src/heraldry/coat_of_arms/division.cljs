@@ -842,53 +842,66 @@
   {:display-name "Per fess"
    :parts        ["chief" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin]}        (options/sanitize division (options division))
-        points                       (:points environment)
-        origin-point                 (position/calculate origin environment :fess)
-        top-left                     (:top-left points)
-        left                         (assoc (:left points) :y (:y origin-point))
-        right                        (assoc (:right points) :y (:y origin-point))
-        bottom-right                 (:bottom-right points)
+  (let [{:keys [line origin]}          (options/sanitize division (options division))
+        points                         (:points environment)
+        origin-point                   (position/calculate origin environment :fess)
+        top-left                       (:top-left points)
+        left                           (assoc (:left points) :y (:y origin-point))
+        right                          (assoc (:right points) :y (:y origin-point))
+        bottom-right                   (:bottom-right points)
         {line-one       :line
-         line-one-start :line-start} (line/create line
-                                                  (:x (v/- right left))
-                                                  :render-options render-options)
-        parts                        [[["M" (v/+ left
-                                                 line-one-start)
-                                        (line/stitch line-one)
-                                        (infinity/path :counter-clockwise
-                                                       [:right :left]
-                                                       [(v/+ right
-                                                             line-one-start)
-                                                        (v/+ left
-                                                             line-one-start)])
-                                        "z"]
-                                       [top-left (v/+ right
-                                                      line-one-start)]]
+         line-one-start :line-start
+         :as            line-one-data} (line/create line
+                                                    (:x (v/- right left))
+                                                    :render-options render-options)
+        parts                          [[["M" (v/+ left
+                                                   line-one-start)
+                                          (line/stitch line-one)
+                                          (infinity/path :counter-clockwise
+                                                         [:right :left]
+                                                         [(v/+ right
+                                                               line-one-start)
+                                                          (v/+ left
+                                                               line-one-start)])
+                                          "z"]
+                                         [top-left
+                                          (v/+ right
+                                               line-one-start)]]
 
-                                      [["M" (v/+ left
-                                                 line-one-start)
-                                        (line/stitch line-one)
-                                        (infinity/path :clockwise
-                                                       [:right :left]
-                                                       [(v/+ right
-                                                             line-one-start)
-                                                        (v/+ left
-                                                             line-one-start)])
-                                        "z"]
-                                       [(v/+ left
-                                             line-one-start) bottom-right]]]]
-    [make-division
-     (division-context-key type) fields parts
-     [:all nil]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline-style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ left
-                              line-one-start)
-                     (line/stitch line-one)])}]])
-     environment division context]))
+                                        [["M" (v/+ left
+                                                   line-one-start)
+                                          (line/stitch line-one)
+                                          (infinity/path :clockwise
+                                                         [:right :left]
+                                                         [(v/+ right
+                                                               line-one-start)
+                                                          (v/+ left
+                                                               line-one-start)])
+                                          "z"]
+                                         [(v/+ left
+                                               line-one-start)
+                                          bottom-right]]]
+        [fimbriation-elements
+         fimbriation-outlines] (line/render-fimbriation
+                                [left :left]
+                                [right :right]
+                                [line-one-data]
+                                (:fimbriation line)
+                                render-options)]
+    [:<>
+     [make-division
+      (division-context-key type) fields parts
+      [:all nil]
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:g outline-style
+         [:path {:d (svg/make-path
+                     ["M" (v/+ left
+                               line-one-start)
+                      (line/stitch line-one)])}]
+         fimbriation-outlines])
+      environment division context]
+     fimbriation-elements]))
 
 (defn angle-to-point [p1 p2]
   (let [d         (v/- p2 p1)
