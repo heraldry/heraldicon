@@ -7,7 +7,6 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
@@ -114,112 +113,12 @@
                          (not (:flipped? line))
                          (:flipped? line)))))
 
-(defn render-tinctured-area [tincture path render-options]
-  (let [mask-id (util/id "mask")]
-    [:<>
-     [:defs
-      [:mask {:id mask-id}
-       [:path {:d    (svg/make-path path)
-               :fill "#ffffff"}]]]
-     [:rect {:x      -500
-             :y      -500
-             :width  1100
-             :height 1100
-             :mask   (str "url(#" mask-id ")")
-             :fill   (tincture/pick tincture render-options)}]]))
-
 (defn percent-of [base-value]
   (fn [v]
     (when v
       (-> v
           (* base-value)
           (/ 100)))))
-
-(defn render-fimbriation [[start start-direction]
-                          [end end-direction]
-                          lines
-                          {:keys [:tincture-1 :tincture-2]}
-                          render-options]
-  (let [{fimbriation-1             :fimbriation-1
-         fimbriation-2             :fimbriation-2
-         first-line-start          :line-start
-         first-fimbriation-1-start :fimbriation-1-start
-         first-fimbriation-2-start :fimbriation-2-start} (first lines)
-        {last-line-end          :line-end
-         last-fimbriation-1-end :fimbriation-1-end
-         last-fimbriation-2-end :fimbriation-2-end}      (last lines)
-
-        elements [:<> (when fimbriation-2
-                        [render-tinctured-area
-                         tincture-2
-                         ["M" (v/+ start first-line-start)
-                          (for [{:keys [line]} lines]
-                            (line/stitch line))
-                          (if (= end-direction :none)
-                            ["L" (v/+ end
-                                      last-fimbriation-2-end)]
-                            (infinity/path :counter-clockwise
-                                           [end-direction end-direction]
-                                           [(v/+ end
-                                                 last-line-end)
-                                            (v/+ end
-                                                 last-fimbriation-2-end)]))
-                          (for [{:keys [fimbriation-2]} (reverse lines)]
-                            (line/stitch fimbriation-2))
-                          (if (= start-direction :none)
-                            ["L" (v/+ start
-                                      first-line-start)]
-                            (infinity/path :counter-clockwise
-                                           [start-direction start-direction]
-                                           [(v/+ start
-                                                 first-fimbriation-2-start)
-                                            (v/+ start
-                                                 first-line-start)]))
-                          "z"]
-                         render-options])
-
-                  (when fimbriation-1
-                    [render-tinctured-area
-                     tincture-1
-                     ["M" (v/+ start first-line-start)
-                      (for [{:keys [line]} lines]
-                        (line/stitch line))
-                      (if (= end-direction :none)
-                        ["L" (v/+ end
-                                  last-fimbriation-1-end)]
-                        (infinity/path :counter-clockwise
-                                       [end-direction end-direction]
-                                       [(v/+ end
-                                             last-line-end)
-                                        (v/+ end
-                                             last-fimbriation-1-end)]))
-                      (for [{:keys [fimbriation-1]} (reverse lines)]
-                        (line/stitch fimbriation-1))
-                      (if (= start-direction :none)
-                        ["L" (v/+ start
-                                  first-line-start)]
-                        (infinity/path :counter-clockwise
-                                       [start-direction start-direction]
-                                       [(v/+ start
-                                             first-fimbriation-1-start)
-                                        (v/+ start
-                                             first-line-start)]))
-                      "z"]
-                     render-options])]
-
-        outlines [:<>
-                  (when fimbriation-1
-                    [:path {:d (svg/make-path
-                                ["M" (v/+ end last-fimbriation-1-end)
-                                 (for [{:keys [fimbriation-1]} (reverse lines)]
-                                   (line/stitch fimbriation-1))])}])
-
-                  (when fimbriation-2
-                    [:path {:d (svg/make-path
-                                ["M" (v/+ end last-fimbriation-2-end)
-                                 (for [{:keys [fimbriation-2]} (reverse lines)]
-                                   (line/stitch fimbriation-2))])}])]]
-    [elements outlines]))
 
 (defn pale
   {:display-name "Pale"}
@@ -284,13 +183,13 @@
         field                                                   (if (charge/counterchangable? field parent)
                                                                   (charge/counterchange-field field parent)
                                                                   field)
-        [fimbriation-elements-left fimbriation-outlines-left]   (render-fimbriation
+        [fimbriation-elements-left fimbriation-outlines-left]   (line/render-fimbriation
                                                                  [first-bottom :bottom]
                                                                  [first-top :top]
                                                                  [line-one-data]
                                                                  (:fimbriation line)
                                                                  render-options)
-        [fimbriation-elements-right fimbriation-outlines-right] (render-fimbriation
+        [fimbriation-elements-right fimbriation-outlines-right] (line/render-fimbriation
                                                                  [second-top :top]
                                                                  [second-bottom :bottom]
                                                                  [line-reversed-data]
@@ -379,13 +278,13 @@
         field                                                     (if (charge/counterchangable? field parent)
                                                                     (charge/counterchange-field field parent)
                                                                     field)
-        [fimbriation-elements-top fimbriation-outlines-top]       (render-fimbriation
+        [fimbriation-elements-top fimbriation-outlines-top]       (line/render-fimbriation
                                                                    [first-left :left]
                                                                    [first-right :right]
                                                                    [line-one-data]
                                                                    (:fimbriation line)
                                                                    render-options)
-        [fimbriation-elements-bottom fimbriation-outlines-bottom] (render-fimbriation
+        [fimbriation-elements-bottom fimbriation-outlines-bottom] (line/render-fimbriation
                                                                    [second-right :right]
                                                                    [second-left :left]
                                                                    [line-reversed-data]
@@ -452,7 +351,7 @@
         field                                       (if (charge/counterchangable? field parent)
                                                       (charge/counterchange-field field parent)
                                                       field)
-        [fimbriation-elements fimbriation-outlines] (render-fimbriation
+        [fimbriation-elements fimbriation-outlines] (line/render-fimbriation
                                                      [row-right :right]
                                                      [row-left :left]
                                                      [line-reversed-data]
@@ -513,7 +412,7 @@
         field                                       (if (charge/counterchangable? field parent)
                                                       (charge/counterchange-field field parent)
                                                       field)
-        [fimbriation-elements fimbriation-outlines] (render-fimbriation
+        [fimbriation-elements fimbriation-outlines] (line/render-fimbriation
                                                      [row-left :left]
                                                      [row-right :right]
                                                      [line-one-data]
@@ -616,13 +515,13 @@
         field                                                     (if counterchanged?
                                                                     (charge/counterchange-field field parent)
                                                                     field)
-        [fimbriation-elements-top fimbriation-outlines-top]       (render-fimbriation
+        [fimbriation-elements-top fimbriation-outlines-top]       (line/render-fimbriation
                                                                    [first-left :left]
                                                                    [first-right :right]
                                                                    [line-one-data]
                                                                    (:fimbriation line)
                                                                    render-options)
-        [fimbriation-elements-bottom fimbriation-outlines-bottom] (render-fimbriation
+        [fimbriation-elements-bottom fimbriation-outlines-bottom] (line/render-fimbriation
                                                                    [second-right :right]
                                                                    [second-left :left]
                                                                    [line-reversed-data]
@@ -738,13 +637,13 @@
         field                                                     (if counterchanged?
                                                                     (charge/counterchange-field field parent)
                                                                     field)
-        [fimbriation-elements-top fimbriation-outlines-top]       (render-fimbriation
+        [fimbriation-elements-top fimbriation-outlines-top]       (line/render-fimbriation
                                                                    [first-left :left]
                                                                    [first-right :right]
                                                                    [line-one-data]
                                                                    (:fimbriation line)
                                                                    render-options)
-        [fimbriation-elements-bottom fimbriation-outlines-bottom] (render-fimbriation
+        [fimbriation-elements-bottom fimbriation-outlines-bottom] (line/render-fimbriation
                                                                    [second-right :right]
                                                                    [second-left :left]
                                                                    [line-reversed-data]
@@ -916,28 +815,28 @@
         field                                                      (if (charge/counterchangable? field parent)
                                                                      (charge/counterchange-field field parent)
                                                                      field)
-        [fimbriation-elements-1 fimbriation-outlines-1]            (render-fimbriation
+        [fimbriation-elements-1 fimbriation-outlines-1]            (line/render-fimbriation
                                                                     [fess-top-left :left]
                                                                     [pale-top-left :top]
                                                                     [line-fess-top-left-data
                                                                      line-pale-top-left-data]
                                                                     (:fimbriation line)
                                                                     render-options)
-        [fimbriation-elements-2 fimbriation-outlines-2]            (render-fimbriation
+        [fimbriation-elements-2 fimbriation-outlines-2]            (line/render-fimbriation
                                                                     [pale-top-right :top]
                                                                     [fess-top-right :right]
                                                                     [line-pale-top-right-data
                                                                      line-fess-top-right-data]
                                                                     (:fimbriation line)
                                                                     render-options)
-        [fimbriation-elements-3 fimbriation-outlines-3]            (render-fimbriation
+        [fimbriation-elements-3 fimbriation-outlines-3]            (line/render-fimbriation
                                                                     [fess-bottom-right :right]
                                                                     [pale-bottom-right :bottom]
                                                                     [line-fess-bottom-right-data
                                                                      line-pale-bottom-right-data]
                                                                     (:fimbriation line)
                                                                     render-options)
-        [fimbriation-elements-4 fimbriation-outlines-4]            (render-fimbriation
+        [fimbriation-elements-4 fimbriation-outlines-4]            (line/render-fimbriation
                                                                     [pale-bottom-left :bottom]
                                                                     [fess-bottom-left :left]
                                                                     [line-pale-bottom-left-data
@@ -1150,28 +1049,28 @@
         field                                                        (if (charge/counterchangable? field parent)
                                                                        (charge/counterchange-field field parent)
                                                                        field)
-        [fimbriation-elements-1 fimbriation-outlines-1]              (render-fimbriation
+        [fimbriation-elements-1 fimbriation-outlines-1]              (line/render-fimbriation
                                                                       [top-left-upper :left]
                                                                       [top-right-upper :right]
                                                                       [line-top-left-upper-data
                                                                        line-top-right-upper-data]
                                                                       (:fimbriation line)
                                                                       render-options)
-        [fimbriation-elements-2 fimbriation-outlines-2]              (render-fimbriation
+        [fimbriation-elements-2 fimbriation-outlines-2]              (line/render-fimbriation
                                                                       [top-right-lower :right]
                                                                       [bottom-right-upper :right]
                                                                       [line-top-right-lower-data
                                                                        line-bottom-right-upper-data]
                                                                       (:fimbriation line)
                                                                       render-options)
-        [fimbriation-elements-3 fimbriation-outlines-3]              (render-fimbriation
+        [fimbriation-elements-3 fimbriation-outlines-3]              (line/render-fimbriation
                                                                       [bottom-right-lower :right]
                                                                       [bottom-left-lower :left]
                                                                       [line-bottom-right-lower-data
                                                                        line-bottom-left-lower-data]
                                                                       (:fimbriation line)
                                                                       render-options)
-        [fimbriation-elements-4 fimbriation-outlines-4]              (render-fimbriation
+        [fimbriation-elements-4 fimbriation-outlines-4]              (line/render-fimbriation
                                                                       [bottom-left-upper :left]
                                                                       [top-left-lower :left]
                                                                       [line-bottom-left-upper-data
@@ -1321,14 +1220,14 @@
         field                                                   (if (charge/counterchangable? field parent)
                                                                   (charge/counterchange-field field parent)
                                                                   field)
-        [fimbriation-elements-upper fimbriation-outlines-upper] (render-fimbriation
+        [fimbriation-elements-upper fimbriation-outlines-upper] (line/render-fimbriation
                                                                  [left-upper :left]
                                                                  [right-upper :right]
                                                                  [line-left-upper-data
                                                                   line-right-upper-data]
                                                                  (:fimbriation line)
                                                                  render-options)
-        [fimbriation-elements-lower fimbriation-outlines-lower] (render-fimbriation
+        [fimbriation-elements-lower fimbriation-outlines-lower] (line/render-fimbriation
                                                                  [right-lower :bottom]
                                                                  [left-lower :bottom]
                                                                  [line-right-lower-data
