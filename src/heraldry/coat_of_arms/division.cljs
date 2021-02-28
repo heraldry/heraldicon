@@ -784,10 +784,11 @@
         bottom (assoc (:bottom points) :x (:x origin-point))
         bottom-right (:bottom-right points)
         {line-one :line
-         line-one-start :line-start} (line/create line
-                                                  (:y (v/- bottom top))
-                                                  :angle 90
-                                                  :render-options render-options)
+         line-one-start :line-start
+         :as line-one-data} (line/create line
+                                         (:y (v/- bottom top))
+                                         :angle 90
+                                         :render-options render-options)
         parts [[["M" (v/+ top
                           line-one-start)
                  (line/stitch line-one)
@@ -814,18 +815,28 @@
                  "z"]
                 [(v/+ top
                       line-one-start)
-                 bottom-right]]]]
-    [make-division
-     (division-context-key type) fields parts
-     [:all nil]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline-style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ top
-                              line-one-start)
-                     (line/stitch line-one)])}]])
-     environment division context]))
+                 bottom-right]]]
+        [fimbriation-elements
+         fimbriation-outlines] (line/render-fimbriation
+                                [top :top]
+                                [bottom :bottom]
+                                [line-one-data]
+                                (:fimbriation line)
+                                render-options)]
+    [:<>
+     [make-division
+      (division-context-key type) fields parts
+      [:all nil]
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:g outline-style
+         [:path {:d (svg/make-path
+                     ["M" (v/+ top
+                               line-one-start)
+                      (line/stitch line-one)])}]
+         fimbriation-outlines])
+      environment division context]
+     fimbriation-elements]))
 
 (defn per-fess
   {:display-name "Per fess"
