@@ -322,24 +322,22 @@
            width]}
    fimbriation-offset
    line-options]
-  (let [half-width    (/ width 2)
-        quarter-width (/ width 4)
-        height        (* half-width height)
-        filled?       (>= (Math/abs fimbriation-offset) quarter-width)]
-    {:pattern (if filled?
-                ["h" width]
-                ["l"
-                 [(+ quarter-width
-                     fimbriation-offset) 0]
-                 [0 (- height)]
-                 [(- half-width
-                     (* 2 fimbriation-offset)) 0]
-                 [0 height]
-                 [(+ quarter-width
-                     fimbriation-offset) 0]])
-     :offset  (if filled?
-                (v/v 0 (- height))
-                (v/v 0 0))}))
+  (let [half-width         (/ width 2)
+        quarter-width      (/ width 4)
+        height             (* half-width height)
+        fimbriation-offset (-> fimbriation-offset
+                               (min quarter-width)
+                               (max (- quarter-width)))]
+    {:pattern ["l"
+               [(+ quarter-width
+                   fimbriation-offset) 0]
+               [0 (- height)]
+               [(- half-width
+                   (* 2 fimbriation-offset)) 0]
+               [0 height]
+               [(+ quarter-width
+                   fimbriation-offset) 0]]
+     :offset  v/zero}))
 
 (defn indented
   {:display-name "Indented"}
@@ -402,39 +400,39 @@
            width]}
    fimbriation-offset
    line-options]
-  (let [half-width    (/ width 2)
-        quarter-width (/ width 4)
-        height        (* half-width height)
-        dx            (-> width
-                          (/ 4)
-                          (* (-> eccentricity
-                                 (* 0.5)
-                                 (+ 0.2))))
-        shift-x       (-> fimbriation-offset
-                          (* dx 2)
-                          (/ height))
-        filled?       (>= (Math/abs fimbriation-offset) (- quarter-width dx (- shift-x)))]
-    {:pattern (if filled?
-                ["h" width]
-                ["l"
-                 [(+ quarter-width
-                     dx
-                     fimbriation-offset
-                     shift-x) 0]
-                 [(* dx -2) (- height)]
-                 [(+ half-width
-                     dx
-                     dx
-                     (* -2 fimbriation-offset)
-                     (* -2 shift-x)) 0]
-                 [(* dx -2) height]
-                 [(+ quarter-width
-                     dx
-                     fimbriation-offset
-                     shift-x) 0]])
-     :offset  (if filled?
-                (v/v 0 (- height))
-                v/zero)}))
+  (let [half-width         (/ width 2)
+        quarter-width      (/ width 4)
+        height             (* half-width height)
+        dx                 (-> width
+                               (/ 4)
+                               (* (-> eccentricity
+                                      (* 0.5)
+                                      (+ 0.2))))
+        max-fo             (/ (- quarter-width dx)
+                              (+ 1 (/ (* 2 dx) height)))
+        fimbriation-offset (-> fimbriation-offset
+                               (min max-fo)
+                               (max (- max-fo)))
+        shift-x            (-> fimbriation-offset
+                               (* dx 2)
+                               (/ height))]
+    {:pattern ["l"
+               [(+ quarter-width
+                   dx
+                   fimbriation-offset
+                   shift-x) 0]
+               [(* dx -2) (- height)]
+               [(+ half-width
+                   dx
+                   dx
+                   (* -2 fimbriation-offset)
+                   (* -2 shift-x)) 0]
+               [(* dx -2) height]
+               [(+ quarter-width
+                   dx
+                   fimbriation-offset
+                   shift-x) 0]]
+     :offset  v/zero}))
 
 (defn raguly
   {:display-name "Raguly"}
@@ -443,46 +441,44 @@
            width]}
    fimbriation-offset
    {:keys [reversed?] :as line-options}]
-  (let [half-width    (/ width 2)
-        quarter-width (/ width 4)
-        height        (* half-width height)
-        dx            (-> width
-                          (/ 2)
-                          (* (-> eccentricity
-                                 (* 0.7)
-                                 (+ 0.3))))
-        filled?       (>= (Math/abs fimbriation-offset) quarter-width)
-        shift-x       (-> fimbriation-offset
-                          (* dx)
-                          (/ height))]
-    {:pattern (if filled?
-                ["h" width]
-                (if reversed?
-                  ["l"
-                   [(+ quarter-width
-                       fimbriation-offset
-                       (- shift-x)) 0]
-                   [dx (- height)]
-                   [(+ half-width
-                       (* -2 fimbriation-offset)) 0]
-                   [(- dx) height]
-                   [(+ quarter-width
-                       fimbriation-offset
-                       shift-x) 0]]
-                  ["l"
-                   [(+ quarter-width
-                       fimbriation-offset
-                       shift-x) 0]
-                   [(- dx) (- height)]
-                   [(+ half-width
-                       (* -2 fimbriation-offset)) 0]
-                   [dx height]
-                   [(+ quarter-width
-                       fimbriation-offset
-                       (- shift-x)) 0]]))
-     :offset  (if filled?
-                (v/v 0 (- height))
-                v/zero)}))
+  (let [half-width         (/ width 2)
+        quarter-width      (/ width 4)
+        height             (* half-width height)
+        dx                 (-> width
+                               (/ 2)
+                               (* (-> eccentricity
+                                      (* 0.7)
+                                      (+ 0.3))))
+        fimbriation-offset (-> fimbriation-offset
+                               (min quarter-width)
+                               (max (- quarter-width)))
+        shift-x            (-> fimbriation-offset
+                               (* dx)
+                               (/ height))]
+    {:pattern (if reversed?
+                ["l"
+                 [(+ quarter-width
+                     fimbriation-offset
+                     (- shift-x)) 0]
+                 [dx (- height)]
+                 [(+ half-width
+                     (* -2 fimbriation-offset)) 0]
+                 [(- dx) height]
+                 [(+ quarter-width
+                     fimbriation-offset
+                     shift-x) 0]]
+                ["l"
+                 [(+ quarter-width
+                     fimbriation-offset
+                     shift-x) 0]
+                 [(- dx) (- height)]
+                 [(+ half-width
+                     (* -2 fimbriation-offset)) 0]
+                 [dx height]
+                 [(+ quarter-width
+                     fimbriation-offset
+                     (- shift-x)) 0]])
+     :offset  v/zero}))
 
 (defn urdy
   {:display-name "Urdy"}
