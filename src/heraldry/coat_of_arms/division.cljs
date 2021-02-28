@@ -776,56 +776,67 @@
   {:display-name "Per pale"
    :parts        ["dexter" "sinister"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin]}        (options/sanitize division (options division))
-        points                       (:points environment)
-        origin-point                 (position/calculate origin environment :fess)
-        top-left                     (:top-left points)
-        top                          (assoc (:top points) :x (:x origin-point))
-        bottom                       (assoc (:bottom points) :x (:x origin-point))
-        bottom-right                 (:bottom-right points)
+  (let [{:keys [line origin]}          (options/sanitize division (options division))
+        points                         (:points environment)
+        origin-point                   (position/calculate origin environment :fess)
+        top-left                       (:top-left points)
+        top                            (assoc (:top points) :x (:x origin-point))
+        bottom                         (assoc (:bottom points) :x (:x origin-point))
+        bottom-right                   (:bottom-right points)
         {line-one       :line
-         line-one-start :line-start} (line/create line
-                                                  (:y (v/- bottom top))
-                                                  :angle 90
-                                                  :render-options render-options)
-        parts                        [[["M" (v/+ top
-                                                 line-one-start)
-                                        (line/stitch line-one)
-                                        (infinity/path :clockwise
-                                                       [:bottom :top]
-                                                       [(v/+ bottom
-                                                             line-one-start)
-                                                        (v/+ top
-                                                             line-one-start)])
-                                        "z"]
-                                       [top-left
-                                        (v/+ bottom
-                                             line-one-start)]]
+         line-one-start :line-start
+         :as            line-one-data} (line/create line
+                                                    (:y (v/- bottom top))
+                                                    :angle 90
+                                                    :render-options render-options)
+        parts                          [[["M" (v/+ top
+                                                   line-one-start)
+                                          (line/stitch line-one)
+                                          (infinity/path :clockwise
+                                                         [:bottom :top]
+                                                         [(v/+ bottom
+                                                               line-one-start)
+                                                          (v/+ top
+                                                               line-one-start)])
+                                          "z"]
+                                         [top-left
+                                          (v/+ bottom
+                                               line-one-start)]]
 
-                                      [["M" (v/+ top
-                                                 line-one-start)
-                                        (line/stitch line-one)
-                                        (infinity/path :counter-clockwise
-                                                       [:bottom :top]
-                                                       [(v/+ bottom
-                                                             line-one-start)
-                                                        (v/+ top
-                                                             line-one-start)])
-                                        "z"]
-                                       [(v/+ top
-                                             line-one-start)
-                                        bottom-right]]]]
-    [make-division
-     (division-context-key type) fields parts
-     [:all nil]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline-style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ top
-                              line-one-start)
-                     (line/stitch line-one)])}]])
-     environment division context]))
+                                        [["M" (v/+ top
+                                                   line-one-start)
+                                          (line/stitch line-one)
+                                          (infinity/path :counter-clockwise
+                                                         [:bottom :top]
+                                                         [(v/+ bottom
+                                                               line-one-start)
+                                                          (v/+ top
+                                                               line-one-start)])
+                                          "z"]
+                                         [(v/+ top
+                                               line-one-start)
+                                          bottom-right]]]
+        [fimbriation-elements
+         fimbriation-outlines] (line/render-fimbriation
+                                [top :top]
+                                [bottom :bottom]
+                                [line-one-data]
+                                (:fimbriation line)
+                                render-options)]
+    [:<>
+     [make-division
+      (division-context-key type) fields parts
+      [:all nil]
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:g outline-style
+         [:path {:d (svg/make-path
+                     ["M" (v/+ top
+                               line-one-start)
+                      (line/stitch line-one)])}]
+         fimbriation-outlines])
+      environment division context]
+     fimbriation-elements]))
 
 (defn per-fess
   {:display-name "Per fess"
