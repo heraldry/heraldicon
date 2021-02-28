@@ -410,22 +410,28 @@
                (* (-> eccentricity
                       (* 0.5)
                       (+ 0.2))))
-        filled? (>= (Math/abs fimbriation-offset) (- quarter-width dx))]
+        shift-x (-> fimbriation-offset
+                    (* dx 2)
+                    (/ height))
+        filled? (>= (Math/abs fimbriation-offset) (- quarter-width dx (- shift-x)))]
     {:pattern (if filled?
                 ["h" width]
                 ["l"
                  [(+ quarter-width
                      dx
-                     fimbriation-offset) 0]
+                     fimbriation-offset
+                     shift-x) 0]
                  [(* dx -2) (- height)]
                  [(+ half-width
                      dx
                      dx
-                     (* -2 fimbriation-offset)) 0]
+                     (* -2 fimbriation-offset)
+                     (* -2 shift-x)) 0]
                  [(* dx -2) height]
                  [(+ quarter-width
                      dx
-                     fimbriation-offset) 0]])
+                     fimbriation-offset
+                     shift-x) 0]])
      :offset (if filled?
                (v/v 0 (- height))
                v/zero)}))
