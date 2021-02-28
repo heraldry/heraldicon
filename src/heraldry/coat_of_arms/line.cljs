@@ -435,7 +435,7 @@
   [{:keys [eccentricity
            height
            width]}
-   _fimbriation-offset
+   fimbriation-offset
    {:keys [reversed?] :as line-options}]
   (let [half-width (/ width 2)
         quarter-width (/ width 4)
@@ -444,21 +444,39 @@
                (/ 2)
                (* (-> eccentricity
                       (* 0.7)
-                      (+ 0.3))))]
-    {:pattern (if reversed?
-                ["l"
-                 [quarter-width 0]
-                 [quarter-width (- height)]
-                 [half-width 0]
-                 [(- quarter-width) height]
-                 [quarter-width 0]]
-                ["l"
-                 [quarter-width 0]
-                 [(- dx) (- height)]
-                 [half-width 0]
-                 [dx height]
-                 [quarter-width 0]])
-     :offset v/zero}))
+                      (+ 0.3))))
+        filled? (>= (Math/abs fimbriation-offset) quarter-width)
+        shift-x (-> fimbriation-offset
+                    (* dx)
+                    (/ height))]
+    {:pattern (if filled?
+                ["h" width]
+                (if reversed?
+                  ["l"
+                   [(+ quarter-width
+                       fimbriation-offset
+                       (- shift-x)) 0]
+                   [dx (- height)]
+                   [(+ half-width
+                       (* -2 fimbriation-offset)) 0]
+                   [(- dx) height]
+                   [(+ quarter-width
+                       fimbriation-offset
+                       shift-x) 0]]
+                  ["l"
+                   [(+ quarter-width
+                       fimbriation-offset
+                       shift-x) 0]
+                   [(- dx) (- height)]
+                   [(+ half-width
+                       (* -2 fimbriation-offset)) 0]
+                   [dx height]
+                   [(+ quarter-width
+                       fimbriation-offset
+                       (- shift-x)) 0]]))
+     :offset (if filled?
+               (v/v 0 (- height))
+               v/zero)}))
 
 (defn urdy
   {:display-name "Urdy"}
