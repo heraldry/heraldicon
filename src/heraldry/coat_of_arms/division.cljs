@@ -1083,6 +1083,7 @@
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
+        top-right (:top-right points)
         bottom-left (:bottom-left points)
         bottom-right (:bottom-right points)
         left (:left points)
@@ -1092,69 +1093,84 @@
         diagonal-bottom-right (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
         angle-bottom-left (angle-to-point origin-point diagonal-bottom-left)
         angle-bottom-right (angle-to-point origin-point diagonal-bottom-right)
+        joint-angle (- angle-bottom-left angle-bottom-right)
         {line-left :line
-         line-left-start :line-start} (line/create line
-                                                   (v/abs (v/- diagonal-bottom-left origin-point))
-                                                   :angle (+ angle-bottom-left 180)
-                                                   :reversed? true
-                                                   :render-options render-options)
+         line-left-start :line-start
+         :as line-left-data} (line/create line
+                                          (v/abs (v/- diagonal-bottom-left origin-point))
+                                          :angle (+ angle-bottom-left 180)
+                                          :joint-angle (- joint-angle)
+                                          :reversed? true
+                                          :render-options render-options)
         {line-right :line
-         line-right-start :line-start} (line/create line
-                                                    (v/abs (v/- diagonal-bottom-right origin-point))
-                                                    :angle angle-bottom-right
-                                                    :render-options render-options)
+         line-right-start :line-start
+         line-right-end :line-end
+         :as line-right-data} (line/create line
+                                           (v/abs (v/- diagonal-bottom-right origin-point))
+                                           :angle angle-bottom-right
+                                           :joint-angle (- joint-angle)
+                                           :render-options render-options)
         parts [[["M" (v/+ diagonal-bottom-left
                           line-left-start)
                  (line/stitch line-left)
-                 "L" origin-point
                  (line/stitch line-right)
                  (infinity/path :counter-clockwise
                                 [:right :left]
                                 [(v/+ diagonal-bottom-right
-                                      line-right-start)
+                                      line-right-end)
                                  (v/+ diagonal-bottom-left
                                       line-left-start)])
                  "z"]
                 [top-left
+                 top-right
                  (v/+ diagonal-bottom-left
                       line-left-start)
                  (v/+ diagonal-bottom-right
-                      line-right-start)]]
+                      line-left-start)]]
 
                [["M" (v/+ diagonal-bottom-left
                           line-left-start)
                  (line/stitch line-left)
-                 "L" origin-point
                  (line/stitch line-right)
                  (infinity/path :clockwise
                                 [:right :left]
                                 [(v/+ diagonal-bottom-right
-                                      line-right-start)
+                                      line-right-end)
                                  (v/+ diagonal-bottom-left
                                       line-left-start)])
-                 "z"
                  "z"]
                 [(v/+ diagonal-bottom-left
                       line-left-start)
                  origin-point
                  (v/+ diagonal-bottom-right
-                      line-right-start)
+                      line-right-end)
                  bottom-left
-                 bottom-right]]]]
-    [make-division
-     (division-context-key type) fields parts
-     [:all nil]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline-style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ diagonal-bottom-left
-                              line-left-start)
-                     (line/stitch line-left)
-                     "L" (v/+ origin-point
-                              line-right-start)
-                     (line/stitch line-right)])}]])
-     environment division context]))
+                 bottom-right]]]
+        [fimbriation-elements
+         fimbriation-outlines] (line/render-fimbriation
+                                [diagonal-bottom-left :left]
+                                [diagonal-bottom-right :right]
+                                [line-left-data
+                                 line-right-data]
+                                (:fimbriation line)
+                                render-options)]
+    [:<>
+     [make-division
+      (division-context-key type) fields parts
+      [:all nil]
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:g outline-style
+         [:path {:d (svg/make-path
+                     ["M" (v/+ diagonal-bottom-left
+                               line-left-start)
+                      (line/stitch line-left)
+                      "L" (v/+ origin-point
+                               line-right-start)
+                      (line/stitch line-right)])}]
+         fimbriation-outlines])
+      environment division context]
+     fimbriation-elements]))
 
 (defn per-saltire
   {:display-name "Per saltire"
