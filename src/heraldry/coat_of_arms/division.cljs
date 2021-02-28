@@ -157,12 +157,14 @@
                                                    [:origin :offset-y]
                                                    [:diagonal-mode]]
                                                   {[:diagonal-mode :choices] (diagonal-mode-choices :per-saltire)
-                                                   [:line :offset :min]      0})
+                                                   [:line :offset :min]      0
+                                                   [:line :fimbriation]      nil})
        :quartered                   (pick-options [[:line]
                                                    [:origin :point]
                                                    [:origin :offset-x]
                                                    [:origin :offset-y]]
-                                                  {[:line :offset :min] 0})
+                                                  {[:line :offset :min] 0
+                                                   [:line :fimbriation] nil})
        :quarterly                   (pick-options [[:layout :num-base-fields]
                                                    [:layout :num-fields-x]
                                                    [:layout :offset-x]
@@ -178,7 +180,8 @@
                                                    [:origin :offset-y]
                                                    [:diagonal-mode]]
                                                   {[:diagonal-mode :choices] (diagonal-mode-choices :gyronny)
-                                                   [:line :offset :min]      0})
+                                                   [:line :offset :min]      0
+                                                   [:line :fimbriation]      nil})
        :paly                        (pick-options [[:line]
                                                    [:layout :num-base-fields]
                                                    [:layout :num-fields-x]
@@ -1184,6 +1187,8 @@
         angle-top-right                       (angle-to-point origin-point diagonal-top-right)
         angle-bottom-left                     (angle-to-point origin-point diagonal-bottom-left)
         angle-bottom-right                    (angle-to-point origin-point diagonal-bottom-right)
+        line                                  (-> line
+                                                  (dissoc :fimbriation))
         {line-top-left       :line
          line-top-left-start :line-start}     (line/create line
                                                            (v/abs (v/- diagonal-top-left origin-point))
@@ -1332,6 +1337,8 @@
         bottom-right                    (:bottom-right points)
         left                            (assoc (:left points) :y (:y origin-point))
         right                           (assoc (:right points) :y (:y origin-point))
+        line                            (-> line
+                                            (dissoc :fimbriation))
         {line-top       :line
          line-top-start :line-start}    (line/create line
                                                      (v/abs (v/- top origin-point))
@@ -1475,6 +1482,8 @@
         angle-top-right                     (angle-to-point origin-point diagonal-top-right)
         angle-bottom-left                   (angle-to-point origin-point diagonal-bottom-left)
         angle-bottom-right                  (angle-to-point origin-point diagonal-bottom-right)
+        line                                (-> line
+                                                (dissoc :fimbriation))
         {line-top       :line
          line-top-start :line-start}        (line/create line
                                                          (v/abs (v/- top origin-point))
