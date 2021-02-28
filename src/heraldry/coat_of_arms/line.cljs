@@ -271,7 +271,7 @@
            height
            width]}
    _fimbriation-offset
-   line-options]
+   _line-options]
   (let [radius-x (-> width
                      (/ 2)
                      (* (-> eccentricity
@@ -287,7 +287,7 @@
            height
            width]}
    _fimbriation-offset
-   line-options]
+   _line-options]
   (let [radius-x (-> width
                      (/ 2)
                      (* (-> eccentricity
@@ -310,7 +310,7 @@
   [{:keys [height
            width]}
    fimbriation-offset
-   line-options]
+   _line-options]
   (let [half-width         (/ width 2)
         quarter-width      (/ width 4)
         height             (* half-width height)
@@ -332,7 +332,7 @@
   [{:keys [height
            width]}
    _fimbriation-offset
-   line-options]
+   _line-options]
   (let [half-width (/ width 2)
         height     (* half-width height)]
     ["l"
@@ -344,7 +344,7 @@
   [{:keys [height
            width]}
    _fimbriation-offset
-   {:keys [reversed?] :as line-options}]
+   {:keys [reversed?] :as _line-options}]
   (let [half-width    (/ width 2)
         quarter-width (/ width 4)
         half-height   (* quarter-width height)
@@ -365,7 +365,7 @@
            height
            width]}
    _fimbriation-offset
-   {:keys [reversed?] :as line-options}]
+   {:keys [reversed?] :as _line-options}]
   (let [radius-x (-> width
                      (/ 4)
                      (* (-> eccentricity
@@ -384,7 +384,7 @@
            height
            width]}
    fimbriation-offset
-   line-options]
+   _line-options]
   (let [half-width         (/ width 2)
         quarter-width      (/ width 4)
         height             (* half-width height)
@@ -424,7 +424,7 @@
            height
            width]}
    fimbriation-offset
-   {:keys [reversed?] :as line-options}]
+   {:keys [reversed?] :as _line-options}]
   (let [half-width         (/ width 2)
         quarter-width      (/ width 4)
         height             (* half-width height)
@@ -469,7 +469,7 @@
            height
            width]}
    _fimbriation-offset
-   {:keys [reversed?] :as line-options}]
+   {:keys [reversed?] :as _line-options}]
   (let [quarter-width (/ width 4)
         pointy-height (* quarter-width
                          (* 2)
