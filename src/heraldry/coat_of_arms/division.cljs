@@ -850,9 +850,10 @@
         right (assoc (:right points) :y (:y origin-point))
         bottom-right (:bottom-right points)
         {line-one :line
-         line-one-start :line-start} (line/create line
-                                                  (:x (v/- right left))
-                                                  :render-options render-options)
+         line-one-start :line-start
+         :as line-one-data} (line/create line
+                                         (:x (v/- right left))
+                                         :render-options render-options)
         parts [[["M" (v/+ left
                           line-one-start)
                  (line/stitch line-one)
@@ -863,8 +864,9 @@
                                  (v/+ left
                                       line-one-start)])
                  "z"]
-                [top-left (v/+ right
-                               line-one-start)]]
+                [top-left
+                 (v/+ right
+                      line-one-start)]]
 
                [["M" (v/+ left
                           line-one-start)
@@ -877,18 +879,29 @@
                                       line-one-start)])
                  "z"]
                 [(v/+ left
-                      line-one-start) bottom-right]]]]
-    [make-division
-     (division-context-key type) fields parts
-     [:all nil]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline-style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ left
-                              line-one-start)
-                     (line/stitch line-one)])}]])
-     environment division context]))
+                      line-one-start)
+                 bottom-right]]]
+        [fimbriation-elements
+         fimbriation-outlines] (line/render-fimbriation
+                                [left :left]
+                                [right :right]
+                                [line-one-data]
+                                (:fimbriation line)
+                                render-options)]
+    [:<>
+     [make-division
+      (division-context-key type) fields parts
+      [:all nil]
+      (when (or (:outline? render-options)
+                (:outline? hints))
+        [:g outline-style
+         [:path {:d (svg/make-path
+                     ["M" (v/+ left
+                               line-one-start)
+                      (line/stitch line-one)])}]
+         fimbriation-outlines])
+      environment division context]
+     fimbriation-elements]))
 
 (defn angle-to-point [p1 p2]
   (let [d (v/- p2 p1)
