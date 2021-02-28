@@ -785,6 +785,7 @@
         bottom-right                   (:bottom-right points)
         {line-one       :line
          line-one-start :line-start
+         line-one-end   :line-end
          :as            line-one-data} (line/create line
                                                     (:y (v/- bottom top))
                                                     :angle 90
@@ -795,13 +796,12 @@
                                           (infinity/path :clockwise
                                                          [:bottom :top]
                                                          [(v/+ bottom
-                                                               line-one-start)
+                                                               line-one-end)
                                                           (v/+ top
                                                                line-one-start)])
                                           "z"]
                                          [top-left
-                                          (v/+ bottom
-                                               line-one-start)]]
+                                          bottom]]
 
                                         [["M" (v/+ top
                                                    line-one-start)
@@ -809,12 +809,11 @@
                                           (infinity/path :counter-clockwise
                                                          [:bottom :top]
                                                          [(v/+ bottom
-                                                               line-one-start)
+                                                               line-one-end)
                                                           (v/+ top
                                                                line-one-start)])
                                           "z"]
-                                         [(v/+ top
-                                               line-one-start)
+                                         [top
                                           bottom-right]]]
         [fimbriation-elements
          fimbriation-outlines] (line/render-fimbriation
@@ -851,6 +850,7 @@
         bottom-right                   (:bottom-right points)
         {line-one       :line
          line-one-start :line-start
+         line-one-end   :line-end
          :as            line-one-data} (line/create line
                                                     (:x (v/- right left))
                                                     :render-options render-options)
@@ -860,13 +860,12 @@
                                           (infinity/path :counter-clockwise
                                                          [:right :left]
                                                          [(v/+ right
-                                                               line-one-start)
+                                                               line-one-end)
                                                           (v/+ left
                                                                line-one-start)])
                                           "z"]
                                          [top-left
-                                          (v/+ right
-                                               line-one-start)]]
+                                          right]]
 
                                         [["M" (v/+ left
                                                    line-one-start)
@@ -874,12 +873,11 @@
                                           (infinity/path :clockwise
                                                          [:right :left]
                                                          [(v/+ right
-                                                               line-one-start)
+                                                               line-one-end)
                                                           (v/+ left
                                                                line-one-start)])
                                           "z"]
-                                         [(v/+ left
-                                               line-one-start)
+                                         [left
                                           bottom-right]]]
         [fimbriation-elements
          fimbriation-outlines] (line/render-fimbriation
@@ -945,6 +943,7 @@
         angle                               (angle-to-point diagonal-start diagonal-end)
         {line-one       :line
          line-one-start :line-start
+         line-one-end   :line-end
          :as            line-one-data}      (line/create line
                                                          (v/abs (v/- diagonal-end diagonal-start))
                                                          :angle angle
@@ -955,29 +954,25 @@
                                                (infinity/path :counter-clockwise
                                                               [:right :top]
                                                               [(v/+ diagonal-end
-                                                                    line-one-start)
+                                                                    line-one-end)
                                                                (v/+ diagonal-start
                                                                     line-one-start)])
                                                "z"]
-                                              [(v/+ diagonal-start
-                                                    line-one-start)
+                                              [diagonal-start
                                                top-right
-                                               (v/+ diagonal-end
-                                                    line-one-start)]]
+                                               diagonal-end]]
                                              [["M" (v/+ diagonal-start
                                                         line-one-start)
                                                (line/stitch line-one)
                                                (infinity/path :clockwise
                                                               [:right :top]
                                                               [(v/+ diagonal-end
-                                                                    line-one-start)
+                                                                    line-one-end)
                                                                (v/+ diagonal-start
                                                                     line-one-start)])
                                                "z"]
-                                              [(v/+ diagonal-start
-                                                    line-one-start)
-                                               (v/+ diagonal-end
-                                                    line-one-start)
+                                              [diagonal-start
+                                               diagonal-end
                                                bottom-left]]]
         [fimbriation-elements
          fimbriation-outlines]              (line/render-fimbriation
@@ -1018,6 +1013,7 @@
         angle                               (angle-to-point diagonal-start diagonal-end)
         {line-one       :line
          line-one-start :line-start
+         line-one-end   :line-end
          :as            line-one-data}      (line/create line
                                                          (v/abs (v/- diagonal-end diagonal-start))
                                                          :angle angle
@@ -1028,15 +1024,13 @@
                                                (infinity/path :counter-clockwise
                                                               [:top :left]
                                                               [(v/+ diagonal-end
-                                                                    line-one-start)
+                                                                    line-one-end)
                                                                (v/+ diagonal-start
                                                                     line-one-start)])
                                                "z"]
-                                              [(v/+ diagonal-start
-                                                    line-one-start)
+                                              [diagonal-start
                                                top-left
-                                               (v/+ diagonal-end
-                                                    line-one-start)]]
+                                               diagonal-end]]
 
                                              [["M" (v/+ diagonal-start
                                                         line-one-start)
@@ -1044,15 +1038,13 @@
                                                (infinity/path :clockwise
                                                               [:top :left]
                                                               [(v/+ diagonal-end
-                                                                    line-one-start)
+                                                                    line-one-end)
                                                                (v/+ diagonal-start
                                                                     line-one-start)])
                                                "z"]
-                                              [(v/+ diagonal-start
-                                                    line-one-start)
+                                              [diagonal-start
                                                bottom-right
-                                               (v/+ diagonal-end
-                                                    line-one-start)]]]
+                                               diagonal-end]]]
         [fimbriation-elements
          fimbriation-outlines] (line/render-fimbriation
                                 [diagonal-start :left]
