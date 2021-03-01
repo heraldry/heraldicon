@@ -6,7 +6,7 @@
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.geometry :as geometry]
-            [heraldry.coat-of-arms.line :as line]
+            [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]

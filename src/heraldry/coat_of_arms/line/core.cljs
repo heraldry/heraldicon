@@ -1,9 +1,18 @@
-(ns heraldry.coat-of-arms.line
+(ns heraldry.coat-of-arms.line.core
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
             [clojure.walk :as walk]
             [heraldry.coat-of-arms.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.infinity :as infinity]
+            [heraldry.coat-of-arms.line.type.dancetty :as dancetty]
+            [heraldry.coat-of-arms.line.type.dovetailed :as dovetailed]
+            [heraldry.coat-of-arms.line.type.embattled :as embattled]
+            [heraldry.coat-of-arms.line.type.engrailed :as engrailed]
+            [heraldry.coat-of-arms.line.type.indented :as indented]
+            [heraldry.coat-of-arms.line.type.invected :as invected]
+            [heraldry.coat-of-arms.line.type.raguly :as raguly]
+            [heraldry.coat-of-arms.line.type.urdy :as urdy]
+            [heraldry.coat-of-arms.line.type.wavy :as wavy]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.random :as random]
             [heraldry.coat-of-arms.svg :as svg]
@@ -152,7 +161,8 @@
                                                    (assoc :fimbriation-2-end (:fimbriation-2-start line-data))))))
 
 (defn straight
-  {:display-name "Straight"}
+  {:display-name "Straight"
+   :value        :straight}
   [line length {:keys [joint-angle reversed?]}]
   (let [{fimbriation-mode        :mode
          fimbriation-alignment   :alignment
@@ -228,260 +238,28 @@
                                                    (assoc :fimbriation-2-start (:fimbriation-2-end line-data))
                                                    (assoc :fimbriation-2-end (:fimbriation-2-start line-data))))))
 
-(defn invected
-  {:display-name "Invected"}
-  [{:keys [eccentricity
-           height
-           width]}
-   _fimbriation-offset
-   _line-options]
-  (let [radius-x (-> width
-                     (/ 2)
-                     (* (-> eccentricity
-                            (min 1)
-                            (* -0.5)
-                            (+ 1.5))))
-        radius-y (* radius-x height)]
-    ["a" radius-x radius-y 0 0 1 [width 0]]))
-
-(defn engrailed
-  {:display-name "Engrailed"}
-  [{:keys [eccentricity
-           height
-           width]}
-   _fimbriation-offset
-   _line-options]
-  (let [radius-x (-> width
-                     (/ 2)
-                     (* (-> eccentricity
-                            (min 1)
-                            (* -0.5)
-                            (+ 1.5))))
-        radius-y (* radius-x height)
-        tx       (-> width
-                     (/ 2))
-        ty       (-> (- 1 (/ (* tx tx)
-                             (* radius-x radius-x)))
-                     Math/sqrt
-                     (* radius-y)
-                     (->> (- radius-y)))]
-    ["a" radius-x radius-y 0 0 0 [tx (- ty)]
-     "a" radius-x radius-y 0 0 0 [tx ty]]))
-
-(defn embattled
-  {:display-name "Embattled"}
-  [{:keys [height
-           width]}
-   fimbriation-offset
-   _line-options]
-  (let [half-width         (/ width 2)
-        quarter-width      (/ width 4)
-        height             (* half-width height)
-        fimbriation-offset (-> fimbriation-offset
-                               (min quarter-width)
-                               (max (- quarter-width)))]
-    ["l"
-     [(+ quarter-width
-         fimbriation-offset) 0]
-     [0 (- height)]
-     [(- half-width
-         (* 2 fimbriation-offset)) 0]
-     [0 height]
-     [(+ quarter-width
-         fimbriation-offset) 0]]))
-
-(defn indented
-  {:display-name "Indented"}
-  [{:keys [height
-           width]}
-   _fimbriation-offset
-   _line-options]
-  (let [half-width (/ width 2)
-        height     (* half-width height)]
-    ["l"
-     [half-width (- height)]
-     [half-width height]]))
-
-(defn dancetty
-  {:display-name "Dancetty"}
-  [{:keys [height
-           width]}
-   _fimbriation-offset
-   {:keys [reversed?] :as _line-options}]
-  (let [half-width    (/ width 2)
-        quarter-width (/ width 4)
-        half-height   (* quarter-width height)
-        height        (* half-height 2)]
-    (if reversed?
-      ["l"
-       [quarter-width half-height]
-       [half-width (- height)]
-       [quarter-width half-height]]
-      ["l"
-       [quarter-width (- half-height)]
-       [half-width height]
-       [quarter-width (- half-height)]])))
-
-(defn wavy
-  {:display-name "Wavy / undy"}
-  [{:keys [eccentricity
-           height
-           width]}
-   _fimbriation-offset
-   {:keys [reversed?] :as _line-options}]
-  (let [radius-x (-> width
-                     (/ 4)
-                     (* (-> eccentricity
-                            (min 1)
-                            (* -0.5)
-                            (+ 1.5))))
-        radius-y (* radius-x height)
-        tx       (-> width
-                     (/ 2))]
-    ["a" radius-x radius-y 0 0 (if reversed? 0 1) [tx 0]
-     "a" radius-x radius-y 0 0 (if reversed? 1 0) [tx 0]]))
-
-(defn dovetailed
-  {:display-name "Dovetailed"}
-  [{:keys [eccentricity
-           height
-           width]}
-   fimbriation-offset
-   _line-options]
-  (let [half-width         (/ width 2)
-        quarter-width      (/ width 4)
-        height             (* half-width height)
-        dx                 (-> width
-                               (/ 4)
-                               (* (-> eccentricity
-                                      (* 0.5)
-                                      (+ 0.2))))
-        max-fo             (/ (- quarter-width dx)
-                              (+ 1 (/ (* 2 dx) height)))
-        fimbriation-offset (-> fimbriation-offset
-                               (min max-fo)
-                               (max (- max-fo)))
-        shift-x            (-> fimbriation-offset
-                               (* dx 2)
-                               (/ height))]
-    ["l"
-     [(+ quarter-width
-         dx
-         fimbriation-offset
-         shift-x) 0]
-     [(* dx -2) (- height)]
-     [(+ half-width
-         dx
-         dx
-         (* -2 fimbriation-offset)
-         (* -2 shift-x)) 0]
-     [(* dx -2) height]
-     [(+ quarter-width
-         dx
-         fimbriation-offset
-         shift-x) 0]]))
-
-(defn raguly
-  {:display-name "Raguly"}
-  [{:keys [eccentricity
-           height
-           width]}
-   fimbriation-offset
-   {:keys [reversed?] :as _line-options}]
-  (let [half-width         (/ width 2)
-        quarter-width      (/ width 4)
-        height             (* half-width height)
-        dx                 (-> width
-                               (/ 2)
-                               (* (-> eccentricity
-                                      (* 0.7)
-                                      (+ 0.3))))
-        fimbriation-offset (-> fimbriation-offset
-                               (min quarter-width)
-                               (max (- quarter-width)))
-        shift-x            (-> fimbriation-offset
-                               (* dx)
-                               (/ height))]
-    (if reversed?
-      ["l"
-       [(+ quarter-width
-           fimbriation-offset
-           (- shift-x)) 0]
-       [dx (- height)]
-       [(+ half-width
-           (* -2 fimbriation-offset)) 0]
-       [(- dx) height]
-       [(+ quarter-width
-           fimbriation-offset
-           shift-x) 0]]
-      ["l"
-       [(+ quarter-width
-           fimbriation-offset
-           shift-x) 0]
-       [(- dx) (- height)]
-       [(+ half-width
-           (* -2 fimbriation-offset)) 0]
-       [dx height]
-       [(+ quarter-width
-           fimbriation-offset
-           (- shift-x)) 0]])))
-
-(defn urdy
-  {:display-name "Urdy"}
-  [{:keys [eccentricity
-           height
-           width]}
-   _fimbriation-offset
-   {:keys [reversed?] :as _line-options}]
-  (let [quarter-width (/ width 4)
-        pointy-height (* quarter-width
-                         (* 2)
-                         (* (-> eccentricity
-                                (* 0.6)
-                                (+ 0.2)))
-                         (* height))
-        middle-height (* quarter-width height)
-        half-height   (/ middle-height 2)]
-    (if reversed?
-      ["l"
-       [0 half-height]
-       [quarter-width pointy-height]
-       [quarter-width (- pointy-height)]
-       [0 (- middle-height)]
-       [quarter-width (- pointy-height)]
-       [quarter-width pointy-height]
-       [0 half-height]]
-      ["l"
-       [0 (- half-height)]
-       [quarter-width (- pointy-height)]
-       [quarter-width pointy-height]
-       [0 middle-height]
-       [quarter-width pointy-height]
-       [quarter-width (- pointy-height)]
-       [0 (- half-height)]])))
-
 (def lines
   [#'straight
-   #'invected
-   #'engrailed
-   #'embattled
-   #'indented
-   #'dancetty
-   #'wavy
-   #'dovetailed
-   #'raguly
-   #'urdy])
+   #'invected/pattern
+   #'engrailed/pattern
+   #'embattled/pattern
+   #'indented/pattern
+   #'dancetty/pattern
+   #'wavy/pattern
+   #'dovetailed/pattern
+   #'raguly/pattern
+   #'urdy/pattern])
 
 (def kinds-function-map
   (->> lines
        (map (fn [function]
-              [(-> function meta :name keyword) function]))
+              [(-> function meta :value) function]))
        (into {})))
 
 (def choices
   (->> lines
        (map (fn [function]
-              [(-> function meta :display-name) (-> function meta :name keyword)]))))
+              [(-> function meta :display-name) (-> function meta :value)]))))
 
 (def line-map
   (util/choices->map choices))
