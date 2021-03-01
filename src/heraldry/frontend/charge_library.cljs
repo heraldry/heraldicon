@@ -13,6 +13,7 @@
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
+            [heraldry.frontend.form.charge-map :as charge-map-component]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
@@ -361,7 +362,7 @@
         [:div.credits
          [credits/for-charge charge-data]]
         [:div {:style {:margin-bottom "0.5em"}}
-         [component/charge-properties charge-data]]
+         [charge-map-component/charge-properties charge-data]]
         (when (= (:username charge-data)
                  (:username user-data))
           [:div.pure-control-group {:style {:text-align    "right"
@@ -433,7 +434,7 @@
                                                  (invalidate-charges-cache)
                                                  (.stopPropagation %))} [:i.fas.fa-sync-alt]]]
      (if (= status :done)
-       [component/charge-tree charges :link-to-charge link-to-charge]
+       [charge-map-component/charge-tree charges :link-to-charge link-to-charge]
        [:div "loading..."])]))
 
 (defn edit-charge-by-id [{:keys [parameters] :as match}]
