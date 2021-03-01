@@ -5,7 +5,7 @@
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
-            [heraldry.coat-of-arms.line :as line]
+            [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.util :as util]))

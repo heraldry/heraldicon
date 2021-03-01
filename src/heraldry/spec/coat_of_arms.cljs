@@ -3,7 +3,7 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.division :as division]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
-            [heraldry.coat-of-arms.line :as line]
+            [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary :as ordinary]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.texture :as texture]
