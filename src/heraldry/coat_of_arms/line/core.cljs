@@ -330,12 +330,6 @@
         (update :fimbriation-2-start (fn [p] (when p (v/rotate p angle))))
         (update :fimbriation-2-end (fn [p] (when p (v/rotate p angle)))))))
 
-(defn translate [path dx dy]
-  (-> path
-      svgpath
-      (.translate dx dy)
-      .toString))
-
 (defn stitch [path]
   ;; TODO: this can be improved, it already broke some things and caused unexpected behaviour,
   ;; because the 'e' was not part of the pattern
