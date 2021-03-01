@@ -20,6 +20,7 @@
             [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.form.state]
+            [heraldry.frontend.form.theme :as theme]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
@@ -110,66 +111,6 @@
               [escutcheon-choice path key display-name])])
      [:div.spacer]]))
 
-(defn theme-choice [path key display-name]
-  (let [value            @(rf/subscribe [:get path])
-        {:keys [result]} (render/coat-of-arms
-                          {:component  :coat-of-arms
-                           :escutcheon :rectangle
-                           :field      {:component :field
-                                        :division  {:type   :bendy-sinister
-                                                    :line   {:type :straight}
-                                                    :layout {:num-base-fields 7
-                                                             :num-fields-y    7}
-                                                    :fields [{:component :field
-                                                              :content   {:tincture :argent}}
-                                                             {:component :field
-                                                              :content   {:tincture :gules}}
-                                                             {:component :field
-                                                              :content   {:tincture :or}}
-                                                             {:component :field
-                                                              :content   {:tincture :vert}}
-                                                             {:component :field
-                                                              :content   {:tincture :azure}}
-                                                             {:component :field
-                                                              :content   {:tincture :purpure}}
-                                                             {:component :field
-                                                              :content   {:tincture :sable}}
-                                                             {:ref 0}]}}}
-                          80
-                          (-> shared/coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] key)))]
-    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
-                          :style    {:border        (if (= value key)
-                                                      "1px solid #000"
-                                                      "1px solid transparent")
-                                     :border-radius "5px"}}
-     [:svg {:style               {:width  "4em"
-                                  :height "4.5em"}
-            :viewBox             "0 0 100 200"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g {:filter "url(#shadow)"}
-       [:g {:transform "translate(10,10)"}
-        result]]]
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} display-name]
-      [:i]]]))
-
-(defn form-for-theme [path & {:keys [label] :or {label "Colour Theme"}}]
-  (let [value (or @(rf/subscribe [:get path])
-                  tincture/default-theme)]
-    [:div.setting
-     [:label label]
-     " "
-     [element/submenu path "Select Colour Theme" (get tincture/theme-map value) {:min-width "22em"}
-      (for [[group-name & group] tincture/theme-choices]
-        ^{:key group-name}
-        [:<>
-         [:h4 group-name]
-         (for [[display-name key] group]
-           ^{:key display-name}
-           [theme-choice path key display-name])])]]))
-
 (defn form-render-options [db-path]
   [element/component db-path :render-options "Options" nil
    (let [mode-path    (conj db-path :mode)
@@ -187,7 +128,7 @@
                        :hatching (rf/dispatch [:set outline-path true])
                        :colours  (rf/dispatch [:set outline-path false])))]
       (when (= @(rf/subscribe [:get mode-path]) :colours)
-        [form-for-theme (conj db-path :theme)])])
+        [theme/form (conj db-path :theme)])])
    [element/select (conj db-path :texture) "Texture" (concat [["None" :none]]
                                                              texture/choices)]
    (when (-> @(rf/subscribe [:get (conj db-path :texture)])
