@@ -167,7 +167,7 @@
                                            (.scale scale-x scale-y)
                                            (.toString))
                                           (cond->
-                                              (:squiggly? render-options) line/squiggly-path
+                                              (:squiggly? render-options) svg/squiggly-path
                                               (not= rotation 0) (->
                                                                  (svgpath)
                                                                  (.rotate rotation)
@@ -181,7 +181,7 @@
                                              (.scale scale-x scale-y)
                                              (.toString))
                                             (cond->
-                                                (:squiggly? render-options) line/squiggly-path
+                                                (:squiggly? render-options) svg/squiggly-path
                                                 (not= rotation 0) (->
                                                                    (svgpath)
                                                                    (.rotate rotation)

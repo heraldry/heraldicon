@@ -5,7 +5,7 @@
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
-            [heraldry.coat-of-arms.line.core :as line]
+            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.util :as util]))
@@ -20,7 +20,7 @@
         shield                (escutcheon/field escutcheon)
         environment           (-> (field-environment/transform-to-width shield width)
                                   (cond->
-                                      (:squiggly? render-options) (update :shape line/squiggly-path)))
+                                      (:squiggly? render-options) (update :shape svg/squiggly-path)))
         field                 (:field coat-of-arms)
         mask-id               (util/id "mask")
         texture               (-> render-options
@@ -31,7 +31,7 @@
         texture-id            (util/id "texture")
         shiny-id              (util/id "shiny")
         use-texture?          (and texture
-                          (not svg-export?))]
+                                   (not svg-export?))]
     {:environment environment
      :result      [:g
                    metadata

@@ -1,8 +1,6 @@
 (ns heraldry.coat-of-arms.line.core
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
-            [clojure.walk :as walk]
-            [heraldry.coat-of-arms.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.type.dancetty :as dancetty]
             [heraldry.coat-of-arms.line.type.dovetailed :as dovetailed]
@@ -15,7 +13,6 @@
             [heraldry.coat-of-arms.line.type.urdy :as urdy]
             [heraldry.coat-of-arms.line.type.wavy :as wavy]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.random :as random]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.coat-of-arms.vector :as v]
@@ -267,42 +264,6 @@
          :wavy      {:width {:default 20}}}
         (:type line))))
 
-(defn jiggle [[previous
-               {:keys [x y] :as current}
-               _]]
-  (let [dist          (-> current
-                          (v/- previous)
-                          (v/abs))
-        jiggle-radius (/ dist 4)
-        dx            (- (* (random/float) jiggle-radius)
-                         jiggle-radius)
-        dy            (- (* (random/float) jiggle-radius)
-                         jiggle-radius)]
-    {:x (+ x dx)
-     :y (+ y dy)}))
-
-(defn squiggly-path [path & {:keys [seed]}]
-  (random/seed (if seed
-                 [seed path]
-                 path))
-  (let [points   (-> path
-                     svg/new-path
-                     (svg/points :length))
-        points   (vec (concat [(first points)]
-                              (map jiggle (partition 3 1 points))
-                              [(last points)]))
-        curve    (catmullrom/catmullrom points)
-        new-path (catmullrom/curve->svg-path-relative curve)]
-    new-path))
-
-(defn squiggly-paths [data]
-  (walk/postwalk #(cond-> %
-                    (vector? %) ((fn [v]
-                                   (if (= (first v) :d)
-                                     [:d (squiggly-path (second v))]
-                                     v))))
-                 data))
-
 (defn create [{:keys [type] :or {type :straight} :as line} length & {:keys [angle flipped? render-options seed] :as line-options}]
   (let [line-function          (get kinds-function-map type)
         line-options-values    (options/sanitize line (options line))
@@ -321,21 +282,21 @@
                                    (->>
                                     (str "M 0,0 "))
                                    (cond->
-                                       (:squiggly? render-options) (squiggly-path :seed seed)))
+                                       (:squiggly? render-options) (svg/squiggly-path :seed seed)))
         adjusted-fimbriation-1 (some-> line-data
                                        :fimbriation-1
                                        svg/make-path
                                        (->>
                                         (str "M 0,0 "))
                                        (cond->
-                                           (:squiggly? render-options) (squiggly-path :seed [seed :fimbriation-1])))
+                                           (:squiggly? render-options) (svg/squiggly-path :seed [seed :fimbriation-1])))
         adjusted-fimbriation-2 (some-> line-data
                                        :fimbriation-2
                                        svg/make-path
                                        (->>
                                         (str "M 0,0 "))
                                        (cond->
-                                           (:squiggly? render-options) (squiggly-path :seed [seed :fimbriation-2])))
+                                           (:squiggly? render-options) (svg/squiggly-path :seed [seed :fimbriation-2])))
         effective-flipped?     (or (and flipped? (not line-flipped?))
                                    (and (not flipped?) line-flipped?))]
     (-> line-data
