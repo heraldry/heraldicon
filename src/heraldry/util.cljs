@@ -92,3 +92,10 @@
            (flatten
             (map (fn [[c g]] (take c (repeat g)))
                  (map vector counts glyphs))))))
+
+(defn percent-of [base-value]
+  (fn [v]
+    (when v
+      (-> v
+          (* base-value)
+          (/ 100)))))
