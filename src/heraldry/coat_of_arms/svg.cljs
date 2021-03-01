@@ -319,3 +319,23 @@
   ;; TODO: this can be improved, it already broke some things and caused unexpected behaviour,
   ;; because the 'e' was not part of the pattern
   (s/replace path #"^M[ ]*[0-9.e-]+[, -] *[0-9.e-]+" ""))
+
+(defn split-style-value [value]
+  (-> value
+      (s/split #";")
+      (->>
+       (map (fn [chunk]
+              (-> chunk
+                  (s/split #":" 2)
+                  (as-> [key value]
+                        [(keyword (s/trim key)) (s/trim value)])))))
+      (into {})))
+
+(defn fix-string-style-values [data]
+  (walk/postwalk #(if (and (vector? %)
+                           (-> % count (= 2))
+                           (-> % first (= :style))
+                           (-> % second string?))
+                    [:style (split-style-value (second %))]
+                    %)
+                 data))
