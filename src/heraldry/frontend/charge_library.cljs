@@ -15,6 +15,7 @@
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
+            [heraldry.frontend.form.render-options :as render-options]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [id-for-url]]
@@ -337,7 +338,7 @@
                                                     :class (when disabled?
                                                              "disabled")}
            "Save"])]]
-      [component/form-render-options [:example-coa :render-options]]
+      [render-options/form [:example-coa :render-options]]
       [component/form-for-coat-of-arms [:example-coa :coat-of-arms]]]]))
 
 (defn charge-display [charge-id version]
@@ -372,7 +373,7 @@
                                                                   (rf/dispatch-sync [:clear-form-message form-db-path])
                                                                   (reife/push-state :edit-charge-by-id {:id charge-id}))}
             "Edit"]])
-        [component/form-render-options [:example-coa :render-options]]]])))
+        [render-options/form [:example-coa :render-options]]]])))
 
 (defn link-to-charge [charge & {:keys [type-prefix?]}]
   (let [charge-id (-> charge

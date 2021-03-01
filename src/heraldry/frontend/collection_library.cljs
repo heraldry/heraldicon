@@ -5,6 +5,7 @@
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
+            [heraldry.frontend.form.render-options :as render-options]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [id-for-url]]
@@ -125,7 +126,7 @@
                                                     :class (when disabled? "disabled")}
            "Save"])
         [:div.spacer]]]
-      [component/form-render-options (conj form-db-path :render-options)]]]))
+      [render-options/form (conj form-db-path :render-options)]]]))
 
 (defn collection-display [collection-id version]
   (let [user-data                (user/data)
@@ -157,7 +158,7 @@
                                                                   (reife/push-state :edit-collection-by-id {:id collection-id}))}
             "Edit"])
          [:div.spacer]]
-        [component/form-render-options (conj form-db-path :render-options)]]])))
+        [render-options/form (conj form-db-path :render-options)]]])))
 
 (defn list-collection-for-user [user-id]
   (let [[status collection-list] (state/async-fetch-data

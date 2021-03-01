@@ -12,7 +12,6 @@
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.render :as render]
-            [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.charge-map :as charge-map]
@@ -20,7 +19,6 @@
             [heraldry.frontend.form.escutcheon :as escutcheon]
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.form.state]
-            [heraldry.frontend.form.theme :as theme]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
@@ -55,34 +53,6 @@
                              :border      "0"
                              :margin-left "0.5em"
                              :width       "calc(100% - 12px - 1.5em)"}}]]))
-
-(defn form-render-options [db-path]
-  [element/component db-path :render-options "Options" nil
-   (let [mode-path    (conj db-path :mode)
-         outline-path (conj db-path :outline?)]
-     [:<>
-      [escutcheon/form (conj db-path :escutcheon-override) "Escutcheon Override"
-       :label-width "11em"
-       :allow-none? true]
-      [element/radio-select mode-path [["Colours" :colours]
-                                       ["Hatching" :hatching]]
-       :default :colours
-       :on-change #(let [new-mode %]
-                     (rf/dispatch [:set mode-path new-mode])
-                     (case new-mode
-                       :hatching (rf/dispatch [:set outline-path true])
-                       :colours  (rf/dispatch [:set outline-path false])))]
-      (when (= @(rf/subscribe [:get mode-path]) :colours)
-        [theme/form (conj db-path :theme)])])
-   [element/select (conj db-path :texture) "Texture" (concat [["None" :none]]
-                                                             texture/choices)]
-   (when (-> @(rf/subscribe [:get (conj db-path :texture)])
-             (or :none)
-             (#(when (not= % :none) %)))
-     [element/checkbox (conj db-path :texture-displacement?) "Apply texture"])
-   [element/checkbox (conj db-path :shiny?) "Shiny"]
-   [element/checkbox (conj db-path :outline?) "Draw outline"]
-   [element/checkbox (conj db-path :squiggly?) "Squiggly lines (can be slow)"]])
 
 (defn form-for-coat-of-arms [db-path]
   [element/component db-path :coat-of-arms "Coat of Arms" nil
