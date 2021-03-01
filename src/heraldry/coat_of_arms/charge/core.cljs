@@ -111,9 +111,8 @@
                 mirrored? reversed?]} geometry
         position-point                (position/calculate position environment :fess)
         arg-value                     (get environment arg)
-        target-arg-value              (-> arg-value
-                                          (* size)
-                                          (/ 100))
+        target-arg-value              (-> size
+                                          ((util/percent-of arg-value)))
         scale-x                       (if mirrored? -1 1)
         scale-y                       (* (if reversed? -1 1) stretch)
         {:keys [shape
@@ -435,13 +434,11 @@
                                                 (- (:y bottom) (:y center-point)))
           target-width                     (if size
                                              (-> size
-                                                 (* width)
-                                                 (/ 100))
+                                                 ((util/percent-of width)))
                                              (* (* min-x-distance 2) 0.8))
           target-height                    (/ (if size
                                                 (-> size
-                                                    (* height)
-                                                    (/ 100))
+                                                    ((util/percent-of height)))
                                                 (* (* min-y-distance 2) 0.7))
                                               stretch)
           scale-x                          (* (if mirrored? -1 1)
