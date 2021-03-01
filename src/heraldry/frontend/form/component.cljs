@@ -8,6 +8,7 @@
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.form.charge :as charge]
+            [heraldry.frontend.form.division :as division-form]
             [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.escutcheon :as escutcheon]
             [heraldry.frontend.form.geometry :as geometry]
@@ -28,65 +29,6 @@
   [element/component db-path :coat-of-arms "Coat of Arms" nil
    [escutcheon/form (conj db-path :escutcheon) "Default Escutcheon" :label-width "11em"]
    [form-for-field (conj db-path :field)]])
-
-(defn division-choice [path key display-name]
-  (let [division         (-> @(rf/subscribe [:get path])
-                             :division)
-        value            (-> division
-                             :type
-                             (or :none))
-        {:keys [result]} (render/coat-of-arms
-                          {:escutcheon :rectangle
-                           :field      (if (= key :none)
-                                         {:component :field
-                                          :content   {:tincture (if (= value key) :or :azure)}}
-                                         {:component :field
-                                          :division  {:type   key
-                                                      :fields (-> (division/default-fields {:type key})
-                                                                  (util/replace-recursively :none :argent)
-                                                                  (cond->
-                                                                      (= value key) (util/replace-recursively :azure :or)))
-                                                      :layout {:num-fields-y (when (= key :chequy)
-                                                                               7)}}})}
-                          100
-                          (-> shared/coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
-    [:div.choice.tooltip {:on-click #(let [new-division              (assoc division :type key)
-                                           {:keys [num-fields-x
-                                                   num-fields-y
-                                                   num-base-fields]} (:layout (options/sanitize-or-nil
-                                                                               new-division
-                                                                               (division-options/options new-division)))]
-                                       (state/dispatch-on-event % [:set-division-type path key num-fields-x num-fields-y num-base-fields]))}
-     [:svg {:style               {:width  "4em"
-                                  :height "4.5em"}
-            :viewBox             "0 0 120 200"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g {:filter "url(#shadow)"}
-       [:g {:transform "translate(10,10)"}
-        result]]]
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} display-name]
-      [:i]]]))
-
-(defn form-for-division [path]
-  (let [division-type (-> @(rf/subscribe [:get path])
-                          :division
-                          :type
-                          (or :none))
-        names         (->> (into [["None" :none]]
-                                 division/choices)
-                           (map (comp vec reverse))
-                           (into {}))]
-    [:div.setting
-     [:label "Division"]
-     " "
-     [element/submenu path "Select Division" (get names division-type) {:min-width "17.5em"}
-      (for [[display-name key] (into [["None" :none]]
-                                     division/choices)]
-        ^{:key key}
-        [division-choice path key display-name])]]))
 
 (defn line-type-choice [path key display-name & {:keys [current]}]
   (let [options          (line/options {:type key})
@@ -445,7 +387,7 @@
          :disabled? (not (division/counterchangable? (-> parent-field :division)))])
       (when (not counterchanged?)
         [:<>
-         [form-for-division path]
+         [division-form/form path]
          (let [division-options (division-options/options (:division field))]
            [:<>
             (when (-> division-options :origin)
