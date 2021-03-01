@@ -16,12 +16,6 @@
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
-(defn find-charge [charge-map [group & rest]]
-  (let [next (get-in charge-map [:groups group])]
-    (if rest
-      (recur next rest)
-      next)))
-
 (defn split-style-value [value]
   (-> value
       (s/split #";")
