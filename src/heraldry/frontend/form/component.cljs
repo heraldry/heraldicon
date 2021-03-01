@@ -16,6 +16,7 @@
             [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.escutcheon :as escutcheon]
+            [heraldry.frontend.form.position :as position]
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.form.state]
             [heraldry.frontend.form.tincture :as tincture]
@@ -58,39 +59,6 @@
   [element/component db-path :coat-of-arms "Coat of Arms" nil
    [escutcheon/form (conj db-path :escutcheon) "Default Escutcheon" :label-width "11em"]
    [form-for-field (conj db-path :field)]])
-
-(defn form-for-position [path & {:keys [title options] :or {title "Position"}}]
-  (let [position      @(rf/subscribe [:get path])
-        point-path    (conj path :point)
-        offset-x-path (conj path :offset-x)
-        offset-y-path (conj path :offset-y)]
-    [:div.setting
-     [:label title]
-     " "
-     [element/submenu path title (str (-> position
-                                          :point
-                                          (or :fess)
-                                          (util/translate-cap-first))
-                                      " point" (when (or (-> position :offset-x (or 0) zero? not)
-                                                         (-> position :offset-y (or 0) zero? not))
-                                                 " (adjusted)")) {}
-      [element/select point-path "Point" (-> options :point :choices)
-       :on-change #(do
-                     (rf/dispatch [:set point-path %])
-                     (rf/dispatch [:set offset-x-path nil])
-                     (rf/dispatch [:set offset-y-path nil]))]
-      (when (:offset-x options)
-        [element/range-input-with-checkbox offset-x-path "Offset x"
-         (-> options :offset-x :min)
-         (-> options :offset-x :max)
-         :default (options/get-value (:offset-x position) (:offset-x options))
-         :display-function #(str % "%")])
-      (when (:offset-y options)
-        [element/range-input-with-checkbox offset-y-path "Offset y"
-         (-> options :offset-y :min)
-         (-> options :offset-y :max)
-         :default (options/get-value (:offset-y position) (:offset-y options))
-         :display-function #(str % "%")])]]))
 
 (defn form-for-geometry [path options & {:keys [current]}]
   (let [changes         (filter some? [(when (and (:size current)
@@ -580,7 +548,7 @@
       (let [charge-options (charge-options/options charge)]
         [:<>
          (when (:position charge-options)
-           [form-for-position (conj path :position)
+           [position/form (conj path :position)
             :title "Position"
             :options (:position charge-options)])
          (when (:geometry charge-options)
@@ -884,7 +852,7 @@
             (-> ordinary-options :diagonal-mode :choices)
             :default (-> ordinary-options :diagonal-mode :default)])
          (when (:origin ordinary-options)
-           [form-for-position (conj path :origin)
+           [position/form (conj path :origin)
             :title "Origin"
             :options (:origin ordinary-options)])
          (when (:geometry ordinary-options)
@@ -1020,7 +988,7 @@
          (let [division-options (division-options/options (:division field))]
            [:<>
             (when (-> division-options :origin)
-              [form-for-position (conj path :division :origin)
+              [position/form (conj path :division :origin)
                :title "Origin"
                :options (:origin division-options)])
             (when (-> division-options :diagonal-mode)
