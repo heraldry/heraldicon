@@ -232,8 +232,6 @@
                  :alignment {:type :choice
                              :choices fimbriation-alignment-choices
                              :default :even}
-                 :outline? {:type :boolean
-                            :default false}
                  :thickness-1 {:type :range
                                :min 1
                                :max 10
