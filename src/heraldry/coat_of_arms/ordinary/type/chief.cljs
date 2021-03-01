@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.ordinary.type.chief
-  (:require [heraldry.coat-of-arms.charge :as charge]
+  (:require [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]

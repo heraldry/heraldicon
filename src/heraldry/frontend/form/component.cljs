@@ -2,7 +2,7 @@
   (:require [clojure.set :as set]
             [clojure.string :as s]
             [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.coat-of-arms.charge :as charge]
+            [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.division.options :as division-options]
