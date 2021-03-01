@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.division
+(ns heraldry.coat-of-arms.division.core
   (:require [clojure.string :as s]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field-environment :as field-environment]

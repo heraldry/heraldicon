@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field
   (:require [heraldry.coat-of-arms.charge :as charge]
-            [heraldry.coat-of-arms.division :as division]
+            [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.ordinary :as ordinary]
             [heraldry.coat-of-arms.tincture :as tincture]))
 

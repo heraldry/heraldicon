@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.blazon
   (:require [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.coat-of-arms.division :as division]
+            [heraldry.coat-of-arms.division.core :as division]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.util :as util]))
 
