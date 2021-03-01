@@ -9,7 +9,7 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.tincture :as tincture]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]

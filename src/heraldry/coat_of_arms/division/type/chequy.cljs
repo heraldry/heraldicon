@@ -2,7 +2,7 @@
   (:require [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.tincture :as tincture]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.util :as util]))
 
 (defn render
