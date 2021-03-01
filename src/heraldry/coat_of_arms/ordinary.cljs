@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.ordinary
   (:require [heraldry.coat-of-arms.charge :as charge]
-            [heraldry.coat-of-arms.division :as division]
+            [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]

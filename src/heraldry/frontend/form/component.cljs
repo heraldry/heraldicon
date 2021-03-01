@@ -4,7 +4,7 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.charge :as charge]
             [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.division :as division]
+            [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
