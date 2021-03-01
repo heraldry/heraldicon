@@ -3,10 +3,10 @@
             [clojure.string :as s]
             [clojure.walk :as walk]
             [heraldry.coat-of-arms.division.core :as division]
+            [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.geometry :as geometry]
-            [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
@@ -208,7 +208,7 @@
         field                         (if (counterchangable? field parent)
                                         (counterchange-field field parent)
                                         field)]
-    [division/make-division
+    [division-shared/make-division
      :charge-pale [field] parts
      [:all]
      (when (or (:outline? render-options)
