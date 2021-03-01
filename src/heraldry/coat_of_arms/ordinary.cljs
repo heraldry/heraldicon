@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.ordinary
   (:require [heraldry.coat-of-arms.charge :as charge]
             [heraldry.coat-of-arms.division.core :as division]
+            [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -199,7 +200,7 @@
     [:<>
      fimbriation-elements-left
      fimbriation-elements-right
-     [division/make-division
+     [division-shared/make-division
       :ordinary-pale [field] parts
       [:all]
       (when (or (:outline? render-options)
@@ -294,7 +295,7 @@
     [:<>
      fimbriation-elements-top
      fimbriation-elements-bottom
-     [division/make-division
+     [division-shared/make-division
       :ordinary-fess [field] parts
       [:all]
       (when (or (:outline? render-options)
@@ -360,7 +361,7 @@
                                                      render-options)]
     [:<>
      fimbriation-elements
-     [division/make-division
+     [division-shared/make-division
       :ordinary-chief [field] parts
       [:all]
       (when (or (:outline? render-options)
@@ -421,7 +422,7 @@
                                                      render-options)]
     [:<>
      fimbriation-elements
-     [division/make-division
+     [division-shared/make-division
       :ordinary-base [field] parts
       [:all]
       (when (or (:outline? render-options)
@@ -533,7 +534,7 @@
                          "translate(" (- required-half-length) "," 0 ")")}
      fimbriation-elements-top
      fimbriation-elements-bottom
-     [division/make-division
+     [division-shared/make-division
       :ordinary-fess [field] parts
       [:all]
       (when (or (:outline? render-options)
@@ -655,7 +656,7 @@
                          "translate(" (- required-half-length) "," 0 ")")}
      fimbriation-elements-top
      fimbriation-elements-bottom
-     [division/make-division
+     [division-shared/make-division
       :ordinary-fess [field] parts
       [:all]
       (when (or (:outline? render-options)
@@ -849,7 +850,7 @@
      fimbriation-elements-2
      fimbriation-elements-3
      fimbriation-elements-4
-     [division/make-division
+     [division-shared/make-division
       :ordinary-pale [field] parts
       [:all]
       (when (or (:outline? render-options)
@@ -1084,7 +1085,7 @@
      fimbriation-elements-2
      fimbriation-elements-3
      fimbriation-elements-4
-     [division/make-division
+     [division-shared/make-division
       :ordinary-pale [field] parts
       [:all]
       (when (or (:outline? render-options)
@@ -1238,7 +1239,7 @@
     [:<>
      fimbriation-elements-upper
      fimbriation-elements-lower
-     [division/make-division
+     [division-shared/make-division
       :ordinary-pale [field] parts
       [:all]
       (when (or (:outline? render-options)

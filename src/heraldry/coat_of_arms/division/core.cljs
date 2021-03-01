@@ -1,7 +1,6 @@
 (ns heraldry.coat-of-arms.division.core
-  (:require [clojure.string :as s]
-            [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.field-environment :as field-environment]
+  (:require [heraldry.coat-of-arms.default :as default]
+            [heraldry.coat-of-arms.division.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
@@ -12,7 +11,6 @@
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
-(def overlap-stroke-width 0.1)
 (def outline-stroke-width 0.5)
 
 (def outline-style
@@ -333,86 +331,8 @@
                :tierced-per-pairle
                :tierced-per-pairle-reversed} type) [(nth defaults 2)]))))
 
-(defn get-field [fields index]
-  (let [part (get fields index)
-        ref (:ref part)]
-    (if ref
-      (get fields ref)
-      part)))
-
 (defn division-context-key [key]
   (keyword (str "division-" (name key))))
-
-(defn make-division [type fields parts mask-overlaps outline parent-environment parent
-                     {:keys [render-field db-path transform svg-export?] :as context}]
-  (let [mask-ids (->> (range (count fields))
-                      (map (fn [idx] [(util/id (str (name type) "-" idx))
-                                      (util/id (str (name type) "-" idx))])))
-        environments (->> parts
-                          (map-indexed (fn [idx [shape-path bounding-box & extra]]
-                                         (let [field (get-field fields idx)]
-                                           (field-environment/create
-                                            (svg/make-path shape-path)
-                                            {:parent parent
-                                             :context [type idx]
-                                             :bounding-box (svg/bounding-box bounding-box)
-                                             :override-environment (when (or (:inherit-environment? field)
-                                                                             (:counterchanged? field))
-                                                                     parent-environment)
-                                             :mask (first extra)}))))
-                          vec)]
-    [:<>
-     [:defs
-      (for [[idx [clip-path-id mask-id]] (map-indexed vector mask-ids)]
-        (let [env (get environments idx)
-              environment-shape (:shape env)
-              overlap-paths (get mask-overlaps idx)]
-          ^{:key idx}
-          [:<>
-           [(if svg-export?
-              :mask
-              :clipPath) {:id clip-path-id}
-            [:path {:d environment-shape
-                    :fill "#fff"}]
-            (cond
-              (= overlap-paths :all) [:path {:d environment-shape
-                                             :fill "none"
-                                             :stroke-width overlap-stroke-width
-                                             :stroke "#fff"}]
-              overlap-paths (for [[idx shape] (map-indexed vector overlap-paths)]
-                              ^{:key idx}
-                              [:path {:d shape
-                                      :fill "none"
-                                      :stroke-width overlap-stroke-width
-                                      :stroke "#fff"}]))]
-           (when-let [mask-shape (-> env :meta :mask)]
-             [:mask {:id mask-id}
-              [:path {:d environment-shape
-                      :fill "#fff"}]
-              [:path {:d mask-shape
-                      :fill "#000"}]])]))]
-
-     (for [[idx [clip-path-id mask-id]] (map-indexed vector mask-ids)]
-       (let [env (get environments idx)]
-         ^{:key idx}
-         [:g {(if svg-export?
-                :mask
-                :clip-path) (str "url(#" clip-path-id ")")}
-          [:g {:transform transform
-               :mask (when (-> env :meta :mask)
-                       (str "url(#" mask-id ")"))}
-           [render-field
-            (get-field fields idx)
-            (get environments idx)
-            (-> context
-                (assoc :db-path (if (-> type
-                                        name
-                                        (s/split #"-" 2)
-                                        first
-                                        (->> (get #{"charge" "ordinary"}))) ;; FIXME: bit of a hack
-                                  (conj db-path :field)
-                                  (conj db-path :fields idx))))]]]))
-     outline]))
 
 (defn paly-parts [{:keys [num-fields-x
                           offset-x
@@ -827,7 +747,7 @@
                                 (:fimbriation line)
                                 render-options)]
     [:<>
-     [make-division
+     [shared/make-division
       (division-context-key type) fields parts
       [:all nil]
       (when (or (:outline? render-options)
@@ -891,7 +811,7 @@
                                 (:fimbriation line)
                                 render-options)]
     [:<>
-     [make-division
+     [shared/make-division
       (division-context-key type) fields parts
       [:all nil]
       (when (or (:outline? render-options)
@@ -986,7 +906,7 @@
                                 (:fimbriation line)
                                 render-options)]
     [:<>
-     [make-division
+     [shared/make-division
       (division-context-key type) fields parts
       [:all nil]
       (when (or (:outline? render-options)
@@ -1057,7 +977,7 @@
                                 (:fimbriation line)
                                 render-options)]
     [:<>
-     [make-division
+     [shared/make-division
       (division-context-key type) fields parts
       [:all nil]
       (when (or (:outline? render-options)
@@ -1151,7 +1071,7 @@
                                 (:fimbriation line)
                                 render-options)]
     [:<>
-     [make-division
+     [shared/make-division
       (division-context-key type) fields parts
       [:all nil]
       (when (or (:outline? render-options)
@@ -1290,7 +1210,7 @@
                  (v/+ diagonal-bottom-right
                       line-bottom-right-start)]]]]
 
-    [make-division
+    [shared/make-division
      (division-context-key type) fields parts
      [:all
       [(svg/make-path
@@ -1418,7 +1338,7 @@
                                       line-bottom-start)])
                  "z"]
                 [origin-point bottom-right]]]]
-    [make-division
+    [shared/make-division
      (division-context-key type) fields parts
      [:all
       [(svg/make-path
@@ -1457,7 +1377,7 @@
         top-left (:top-left points)
         bottom-right (:bottom-right points)
         [parts overlap outlines] (quarterly-parts layout top-left bottom-right hints render-options)]
-    [make-division
+    [shared/make-division
      (division-context-key type) fields parts
      overlap
      outlines
@@ -1656,7 +1576,7 @@
                  (v/+ bottom
                       line-bottom-start)]]]]
 
-    [make-division
+    [shared/make-division
      (division-context-key type) fields parts
      [:all
       [(svg/make-path
@@ -1723,7 +1643,7 @@
         top-left (:top-left points)
         bottom-right (:bottom-right points)
         [parts overlap outlines] (paly-parts layout top-left bottom-right line hints render-options)]
-    [make-division
+    [shared/make-division
      (division-context-key type) fields parts
      overlap
      outlines
@@ -1738,7 +1658,7 @@
         top-left (:top-left points)
         bottom-right (:bottom-right points)
         [parts overlap outlines] (barry-parts layout top-left bottom-right line hints render-options)]
-    [make-division
+    [shared/make-division
      (division-context-key type) fields parts
      overlap
      outlines
@@ -1994,7 +1914,7 @@
                                               line hints render-options)]
     [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
                          "rotate(" angle ")")}
-     [make-division
+     [shared/make-division
       (division-context-key type) fields parts
       overlap
       outlines
@@ -2020,7 +1940,7 @@
                                               line hints render-options)]
     [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
                          "rotate(" angle ")")}
-     [make-division
+     [shared/make-division
       (division-context-key type) fields parts
       overlap
       outlines
@@ -2110,7 +2030,7 @@
                 [(v/+ second-top
                       line-reversed-start)
                  bottom-right]]]]
-    [make-division
+    [shared/make-division
      (division-context-key type) fields parts
      [:all
       [(svg/make-path
@@ -2210,7 +2130,7 @@
                  "z"]
                 [(v/+ second-left
                       line-reversed-start) bottom-right]]]]
-    [make-division
+    [shared/make-division
      (division-context-key type) fields parts
      [:all
       [(svg/make-path
@@ -2328,7 +2248,7 @@
                       line-bottom-start)
                  (v/+ diagonal-top-left
                       line-top-left-start)]]]]
-    [make-division
+    [shared/make-division
      (division-context-key type) fields parts
      [:all
       [(svg/make-path
@@ -2447,7 +2367,7 @@
                                       line-bottom-right-start)])
                  "z"]
                 [origin-point bottom-left bottom-right]]]]
-    [make-division
+    [shared/make-division
      (division-context-key type) fields parts
      [:all
       [(svg/make-path
