@@ -259,8 +259,6 @@
                     :height nil
                     :width nil
                     :flipped? nil}
-         :invected {:eccentricity {:default 1}}
-         :engrailed {:eccentricity {:default 1}}
          :indented {:eccentricity nil}
          :embattled {:eccentricity nil}
          :dancetty {:width {:default 20}
