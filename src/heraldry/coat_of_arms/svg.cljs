@@ -1,6 +1,9 @@
 (ns heraldry.coat-of-arms.svg
   (:require ["svg-path-properties" :as svg-path-properties]
             [clojure.string :as s]
+            [clojure.walk :as walk]
+            [heraldry.coat-of-arms.catmullrom :as catmullrom]
+            [heraldry.coat-of-arms.random :as random]
             [heraldry.coat-of-arms.vector :as v]))
 
 (defn clean-path [d]
@@ -268,3 +271,39 @@
       (-expand-three-hex colour)
       (-convert-rgb colour)
       colour))
+
+(defn jiggle [[previous
+               {:keys [x y] :as current}
+               _]]
+  (let [dist (-> current
+                 (v/- previous)
+                 (v/abs))
+        jiggle-radius (/ dist 4)
+        dx (- (* (random/float) jiggle-radius)
+              jiggle-radius)
+        dy (- (* (random/float) jiggle-radius)
+              jiggle-radius)]
+    {:x (+ x dx)
+     :y (+ y dy)}))
+
+(defn squiggly-path [path & {:keys [seed]}]
+  (random/seed (if seed
+                 [seed path]
+                 path))
+  (let [points (-> path
+                   new-path
+                   (points :length))
+        points (vec (concat [(first points)]
+                            (map jiggle (partition 3 1 points))
+                            [(last points)]))
+        curve (catmullrom/catmullrom points)
+        new-path (catmullrom/curve->svg-path-relative curve)]
+    new-path))
+
+(defn squiggly-paths [data]
+  (walk/postwalk #(cond-> %
+                    (vector? %) ((fn [v]
+                                   (if (= (first v) :d)
+                                     [:d (squiggly-path (second v))]
+                                     v))))
+                 data))
