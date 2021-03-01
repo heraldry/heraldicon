@@ -10,7 +10,7 @@
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.attribution :as attribution]
-            [heraldry.frontend.form.component :as component]
+            [heraldry.frontend.form.coat-of-arms :as coat-of-arms-component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
             [heraldry.frontend.http :as http]
@@ -258,7 +258,7 @@
            "Save"])
         [:div.spacer]]]
       [render-options/form (conj form-db-path :render-options)]
-      [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]]))
+      [coat-of-arms-component/form (conj form-db-path :coat-of-arms)]]]))
 
 (defn arms-display [arms-id version]
   (let [user-data          (user/data)
