@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.render
-  (:require [heraldry.coat-of-arms.division :as division]
+  (:require [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field :as field]
             [heraldry.coat-of-arms.field-environment :as field-environment]
