@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.svg
   (:require ["svg-path-properties" :as svg-path-properties]
+            ["svgpath" :as svgpath]
             [clojure.string :as s]
             [clojure.walk :as walk]
             [heraldry.coat-of-arms.catmullrom :as catmullrom]
@@ -307,3 +308,9 @@
                                      [:d (squiggly-path (second v))]
                                      v))))
                  data))
+
+(defn translate [path dx dy]
+  (-> path
+      svgpath
+      (.translate dx dy)
+      .toString))
