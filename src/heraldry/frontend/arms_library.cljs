@@ -11,6 +11,7 @@
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
+            [heraldry.frontend.form.render-options :as render-options]
             [heraldry.frontend.http :as http]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
@@ -255,7 +256,7 @@
                                                     :class (when disabled? "disabled")}
            "Save"])
         [:div.spacer]]]
-      [component/form-render-options (conj form-db-path :render-options)]
+      [render-options/form (conj form-db-path :render-options)]
       [component/form-for-coat-of-arms (conj form-db-path :coat-of-arms)]]]))
 
 (defn arms-display [arms-id version]
@@ -291,7 +292,7 @@
                                                                   (reife/push-state :edit-arms-by-id {:id arms-id}))}
             "Edit"])
          [:div.spacer]]
-        [component/form-render-options (conj form-db-path :render-options)]]])))
+        [render-options/form (conj form-db-path :render-options)]]])))
 
 (defn list-arms-for-user [user-id]
   (let [[status arms-list] (state/async-fetch-data
