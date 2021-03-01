@@ -2,7 +2,7 @@
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
             [clojure.walk :as walk]
-            [heraldry.coat-of-arms.division.core :as division]
+            [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field-environment :as field-environment]
@@ -94,20 +94,6 @@
                              "#000"
                              "#fff"))))]
     [mask-id mask mask-inverted-id mask-inverted]))
-
-(defn counterchange-field [field {:keys [division]}]
-  (-> field
-      (dissoc :content)
-      (assoc :division {:type (:type division)
-                        :line (:line division)
-                        :layout (:layout division)
-                        :fields (-> (division/default-fields division)
-                                    (assoc-in [0 :content :tincture] (get-in division [:fields 1 :content :tincture]))
-                                    (assoc-in [1 :content :tincture] (get-in division [:fields 0 :content :tincture])))})))
-
-(defn counterchangable? [field parent]
-  (and (:counterchanged? field)
-       (division/counterchangable? (-> parent :division))))
 
 (def default-options
   {:position position/default-options
@@ -206,8 +192,8 @@
                  (v/+ position-point
                       (v// box-size 2))]
                 mask-shape]]
-        field (if (counterchangable? field parent)
-                (counterchange-field field parent)
+        field (if (counterchange/counterchangable? field parent)
+                (counterchange/counterchange-field field parent)
                 field)]
     [division-shared/make-division
      :charge-pale [field] parts
@@ -554,9 +540,9 @@
                                               [position (v/+ position
                                                              clip-size)])
                                :override-environment (when (or (:inherit-environment? field)
-                                                               (counterchangable? field parent)) environment)})
-          field (if (counterchangable? field parent)
-                  (counterchange-field field parent)
+                                                               (counterchange/counterchangable? field parent)) environment)})
+          field (if (counterchange/counterchangable? field parent)
+                  (counterchange/counterchange-field field parent)
                   field)
           charge-name (or (:name full-charge-data) "")
           username (:username full-charge-data)
