@@ -13,6 +13,9 @@
       (get fields ref)
       part)))
 
+(defn division-context-key [key]
+  (keyword (str "division-" (name key))))
+
 (defn make-division [type fields parts mask-overlaps outline parent-environment parent
                      {:keys [render-field db-path transform svg-export?] :as context}]
   (let [mask-ids     (->> (range (count fields))

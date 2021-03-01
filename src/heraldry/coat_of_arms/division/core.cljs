@@ -323,9 +323,6 @@
                :tierced-per-pairle
                :tierced-per-pairle-reversed} type) [(nth defaults 2)]))))
 
-(defn division-context-key [key]
-  (keyword (str "division-" (name key))))
-
 (defn paly-parts [{:keys [num-fields-x
                           offset-x
                           stretch-x]} top-left bottom-right line hints render-options]
@@ -740,7 +737,7 @@
                                 render-options)]
     [:<>
      [shared/make-division
-      (division-context-key type) fields parts
+      (shared/division-context-key type) fields parts
       [:all nil]
       (when (or (:outline? render-options)
                 (:outline? hints))
@@ -804,7 +801,7 @@
                                 render-options)]
     [:<>
      [shared/make-division
-      (division-context-key type) fields parts
+      (shared/division-context-key type) fields parts
       [:all nil]
       (when (or (:outline? render-options)
                 (:outline? hints))
@@ -899,7 +896,7 @@
                                              render-options)]
     [:<>
      [shared/make-division
-      (division-context-key type) fields parts
+      (shared/division-context-key type) fields parts
       [:all nil]
       (when (or (:outline? render-options)
                 (:outline? hints))
@@ -970,7 +967,7 @@
                                 render-options)]
     [:<>
      [shared/make-division
-      (division-context-key type) fields parts
+      (shared/division-context-key type) fields parts
       [:all nil]
       (when (or (:outline? render-options)
                 (:outline? hints))
@@ -1064,7 +1061,7 @@
                                 render-options)]
     [:<>
      [shared/make-division
-      (division-context-key type) fields parts
+      (shared/division-context-key type) fields parts
       [:all nil]
       (when (or (:outline? render-options)
                 (:outline? hints))
@@ -1203,7 +1200,7 @@
                                                       line-bottom-right-start)]]]]
 
     [shared/make-division
-     (division-context-key type) fields parts
+     (shared/division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" (v/+ origin-point
@@ -1331,7 +1328,7 @@
                                            "z"]
                                           [origin-point bottom-right]]]]
     [shared/make-division
-     (division-context-key type) fields parts
+     (shared/division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" origin-point
@@ -1370,7 +1367,7 @@
         bottom-right             (:bottom-right points)
         [parts overlap outlines] (quarterly-parts layout top-left bottom-right hints render-options)]
     [shared/make-division
-     (division-context-key type) fields parts
+     (shared/division-context-key type) fields parts
      overlap
      outlines
      environment division context]))
@@ -1569,7 +1566,7 @@
                                                     line-bottom-start)]]]]
 
     [shared/make-division
-     (division-context-key type) fields parts
+     (shared/division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" origin-point
@@ -1636,7 +1633,7 @@
         bottom-right             (:bottom-right points)
         [parts overlap outlines] (paly-parts layout top-left bottom-right line hints render-options)]
     [shared/make-division
-     (division-context-key type) fields parts
+     (shared/division-context-key type) fields parts
      overlap
      outlines
      environment division context]))
@@ -1651,7 +1648,7 @@
         bottom-right             (:bottom-right points)
         [parts overlap outlines] (barry-parts layout top-left bottom-right line hints render-options)]
     [shared/make-division
-     (division-context-key type) fields parts
+     (shared/division-context-key type) fields parts
      overlap
      outlines
      environment division context]))
@@ -1907,7 +1904,7 @@
     [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
                          "rotate(" angle ")")}
      [shared/make-division
-      (division-context-key type) fields parts
+      (shared/division-context-key type) fields parts
       overlap
       outlines
       environment division context]]))
@@ -1933,7 +1930,7 @@
     [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
                          "rotate(" angle ")")}
      [shared/make-division
-      (division-context-key type) fields parts
+      (shared/division-context-key type) fields parts
       overlap
       outlines
       environment division context]]))
@@ -2023,7 +2020,7 @@
                                                   line-reversed-start)
                                              bottom-right]]]]
     [shared/make-division
-     (division-context-key type) fields parts
+     (shared/division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" (v/+ second-bottom
@@ -2123,7 +2120,7 @@
                                             [(v/+ second-left
                                                   line-reversed-start) bottom-right]]]]
     [shared/make-division
-     (division-context-key type) fields parts
+     (shared/division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" (v/+ second-right
@@ -2241,7 +2238,7 @@
                                                     (v/+ diagonal-top-left
                                                          line-top-left-start)]]]]
     [shared/make-division
-     (division-context-key type) fields parts
+     (shared/division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" (v/+ bottom
@@ -2360,7 +2357,7 @@
                                                  "z"]
                                                 [origin-point bottom-left bottom-right]]]]
     [shared/make-division
-     (division-context-key type) fields parts
+     (shared/division-context-key type) fields parts
      [:all
       [(svg/make-path
         ["M" (v/+ diagonal-bottom-right
