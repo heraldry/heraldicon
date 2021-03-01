@@ -19,10 +19,11 @@
             [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.form.element :as element]
+            [heraldry.frontend.form.state]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
-            [heraldry.util :refer [deep-merge-with id full-url-for-username]]
+            [heraldry.util :refer [id full-url-for-username]]
             [re-frame.core :as rf]))
 
 (def coa-select-option-context
@@ -33,231 +34,9 @@
 (def ui-render-options-theme-path
   [:ui :render-options :theme])
 
-;; subs
-
-(rf/reg-sub
- :ui-component-open?
- (fn [db [_ path]]
-   (get-in db [:ui :component-open? path])))
-
-(rf/reg-sub
- :ui-submenu-open?
- (fn [db [_ path]]
-   (get-in db [:ui :submenu-open? path])))
-
-(rf/reg-sub
- :ui-component-selected?
- (fn [db [_ path]]
-   (or (get-in db [:ui :component-selected? path])
-       (when (get-in db (-> path
-                            (->> (drop-last 3))
-                            vec
-                            (conj :counterchanged?)))
-         (let [parent-field-path (-> path
-                                     (->> (drop-last 6))
-                                     vec
-                                     (conj :division :fields (last path)))]
-           (get-in db [:ui :component-selected? parent-field-path]))))))
-
-
-;; events
-
-
-(rf/reg-event-db
- :ui-component-open
- (fn [db [_ path]]
-   (-> (loop [db   db
-              rest path]
-         (if (empty? rest)
-           db
-           (recur
-            (assoc-in db [:ui :component-open? rest] true)
-            (-> rest drop-last vec)))))))
-
-(rf/reg-event-db
- :ui-component-close
- (fn [db [_ path]]
-
-   (update-in db [:ui :component-open?]
-              #(into {}
-                     (->> %
-                          (filter (fn [[k _]]
-                                    (not (and (-> k count (>= (count path)))
-                                              (= (subvec k 0 (count path))
-                                                 path))))))))))
-
-(rf/reg-event-fx
- :ui-component-open-toggle
- (fn [{:keys [db]} [_ path]]
-   (let [open? (get-in db [:ui :component-open? path])]
-     (if open?
-       {:fx [[:dispatch [:ui-component-close path]]]}
-       {:fx [[:dispatch [:ui-component-open path]]]}))))
-
-(rf/reg-event-db
- :ui-component-deselect-all
- (fn [db _]
-   (update-in db [:ui] dissoc :component-selected?)))
-
-(rf/reg-event-db
- :ui-submenu-close-all
- (fn [db _]
-   (update-in db [:ui] dissoc :submenu-open?)))
-
-(rf/reg-event-db
- :ui-submenu-open
- (fn [db [_ path]]
-   (assoc-in db [:ui :submenu-open? path] true)))
-
-(rf/reg-event-db
- :ui-submenu-close
- (fn [db [_ path]]
-   (assoc-in db [:ui :submenu-open? path] false)))
-
-(rf/reg-event-fx
- :ui-component-select
- (fn [{:keys [db]} [_ path]]
-   (let [real-path (if (get-in
-                        db
-                        (-> path
-                            (->> (drop-last 3))
-                            vec
-                            (conj :counterchanged?)))
-                     (-> path
-                         (->> (drop-last 6))
-                         vec
-                         (conj :division :fields (last path)))
-                     path)]
-     {:db (-> db
-              (update-in [:ui] dissoc :component-selected?)
-              (cond->
-                  path (as-> db
-                           (assoc-in db [:ui :component-selected? real-path] true))))
-      :fx [[:dispatch [:ui-component-open real-path]]]})))
-
-(rf/reg-event-db
- :set-division-type
- (fn [db [_ path new-type num-fields-x num-fields-y num-base-fields]]
-   (if (= new-type :none)
-     (-> db
-         (update-in path dissoc :division)
-         (update-in (conj path :content) #(or % {:tincture :none})))
-     (-> db
-         (assoc-in (conj path :division :type) new-type)
-         (update-in (conj path :division :line :type) #(or % :straight))
-         (assoc-in (conj path :division :layout :num-fields-x) num-fields-x)
-         (assoc-in (conj path :division :layout :num-fields-y) num-fields-y)
-         (assoc-in (conj path :division :layout :num-base-fields) num-base-fields)
-         (update-in (conj path :division)
-                    (fn [prepared-division]
-                      (let [current          (or (:fields prepared-division) [])
-                            default          (division/default-fields prepared-division)
-                            previous-default (division/default-fields (get-in db (conj path :division)))
-                            previous-default (cond
-                                               (< (count previous-default) (count default)) (into previous-default (subvec default (count previous-default)))
-                                               (> (count previous-default) (count default)) (subvec previous-default 0 (count default))
-                                               :else                                        previous-default)
-                            merged           (cond
-                                               (< (count current) (count default)) (into current (subvec default (count current)))
-                                               (> (count current) (count default)) (subvec current 0 (count default))
-                                               :else                               current)]
-                        (-> prepared-division
-                            (assoc :fields (->> (map vector merged previous-default default)
-                                                (map (fn [[cur old-def def]]
-                                                       (if (and (-> cur :ref not)
-                                                                (not= cur old-def))
-                                                         cur
-                                                         def)))
-                                                vec))))))
-         (update-in (conj path :division) #(merge %
-                                                  (options/sanitize-or-nil % (division-options/options %))))
-         (update-in path dissoc :content)
-         (cond->
-             (not (division/counterchangable? {:type new-type})) (update-in (conj path :components)
-                                                                            (fn [components]
-                                                                              (->> components
-                                                                                   (map #(update % :field dissoc :counterchanged?))
-                                                                                   vec))))))))
-
-(rf/reg-event-db
- :set-ordinary-type
- (fn [db [_ path new-type]]
-   (-> db
-       (assoc-in (conj path :type) new-type)
-       (update-in path #(deep-merge-with (fn [_current-value new-value]
-                                           new-value)
-                                         %
-                                         (options/sanitize-or-nil % (ordinary-options/options %)))))))
-(rf/reg-event-db
- :set-charge-type
- (fn [db [_ path new-type]]
-   (-> db
-       (assoc-in (conj path :type) new-type)
-       (update-in path #(deep-merge-with (fn [_current-value new-value]
-                                           new-value)
-                                         %
-                                         (options/sanitize-or-nil % (charge-options/options %)))))))
-
-(rf/reg-event-fx
- :add-component
- (fn [{:keys [db]} [_ path value]]
-   (let [components-path (conj path :components)
-         index           (count (get-in db components-path))]
-     {:db (update-in db components-path #(-> %
-                                             (conj value)
-                                             vec))
-      :fx [[:dispatch [:ui-submenu-open (conj components-path index (case (:component value)
-                                                                      :ordinary "Select Ordinary"
-                                                                      :charge   "Select Charge"))]]
-           [:dispatch [:ui-component-open (conj components-path index)]]
-           [:dispatch [:ui-component-open (conj components-path index :field)]]]})))
-
-(rf/reg-event-db
- :remove-component
- (fn [db [_ path]]
-   (let [components-path (drop-last path)
-         index           (last path)]
-     (update-in db components-path (fn [components]
-                                     (vec (concat (subvec components 0 index)
-                                                  (subvec components (inc index)))))))))
-
-(rf/reg-event-db
- :move-component-up
- (fn [db [_ path]]
-   (let [components-path (drop-last path)
-         index           (last path)]
-     (update-in db components-path (fn [components]
-                                     (let [num-components (count components)]
-                                       (if (>= index num-components)
-                                         components
-                                         (-> components
-                                             (subvec 0 index)
-                                             (conj (get components (inc index)))
-                                             (conj (get components index))
-                                             (concat (subvec components (+ index 2)))
-                                             vec))))))))
-
-(rf/reg-event-db
- :move-component-down
- (fn [db [_ path]]
-   (let [components-path (drop-last path)
-         index           (last path)]
-     (update-in db components-path (fn [components]
-                                     (if (zero? index)
-                                       components
-                                       (-> components
-                                           (subvec 0 (dec index))
-                                           (conj (get components index))
-                                           (conj (get components (dec index)))
-                                           (concat (subvec components (inc index)))
-                                           vec)))))))
-
-(rf/reg-event-db
- :update-charge
- (fn [db [_ path changes]]
-   (update-in db path merge changes)))
 
 ;; components
+
 
 (declare form-for-field)
 
@@ -284,55 +63,6 @@
                              :border      "0"
                              :margin-left "0.5em"
                              :width       "calc(100% - 12px - 1.5em)"}}]]))
-
-(defn selector [path]
-  [:a.selector {:on-click #(state/dispatch-on-event % [:ui-component-select path])}
-   [:i.fas.fa-search]])
-
-(defn component [path type title title-prefix & content]
-  (let [selected?      @(rf/subscribe [:ui-component-selected? path])
-        content?       (seq content)
-        open?          (and @(rf/subscribe [:ui-component-open? path])
-                            content?)
-        show-selector? (and (not= path [:render-options])
-                            (get #{:field :ref} type))]
-    [:div.component
-     {:class (util/combine " " [(when type (name type))
-                                (when selected? "selected")
-                                (when (not open?) "closed")])}
-     [:div.header.clickable {:on-click #(state/dispatch-on-event % [:ui-component-open-toggle path])}
-      [:a.arrow {:style {:opacity (if content? 1 0)}}
-       (if open?
-         [:i.fas.fa-chevron-circle-down]
-         [:i.fas.fa-chevron-circle-right])]
-      [:h1 (util/combine " " [(when title-prefix
-                                (str (util/upper-case-first title-prefix) ":"))
-                              (when (and type
-                                         (-> #{:charge :ordinary}
-                                             (get type)))
-                                (str (util/translate-cap-first type) ":"))
-                              title])]
-      (when show-selector?
-        [selector path])]
-     (when (and open?
-                content?)
-       (into [:div.content]
-             content))]))
-
-(defn submenu [path title link-name styles & content]
-  (let [submenu-id    (conj path title)
-        submenu-open? @(rf/subscribe [:ui-submenu-open? submenu-id])]
-    [:div.submenu-setting {:style    {:display "inline-block"}
-                           :on-click #(.stopPropagation %)}
-     [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-open submenu-id])}
-      link-name]
-     (when submenu-open?
-       [:div.component.submenu {:style styles}
-        [:div.header [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-close submenu-id])}
-                      [:i.far.fa-times-circle]]
-         " " title]
-        (into [:div.content]
-              content)])]))
 
 (defn escutcheon-choice [path key display-name]
   (let [value            @(rf/subscribe [:get path])
@@ -383,7 +113,7 @@
                             :position "absolute"
                             :left     label-width}}]
              [:<>])
-           [submenu path "Select Escutcheon" (get names escutcheon) {:min-width "17.5em"}
+           [element/submenu path "Select Escutcheon" (get names escutcheon) {:min-width "17.5em"}
             (for [[display-name key] choices]
               ^{:key key}
               [escutcheon-choice path key display-name])])
@@ -440,7 +170,7 @@
     [:div.setting
      [:label label]
      " "
-     [submenu path "Select Colour Theme" (get tincture/theme-map value) {:min-width "22em"}
+     [element/submenu path "Select Colour Theme" (get tincture/theme-map value) {:min-width "22em"}
       (for [[group-name & group] tincture/theme-choices]
         ^{:key group-name}
         [:<>
@@ -450,7 +180,7 @@
            [theme-choice path key display-name])])]]))
 
 (defn form-render-options [db-path]
-  [component db-path :render-options "Options" nil
+  [element/component db-path :render-options "Options" nil
    (let [mode-path    (conj db-path :mode)
          outline-path (conj db-path :outline?)]
      [:<>
@@ -478,7 +208,7 @@
    [element/checkbox (conj db-path :squiggly?) "Squiggly lines (can be slow)"]])
 
 (defn form-for-coat-of-arms [db-path]
-  [component db-path :coat-of-arms "Coat of Arms" nil
+  [element/component db-path :coat-of-arms "Coat of Arms" nil
    [form-for-escutcheon (conj db-path :escutcheon) "Default Escutcheon" :label-width "11em"]
    [form-for-field (conj db-path :field)]])
 
@@ -516,7 +246,7 @@
     [:div.setting
      [:label label]
      " "
-     [submenu path "Select Tincture" (get names value) {:min-width "22em"}
+     [element/submenu path "Select Tincture" (get names value) {:min-width "22em"}
       (for [[group-name & group] tincture/choices]
         ^{:key group-name}
         [:<>
@@ -537,13 +267,13 @@
     [:div.setting
      [:label title]
      " "
-     [submenu path title (str (-> position
-                                  :point
-                                  (or :fess)
-                                  (util/translate-cap-first))
-                              " point" (when (or (-> position :offset-x (or 0) zero? not)
-                                                 (-> position :offset-y (or 0) zero? not))
-                                         " (adjusted)")) {}
+     [element/submenu path title (str (-> position
+                                          :point
+                                          (or :fess)
+                                          (util/translate-cap-first))
+                                      " point" (when (or (-> position :offset-x (or 0) zero? not)
+                                                         (-> position :offset-y (or 0) zero? not))
+                                                 " (adjusted)")) {}
       [element/select point-path "Point" (-> options :point :choices)
        :on-change #(do
                      (rf/dispatch [:set point-path %])
@@ -580,7 +310,7 @@
     [:div.setting
      [:label "Geometry"]
      " "
-     [submenu path "Geometry" current-display {}
+     [element/submenu path "Geometry" current-display {}
       [:div.settings
        (when (:size options)
          [element/range-input-with-checkbox (conj path :size) "Size"
@@ -938,7 +668,7 @@
     [:div.setting
      [:label "Type"]
      " "
-     [submenu path "Select Charge" title {:min-width "22em"}
+     [element/submenu path "Select Charge" title {:min-width "22em"}
       (for [[display-name key] charge/choices]
         ^{:key key}
         [charge-type-choice path key display-name :current charge-type])
@@ -1015,7 +745,7 @@
                                      tinctures-title)
         title                      (s/join " " [(-> charge :type util/translate-cap-first)
                                                 (-> charge :attitude util/translate)])]
-    [component path :charge title nil
+    [element/component path :charge title nil
      [:div.settings
       (when (and (:type charge)
                  (-> charge :type :map? not))
@@ -1026,7 +756,7 @@
         [:div.setting
          [:label "Tinctures"]
          " "
-         [submenu (conj path :tincture) "Tinctures" tinctures-title {}
+         [element/submenu (conj path :tincture) "Tinctures" tinctures-title {}
           (when sorted-supported-tinctures
             [:div.placeholders
              {:style {:width "50%"
@@ -1123,7 +853,7 @@
     [:div.setting
      [:label "Division"]
      " "
-     [submenu path "Select Division" (get names division-type) {:min-width "17.5em"}
+     [element/submenu path "Select Division" (get names division-type) {:min-width "17.5em"}
       (for [[display-name key] (into [["None" :none]]
                                      division/choices)]
         ^{:key key}
@@ -1170,7 +900,7 @@
                                  (rf/dispatch [:set (conj path :type) default])
                                  (rf/dispatch [:remove (conj path :type)])))}])
       (if (some? (:type line))
-        [submenu (conj path :type) "Select Line Type" (get line/line-map value) {:min-width "25em"}
+        [element/submenu (conj path :type) "Select Line Type" (get line/line-map value) {:min-width "25em"}
          (for [[display-name key] (-> options :type :choices)]
            ^{:key display-name}
            [line-type-choice (conj path :type) key display-name :current value])]
@@ -1192,16 +922,8 @@
                                      (:offset defaults))
         fimbriation-mode         (or (-> line :fimbriation :mode)
                                      (-> defaults :fimbriation :mode))
-        fimbriation-alignment    (or (-> line :fimbriation :alignment)
-                                     (-> defaults :fimbriation :alignment))
-        fimbriation-outline?     (or (-> line :fimbriation :outline?)
-                                     (-> defaults :fimbriation :outline?))
-        fimbriation-thickness-1  (or (-> line :fimbriation :thickness-1)
-                                     (-> defaults :fimbriation :thickness-1))
         fimbriation-tincture-1   (or (-> line :fimbriation :tincture-1)
                                      (-> defaults :fimbriation :tincture-1))
-        fimbriation-thickness-2  (or (-> line :fimbriation :thickness-2)
-                                     (-> defaults :fimbriation :thickness-2))
         fimbriation-tincture-2   (or (-> line :fimbriation :tincture-2)
                                      (-> defaults :fimbriation :tincture-2))
         current-fimbriation-mode (options/get-value fimbriation-mode
@@ -1209,7 +931,7 @@
     [:div.setting
      [:label title]
      " "
-     [submenu path title (get line/line-map line-type) {}
+     [element/submenu path title (get line/line-map line-type) {}
       [form-for-line-type path :options options
        :can-disable? (some? defaults)
        :value line-type
@@ -1256,7 +978,7 @@
           [:div.setting
            [:label "Fimbriation"]
            " "
-           [submenu fimbriation-path "Fimbriation" link-name {}
+           [element/submenu fimbriation-path "Fimbriation" link-name {}
             (when (-> options :fimbriation :mode)
               [element/select (conj fimbriation-path :mode) "Mode"
                (-> options :fimbriation :mode :choices)
@@ -1335,14 +1057,14 @@
     [:div.setting
      [:label "Type"]
      " "
-     [submenu path "Select Ordinary" (get ordinary/ordinary-map ordinary-type) {:min-width "17.5em"}
+     [element/submenu path "Select Ordinary" (get ordinary/ordinary-map ordinary-type) {:min-width "17.5em"}
       (for [[display-name key] ordinary/choices]
         ^{:key key}
         [ordinary-type-choice path key display-name :current ordinary-type])]]))
 
 (defn form-for-ordinary [path & {:keys [parent-field]}]
   (let [ordinary @(rf/subscribe [:get path])]
-    [component
+    [element/component
      path :ordinary (-> ordinary :type util/translate-cap-first) nil
      [:div.settings
       [form-for-ordinary-type path]
@@ -1403,7 +1125,7 @@
     [:div.setting
      [:label title]
      " "
-     [submenu layout-path title link-name {}
+     [element/submenu layout-path title link-name {}
       (when (-> options :num-base-fields)
         [element/range-input-with-checkbox (conj layout-path :num-base-fields) "Base fields"
          (-> options :num-base-fields :min)
@@ -1481,10 +1203,10 @@
         counterchanged? (and @(rf/subscribe [:get (conj path :counterchanged?)])
                              (division/counterchangable? (-> parent-field :division)))
         root-field?     (= path [:coat-of-arms :field])]
-    [component path :field (cond
-                             (:counterchanged? field) "Counterchanged"
-                             (= division-type :none)  (-> field :content :tincture util/translate-tincture util/upper-case-first)
-                             :else                    (-> division-type util/translate-cap-first)) title-prefix
+    [element/component path :field (cond
+                                     (:counterchanged? field) "Counterchanged"
+                                     (= division-type :none)  (-> field :content :tincture util/translate-tincture util/upper-case-first)
+                                     :else                    (-> division-type util/translate-cap-first)) title-prefix
      [:div.settings
       (when (not root-field?)
         [element/checkbox (conj path :inherit-environment?) "Inherit environment (dimidiation)"])
@@ -1534,7 +1256,7 @@
                                            [:li
                                             [:div
                                              (if ref
-                                               [component part-path :ref (str "Same as " (division/part-name division-type ref)) part-name]
+                                               [element/component part-path :ref (str "Same as " (division/part-name division-type ref)) part-name]
                                                [form-for-field part-path :title-prefix part-name])]
                                             [:div {:style {:padding-left "10px"}}
                                              (if ref
@@ -1587,7 +1309,7 @@
                              ["CC Attribution-ShareAlike" :cc-attribution-share-alike]
                              ["Public Domain" :public-domain]]
         license-nature      @(rf/subscribe [:get (conj db-path :nature)])]
-    [component db-path :attribution "Attribution / License" nil
+    [element/component db-path :attribution "Attribution / License" nil
      [element/select (conj db-path :license) "License" attribution-options]
      [element/radio-select (conj db-path :nature) [["Own work" :own-work]
                                                    ["Derivative" :derivative]]
