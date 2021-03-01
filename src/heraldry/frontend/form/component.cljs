@@ -5,6 +5,7 @@
             [heraldry.coat-of-arms.charge :as charge]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.division.core :as division]
+            [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
@@ -166,7 +167,7 @@
                                                          def)))
                                                 vec))))))
          (update-in (conj path :division) #(merge %
-                                                  (options/sanitize-or-nil % (division/options %))))
+                                                  (options/sanitize-or-nil % (division-options/options %))))
          (update-in path dissoc :content)
          (cond->
              (not (division/counterchangable? {:type new-type})) (update-in (conj path :components)
@@ -1241,7 +1242,7 @@
                                                    num-fields-y
                                                    num-base-fields]} (:layout (options/sanitize-or-nil
                                                                                new-division
-                                                                               (division/options new-division)))]
+                                                                               (division-options/options new-division)))]
                                        (state/dispatch-on-event % [:set-division-type path key num-fields-x num-fields-y num-base-fields]))}
      [:svg {:style               {:width  "4em"
                                   :height "4.5em"}
@@ -1520,8 +1521,8 @@
         division       @(rf/subscribe [:get (conj field-path :division)])
         layout         (:layout division)
         division-type  (:type division)
-        current-data   (:layout (options/sanitize-or-nil division (division/options division)))
-        effective-data (:layout (options/sanitize division (division/options division)))
+        current-data   (:layout (options/sanitize-or-nil division (division-options/options division)))
+        effective-data (:layout (options/sanitize division (division-options/options division)))
         link-name      (util/combine
                         ", "
                         [(cond
@@ -1638,7 +1639,7 @@
       (when (not counterchanged?)
         [:<>
          [form-for-division path]
-         (let [division-options (division/options (:division field))]
+         (let [division-options (division-options/options (:division field))]
            [:<>
             (when (-> division-options :origin)
               [form-for-position (conj path :division :origin)
