@@ -26,8 +26,7 @@
     nil
     (case (:type options)
       :boolean (boolean value)
-      :choice (let [choices (into #{}
-                                  (map second (:choices options)))]
+      :choice (let [choices (util/choices->map (:choices options))]
                 (if (contains? choices value)
                   value
                   nil))
