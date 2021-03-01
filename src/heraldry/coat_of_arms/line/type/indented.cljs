@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.line.style.indented)
+(ns heraldry.coat-of-arms.line.type.indented)
 
 (defn pattern
   {:display-name "Indented"
