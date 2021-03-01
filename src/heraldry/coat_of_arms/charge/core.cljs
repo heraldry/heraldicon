@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.charge.core
   (:require ["svgpath" :as svgpath]
-            [clojure.string :as s]
             [clojure.walk :as walk]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.division.shared :as division-shared]
@@ -15,26 +14,6 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
-
-(defn split-style-value [value]
-  (-> value
-      (s/split #";")
-      (->>
-       (map (fn [chunk]
-              (-> chunk
-                  (s/split #":" 2)
-                  (as-> [key value]
-                      [(keyword (s/trim key)) (s/trim value)])))))
-      (into {})))
-
-(defn fix-string-style-values [data]
-  (walk/postwalk #(if (and (vector? %)
-                           (-> % count (= 2))
-                           (-> % first (= :style))
-                           (-> % second string?))
-                    [:style (split-style-value (second %))]
-                    %)
-                 data))
 
 (defn remove-outlines [data placeholder-colours]
   (walk/postwalk #(if (and (vector? %)
@@ -479,7 +458,7 @@
                                                               [k :keep])))))
           adjusted-charge                  (-> charge-data
                                                :data
-                                               fix-string-style-values
+                                               svg/fix-string-style-values
                                                (cond->
                                                    (not (or (-> hints :outline-mode (not= :remove))
                                                             (:outline? render-options))) (remove-outlines placeholder-colours)))
