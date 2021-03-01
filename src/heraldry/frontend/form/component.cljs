@@ -17,23 +17,14 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.charge-map :as charge-map]
-            [heraldry.frontend.context :as context]
             [heraldry.frontend.form.element :as element]
+            [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.form.state]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
             [heraldry.util :refer [id full-url-for-username]]
             [re-frame.core :as rf]))
-
-(def coa-select-option-context
-  (-> context/default
-      (dissoc :fn-component-selected?)
-      (dissoc :fn-select-component)))
-
-(def ui-render-options-theme-path
-  [:ui :render-options :theme])
-
 
 ;; components
 
@@ -75,9 +66,9 @@
                              :field      {:component :field
                                           :content   {:tincture (if (= value key) :or :azure)}}})
                           100
-                          (-> coa-select-option-context
+                          (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
      [:svg {:style               {:width  "4em"
                                   :height "5em"}
@@ -145,7 +136,7 @@
                                                               :content   {:tincture :sable}}
                                                              {:ref 0}]}}}
                           80
-                          (-> coa-select-option-context
+                          (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
                               (assoc-in [:render-options :theme] key)))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
@@ -219,9 +210,9 @@
                            :field      {:component :field
                                         :content   {:tincture key}}}
                           40
-                          (-> coa-select-option-context
+                          (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
                           :style    {:border        (if (= value key)
                                                       "1px solid #000"
@@ -346,9 +337,9 @@
                                                       :escutcheon (if (= key :escutcheon) :heater nil)
                                                       :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
                           100
-                          (-> coa-select-option-context
+                          (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:update-charge path {:type     key
                                                                                       :attitude nil
                                                                                       :facing   nil
@@ -375,9 +366,9 @@
                                                       :variant   (:variant charge)
                                                       :field     {:content {:tincture :or}}}]}}
                           100
-                          (-> coa-select-option-context
+                          (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
     [:div.choice.tooltip
      [:svg {:style               {:width  "4em"
                                   :height "4.5em"}
@@ -820,9 +811,9 @@
                                                       :layout {:num-fields-y (when (= key :chequy)
                                                                                7)}}})}
                           100
-                          (-> coa-select-option-context
+                          (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(let [new-division              (assoc division :type key)
                                            {:keys [num-fields-x
                                                    num-fields-y
@@ -870,9 +861,9 @@
                                                     :fields [{:content {:tincture :argent}}
                                                              {:content {:tincture (if (= key current) :or :azure)}}]}}}
                           100
-                          (-> coa-select-option-context
+                          (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
      [:svg {:style               {:width  "6.5em"
                                   :height "4.5em"}
@@ -1037,9 +1028,9 @@
                                                       :escutcheon (if (= key :escutcheon) :heater nil)
                                                       :field      {:content {:tincture (if (= current key) :or :azure)}}}]}}
                           100
-                          (-> coa-select-option-context
+                          (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get ui-render-options-theme-path]))))]
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type path key])}
      [:svg {:style               {:width  "4em"
                                   :height "4.5em"}
