@@ -12,13 +12,13 @@
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.render :as render]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.escutcheon :as escutcheon]
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.form.state]
+            [heraldry.frontend.form.tincture :as tincture]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
@@ -58,53 +58,6 @@
   [element/component db-path :coat-of-arms "Coat of Arms" nil
    [escutcheon/form (conj db-path :escutcheon) "Default Escutcheon" :label-width "11em"]
    [form-for-field (conj db-path :field)]])
-
-(defn tincture-choice [path key display-name]
-  (let [value @(rf/subscribe [:get path])
-        {:keys [result]} (render/coat-of-arms
-                          {:escutcheon :rectangle
-                           :field {:component :field
-                                   :content {:tincture key}}}
-                          40
-                          (-> shared/coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
-    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
-                          :style {:border (if (= value key)
-                                            "1px solid #000"
-                                            "1px solid transparent")
-                                  :border-radius "5px"}}
-     [:svg {:style {:width "4em"
-                    :height "4.5em"}
-            :viewBox "0 0 50 100"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g {:filter "url(#shadow)"}
-       [:g {:transform "translate(5,5)"}
-        result]]]
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} display-name]
-      [:i]]]))
-
-(defn form-for-tincture [path & {:keys [label] :or {label "Tincture"}}]
-  (let [value (or @(rf/subscribe [:get path])
-                  :none)
-        names (-> tincture/tincture-map
-                  (assoc :none "None"))]
-    [:div.setting
-     [:label label]
-     " "
-     [element/submenu path "Select Tincture" (get names value) {:min-width "22em"}
-      (for [[group-name & group] tincture/choices]
-        ^{:key group-name}
-        [:<>
-         (if (= group-name "Metal")
-           [:<>
-            [:h4 {:style {:margin-left "4.5em"}} group-name]
-            [tincture-choice path :none "None"]]
-           [:h4 group-name])
-         (for [[display-name key] group]
-           ^{:key display-name}
-           [tincture-choice path key display-name])])]]))
 
 (defn form-for-position [path & {:keys [title options] :or {title "Position"}}]
   (let [position @(rf/subscribe [:get path])
@@ -610,7 +563,7 @@
                       :float "left"}}
              (for [t sorted-supported-tinctures]
                ^{:key t}
-               [form-for-tincture
+               [tincture/form
                 (conj path :tincture t)
                 :label (util/translate-cap-first t)])])
           [:div
@@ -852,7 +805,7 @@
                :display-function #(str % "%")])
             (when (and (#{:single :double} fimbriation-mode)
                        (-> options :fimbriation :tincture-1))
-              [form-for-tincture (conj fimbriation-path :tincture-1)
+              [tincture/form (conj fimbriation-path :tincture-1)
                :label (str "Tincture"
                            (when (#{:double} current-fimbriation-mode) " 1"))])
             (when (and (#{:double} current-fimbriation-mode)
@@ -867,12 +820,12 @@
                :display-function #(str % "%")])
             (when (and (#{:double} current-fimbriation-mode)
                        (-> options :fimbriation :tincture-2))
-              [form-for-tincture (conj fimbriation-path :tincture-2)
+              [tincture/form (conj fimbriation-path :tincture-2)
                :label "Tincture 2"])]]))]]))
 
 (defn form-for-content [path]
   [:div.form-content
-   [form-for-tincture (conj path :tincture)]])
+   [tincture/form (conj path :tincture)]])
 
 (defn ordinary-type-choice [path key display-name & {:keys [current]}]
   (let [{:keys [result]} (render/coat-of-arms
@@ -1089,7 +1042,7 @@
                                        (for [idx (range (count tinctures))]
                                          ^{:key idx}
                                          [:li
-                                          [form-for-tincture (conj path :division :fields idx :content :tincture)
+                                          [tincture/form (conj path :division :fields idx :content :tincture)
                                            :label (str "Tincture " (inc idx))]]))]]
        (not counterchanged?) [:div.parts.components
                               [:ul
