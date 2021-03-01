@@ -4,6 +4,7 @@
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
+            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
@@ -454,14 +455,14 @@
                                 last-part? (-> i inc (= num-fields-x))]
                             [(cond
                                (zero? i) ["M" [x2 y1]
-                                          (line/stitch line-down)
+                                          (svg/stitch line-down)
                                           (infinity/path :clockwise
                                                          [:bottom :top]
                                                          [(v/v x2 y2) (v/v x2 y1)])
                                           "z"]
                                (even? i) (concat
                                           ["M" [x1 (:y line-up-origin)]
-                                           (line/stitch line-up)]
+                                           (svg/stitch line-up)]
                                           (cond
                                             last-part? [(infinity/path :clockwise
                                                                        [:top :bottom]
@@ -471,14 +472,14 @@
                                                                   [:top :top]
                                                                   [(v/v x1 y1) (v/v x2 y1)])
                                                    "L" [x2 y1]
-                                                   (line/stitch line-down)
+                                                   (svg/stitch line-down)
                                                    (infinity/path :clockwise
                                                                   [:bottom :bottom]
                                                                   [(v/v x2 y2) (v/v x1 y2)])
                                                    "z"]))
                                :else (concat
                                       ["M" [x1 y1]
-                                       (line/stitch line-down)]
+                                       (svg/stitch line-down)]
                                       (cond
                                         last-part? [(infinity/path :counter-clockwise
                                                                    [:bottom :top]
@@ -488,7 +489,7 @@
                                                               [:bottom :bottom]
                                                               [(v/v x1 y2) (v/v x2 y2)])
                                                "L" [x2 (:y line-up-origin)]
-                                               (line/stitch line-up)
+                                               (svg/stitch line-up)
                                                (infinity/path :clockwise
                                                               [:top :top]
                                                               [(v/v x2 y1) (v/v x1 y1)])
@@ -503,9 +504,9 @@
                                 x2 (+ x1 pallet-width)]
                             (if (even? i)
                               (svg/make-path ["M" [x2 y1]
-                                              (line/stitch line-down)])
+                                              (svg/stitch line-down)])
                               (svg/make-path ["M" [x2 (:y line-up-origin)]
-                                              (line/stitch line-up)])))))
+                                              (svg/stitch line-up)])))))
                    vec)
         overlap (-> edges
                     (->> (map vector))
@@ -559,13 +560,13 @@
                                 last-part? (-> i inc (= num-fields-y))]
                             [(cond
                                (zero? i) ["M" [x1 y2]
-                                          (line/stitch line-right)
+                                          (svg/stitch line-right)
                                           (infinity/path :counter-clockwise
                                                          [:right :left]
                                                          [(v/v x2 y2) (v/v x1 y2)])
                                           "z"]
                                (even? i) (concat ["M" [(:x line-left-origin) y1]
-                                                  (line/stitch line-left)]
+                                                  (svg/stitch line-left)]
                                                  (cond
                                                    last-part? [(infinity/path :counter-clockwise
                                                                               [:left :right]
@@ -575,12 +576,12 @@
                                                                          [:left :left]
                                                                          [(v/v x1 y1) (v/v x1 y2)])
                                                           "L" [x1 y2]
-                                                          (line/stitch line-right)
+                                                          (svg/stitch line-right)
                                                           (infinity/path :counter-clockwise
                                                                          [:right :right]
                                                                          [(v/v x2 y2) (v/v x2 y1)])]))
                                :else (concat ["M" [x1 y1]
-                                              (line/stitch line-right)]
+                                              (svg/stitch line-right)]
                                              (cond
                                                last-part? [(infinity/path :clockwise
                                                                           [:right :left]
@@ -590,7 +591,7 @@
                                                                      [:right :right]
                                                                      [(v/v x2 y1) (v/v x2 y2)])
                                                       "L" [(:x line-left-origin) y2]
-                                                      (line/stitch line-left)
+                                                      (svg/stitch line-left)
                                                       (infinity/path :clockwise
                                                                      [:left :left]
                                                                      [(v/v x1 y2) (v/v x1 y1)])
@@ -605,9 +606,9 @@
                                 y2 (+ y1 bar-height)]
                             (if (even? i)
                               (svg/make-path ["M" [x1 y2]
-                                              (line/stitch line-right)])
+                                              (svg/stitch line-right)])
                               (svg/make-path ["M" [(:x line-left-origin) y2]
-                                              (line/stitch line-left)])))))
+                                              (svg/stitch line-left)])))))
                    vec)
         overlap (-> edges
                     (->> (map vector))
@@ -795,7 +796,7 @@
                                          :render-options render-options)
         parts [[["M" (v/+ top
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:bottom :top]
                                 [(v/+ bottom
@@ -808,7 +809,7 @@
 
                [["M" (v/+ top
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:bottom :top]
                                 [(v/+ bottom
@@ -819,7 +820,7 @@
                 [top
                  bottom-right]]]
         [fimbriation-elements
-         fimbriation-outlines] (line/render-fimbriation
+         fimbriation-outlines] (fimbriation/render
                                 [top :top]
                                 [bottom :bottom]
                                 [line-one-data]
@@ -835,7 +836,7 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ top
                                line-one-start)
-                      (line/stitch line-one)])}]
+                      (svg/stitch line-one)])}]
          fimbriation-outlines])
       environment division context]
      fimbriation-elements]))
@@ -859,7 +860,7 @@
                                          :render-options render-options)
         parts [[["M" (v/+ left
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:right :left]
                                 [(v/+ right
@@ -872,7 +873,7 @@
 
                [["M" (v/+ left
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:right :left]
                                 [(v/+ right
@@ -883,7 +884,7 @@
                 [left
                  bottom-right]]]
         [fimbriation-elements
-         fimbriation-outlines] (line/render-fimbriation
+         fimbriation-outlines] (fimbriation/render
                                 [left :left]
                                 [right :right]
                                 [line-one-data]
@@ -899,7 +900,7 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ left
                                line-one-start)
-                      (line/stitch line-one)])}]
+                      (svg/stitch line-one)])}]
          fimbriation-outlines])
       environment division context]
      fimbriation-elements]))
@@ -953,7 +954,7 @@
                                          :render-options render-options)
         parts [[["M" (v/+ diagonal-start
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:right :top]
                                 [(v/+ diagonal-end
@@ -966,7 +967,7 @@
                  diagonal-end]]
                [["M" (v/+ diagonal-start
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:right :top]
                                 [(v/+ diagonal-end
@@ -978,7 +979,7 @@
                  diagonal-end
                  bottom-left]]]
         [fimbriation-elements
-         fimbriation-outlines] (line/render-fimbriation
+         fimbriation-outlines] (fimbriation/render
                                 [diagonal-start :top]
                                 [diagonal-end :right]
                                 [line-one-data]
@@ -994,7 +995,7 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ diagonal-start
                                line-one-start)
-                      (line/stitch line-one)])}]
+                      (svg/stitch line-one)])}]
          fimbriation-outlines])
       environment division context]
      fimbriation-elements]))
@@ -1023,7 +1024,7 @@
                                          :render-options render-options)
         parts [[["M" (v/+ diagonal-start
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:top :left]
                                 [(v/+ diagonal-end
@@ -1037,7 +1038,7 @@
 
                [["M" (v/+ diagonal-start
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:top :left]
                                 [(v/+ diagonal-end
@@ -1049,7 +1050,7 @@
                  bottom-right
                  diagonal-end]]]
         [fimbriation-elements
-         fimbriation-outlines] (line/render-fimbriation
+         fimbriation-outlines] (fimbriation/render
                                 [diagonal-start :left]
                                 [diagonal-end :right]
                                 [line-one-data]
@@ -1065,7 +1066,7 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ diagonal-start
                                line-one-start)
-                      (line/stitch line-one)])}]
+                      (svg/stitch line-one)])}]
          fimbriation-outlines])
       environment division context]
      fimbriation-elements]))
@@ -1107,8 +1108,8 @@
                                            :render-options render-options)
         parts [[["M" (v/+ diagonal-bottom-left
                           line-left-start)
-                 (line/stitch line-left)
-                 (line/stitch line-right)
+                 (svg/stitch line-left)
+                 (svg/stitch line-right)
                  (infinity/path :counter-clockwise
                                 [:right :left]
                                 [(v/+ diagonal-bottom-right
@@ -1125,8 +1126,8 @@
 
                [["M" (v/+ diagonal-bottom-left
                           line-left-start)
-                 (line/stitch line-left)
-                 (line/stitch line-right)
+                 (svg/stitch line-left)
+                 (svg/stitch line-right)
                  (infinity/path :clockwise
                                 [:right :left]
                                 [(v/+ diagonal-bottom-right
@@ -1142,7 +1143,7 @@
                  bottom-left
                  bottom-right]]]
         [fimbriation-elements
-         fimbriation-outlines] (line/render-fimbriation
+         fimbriation-outlines] (fimbriation/render
                                 [diagonal-bottom-left :left]
                                 [diagonal-bottom-right :right]
                                 [line-left-data
@@ -1159,10 +1160,10 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ diagonal-bottom-left
                                line-left-start)
-                      (line/stitch line-left)
+                      (svg/stitch line-left)
                       "L" (v/+ origin-point
                                line-right-start)
-                      (line/stitch line-right)])}]
+                      (svg/stitch line-right)])}]
          fimbriation-outlines])
       environment division context]
      fimbriation-elements]))
@@ -1215,9 +1216,9 @@
                                                           :render-options render-options)
         parts [[["M" (v/+ diagonal-top-left
                           line-top-left-start)
-                 (line/stitch line-top-left)
+                 (svg/stitch line-top-left)
                  "L" origin-point
-                 (line/stitch line-top-right)
+                 (svg/stitch line-top-right)
                  (infinity/path :counter-clockwise
                                 [:right :left]
                                 [(v/+ diagonal-top-right
@@ -1234,9 +1235,9 @@
 
                [["M" (v/+ diagonal-top-left
                           line-top-left-start)
-                 (line/stitch line-top-left)
+                 (svg/stitch line-top-left)
                  "L" origin-point
-                 (line/stitch line-bottom-left)
+                 (svg/stitch line-bottom-left)
                  (infinity/path :clockwise
                                 [:left :left]
                                 [(v/+ diagonal-bottom-left
@@ -1253,9 +1254,9 @@
 
                [["M" (v/+ diagonal-bottom-right
                           line-bottom-right-start)
-                 (line/stitch line-bottom-right)
+                 (svg/stitch line-bottom-right)
                  "L" origin-point
-                 (line/stitch line-top-right)
+                 (svg/stitch line-top-right)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [(v/+ diagonal-top-right
@@ -1272,9 +1273,9 @@
 
                [["M" (v/+ diagonal-bottom-right
                           line-bottom-right-start)
-                 (line/stitch line-bottom-right)
+                 (svg/stitch line-bottom-right)
                  "L" origin-point
-                 (line/stitch line-bottom-left)
+                 (svg/stitch line-bottom-left)
                  (infinity/path :counter-clockwise
                                 [:left :right]
                                 [(v/+ diagonal-bottom-left
@@ -1295,11 +1296,11 @@
       [(svg/make-path
         ["M" (v/+ origin-point
                   line-bottom-left-start)
-         (line/stitch line-bottom-left)])]
+         (svg/stitch line-bottom-left)])]
       [(svg/make-path
         ["M" (v/+ diagonal-bottom-right
                   line-bottom-right-start)
-         (line/stitch line-bottom-right)])]
+         (svg/stitch line-bottom-right)])]
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
@@ -1307,19 +1308,19 @@
         [:path {:d (svg/make-path
                     ["M" (v/+ diagonal-top-left
                               line-top-left-start)
-                     (line/stitch line-top-left)])}]
+                     (svg/stitch line-top-left)])}]
         [:path {:d (svg/make-path
                     ["M" (v/+ origin-point
                               line-top-right-start)
-                     (line/stitch line-top-right)])}]
+                     (svg/stitch line-top-right)])}]
         [:path {:d (svg/make-path
                     ["M" (v/+ diagonal-bottom-right
                               line-bottom-right-start)
-                     (line/stitch line-bottom-right)])}]
+                     (svg/stitch line-bottom-right)])}]
         [:path {:d (svg/make-path
                     ["M" (v/+ origin-point
                               line-bottom-left-start)
-                     (line/stitch line-bottom-left)])}]])
+                     (svg/stitch line-bottom-left)])}]])
      environment division context]))
 
 (defn quartered
@@ -1364,9 +1365,9 @@
                                                    :render-options render-options)
         parts [[["M" (v/+ top
                           line-top-start)
-                 (line/stitch line-top)
+                 (svg/stitch line-top)
                  "L" origin-point
-                 (line/stitch line-left)
+                 (svg/stitch line-left)
                  (infinity/path :clockwise
                                 [:left :top]
                                 [(v/+ left
@@ -1378,9 +1379,9 @@
 
                [["M" (v/+ top
                           line-top-start)
-                 (line/stitch line-top)
+                 (svg/stitch line-top)
                  "L" origin-point
-                 (line/stitch line-right)
+                 (svg/stitch line-right)
                  (infinity/path :counter-clockwise
                                 [:right :top]
                                 [(v/+ right
@@ -1392,9 +1393,9 @@
 
                [["M" (v/+ bottom
                           line-bottom-start)
-                 (line/stitch line-bottom)
+                 (svg/stitch line-bottom)
                  "L" origin-point
-                 (line/stitch line-left)
+                 (svg/stitch line-left)
                  (infinity/path :counter-clockwise
                                 [:left :bottom]
                                 [(v/+ left
@@ -1406,9 +1407,9 @@
 
                [["M" (v/+ bottom
                           line-bottom-start)
-                 (line/stitch line-bottom)
+                 (svg/stitch line-bottom)
                  "L" origin-point
-                 (line/stitch line-right)
+                 (svg/stitch line-right)
                  (infinity/path :clockwise
                                 [:right :bottom]
                                 [(v/+ right
@@ -1422,11 +1423,11 @@
      [:all
       [(svg/make-path
         ["M" origin-point
-         (line/stitch line-right)])]
+         (svg/stitch line-right)])]
       [(svg/make-path
         ["M" (v/+ bottom
                   line-bottom-start)
-         (line/stitch line-bottom)])]
+         (svg/stitch line-bottom)])]
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
@@ -1434,17 +1435,17 @@
         [:path {:d (svg/make-path
                     ["M" (v/+ top
                               line-top-start)
-                     (line/stitch line-top)])}]
+                     (svg/stitch line-top)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (line/stitch line-right)])}]
+                     (svg/stitch line-right)])}]
         [:path {:d (svg/make-path
                     ["M" (v/+ bottom
                               line-bottom-start)
-                     (line/stitch line-bottom)])}]
+                     (svg/stitch line-bottom)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (line/stitch line-left)])}]])
+                     (svg/stitch line-left)])}]])
      environment division context]))
 
 (defn quarterly
@@ -1529,9 +1530,9 @@
                                               :render-options render-options)
         parts [[["M" (v/+ top
                           line-top-start)
-                 (line/stitch line-top)
+                 (svg/stitch line-top)
                  "L" origin-point
-                 (line/stitch line-top-left)
+                 (svg/stitch line-top-left)
                  (infinity/path :clockwise
                                 [:left :top]
                                 [diagonal-top-left
@@ -1545,9 +1546,9 @@
 
                [["M" (v/+ top
                           line-top-start)
-                 (line/stitch line-top)
+                 (svg/stitch line-top)
                  "L" origin-point
-                 (line/stitch line-top-right)
+                 (svg/stitch line-top-right)
                  (infinity/path :counter-clockwise
                                 [:right :top]
                                 [diagonal-top-right
@@ -1561,9 +1562,9 @@
 
                [["M" (v/+ left
                           line-left-start)
-                 (line/stitch line-left)
+                 (svg/stitch line-left)
                  "L" origin-point
-                 (line/stitch line-top-left)
+                 (svg/stitch line-top-left)
                  (infinity/path :counter-clockwise
                                 [:left :left]
                                 [diagonal-top-left
@@ -1577,9 +1578,9 @@
 
                [["M" (v/+ right
                           line-right-start)
-                 (line/stitch line-right)
+                 (svg/stitch line-right)
                  "L" origin-point
-                 (line/stitch line-top-right)
+                 (svg/stitch line-top-right)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [diagonal-top-right
@@ -1593,9 +1594,9 @@
 
                [["M" (v/+ left
                           line-left-start)
-                 (line/stitch line-left)
+                 (svg/stitch line-left)
                  "L" origin-point
-                 (line/stitch line-bottom-left)
+                 (svg/stitch line-bottom-left)
                  (infinity/path :clockwise
                                 [:left :left]
                                 [diagonal-bottom-left
@@ -1609,9 +1610,9 @@
 
                [["M" (v/+ right
                           line-right-start)
-                 (line/stitch line-right)
+                 (svg/stitch line-right)
                  "L" origin-point
-                 (line/stitch line-bottom-right)
+                 (svg/stitch line-bottom-right)
                  (infinity/path :counter-clockwise
                                 [:right :right]
                                 [diagonal-bottom-right
@@ -1625,9 +1626,9 @@
 
                [["M" (v/+ bottom
                           line-bottom-start)
-                 (line/stitch line-bottom)
+                 (svg/stitch line-bottom)
                  "L" origin-point
-                 (line/stitch line-bottom-left)
+                 (svg/stitch line-bottom-left)
                  (infinity/path :counter-clockwise
                                 [:left :bottom]
                                 [diagonal-bottom-left
@@ -1641,9 +1642,9 @@
 
                [["M" (v/+ bottom
                           line-bottom-start)
-                 (line/stitch line-bottom)
+                 (svg/stitch line-bottom)
                  "L" origin-point
-                 (line/stitch line-bottom-right)
+                 (svg/stitch line-bottom-right)
                  (infinity/path :clockwise
                                 [:right :bottom]
                                 [diagonal-bottom-right
@@ -1660,57 +1661,57 @@
      [:all
       [(svg/make-path
         ["M" origin-point
-         (line/stitch line-top-right)])]
+         (svg/stitch line-top-right)])]
       [(svg/make-path
         ["M" (v/+ left
                   line-left-start)
-         (line/stitch line-left)])]
+         (svg/stitch line-left)])]
       [(svg/make-path
         ["M" (v/+ right
                   line-right-start)
-         (line/stitch line-right)])]
+         (svg/stitch line-right)])]
       [(svg/make-path
         ["M" origin-point
-         (line/stitch line-bottom-left)])]
+         (svg/stitch line-bottom-left)])]
       [(svg/make-path
         ["M" origin-point
-         (line/stitch line-bottom-right)])]
+         (svg/stitch line-bottom-right)])]
       [(svg/make-path
         ["M" (v/+ bottom
                   line-bottom-start)
-         (line/stitch line-bottom)])]
+         (svg/stitch line-bottom)])]
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline-style
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (line/stitch line-top-left)])}]
+                     (svg/stitch line-top-left)])}]
         [:path {:d (svg/make-path
                     ["M" (v/+ top
                               line-top-start)
-                     (line/stitch line-top)])}]
+                     (svg/stitch line-top)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (line/stitch line-top-right)])}]
+                     (svg/stitch line-top-right)])}]
         [:path {:d (svg/make-path
                     ["M" (v/+ right
                               line-right-start)
-                     (line/stitch line-right)])}]
+                     (svg/stitch line-right)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (line/stitch line-bottom-right)])}]
+                     (svg/stitch line-bottom-right)])}]
         [:path {:d (svg/make-path
                     ["M" (v/+ bottom
                               line-bottom-start)
-                     (line/stitch line-bottom)])}]
+                     (svg/stitch line-bottom)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (line/stitch line-bottom-left)])}]
+                     (svg/stitch line-bottom-left)])}]
         [:path {:d (svg/make-path
                     ["M" (v/+ left
                               line-left-start)
-                     (line/stitch line-left)])}]])
+                     (svg/stitch line-left)])}]])
      environment division context]))
 
 (defn paly
@@ -2061,7 +2062,7 @@
                                                        :render-options render-options)
         parts [[["M" (v/+ first-top
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:bottom :top]
                                 [(v/+ first-bottom
@@ -2075,14 +2076,14 @@
 
                [["M" (v/+ second-bottom
                           line-reversed-start)
-                 (line/stitch line-reversed)
+                 (svg/stitch line-reversed)
                  (infinity/path :counter-clockwise
                                 [:top :top]
                                 [(v/+ second-top
                                       line-reversed-start)
                                  (v/+ first-top
                                       line-one-start)])
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:bottom :bottom]
                                 [(v/+ first-top
@@ -2098,7 +2099,7 @@
 
                [["M" (v/+ second-bottom
                           line-reversed-start)
-                 (line/stitch line-reversed)
+                 (svg/stitch line-reversed)
                  (infinity/path :clockwise
                                 [:top :bottom]
                                 [(v/+ second-top
@@ -2115,7 +2116,7 @@
       [(svg/make-path
         ["M" (v/+ second-bottom
                   line-reversed-start)
-         (line/stitch line-reversed)])]
+         (svg/stitch line-reversed)])]
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
@@ -2123,11 +2124,11 @@
         [:path {:d (svg/make-path
                     ["M" (v/+ first-top
                               line-one-start)
-                     (line/stitch line-one)])}]
+                     (svg/stitch line-one)])}]
         [:path {:d (svg/make-path
                     ["M" (v/+ second-bottom
                               line-reversed-start)
-                     (line/stitch line-reversed)])}]])
+                     (svg/stitch line-reversed)])}]])
      environment division context]))
 
 (defn tierced-per-fess
@@ -2165,7 +2166,7 @@
                                                        :render-options render-options)
         parts [[["M" (v/+ first-left
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:right :left]
                                 [(v/+ first-right
@@ -2178,14 +2179,14 @@
 
                [["M" (v/+ first-left
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [(v/+ first-left
                                       line-one-start)
                                  (v/+ second-right
                                       line-reversed-start)])
-                 (line/stitch line-reversed)
+                 (svg/stitch line-reversed)
                  (infinity/path :clockwise
                                 [:left :left]
                                 [(v/+ second-left
@@ -2199,7 +2200,7 @@
 
                [["M" (v/+ second-right
                           line-reversed-start)
-                 (line/stitch line-reversed)
+                 (svg/stitch line-reversed)
                  (infinity/path :counter-clockwise
                                 [:left :right]
                                 [(v/+ second-left
@@ -2215,7 +2216,7 @@
       [(svg/make-path
         ["M" (v/+ second-right
                   line-reversed-start)
-         (line/stitch line-reversed)])]
+         (svg/stitch line-reversed)])]
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
@@ -2223,11 +2224,11 @@
         [:path {:d (svg/make-path
                     ["M" (v/+ first-left
                               line-one-start)
-                     (line/stitch line-one)])}]
+                     (svg/stitch line-one)])}]
         [:path {:d (svg/make-path
                     ["M" (v/+ second-right
                               line-reversed-start)
-                     (line/stitch line-reversed)])}]])
+                     (svg/stitch line-reversed)])}]])
      environment division context]))
 
 (defn tierced-per-pairle
@@ -2273,9 +2274,9 @@
                                                               :render-options render-options)
         parts [[["M" (v/+ diagonal-top-left
                           line-top-left-start)
-                 (line/stitch line-top-left)
+                 (svg/stitch line-top-left)
                  "L" origin-point
-                 (line/stitch line-top-right)
+                 (svg/stitch line-top-right)
                  (infinity/path :counter-clockwise
                                 [:right :left]
                                 [(v/+ diagonal-top-right
@@ -2291,9 +2292,9 @@
 
                [["M" (v/+ bottom
                           line-bottom-reversed-start)
-                 (line/stitch line-bottom-reversed)
+                 (svg/stitch line-bottom-reversed)
                  "L" origin-point
-                 (line/stitch line-top-right)
+                 (svg/stitch line-top-right)
                  (infinity/path :clockwise
                                 [:right :bottom]
                                 [(v/+ diagonal-top-right
@@ -2311,9 +2312,9 @@
 
                [["M" (v/+ diagonal-top-left
                           line-top-left-start)
-                 (line/stitch line-top-left)
+                 (svg/stitch line-top-left)
                  "L" origin-point
-                 (line/stitch line-bottom)
+                 (svg/stitch line-bottom)
                  (infinity/path :clockwise
                                 [:bottom :left]
                                 [(v/+ bottom
@@ -2333,7 +2334,7 @@
       [(svg/make-path
         ["M" (v/+ bottom
                   line-bottom-reversed-start)
-         (line/stitch line-bottom-reversed)])]
+         (svg/stitch line-bottom-reversed)])]
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
@@ -2341,13 +2342,13 @@
         [:path {:d (svg/make-path
                     ["M" (v/+ diagonal-top-left
                               line-top-left-start)
-                     (line/stitch line-top-left)])}]
+                     (svg/stitch line-top-left)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (line/stitch line-top-right)])}]
+                     (svg/stitch line-top-right)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (line/stitch line-bottom)])}]])
+                     (svg/stitch line-bottom)])}]])
      environment division context]))
 
 (defn tierced-per-pairle-reversed
@@ -2397,9 +2398,9 @@
                                                            :render-options render-options)
         parts [[["M" (v/+ top
                           line-top-reversed-start)
-                 (line/stitch line-top-reversed)
+                 (svg/stitch line-top-reversed)
                  "L" origin-point
-                 (line/stitch line-bottom-left)
+                 (svg/stitch line-bottom-left)
                  (infinity/path :clockwise
                                 [:left :top]
                                 [(v/+ diagonal-bottom-left
@@ -2416,9 +2417,9 @@
 
                [["M" (v/+ diagonal-bottom-right
                           line-bottom-right-start)
-                 (line/stitch line-bottom-right)
+                 (svg/stitch line-bottom-right)
                  "L" origin-point
-                 (line/stitch line-top)
+                 (svg/stitch line-top)
                  (infinity/path :clockwise
                                 [:top :right]
                                 [(v/+ top
@@ -2435,9 +2436,9 @@
 
                [["M" (v/+ diagonal-bottom-right
                           line-bottom-right-start)
-                 (line/stitch line-bottom-right)
+                 (svg/stitch line-bottom-right)
                  "L" origin-point
-                 (line/stitch line-bottom-left)
+                 (svg/stitch line-bottom-left)
                  (infinity/path :counter-clockwise
                                 [:left :right]
                                 [(v/+ diagonal-bottom-left
@@ -2452,21 +2453,21 @@
       [(svg/make-path
         ["M" (v/+ diagonal-bottom-right
                   line-bottom-right-start)
-         (line/stitch line-bottom-right)])]
+         (svg/stitch line-bottom-right)])]
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline-style
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (line/stitch line-top)])}]
+                     (svg/stitch line-top)])}]
         [:path {:d (svg/make-path
                     ["M" (v/+ diagonal-bottom-right
                               line-bottom-right-start)
-                     (line/stitch line-bottom-right)])}]
+                     (svg/stitch line-bottom-right)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (line/stitch line-bottom-left)])}]])
+                     (svg/stitch line-bottom-left)])}]])
      environment division context]))
 
 (def divisions
