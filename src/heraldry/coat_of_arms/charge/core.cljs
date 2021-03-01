@@ -1,14 +1,12 @@
 (ns heraldry.coat-of-arms.charge.core
-  (:require ["svgpath" :as svgpath]
-            [clojure.walk :as walk]
+  (:require [clojure.walk :as walk]
             [heraldry.coat-of-arms.charge.options :as charge-options]
+            [heraldry.coat-of-arms.charge.shared :as charge-shared]
             [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
@@ -68,268 +66,194 @@
                              "#fff"))))]
     [mask-id mask mask-inverted-id mask-inverted]))
 
-(defn make-charge
-  [{:keys [field hints] :as charge} parent environment {:keys [render-options] :as context} arg function]
-  (let [{:keys [position geometry]} (options/sanitize charge (charge-options/options charge))
-        {:keys [size stretch rotation
-                mirrored? reversed?]} geometry
-        position-point (position/calculate position environment :fess)
-        arg-value (get environment arg)
-        target-arg-value (-> size
-                             ((util/percent-of arg-value)))
-        scale-x (if mirrored? -1 1)
-        scale-y (* (if reversed? -1 1) stretch)
-        {:keys [shape
-                mask
-                charge-width
-                charge-height]} (function target-arg-value)
-        charge-shape (-> shape
-                         svg/make-path
-                         (->
-                          (svgpath)
-                          (.scale scale-x scale-y)
-                          (.toString))
-                         (cond->
-                          (:squiggly? render-options) svg/squiggly-path
-                          (not= rotation 0) (->
-                                             (svgpath)
-                                             (.rotate rotation)
-                                             (.toString)))
-                         (svg/translate (:x position-point) (:y position-point)))
-        mask-shape (when mask
-                     (-> mask
-                         svg/make-path
-                         (->
-                          (svgpath)
-                          (.scale scale-x scale-y)
-                          (.toString))
-                         (cond->
-                          (:squiggly? render-options) svg/squiggly-path
-                          (not= rotation 0) (->
-                                             (svgpath)
-                                             (.rotate rotation)
-                                             (.toString)))
-                         (svg/translate (:x position-point) (:y position-point))))
-        [min-x max-x min-y max-y] (svg/rotated-bounding-box (v//
-                                                             (v/v charge-width
-                                                                  charge-height)
-                                                             -2)
-                                                            (v//
-                                                             (v/v charge-width
-                                                                  charge-height)
-                                                             2)
-                                                            rotation
-                                                            :scale (v/v scale-x scale-y))
-        box-size (v/v (- max-x min-x)
-                      (- max-y min-y))
-        parts [[charge-shape
-                [(v/- position-point
-                      (v// box-size 2))
-                 (v/+ position-point
-                      (v// box-size 2))]
-                mask-shape]]
-        field (if (counterchange/counterchangable? field parent)
-                (counterchange/counterchange-field field parent)
-                field)]
-    [division-shared/make-division
-     :charge-pale [field] parts
-     [:all]
-     (when (or (:outline? render-options)
-               (-> hints :outline-mode (= :keep)))
-       [:g outline/style
-        [:path {:d charge-shape}]
-        (when mask-shape
-          [:path {:d mask-shape}])])
-     environment charge context]))
-
 (defn escutcheon
   {:display-name "Escutcheon"}
   [charge parent environment {:keys [root-escutcheon] :as context}]
   (let [{:keys [escutcheon]} (options/sanitize charge (charge-options/options charge))]
-    (make-charge charge parent environment context
-                 :width
-                 (fn [width]
-                   (let [env (field-environment/transform-to-width
-                              (escutcheon/field (if (= escutcheon :none)
-                                                  root-escutcheon
-                                                  escutcheon)) width)
-                         env-fess (-> env :points :fess)]
-                     {:shape (svg/translate (:shape env)
-                                            (-> env-fess :x -)
-                                            (-> env-fess :y -))
-                      :charge-width width
-                      :charge-height width})))))
+    (charge-shared/make-charge charge parent environment context
+                               :width
+                               (fn [width]
+                                 (let [env (field-environment/transform-to-width
+                                            (escutcheon/field (if (= escutcheon :none)
+                                                                root-escutcheon
+                                                                escutcheon)) width)
+                                       env-fess (-> env :points :fess)]
+                                   {:shape (svg/translate (:shape env)
+                                                          (-> env-fess :x -)
+                                                          (-> env-fess :y -))
+                                    :charge-width width
+                                    :charge-height width})))))
 
 (defn roundel
   {:display-name "Roundel"}
   [charge parent environment context]
-  (make-charge charge parent environment context
-               :width
-               (fn [width]
-                 (let [radius (/ width 2)]
-                   {:shape ["m" (v/v radius 0)
-                            ["a" radius radius
-                             0 0 0 (v/v (- width) 0)]
-                            ["a" radius radius
-                             0 0 0 width 0]
-                            "z"]
-                    :charge-width width
-                    :charge-height width}))))
+  (charge-shared/make-charge charge parent environment context
+                             :width
+                             (fn [width]
+                               (let [radius (/ width 2)]
+                                 {:shape ["m" (v/v radius 0)
+                                          ["a" radius radius
+                                           0 0 0 (v/v (- width) 0)]
+                                          ["a" radius radius
+                                           0 0 0 width 0]
+                                          "z"]
+                                  :charge-width width
+                                  :charge-height width}))))
 
 (defn annulet
   {:display-name "Annulet"}
   [charge parent environment context]
-  (make-charge charge parent environment context
-               :width
-               (fn [width]
-                 (let [radius (/ width 2)
-                       hole-radius (* radius 0.6)]
-                   {:shape ["m" (v/v radius 0)
-                            ["a" radius radius
-                             0 0 0 (v/v (- width) 0)]
-                            ["a" radius radius
-                             0 0 0 width 0]
-                            "z"]
-                    :mask ["m" (v/v hole-radius 0)
-                           ["a" hole-radius hole-radius
-                            0 0 0 (v/v (* hole-radius -2) 0)]
-                           ["a" hole-radius hole-radius
-                            0 0 0 (* hole-radius 2) 0]
-                           "z"]
-                    :charge-width width
-                    :charge-height width}))))
+  (charge-shared/make-charge charge parent environment context
+                             :width
+                             (fn [width]
+                               (let [radius (/ width 2)
+                                     hole-radius (* radius 0.6)]
+                                 {:shape ["m" (v/v radius 0)
+                                          ["a" radius radius
+                                           0 0 0 (v/v (- width) 0)]
+                                          ["a" radius radius
+                                           0 0 0 width 0]
+                                          "z"]
+                                  :mask ["m" (v/v hole-radius 0)
+                                         ["a" hole-radius hole-radius
+                                          0 0 0 (v/v (* hole-radius -2) 0)]
+                                         ["a" hole-radius hole-radius
+                                          0 0 0 (* hole-radius 2) 0]
+                                         "z"]
+                                  :charge-width width
+                                  :charge-height width}))))
 
 (defn billet
   {:display-name "Billet"}
   [charge parent environment context]
-  (make-charge charge parent environment context
-               :height
-               (fn [height]
-                 (let [width (/ height 2)
-                       width-half (/ width 2)
-                       height-half (/ height 2)]
-                   {:shape ["m" (v/v (- width-half) (- height-half))
-                            "h" width
-                            "v" height
-                            "h" (- width)
-                            "z"]
-                    :charge-width width
-                    :charge-height height}))))
+  (charge-shared/make-charge charge parent environment context
+                             :height
+                             (fn [height]
+                               (let [width (/ height 2)
+                                     width-half (/ width 2)
+                                     height-half (/ height 2)]
+                                 {:shape ["m" (v/v (- width-half) (- height-half))
+                                          "h" width
+                                          "v" height
+                                          "h" (- width)
+                                          "z"]
+                                  :charge-width width
+                                  :charge-height height}))))
 
 (defn lozenge
   {:display-name "Lozenge"}
   [charge parent environment context]
-  (make-charge charge parent environment context
-               :height
-               (fn [height]
-                 (let [width (/ height 1.3)
-                       width-half (/ width 2)
-                       height-half (/ height 2)]
-                   {:shape ["m" (v/v 0 (- height-half))
-                            "l" (v/v width-half height-half)
-                            "l " (v/v (- width-half) height-half)
-                            "l" (v/v (- width-half) (- height-half))
-                            "z"]
-                    :charge-width width
-                    :charge-height height}))))
+  (charge-shared/make-charge charge parent environment context
+                             :height
+                             (fn [height]
+                               (let [width (/ height 1.3)
+                                     width-half (/ width 2)
+                                     height-half (/ height 2)]
+                                 {:shape ["m" (v/v 0 (- height-half))
+                                          "l" (v/v width-half height-half)
+                                          "l " (v/v (- width-half) height-half)
+                                          "l" (v/v (- width-half) (- height-half))
+                                          "z"]
+                                  :charge-width width
+                                  :charge-height height}))))
 
 (defn fusil
   {:display-name "Fusil"}
   [charge parent environment context]
-  (make-charge charge parent environment context
-               :height
-               (fn [height]
-                 (let [width (/ height 2)
-                       width-half (/ width 2)
-                       height-half (/ height 2)]
-                   {:shape ["m" (v/v 0 (- height-half))
-                            "l" (v/v width-half height-half)
-                            "l " (v/v (- width-half) height-half)
-                            "l" (v/v (- width-half) (- height-half))
-                            "z"]
-                    :charge-width width
-                    :charge-height height}))))
+  (charge-shared/make-charge charge parent environment context
+                             :height
+                             (fn [height]
+                               (let [width (/ height 2)
+                                     width-half (/ width 2)
+                                     height-half (/ height 2)]
+                                 {:shape ["m" (v/v 0 (- height-half))
+                                          "l" (v/v width-half height-half)
+                                          "l " (v/v (- width-half) height-half)
+                                          "l" (v/v (- width-half) (- height-half))
+                                          "z"]
+                                  :charge-width width
+                                  :charge-height height}))))
 
 (defn mascle
   {:display-name "Mascle"}
   [charge parent environment context]
-  (make-charge charge parent environment context
-               :height
-               (fn [height]
-                 (let [width (/ height 1.3)
-                       width-half (/ width 2)
-                       height-half (/ height 2)
-                       hole-width (* width 0.55)
-                       hole-height (* height 0.55)
-                       hole-width-half (/ hole-width 2)
-                       hole-height-half (/ hole-height 2)]
-                   {:shape ["m" (v/v 0 (- height-half))
-                            "l" (v/v width-half height-half)
-                            "l " (v/v (- width-half) height-half)
-                            "l" (v/v (- width-half) (- height-half))
-                            "z"]
-                    :mask ["m" (v/v 0 (- hole-height-half))
-                           "l" (v/v hole-width-half hole-height-half)
-                           "l " (v/v (- hole-width-half) hole-height-half)
-                           "l" (v/v (- hole-width-half) (- hole-height-half))
-                           "z"]
-                    :charge-width width
-                    :charge-height height}))))
+  (charge-shared/make-charge charge parent environment context
+                             :height
+                             (fn [height]
+                               (let [width (/ height 1.3)
+                                     width-half (/ width 2)
+                                     height-half (/ height 2)
+                                     hole-width (* width 0.55)
+                                     hole-height (* height 0.55)
+                                     hole-width-half (/ hole-width 2)
+                                     hole-height-half (/ hole-height 2)]
+                                 {:shape ["m" (v/v 0 (- height-half))
+                                          "l" (v/v width-half height-half)
+                                          "l " (v/v (- width-half) height-half)
+                                          "l" (v/v (- width-half) (- height-half))
+                                          "z"]
+                                  :mask ["m" (v/v 0 (- hole-height-half))
+                                         "l" (v/v hole-width-half hole-height-half)
+                                         "l " (v/v (- hole-width-half) hole-height-half)
+                                         "l" (v/v (- hole-width-half) (- hole-height-half))
+                                         "z"]
+                                  :charge-width width
+                                  :charge-height height}))))
 
 (defn rustre
   {:display-name "Rustre"}
   [charge parent environment context]
-  (make-charge charge parent environment context
-               :height
-               (fn [height]
-                 (let [width (/ height 1.3)
-                       width-half (/ width 2)
-                       height-half (/ height 2)
-                       hole-radius (/ width 4)]
-                   {:shape ["m" (v/v 0 (- height-half))
-                            "l" (v/v width-half height-half)
-                            "l " (v/v (- width-half) height-half)
-                            "l" (v/v (- width-half) (- height-half))
-                            "z"]
-                    :mask ["m" (v/v hole-radius 0)
-                           ["a" hole-radius hole-radius
-                            0 0 0 (v/v (* hole-radius -2) 0)]
-                           ["a" hole-radius hole-radius
-                            0 0 0 (* hole-radius 2) 0]
-                           "z"]
-                    :charge-width width
-                    :charge-height height}))))
+  (charge-shared/make-charge charge parent environment context
+                             :height
+                             (fn [height]
+                               (let [width (/ height 1.3)
+                                     width-half (/ width 2)
+                                     height-half (/ height 2)
+                                     hole-radius (/ width 4)]
+                                 {:shape ["m" (v/v 0 (- height-half))
+                                          "l" (v/v width-half height-half)
+                                          "l " (v/v (- width-half) height-half)
+                                          "l" (v/v (- width-half) (- height-half))
+                                          "z"]
+                                  :mask ["m" (v/v hole-radius 0)
+                                         ["a" hole-radius hole-radius
+                                          0 0 0 (v/v (* hole-radius -2) 0)]
+                                         ["a" hole-radius hole-radius
+                                          0 0 0 (* hole-radius 2) 0]
+                                         "z"]
+                                  :charge-width width
+                                  :charge-height height}))))
 
 (defn crescent
   {:display-name "Crescent"}
   [charge parent environment context]
-  (make-charge charge parent environment context
-               :width
-               (fn [width]
-                 (let [radius (/ width 2)
-                       inner-radius (* radius
-                                       0.75)
-                       horn-angle -45
-                       horn-point-x (* radius
-                                       (-> horn-angle
-                                           (* Math/PI)
-                                           (/ 180)
-                                           Math/cos))
-                       horn-point-y (* radius
-                                       (-> horn-angle
-                                           (* Math/PI)
-                                           (/ 180)
-                                           Math/sin))
-                       horn-point-1 (v/v horn-point-x horn-point-y)
-                       horn-point-2 (v/v (- horn-point-x) horn-point-y)]
-                   {:shape ["m" horn-point-1
-                            ["a" radius radius
-                             0 1 1 (v/- horn-point-2 horn-point-1)]
-                            ["a" inner-radius inner-radius
-                             0 1 0 (v/- horn-point-1 horn-point-2)]
-                            "z"]
-                    :charge-width width
-                    :charge-height width}))))
+  (charge-shared/make-charge charge parent environment context
+                             :width
+                             (fn [width]
+                               (let [radius (/ width 2)
+                                     inner-radius (* radius
+                                                     0.75)
+                                     horn-angle -45
+                                     horn-point-x (* radius
+                                                     (-> horn-angle
+                                                         (* Math/PI)
+                                                         (/ 180)
+                                                         Math/cos))
+                                     horn-point-y (* radius
+                                                     (-> horn-angle
+                                                         (* Math/PI)
+                                                         (/ 180)
+                                                         Math/sin))
+                                     horn-point-1 (v/v horn-point-x horn-point-y)
+                                     horn-point-2 (v/v (- horn-point-x) horn-point-y)]
+                                 {:shape ["m" horn-point-1
+                                          ["a" radius radius
+                                           0 1 1 (v/- horn-point-2 horn-point-1)]
+                                          ["a" inner-radius inner-radius
+                                           0 1 0 (v/- horn-point-1 horn-point-2)]
+                                          "z"]
+                                  :charge-width width
+                                  :charge-height width}))))
 
 (def charges
   [#'roundel
