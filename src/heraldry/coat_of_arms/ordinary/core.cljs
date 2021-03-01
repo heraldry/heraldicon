@@ -2,119 +2,16 @@
   (:require [heraldry.coat-of-arms.angle :as angle]
             [heraldry.coat-of-arms.charge :as charge]
             [heraldry.coat-of-arms.division.shared :as division-shared]
-            [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
-
-(defn diagonal-mode-choices [type]
-  (let [options {:forty-five-degrees "45°"
-                 :top-left-origin "Top-left to origin"
-                 :top-right-origin "Top-right to origin"
-                 :bottom-left-origin "Bottom-left to origin"
-                 :bottom-right-origin "Bottom-right to origin"}]
-    (->> type
-         (get {:bend [:forty-five-degrees
-                      :top-left-origin]
-               :bend-sinister [:forty-five-degrees
-                               :top-right-origin]
-               :chevron [:forty-five-degrees
-                         :bottom-left-origin
-                         :bottom-right-origin]
-               :saltire [:forty-five-degrees
-                         :top-left-origin
-                         :top-right-origin
-                         :bottom-left-origin
-                         :bottom-right-origin]})
-         (map (fn [key]
-                [(get options key) key])))))
-
-(defn diagonal-default [type]
-  (or (get {:bend-sinister :top-right-origin
-            :chevron :forty-five-degrees} type)
-      :top-left-origin))
-
-(def default-options
-  {:origin position/default-options
-   :diagonal-mode {:type :choice
-                   :default :top-left-origin}
-   :line line/default-options
-   :opposite-line line/default-options
-   :geometry (-> geometry/default-options
-                 (assoc-in [:size :min] 10)
-                 (assoc-in [:size :default] 25)
-                 (assoc :mirrored? nil)
-                 (assoc :reversed? nil)
-                 (assoc :stretch nil)
-                 (assoc :rotation nil))})
-
-(defn options [ordinary]
-  (when ordinary
-    (let [type (:type ordinary)]
-      (->
-       default-options
-       (options/merge {:line (line/options (get-in ordinary [:line]))})
-       (options/merge {:opposite-line (line/options (get-in ordinary [:opposite-line]))})
-       (options/merge
-        (->
-         (get {:pale {:origin {:offset-y nil}
-                      :diagonal-mode nil
-                      :geometry {:size {:max 50}}}
-               :fess {:origin {:offset-x nil}
-                      :diagonal-mode nil
-                      :geometry {:size {:max 50}}}
-               :chief {:origin nil
-                       :diagonal-mode nil
-                       :opposite-line nil
-                       :geometry {:size {:max 50}}}
-               :base {:origin nil
-                      :opposite-line nil
-                      :diagonal-mode nil
-                      :geometry {:size {:max 50}}}
-               :bend {:origin {:point {:choices position/point-choices-y}}
-                      :diagonal-mode {:choices (diagonal-mode-choices
-                                                :bend)}
-                      :geometry {:size {:max 50}}}
-               :bend-sinister {:origin {:point {:choices position/point-choices-y}}
-                               :diagonal-mode {:choices (diagonal-mode-choices
-                                                         :bend-sinister)
-                                               :default :top-right-origin}
-                               :geometry {:size {:max 50}}}
-               :chevron {:diagonal-mode {:choices (diagonal-mode-choices
-                                                   :chevron)
-                                         :default :forty-five-degrees}
-                         :line {:offset {:min 0}}
-                         :opposite-line {:offset {:min 0}}
-                         :geometry {:size {:max 30}}}
-               :saltire {:diagonal-mode {:choices (diagonal-mode-choices
-                                                   :saltire)}
-                         :line {:offset {:min 0}}
-                         :opposite-line nil
-                         :geometry {:size {:max 30}}}
-               :cross {:diagonal-mode nil
-                       :line {:offset {:min 0}}
-                       :opposite-line nil
-                       :geometry {:size {:max 30}}}}
-              type)))))))
-
-(defn sanitize-opposite-line [ordinary line]
-  (-> (options/sanitize
-       (util/deep-merge-with (fn [_current-value new-value]
-                               new-value) line
-                             (into {}
-                                   (filter (fn [[_ v]]
-                                             (some? v))
-                                           (:opposite-line ordinary))))
-       (-> ordinary options :opposite-line))
-      (assoc :flipped? (if (-> ordinary :opposite-line :flipped?)
-                         (not (:flipped? line))
-                         (:flipped? line)))))
 
 (defn percent-of [base-value]
   (fn [v]
@@ -126,8 +23,8 @@
 (defn pale
   {:display-name "Pale"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
-        opposite-line (sanitize-opposite-line ordinary line)
+  (let [{:keys [line origin geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
+        opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         {:keys [size]} geometry
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -222,9 +119,9 @@
 (defn fess
   {:display-name "Fess"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
-        opposite-line (sanitize-opposite-line ordinary line)
+        opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -315,7 +212,7 @@
 (defn chief
   {:display-name "Chief"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line geometry]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
         points (:points environment)
         top (:top points)
@@ -378,7 +275,7 @@
 (defn base
   {:display-name "Base"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line geometry]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
         points (:points environment)
         bottom (:bottom points)
@@ -439,9 +336,9 @@
 (defn bend
   {:display-name "Bend"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
-        opposite-line (sanitize-opposite-line ordinary line)
+        opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
         top-left (:top-left points)
         origin-point (position/calculate origin environment :fess)
@@ -561,9 +458,9 @@
 (defn bend-sinister
   {:display-name "Bend sinister"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
-        opposite-line (sanitize-opposite-line ordinary line)
+        opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
         top-right (:top-right points)
         origin-point (position/calculate origin environment :fess)
@@ -683,7 +580,7 @@
 (defn cross
   {:display-name "Cross"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin geometry]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -898,7 +795,7 @@
 (defn saltire
   {:display-name "Saltire"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -1133,9 +1030,9 @@
 (defn chevron
   {:display-name "Chevron"}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (options ordinary))
+  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
-        opposite-line (sanitize-opposite-line ordinary line)
+        opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
