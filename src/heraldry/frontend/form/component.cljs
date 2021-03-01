@@ -18,6 +18,7 @@
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.context :as context]
+            [heraldry.frontend.form.element :as element]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
@@ -284,153 +285,6 @@
                              :margin-left "0.5em"
                              :width       "calc(100% - 12px - 1.5em)"}}]]))
 
-(defn checkbox [path label & {:keys [on-change disabled? checked? style]}]
-  (let [component-id (id "checkbox")
-        checked?     (-> (and path
-                              @(rf/subscribe [:get path]))
-                         (or checked?)
-                         boolean
-                         (and (not disabled?)))]
-    [:div.setting {:style style}
-     [:input {:type      "checkbox"
-              :id        component-id
-              :checked   checked?
-              :disabled  disabled?
-              :on-change #(let [new-checked? (-> % .-target .-checked)]
-                            (if on-change
-                              (on-change new-checked?)
-                              (rf/dispatch [:set path new-checked?])))}]
-     [:label {:for component-id} label]]))
-
-(defn select [path label choices & {:keys [grouped? value on-change default]}]
-  (let [component-id  (id "select")
-        current-value @(rf/subscribe [:get path])]
-    [:div.setting
-     [:label {:for component-id} label]
-     [:select {:id        component-id
-               :value     (name (or value
-                                    current-value
-                                    default
-                                    :none))
-               :on-change #(let [checked (keyword (-> % .-target .-value))]
-                             (if on-change
-                               (on-change checked)
-                               (rf/dispatch [:set path checked])))}
-      (if grouped?
-        (for [[group-name & group-choices] choices]
-          (if (and (-> group-choices count (= 1))
-                   (-> group-choices first keyword?))
-            (let [key (-> group-choices first)]
-              ^{:key key}
-              [:option {:value (name key)} group-name])
-            ^{:key group-name}
-            [:optgroup {:label group-name}
-             (for [[display-name key] group-choices]
-               ^{:key key}
-               [:option {:value (name key)} display-name])]))
-        (for [[display-name key] choices]
-          ^{:key key}
-          [:option {:value (name key)} display-name]))]]))
-
-(defn radio-select [path choices & {:keys [on-change default]}]
-  [:div.setting
-   (let [current-value (or @(rf/subscribe [:get path])
-                           default)]
-     (for [[display-name key] choices]
-       (let [component-id (id "radio")]
-         ^{:key key}
-         [:<>
-          [:input {:id        component-id
-                   :type      "radio"
-                   :value     (name key)
-                   :checked   (= key current-value)
-                   :on-change #(let [value (keyword (-> % .-target .-value))]
-                                 (if on-change
-                                   (on-change value)
-                                   (rf/dispatch [:set path value])))}]
-          [:label {:for   component-id
-                   :style {:margin-right "10px"}} display-name]])))])
-
-(defn range-input [path label min-value max-value & {:keys [value on-change default display-function step
-                                                            disabled?]}]
-  (let [component-id  (id "range")
-        current-value @(rf/subscribe [:get path])
-        value         (or value
-                          current-value
-                          default
-                          min-value)]
-    [:div.setting
-     [:label {:for component-id} label]
-     [:div.slider
-      [:input {:type      "range"
-               :id        component-id
-               :min       min-value
-               :max       max-value
-               :step      step
-               :value     value
-               :disabled  disabled?
-               :on-change #(let [value (-> % .-target .-value js/parseFloat)]
-                             (if on-change
-                               (on-change value)
-                               (rf/dispatch [:set path value])))}]
-      [:span {:style {:margin-left "1em"}} (cond-> value
-                                             display-function display-function)]]]))
-
-(defn range-input-with-checkbox [path label min-value max-value & {:keys [value on-change default display-function step
-                                                                          disabled?]}]
-  (let [component-id   (id "range")
-        checkbox-id    (id "checkbox")
-        current-value  @(rf/subscribe [:get path])
-        value          (or value
-                           current-value
-                           default
-                           min-value)
-        using-default? (nil? current-value)
-        checked?       (not using-default?)]
-    [:div.setting
-     [:label {:for component-id} label]
-     [:div.slider
-      [:input {:type      "checkbox"
-               :id        checkbox-id
-               :checked   checked?
-               :disabled? disabled?
-               :on-change #(let [new-checked? (-> % .-target .-checked)]
-                             (if new-checked?
-                               (if on-change
-                                 (on-change value)
-                                 (rf/dispatch [:set path value]))
-                               (if on-change
-                                 (on-change nil)
-                                 (rf/dispatch [:remove path]))))}]
-      [:input {:type      "range"
-               :id        component-id
-               :min       min-value
-               :max       max-value
-               :step      step
-               :value     value
-               :disabled  (or disabled?
-                              using-default?)
-               :on-change #(let [value (-> % .-target .-value js/parseFloat)]
-                             (if on-change
-                               (on-change value)
-                               (rf/dispatch [:set path value])))}]
-      [:span {:style {:margin-left "1em"}} (cond-> value
-                                             display-function display-function)]]]))
-
-(defn text-field [path label & {:keys [on-change default]}]
-  (let [current-value (or @(rf/subscribe [:get path])
-                          default)
-        input-id      (id "input")]
-    [:div.setting
-     [:label {:for input-id} label]
-     [:input {:id        input-id
-              :type      "text"
-              :value     current-value
-              :on-change #(let [value (-> % .-target .-value)]
-                            (if on-change
-                              (on-change value)
-                              (rf/dispatch-sync [:set path value])))}]]))
-
 (defn selector [path]
   [:a.selector {:on-click #(state/dispatch-on-event % [:ui-component-select path])}
    [:i.fas.fa-search]])
@@ -603,8 +457,8 @@
       [form-for-escutcheon (conj db-path :escutcheon-override) "Escutcheon Override"
        :label-width "11em"
        :allow-none? true]
-      [radio-select mode-path [["Colours" :colours]
-                               ["Hatching" :hatching]]
+      [element/radio-select mode-path [["Colours" :colours]
+                                       ["Hatching" :hatching]]
        :default :colours
        :on-change #(let [new-mode %]
                      (rf/dispatch [:set mode-path new-mode])
@@ -613,15 +467,15 @@
                        :colours  (rf/dispatch [:set outline-path false])))]
       (when (= @(rf/subscribe [:get mode-path]) :colours)
         [form-for-theme (conj db-path :theme)])])
-   [select (conj db-path :texture) "Texture" (concat [["None" :none]]
-                                                     texture/choices)]
+   [element/select (conj db-path :texture) "Texture" (concat [["None" :none]]
+                                                             texture/choices)]
    (when (-> @(rf/subscribe [:get (conj db-path :texture)])
              (or :none)
              (#(when (not= % :none) %)))
-     [checkbox (conj db-path :texture-displacement?) "Apply texture"])
-   [checkbox (conj db-path :shiny?) "Shiny"]
-   [checkbox (conj db-path :outline?) "Draw outline"]
-   [checkbox (conj db-path :squiggly?) "Squiggly lines (can be slow)"]])
+     [element/checkbox (conj db-path :texture-displacement?) "Apply texture"])
+   [element/checkbox (conj db-path :shiny?) "Shiny"]
+   [element/checkbox (conj db-path :outline?) "Draw outline"]
+   [element/checkbox (conj db-path :squiggly?) "Squiggly lines (can be slow)"]])
 
 (defn form-for-coat-of-arms [db-path]
   [component db-path :coat-of-arms "Coat of Arms" nil
@@ -690,19 +544,19 @@
                               " point" (when (or (-> position :offset-x (or 0) zero? not)
                                                  (-> position :offset-y (or 0) zero? not))
                                          " (adjusted)")) {}
-      [select point-path "Point" (-> options :point :choices)
+      [element/select point-path "Point" (-> options :point :choices)
        :on-change #(do
                      (rf/dispatch [:set point-path %])
                      (rf/dispatch [:set offset-x-path nil])
                      (rf/dispatch [:set offset-y-path nil]))]
       (when (:offset-x options)
-        [range-input-with-checkbox offset-x-path "Offset x"
+        [element/range-input-with-checkbox offset-x-path "Offset x"
          (-> options :offset-x :min)
          (-> options :offset-x :max)
          :default (options/get-value (:offset-x position) (:offset-x options))
          :display-function #(str % "%")])
       (when (:offset-y options)
-        [range-input-with-checkbox offset-y-path "Offset y"
+        [element/range-input-with-checkbox offset-y-path "Offset y"
          (-> options :offset-y :min)
          (-> options :offset-y :max)
          :default (options/get-value (:offset-y position) (:offset-y options))
@@ -729,27 +583,27 @@
      [submenu path "Geometry" current-display {}
       [:div.settings
        (when (:size options)
-         [range-input-with-checkbox (conj path :size) "Size"
+         [element/range-input-with-checkbox (conj path :size) "Size"
           (-> options :size :min)
           (-> options :size :max)
           :default (options/get-value (:size current) (:size options))
           :display-function #(str % "%")])
        (when (:stretch options)
-         [range-input-with-checkbox (conj path :stretch) "Stretch"
+         [element/range-input-with-checkbox (conj path :stretch) "Stretch"
           (-> options :stretch :min)
           (-> options :stretch :max)
           :step 0.01
           :default (options/get-value (:stretch current) (:stretch options))])
        (when (:rotation options)
-         [range-input-with-checkbox (conj path :rotation) "Rotation"
+         [element/range-input-with-checkbox (conj path :rotation) "Rotation"
           (-> options :rotation :min)
           (-> options :rotation :max)
           :step 5
           :default (options/get-value (:rotation current) (:rotation options))])
        (when (:mirrored? options)
-         [checkbox (conj path :mirrored?) "Mirrored"])
+         [element/checkbox (conj path :mirrored?) "Mirrored"])
        (when (:reversed? options)
-         [checkbox (conj path :reversed?) "Reversed"])]]]))
+         [element/checkbox (conj path :reversed?) "Reversed"])]]]))
 
 (defn charge-type-choice [path key display-name & {:keys [current]}]
   (let [{:keys [result]} (render/coat-of-arms
@@ -1048,9 +902,9 @@
                           (.stopPropagation %))} [:i.fas.fa-sync-alt]])
       (when (not hide-access-filters?)
         [:div
-         [checkbox show-public-db-path "Public charges" :style {:display "inline-block"}]
-         [checkbox show-own-db-path "Own charges" :style {:display     "inline-block"
-                                                          :margin-left "1em"}]])
+         [element/checkbox show-public-db-path "Public charges" :style {:display "inline-block"}]
+         [element/checkbox show-own-db-path "Own charges" :style {:display     "inline-block"
+                                                                  :margin-left "1em"}]])
       (if (empty? filtered-charges)
         [:div "None"]
         [tree-for-charge-map charge-map [] nil nil
@@ -1186,7 +1040,7 @@
            {:style {:width "50%"
                     :float "left"}}
            (when (get supported-tinctures :eyes-and-teeth)
-             [checkbox
+             [element/checkbox
               (conj path :tincture :eyes-and-teeth)
               "White eyes and teeth"
               :on-change #(rf/dispatch [:set
@@ -1206,10 +1060,10 @@
          (when (:escutcheon charge-options)
            [form-for-escutcheon (conj path :escutcheon) "Escutcheon"
             :choices (-> charge-options :escutcheon :choices)])])
-      [select (conj path :hints :outline-mode) "Outline" [["Keep" :keep]
-                                                          ["Remove" :remove]
-                                                          ["Primary" :primary]
-                                                          ["Transparent" :transparent]]
+      [element/select (conj path :hints :outline-mode) "Outline" [["Keep" :keep]
+                                                                  ["Remove" :remove]
+                                                                  ["Primary" :primary]
+                                                                  ["Transparent" :transparent]]
        :default :keep]]
      (if (not= fixed-tincture :none)
        [:div {:style {:margin-bottom "0.5em"}}
@@ -1361,35 +1215,35 @@
        :value line-type
        :default (:type defaults)]
       (when (:eccentricity options)
-        [range-input-with-checkbox (conj path :eccentricity) "Eccentricity"
+        [element/range-input-with-checkbox (conj path :eccentricity) "Eccentricity"
          (-> options :eccentricity :min)
          (-> options :eccentricity :max)
          :step 0.01
          :default (or (:eccentricity defaults)
                       (options/get-value line-eccentricity (:eccentricity options)))])
       (when (:height options)
-        [range-input-with-checkbox (conj path :height) "Height"
+        [element/range-input-with-checkbox (conj path :height) "Height"
          (-> options :height :min)
          (-> options :height :max)
          :step 0.01
          :default (or (:height defaults)
                       (options/get-value line-height (:height options)))])
       (when (:width options)
-        [range-input-with-checkbox (conj path :width) "Width"
+        [element/range-input-with-checkbox (conj path :width) "Width"
          (-> options :width :min)
          (-> options :width :max)
          :default (or (:width defaults)
                       (options/get-value line-width (:width options)))
          :display-function #(str % "%")])
       (when (:offset options)
-        [range-input-with-checkbox (conj path :offset) "Offset"
+        [element/range-input-with-checkbox (conj path :offset) "Offset"
          (-> options :offset :min)
          (-> options :offset :max)
          :step 0.01
          :default (or (:offset defaults)
                       (options/get-value line-offset (:offset options)))])
       (when (:flipped? options)
-        [checkbox (conj path :flipped?) "Flipped"])
+        [element/checkbox (conj path :flipped?) "Flipped"])
       (when (:fimbriation options)
         (let [fimbriation-path (conj path :fimbriation)
               link-name        (case fimbriation-mode
@@ -1404,20 +1258,20 @@
            " "
            [submenu fimbriation-path "Fimbriation" link-name {}
             (when (-> options :fimbriation :mode)
-              [select (conj fimbriation-path :mode) "Mode"
+              [element/select (conj fimbriation-path :mode) "Mode"
                (-> options :fimbriation :mode :choices)
                :default (-> options :fimbriation :mode :default)])
             (when (and (not= current-fimbriation-mode :none)
                        (-> options :fimbriation :alignment))
-              [select (conj fimbriation-path :alignment) "Alignment"
+              [element/select (conj fimbriation-path :alignment) "Alignment"
                (-> options :fimbriation :alignment :choices)
                :default (-> options :fimbriation :alignment :default)])
             (when (and (not= current-fimbriation-mode :none)
                        (-> options :fimbriation :outline?))
-              [checkbox (conj fimbriation-path :outline?) "Outline"])
+              [element/checkbox (conj fimbriation-path :outline?) "Outline"])
             (when (and (#{:single :double} current-fimbriation-mode)
                        (-> options :fimbriation :thickness-1))
-              [range-input (conj fimbriation-path :thickness-1)
+              [element/range-input (conj fimbriation-path :thickness-1)
                (str "Thickness"
                     (when (#{:double} current-fimbriation-mode) " 1"))
                (-> options :fimbriation :thickness-1 :min)
@@ -1434,7 +1288,7 @@
                            (when (#{:double} current-fimbriation-mode) " 1"))])
             (when (and (#{:double} current-fimbriation-mode)
                        (-> options :fimbriation :thickness-2))
-              [range-input (conj fimbriation-path :thickness-2) "Thickness 2"
+              [element/range-input (conj fimbriation-path :thickness-2) "Thickness 2"
                (-> options :fimbriation :thickness-2 :min)
                (-> options :fimbriation :thickness-2 :max)
                :default (or (-> defaults :fimbriation :thickness-2)
@@ -1504,7 +1358,7 @@
             :defaults (options/sanitize (:line ordinary) (:line ordinary-options))
             :title "Opposite Line"])
          (when (:diagonal-mode ordinary-options)
-           [select (conj path :diagonal-mode) "Diagonal"
+           [element/select (conj path :diagonal-mode) "Diagonal"
             (-> ordinary-options :diagonal-mode :choices)
             :default (-> ordinary-options :diagonal-mode :default)])
          (when (:origin ordinary-options)
@@ -1515,7 +1369,7 @@
            [form-for-geometry (conj path :geometry)
             (:geometry ordinary-options)
             :current (:geometry ordinary)])])
-      [checkbox (conj path :hints :outline?) "Outline"]]
+      [element/checkbox (conj path :hints :outline?) "Outline"]]
      [form-for-field (conj path :field) :parent-field parent-field]]))
 
 (defn form-for-layout [field-path & {:keys [title options] :or {title "Layout"}}]
@@ -1551,7 +1405,7 @@
      " "
      [submenu layout-path title link-name {}
       (when (-> options :num-base-fields)
-        [range-input-with-checkbox (conj layout-path :num-base-fields) "Base fields"
+        [element/range-input-with-checkbox (conj layout-path :num-base-fields) "Base fields"
          (-> options :num-base-fields :min)
          (-> options :num-base-fields :max)
          :default (options/get-value (:num-base-fields layout) (:num-base-fields options))
@@ -1563,7 +1417,7 @@
                                     (:num-fields-y layout)
                                     value]))])
       (when (-> options :num-fields-x)
-        [range-input-with-checkbox (conj layout-path :num-fields-x) "x-Subfields"
+        [element/range-input-with-checkbox (conj layout-path :num-fields-x) "x-Subfields"
          (-> options :num-fields-x :min)
          (-> options :num-fields-x :max)
          :default (options/get-value (:num-fields-x layout) (:num-fields-x options))
@@ -1575,7 +1429,7 @@
                                     (:num-fields-y layout)
                                     (:num-base-fields layout)]))])
       (when (-> options :num-fields-y)
-        [range-input-with-checkbox (conj layout-path :num-fields-y) "y-Subfields"
+        [element/range-input-with-checkbox (conj layout-path :num-fields-y) "y-Subfields"
          (-> options :num-fields-y :min)
          (-> options :num-fields-y :max)
          :default (options/get-value (:num-fields-y layout) (:num-fields-y options))
@@ -1587,31 +1441,31 @@
                                     value
                                     (:num-base-fields layout)]))])
       (when (-> options :offset-x)
-        [range-input-with-checkbox (conj layout-path :offset-x) "Offset x"
+        [element/range-input-with-checkbox (conj layout-path :offset-x) "Offset x"
          (-> options :offset-x :min)
          (-> options :offset-x :max)
          :step 0.01
          :default (options/get-value (:offset-x layout) (:offset-x options))])
       (when (-> options :offset-y)
-        [range-input-with-checkbox (conj layout-path :offset-y) "Offset y"
+        [element/range-input-with-checkbox (conj layout-path :offset-y) "Offset y"
          (-> options :offset-y :min)
          (-> options :offset-y :max)
          :step 0.01
          :default (options/get-value (:offset-y layout) (:offset-y options))])
       (when (-> options :stretch-x)
-        [range-input-with-checkbox (conj layout-path :stretch-x) "Stretch x"
+        [element/range-input-with-checkbox (conj layout-path :stretch-x) "Stretch x"
          (-> options :stretch-x :min)
          (-> options :stretch-x :max)
          :step 0.01
          :default (options/get-value (:stretch-x layout) (:stretch-x options))])
       (when (-> options :stretch-y)
-        [range-input-with-checkbox (conj layout-path :stretch-y) "Stretch y"
+        [element/range-input-with-checkbox (conj layout-path :stretch-y) "Stretch y"
          (-> options :stretch-y :min)
          (-> options :stretch-y :max)
          :step 0.01
          :default (options/get-value (:stretch-y layout) (:stretch-y options))])
       (when (-> options :rotation)
-        [range-input-with-checkbox (conj layout-path :rotation) "Rotation"
+        [element/range-input-with-checkbox (conj layout-path :rotation) "Rotation"
          (-> options :rotation :min)
          (-> options :rotation :max)
          :step 5
@@ -1633,10 +1487,10 @@
                              :else                    (-> division-type util/translate-cap-first)) title-prefix
      [:div.settings
       (when (not root-field?)
-        [checkbox (conj path :inherit-environment?) "Inherit environment (dimidiation)"])
+        [element/checkbox (conj path :inherit-environment?) "Inherit environment (dimidiation)"])
       (when (and (not= path [:coat-of-arms :field])
                  parent-field)
-        [checkbox (conj path :counterchanged?) "Counterchanged"
+        [element/checkbox (conj path :counterchanged?) "Counterchanged"
          :disabled? (not (division/counterchangable? (-> parent-field :division)))])
       (when (not counterchanged?)
         [:<>
@@ -1648,7 +1502,7 @@
                :title "Origin"
                :options (:origin division-options)])
             (when (-> division-options :diagonal-mode)
-              [select (conj path :division :diagonal-mode) "Diagonal"
+              [element/select (conj path :division :diagonal-mode) "Diagonal"
                (-> division-options :diagonal-mode :choices)
                :default (-> division-options :diagonal-mode :default)])
             (when (:layout division-options)
@@ -1657,7 +1511,7 @@
               [form-for-line (conj path :division :line) :options (:line division-options)])])
          (if (= division-type :none)
            [form-for-content (conj path :content)]
-           [checkbox (conj path :division :hints :outline?) "Outline"])])]
+           [element/checkbox (conj path :division :hints :outline?) "Outline"])])]
      (cond
        (#{:chequy
           :lozengy} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
@@ -1734,18 +1588,18 @@
                              ["Public Domain" :public-domain]]
         license-nature      @(rf/subscribe [:get (conj db-path :nature)])]
     [component db-path :attribution "Attribution / License" nil
-     [select (conj db-path :license) "License" attribution-options]
-     [radio-select (conj db-path :nature) [["Own work" :own-work]
-                                           ["Derivative" :derivative]]
+     [element/select (conj db-path :license) "License" attribution-options]
+     [element/radio-select (conj db-path :nature) [["Own work" :own-work]
+                                                   ["Derivative" :derivative]]
       :default :own-work]
      (when (= license-nature :derivative)
        [:<>
-        [select (conj db-path :source-license) "Source license" (assoc-in
-                                                                 attribution-options
-                                                                 [0 0]
-                                                                 "None")]
-        [text-field (conj db-path :source-name) "Source name"]
-        [text-field (conj db-path :source-link) "Source link"]
-        [text-field (conj db-path :source-creator-name) "Creator name"]
-        [text-field (conj db-path :source-creator-link) "Creator link"]])
+        [element/select (conj db-path :source-license) "Source license" (assoc-in
+                                                                         attribution-options
+                                                                         [0 0]
+                                                                         "None")]
+        [element/text-field (conj db-path :source-name) "Source name"]
+        [element/text-field (conj db-path :source-link) "Source link"]
+        [element/text-field (conj db-path :source-creator-name) "Creator name"]
+        [element/text-field (conj db-path :source-creator-link) "Creator link"]])
      [:div {:style {:margin-bottom "1em"}} " "]]))
