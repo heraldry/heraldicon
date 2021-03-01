@@ -3,7 +3,7 @@
             [heraldry.coat-of-arms.division :as division]
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.infinity :as infinity]
-            [heraldry.coat-of-arms.line :as line]
+            [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]

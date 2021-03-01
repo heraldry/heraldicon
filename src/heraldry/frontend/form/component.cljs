@@ -6,7 +6,7 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.division :as division]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
-            [heraldry.coat-of-arms.line :as line]
+            [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary :as ordinary]
             [heraldry.coat-of-arms.render :as render]
