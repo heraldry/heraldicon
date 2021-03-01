@@ -7,6 +7,7 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
@@ -205,7 +206,7 @@
       [:all]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g division/outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ first-bottom
                                line-one-start)
@@ -300,7 +301,7 @@
       [:all]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g division/outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ first-left line-one-start)
                       (svg/stitch line-one)])}]
@@ -366,7 +367,7 @@
       [:all]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g division/outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ row-right
                                line-reversed-start)
@@ -427,7 +428,7 @@
       [:all]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g division/outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ row-left
                                line-one-start)
@@ -539,7 +540,7 @@
       [:all]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g division/outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ first-left
                                line-one-start)
@@ -661,7 +662,7 @@
       [:all]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g division/outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ first-left
                                line-one-start)
@@ -855,7 +856,7 @@
       [:all]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g division/outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-top-left
                                line-pale-top-left-start)
@@ -1090,7 +1091,7 @@
       [:all]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g division/outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-left
                                line-top-left-lower-start)
@@ -1244,7 +1245,7 @@
       [:all]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g division/outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-upper
                                line-right-upper-start)

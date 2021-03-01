@@ -5,20 +5,12 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture :as tincture]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
-
-(def outline-stroke-width 0.5)
-
-(def outline-style
-  {:stroke "#000"
-   :stroke-width outline-stroke-width
-   :fill "none"
-   :stroke-linecap "round"
-   :stroke-linejoin "round"})
 
 (defn diagonal-mode-choices [type]
   (let [options {:forty-five-degrees "45°"
@@ -434,7 +426,7 @@
                     (conj nil))
         outlines (when (or (:outline? render-options)
                            (:outline? hints))
-                   [:g outline-style
+                   [:g outline/style
                     (for [i (range (dec num-fields-x))]
                       ^{:key i}
                       [:path {:d (nth edges i)}])])]
@@ -536,7 +528,7 @@
                     (conj nil))
         outlines (when (or (:outline? render-options)
                            (:outline? hints))
-                   [:g outline-style
+                   [:g outline/style
                     (for [i (range (dec num-fields-y))]
                       ^{:key i}
                       [:path {:d (nth edges i)}])])]
@@ -683,7 +675,7 @@
         outline-extra 50
         outlines (when (or (:outline? render-options)
                            (:outline? hints))
-                   [:g outline-style
+                   [:g outline/style
                     (for [i (range 1 num-fields-x)]
                       (let [x1 (+ x0 (* i part-width))]
                         ^{:key [:x i]}
@@ -752,7 +744,7 @@
       [:all nil]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ top
                                line-one-start)
@@ -816,7 +808,7 @@
       [:all nil]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ left
                                line-one-start)
@@ -911,7 +903,7 @@
       [:all nil]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ diagonal-start
                                line-one-start)
@@ -982,7 +974,7 @@
       [:all nil]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ diagonal-start
                                line-one-start)
@@ -1076,7 +1068,7 @@
       [:all nil]
       (when (or (:outline? render-options)
                 (:outline? hints))
-        [:g outline-style
+        [:g outline/style
          [:path {:d (svg/make-path
                      ["M" (v/+ diagonal-bottom-left
                                line-left-start)
@@ -1224,7 +1216,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g outline-style
+       [:g outline/style
         [:path {:d (svg/make-path
                     ["M" (v/+ diagonal-top-left
                               line-top-left-start)
@@ -1351,7 +1343,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g outline-style
+       [:g outline/style
         [:path {:d (svg/make-path
                     ["M" (v/+ top
                               line-top-start)
@@ -1603,7 +1595,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g outline-style
+       [:g outline/style
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (svg/stitch line-top-left)])}]
@@ -1715,7 +1707,7 @@
                    :y (+ (* part-height offset-y)
                          (:y top-left))
                    :pattern-units "userSpaceOnUse"}
-         [:g outline-style
+         [:g outline/style
           [:path {:d (str "M 0,0 h " part-width)}]
           [:path {:d (str "M 0,0 v " part-height)}]
           [:path {:d (str "M 0," part-height " h " part-width)}]
@@ -1828,7 +1820,7 @@
                    :y (+ (* part-height offset-y)
                          (:y top-left))
                    :pattern-units "userSpaceOnUse"}
-         [:g outline-style
+         [:g outline/style
           [:path {:d lozenge-shape}]]])
       [:pattern {:id (str pattern-id "-0")
                  :width part-width
@@ -2040,7 +2032,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g outline-style
+       [:g outline/style
         [:path {:d (svg/make-path
                     ["M" (v/+ first-top
                               line-one-start)
@@ -2140,7 +2132,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g outline-style
+       [:g outline/style
         [:path {:d (svg/make-path
                     ["M" (v/+ first-left
                               line-one-start)
@@ -2258,7 +2250,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g outline-style
+       [:g outline/style
         [:path {:d (svg/make-path
                     ["M" (v/+ diagonal-top-left
                               line-top-left-start)
@@ -2377,7 +2369,7 @@
       nil]
      (when (or (:outline? render-options)
                (:outline? hints))
-       [:g outline-style
+       [:g outline/style
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (svg/stitch line-top)])}]

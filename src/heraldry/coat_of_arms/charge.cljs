@@ -9,6 +9,7 @@
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture :as tincture]
@@ -213,7 +214,7 @@
      [:all]
      (when (or (:outline? render-options)
                (-> hints :outline-mode (= :keep)))
-       [:g division/outline-style
+       [:g outline/style
         [:path {:d charge-shape}]
         (when mask-shape
           [:path {:d mask-shape}])])
