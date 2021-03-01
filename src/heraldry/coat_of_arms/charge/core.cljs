@@ -1,9 +1,16 @@
 (ns heraldry.coat-of-arms.charge.core
   (:require [clojure.walk :as walk]
             [heraldry.coat-of-arms.charge.options :as charge-options]
-            [heraldry.coat-of-arms.charge.shared :as charge-shared]
+            [heraldry.coat-of-arms.charge.type.annulet :as annulet]
+            [heraldry.coat-of-arms.charge.type.billet :as billet]
+            [heraldry.coat-of-arms.charge.type.crescent :as crescent]
+            [heraldry.coat-of-arms.charge.type.escutcheon :as escutcheon]
+            [heraldry.coat-of-arms.charge.type.fusil :as fusil]
+            [heraldry.coat-of-arms.charge.type.lozenge :as lozenge]
+            [heraldry.coat-of-arms.charge.type.mascle :as mascle]
+            [heraldry.coat-of-arms.charge.type.roundel :as roundel]
+            [heraldry.coat-of-arms.charge.type.rustre :as rustre]
             [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.options :as options]
@@ -66,219 +73,29 @@
                              "#fff"))))]
     [mask-id mask mask-inverted-id mask-inverted]))
 
-(defn escutcheon
-  {:display-name "Escutcheon"}
-  [charge parent environment {:keys [root-escutcheon] :as context}]
-  (let [{:keys [escutcheon]} (options/sanitize charge (charge-options/options charge))]
-    (charge-shared/make-charge charge parent environment context
-                               :width
-                               (fn [width]
-                                 (let [env (field-environment/transform-to-width
-                                            (escutcheon/field (if (= escutcheon :none)
-                                                                root-escutcheon
-                                                                escutcheon)) width)
-                                       env-fess (-> env :points :fess)]
-                                   {:shape (svg/translate (:shape env)
-                                                          (-> env-fess :x -)
-                                                          (-> env-fess :y -))
-                                    :charge-width width
-                                    :charge-height width})))))
-
-(defn roundel
-  {:display-name "Roundel"}
-  [charge parent environment context]
-  (charge-shared/make-charge charge parent environment context
-                             :width
-                             (fn [width]
-                               (let [radius (/ width 2)]
-                                 {:shape ["m" (v/v radius 0)
-                                          ["a" radius radius
-                                           0 0 0 (v/v (- width) 0)]
-                                          ["a" radius radius
-                                           0 0 0 width 0]
-                                          "z"]
-                                  :charge-width width
-                                  :charge-height width}))))
-
-(defn annulet
-  {:display-name "Annulet"}
-  [charge parent environment context]
-  (charge-shared/make-charge charge parent environment context
-                             :width
-                             (fn [width]
-                               (let [radius (/ width 2)
-                                     hole-radius (* radius 0.6)]
-                                 {:shape ["m" (v/v radius 0)
-                                          ["a" radius radius
-                                           0 0 0 (v/v (- width) 0)]
-                                          ["a" radius radius
-                                           0 0 0 width 0]
-                                          "z"]
-                                  :mask ["m" (v/v hole-radius 0)
-                                         ["a" hole-radius hole-radius
-                                          0 0 0 (v/v (* hole-radius -2) 0)]
-                                         ["a" hole-radius hole-radius
-                                          0 0 0 (* hole-radius 2) 0]
-                                         "z"]
-                                  :charge-width width
-                                  :charge-height width}))))
-
-(defn billet
-  {:display-name "Billet"}
-  [charge parent environment context]
-  (charge-shared/make-charge charge parent environment context
-                             :height
-                             (fn [height]
-                               (let [width (/ height 2)
-                                     width-half (/ width 2)
-                                     height-half (/ height 2)]
-                                 {:shape ["m" (v/v (- width-half) (- height-half))
-                                          "h" width
-                                          "v" height
-                                          "h" (- width)
-                                          "z"]
-                                  :charge-width width
-                                  :charge-height height}))))
-
-(defn lozenge
-  {:display-name "Lozenge"}
-  [charge parent environment context]
-  (charge-shared/make-charge charge parent environment context
-                             :height
-                             (fn [height]
-                               (let [width (/ height 1.3)
-                                     width-half (/ width 2)
-                                     height-half (/ height 2)]
-                                 {:shape ["m" (v/v 0 (- height-half))
-                                          "l" (v/v width-half height-half)
-                                          "l " (v/v (- width-half) height-half)
-                                          "l" (v/v (- width-half) (- height-half))
-                                          "z"]
-                                  :charge-width width
-                                  :charge-height height}))))
-
-(defn fusil
-  {:display-name "Fusil"}
-  [charge parent environment context]
-  (charge-shared/make-charge charge parent environment context
-                             :height
-                             (fn [height]
-                               (let [width (/ height 2)
-                                     width-half (/ width 2)
-                                     height-half (/ height 2)]
-                                 {:shape ["m" (v/v 0 (- height-half))
-                                          "l" (v/v width-half height-half)
-                                          "l " (v/v (- width-half) height-half)
-                                          "l" (v/v (- width-half) (- height-half))
-                                          "z"]
-                                  :charge-width width
-                                  :charge-height height}))))
-
-(defn mascle
-  {:display-name "Mascle"}
-  [charge parent environment context]
-  (charge-shared/make-charge charge parent environment context
-                             :height
-                             (fn [height]
-                               (let [width (/ height 1.3)
-                                     width-half (/ width 2)
-                                     height-half (/ height 2)
-                                     hole-width (* width 0.55)
-                                     hole-height (* height 0.55)
-                                     hole-width-half (/ hole-width 2)
-                                     hole-height-half (/ hole-height 2)]
-                                 {:shape ["m" (v/v 0 (- height-half))
-                                          "l" (v/v width-half height-half)
-                                          "l " (v/v (- width-half) height-half)
-                                          "l" (v/v (- width-half) (- height-half))
-                                          "z"]
-                                  :mask ["m" (v/v 0 (- hole-height-half))
-                                         "l" (v/v hole-width-half hole-height-half)
-                                         "l " (v/v (- hole-width-half) hole-height-half)
-                                         "l" (v/v (- hole-width-half) (- hole-height-half))
-                                         "z"]
-                                  :charge-width width
-                                  :charge-height height}))))
-
-(defn rustre
-  {:display-name "Rustre"}
-  [charge parent environment context]
-  (charge-shared/make-charge charge parent environment context
-                             :height
-                             (fn [height]
-                               (let [width (/ height 1.3)
-                                     width-half (/ width 2)
-                                     height-half (/ height 2)
-                                     hole-radius (/ width 4)]
-                                 {:shape ["m" (v/v 0 (- height-half))
-                                          "l" (v/v width-half height-half)
-                                          "l " (v/v (- width-half) height-half)
-                                          "l" (v/v (- width-half) (- height-half))
-                                          "z"]
-                                  :mask ["m" (v/v hole-radius 0)
-                                         ["a" hole-radius hole-radius
-                                          0 0 0 (v/v (* hole-radius -2) 0)]
-                                         ["a" hole-radius hole-radius
-                                          0 0 0 (* hole-radius 2) 0]
-                                         "z"]
-                                  :charge-width width
-                                  :charge-height height}))))
-
-(defn crescent
-  {:display-name "Crescent"}
-  [charge parent environment context]
-  (charge-shared/make-charge charge parent environment context
-                             :width
-                             (fn [width]
-                               (let [radius (/ width 2)
-                                     inner-radius (* radius
-                                                     0.75)
-                                     horn-angle -45
-                                     horn-point-x (* radius
-                                                     (-> horn-angle
-                                                         (* Math/PI)
-                                                         (/ 180)
-                                                         Math/cos))
-                                     horn-point-y (* radius
-                                                     (-> horn-angle
-                                                         (* Math/PI)
-                                                         (/ 180)
-                                                         Math/sin))
-                                     horn-point-1 (v/v horn-point-x horn-point-y)
-                                     horn-point-2 (v/v (- horn-point-x) horn-point-y)]
-                                 {:shape ["m" horn-point-1
-                                          ["a" radius radius
-                                           0 1 1 (v/- horn-point-2 horn-point-1)]
-                                          ["a" inner-radius inner-radius
-                                           0 1 0 (v/- horn-point-1 horn-point-2)]
-                                          "z"]
-                                  :charge-width width
-                                  :charge-height width}))))
-
 (def charges
-  [#'roundel
-   #'annulet
-   #'billet
-   #'escutcheon
-   #'lozenge
-   #'fusil
-   #'mascle
-   #'rustre
-   #'crescent])
+  [#'roundel/render
+   #'annulet/render
+   #'billet/render
+   #'escutcheon/render
+   #'lozenge/render
+   #'fusil/render
+   #'mascle/render
+   #'rustre/render
+   #'crescent/render])
 
 (def kinds-function-map
   (->> charges
        (map (fn [function]
-              [(-> function meta :name keyword) function]))
+              [(-> function meta :value) function]))
        (into {})))
 
 (def choices
   (->> charges
        (map (fn [function]
-              [(-> function meta :display-name) (-> function meta :name keyword)]))))
+              [(-> function meta :display-name) (-> function meta :value)]))))
 
-(defn render-other-charge [{:keys [type
-                                   field
+(defn render-other-charge [{:keys [field
                                    tincture
                                    hints
                                    variant
