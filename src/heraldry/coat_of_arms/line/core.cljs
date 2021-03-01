@@ -11,6 +11,7 @@
             [heraldry.coat-of-arms.line.type.indented :as indented]
             [heraldry.coat-of-arms.line.type.invected :as invected]
             [heraldry.coat-of-arms.line.type.raguly :as raguly]
+            [heraldry.coat-of-arms.line.type.straight :as straight]
             [heraldry.coat-of-arms.line.type.urdy :as urdy]
             [heraldry.coat-of-arms.line.type.wavy :as wavy]
             [heraldry.coat-of-arms.options :as options]
@@ -160,86 +161,8 @@
                                            (assoc :fimbriation-2-start (:fimbriation-2-end line-data))
                                            (assoc :fimbriation-2-end (:fimbriation-2-start line-data))))))
 
-(defn straight
-  {:display-name "Straight"
-   :value :straight}
-  [line length {:keys [joint-angle reversed?]}]
-  (let [{fimbriation-mode :mode
-         fimbriation-alignment :alignment
-         fimbriation-thickness-1 :thickness-1
-         fimbriation-thickness-2 :thickness-2} (:fimbriation line)
-
-        base-line (cond
-                    (and (not= fimbriation-mode :none)
-                         (= fimbriation-alignment :even)) (-> fimbriation-thickness-1
-                                                              (cond->
-                                                               (#{:double} fimbriation-mode) (+ fimbriation-thickness-2))
-                                                              (/ 2))
-                    (and (= fimbriation-mode :single)
-                         (= fimbriation-alignment :inside)) fimbriation-thickness-1
-                    (and (= fimbriation-mode :double)
-                         (= fimbriation-alignment :inside)) (+ fimbriation-thickness-1
-                                                               fimbriation-thickness-2)
-                    :else 0)
-        fimbriation-1-line (- base-line
-                              fimbriation-thickness-1)
-        fimbriation-2-line (- base-line
-                              fimbriation-thickness-1
-                              fimbriation-thickness-2)
-        offset-x-factor (if joint-angle
-                          (-> joint-angle
-                              (/ 2)
-                              (* Math/PI)
-                              (/ 180)
-                              Math/tan
-                              (->> (/ 1)))
-                          0)
-        line-start-x (* base-line
-                        offset-x-factor)
-        fimbriation-1-offset-x (* fimbriation-1-line
-                                  offset-x-factor)
-        fimbriation-2-offset-x (* fimbriation-2-line
-                                  offset-x-factor)
-
-        line-data {:line ["h" (+ length
-                                 line-start-x)]
-                   :line-start (v/v (- line-start-x)
-                                    base-line)
-                   :line-end (v/v 0
-                                  base-line)
-                   :fimbriation-1 (when (#{:single :double} fimbriation-mode)
-                                    ["h" (+ length
-                                            fimbriation-1-offset-x)])
-                   :fimbriation-1-start (when (#{:single :double} fimbriation-mode)
-                                          (v/v fimbriation-1-offset-x
-                                               fimbriation-1-line))
-                   :fimbriation-1-end (when (#{:single :double} fimbriation-mode)
-                                        (v/v 0
-                                             fimbriation-1-line))
-                   :fimbriation-2 (when (#{:double} fimbriation-mode)
-                                    ["h" (+ length
-                                            fimbriation-2-offset-x)])
-                   :fimbriation-2-start (when (#{:double} fimbriation-mode)
-                                          (v/v fimbriation-2-offset-x
-                                               fimbriation-2-line))
-                   :fimbriation-2-end (when (#{:double} fimbriation-mode)
-                                        (v/v 0
-                                             fimbriation-2-line))}]
-    (cond-> line-data
-      reversed? (->
-                 (assoc :line-start (:line-end line-data))
-                 (assoc :line-end (:line-start line-data)))
-      (and reversed?
-           (#{:single :double} fimbriation-mode)) (->
-                                                   (assoc :fimbriation-1-start (:fimbriation-1-end line-data))
-                                                   (assoc :fimbriation-1-end (:fimbriation-1-start line-data)))
-      (and reversed?
-           (#{:double} fimbriation-mode)) (->
-                                           (assoc :fimbriation-2-start (:fimbriation-2-end line-data))
-                                           (assoc :fimbriation-2-end (:fimbriation-2-start line-data))))))
-
 (def lines
-  [#'straight
+  [#'straight/pattern
    #'invected/pattern
    #'engrailed/pattern
    #'embattled/pattern
@@ -383,13 +306,14 @@
 (defn create [{:keys [type] :or {type :straight} :as line} length & {:keys [angle flipped? render-options seed] :as line-options}]
   (let [line-function (get kinds-function-map type)
         line-options-values (options/sanitize line (options line))
-        line-data (if (= line-function #'straight)
-                    (line-function line length line-options)
-                    (line-with-offset
-                     line-options-values
-                     length
-                     line-function
-                     line-options))
+        line-options-values (if (= type :straight)
+                              (assoc line-options-values :width length)
+                              line-options-values)
+        line-data (line-with-offset
+                   line-options-values
+                   length
+                   line-function
+                   line-options)
         line-flipped? (:flipped? line-options-values)
         adjusted-path (-> line-data
                           :line
