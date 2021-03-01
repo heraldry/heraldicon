@@ -1,7 +1,6 @@
-(ns heraldry.coat-of-arms.ordinary
-  (:require [heraldry.coat-of-arms.charge :as charge]
-            [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.division.core :as division]
+(ns heraldry.coat-of-arms.ordinary.core
+  (:require [heraldry.coat-of-arms.angle :as angle]
+            [heraldry.coat-of-arms.charge :as charge]
             [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.infinity :as infinity]
