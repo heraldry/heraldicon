@@ -1,5 +1,7 @@
 (ns heraldry.frontend.form.element
-  (:require [heraldry.util :refer [id]]
+  (:require [heraldry.frontend.state :as state]
+            [heraldry.frontend.util :as util]
+            [heraldry.util :refer [id]]
             [re-frame.core :as rf]))
 
 (defn checkbox [path label & {:keys [on-change disabled? checked? style]}]
@@ -144,3 +146,51 @@
                             (if on-change
                               (on-change value)
                               (rf/dispatch-sync [:set path value])))}]]))
+(defn selector [path]
+  [:a.selector {:on-click #(state/dispatch-on-event % [:ui-component-select path])}
+   [:i.fas.fa-search]])
+
+(defn component [path type title title-prefix & content]
+  (let [selected? @(rf/subscribe [:ui-component-selected? path])
+        content? (seq content)
+        open? (and @(rf/subscribe [:ui-component-open? path])
+                   content?)
+        show-selector? (and (not= path [:render-options])
+                            (get #{:field :ref} type))]
+    [:div.component
+     {:class (util/combine " " [(when type (name type))
+                                (when selected? "selected")
+                                (when (not open?) "closed")])}
+     [:div.header.clickable {:on-click #(state/dispatch-on-event % [:ui-component-open-toggle path])}
+      [:a.arrow {:style {:opacity (if content? 1 0)}}
+       (if open?
+         [:i.fas.fa-chevron-circle-down]
+         [:i.fas.fa-chevron-circle-right])]
+      [:h1 (util/combine " " [(when title-prefix
+                                (str (util/upper-case-first title-prefix) ":"))
+                              (when (and type
+                                         (-> #{:charge :ordinary}
+                                             (get type)))
+                                (str (util/translate-cap-first type) ":"))
+                              title])]
+      (when show-selector?
+        [selector path])]
+     (when (and open?
+                content?)
+       (into [:div.content]
+             content))]))
+
+(defn submenu [path title link-name styles & content]
+  (let [submenu-id (conj path title)
+        submenu-open? @(rf/subscribe [:ui-submenu-open? submenu-id])]
+    [:div.submenu-setting {:style {:display "inline-block"}
+                           :on-click #(.stopPropagation %)}
+     [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-open submenu-id])}
+      link-name]
+     (when submenu-open?
+       [:div.component.submenu {:style styles}
+        [:div.header [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-close submenu-id])}
+                      [:i.far.fa-times-circle]]
+         " " title]
+        (into [:div.content]
+              content)])]))
