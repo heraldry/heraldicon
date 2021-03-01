@@ -4,6 +4,7 @@
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
+            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
@@ -161,14 +162,14 @@
                                               :render-options render-options)
         parts [[["M" (v/+ first-bottom
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:top :top]
                                 [(v/+ first-top
                                       line-one-start)
                                  (v/+ second-top
                                       line-reversed-start)])
-                 (line/stitch line-reversed)
+                 (svg/stitch line-reversed)
                  (infinity/path :clockwise
                                 [:bottom :bottom]
                                 [(v/+ second-bottom
@@ -183,13 +184,13 @@
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)
-        [fimbriation-elements-left fimbriation-outlines-left] (line/render-fimbriation
+        [fimbriation-elements-left fimbriation-outlines-left] (fimbriation/render
                                                                [first-bottom :bottom]
                                                                [first-top :top]
                                                                [line-one-data]
                                                                (:fimbriation line)
                                                                render-options)
-        [fimbriation-elements-right fimbriation-outlines-right] (line/render-fimbriation
+        [fimbriation-elements-right fimbriation-outlines-right] (fimbriation/render
                                                                  [second-top :top]
                                                                  [second-bottom :bottom]
                                                                  [line-reversed-data]
@@ -207,11 +208,11 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ first-bottom
                                line-one-start)
-                      (line/stitch line-one)])}]
+                      (svg/stitch line-one)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ second-top
                                line-reversed-start)
-                      (line/stitch line-reversed)])}]
+                      (svg/stitch line-reversed)])}]
          fimbriation-outlines-left
          fimbriation-outlines-right])
       environment ordinary context]]))
@@ -256,14 +257,14 @@
         second-right (v/v (:x right) row2)
         parts [[["M" (v/+ first-left
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [(v/+ first-right
                                       line-one-start)
                                  (v/+ second-right
                                       line-reversed-start)])
-                 (line/stitch line-reversed)
+                 (svg/stitch line-reversed)
                  (infinity/path :clockwise
                                 [:left :left]
                                 [(v/+ second-left
@@ -278,13 +279,13 @@
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)
-        [fimbriation-elements-top fimbriation-outlines-top] (line/render-fimbriation
+        [fimbriation-elements-top fimbriation-outlines-top] (fimbriation/render
                                                              [first-left :left]
                                                              [first-right :right]
                                                              [line-one-data]
                                                              (:fimbriation line)
                                                              render-options)
-        [fimbriation-elements-bottom fimbriation-outlines-bottom] (line/render-fimbriation
+        [fimbriation-elements-bottom fimbriation-outlines-bottom] (fimbriation/render
                                                                    [second-right :right]
                                                                    [second-left :left]
                                                                    [line-reversed-data]
@@ -301,10 +302,10 @@
         [:g division/outline-style
          [:path {:d (svg/make-path
                      ["M" (v/+ first-left line-one-start)
-                      (line/stitch line-one)])}]
+                      (svg/stitch line-one)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ second-right line-reversed-start)
-                      (line/stitch line-reversed)])}]
+                      (svg/stitch line-reversed)])}]
          fimbriation-outlines-top
          fimbriation-outlines-bottom])
       environment ordinary context]]))
@@ -338,7 +339,7 @@
                                               :render-options render-options)
         parts [[["M" (v/+ row-right
                           line-reversed-start)
-                 (line/stitch line-reversed)
+                 (svg/stitch line-reversed)
                  (infinity/path :clockwise
                                 [:left :right]
                                 [(v/+ row-left
@@ -351,7 +352,7 @@
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)
-        [fimbriation-elements fimbriation-outlines] (line/render-fimbriation
+        [fimbriation-elements fimbriation-outlines] (fimbriation/render
                                                      [row-right :right]
                                                      [row-left :left]
                                                      [line-reversed-data]
@@ -368,7 +369,7 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ row-right
                                line-reversed-start)
-                      (line/stitch line-reversed)])}]
+                      (svg/stitch line-reversed)])}]
          fimbriation-outlines])
       environment ordinary context]]))
 
@@ -399,7 +400,7 @@
                                          :render-options render-options)
         parts [[["M" (v/+ row-left
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:right :left]
                                 [(v/+ row-right
@@ -412,7 +413,7 @@
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)
-        [fimbriation-elements fimbriation-outlines] (line/render-fimbriation
+        [fimbriation-elements fimbriation-outlines] (fimbriation/render
                                                      [row-left :left]
                                                      [row-right :right]
                                                      [line-one-data]
@@ -429,7 +430,7 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ row-left
                                line-one-start)
-                      (line/stitch line-one)])}]
+                      (svg/stitch line-one)])}]
          fimbriation-outlines])
       environment ordinary context]]))
 
@@ -495,14 +496,14 @@
                                               :render-options render-options)
         parts [[["M" (v/+ first-left
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [(v/+ first-right
                                       line-one-start)
                                  (v/+ second-right
                                       line-reversed-start)])
-                 (line/stitch line-reversed)
+                 (svg/stitch line-reversed)
                  (infinity/path :clockwise
                                 [:left :left]
                                 [(v/+ second-left
@@ -515,13 +516,13 @@
         field (if counterchanged?
                 (charge/counterchange-field field parent)
                 field)
-        [fimbriation-elements-top fimbriation-outlines-top] (line/render-fimbriation
+        [fimbriation-elements-top fimbriation-outlines-top] (fimbriation/render
                                                              [first-left :left]
                                                              [first-right :right]
                                                              [line-one-data]
                                                              (:fimbriation line)
                                                              render-options)
-        [fimbriation-elements-bottom fimbriation-outlines-bottom] (line/render-fimbriation
+        [fimbriation-elements-bottom fimbriation-outlines-bottom] (fimbriation/render
                                                                    [second-right :right]
                                                                    [second-left :left]
                                                                    [line-reversed-data]
@@ -541,11 +542,11 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ first-left
                                line-one-start)
-                      (line/stitch line-one)])}]
+                      (svg/stitch line-one)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ second-right
                                line-reversed-start)
-                      (line/stitch line-reversed)])}]
+                      (svg/stitch line-reversed)])}]
          fimbriation-outlines-top
          fimbriation-outlines-bottom])
       environment ordinary (-> context
@@ -617,14 +618,14 @@
                                               :render-options render-options)
         parts [[["M" (v/+ first-left
                           line-one-start)
-                 (line/stitch line-one)
+                 (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [(v/+ first-right
                                       line-one-start)
                                  (v/+ second-right
                                       line-reversed-start)])
-                 (line/stitch line-reversed)
+                 (svg/stitch line-reversed)
                  (infinity/path :clockwise
                                 [:left :left]
                                 [(v/+ second-left
@@ -637,13 +638,13 @@
         field (if counterchanged?
                 (charge/counterchange-field field parent)
                 field)
-        [fimbriation-elements-top fimbriation-outlines-top] (line/render-fimbriation
+        [fimbriation-elements-top fimbriation-outlines-top] (fimbriation/render
                                                              [first-left :left]
                                                              [first-right :right]
                                                              [line-one-data]
                                                              (:fimbriation line)
                                                              render-options)
-        [fimbriation-elements-bottom fimbriation-outlines-bottom] (line/render-fimbriation
+        [fimbriation-elements-bottom fimbriation-outlines-bottom] (fimbriation/render
                                                                    [second-right :right]
                                                                    [second-left :left]
                                                                    [line-reversed-data]
@@ -663,11 +664,11 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ first-left
                                line-one-start)
-                      (line/stitch line-one)])}]
+                      (svg/stitch line-one)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ second-right
                                line-reversed-start)
-                      (line/stitch line-reversed)])}]
+                      (svg/stitch line-reversed)])}]
          fimbriation-outlines-top
          fimbriation-outlines-bottom])
       environment ordinary (-> context
@@ -772,71 +773,71 @@
                                                    :render-options render-options)
         parts [[["M" (v/+ corner-top-left
                           line-pale-top-left-start)
-                 (line/stitch line-pale-top-left)
+                 (svg/stitch line-pale-top-left)
                  (infinity/path :clockwise
                                 [:top :top]
                                 [(v/+ pale-top-left
                                       line-pale-top-left-start)
                                  (v/+ pale-top-right
                                       line-pale-top-right-start)])
-                 (line/stitch line-pale-top-right)
+                 (svg/stitch line-pale-top-right)
                  "L" (v/+ corner-top-right
                           line-fess-top-right-start)
-                 (line/stitch line-fess-top-right)
+                 (svg/stitch line-fess-top-right)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [(v/+ fess-top-right
                                       line-fess-top-right-start)
                                  (v/+ fess-bottom-right
                                       line-fess-bottom-right-start)])
-                 (line/stitch line-fess-bottom-right)
+                 (svg/stitch line-fess-bottom-right)
                  "L" (v/+ corner-bottom-right
                           line-pale-bottom-right-start)
-                 (line/stitch line-pale-bottom-right)
+                 (svg/stitch line-pale-bottom-right)
                  (infinity/path :clockwise
                                 [:bottom :bottom]
                                 [(v/+ pale-bottom-right
                                       line-pale-bottom-right-start)
                                  (v/+ pale-bottom-left
                                       line-pale-bottom-left-start)])
-                 (line/stitch line-pale-bottom-left)
+                 (svg/stitch line-pale-bottom-left)
                  "L" (v/+ corner-bottom-left
                           line-fess-bottom-left-start)
-                 (line/stitch line-fess-bottom-left)
+                 (svg/stitch line-fess-bottom-left)
                  (infinity/path :clockwise
                                 [:left :left]
                                 [(v/+ fess-bottom-left
                                       line-fess-bottom-left-start)
                                  (v/+ fess-top-left
                                       line-fess-top-left-start)])
-                 (line/stitch line-fess-top-left)
+                 (svg/stitch line-fess-top-left)
                  "z"]
                 [top bottom left right]]]
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)
-        [fimbriation-elements-1 fimbriation-outlines-1] (line/render-fimbriation
+        [fimbriation-elements-1 fimbriation-outlines-1] (fimbriation/render
                                                          [fess-top-left :left]
                                                          [pale-top-left :top]
                                                          [line-fess-top-left-data
                                                           line-pale-top-left-data]
                                                          (:fimbriation line)
                                                          render-options)
-        [fimbriation-elements-2 fimbriation-outlines-2] (line/render-fimbriation
+        [fimbriation-elements-2 fimbriation-outlines-2] (fimbriation/render
                                                          [pale-top-right :top]
                                                          [fess-top-right :right]
                                                          [line-pale-top-right-data
                                                           line-fess-top-right-data]
                                                          (:fimbriation line)
                                                          render-options)
-        [fimbriation-elements-3 fimbriation-outlines-3] (line/render-fimbriation
+        [fimbriation-elements-3 fimbriation-outlines-3] (fimbriation/render
                                                          [fess-bottom-right :right]
                                                          [pale-bottom-right :bottom]
                                                          [line-fess-bottom-right-data
                                                           line-pale-bottom-right-data]
                                                          (:fimbriation line)
                                                          render-options)
-        [fimbriation-elements-4 fimbriation-outlines-4] (line/render-fimbriation
+        [fimbriation-elements-4 fimbriation-outlines-4] (fimbriation/render
                                                          [pale-bottom-left :bottom]
                                                          [fess-bottom-left :left]
                                                          [line-pale-bottom-left-data
@@ -857,35 +858,35 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-top-left
                                line-pale-top-left-start)
-                      (line/stitch line-pale-top-left)])}]
+                      (svg/stitch line-pale-top-left)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ pale-top-right
                                line-pale-top-right-start)
-                      (line/stitch line-pale-top-right)])}]
+                      (svg/stitch line-pale-top-right)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-top-right
                                line-fess-top-right-start)
-                      (line/stitch line-fess-top-right)])}]
+                      (svg/stitch line-fess-top-right)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ fess-bottom-right
                                line-fess-bottom-right-start)
-                      (line/stitch line-fess-bottom-right)])}]
+                      (svg/stitch line-fess-bottom-right)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-bottom-right
                                line-pale-bottom-right-start)
-                      (line/stitch line-pale-bottom-right)])}]
+                      (svg/stitch line-pale-bottom-right)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ pale-bottom-left
                                line-pale-bottom-left-start)
-                      (line/stitch line-pale-bottom-left)])}]
+                      (svg/stitch line-pale-bottom-left)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-bottom-left
                                line-fess-bottom-left-start)
-                      (line/stitch line-fess-bottom-left)])}]
+                      (svg/stitch line-fess-bottom-left)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ fess-top-left
                                line-fess-top-left-start)
-                      (line/stitch line-fess-top-left)])}]
+                      (svg/stitch line-fess-top-left)])}]
          fimbriation-outlines-1
          fimbriation-outlines-2
          fimbriation-outlines-3
@@ -1006,71 +1007,71 @@
                                                        :render-options render-options)
         parts [[["M" (v/+ corner-left
                           line-top-left-lower-start)
-                 (line/stitch line-top-left-lower)
+                 (svg/stitch line-top-left-lower)
                  (infinity/path :clockwise
                                 [:left :left]
                                 [(v/+ top-left-lower
                                       line-top-left-lower-start)
                                  (v/+ top-left-upper
                                       line-top-left-upper-start)])
-                 (line/stitch line-top-left-upper)
+                 (svg/stitch line-top-left-upper)
                  "L" (v/+ corner-top
                           line-top-right-upper-start)
-                 (line/stitch line-top-right-upper)
+                 (svg/stitch line-top-right-upper)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [(v/+ top-right-upper
                                       line-top-right-upper-start)
                                  (v/+ top-right-lower
                                       line-top-right-lower-start)])
-                 (line/stitch line-top-right-lower)
+                 (svg/stitch line-top-right-lower)
                  "L" (v/+ corner-right
                           line-bottom-right-upper-start)
-                 (line/stitch line-bottom-right-upper)
+                 (svg/stitch line-bottom-right-upper)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [(v/+ bottom-right-upper
                                       line-bottom-right-upper-start)
                                  (v/+ bottom-right-lower
                                       line-bottom-right-lower-start)])
-                 (line/stitch line-bottom-right-lower)
+                 (svg/stitch line-bottom-right-lower)
                  "L" (v/+ corner-bottom
                           line-bottom-left-lower-start)
-                 (line/stitch line-bottom-left-lower)
+                 (svg/stitch line-bottom-left-lower)
                  (infinity/path :clockwise
                                 [:left :left]
                                 [(v/+ bottom-left-lower
                                       line-bottom-left-lower)
                                  (v/+ bottom-left-upper
                                       line-bottom-left-upper-start)])
-                 (line/stitch line-bottom-left-upper)
+                 (svg/stitch line-bottom-left-upper)
                  "z"]
                 [top bottom left right]]]
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)
-        [fimbriation-elements-1 fimbriation-outlines-1] (line/render-fimbriation
+        [fimbriation-elements-1 fimbriation-outlines-1] (fimbriation/render
                                                          [top-left-upper :left]
                                                          [top-right-upper :right]
                                                          [line-top-left-upper-data
                                                           line-top-right-upper-data]
                                                          (:fimbriation line)
                                                          render-options)
-        [fimbriation-elements-2 fimbriation-outlines-2] (line/render-fimbriation
+        [fimbriation-elements-2 fimbriation-outlines-2] (fimbriation/render
                                                          [top-right-lower :right]
                                                          [bottom-right-upper :right]
                                                          [line-top-right-lower-data
                                                           line-bottom-right-upper-data]
                                                          (:fimbriation line)
                                                          render-options)
-        [fimbriation-elements-3 fimbriation-outlines-3] (line/render-fimbriation
+        [fimbriation-elements-3 fimbriation-outlines-3] (fimbriation/render
                                                          [bottom-right-lower :right]
                                                          [bottom-left-lower :left]
                                                          [line-bottom-right-lower-data
                                                           line-bottom-left-lower-data]
                                                          (:fimbriation line)
                                                          render-options)
-        [fimbriation-elements-4 fimbriation-outlines-4] (line/render-fimbriation
+        [fimbriation-elements-4 fimbriation-outlines-4] (fimbriation/render
                                                          [bottom-left-upper :left]
                                                          [top-left-lower :left]
                                                          [line-bottom-left-upper-data
@@ -1092,35 +1093,35 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-left
                                line-top-left-lower-start)
-                      (line/stitch line-top-left-lower)])}]
+                      (svg/stitch line-top-left-lower)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ top-left-upper
                                line-top-left-upper-start)
-                      (line/stitch line-top-left-upper)])}]
+                      (svg/stitch line-top-left-upper)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-top
                                line-top-right-upper-start)
-                      (line/stitch line-top-right-upper)])}]
+                      (svg/stitch line-top-right-upper)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ top-right-lower
                                line-top-right-lower-start)
-                      (line/stitch line-top-right-lower)])}]
+                      (svg/stitch line-top-right-lower)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-right
                                line-bottom-right-upper-start)
-                      (line/stitch line-bottom-right-upper)])}]
+                      (svg/stitch line-bottom-right-upper)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ bottom-right-lower
                                line-bottom-right-lower-start)
-                      (line/stitch line-bottom-right-lower)])}]
+                      (svg/stitch line-bottom-right-lower)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-bottom
                                line-bottom-left-lower-start)
-                      (line/stitch line-bottom-left-lower)])}]
+                      (svg/stitch line-bottom-left-lower)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ bottom-left-upper
                                line-bottom-left-upper-start)
-                      (line/stitch line-bottom-left-upper)])}]
+                      (svg/stitch line-bottom-left-upper)])}]
          fimbriation-outlines-1
          fimbriation-outlines-2
          fimbriation-outlines-3
@@ -1197,37 +1198,37 @@
                                                 :joint-angle (- joint-angle))
         parts [[["M" (v/+ corner-upper
                           line-right-upper-start)
-                 (line/stitch line-right-upper)
+                 (svg/stitch line-right-upper)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [(v/+ right-upper
                                       line-right-upper-start)
                                  (v/+ right-lower
                                       line-right-lower-start)])
-                 (line/stitch line-right-lower)
+                 (svg/stitch line-right-lower)
                  "L" (v/+ corner-lower
                           line-left-lower-start)
-                 (line/stitch line-left-lower)
+                 (svg/stitch line-left-lower)
                  (infinity/path :clockwise
                                 [:left :left]
                                 [(v/+ left-lower
                                       line-left-lower-start)
                                  (v/+ left-upper
                                       line-left-upper-start)])
-                 (line/stitch line-left-upper)
+                 (svg/stitch line-left-upper)
                  "z"]
                 [top bottom left right]]]
         field (if (charge/counterchangable? field parent)
                 (charge/counterchange-field field parent)
                 field)
-        [fimbriation-elements-upper fimbriation-outlines-upper] (line/render-fimbriation
+        [fimbriation-elements-upper fimbriation-outlines-upper] (fimbriation/render
                                                                  [left-upper :left]
                                                                  [right-upper :right]
                                                                  [line-left-upper-data
                                                                   line-right-upper-data]
                                                                  (:fimbriation line)
                                                                  render-options)
-        [fimbriation-elements-lower fimbriation-outlines-lower] (line/render-fimbriation
+        [fimbriation-elements-lower fimbriation-outlines-lower] (fimbriation/render
                                                                  [right-lower :bottom]
                                                                  [left-lower :bottom]
                                                                  [line-right-lower-data
@@ -1246,19 +1247,19 @@
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-upper
                                line-right-upper-start)
-                      (line/stitch line-right-upper)])}]
+                      (svg/stitch line-right-upper)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ right-lower
                                line-right-lower-start)
-                      (line/stitch line-right-lower)])}]
+                      (svg/stitch line-right-lower)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ corner-lower
                                line-left-lower-start)
-                      (line/stitch line-left-lower)])}]
+                      (svg/stitch line-left-lower)])}]
          [:path {:d (svg/make-path
                      ["M" (v/+ left-upper
                                line-left-upper-start)
-                      (line/stitch line-left-upper)])}]
+                      (svg/stitch line-left-upper)])}]
          fimbriation-outlines-upper
          fimbriation-outlines-lower])
       environment ordinary context]]))
