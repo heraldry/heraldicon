@@ -16,6 +16,7 @@
             [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.escutcheon :as escutcheon]
+            [heraldry.frontend.form.geometry :as geometry]
             [heraldry.frontend.form.position :as position]
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.form.state]
@@ -59,49 +60,6 @@
   [element/component db-path :coat-of-arms "Coat of Arms" nil
    [escutcheon/form (conj db-path :escutcheon) "Default Escutcheon" :label-width "11em"]
    [form-for-field (conj db-path :field)]])
-
-(defn form-for-geometry [path options & {:keys [current]}]
-  (let [changes (filter some? [(when (and (:size current)
-                                          (:size options)) "resized")
-                               (when (and (:stretch current)
-                                          (:stretch options)) "stretched")
-                               (when (and (:rotation current)
-                                          (:rotation options)) "rotated")
-                               (when (and (:mirrored? current)
-                                          (:mirrored? options)) "mirrored")
-                               (when (and (:reversed? current)
-                                          (:reversed? options)) "reversed")])
-        current-display (-> (if (-> changes count (> 0))
-                              (util/combine ", " changes)
-                              "default")
-                            util/upper-case-first)]
-    [:div.setting
-     [:label "Geometry"]
-     " "
-     [element/submenu path "Geometry" current-display {}
-      [:div.settings
-       (when (:size options)
-         [element/range-input-with-checkbox (conj path :size) "Size"
-          (-> options :size :min)
-          (-> options :size :max)
-          :default (options/get-value (:size current) (:size options))
-          :display-function #(str % "%")])
-       (when (:stretch options)
-         [element/range-input-with-checkbox (conj path :stretch) "Stretch"
-          (-> options :stretch :min)
-          (-> options :stretch :max)
-          :step 0.01
-          :default (options/get-value (:stretch current) (:stretch options))])
-       (when (:rotation options)
-         [element/range-input-with-checkbox (conj path :rotation) "Rotation"
-          (-> options :rotation :min)
-          (-> options :rotation :max)
-          :step 5
-          :default (options/get-value (:rotation current) (:rotation options))])
-       (when (:mirrored? options)
-         [element/checkbox (conj path :mirrored?) "Mirrored"])
-       (when (:reversed? options)
-         [element/checkbox (conj path :reversed?) "Reversed"])]]]))
 
 (defn charge-type-choice [path key display-name & {:keys [current]}]
   (let [{:keys [result]} (render/coat-of-arms
@@ -552,7 +510,7 @@
             :title "Position"
             :options (:position charge-options)])
          (when (:geometry charge-options)
-           [form-for-geometry (conj path :geometry)
+           [geometry/form (conj path :geometry)
             (:geometry charge-options)
             :current (:geometry charge)])
          (when (:escutcheon charge-options)
@@ -856,7 +814,7 @@
             :title "Origin"
             :options (:origin ordinary-options)])
          (when (:geometry ordinary-options)
-           [form-for-geometry (conj path :geometry)
+           [geometry/form (conj path :geometry)
             (:geometry ordinary-options)
             :current (:geometry ordinary)])])
       [element/checkbox (conj path :hints :outline?) "Outline"]]
