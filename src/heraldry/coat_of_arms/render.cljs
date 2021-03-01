@@ -1,10 +1,10 @@
 (ns heraldry.coat-of-arms.render
-  (:require [heraldry.coat-of-arms.division.core :as division]
-            [heraldry.coat-of-arms.escutcheon :as escutcheon]
+  (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field :as field]
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
+            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture :as tincture]
@@ -103,5 +103,5 @@
                                                      (update :db-path conj :field)
                                                      (assoc :root-escutcheon escutcheon))]]]]
               (when (:outline? render-options)
-                [:g division/outline-style
+                [:g outline/style
                  [:path {:d (:shape environment)}]])]}))
