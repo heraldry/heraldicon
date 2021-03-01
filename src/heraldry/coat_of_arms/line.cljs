@@ -13,51 +13,13 @@
 
 (declare options)
 
-(defn line-with-offset [length offset pattern-width pattern {:keys [reversed?]}]
-  (let [offset-length (* offset pattern-width)
-        repetitions   (-> length
-                          (- offset-length)
-                          (/ pattern-width)
-                          Math/ceil
-                          int
-                          inc)
-        actual-length (-> (* repetitions pattern-width)
-                          (cond->
-                              (pos? offset-length) (+ offset-length)))
-        line-start    (v/v (min 0 offset-length) 0)
-        line-end      (-> (v/v actual-length 0)
-                          (cond->
-                              (neg? offset-length) (v/+ (v/v offset-length 0)))
-                          (v/- (v/v length 0)))]
-    {:line       (-> []
-                     (cond->
-                         (and (not reversed?)
-                              (pos? offset-length)) (into [["l" offset-length 0]]))
-                     (into (repeat repetitions pattern))
-                     (cond->
-                         (and reversed?
-                              (pos? offset-length)) (into [["l" offset-length 0]]))
-                     (->> (apply merge))
-                     vec)
-     :offset     (min 0 offset-length)
-     :length     (-> (* repetitions pattern-width)
-                     (+ (* offset-length 2)))
-     :line-start (if reversed?
-                   (v/- (v/v 0 0)
-                        line-end)
-                   line-start)
-     :line-end   (if reversed?
-                   (v/- (v/v 0 0)
-                        line-start)
-                   line-end)}))
-
-(defn line-with-offset2 [{fimbriation   :fimbriation
-                          pattern-width :width
-                          line-offset   :offset
-                          :as           line}
-                         length line-function {:keys [reversed?
-                                                      joint-angle]
-                                               :as   line-options}]
+(defn line-with-offset [{fimbriation   :fimbriation
+                         pattern-width :width
+                         line-offset   :offset
+                         :as           line}
+                        length line-function {:keys [reversed?
+                                                     joint-angle]
+                                              :as   line-options}]
   (let [{fimbriation-mode        :mode
          fimbriation-alignment   :alignment
          fimbriation-thickness-1 :thickness-1
@@ -645,7 +607,7 @@
         line-options-values    (options/sanitize line (options line))
         line-data              (if (= line-function #'straight)
                                  (line-function line length line-options)
-                                 (line-with-offset2
+                                 (line-with-offset
                                   line-options-values
                                   length
                                   line-function
