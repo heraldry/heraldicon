@@ -10,6 +10,7 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
+            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture :as tincture]
@@ -184,7 +185,7 @@
        (update-in path #(deep-merge-with (fn [_current-value new-value]
                                            new-value)
                                          %
-                                         (options/sanitize-or-nil % (ordinary/options %)))))))
+                                         (options/sanitize-or-nil % (ordinary-options/options %)))))))
 (rf/reg-event-db
  :set-charge-type
  (fn [db [_ path new-type]]
@@ -1490,7 +1491,7 @@
      path :ordinary (-> ordinary :type util/translate-cap-first) nil
      [:div.settings
       [form-for-ordinary-type path]
-      (let [ordinary-options (ordinary/options ordinary)]
+      (let [ordinary-options (ordinary-options/options ordinary)]
         [:<>
          (when (:escutcheon ordinary-options)
            [form-for-escutcheon (conj path :escutcheon)])
