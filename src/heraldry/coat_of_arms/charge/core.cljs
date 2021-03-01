@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.charge
+(ns heraldry.coat-of-arms.charge.core
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
             [clojure.walk :as walk]

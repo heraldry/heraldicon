@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.field
-  (:require [heraldry.coat-of-arms.charge :as charge]
+  (:require [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.coat-of-arms.tincture.core :as tincture]))
