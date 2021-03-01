@@ -257,10 +257,8 @@
                      :on-change on-change
                      :type "text"}]])]
         [form/select (conj form-db-path :attitude) "Attitude" attributes/attitude-choices
-         :grouped? true
          :label-style {:width "6em"}]
         [form/select (conj form-db-path :facing) "Facing" attributes/facing-choices
-         :grouped? true
          :label-style {:width "6em"}]
         [:div.pure-control-group
          [:h4 {:style {:margin-top "1em"
@@ -296,7 +294,6 @@
                 [:h3 {:style {:text-align "center"}} k]
                 [:i]]]
               attributes/tincture-modifier-for-charge-choices
-              :grouped? true
               :label-style {:width "1.5em"
                             :margin-right "0.5em"}
               :style {:display "inline-block"
@@ -306,7 +303,6 @@
           "Preview original (don't replace colours)" :style {:margin-right "0.5em"
                                                              :width "20em"}]]
         [form/select (conj form-db-path :fixed-tincture) "Fixed tincture" tincture/fixed-tincture-choices
-         :grouped? true
          :label-style {:width "6em"}]]
        (when form-message
          [:div.form-message form-message])
