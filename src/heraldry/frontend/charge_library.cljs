@@ -13,6 +13,7 @@
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
+            [heraldry.frontend.form.attribution :as attribution]
             [heraldry.frontend.form.charge-map :as charge-map-component]
             [heraldry.frontend.form.component :as component]
             [heraldry.frontend.form.core :as form]
@@ -216,7 +217,7 @@
       [preview]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
                                :width       "45%"}}
-      [component/form-attribution (conj form-db-path :attribution)]
+      [attribution/form (conj form-db-path :attribution)]
       [:form.pure-form.pure-form-aligned
        {:style        {:display "inline-block"}
         :on-key-press (fn [event]
