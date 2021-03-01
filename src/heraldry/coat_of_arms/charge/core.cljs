@@ -1,11 +1,11 @@
 (ns heraldry.coat-of-arms.charge.core
   (:require ["svgpath" :as svgpath]
             [clojure.walk :as walk]
+            [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field-environment :as field-environment]
-            [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
@@ -68,45 +68,9 @@
                              "#fff"))))]
     [mask-id mask mask-inverted-id mask-inverted]))
 
-(def default-options
-  {:position position/default-options
-   :geometry geometry/default-options
-   :escutcheon {:type :choice
-                :choices (concat [["Root" :none]]
-                                 escutcheon/choices)
-                :default :none}})
-
-(defn options [charge]
-  (when charge
-    (let [type (:type charge)]
-      (->
-       default-options
-       (options/merge
-        (->
-         (get {:escutcheon {:geometry {:size {:default 30}
-                                       :mirrored? nil}}
-               :roundel {:geometry {:mirrored? nil
-                                    :reversed? nil}}
-               :annulet {:geometry {:mirrored? nil
-                                    :reversed? nil}}
-               :billet {:geometry {:mirrored? nil
-                                   :reversed? nil}}
-               :lozenge {:geometry {:mirrored? nil
-                                    :reversed? nil}}
-               :fusil {:geometry {:mirrored? nil
-                                  :reversed? nil}}
-               :mascle {:geometry {:mirrored? nil
-                                   :reversed? nil}}
-               :rustre {:geometry {:mirrored? nil
-                                   :reversed? nil}}
-               :crescent {:geometry {:mirrored? nil}}}
-              type)
-         (cond->
-          (not= type :escutcheon) (assoc :escutcheon nil))))))))
-
 (defn make-charge
   [{:keys [field hints] :as charge} parent environment {:keys [render-options] :as context} arg function]
-  (let [{:keys [position geometry]} (options/sanitize charge (options charge))
+  (let [{:keys [position geometry]} (options/sanitize charge (charge-options/options charge))
         {:keys [size stretch rotation
                 mirrored? reversed?]} geometry
         position-point (position/calculate position environment :fess)
@@ -181,7 +145,7 @@
 (defn escutcheon
   {:display-name "Escutcheon"}
   [charge parent environment {:keys [root-escutcheon] :as context}]
-  (let [{:keys [escutcheon]} (options/sanitize charge (options charge))]
+  (let [{:keys [escutcheon]} (options/sanitize charge (charge-options/options charge))]
     (make-charge charge parent environment context
                  :width
                  (fn [width]
@@ -405,7 +369,7 @@
                                    svg-export?]
                             :as context}]
   (if-let [full-charge-data (or data (load-charge-data variant))]
-    (let [{:keys [position geometry]} (options/sanitize charge (options charge))
+    (let [{:keys [position geometry]} (options/sanitize charge (charge-options/options charge))
           {:keys [size stretch
                   mirrored? reversed?
                   rotation]} geometry
