@@ -172,7 +172,7 @@
                                                                  (svgpath)
                                                                  (.rotate rotation)
                                                                  (.toString)))
-                                          (line/translate (:x position-point) (:y position-point)))
+                                          (svg/translate (:x position-point) (:y position-point)))
         mask-shape                    (when mask
                                         (-> mask
                                             svg/make-path
@@ -186,7 +186,7 @@
                                                                    (svgpath)
                                                                    (.rotate rotation)
                                                                    (.toString)))
-                                            (line/translate (:x position-point) (:y position-point))))
+                                            (svg/translate (:x position-point) (:y position-point))))
         [min-x max-x min-y max-y]     (svg/rotated-bounding-box (v//
                                                                  (v/v charge-width
                                                                       charge-height)
@@ -231,9 +231,9 @@
                                                        root-escutcheon
                                                        escutcheon)) width)
                          env-fess (-> env :points :fess)]
-                     {:shape         (line/translate (:shape env)
-                                                     (-> env-fess :x -)
-                                                     (-> env-fess :y -))
+                     {:shape         (svg/translate (:shape env)
+                                                    (-> env-fess :x -)
+                                                    (-> env-fess :y -))
                       :charge-width  width
                       :charge-height width})))))
 
