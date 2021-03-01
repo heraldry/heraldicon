@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.ordinary
   (:require [heraldry.coat-of-arms.charge :as charge]
+            [heraldry.coat-of-arms.angle :as angle]
             [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.geometry :as geometry]
@@ -451,11 +452,11 @@
         band-height (-> height
                         (* size)
                         (/ 100))
-        direction (division/direction diagonal-mode points origin-point)
+        direction (angle/direction diagonal-mode points origin-point)
         direction-orthogonal (v/v (-> direction :y) (-> direction :x -))
         diagonal-start (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
         diagonal-end (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
-        angle (division/angle-to-point diagonal-start diagonal-end)
+        angle (angle/angle-to-point diagonal-start diagonal-end)
         required-half-length (v/distance-point-to-line top-left origin-point (v/+ origin-point direction-orthogonal))
         bend-length (* required-half-length 2)
         line-length (-> diagonal-end
@@ -573,11 +574,11 @@
         band-height (-> height
                         (* size)
                         (/ 100))
-        direction (division/direction diagonal-mode points origin-point)
+        direction (angle/direction diagonal-mode points origin-point)
         direction-orthogonal (v/v (-> direction :y) (-> direction :x))
         diagonal-start (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
         diagonal-end (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
-        angle (division/angle-to-point diagonal-start diagonal-end)
+        angle (angle/angle-to-point diagonal-start diagonal-end)
         required-half-length (v/distance-point-to-line top-right origin-point (v/+ origin-point direction-orthogonal))
         bend-length (* required-half-length 2)
         line-length (-> diagonal-end
@@ -911,7 +912,7 @@
         band-width (-> width
                        (* size)
                        (/ 100))
-        direction (division/direction diagonal-mode points origin-point)
+        direction (angle/direction diagonal-mode points origin-point)
         arm-length (-> direction
                        v/abs
                        (->> (/ height)))
@@ -919,10 +920,10 @@
         diagonal-top-right (v/+ origin-point (v/* (v/dot direction (v/v 1 -1)) arm-length))
         diagonal-bottom-left (v/+ origin-point (v/* (v/dot direction (v/v -1 1)) arm-length))
         diagonal-bottom-right (v/+ origin-point (v/* (v/dot direction (v/v 1 1)) arm-length))
-        angle-top-left (division/angle-to-point origin-point diagonal-top-left)
-        angle-top-right (division/angle-to-point origin-point diagonal-top-right)
-        angle-bottom-left (division/angle-to-point origin-point diagonal-bottom-left)
-        angle-bottom-right (division/angle-to-point origin-point diagonal-bottom-right)
+        angle-top-left (angle/angle-to-point origin-point diagonal-top-left)
+        angle-top-right (angle/angle-to-point origin-point diagonal-top-right)
+        angle-bottom-left (angle/angle-to-point origin-point diagonal-bottom-left)
+        angle-bottom-right (angle/angle-to-point origin-point diagonal-bottom-right)
         angle (-> angle-bottom-right (* Math/PI) (/ 180))
         joint-angle-horizontal (+ 360 (- angle-top-left angle-bottom-left))
         joint-angle-vertical (- angle-top-right angle-top-left)
@@ -1146,11 +1147,11 @@
         band-width (-> height
                        (* size)
                        (/ 100))
-        direction (division/direction diagonal-mode points origin-point)
+        direction (angle/direction diagonal-mode points origin-point)
         diagonal-left (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
         diagonal-right (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
-        angle-left (division/angle-to-point origin-point diagonal-left)
-        angle-right (division/angle-to-point origin-point diagonal-right)
+        angle-left (angle/angle-to-point origin-point diagonal-left)
+        angle-right (angle/angle-to-point origin-point diagonal-right)
         angle (-> angle-right (* Math/PI) (/ 180))
         joint-angle (- angle-left angle-right)
         dy (/ band-width 2 (Math/cos angle))
