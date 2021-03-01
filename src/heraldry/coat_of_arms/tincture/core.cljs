@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.tincture
+(ns heraldry.coat-of-arms.tincture.core
   (:require [heraldry.coat-of-arms.hatching :as hatching]
             [heraldry.util :as util]))
 

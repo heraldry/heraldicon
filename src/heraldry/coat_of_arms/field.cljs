@@ -2,7 +2,7 @@
   (:require [heraldry.coat-of-arms.charge :as charge]
             [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
-            [heraldry.coat-of-arms.tincture :as tincture]))
+            [heraldry.coat-of-arms.tincture.core :as tincture]))
 
 (defn render [{:keys [division components] :as field} environment
               {:keys [db-path render-options fn-component-selected? fn-select-component svg-export?] :as context}]

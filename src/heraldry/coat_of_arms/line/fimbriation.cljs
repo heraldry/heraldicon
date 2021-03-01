@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.line.fimbriation
   (:require [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.tincture :as tincture]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 

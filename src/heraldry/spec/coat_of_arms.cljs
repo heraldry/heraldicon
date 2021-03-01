@@ -7,7 +7,7 @@
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.texture :as texture]
-            [heraldry.coat-of-arms.tincture :as tincture]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.spec.core :as core]))
 
 (s/def :heraldry/tincture #(or (= % :none)

@@ -7,7 +7,7 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.texture :as texture]
-            [heraldry.coat-of-arms.tincture :as tincture]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.util :as util]))
 
 (defn coat-of-arms [coat-of-arms width {:keys [render-options svg-export? metadata] :as context}]
