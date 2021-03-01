@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.ordinary.type.base
-  (:require [heraldry.coat-of-arms.charge.core :as charge]
+  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -48,8 +48,8 @@
                                                        "z"]
                                                       [(v/+ row-left
                                                             line-one-start) bottom-right]]]
-        field                                       (if (charge/counterchangable? field parent)
-                                                      (charge/counterchange-field field parent)
+        field                                       (if (counterchange/counterchangable? field parent)
+                                                      (counterchange/counterchange-field field parent)
                                                       field)
         [fimbriation-elements fimbriation-outlines] (fimbriation/render
                                                      [row-left :left]

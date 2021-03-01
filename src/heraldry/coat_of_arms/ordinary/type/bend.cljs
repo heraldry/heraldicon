@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.ordinary.type.bend
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.charge.core :as charge]
+            [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -91,9 +91,9 @@
                                                                                           line-one-start)])
                                                                      "z"]
                                                                     [(v/v 0 row1) (v/v bend-length row2)]]]
-        counterchanged?                                           (charge/counterchangable? field parent)
+        counterchanged?                                           (counterchange/counterchangable? field parent)
         field                                                     (if counterchanged?
-                                                                    (charge/counterchange-field field parent)
+                                                                    (counterchange/counterchange-field field parent)
                                                                     field)
         [fimbriation-elements-top fimbriation-outlines-top]       (fimbriation/render
                                                                    [first-left :left]

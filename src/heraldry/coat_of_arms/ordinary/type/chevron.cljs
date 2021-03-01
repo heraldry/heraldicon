@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.ordinary.type.chevron
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.charge.core :as charge]
+            [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -103,8 +103,8 @@
                                                                    (svg/stitch line-left-upper)
                                                                    "z"]
                                                                   [top bottom left right]]]
-        field                                                   (if (charge/counterchangable? field parent)
-                                                                  (charge/counterchange-field field parent)
+        field                                                   (if (counterchange/counterchangable? field parent)
+                                                                  (counterchange/counterchange-field field parent)
                                                                   field)
         [fimbriation-elements-upper fimbriation-outlines-upper] (fimbriation/render
                                                                  [left-upper :left]
