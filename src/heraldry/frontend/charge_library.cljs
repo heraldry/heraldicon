@@ -102,42 +102,42 @@
          first
          hickory/as-hiccup
          (as-> parsed
-               (let [edn-data       (-> parsed
-                                        (assoc 0 :g)
-                                        (assoc 1 {}))
-                     width          (-> parsed
-                                        (get-in [1 :width])
-                                        parse-number-with-unit)
-                     height         (-> parsed
-                                        (get-in [1 :height])
-                                        parse-number-with-unit)
-                     [width height] (if (and width height)
-                                      [width height]
-                                      (-> parsed
-                                          (get-in [1 :viewbox])
-                                          parse-width-height-from-viewbox))
-                     [width height] (if (and width height)
-                                      [width height]
-                                      [100 100])
-                     colours        (into {}
-                                          (map (fn [c]
-                                                 [c :keep]) (find-colours
-                                                             edn-data)))]
-                 (let [existing-colours @(rf/subscribe [:get (conj db-path :colours)])
-                       new-colours      (merge colours
-                                               (select-keys existing-colours
-                                                            (set/intersection
-                                                             (-> colours
-                                                                 keys
-                                                                 set)
-                                                             (-> existing-colours
-                                                                 keys
-                                                                 set))))]
-                   (rf/dispatch [:set (conj db-path :colours) new-colours]))
-                 (rf/dispatch [:set (conj db-path :data) {:edn-data {:data   edn-data
-                                                                     :width  width
-                                                                     :height height}
-                                                          :svg-data data}]))))
+             (let [edn-data       (-> parsed
+                                      (assoc 0 :g)
+                                      (assoc 1 {}))
+                   width          (-> parsed
+                                      (get-in [1 :width])
+                                      parse-number-with-unit)
+                   height         (-> parsed
+                                      (get-in [1 :height])
+                                      parse-number-with-unit)
+                   [width height] (if (and width height)
+                                    [width height]
+                                    (-> parsed
+                                        (get-in [1 :viewbox])
+                                        parse-width-height-from-viewbox))
+                   [width height] (if (and width height)
+                                    [width height]
+                                    [100 100])
+                   colours        (into {}
+                                        (map (fn [c]
+                                               [c :keep]) (find-colours
+                                                           edn-data)))]
+               (let [existing-colours @(rf/subscribe [:get (conj db-path :colours)])
+                     new-colours      (merge colours
+                                             (select-keys existing-colours
+                                                          (set/intersection
+                                                           (-> colours
+                                                               keys
+                                                               set)
+                                                           (-> existing-colours
+                                                               keys
+                                                               set))))]
+                 (rf/dispatch [:set (conj db-path :colours) new-colours]))
+               (rf/dispatch [:set (conj db-path :data) {:edn-data {:data   edn-data
+                                                                   :width  width
+                                                                   :height height}
+                                                        :svg-data data}]))))
      (catch :default e
        (println "error:" e)))))
 
@@ -257,10 +257,8 @@
                      :on-change on-change
                      :type      "text"}]])]
         [form/select (conj form-db-path :attitude) "Attitude" attributes/attitude-choices
-         :grouped? true
          :label-style {:width "6em"}]
         [form/select (conj form-db-path :facing) "Facing" attributes/facing-choices
-         :grouped? true
          :label-style {:width "6em"}]
         [:div.pure-control-group
          [:h4 {:style {:margin-top    "1em"
@@ -296,7 +294,6 @@
                 [:h3 {:style {:text-align "center"}} k]
                 [:i]]]
               attributes/tincture-modifier-for-charge-choices
-              :grouped? true
               :label-style {:width        "1.5em"
                             :margin-right "0.5em"}
               :style {:display      "inline-block"
@@ -306,7 +303,6 @@
           "Preview original (don't replace colours)" :style {:margin-right "0.5em"
                                                              :width        "20em"}]]
         [form/select (conj form-db-path :fixed-tincture) "Fixed tincture" tincture/fixed-tincture-choices
-         :grouped? true
          :label-style {:width "6em"}]]
        (when form-message
          [:div.form-message form-message])

@@ -35,7 +35,7 @@
               :style     {:vertical-align "-1px"}}]
      (str " " label)]))
 
-(defn select [path label choices & {:keys [grouped? value on-change default label-extra style label-style]}]
+(defn select [path label choices & {:keys [value on-change default label-extra style label-style]}]
   (let [component-id  (util/id "select")
         current-value @(rf/subscribe [:get path])]
     [:div.pure-control-group {:style style}
@@ -50,18 +50,14 @@
                              (if on-change
                                (on-change checked)
                                (rf/dispatch [:set path checked])))}
-      (if grouped?
-        (for [[group-name & group-choices] choices]
-          (if (and (-> group-choices count (= 1))
-                   (-> group-choices first keyword?))
-            (let [key (-> group-choices first)]
-              ^{:key key}
-              [:option {:value (name key)} group-name])
-            ^{:key group-name}
-            [:optgroup {:label group-name}
-             (for [[display-name key] group-choices]
-               ^{:key key}
-               [:option {:value (name key)} display-name])]))
-        (for [[display-name key] choices]
-          ^{:key key}
-          [:option {:value (name key)} display-name]))]]))
+      (for [[group-name & group-choices] choices]
+        (if (and (-> group-choices count (= 1))
+                 (-> group-choices first keyword?))
+          (let [key (-> group-choices first)]
+            ^{:key key}
+            [:option {:value (name key)} group-name])
+          ^{:key group-name}
+          [:optgroup {:label group-name}
+           (for [[display-name key] group-choices]
+             ^{:key key}
+             [:option {:value (name key)} display-name])]))]]))
