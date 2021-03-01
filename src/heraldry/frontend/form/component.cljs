@@ -3,6 +3,7 @@
             [clojure.string :as s]
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.charge.core :as charge]
+            [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.division.options :as division-options]
@@ -194,7 +195,7 @@
        (update-in path #(deep-merge-with (fn [_current-value new-value]
                                            new-value)
                                          %
-                                         (options/sanitize-or-nil % (charge/options %)))))))
+                                         (options/sanitize-or-nil % (charge-options/options %)))))))
 
 (rf/reg-event-fx
  :add-component
@@ -1192,7 +1193,7 @@
                                         (conj path :tincture :eyes-and-teeth)
                                         (if % :argent nil)])])]
           [:div.spacer]]])
-      (let [charge-options (charge/options charge)]
+      (let [charge-options (charge-options/options charge)]
         [:<>
          (when (:position charge-options)
            [form-for-position (conj path :position)
