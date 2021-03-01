@@ -7,7 +7,6 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.division.options :as division-options]
-            [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
@@ -18,6 +17,7 @@
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.form.element :as element]
+            [heraldry.frontend.form.escutcheon :as escutcheon]
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.form.state]
             [heraldry.frontend.form.theme :as theme]
@@ -56,67 +56,12 @@
                       :margin-left "0.5em"
                       :width "calc(100% - 12px - 1.5em)"}}]]))
 
-(defn escutcheon-choice [path key display-name]
-  (let [value @(rf/subscribe [:get path])
-        {:keys [result]} (render/coat-of-arms
-                          (if (= key :none)
-                            {:escutcheon :rectangle
-                             :field {:component :field
-                                     :content {:tincture :void}}}
-                            {:escutcheon key
-                             :field {:component :field
-                                     :content {:tincture (if (= value key) :or :azure)}}})
-                          100
-                          (-> shared/coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
-    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
-     [:svg {:style {:width "4em"
-                    :height "5em"}
-            :viewBox "0 0 120 200"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g {:filter "url(#shadow)"}
-       [:g {:transform "translate(10,10)"}
-        result]]]
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} display-name]
-      [:i]]]))
-
-(defn form-for-escutcheon [path label & {:keys [label-width allow-none? choices]}]
-  (let [escutcheon (or @(rf/subscribe [:get path])
-                       (when allow-none?
-                         :none)
-                       (when choices
-                         (-> choices first second))
-                       :heater)
-        choices (or choices
-                    (if allow-none?
-                      (concat [["None" :none]]
-                              escutcheon/choices)
-                      escutcheon/choices))
-        names (->> choices
-                   (map (comp vec reverse))
-                   (into {}))]
-    [:div.setting
-     [:label label]
-     " "
-     (conj (if label-width
-             [:div {:style {:display "inline-block"
-                            :position "absolute"
-                            :left label-width}}]
-             [:<>])
-           [element/submenu path "Select Escutcheon" (get names escutcheon) {:min-width "17.5em"}
-            (for [[display-name key] choices]
-              ^{:key key}
-              [escutcheon-choice path key display-name])])
-     [:div.spacer]]))
-
 (defn form-render-options [db-path]
   [element/component db-path :render-options "Options" nil
    (let [mode-path (conj db-path :mode)
          outline-path (conj db-path :outline?)]
      [:<>
-      [form-for-escutcheon (conj db-path :escutcheon-override) "Escutcheon Override"
+      [escutcheon/form (conj db-path :escutcheon-override) "Escutcheon Override"
        :label-width "11em"
        :allow-none? true]
       [element/radio-select mode-path [["Colours" :colours]
@@ -141,7 +86,7 @@
 
 (defn form-for-coat-of-arms [db-path]
   [element/component db-path :coat-of-arms "Coat of Arms" nil
-   [form-for-escutcheon (conj db-path :escutcheon) "Default Escutcheon" :label-width "11em"]
+   [escutcheon/form (conj db-path :escutcheon) "Default Escutcheon" :label-width "11em"]
    [form-for-field (conj db-path :field)]])
 
 (defn tincture-choice [path key display-name]
@@ -720,7 +665,7 @@
             (:geometry charge-options)
             :current (:geometry charge)])
          (when (:escutcheon charge-options)
-           [form-for-escutcheon (conj path :escutcheon) "Escutcheon"
+           [escutcheon/form (conj path :escutcheon) "Escutcheon"
             :choices (-> charge-options :escutcheon :choices)])])
       [element/select (conj path :hints :outline-mode) "Outline" [["Keep" :keep]
                                                                   ["Remove" :remove]
@@ -1003,7 +948,7 @@
       (let [ordinary-options (ordinary-options/options ordinary)]
         [:<>
          (when (:escutcheon ordinary-options)
-           [form-for-escutcheon (conj path :escutcheon)])
+           [escutcheon/form (conj path :escutcheon)])
          (when (:line ordinary-options)
            [form-for-line (conj path :line) :options (:line ordinary-options)])
          (when (:opposite-line ordinary-options)
