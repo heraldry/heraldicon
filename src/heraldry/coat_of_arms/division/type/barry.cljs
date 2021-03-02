@@ -3,7 +3,6 @@
             [heraldry.coat-of-arms.division.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
@@ -31,59 +30,87 @@
         x1 (:x top-left)
         x2 (:x bottom-right)
         width (- x2 x1)
-        {line-right :line} (line/create line
-                                        width
-                                        :render-options render-options)
-        {line-left :line
-         line-left-length :length} (line/create line
+        {line-right :line
+         line-right-start :line-start
+         line-right-end :line-end} (line/create line
                                                 width
-                                                :angle 180
-                                                :flipped? true
-                                                :reversed? true
                                                 :render-options render-options)
-        line-left-origin (v/extend (v/v x1 0) (v/v x2 0) line-left-length)
+        {line-left :line
+         line-left-start :line-start
+         line-left-end :line-end} (line/create line
+                                               width
+                                               :angle 180
+                                               :flipped? true
+                                               :reversed? true
+                                               :render-options render-options)
         parts (->> (range num-fields-y)
                    (map (fn [i]
                           (let [y1 (+ y0 (* i bar-height))
                                 y2 (+ y1 bar-height)
-                                last-part? (-> i inc (= num-fields-y))]
+                                last-part? (-> i inc (= num-fields-y))
+                                line-one-left (v/v x1 y1)
+                                line-one-right (v/v x2 y1)
+                                line-two-left (v/v x1 y2)
+                                line-two-right (v/v x2 y2)]
                             [(cond
-                               (zero? i) ["M" [x1 y2]
+                               (zero? i) ["M" (v/+ line-two-left
+                                                   line-right-start)
                                           (svg/stitch line-right)
                                           (infinity/path :counter-clockwise
                                                          [:right :left]
-                                                         [(v/v x2 y2) (v/v x1 y2)])
+                                                         [(v/+ line-two-right
+                                                               line-right-end)
+                                                          (v/+ line-two-left
+                                                               line-right-start)])
                                           "z"]
-                               (even? i) (concat ["M" [(:x line-left-origin) y1]
+                               (even? i) (concat ["M" (v/+ line-one-right
+                                                           line-left-start)
                                                   (svg/stitch line-left)]
                                                  (cond
                                                    last-part? [(infinity/path :counter-clockwise
                                                                               [:left :right]
-                                                                              [(v/v x1 y1) (v/v x2 y1)])
+                                                                              [(v/+ line-one-left
+                                                                                    line-left-end)
+                                                                               (v/+ line-one-right
+                                                                                    line-left-start)])
                                                                "z"]
                                                    :else [(infinity/path :counter-clockwise
                                                                          [:left :left]
-                                                                         [(v/v x1 y1) (v/v x1 y2)])
-                                                          "L" [x1 y2]
+                                                                         [(v/+ line-one-left
+                                                                               line-left-end)
+                                                                          (v/+ line-two-left
+                                                                               line-right-start)])
                                                           (svg/stitch line-right)
                                                           (infinity/path :counter-clockwise
                                                                          [:right :right]
-                                                                         [(v/v x2 y2) (v/v x2 y1)])]))
-                               :else (concat ["M" [x1 y1]
+                                                                         [(v/+ line-two-right
+                                                                               line-right-end)
+                                                                          (v/+ line-one-right
+                                                                               line-left-start)])]))
+                               :else (concat ["M" (v/+ line-one-left
+                                                       line-right-start)
                                               (svg/stitch line-right)]
                                              (cond
                                                last-part? [(infinity/path :clockwise
                                                                           [:right :left]
-                                                                          [(v/v x2 y1) (v/v x1 y1)])
+                                                                          [(v/+ line-one-right
+                                                                                line-right-end)
+                                                                           (v/+ line-one-left
+                                                                                line-right-start)])
                                                            "z"]
                                                :else [(infinity/path :clockwise
                                                                      [:right :right]
-                                                                     [(v/v x2 y1) (v/v x2 y2)])
-                                                      "L" [(:x line-left-origin) y2]
+                                                                     [(v/+ line-one-right
+                                                                           line-right-end)
+                                                                      (v/+ line-two-right
+                                                                           line-left-start)])
                                                       (svg/stitch line-left)
                                                       (infinity/path :clockwise
                                                                      [:left :left]
-                                                                     [(v/v x1 y2) (v/v x1 y1)])
+                                                                     [(v/+ line-two-left
+                                                                           line-left-end)
+                                                                      (v/+ line-one-left
+                                                                           line-right-start)])
                                                       "z"])))
                              [(v/v x1 y1) (v/v x2 y2)]])))
                    vec)
@@ -92,11 +119,15 @@
                    range
                    (map (fn [i]
                           (let [y1 (+ y0 (* i bar-height))
-                                y2 (+ y1 bar-height)]
+                                y2 (+ y1 bar-height)
+                                line-two-left (v/v x1 y2)
+                                line-two-right (v/v x2 y2)]
                             (if (even? i)
-                              (svg/make-path ["M" [x1 y2]
+                              (svg/make-path ["M" (v/+ line-two-left
+                                                       line-right-start)
                                               (svg/stitch line-right)])
-                              (svg/make-path ["M" [(:x line-left-origin) y2]
+                              (svg/make-path ["M" (v/+ line-two-right
+                                                       line-left-start)
                                               (svg/stitch line-left)])))))
                    vec)
         overlap (-> edges
