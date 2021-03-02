@@ -21,6 +21,7 @@
 (defn line-with-offset [{fimbriation :fimbriation
                          pattern-width :width
                          line-offset :offset
+                         flipped? :flipped?
                          :as line}
                         length line-function {:keys [joint-angle]
                                               :as line-options}]
@@ -71,9 +72,15 @@
         fimbriation-1-fill-x (- max-x-offset fimbriation-1-offset-x)
         fimbriation-2-fill-x (- max-x-offset fimbriation-2-offset-x)
 
-        line-pattern (line-function line base-line line-options)
-        fimbriation-1-pattern (line-function line fimbriation-1-line line-options)
-        fimbriation-2-pattern (line-function line fimbriation-2-line line-options)
+        line-pattern (line-function line (if flipped?
+                                           (- base-line)
+                                           base-line) line-options)
+        fimbriation-1-pattern (line-function line (if flipped?
+                                                    (- fimbriation-1-line)
+                                                    fimbriation-1-line) line-options)
+        fimbriation-2-pattern (line-function line (if flipped?
+                                                    (- fimbriation-2-line)
+                                                    fimbriation-2-line) line-options)
         offset-length (* line-offset pattern-width)
         repetitions (-> length
                         (- offset-length)
