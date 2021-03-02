@@ -36,9 +36,10 @@
                               :preloads    [devtools.preload
                                             day8.re-frame-10x.preload]
                               :repl-pprint true}
-           :compiler-options {:closure-defines {re-frame.trace.trace-enabled?       true
-                                                re_frame.trace.trace_enabled_QMARK_ true}
-                              :warnings        {:redef false}}
+           :compiler-options {:closure-defines    {re-frame.trace.trace-enabled?       true
+                                                   re_frame.trace.trace_enabled_QMARK_ true}
+                              :output-feature-set :es6
+                              :warnings           {:redef false}}
            :build-hooks      [(shadow-env.core/hook)]}
 
           :backend
@@ -48,7 +49,8 @@
            :js-options       {:js-package-dirs ["./backend/node_modules"]}
            :output-to        "backend/generated/api.js"
            :devtools         {:repl-pprint true}
-           :compiler-options {:warnings {:redef false}}
+           :compiler-options {:warnings           {:redef false}
+                              :output-feature-set :es6}
            :build-hooks      [(shadow-env.core/hook)]}
 
           :test
