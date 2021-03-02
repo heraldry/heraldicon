@@ -93,17 +93,17 @@
      [division-shared/make-division
       :ordinary-pale [field] parts
       [:all]
-      (when (or (:outline? render-options)
-                (:outline? hints))
-        [:g outline/style
-         [:path {:d (svg/make-path
-                     ["M" (v/+ first-bottom
-                               line-one-start)
-                      (svg/stitch line-one)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ second-top
-                               line-reversed-start)
-                      (svg/stitch line-reversed)])}]
-         fimbriation-outlines-left
-         fimbriation-outlines-right])
-      environment ordinary context]]))
+      environment ordinary context]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g outline/style
+        [:path {:d (svg/make-path
+                    ["M" (v/+ first-bottom
+                              line-one-start)
+                     (svg/stitch line-one)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ second-top
+                              line-reversed-start)
+                     (svg/stitch line-reversed)])}]
+        fimbriation-outlines-left
+        fimbriation-outlines-right])]))

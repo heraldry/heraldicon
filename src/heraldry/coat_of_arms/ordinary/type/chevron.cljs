@@ -126,25 +126,25 @@
      [division-shared/make-division
       :ordinary-pale [field] parts
       [:all]
-      (when (or (:outline? render-options)
-                (:outline? hints))
-        [:g outline/style
-         [:path {:d (svg/make-path
-                     ["M" (v/+ corner-upper
-                               line-right-upper-start)
-                      (svg/stitch line-right-upper)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ right-lower
-                               line-right-lower-start)
-                      (svg/stitch line-right-lower)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ corner-lower
-                               line-left-lower-start)
-                      (svg/stitch line-left-lower)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ left-upper
-                               line-left-upper-start)
-                      (svg/stitch line-left-upper)])}]
-         fimbriation-outlines-upper
-         fimbriation-outlines-lower])
-      environment ordinary context]]))
+      environment ordinary context]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g outline/style
+        [:path {:d (svg/make-path
+                    ["M" (v/+ corner-upper
+                              line-right-upper-start)
+                     (svg/stitch line-right-upper)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ right-lower
+                              line-right-lower-start)
+                     (svg/stitch line-right-lower)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ corner-lower
+                              line-left-lower-start)
+                     (svg/stitch line-left-lower)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ left-upper
+                              line-left-upper-start)
+                     (svg/stitch line-left-upper)])}]
+        fimbriation-outlines-upper
+        fimbriation-outlines-lower])]))
