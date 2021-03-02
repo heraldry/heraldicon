@@ -53,12 +53,12 @@
                                 ["Ancien" :ancien]]
                       :default :default}
             :num-fields-x {:type :range
-                           :min 2
+                           :min 1
                            :max 20
                            :default 6
                            :integer? true}
             :num-fields-y {:type :range
-                           :min 2
+                           :min 1
                            :max 20
                            :default 6
                            :integer? true}
