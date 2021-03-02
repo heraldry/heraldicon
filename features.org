@@ -37,7 +37,7 @@ Here's a list of things already supported and things I'm working on.
 - [X] clickable components in the shield and the form, to make it easier to find
       them and understand the structure
 - [X] add furs - added ermine-based furs
-- [ ] add vair - might need to treat this as a paly division, because the number
+- [X] add vair - might need to treat this as a paly division, because the number
       of elements can be specified
 - [ ] add other field *treatments*, some of which might have configurable colours
 - [X] configure charge position and size
@@ -54,7 +54,7 @@ Here's a list of things already supported and things I'm working on.
 - [X] add options to offset line styles and adjust their eccentricity and
       pattern width
 - [ ] add *nowy* intersections
-- [ ] add *fimbriation*
+- [X] add *fimbriation*
 - [ ] add more ordinaries
 - [ ] add more charges
 - [ ] add more divisions
