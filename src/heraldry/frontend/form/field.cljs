@@ -51,6 +51,10 @@
      [:label title]
      " "
      [element/submenu layout-path title link-name {}
+      (when (-> options :variant)
+        [element/select (conj layout-path :variant) "Variant"
+         (-> options :variant :choices)
+         :default (-> options :variant :default)])
       (when (-> options :num-base-fields)
         [element/range-input-with-checkbox (conj layout-path :num-base-fields) "Base fields"
          (-> options :num-base-fields :min)
@@ -161,14 +165,15 @@
            [element/checkbox (conj path :division :hints :outline?) "Outline"])])]
      (cond
        (#{:chequy
-          :lozengy} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
-                                    [:ul
-                                     (let [tinctures @(rf/subscribe [:get (conj path :division :fields)])]
-                                       (for [idx (range (count tinctures))]
-                                         ^{:key idx}
-                                         [:li
-                                          [tincture/form (conj path :division :fields idx :content :tincture)
-                                           :label (str "Tincture " (inc idx))]]))]]
+          :lozengy
+          :vair} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
+                                 [:ul
+                                  (let [tinctures @(rf/subscribe [:get (conj path :division :fields)])]
+                                    (for [idx (range (count tinctures))]
+                                      ^{:key idx}
+                                      [:li
+                                       [tincture/form (conj path :division :fields idx :content :tincture)
+                                        :label (str "Tincture " (inc idx))]]))]]
        (not counterchanged?) [:div.parts.components
                               [:ul
                                (let [content @(rf/subscribe [:get (conj path :division :fields)])
