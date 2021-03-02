@@ -204,31 +204,33 @@
                  (v/+ bottom
                       line-bottom-start)]]]]
 
-    [shared/make-division
-     (shared/division-context-key type) fields parts
-     [:all
-      [(svg/make-path
-        ["M" origin-point
-         (svg/stitch line-top-right)])]
-      [(svg/make-path
-        ["M" (v/+ left
-                  line-left-start)
-         (svg/stitch line-left)])]
-      [(svg/make-path
-        ["M" (v/+ right
-                  line-right-start)
-         (svg/stitch line-right)])]
-      [(svg/make-path
-        ["M" origin-point
-         (svg/stitch line-bottom-left)])]
-      [(svg/make-path
-        ["M" origin-point
-         (svg/stitch line-bottom-right)])]
-      [(svg/make-path
-        ["M" (v/+ bottom
-                  line-bottom-start)
-         (svg/stitch line-bottom)])]
-      nil]
+    [:<>
+     [shared/make-division
+      (shared/division-context-key type) fields parts
+      [:all
+       [(svg/make-path
+         ["M" origin-point
+          (svg/stitch line-top-right)])]
+       [(svg/make-path
+         ["M" (v/+ left
+                   line-left-start)
+          (svg/stitch line-left)])]
+       [(svg/make-path
+         ["M" (v/+ right
+                   line-right-start)
+          (svg/stitch line-right)])]
+       [(svg/make-path
+         ["M" origin-point
+          (svg/stitch line-bottom-left)])]
+       [(svg/make-path
+         ["M" origin-point
+          (svg/stitch line-bottom-right)])]
+       [(svg/make-path
+         ["M" (v/+ bottom
+                   line-bottom-start)
+          (svg/stitch line-bottom)])]
+       nil]
+      environment division context]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline/style
@@ -259,5 +261,4 @@
         [:path {:d (svg/make-path
                     ["M" (v/+ left
                               line-left-start)
-                     (svg/stitch line-left)])}]])
-     environment division context]))
+                     (svg/stitch line-left)])}]])]))
