@@ -92,15 +92,15 @@
      [division-shared/make-division
       :ordinary-fess [field] parts
       [:all]
-      (when (or (:outline? render-options)
-                (:outline? hints))
-        [:g outline/style
-         [:path {:d (svg/make-path
-                     ["M" (v/+ first-left line-one-start)
-                      (svg/stitch line-one)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ second-right line-reversed-start)
-                      (svg/stitch line-reversed)])}]
-         fimbriation-outlines-top
-         fimbriation-outlines-bottom])
-      environment ordinary context]]))
+      environment ordinary context]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g outline/style
+        [:path {:d (svg/make-path
+                    ["M" (v/+ first-left line-one-start)
+                     (svg/stitch line-one)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ second-right line-reversed-start)
+                     (svg/stitch line-reversed)])}]
+        fimbriation-outlines-top
+        fimbriation-outlines-bottom])]))

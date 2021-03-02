@@ -64,12 +64,12 @@
      [division-shared/make-division
       :ordinary-chief [field] parts
       [:all]
-      (when (or (:outline? render-options)
-                (:outline? hints))
-        [:g outline/style
-         [:path {:d (svg/make-path
-                     ["M" (v/+ row-right
-                               line-reversed-start)
-                      (svg/stitch line-reversed)])}]
-         fimbriation-outlines])
-      environment ordinary context]]))
+      environment ordinary context]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g outline/style
+        [:path {:d (svg/make-path
+                    ["M" (v/+ row-right
+                              line-reversed-start)
+                     (svg/stitch line-reversed)])}]
+        fimbriation-outlines])]))

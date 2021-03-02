@@ -207,43 +207,43 @@
      [division-shared/make-division
       :ordinary-pale [field] parts
       [:all]
-      (when (or (:outline? render-options)
-                (:outline? hints))
-        [:g outline/style
-         [:path {:d (svg/make-path
-                     ["M" (v/+ corner-left
-                               line-top-left-lower-start)
-                      (svg/stitch line-top-left-lower)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ top-left-upper
-                               line-top-left-upper-start)
-                      (svg/stitch line-top-left-upper)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ corner-top
-                               line-top-right-upper-start)
-                      (svg/stitch line-top-right-upper)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ top-right-lower
-                               line-top-right-lower-start)
-                      (svg/stitch line-top-right-lower)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ corner-right
-                               line-bottom-right-upper-start)
-                      (svg/stitch line-bottom-right-upper)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ bottom-right-lower
-                               line-bottom-right-lower-start)
-                      (svg/stitch line-bottom-right-lower)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ corner-bottom
-                               line-bottom-left-lower-start)
-                      (svg/stitch line-bottom-left-lower)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ bottom-left-upper
-                               line-bottom-left-upper-start)
-                      (svg/stitch line-bottom-left-upper)])}]
-         fimbriation-outlines-1
-         fimbriation-outlines-2
-         fimbriation-outlines-3
-         fimbriation-outlines-4])
-      environment ordinary context]]))
+      environment ordinary context]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g outline/style
+        [:path {:d (svg/make-path
+                    ["M" (v/+ corner-left
+                              line-top-left-lower-start)
+                     (svg/stitch line-top-left-lower)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ top-left-upper
+                              line-top-left-upper-start)
+                     (svg/stitch line-top-left-upper)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ corner-top
+                              line-top-right-upper-start)
+                     (svg/stitch line-top-right-upper)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ top-right-lower
+                              line-top-right-lower-start)
+                     (svg/stitch line-top-right-lower)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ corner-right
+                              line-bottom-right-upper-start)
+                     (svg/stitch line-bottom-right-upper)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ bottom-right-lower
+                              line-bottom-right-lower-start)
+                     (svg/stitch line-bottom-right-lower)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ corner-bottom
+                              line-bottom-left-lower-start)
+                     (svg/stitch line-bottom-left-lower)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ bottom-left-upper
+                              line-bottom-left-upper-start)
+                     (svg/stitch line-bottom-left-upper)])}]
+        fimbriation-outlines-1
+        fimbriation-outlines-2
+        fimbriation-outlines-3
+        fimbriation-outlines-4])]))

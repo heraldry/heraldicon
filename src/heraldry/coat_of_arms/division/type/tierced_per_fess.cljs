@@ -89,14 +89,16 @@
                                              "z"]
                                             [(v/+ second-left
                                                   line-reversed-start) bottom-right]]]]
-    [shared/make-division
-     (shared/division-context-key type) fields parts
-     [:all
-      [(svg/make-path
-        ["M" (v/+ second-right
-                  line-reversed-start)
-         (svg/stitch line-reversed)])]
-      nil]
+    [:<>
+     [shared/make-division
+      (shared/division-context-key type) fields parts
+      [:all
+       [(svg/make-path
+         ["M" (v/+ second-right
+                   line-reversed-start)
+          (svg/stitch line-reversed)])]
+       nil]
+      environment division context]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline/style
@@ -107,5 +109,4 @@
         [:path {:d (svg/make-path
                     ["M" (v/+ second-right
                               line-reversed-start)
-                     (svg/stitch line-reversed)])}]])
-     environment division context]))
+                     (svg/stitch line-reversed)])}]])]))

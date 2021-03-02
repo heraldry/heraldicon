@@ -171,8 +171,9 @@
         top-left                 (:top-left points)
         bottom-right             (:bottom-right points)
         [parts overlap outlines] (quarterly-parts layout top-left bottom-right hints render-options)]
-    [shared/make-division
-     (shared/division-context-key type) fields parts
-     overlap
-     outlines
-     environment division context]))
+    [:<>
+     [shared/make-division
+      (shared/division-context-key type) fields parts
+      overlap
+      environment division context]
+     outlines]))

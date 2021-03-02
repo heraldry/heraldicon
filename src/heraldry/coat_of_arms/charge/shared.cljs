@@ -73,13 +73,14 @@
         field                         (if (counterchange/counterchangable? field parent)
                                         (counterchange/counterchange-field field parent)
                                         field)]
-    [division-shared/make-division
-     :charge-pale [field] parts
-     [:all]
+    [:<>
+     [division-shared/make-division
+      :charge-pale [field] parts
+      [:all]
+      environment charge context]
      (when (or (:outline? render-options)
                (-> hints :outline-mode (= :keep)))
        [:g outline/style
         [:path {:d charge-shape}]
         (when mask-shape
-          [:path {:d mask-shape}])])
-     environment charge context]))
+          [:path {:d mask-shape}])])]))

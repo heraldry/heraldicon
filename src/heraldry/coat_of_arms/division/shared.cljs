@@ -16,7 +16,7 @@
 (defn division-context-key [key]
   (keyword (str "division-" (name key))))
 
-(defn make-division [type fields parts mask-overlaps outline parent-environment parent
+(defn make-division [type fields parts mask-overlaps parent-environment parent
                      {:keys [render-field db-path transform svg-export?] :as context}]
   (let [mask-ids     (->> (range (count fields))
                           (map (fn [idx] [(util/id (str (name type) "-" idx))
@@ -84,5 +84,4 @@
                                         first
                                         (->> (get #{"charge" "ordinary"}))) ;; FIXME: bit of a hack
                                   (conj db-path :field)
-                                  (conj db-path :fields idx))))]]]))
-     outline]))
+                                  (conj db-path :fields idx))))]]]))]))
