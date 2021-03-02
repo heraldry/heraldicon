@@ -20,4 +20,7 @@ deploy-backend-prod: release-backend-prod
 	cd backend && npx sls deploy --stage prod
 
 dev-local:
-	npx shadow-cljs watch frontend backend test
+	npx shadow-cljs watch frontend backend
+
+dev-test:
+	npx shadow-cljs watch test
