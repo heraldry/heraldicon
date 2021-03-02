@@ -5,7 +5,7 @@
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
-(defn render-tinctured-area [tincture path render-options]
+(defn render-tinctured-area [tincture path {:keys [svg-export?] :as render-options}]
   (let [mask-id (util/id "mask")]
     [:<>
      [:defs
@@ -17,7 +17,9 @@
              :width  1100
              :height 1100
              :mask   (str "url(#" mask-id ")")
-             :fill   (tincture/pick tincture render-options)}]]))
+             :fill   (tincture/pick tincture render-options)
+             :style  (when (not svg-export?)
+                       {:pointer-events "none"})}]]))
 
 (defn render [[start start-direction]
               [end end-direction]
