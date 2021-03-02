@@ -155,7 +155,8 @@
                                  [:layout :offset-y]
                                  [:layout :stretch-y]]
                                 {[:layout :num-fields-x :default] 3
-                                 [:layout :num-fields-y :default] 4})
+                                 [:layout :num-fields-y :default] 4
+                                 [:line :fimbriation] nil})
        :gyronny (pick-options [[:line]
                                [:origin :point]
                                [:origin :offset-x]
@@ -168,12 +169,14 @@
                             [:layout :num-base-fields]
                             [:layout :num-fields-x]
                             [:layout :offset-x]
-                            [:layout :stretch-x]])
+                            [:layout :stretch-x]]
+                           {[:line :fimbriation] nil})
        :barry (pick-options [[:line]
                              [:layout :num-base-fields]
                              [:layout :num-fields-y]
                              [:layout :offset-y]
-                             [:layout :stretch-y]])
+                             [:layout :stretch-y]]
+                            {[:line :fimbriation] nil})
        :chequy (pick-options [[:layout :num-base-fields]
                               [:layout :num-fields-x]
                               [:layout :offset-x]
@@ -181,7 +184,8 @@
                               [:layout :num-fields-y]
                               [:layout :offset-y]
                               [:layout :stretch-y]]
-                             {[:layout :num-fields-y :default] nil})
+                             {[:layout :num-fields-y :default] nil
+                              [:line :fimbriation] nil})
        :lozengy (pick-options [[:layout :num-fields-x]
                                [:layout :offset-x]
                                [:layout :stretch-x]
@@ -190,7 +194,8 @@
                                [:layout :stretch-y]
                                [:layout :rotation]]
                               {[:layout :num-fields-y :default] nil
-                               [:layout :stretch-y :max] 3})
+                               [:layout :stretch-y :max] 3
+                               [:line :fimbriation] nil})
        :bendy (pick-options [[:line]
                              [:layout :num-base-fields]
                              [:layout :num-fields-y]
@@ -201,7 +206,8 @@
                              [:origin :offset-y]
                              [:diagonal-mode]]
                             {[:diagonal-mode :choices] (diagonal-mode-choices :bendy)
-                             [:origin :point :choices] position/point-choices-y})
+                             [:origin :point :choices] position/point-choices-y
+                             [:line :fimbriation] nil})
        :bendy-sinister (pick-options [[:line]
                                       [:layout :num-base-fields]
                                       [:layout :num-fields-y]
@@ -213,24 +219,28 @@
                                       [:diagonal-mode]]
                                      {[:diagonal-mode :choices] (diagonal-mode-choices :bendy)
                                       [:diagonal-mode :default] :top-right-origin
-                                      [:origin :point :choices] position/point-choices-y})
+                                      [:origin :point :choices] position/point-choices-y
+                                      [:line :fimbriation] nil})
        :tierced-per-pale (pick-options [[:line]
                                         [:layout :stretch-x]
                                         [:origin :point]
                                         [:origin :offset-x]]
-                                       {[:origin :point :choices] position/point-choices-x})
+                                       {[:origin :point :choices] position/point-choices-x
+                                        [:line :fimbriation] nil})
        :tierced-per-fess (pick-options [[:line]
                                         [:layout :stretch-y]
                                         [:origin :point]
                                         [:origin :offset-y]]
-                                       {[:origin :point :choices] position/point-choices-y})
+                                       {[:origin :point :choices] position/point-choices-y
+                                        [:line :fimbriation] nil})
        :tierced-per-pairle (pick-options [[:line]
                                           [:origin :point]
                                           [:origin :offset-x]
                                           [:origin :offset-y]
                                           [:diagonal-mode]]
                                          {[:diagonal-mode :choices] (diagonal-mode-choices :tierced-per-pairle)
-                                          [:line :offset :min] 0})
+                                          [:line :offset :min] 0
+                                          [:line :fimbriation] nil})
        :tierced-per-pairle-reversed (pick-options [[:line]
                                                    [:origin :point]
                                                    [:origin :offset-x]
@@ -238,7 +248,8 @@
                                                    [:diagonal-mode]]
                                                   {[:diagonal-mode :choices] (diagonal-mode-choices :tierced-per-pairle-reversed)
                                                    [:diagonal-mode :default] :forty-five-debrees
-                                                   [:line :offset :min] 0})
+                                                   [:line :offset :min] 0
+                                                   [:line :fimbriation] nil})
        {})
      (update-in [:line] (fn [line]
                           (when line
