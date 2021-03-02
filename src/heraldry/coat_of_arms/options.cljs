@@ -19,7 +19,7 @@
                :else (-> value
                          (max (:min options))
                          (min (:max options))))
-      value)))
+      nil)))
 
 (defn get-sanitized-value-or-nil [value options]
   (if (nil? value)
@@ -35,7 +35,7 @@
                (-> value
                    (max (:min options))
                    (min (:max options))))
-      value)))
+      nil)))
 
 #_{:clj-kondo/ignore [:redefined-var]}
 (defn merge
