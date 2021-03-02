@@ -133,18 +133,20 @@
                  (v/+ diagonal-bottom-right
                       line-bottom-right-start)]]]]
 
-    [shared/make-division
-     (shared/division-context-key type) fields parts
-     [:all
-      [(svg/make-path
-        ["M" (v/+ origin-point
-                  line-bottom-left-start)
-         (svg/stitch line-bottom-left)])]
-      [(svg/make-path
-        ["M" (v/+ diagonal-bottom-right
-                  line-bottom-right-start)
-         (svg/stitch line-bottom-right)])]
-      nil]
+    [:<>
+     [shared/make-division
+      (shared/division-context-key type) fields parts
+      [:all
+       [(svg/make-path
+         ["M" (v/+ origin-point
+                   line-bottom-left-start)
+          (svg/stitch line-bottom-left)])]
+       [(svg/make-path
+         ["M" (v/+ diagonal-bottom-right
+                   line-bottom-right-start)
+          (svg/stitch line-bottom-right)])]
+       nil]
+      environment division context]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline/style
@@ -163,5 +165,4 @@
         [:path {:d (svg/make-path
                     ["M" (v/+ origin-point
                               line-bottom-left-start)
-                     (svg/stitch line-bottom-left)])}]])
-     environment division context]))
+                     (svg/stitch line-bottom-left)])}]])]))

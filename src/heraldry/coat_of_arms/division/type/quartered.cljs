@@ -105,17 +105,19 @@
                                       line-bottom-start)])
                  "z"]
                 [origin-point bottom-right]]]]
-    [shared/make-division
-     (shared/division-context-key type) fields parts
-     [:all
-      [(svg/make-path
-        ["M" origin-point
-         (svg/stitch line-right)])]
-      [(svg/make-path
-        ["M" (v/+ bottom
-                  line-bottom-start)
-         (svg/stitch line-bottom)])]
-      nil]
+    [:<>
+     [shared/make-division
+      (shared/division-context-key type) fields parts
+      [:all
+       [(svg/make-path
+         ["M" origin-point
+          (svg/stitch line-right)])]
+       [(svg/make-path
+         ["M" (v/+ bottom
+                   line-bottom-start)
+          (svg/stitch line-bottom)])]
+       nil]
+      environment division context]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline/style
@@ -132,5 +134,4 @@
                      (svg/stitch line-bottom)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (svg/stitch line-left)])}]])
-     environment division context]))
+                     (svg/stitch line-left)])}]])]))

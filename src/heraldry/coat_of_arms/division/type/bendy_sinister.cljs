@@ -35,5 +35,5 @@
      [shared/make-division
       (shared/division-context-key type) fields parts
       overlap
-      outlines
-      environment division context]]))
+      environment division context]
+     outlines]))

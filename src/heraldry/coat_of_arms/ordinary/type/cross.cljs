@@ -186,43 +186,43 @@
      [division-shared/make-division
       :ordinary-pale [field] parts
       [:all]
-      (when (or (:outline? render-options)
-                (:outline? hints))
-        [:g outline/style
-         [:path {:d (svg/make-path
-                     ["M" (v/+ corner-top-left
-                               line-pale-top-left-start)
-                      (svg/stitch line-pale-top-left)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ pale-top-right
-                               line-pale-top-right-start)
-                      (svg/stitch line-pale-top-right)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ corner-top-right
-                               line-fess-top-right-start)
-                      (svg/stitch line-fess-top-right)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ fess-bottom-right
-                               line-fess-bottom-right-start)
-                      (svg/stitch line-fess-bottom-right)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ corner-bottom-right
-                               line-pale-bottom-right-start)
-                      (svg/stitch line-pale-bottom-right)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ pale-bottom-left
-                               line-pale-bottom-left-start)
-                      (svg/stitch line-pale-bottom-left)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ corner-bottom-left
-                               line-fess-bottom-left-start)
-                      (svg/stitch line-fess-bottom-left)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ fess-top-left
-                               line-fess-top-left-start)
-                      (svg/stitch line-fess-top-left)])}]
-         fimbriation-outlines-1
-         fimbriation-outlines-2
-         fimbriation-outlines-3
-         fimbriation-outlines-4])
-      environment ordinary context]]))
+      environment ordinary context]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g outline/style
+        [:path {:d (svg/make-path
+                    ["M" (v/+ corner-top-left
+                              line-pale-top-left-start)
+                     (svg/stitch line-pale-top-left)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ pale-top-right
+                              line-pale-top-right-start)
+                     (svg/stitch line-pale-top-right)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ corner-top-right
+                              line-fess-top-right-start)
+                     (svg/stitch line-fess-top-right)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ fess-bottom-right
+                              line-fess-bottom-right-start)
+                     (svg/stitch line-fess-bottom-right)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ corner-bottom-right
+                              line-pale-bottom-right-start)
+                     (svg/stitch line-pale-bottom-right)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ pale-bottom-left
+                              line-pale-bottom-left-start)
+                     (svg/stitch line-pale-bottom-left)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ corner-bottom-left
+                              line-fess-bottom-left-start)
+                     (svg/stitch line-fess-bottom-left)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ fess-top-left
+                              line-fess-top-left-start)
+                     (svg/stitch line-fess-top-left)])}]
+        fimbriation-outlines-1
+        fimbriation-outlines-2
+        fimbriation-outlines-3
+        fimbriation-outlines-4])]))

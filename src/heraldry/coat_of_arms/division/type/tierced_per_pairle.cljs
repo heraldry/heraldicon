@@ -108,14 +108,16 @@
                       line-bottom-start)
                  (v/+ diagonal-top-left
                       line-top-left-start)]]]]
-    [shared/make-division
-     (shared/division-context-key type) fields parts
-     [:all
-      [(svg/make-path
-        ["M" (v/+ bottom
-                  line-bottom-reversed-start)
-         (svg/stitch line-bottom-reversed)])]
-      nil]
+    [:<>
+     [shared/make-division
+      (shared/division-context-key type) fields parts
+      [:all
+       [(svg/make-path
+         ["M" (v/+ bottom
+                   line-bottom-reversed-start)
+          (svg/stitch line-bottom-reversed)])]
+       nil]
+      environment division context]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline/style
@@ -128,5 +130,4 @@
                      (svg/stitch line-top-right)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (svg/stitch line-bottom)])}]])
-     environment division context]))
+                     (svg/stitch line-bottom)])}]])]))

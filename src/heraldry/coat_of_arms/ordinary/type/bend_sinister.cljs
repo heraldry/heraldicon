@@ -115,22 +115,24 @@
      [division-shared/make-division
       :ordinary-fess [field] parts
       [:all]
-      (when (or (:outline? render-options)
-                (:outline? hints))
-        [:g outline/style
-         [:path {:d (svg/make-path
-                     ["M" (v/+ first-left
-                               line-one-start)
-                      (svg/stitch line-one)])}]
-         [:path {:d (svg/make-path
-                     ["M" (v/+ second-right
-                               line-reversed-start)
-                      (svg/stitch line-reversed)])}]
-         fimbriation-outlines-top
-         fimbriation-outlines-bottom])
-      environment ordinary (-> context
-                               (assoc :transform (when (or counterchanged?
-                                                           (:inherit-environment? field))
-                                                   (str
-                                                    "rotate(" (- angle) ") "
-                                                    "translate(" (-> diagonal-start :x -) "," (-> diagonal-start :y -) ")"))))]]))
+      environment
+      ordinary
+      (-> context
+          (assoc :transform (when (or counterchanged?
+                                      (:inherit-environment? field))
+                              (str
+                               "rotate(" (- angle) ") "
+                               "translate(" (-> diagonal-start :x -) "," (-> diagonal-start :y -) ")"))))]
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g outline/style
+        [:path {:d (svg/make-path
+                    ["M" (v/+ first-left
+                              line-one-start)
+                     (svg/stitch line-one)])}]
+        [:path {:d (svg/make-path
+                    ["M" (v/+ second-right
+                              line-reversed-start)
+                     (svg/stitch line-reversed)])}]
+        fimbriation-outlines-top
+        fimbriation-outlines-bottom])]))

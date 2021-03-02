@@ -95,16 +95,16 @@
      [shared/make-division
       (shared/division-context-key type) fields parts
       [:all nil]
-      (when (or (:outline? render-options)
-                (:outline? hints))
-        [:g outline/style
-         [:path {:d (svg/make-path
-                     ["M" (v/+ diagonal-bottom-left
-                               line-left-start)
-                      (svg/stitch line-left)
-                      "L" (v/+ origin-point
-                               line-right-start)
-                      (svg/stitch line-right)])}]
-         fimbriation-outlines])
       environment division context]
-     fimbriation-elements]))
+     fimbriation-elements
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g outline/style
+        [:path {:d (svg/make-path
+                    ["M" (v/+ diagonal-bottom-left
+                              line-left-start)
+                     (svg/stitch line-left)
+                     "L" (v/+ origin-point
+                              line-right-start)
+                     (svg/stitch line-right)])}]
+        fimbriation-outlines])]))

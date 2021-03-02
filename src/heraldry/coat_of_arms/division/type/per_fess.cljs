@@ -64,13 +64,13 @@
      [shared/make-division
       (shared/division-context-key type) fields parts
       [:all nil]
-      (when (or (:outline? render-options)
-                (:outline? hints))
-        [:g outline/style
-         [:path {:d (svg/make-path
-                     ["M" (v/+ left
-                               line-one-start)
-                      (svg/stitch line-one)])}]
-         fimbriation-outlines])
       environment division context]
-     fimbriation-elements]))
+     fimbriation-elements
+     (when (or (:outline? render-options)
+               (:outline? hints))
+       [:g outline/style
+        [:path {:d (svg/make-path
+                    ["M" (v/+ left
+                              line-one-start)
+                     (svg/stitch line-one)])}]
+        fimbriation-outlines])]))
