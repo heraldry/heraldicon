@@ -306,28 +306,31 @@
     (-> line-data
         (assoc :line
                (-> line-path
+                   (cond->
+                    (:squiggly? render-options) (svg/squiggly-path :seed seed))
                    svgpath
                    (cond->
-                    effective-flipped? (.scale 1 -1)
-                    (:squiggly? render-options) (svg/squiggly-path :seed seed))
+                    effective-flipped? (.scale 1 -1))
                    (.rotate angle)
                    .toString))
         (assoc :fimbriation-1
                (some-> fimbriation-1-path
+                       (cond->
+                        (:squiggly? render-options) (svg/squiggly-path :seed [seed :fimbriation-1]))
                        svgpath
                        (.scale -1 1)
                        (cond->
-                        effective-flipped? (.scale 1 -1)
-                        (:squiggly? render-options) (svg/squiggly-path :seed [seed :fimbriation-1]))
+                        effective-flipped? (.scale 1 -1))
                        (.rotate angle)
                        .toString))
         (assoc :fimbriation-2
                (some-> fimbriation-2-path
+                       (cond->
+                        (:squiggly? render-options) (svg/squiggly-path :seed [seed :fimbriation-2]))
                        svgpath
                        (.scale -1 1)
                        (cond->
-                        effective-flipped? (.scale 1 -1)
-                        (:squiggly? render-options) (svg/squiggly-path :seed [seed :fimbriation-2]))
+                        effective-flipped? (.scale 1 -1))
                        (.rotate angle)
                        .toString))
         (assoc :line-start (when line-start (v/rotate line-start angle)))
