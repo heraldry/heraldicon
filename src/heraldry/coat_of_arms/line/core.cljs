@@ -53,7 +53,8 @@
                               (* Math/PI)
                               (/ 180)
                               Math/tan
-                              (->> (/ 1)))
+                              (->> (/ 1))
+                              -)
                           0)
         line-start-x (* base-line
                         offset-x-factor)
@@ -92,60 +93,60 @@
         line-data {:line (-> []
                              (cond->
                               (not reversed?) (into [["h" (cond-> 0
-                                                            (pos? line-start-x) (+ line-start-x)
+                                                            (neg? line-start-x) (- line-start-x)
                                                             (pos? offset-length) (+ offset-length))]]))
                              (into (repeat repetitions line-pattern))
                              (cond->
                               reversed? (into [["h" (cond-> 0
-                                                      (pos? line-start-x) (+ line-start-x)
+                                                      (neg? line-start-x) (- line-start-x)
                                                       (pos? offset-length) (+ offset-length))]]))
                              (->> (apply merge))
                              vec)
-                   :line-start (v/+ (v/v (- line-start-x)
+                   :line-start (v/+ (v/v line-start-x
                                          base-line)
                                     line-start)
                    :line-end (v/+ (v/v (cond-> 0
-                                         (neg? line-start-x) (+ line-start-x))
+                                         (pos? line-start-x) (- line-start-x))
                                        base-line)
                                   line-end)}
         fimbriation-1-data (when (#{:single :double} fimbriation-mode)
                              {:fimbriation-1 (-> []
                                                  (cond->
                                                   reversed? (into [["h" (cond-> 0
-                                                                          (pos? fimbriation-1-offset-x) (+ fimbriation-1-offset-x)
+                                                                          (neg? fimbriation-1-offset-x) (- fimbriation-1-offset-x)
                                                                           (pos? offset-length) (+ offset-length))]]))
                                                  (into (repeat repetitions fimbriation-1-pattern))
                                                  (cond->
                                                   (not reversed?) (into [["h" (cond-> 0
-                                                                                (pos? fimbriation-1-offset-x) (+ fimbriation-1-offset-x)
+                                                                                (neg? fimbriation-1-offset-x) (- fimbriation-1-offset-x)
                                                                                 (pos? offset-length) (+ offset-length))]]))
                                                  (->> (apply merge))
                                                  vec)
-                              :fimbriation-1-start (v/+ (v/v fimbriation-1-offset-x
+                              :fimbriation-1-start (v/+ (v/v (- fimbriation-1-offset-x)
                                                              fimbriation-1-line)
                                                         line-start)
                               :fimbriation-1-end (v/+ (v/v (cond-> 0
-                                                             (neg? fimbriation-1-offset-x) (- fimbriation-1-offset-x))
+                                                             (pos? fimbriation-1-offset-x) (+ fimbriation-1-offset-x))
                                                            fimbriation-1-line)
                                                       line-end)})
         fimbriation-2-data (when (#{:double} fimbriation-mode)
                              {:fimbriation-2 (-> []
                                                  (cond->
                                                   reversed? (into [["h" (cond-> 0
-                                                                          (pos? fimbriation-2-offset-x) (+ fimbriation-2-offset-x)
+                                                                          (neg? fimbriation-2-offset-x) (- fimbriation-2-offset-x)
                                                                           (pos? offset-length) (+ offset-length))]]))
                                                  (into (repeat repetitions fimbriation-2-pattern))
                                                  (cond->
                                                   (not reversed?) (into [["h" (cond-> 0
-                                                                                (pos? fimbriation-2-offset-x) (+ fimbriation-2-offset-x)
+                                                                                (neg? fimbriation-2-offset-x) (- fimbriation-2-offset-x)
                                                                                 (pos? offset-length) (+ offset-length))]]))
                                                  (->> (apply merge))
                                                  vec)
-                              :fimbriation-2-start (v/+ (v/v fimbriation-2-offset-x
+                              :fimbriation-2-start (v/+ (v/v (- fimbriation-2-offset-x)
                                                              fimbriation-2-line)
                                                         line-start)
                               :fimbriation-2-end (v/+ (v/v (cond-> 0
-                                                             (neg? fimbriation-2-offset-x) (- fimbriation-2-offset-x))
+                                                             (pos? fimbriation-2-offset-x) (+ fimbriation-2-offset-x))
                                                            fimbriation-2-line)
                                                       line-end)})
         line-data (merge line-data fimbriation-1-data fimbriation-2-data)]
