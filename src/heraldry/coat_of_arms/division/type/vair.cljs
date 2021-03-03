@@ -231,7 +231,9 @@
         unstretched-part-height (if num-fields-y
                                   (-> height
                                       (/ num-fields-y))
-                                  part-width)
+                                  (-> part-width
+                                      (/ 4)
+                                      (* (+ 1 1 sqr2))))
         part-height (-> unstretched-part-height
                         (* stretch-y))
         middle-x (/ width 2)
