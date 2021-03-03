@@ -54,6 +54,12 @@
                                 line-two-top (v/v x2 y1)
                                 line-two-bottom (v/v x2 y2)]
                             [(cond
+                               (and (zero? i)
+                                    last-part?) ["M" -1000 -1000
+                                                 "h" 2000
+                                                 "v" 2000
+                                                 "h" -2000
+                                                 "z"]
                                (zero? i) ["M" (v/+ line-two-top
                                                    line-down-start)
                                           (svg/stitch line-down)
