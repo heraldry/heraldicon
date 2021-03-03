@@ -39,7 +39,7 @@
                                                                                :lozengy   4
                                                                                :vairy     3
                                                                                :potenty   3
-                                                                               :papelonne 3
+                                                                               :papelonne 4
                                                                                nil)}}})}
                           100
                           (-> shared/coa-select-option-context
