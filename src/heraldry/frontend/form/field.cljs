@@ -51,10 +51,6 @@
      [:label title]
      " "
      [element/submenu layout-path title link-name {}
-      (when (-> options :variant)
-        [element/select (conj layout-path :variant) "Variant"
-         (-> options :variant :choices)
-         :default (-> options :variant :default)])
       (when (-> options :num-base-fields)
         [element/range-input-with-checkbox (conj layout-path :num-base-fields) "Base fields"
          (-> options :num-base-fields :min)
@@ -148,6 +144,10 @@
          [division-form/form path]
          (let [division-options (division-options/options (:division field))]
            [:<>
+            (when (-> division-options :variant)
+              [element/select (conj path :division :variant) "Variant"
+               (-> division-options :variant :choices)
+               :default (-> division-options :variant :default)])
             (when (-> division-options :origin)
               [position/form (conj path :division :origin)
                :title "Origin"

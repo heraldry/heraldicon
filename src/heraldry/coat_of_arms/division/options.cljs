@@ -45,14 +45,14 @@
    :origin position/default-options
    :diagonal-mode {:type :choice
                    :default :top-left-origin}
-   :layout {:variant {:type :choice
-                      :choices [["Default" :default]
-                                ["Counter" :counter]
-                                ["In pale" :in-pale]
-                                ["En point" :en-point]
-                                ["Ancien" :ancien]]
-                      :default :default}
-            :num-fields-x {:type :range
+   :variant {:type :choice
+             :choices [["Default" :default]
+                       ["Counter" :counter]
+                       ["In pale" :in-pale]
+                       ["En point" :en-point]
+                       ["Ancien" :ancien]]
+             :default :default}
+   :layout {:num-fields-x {:type :range
                            :min 1
                            :max 20
                            :default 6
@@ -203,7 +203,7 @@
                               {[:layout :num-fields-y :default] nil
                                [:layout :stretch-y :max] 3
                                [:line :fimbriation] nil})
-       :vairy (pick-options [[:layout :variant]
+       :vairy (pick-options [[:variant]
                              [:layout :num-fields-x]
                              [:layout :offset-x]
                              [:layout :stretch-x]

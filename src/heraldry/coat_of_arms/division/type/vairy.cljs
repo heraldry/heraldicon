@@ -205,12 +205,11 @@
    :value :vairy
    :parts []}
   [{:keys [fields hints] :as division} environment {:keys [render-options]}]
-  (let [{:keys [layout]} (options/sanitize division (division-options/options division))
+  (let [{:keys [layout variant]} (options/sanitize division (division-options/options division))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        {:keys [variant
-                num-fields-x
+        {:keys [num-fields-x
                 offset-x
                 stretch-x
                 num-fields-y
