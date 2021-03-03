@@ -174,14 +174,15 @@
           :lozengy
           :vairy
           :potenty
-          :papellony} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
-                                      [:ul
-                                       (let [tinctures @(rf/subscribe [:get (conj path :division :fields)])]
-                                         (for [idx (range (count tinctures))]
-                                           ^{:key idx}
-                                           [:li
-                                            [tincture/form (conj path :division :fields idx :content :tincture)
-                                             :label (str "Tincture " (inc idx))]]))]]
+          :papellony
+          :masonry} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
+                                    [:ul
+                                     (let [tinctures @(rf/subscribe [:get (conj path :division :fields)])]
+                                       (for [idx (range (count tinctures))]
+                                         ^{:key idx}
+                                         [:li
+                                          [tincture/form (conj path :division :fields idx :content :tincture)
+                                           :label (str "Tincture " (inc idx))]]))]]
        (not counterchanged?) [:div.parts.components
                               [:ul
                                (let [content @(rf/subscribe [:get (conj path :division :fields)])
