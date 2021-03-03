@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.division.type.vair
+(ns heraldry.coat-of-arms.division.type.vairy
   (:require [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
@@ -201,8 +201,8 @@
                                "h" width)}]]}))
 
 (defn render
-  {:display-name "Vair"
-   :value :vair
+  {:display-name "Vairy"
+   :value :vairy
    :parts []}
   [{:keys [fields hints] :as division} environment {:keys [render-options]}]
   (let [{:keys [layout]} (options/sanitize division (division-options/options division))
@@ -239,7 +239,7 @@
         middle-x (/ width 2)
         origin-x (+ (:x top-left)
                     middle-x)
-        pattern-id (util/id "vair")
+        pattern-id (util/id "vairy")
         vair-function (case variant
                         :counter vair-counter
                         :in-pale vair-in-pale
