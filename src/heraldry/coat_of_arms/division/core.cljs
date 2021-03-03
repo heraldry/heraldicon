@@ -14,7 +14,7 @@
             [heraldry.coat-of-arms.division.type.per-fess :as per-fess]
             [heraldry.coat-of-arms.division.type.per-pale :as per-pale]
             [heraldry.coat-of-arms.division.type.per-saltire :as per-saltire]
-            [heraldry.coat-of-arms.division.type.papelonne :as papelonne]
+            [heraldry.coat-of-arms.division.type.papellony :as papellony]
             [heraldry.coat-of-arms.division.type.potenty :as potenty]
             [heraldry.coat-of-arms.division.type.quartered :as quartered]
             [heraldry.coat-of-arms.division.type.quarterly :as quarterly]
@@ -94,7 +94,7 @@
                                                                 (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))))
       (#{:vairy
          :potenty
-         :papelonne} type)                   [(-> default/field
+         :papellony} type)                   [(-> default/field
                                                   (assoc-in [:content :tincture] :azure))
                                               (-> default/field
                                                   (assoc-in [:content :tincture] :argent))]
@@ -133,7 +133,7 @@
    #'lozengy/render
    #'vairy/render
    #'potenty/render
-   #'papelonne/render])
+   #'papellony/render])
 
 (def kinds-function-map
   (->> divisions

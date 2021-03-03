@@ -1,11 +1,11 @@
-(ns heraldry.coat-of-arms.division.type.papelonne
+(ns heraldry.coat-of-arms.division.type.papellony
   (:require [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.util :as util]))
 
-(defn papelonne-default [part-width part-height thickness]
+(defn papellony-default [part-width part-height thickness]
   (let [width     part-width
         height    (* 2 part-height)
         middle-x  (/ width 2)
@@ -101,8 +101,8 @@
                                "v" (- extra))}]]}))
 
 (defn render
-  {:display-name "Papelonné"
-   :value        :papelonne
+  {:display-name "Papellony"
+   :value        :papellony
    :parts        []}
   [{:keys [fields hints] :as division} environment {:keys [render-options]}]
   (let [{:keys [layout thickness]}   (options/sanitize division (division-options/options division))
@@ -136,11 +136,11 @@
         middle-x                     (/ width 2)
         origin-x                     (+ (:x top-left)
                                         middle-x)
-        pattern-id                   (util/id "papelonne")
+        pattern-id                   (util/id "papellony")
         {pattern-width     :width
          pattern-height    :height
-         papelonne-pattern :pattern
-         papelonne-outline :outline} (papelonne-default part-width part-height thickness)]
+         papellony-pattern :pattern
+         papellony-outline :outline} (papellony-default part-width part-height thickness)]
     [:g
      [:defs
       (when (or (:outline? render-options)
@@ -156,7 +156,7 @@
                                      (:y top-left))
                    :pattern-units "userSpaceOnUse"}
          [:g outline/style
-          papelonne-outline]])
+          papellony-outline]])
       (for [idx (range 2)]
         ^{:key idx}
         [:pattern {:id            (str pattern-id "-" idx)
@@ -175,7 +175,7 @@
                  :height pattern-height
                  :fill   (get ["#ffffff" "#000000"] idx)}]
          [:g {:fill (get ["#000000" "#ffffff"] idx)}
-          papelonne-pattern]])]
+          papellony-pattern]])]
      (for [idx (range 2)]
        (let [mask-id  (util/id "mask")
              tincture (-> fields

@@ -32,14 +32,14 @@
                                                                                :lozengy   3
                                                                                :vairy     2
                                                                                :potenty   2
-                                                                               :papelonne 2
+                                                                               :papellony 2
                                                                                nil)
                                                                :num-fields-y (case key
                                                                                :chequy    5
                                                                                :lozengy   4
                                                                                :vairy     3
                                                                                :potenty   3
-                                                                               :papelonne 4
+                                                                               :papellony 4
                                                                                nil)}}})}
                           100
                           (-> shared/coa-select-option-context
