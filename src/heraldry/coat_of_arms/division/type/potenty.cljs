@@ -5,8 +5,6 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.util :as util]))
 
-(def sqr2 1.4142135623730951)
-
 (defn units [n]
   (-> n
       (* 4)
