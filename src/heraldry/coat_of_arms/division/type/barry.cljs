@@ -112,7 +112,7 @@
                                                                       (v/+ line-one-left
                                                                            line-right-start)])
                                                       "z"])))
-                             [(v/v x1 y1) (v/v x2 y2)]])))
+                             [line-one-left line-two-right]])))
                    vec)
         edges (->> num-fields-y
                    dec
