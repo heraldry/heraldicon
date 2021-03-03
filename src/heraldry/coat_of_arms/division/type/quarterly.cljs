@@ -57,6 +57,15 @@
                            last-y? (-> num-fields-y dec (= j))]
                        (cond
                          (and first-x?
+                              last-x?
+                              first-y?
+                              last-y?) [["M" -1000 -1000
+                                         "h" 2000
+                                         "v" 2000
+                                         "h" -2000
+                                         "z"]
+                                        [(v/v x1 y1) (v/v x2 y2)]]
+                         (and first-x?
                               first-y?) [["M" [x1 y2]
                                           "L" [x2 y2]
                                           "L" [x2 y1]
