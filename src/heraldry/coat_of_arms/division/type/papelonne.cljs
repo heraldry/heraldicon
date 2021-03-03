@@ -7,7 +7,7 @@
 
 (defn papelonne-default [part-width part-height thickness]
   (let [width part-width
-        height part-height
+        height (* 2 part-height)
         middle-x (/ width 2)
         middle-y (/ height 2)
         thickness (* thickness width)
@@ -130,7 +130,7 @@
         unstretched-part-height (if num-fields-y
                                   (-> height
                                       (/ num-fields-y))
-                                  part-width)
+                                  (/ part-width 2))
         part-height (-> unstretched-part-height
                         (* stretch-y))
         middle-x (/ width 2)
