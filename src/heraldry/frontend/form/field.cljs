@@ -148,6 +148,12 @@
               [element/select (conj path :division :variant) "Variant"
                (-> division-options :variant :choices)
                :default (-> division-options :variant :default)])
+            (when (-> division-options :thickness)
+              [element/range-input-with-checkbox (conj path :division :thickness) "Thickness"
+               (-> division-options :thickness :min)
+               (-> division-options :thickness :max)
+               :step 0.01
+               :default (-> division-options :thickness :default)])
             (when (-> division-options :origin)
               [position/form (conj path :division :origin)
                :title "Origin"
@@ -167,14 +173,15 @@
        (#{:chequy
           :lozengy
           :vairy
-          :potenty} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
-                                    [:ul
-                                     (let [tinctures @(rf/subscribe [:get (conj path :division :fields)])]
-                                       (for [idx (range (count tinctures))]
-                                         ^{:key idx}
-                                         [:li
-                                          [tincture/form (conj path :division :fields idx :content :tincture)
-                                           :label (str "Tincture " (inc idx))]]))]]
+          :potenty
+          :papelonne} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
+                                      [:ul
+                                       (let [tinctures @(rf/subscribe [:get (conj path :division :fields)])]
+                                         (for [idx (range (count tinctures))]
+                                           ^{:key idx}
+                                           [:li
+                                            [tincture/form (conj path :division :fields idx :content :tincture)
+                                             :label (str "Tincture " (inc idx))]]))]]
        (not counterchanged?) [:div.parts.components
                               [:ul
                                (let [content @(rf/subscribe [:get (conj path :division :fields)])

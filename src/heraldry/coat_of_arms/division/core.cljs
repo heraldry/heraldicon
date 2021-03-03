@@ -14,6 +14,7 @@
             [heraldry.coat-of-arms.division.type.per-fess :as per-fess]
             [heraldry.coat-of-arms.division.type.per-pale :as per-pale]
             [heraldry.coat-of-arms.division.type.per-saltire :as per-saltire]
+            [heraldry.coat-of-arms.division.type.papelonne :as papelonne]
             [heraldry.coat-of-arms.division.type.potenty :as potenty]
             [heraldry.coat-of-arms.division.type.quartered :as quartered]
             [heraldry.coat-of-arms.division.type.quarterly :as quarterly]
@@ -92,10 +93,11 @@
                              (into (map (fn [i]
                                           (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))))
       (#{:vairy
-         :potenty} type) [(-> default/field
-                              (assoc-in [:content :tincture] :azure))
-                          (-> default/field
-                              (assoc-in [:content :tincture] :argent))]
+         :potenty
+         :papelonne} type) [(-> default/field
+                                (assoc-in [:content :tincture] :azure))
+                            (-> default/field
+                                (assoc-in [:content :tincture] :argent))]
       (#{:bendy
          :bendy-sinister} type) (-> (subvec defaults 0 2)
                                     (into (map (fn [i]
@@ -130,7 +132,8 @@
    #'chequy/render
    #'lozengy/render
    #'vairy/render
-   #'potenty/render])
+   #'potenty/render
+   #'papelonne/render])
 
 (def kinds-function-map
   (->> divisions
