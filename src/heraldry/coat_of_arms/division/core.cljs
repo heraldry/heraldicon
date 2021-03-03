@@ -25,9 +25,9 @@
             [heraldry.util :as util]))
 
 (defn mandatory-part-count [{:keys [type] :as division}]
-  (let [{:keys [num-base-fields]} (options/sanitize division (division-options/options division))]
-    (if (get #{:paly :barry} type)
-      num-base-fields
+  (let [{:keys [layout]} (options/sanitize division (division-options/options division))]
+    (if (:num-base-fields layout)
+      (:num-base-fields layout)
       (case type
         nil 0
         :tierced-per-pale 3
