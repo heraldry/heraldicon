@@ -39,7 +39,7 @@ Here's a list of things already supported and things I'm working on.
 - [X] add furs - added ermine-based furs
 - [X] add vair - might need to treat this as a paly division, because the number
       of elements can be specified
-- [ ] add other field *treatments*, some of which might have configurable colours
+- [X] add other field *treatments*, some of which might have configurable colours
 - [X] configure charge position and size
 - [X] configure charge mirroring, reversing, and rotation
 - [ ] configure charge number and arrangements
