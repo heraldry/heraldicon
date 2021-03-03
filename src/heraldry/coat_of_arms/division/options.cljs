@@ -203,15 +203,15 @@
                               {[:layout :num-fields-y :default] nil
                                [:layout :stretch-y :max] 3
                                [:line :fimbriation] nil})
-       :vair (pick-options [[:layout :variant]
-                            [:layout :num-fields-x]
-                            [:layout :offset-x]
-                            [:layout :stretch-x]
-                            [:layout :num-fields-y]
-                            [:layout :offset-y]
-                            [:layout :stretch-y]]
-                           {[:layout :num-fields-y :default] nil
-                            [:line] nil})
+       :vairy (pick-options [[:layout :variant]
+                             [:layout :num-fields-x]
+                             [:layout :offset-x]
+                             [:layout :stretch-x]
+                             [:layout :num-fields-y]
+                             [:layout :offset-y]
+                             [:layout :stretch-y]]
+                            {[:layout :num-fields-y :default] nil
+                             [:line] nil})
        :bendy (pick-options [[:line]
                              [:layout :num-base-fields]
                              [:layout :num-fields-y]
