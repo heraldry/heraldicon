@@ -203,7 +203,7 @@
                                                   {[:layout :num-fields-y :default] nil
                                                    [:layout :stretch-y :max]        3
                                                    [:line :fimbriation]             nil})
-       :vair                        (pick-options [[:layout :variant]
+       :vairy                       (pick-options [[:layout :variant]
                                                    [:layout :num-fields-x]
                                                    [:layout :offset-x]
                                                    [:layout :stretch-x]

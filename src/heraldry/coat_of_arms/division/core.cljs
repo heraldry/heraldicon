@@ -20,7 +20,7 @@
             [heraldry.coat-of-arms.division.type.tierced-per-pairle :as tierced-per-pairle]
             [heraldry.coat-of-arms.division.type.tierced-per-pairle-reversed :as tierced-per-pairle-reversed]
             [heraldry.coat-of-arms.division.type.tierced-per-pale :as tierced-per-pale]
-            [heraldry.coat-of-arms.division.type.vair :as vair]
+            [heraldry.coat-of-arms.division.type.vairy :as vairy]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.util :as util]))
 
@@ -90,7 +90,7 @@
                                                (-> (subvec defaults 0 2)
                                                    (into (map (fn [i]
                                                                 (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))))
-      (= :vair type)                         [(-> default/field
+      (= :vairy type)                        [(-> default/field
                                                   (assoc-in [:content :tincture] :azure))
                                               (-> default/field
                                                   (assoc-in [:content :tincture] :argent))]
@@ -127,7 +127,7 @@
    #'bendy-sinister/render
    #'chequy/render
    #'lozengy/render
-   #'vair/render])
+   #'vairy/render])
 
 (def kinds-function-map
   (->> divisions
