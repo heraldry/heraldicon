@@ -7,14 +7,15 @@
             [heraldry.coat-of-arms.division.type.chequy :as chequy]
             [heraldry.coat-of-arms.division.type.gyronny :as gyronny]
             [heraldry.coat-of-arms.division.type.lozengy :as lozengy]
+            [heraldry.coat-of-arms.division.type.masonry :as masonry]
             [heraldry.coat-of-arms.division.type.paly :as paly]
+            [heraldry.coat-of-arms.division.type.papellony :as papellony]
             [heraldry.coat-of-arms.division.type.per-bend :as per-bend]
             [heraldry.coat-of-arms.division.type.per-bend-sinister :as per-bend-sinister]
             [heraldry.coat-of-arms.division.type.per-chevron :as per-chevron]
             [heraldry.coat-of-arms.division.type.per-fess :as per-fess]
             [heraldry.coat-of-arms.division.type.per-pale :as per-pale]
             [heraldry.coat-of-arms.division.type.per-saltire :as per-saltire]
-            [heraldry.coat-of-arms.division.type.papellony :as papellony]
             [heraldry.coat-of-arms.division.type.potenty :as potenty]
             [heraldry.coat-of-arms.division.type.quartered :as quartered]
             [heraldry.coat-of-arms.division.type.quarterly :as quarterly]
@@ -94,10 +95,11 @@
                                           (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))))
       (#{:vairy
          :potenty
-         :papellony} type) [(-> default/field
-                                (assoc-in [:content :tincture] :azure))
-                            (-> default/field
-                                (assoc-in [:content :tincture] :argent))]
+         :papellony
+         :masonry} type) [(-> default/field
+                              (assoc-in [:content :tincture] :azure))
+                          (-> default/field
+                              (assoc-in [:content :tincture] :argent))]
       (#{:bendy
          :bendy-sinister} type) (-> (subvec defaults 0 2)
                                     (into (map (fn [i]
@@ -133,7 +135,8 @@
    #'lozengy/render
    #'vairy/render
    #'potenty/render
-   #'papellony/render])
+   #'papellony/render
+   #'masonry/render])
 
 (def kinds-function-map
   (->> divisions
