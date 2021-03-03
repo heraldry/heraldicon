@@ -8,14 +8,9 @@
 (def sqr2 1.4142135623730951)
 
 (defn units [n]
-  (if (even? n)
-    (-> n
-        (* 2)
-        (+ 1))
-    (-> n
-        (+ 1)
-        (* 2)
-        (- 1))))
+  (-> n
+      (* 4)
+      (- 1)))
 
 (defn potent-default [part-width part-height]
   (let [width    part-width
