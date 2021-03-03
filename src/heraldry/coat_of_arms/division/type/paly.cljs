@@ -65,29 +65,29 @@
                                                                                      line-down-start)])
                                                                 "z"]
                                                      (even? i) (concat
-                                                                ["M" (v/+ line-two-bottom
+                                                                ["M" (v/+ line-one-bottom
                                                                           line-up-start)
                                                                  (svg/stitch line-up)]
                                                                 (cond
                                                                   last-part? [(infinity/path :clockwise
                                                                                              [:top :bottom]
-                                                                                             [(v/+ line-two-top
+                                                                                             [(v/+ line-one-top
                                                                                                    line-up-end)
                                                                                               (v/+ line-one-bottom
                                                                                                    line-up-start)])
                                                                               "z"]
                                                                   :else      [(infinity/path :clockwise
                                                                                              [:top :top]
-                                                                                             [(v/+ line-two-top
+                                                                                             [(v/+ line-one-top
                                                                                                    line-up-end)
-                                                                                              (v/+ line-one-top
+                                                                                              (v/+ line-two-top
                                                                                                    line-down-start)])
                                                                               (svg/stitch line-down)
                                                                               (infinity/path :clockwise
                                                                                              [:bottom :bottom]
-                                                                                             [(v/+ line-two-bottom
+                                                                                             [(v/+ line-one-bottom
                                                                                                    line-down-end)
-                                                                                              (v/+ line-one-bottom
+                                                                                              (v/+ line-two-bottom
                                                                                                    line-up-start)])
                                                                               "z"]))
                                                      :else     (concat
