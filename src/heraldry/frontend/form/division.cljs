@@ -27,8 +27,16 @@
                                                             (util/replace-recursively :none :argent)
                                                             (cond->
                                                              (= value key) (util/replace-recursively :azure :or)))
-                                                :layout {:num-fields-y (when (= key :chequy)
-                                                                         7)}}})}
+                                                :layout {:num-fields-x (case key
+                                                                         :chequy 4
+                                                                         :lozengy 3
+                                                                         :vairy 2
+                                                                         nil)
+                                                         :num-fields-y (case key
+                                                                         :chequy 5
+                                                                         :lozengy 4
+                                                                         :vairy 3
+                                                                         nil)}}})}
                           100
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
