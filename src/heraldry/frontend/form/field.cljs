@@ -174,7 +174,7 @@
           :lozengy
           :vairy
           :potenty
-          :papelonne} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
+          :papellony} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
                                       [:ul
                                        (let [tinctures @(rf/subscribe [:get (conj path :division :fields)])]
                                          (for [idx (range (count tinctures))]

@@ -229,7 +229,7 @@
                                                     ["Counter" :counter]
                                                     ["In pale" :in-pale]
                                                     ["En point" :en-point]]})
-       :papelonne (pick-options [[:thickness]
+       :papellony (pick-options [[:thickness]
                                  [:layout :num-fields-x]
                                  [:layout :offset-x]
                                  [:layout :stretch-x]
