@@ -52,6 +52,10 @@
                              ["En point" :en-point]
                              ["Ancien" :ancien]]
                    :default :default}
+   :thickness     {:type    :range
+                   :min     0
+                   :max     0.5
+                   :default 0.1}
    :layout        {:num-fields-x    {:type     :range
                                      :min      1
                                      :max      20
@@ -225,6 +229,15 @@
                                                                                      ["Counter" :counter]
                                                                                      ["In pale" :in-pale]
                                                                                      ["En point" :en-point]]})
+       :papelonne                   (pick-options [[:thickness]
+                                                   [:layout :num-fields-x]
+                                                   [:layout :offset-x]
+                                                   [:layout :stretch-x]
+                                                   [:layout :num-fields-y]
+                                                   [:layout :offset-y]
+                                                   [:layout :stretch-y]]
+                                                  {[:layout :num-fields-y :default] nil
+                                                   [:line]                          nil})
        :bendy                       (pick-options [[:line]
                                                    [:layout :num-base-fields]
                                                    [:layout :num-fields-y]
