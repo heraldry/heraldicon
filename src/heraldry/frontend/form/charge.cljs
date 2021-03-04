@@ -10,6 +10,7 @@
             [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.escutcheon :as escutcheon]
             [heraldry.frontend.form.geometry :as geometry]
+            [heraldry.frontend.form.line :as line]
             [heraldry.frontend.form.position :as position]
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.form.tincture :as tincture]
@@ -207,7 +208,9 @@
             :current (:geometry charge)])
          (when (:escutcheon charge-options)
            [escutcheon/form (conj path :escutcheon) "Escutcheon"
-            :choices (-> charge-options :escutcheon :choices)])])
+            :choices (-> charge-options :escutcheon :choices)])
+         (when (:fimbriation charge-options)
+           [line/form-for-fimbriation (conj path :fimbriation) (:fimbriation charge-options)])])
       [element/select (conj path :hints :outline-mode) "Outline" [["Keep" :keep]
                                                                   ["Remove" :remove]
                                                                   ["Primary" :primary]

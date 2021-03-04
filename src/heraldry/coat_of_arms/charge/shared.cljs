@@ -3,16 +3,20 @@
             [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.division.shared :as division-shared]
+            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
 (defn make-charge
   [{:keys [field hints] :as charge} parent environment {:keys [render-options] :as context} arg function]
-  (let [{:keys [position geometry]} (options/sanitize charge (charge-options/options charge))
+  (let [{:keys [position
+                geometry
+                fimbriation]} (options/sanitize charge (charge-options/options charge))
         {:keys [size stretch rotation
                 mirrored? reversed?]} geometry
         position-point (position/calculate position environment :fess)
@@ -72,15 +76,59 @@
                 mask-shape]]
         field (if (counterchange/counterchangable? field parent)
                 (counterchange/counterchange-field field parent)
-                field)]
+                field)
+        charge-id (util/id "charge")
+        outline? (or (:outline? render-options)
+                     (-> hints :outline-mode (= :keep)))]
     [:<>
-     [division-shared/make-division
-      :charge-pale [field] parts
-      [:all]
-      environment charge context]
-     (when (or (:outline? render-options)
-               (-> hints :outline-mode (= :keep)))
-       [:g outline/style
-        [:path {:d charge-shape}]
-        (when mask-shape
-          [:path {:d mask-shape}])])]))
+     (when (-> fimbriation :mode #{:double})
+       (let [thickness (+ (-> fimbriation
+                              :thickness-1
+                              ((util/percent-of charge-width)))
+                          (-> fimbriation
+                              :thickness-2
+                              ((util/percent-of charge-width))))]
+         [:<>
+          (when outline?
+            [fimbriation/dilate-and-fill
+             charge-shape
+             mask-shape
+             (+ thickness outline/stroke-width)
+             outline/color render-options])
+          [fimbriation/dilate-and-fill
+           charge-shape
+           mask-shape
+           (cond-> thickness
+             outline? (- outline/stroke-width))
+           (-> fimbriation
+               :tincture-2
+               (tincture/pick render-options)) render-options]]))
+     (when (-> fimbriation :mode #{:single :double})
+       (let [thickness (-> fimbriation
+                           :thickness-1
+                           ((util/percent-of charge-width)))]
+         [:<>
+          (when outline?
+            [fimbriation/dilate-and-fill
+             charge-shape
+             mask-shape
+             (+ thickness outline/stroke-width)
+             outline/color render-options])
+          [fimbriation/dilate-and-fill
+           charge-shape
+           mask-shape
+           (cond-> thickness
+             outline? (- outline/stroke-width))
+           (-> fimbriation
+               :tincture-1
+               (tincture/pick render-options)) render-options]]))
+     [:g {:id charge-id}
+      [division-shared/make-division
+       :charge-pale [field] parts
+       [:all]
+       environment charge context]
+      (when outline?
+        [:g outline/style
+         [:path {:d charge-shape}]
+         (when mask-shape
+           [:path {:d mask-shape}])])]]))
