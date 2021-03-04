@@ -43,6 +43,20 @@
     :bounding-box [-5 5 0 (+ 7 5)]}))
 
 (def
+  ^{:display-name "Square Czech"}
+  square-czech
+  (field-environment/create
+   ;; diff(sqrt(r*r - x*x))
+   ;; solve(-24/sqrt(r^2 - 24^2) - (-35/4)) ~ 24.156226
+   (str "m 0,0"
+        "h 56"
+        "l -4,35"
+        "a 24.156226 24.156226 0 0 1 -48,0"
+        "z")
+   {:context      :root
+    :bounding-box [0 56 0 59.1]}))
+
+(def
   ^{:display-name "French modern"}
   french-modern
   (field-environment/create
@@ -214,6 +228,7 @@
   [#'heater
    #'square-french
    #'square-iberian
+   #'square-czech
    #'french-modern
    #'lozenge
    #'roundel
