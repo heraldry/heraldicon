@@ -3,8 +3,10 @@
             [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field-environment :as field-environment]
+            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
@@ -79,7 +81,9 @@
                       svg-export?]
                :as   context}]
   (if-let [full-charge-data (or data (load-charge-data variant))]
-    (let [{:keys [position geometry]}      (options/sanitize charge (charge-options/options charge))
+    (let [{:keys [position
+                  geometry
+                  fimbriation]}            (options/sanitize charge (charge-options/options charge))
           {:keys [size stretch
                   mirrored? reversed?
                   rotation]}               geometry
@@ -115,6 +119,7 @@
                                                     ((util/percent-of height)))
                                                 (* (* min-y-distance 2) 0.7))
                                               stretch)
+          base-charge-width                target-width
           scale-x                          (* (if mirrored? -1 1)
                                               (min (/ target-width positional-charge-width)
                                                    (/ target-height positional-charge-height)))
@@ -191,7 +196,9 @@
           charge-name                      (or (:name full-charge-data) "")
           username                         (:username full-charge-data)
           charge-url                       (or (util/full-url-for-charge full-charge-data) "")
-          attribution                      (:attribution full-charge-data)]
+          attribution                      (:attribution full-charge-data)
+          outline?                         (or (:outline? render-options)
+                                               (-> hints :outline-mode (= :keep)))]
       [:<>
        [:defs
         [:mask {:id mask-id}
@@ -213,22 +220,60 @@
                                     "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
                                     "rotate(" (- rotation) ")"
                                     "translate(" (- (:x center-point)) "," (- (:y center-point)) ")")]
-         [:g {:transform transform
-              :clip-path (when-not svg-export?
-                           (str "url(#" clip-path-id ")"))}
-          [metadata/attribution charge-name username (util/full-url-for-username username) charge-url attribution]
-          (when render-field?
-            [:g {:mask (str "url(#" mask-inverted-id ")")}
-             [:g {:transform reverse-transform}
-              [render-field field charge-environment (-> context
-                                                         (update :db-path conj :field)
-                                                         (dissoc :fn-select-component))]]])
-          [:g {:mask     (str "url(#" mask-id ")")
-               :on-click (when fn-select-component
-                           (fn [event]
-                             (fn-select-component (-> context
-                                                      :db-path
-                                                      (conj :field)))
-                             (.stopPropagation event)))}
-           coloured-charge]])])
+         [:g {:transform transform}
+          (when (-> fimbriation :mode #{:double})
+            (let [thickness (+ (-> fimbriation
+                                   :thickness-1
+                                   ((util/percent-of base-charge-width)))
+                               (-> fimbriation
+                                   :thickness-2
+                                   ((util/percent-of base-charge-width))))]
+              [:<>
+               (when outline?
+                 [fimbriation/dilate-and-fill
+                  adjusted-charge
+                  (+ thickness outline/stroke-width)
+                  outline/color render-options])
+               [fimbriation/dilate-and-fill
+                adjusted-charge
+                (cond-> thickness
+                  outline? (- outline/stroke-width))
+                (-> fimbriation
+                    :tincture-2
+                    (tincture/pick render-options)) render-options]]))
+          (when (-> fimbriation :mode #{:single :double})
+            (let [thickness (-> fimbriation
+                                :thickness-1
+                                ((util/percent-of base-charge-width)))]
+              [:<>
+               (when outline?
+                 [fimbriation/dilate-and-fill
+                  adjusted-charge
+                  (+ thickness outline/stroke-width)
+                  outline/color render-options])
+               [fimbriation/dilate-and-fill
+                adjusted-charge
+                (cond-> thickness
+                  outline? (- outline/stroke-width))
+                (-> fimbriation
+                    :tincture-1
+                    (tincture/pick render-options)) render-options]]))
+
+          [:g {:clip-path (when-not svg-export?
+                            (str "url(#" clip-path-id ")"))}
+           [metadata/attribution charge-name username (util/full-url-for-username username) charge-url attribution]
+           (when render-field?
+             [:g {:mask (str "url(#" mask-inverted-id ")")}
+              [:g {:transform reverse-transform}
+               [render-field field charge-environment (-> context
+                                                          (update :db-path conj :field)
+                                                          (dissoc :fn-select-component))]]])
+           [:g {:mask     (str "url(#" mask-id ")")
+                :on-click (when fn-select-component
+                            (fn [event]
+                              (fn-select-component (-> context
+                                                       :db-path
+                                                       (conj :field)))
+                              (.stopPropagation event)))}
+            coloured-charge]]])])
     [:<>]))

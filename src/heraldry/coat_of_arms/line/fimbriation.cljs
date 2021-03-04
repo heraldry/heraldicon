@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.line.fimbriation
-  (:require [heraldry.coat-of-arms.infinity :as infinity]
+  (:require [clojure.walk :as walk]
+            [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
@@ -107,7 +108,7 @@
                                    (svg/stitch fimbriation-2))])}])]]
     [elements outlines]))
 
-(defn dilate-and-fill [shape negate-shape thickness color {:keys [svg-export?]}]
+(defn dilate-and-fill-path [shape negate-shape thickness color {:keys [svg-export?]}]
   (let [mask-id (util/id "mask")]
     [:<>
      [:defs
@@ -116,14 +117,50 @@
                :fill  "#ffffff"
                :style {:stroke-width      thickness
                        :stroke            "#ffffff"
-                       :stroke-linejoin   "miter"
+                       :stroke-linejoin   "round"
                        :stroke-miterlimit 10}}]
        [:path {:d     negate-shape
                :fill  "#000000"
                :style {:stroke-width      thickness
                        :stroke            "#ffffff"
-                       :stroke-linejoin   "miter"
+                       :stroke-linejoin   "round"
                        :stroke-miterlimit 10}}]]]
+
+     [:rect {:x      -500
+             :y      -500
+             :width  1100
+             :height 1100
+             :mask   (str "url(#" mask-id ")")
+             :fill   color
+             :style  (when (not svg-export?)
+                       {:pointer-events "none"})}]]))
+
+(defn dilate-recursively [data stroke-width color]
+  (walk/postwalk #(cond
+                    (and (vector? %)
+                         (-> % first (= :stroke-width)))    [(first %) stroke-width]
+                    (and (vector? %)
+                         (-> % first (= :style)))           [(first %) (-> %
+                                                                           second
+                                                                           (conj [:stroke-width stroke-width]))]
+                    (and (vector? %)
+                         (-> % first (= :stroke-linejoin))) [(first %) "round"]
+                    (and (vector? %)
+                         (-> % first #{:stroke :fill}))     [(first %) color]
+                    :else                                   %)
+                 data))
+
+(defn dilate-and-fill [shape thickness color {:keys [svg-export?]} & {:keys [transform]}]
+  (let [mask-id (util/id "mask")]
+    [:<>
+     [:defs
+      [:mask {:id mask-id}
+       [:g {:fill  "#ffffff"
+            :style {:stroke-width      thickness
+                    :stroke            "#ffffff"
+                    :stroke-linejoin   "round"
+                    :stroke-miterlimit 10}}
+        (dilate-recursively shape thickness "#ffffff")]]]
 
      [:rect {:x      -500
              :y      -500
