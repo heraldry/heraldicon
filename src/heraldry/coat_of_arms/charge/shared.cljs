@@ -90,12 +90,12 @@
                               ((util/percent-of charge-width))))]
          [:<>
           (when outline?
-            [fimbriation/dilate-and-fill
+            [fimbriation/dilate-and-fill-path
              charge-shape
              mask-shape
              (+ thickness outline/stroke-width)
              outline/color render-options])
-          [fimbriation/dilate-and-fill
+          [fimbriation/dilate-and-fill-path
            charge-shape
            mask-shape
            (cond-> thickness
@@ -109,12 +109,12 @@
                            ((util/percent-of charge-width)))]
          [:<>
           (when outline?
-            [fimbriation/dilate-and-fill
+            [fimbriation/dilate-and-fill-path
              charge-shape
              mask-shape
              (+ thickness outline/stroke-width)
              outline/color render-options])
-          [fimbriation/dilate-and-fill
+          [fimbriation/dilate-and-fill-path
            charge-shape
            mask-shape
            (cond-> thickness
