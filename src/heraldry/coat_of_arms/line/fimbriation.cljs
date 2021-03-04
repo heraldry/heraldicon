@@ -161,12 +161,12 @@
                     :stroke-linejoin "round"
                     :stroke-miterlimit 10}}
         (dilate-recursively shape thickness "#ffffff")]]]
-
-     [:rect {:x -500
-             :y -500
-             :width 1100
-             :height 1100
-             :mask (str "url(#" mask-id ")")
-             :fill color
-             :style (when (not svg-export?)
-                      {:pointer-events "none"})}]]))
+     [:g {:mask (str "url(#" mask-id ")")}
+      [:g {:transform transform}
+       [:rect {:x -500
+               :y -500
+               :width 1100
+               :height 1100
+               :fill color
+               :style (when (not svg-export?)
+                        {:pointer-events "none"})}]]]]))

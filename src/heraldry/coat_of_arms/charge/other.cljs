@@ -119,7 +119,6 @@
                                  ((util/percent-of height)))
                              (* (* min-y-distance 2) 0.7))
                            stretch)
-          base-charge-width target-width
           scale-x (* (if mirrored? -1 1)
                      (min (/ target-width positional-charge-width)
                           (/ target-height positional-charge-height)))
@@ -224,40 +223,44 @@
           (when (-> fimbriation :mode #{:double})
             (let [thickness (+ (-> fimbriation
                                    :thickness-1
-                                   ((util/percent-of base-charge-width)))
+                                   ((util/percent-of positional-charge-width)))
                                (-> fimbriation
                                    :thickness-2
-                                   ((util/percent-of base-charge-width))))]
+                                   ((util/percent-of positional-charge-width))))]
               [:<>
                (when outline?
                  [fimbriation/dilate-and-fill
                   adjusted-charge
                   (+ thickness outline/stroke-width)
-                  outline/color render-options])
+                  outline/color render-options
+                  :transform reverse-transform])
                [fimbriation/dilate-and-fill
                 adjusted-charge
                 (cond-> thickness
                   outline? (- outline/stroke-width))
                 (-> fimbriation
                     :tincture-2
-                    (tincture/pick render-options)) render-options]]))
+                    (tincture/pick render-options)) render-options
+                :transform reverse-transform]]))
           (when (-> fimbriation :mode #{:single :double})
             (let [thickness (-> fimbriation
                                 :thickness-1
-                                ((util/percent-of base-charge-width)))]
+                                ((util/percent-of positional-charge-width)))]
               [:<>
                (when outline?
                  [fimbriation/dilate-and-fill
                   adjusted-charge
                   (+ thickness outline/stroke-width)
-                  outline/color render-options])
+                  outline/color render-options
+                  :transform reverse-transform])
                [fimbriation/dilate-and-fill
                 adjusted-charge
                 (cond-> thickness
                   outline? (- outline/stroke-width))
                 (-> fimbriation
                     :tincture-1
-                    (tincture/pick render-options)) render-options]]))
+                    (tincture/pick render-options)) render-options
+                :transform reverse-transform]]))
 
           [:g {:clip-path (when-not svg-export?
                             (str "url(#" clip-path-id ")"))}
