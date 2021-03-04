@@ -10,7 +10,10 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.util :as util]))
 
-(defn coat-of-arms [coat-of-arms width {:keys [render-options svg-export? metadata] :as context}]
+(defn coat-of-arms [coat-of-arms width {:keys [render-options
+                                               svg-export?
+                                               metadata
+                                               texture-link] :as context}]
   (let [escutcheon (if (-> render-options
                            :escutcheon-override
                            (or :none)
@@ -30,8 +33,7 @@
         texture-displacement? (:texture-displacement? render-options)
         texture-id (util/id "texture")
         shiny-id (util/id "shiny")
-        use-texture? (and texture
-                          (not svg-export?))]
+        use-texture? (or texture-link texture)]
     {:environment environment
      :result [:g
               metadata
@@ -53,7 +55,7 @@
                                  :k4 0}]])
                (when use-texture?
                  [:filter {:id texture-id}
-                  [:feImage {:xlinkHref (get texture/paths texture)
+                  [:feImage {:href (or texture-link (get texture/paths texture))
                              :x 0
                              :y 0
                              :width 150
