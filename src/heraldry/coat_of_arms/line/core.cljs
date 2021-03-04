@@ -16,8 +16,6 @@
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
-(declare options)
-
 (defn line-with-offset [{fimbriation   :fimbriation
                          pattern-width :width
                          line-offset   :offset
