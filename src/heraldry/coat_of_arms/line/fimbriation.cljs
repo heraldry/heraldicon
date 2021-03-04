@@ -106,3 +106,30 @@
                                  (for [{:keys [fimbriation-2]} (reverse lines)]
                                    (svg/stitch fimbriation-2))])}])]]
     [elements outlines]))
+
+(defn dilate-and-fill [shape negate-shape thickness color {:keys [svg-export?]}]
+  (let [mask-id (util/id "mask")]
+    [:<>
+     [:defs
+      [:mask {:id mask-id}
+       [:path {:d shape
+               :fill "#ffffff"
+               :style {:stroke-width thickness
+                       :stroke "#ffffff"
+                       :stroke-linejoin "miter"
+                       :stroke-miterlimit 10}}]
+       [:path {:d negate-shape
+               :fill "#000000"
+               :style {:stroke-width thickness
+                       :stroke "#ffffff"
+                       :stroke-linejoin "miter"
+                       :stroke-miterlimit 10}}]]]
+
+     [:rect {:x -500
+             :y -500
+             :width 1100
+             :height 1100
+             :mask (str "url(#" mask-id ")")
+             :fill color
+             :style (when (not svg-export?)
+                      {:pointer-events "none"})}]]))
