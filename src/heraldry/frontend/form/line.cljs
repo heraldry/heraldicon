@@ -59,13 +59,12 @@
           [:span {:style {:color "#ccc"}} (get line/line-map value)
            " (inherited)"]))]]))
 
-(defn form-for-fimbriation [path options
-                            {:keys [mode
-                                    tincture-1
-                                    tincture-2
-                                    thickness-1-default
-                                    thickness-2-default]}]
-  (let [link-name (case mode
+(defn form-for-fimbriation [path options values & {:keys [defaults]}]
+  (let [fimbriation @(rf/subscribe [:get path])
+        {:keys [mode
+                tincture-1
+                tincture-2]} (merge fimbriation values)
+        link-name (case mode
                     :single (util/combine
                              ", "
                              ["single"
@@ -83,12 +82,12 @@
       (when (-> options :mode)
         [element/select (conj path :mode) "Mode"
          (-> options :mode :choices)
-         :default (-> options :mode :default)])
+         :default (or (:mode defaults) (-> options :mode :default))])
       (when (and (not= mode :none)
                  (-> options :alignment))
         [element/select (conj path :alignment) "Alignment"
          (-> options :alignment :choices)
-         :default (-> options :alignment :default)])
+         :default (or (:alignment defaults) (-> options :alignment :default))])
       (when (and (not= mode :none)
                  (-> options :outline?))
         [element/checkbox (conj path :outline?) "Outline"])
@@ -99,7 +98,7 @@
               (when (#{:double} mode) " 1"))
          (-> options :thickness-1 :min)
          (-> options :thickness-1 :max)
-         :default thickness-1-default
+         :default (or (:thickness-1 defaults) (-> options :thickness-1 :default))
          :step 0.1
          :display-function #(str % "%")])
       (when (and (#{:single :double} mode)
@@ -112,7 +111,7 @@
         [element/range-input (conj path :thickness-2) "Thickness 2"
          (-> options :thickness-2 :min)
          (-> options :thickness-2 :max)
-         :default thickness-2-default
+         :default (or (:thickness-1 defaults) (-> options :thickness-1 :default))
          :step 0.1
          :display-function #(str % "%")])
       (when (and (#{:double} mode)
@@ -136,6 +135,8 @@
                                    (-> defaults :fimbriation :tincture-1))
         fimbriation-tincture-2 (or (-> line :fimbriation :tincture-2)
                                    (-> defaults :fimbriation :tincture-2))
+        fimbriation-alignment (or (-> line :fimbriation :alignment)
+                                  (-> defaults :fimbriation :alignment))
         fimbriation-mode (options/get-value
                           (or (-> line :fimbriation :mode)
                               (-> defaults :fimbriation :mode))
@@ -181,11 +182,18 @@
       (when (:fimbriation options)
         [form-for-fimbriation (conj path :fimbriation) (:fimbriation options)
          {:mode fimbriation-mode
+          :alignment fimbriation-alignment
           :tincture-1 fimbriation-tincture-1
-          :tincture-2 fimbriation-tincture-2
-          :thickness-1-default (or (-> defaults :fimbriation :thickness-1)
-                                   (options/get-value (-> line :fimbriation :thickness-1)
-                                                      (-> options :fimbriation :thickness-1)))
-          :thickness-2-default (or (-> defaults :fimbriation :thickness-2)
-                                   (options/get-value (-> line :fimbriation :thickness-2)
-                                                      (-> options :fimbriation :thickness-2)))}])]]))
+          :tincture-2 fimbriation-tincture-2}
+         :defaults {:mode (or (-> defaults :fimbriation :mode)
+                              (options/get-value (-> line :fimbriation :mode)
+                                                 (-> options :fimbriation :mode)))
+                    :alignment (or (-> defaults :fimbriation :alignment)
+                                   (options/get-value (-> line :fimbriation :alignment)
+                                                      (-> options :fimbriation :alignment)))
+                    :thickness-1 (or (-> defaults :fimbriation :thickness-1)
+                                     (options/get-value (-> line :fimbriation :thickness-1)
+                                                        (-> options :fimbriation :thickness-1)))
+                    :thickness-2 (or (-> defaults :fimbriation :thickness-2)
+                                     (options/get-value (-> line :fimbriation :thickness-2)
+                                                        (-> options :fimbriation :thickness-2)))}])]]))
