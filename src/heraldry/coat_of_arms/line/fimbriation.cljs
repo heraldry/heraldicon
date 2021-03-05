@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.line.fimbriation
   (:require [clojure.walk :as walk]
             [heraldry.coat-of-arms.infinity :as infinity]
+            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
@@ -108,23 +109,26 @@
                                    (svg/stitch fimbriation-2))])}])]]
     [elements outlines]))
 
-(defn dilate-and-fill-path [shape negate-shape thickness color {:keys [svg-export?]}]
+(defn dilate-and-fill-path [shape negate-shape thickness color {:keys [svg-export?]}
+                            & {:keys [linejoin fill?] :or {linejoin "round"
+                                                           fill?    true}}]
   (let [mask-id (util/id "mask")]
     [:<>
      [:defs
       [:mask {:id mask-id}
        [:path {:d     shape
-               :fill  "#ffffff"
+               :fill  (when fill? "#ffffff")
                :style {:stroke-width      thickness
                        :stroke            "#ffffff"
-                       :stroke-linejoin   "round"
+                       :stroke-linejoin   linejoin
                        :stroke-miterlimit 10}}]
-       [:path {:d     negate-shape
-               :fill  "#000000"
-               :style {:stroke-width      thickness
-                       :stroke            "#ffffff"
-                       :stroke-linejoin   "round"
-                       :stroke-miterlimit 10}}]]]
+       (when negate-shape
+         [:path {:d     negate-shape
+                 :fill  "#000000"
+                 :style {:stroke-width      thickness
+                         :stroke            "#ffffff"
+                         :stroke-linejoin   linejoin
+                         :stroke-miterlimit 10}}])]]
 
      [:rect {:x      -500
              :y      -500
@@ -135,7 +139,7 @@
              :style  (when (not svg-export?)
                        {:pointer-events "none"})}]]))
 
-(defn dilate-recursively [data stroke-width color]
+(defn dilate-recursively [data stroke-width color linejoin]
   (walk/postwalk #(cond
                     (and (vector? %)
                          (-> % first (= :stroke-width)))    [(first %) stroke-width]
@@ -144,13 +148,14 @@
                                                                            second
                                                                            (conj [:stroke-width stroke-width]))]
                     (and (vector? %)
-                         (-> % first (= :stroke-linejoin))) [(first %) "round"]
+                         (-> % first (= :stroke-linejoin))) [(first %) linejoin]
                     (and (vector? %)
                          (-> % first #{:stroke :fill}))     [(first %) color]
                     :else                                   %)
                  data))
 
-(defn dilate-and-fill [shape thickness color {:keys [svg-export?]} & {:keys [transform]}]
+(defn dilate-and-fill [shape thickness color {:keys [svg-export?]}
+                       & {:keys [transform linejoin] :or {linejoin "round"}}]
   (let [mask-id (util/id "mask")]
     [:<>
      [:defs
@@ -158,9 +163,9 @@
        [:g {:fill  "#ffffff"
             :style {:stroke-width      thickness
                     :stroke            "#ffffff"
-                    :stroke-linejoin   "round"
+                    :stroke-linejoin   linejoin
                     :stroke-miterlimit 10}}
-        (dilate-recursively shape thickness "#ffffff")]]]
+        (dilate-recursively shape thickness "#ffffff" linejoin)]]]
      [:g {:mask (str "url(#" mask-id ")")}
       [:g {:transform transform}
        [:rect {:x      -500
@@ -170,3 +175,53 @@
                :fill   color
                :style  (when (not svg-export?)
                          {:pointer-events "none"})}]]]]))
+
+(defn draw-line [line line-data start outline? render-options]
+  (let [{:keys [fimbriation]} line
+        line-path             (svg/make-path ["M" (v/+ start
+                                                       (:line-start line-data))
+                                              (svg/stitch (:line line-data))])
+        {:keys [thickness-1
+                thickness-2]} fimbriation
+        thickness-2           (+ thickness-1 thickness-2)]
+    [:<>
+     (when (-> fimbriation :mode #{:double})
+       [:<>
+        (when outline?
+          [dilate-and-fill-path
+           line-path
+           nil
+           (+ thickness-2 outline/stroke-width)
+           outline/color render-options
+           :linejoin "miter"
+           :fill? false])
+        [dilate-and-fill-path
+         line-path
+         nil
+         (cond-> thickness-2
+           outline? (- outline/stroke-width))
+         (-> fimbriation
+             :tincture-2
+             (tincture/pick render-options)) render-options
+         :linejoin "miter"
+         :fill? false]])
+     (when (-> fimbriation :mode #{:single :double})
+       [:<>
+        (when outline?
+          [dilate-and-fill-path
+           line-path
+           nil
+           (+ thickness-1 outline/stroke-width)
+           outline/color render-options
+           :linejoin "miter"
+           :fill? false])
+        [dilate-and-fill-path
+         line-path
+         nil
+         (cond-> thickness-1
+           outline? (- outline/stroke-width))
+         (-> fimbriation
+             :tincture-1
+             (tincture/pick render-options)) render-options
+         :linejoin "miter"
+         :fill? false]])]))
