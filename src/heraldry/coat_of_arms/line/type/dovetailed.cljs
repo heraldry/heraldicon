@@ -6,7 +6,6 @@
   [{:keys [eccentricity
            height
            width]}
-   fimbriation-offset
    _line-options]
   (let [half-width (/ width 2)
         quarter-width (/ width 4)
@@ -15,28 +14,15 @@
                (/ 4)
                (* (-> eccentricity
                       (* 0.5)
-                      (+ 0.2))))
-        max-fo (/ (- quarter-width dx)
-                  (+ 1 (/ (* 2 dx) height)))
-        fimbriation-offset (-> fimbriation-offset
-                               (min max-fo)
-                               (max (- max-fo)))
-        shift-x (-> fimbriation-offset
-                    (* dx 2)
-                    (/ height))]
+                      (+ 0.2))))]
+
     ["l"
      [(+ quarter-width
-         dx
-         fimbriation-offset
-         shift-x) 0]
+         dx) 0]
      [(* dx -2) (- height)]
      [(+ half-width
          dx
-         dx
-         (* -2 fimbriation-offset)
-         (* -2 shift-x)) 0]
+         dx) 0]
      [(* dx -2) height]
      [(+ quarter-width
-         dx
-         fimbriation-offset
-         shift-x) 0]]))
+         dx) 0]]))
