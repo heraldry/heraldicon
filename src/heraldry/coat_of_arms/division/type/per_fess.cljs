@@ -54,7 +54,7 @@
                                          [left
                                           bottom-right]]]
         [fimbriation-elements
-         fimbriation-outlines] (fimbriation/render
+         fimbriation-outlines] (fimbriation/render_
                                 [left :left]
                                 [right :right]
                                 [line-one-data]

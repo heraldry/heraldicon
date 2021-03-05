@@ -170,28 +170,28 @@
         field                                                        (if (counterchange/counterchangable? field parent)
                                                                        (counterchange/counterchange-field field parent)
                                                                        field)
-        [fimbriation-elements-1 fimbriation-outlines-1]              (fimbriation/render
+        [fimbriation-elements-1 fimbriation-outlines-1]              (fimbriation/render_
                                                                       [top-left-upper :left]
                                                                       [top-right-upper :right]
                                                                       [line-top-left-upper-data
                                                                        line-top-right-upper-data]
                                                                       (:fimbriation line)
                                                                       render-options)
-        [fimbriation-elements-2 fimbriation-outlines-2]              (fimbriation/render
+        [fimbriation-elements-2 fimbriation-outlines-2]              (fimbriation/render_
                                                                       [top-right-lower :right]
                                                                       [bottom-right-upper :right]
                                                                       [line-top-right-lower-data
                                                                        line-bottom-right-upper-data]
                                                                       (:fimbriation line)
                                                                       render-options)
-        [fimbriation-elements-3 fimbriation-outlines-3]              (fimbriation/render
+        [fimbriation-elements-3 fimbriation-outlines-3]              (fimbriation/render_
                                                                       [bottom-right-lower :right]
                                                                       [bottom-left-lower :left]
                                                                       [line-bottom-right-lower-data
                                                                        line-bottom-left-lower-data]
                                                                       (:fimbriation line)
                                                                       render-options)
-        [fimbriation-elements-4 fimbriation-outlines-4]              (fimbriation/render
+        [fimbriation-elements-4 fimbriation-outlines-4]              (fimbriation/render_
                                                                       [bottom-left-upper :left]
                                                                       [top-left-lower :left]
                                                                       [line-bottom-left-upper-data

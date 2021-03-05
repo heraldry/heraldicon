@@ -106,14 +106,14 @@
         field                                                   (if (counterchange/counterchangable? field parent)
                                                                   (counterchange/counterchange-field field parent)
                                                                   field)
-        [fimbriation-elements-upper fimbriation-outlines-upper] (fimbriation/render
+        [fimbriation-elements-upper fimbriation-outlines-upper] (fimbriation/render_
                                                                  [left-upper :left]
                                                                  [right-upper :right]
                                                                  [line-left-upper-data
                                                                   line-right-upper-data]
                                                                  (:fimbriation line)
                                                                  render-options)
-        [fimbriation-elements-lower fimbriation-outlines-lower] (fimbriation/render
+        [fimbriation-elements-lower fimbriation-outlines-lower] (fimbriation/render_
                                                                  [right-lower :bottom]
                                                                  [left-lower :bottom]
                                                                  [line-right-lower-data

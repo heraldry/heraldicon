@@ -84,7 +84,7 @@
                                                bottom-left
                                                bottom-right]]]
         [fimbriation-elements
-         fimbriation-outlines] (fimbriation/render
+         fimbriation-outlines] (fimbriation/render_
                                 [diagonal-bottom-left :left]
                                 [diagonal-bottom-right :right]
                                 [line-left-data
