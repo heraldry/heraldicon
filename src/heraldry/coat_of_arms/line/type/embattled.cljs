@@ -5,20 +5,13 @@
    :value :embattled}
   [{:keys [height
            width]}
-   fimbriation-offset
    _line-options]
   (let [half-width (/ width 2)
         quarter-width (/ width 4)
-        height (* half-width height)
-        fimbriation-offset (-> fimbriation-offset
-                               (min quarter-width)
-                               (max (- quarter-width)))]
+        height (* half-width height)]
     ["l"
-     [(+ quarter-width
-         fimbriation-offset) 0]
+     [quarter-width 0]
      [0 (- height)]
-     [(- half-width
-         (* 2 fimbriation-offset)) 0]
+     [half-width 0]
      [0 height]
-     [(+ quarter-width
-         fimbriation-offset) 0]]))
+     [quarter-width 0]]))
