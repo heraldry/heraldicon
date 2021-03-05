@@ -6,7 +6,6 @@
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
@@ -81,5 +80,5 @@
       :ordinary-fess [field] parts
       [:all]
       environment ordinary context]
-     (fimbriation/draw-line line line-one-data first-left outline? render-options)
-     (fimbriation/draw-line opposite-line line-reversed-data second-right outline? render-options)]))
+     (line/render line line-one-data first-left outline? render-options)
+     (line/render opposite-line line-reversed-data second-right outline? render-options)]))

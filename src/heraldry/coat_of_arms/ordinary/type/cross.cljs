@@ -150,28 +150,28 @@
         field (if (counterchange/counterchangable? field parent)
                 (counterchange/counterchange-field field parent)
                 field)
-        [fimbriation-elements-1 fimbriation-outlines-1] (fimbriation/render
+        [fimbriation-elements-1 fimbriation-outlines-1] (fimbriation/render_
                                                          [fess-top-left :left]
                                                          [pale-top-left :top]
                                                          [line-fess-top-left-data
                                                           line-pale-top-left-data]
                                                          (:fimbriation line)
                                                          render-options)
-        [fimbriation-elements-2 fimbriation-outlines-2] (fimbriation/render
+        [fimbriation-elements-2 fimbriation-outlines-2] (fimbriation/render_
                                                          [pale-top-right :top]
                                                          [fess-top-right :right]
                                                          [line-pale-top-right-data
                                                           line-fess-top-right-data]
                                                          (:fimbriation line)
                                                          render-options)
-        [fimbriation-elements-3 fimbriation-outlines-3] (fimbriation/render
+        [fimbriation-elements-3 fimbriation-outlines-3] (fimbriation/render_
                                                          [fess-bottom-right :right]
                                                          [pale-bottom-right :bottom]
                                                          [line-fess-bottom-right-data
                                                           line-pale-bottom-right-data]
                                                          (:fimbriation line)
                                                          render-options)
-        [fimbriation-elements-4 fimbriation-outlines-4] (fimbriation/render
+        [fimbriation-elements-4 fimbriation-outlines-4] (fimbriation/render_
                                                          [pale-bottom-left :bottom]
                                                          [fess-bottom-left :left]
                                                          [line-pale-bottom-left-data
