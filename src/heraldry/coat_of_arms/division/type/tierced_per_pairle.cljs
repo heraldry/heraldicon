@@ -64,11 +64,9 @@
                                  (v/+ diagonal-top-left
                                       line-top-left-start)])
                  "z"]
-                [(v/+ diagonal-top-left
-                      line-top-left-start)
+                [diagonal-top-left
                  origin-point
-                 (v/+ diagonal-top-right
-                      line-top-right-start)]]
+                 diagonal-top-right]]
 
                [["M" (v/+ bottom
                           line-bottom-reversed-start)
@@ -83,10 +81,8 @@
                                       line-bottom-reversed-start)])
                  "z"]
                 [origin-point
-                 (v/+ diagonal-top-right
-                      line-top-right-start)
-                 (v/+ bottom
-                      line-bottom-reversed-start)
+                 diagonal-top-right
+                 bottom
                  diagonal-top-right
                  bottom-right]]
 
@@ -104,10 +100,8 @@
                  "z"]
                 [origin-point
                  bottom-left
-                 (v/+ bottom
-                      line-bottom-start)
-                 (v/+ diagonal-top-left
-                      line-top-left-start)]]]]
+                 bottom
+                 diagonal-top-left]]]]
     [:<>
      [shared/make-division
       (shared/division-context-key type) fields parts
