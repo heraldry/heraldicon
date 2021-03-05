@@ -184,6 +184,29 @@
                :style  (when (not svg-export?)
                          {:pointer-events "none"})}]]]]))
 
+(defn draw-line-fimbriation [line-path mask-id thickness color outline? corner render-options]
+  [:g {:mask (when mask-id
+               (str "url(#" mask-id ")"))}
+   (when outline?
+     [dilate-and-fill-path
+      line-path
+      nil
+      (+ thickness
+         outline/stroke-width)
+      outline/color
+      render-options
+      :corner corner
+      :fill? false])
+   [dilate-and-fill-path
+    line-path
+    nil
+    (cond-> thickness
+      outline? (- outline/stroke-width))
+    color
+    render-options
+    :corner corner
+    :fill? false]])
+
 (defn draw-line [line line-data start outline? render-options]
   (let [{:keys [fimbriation]}     line
         {line-path-snippet :line
@@ -206,62 +229,43 @@
                                      tincture-2 tincture-1]
                                     [thickness-1 thickness-2
                                      tincture-1 tincture-2])
-        mask-shape                (case alignment
-                                    :outside (svg/make-path ["M" (v/+ start line-start)
-                                                             (svg/stitch line-path-snippet)
-                                                             "l" line-up
-                                                             "L" (v/+ start line-start line-up)
-                                                             "z"])
-                                    :inside  (svg/make-path ["M" (v/+ start line-start)
-                                                             (svg/stitch line-path-snippet)
-                                                             "l" line-down
-                                                             "L" (v/+ start line-start line-down)
-                                                             "z"])
-                                    nil)
+        mask-shape-top            (when (#{:even :outside} alignment)
+                                    (svg/make-path ["M" (v/+ start line-start)
+                                                    (svg/stitch line-path-snippet)
+                                                    "l" line-up
+                                                    "L" (v/+ start line-start line-up)
+                                                    "z"]))
+        mask-shape-bottom         (when (#{:even :inside} alignment)
+                                    (svg/make-path ["M" (v/+ start line-start)
+                                                    (svg/stitch line-path-snippet)
+                                                    "l" line-down
+                                                    "L" (v/+ start line-start line-down)
+                                                    "z"]))
         thickness-2               (+ thickness-1 thickness-2)
-        mask-id                   (when mask-shape
-                                    (util/id "mask-line"))]
+        mask-id-top               (when mask-shape-top
+                                    (util/id "mask-line-top"))
+        mask-id-bottom            (when mask-shape-bottom
+                                    (util/id "mask-line-bottom"))]
     [:<>
-     (when mask-shape
+     (when (or mask-shape-top mask-shape-bottom)
        [:defs
-        [:mask {:id mask-id}
-         [:path {:d    mask-shape
-                 :fill "#ffffff"}]]])
-     [:g {:mask (when mask-shape
-                  (str "url(#" mask-id ")"))}
+        (when mask-shape-top
+          [:mask {:id mask-id-top}
+           [:path {:d    mask-shape-top
+                   :fill "#ffffff"}]])
+        (when mask-shape-bottom
+          [:mask {:id mask-id-bottom}
+           [:path {:d    mask-shape-bottom
+                   :fill "#ffffff"}]])])
+     [:g {:mask (case alignment
+                  :outside (str "url(#" mask-id-top ")")
+                  :inside  (str "url(#" mask-id-bottom ")")
+                  nil)}
       (when (#{:double} mode)
-        [:<>
-         (when outline?
-           [dilate-and-fill-path
-            line-path
-            nil
-            (+ thickness-2 outline/stroke-width)
-            outline/color render-options
-            :corner corner
-            :fill? false])
-         [dilate-and-fill-path
-          line-path
-          nil
-          (cond-> thickness-2
-            outline? (- outline/stroke-width))
-          (tincture/pick tincture-2 render-options) render-options
-          :corner corner
-          :fill? false]])
+        [draw-line-fimbriation line-path nil thickness-2
+         (tincture/pick tincture-2 render-options)
+         outline? corner render-options])
       (when (#{:single :double} mode)
-        [:<>
-         (when outline?
-           [dilate-and-fill-path
-            line-path
-            nil
-            (+ thickness-1 outline/stroke-width)
-            outline/color render-options
-            :corner corner
-            :fill? false])
-         [dilate-and-fill-path
-          line-path
-          nil
-          (cond-> thickness-1
-            outline? (- outline/stroke-width))
-          (tincture/pick tincture-1 render-options) render-options
-          :corner corner
-          :fill? false]])]]))
+        [draw-line-fimbriation line-path nil thickness-1
+         (tincture/pick tincture-1 render-options)
+         outline? corner render-options])]]))
