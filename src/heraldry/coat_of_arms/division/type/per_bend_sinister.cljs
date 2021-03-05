@@ -22,15 +22,30 @@
         left                                (:left points)
         right                               (:right points)
         direction                           (angle/direction diagonal-mode points origin-point)
-        diagonal-start                      (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x left))
-        diagonal-end                        (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x right))
-        angle                               (angle/angle-to-point diagonal-start diagonal-end)
+        real-diagonal-start                 (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x left))
+        real-diagonal-end                   (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x right))
+        angle                               (angle/angle-to-point real-diagonal-start real-diagonal-end)
+        effective-width                     (or (:width line) 1)
+        required-extra-length               (-> 30
+                                                (/ effective-width)
+                                                Math/ceil
+                                                inc
+                                                (* effective-width))
+        diagonal-start                      (v/+ real-diagonal-start (-> direction
+                                                                         (v/dot (v/v 1 -1))
+                                                                         (v// (- (v/abs direction)))
+                                                                         (v/* required-extra-length)))
+        diagonal-end                        (v/+ real-diagonal-end (-> direction
+                                                                       (v/dot (v/v -1 1))
+                                                                       (v// (- (v/abs direction)))
+                                                                       (v/* required-extra-length)))
         {line-one       :line
          line-one-start :line-start
          line-one-end   :line-end
          :as            line-one-data}      (line/create line
                                                          (v/abs (v/- diagonal-end diagonal-start))
                                                          :angle angle
+                                                         :reversed? true
                                                          :render-options render-options)
         parts                               [[["M" (v/+ diagonal-start
                                                         line-one-start)
@@ -42,9 +57,9 @@
                                                                (v/+ diagonal-start
                                                                     line-one-start)])
                                                "z"]
-                                              [diagonal-start
+                                              [real-diagonal-start
                                                top-left
-                                               diagonal-end]]
+                                               real-diagonal-end]]
 
                                              [["M" (v/+ diagonal-start
                                                         line-one-start)
@@ -56,9 +71,9 @@
                                                                (v/+ diagonal-start
                                                                     line-one-start)])
                                                "z"]
-                                              [diagonal-start
+                                              [real-diagonal-start
                                                bottom-right
-                                               diagonal-end]]]
+                                               real-diagonal-end]]]
         outline? (or (:outline? render-options)
                      (:outline? hints))]
     [:<>
