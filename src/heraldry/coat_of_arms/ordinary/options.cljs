@@ -33,12 +33,16 @@
             :chevron :forty-five-degrees} type)
       :top-left-origin))
 
+(defn set-line-defaults [options]
+  (-> options
+      (assoc-in [:fimbriation :alignment :default] :outside)))
+
 (def default-options
   {:origin position/default-options
    :diagonal-mode {:type :choice
                    :default :top-left-origin}
-   :line line/default-options
-   :opposite-line line/default-options
+   :line (set-line-defaults line/default-options)
+   :opposite-line (set-line-defaults line/default-options)
    :geometry (-> geometry/default-options
                  (assoc-in [:size :min] 10)
                  (assoc-in [:size :default] 25)
@@ -52,8 +56,12 @@
     (let [type (:type ordinary)]
       (->
        default-options
-       (options/merge {:line (line/options (get-in ordinary [:line]))})
-       (options/merge {:opposite-line (line/options (get-in ordinary [:opposite-line]))})
+       (options/merge {:line (-> (get-in ordinary [:line])
+                                 line/options
+                                 set-line-defaults)})
+       (options/merge {:opposite-line (-> (get-in ordinary [:opposite-line])
+                                          line/options
+                                          set-line-defaults)})
        (options/merge
         (->
          (get {:pale {:origin {:offset-y nil}
