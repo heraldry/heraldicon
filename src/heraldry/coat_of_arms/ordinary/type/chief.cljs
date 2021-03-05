@@ -46,8 +46,7 @@
                                  (v/+ row-right
                                       line-reversed-start)])
                  "z"]
-                [top-left (v/+ row-right
-                               line-reversed-start)]]]
+                [top-left row-right]]]
         field (if (counterchange/counterchangable? field parent)
                 (counterchange/counterchange-field field parent)
                 field)

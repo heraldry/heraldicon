@@ -66,10 +66,8 @@
                                  (v/+ first-bottom
                                       line-one-start)])
                  "z"]
-                [(v/+ first-bottom
-                      line-one-start)
-                 (v/+ second-top
-                      line-reversed-start)]]]
+                [first-bottom
+                 second-top]]]
         field (if (counterchange/counterchangable? field parent)
                 (counterchange/counterchange-field field parent)
                 field)
