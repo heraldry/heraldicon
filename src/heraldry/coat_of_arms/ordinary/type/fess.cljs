@@ -82,12 +82,4 @@
       [:all]
       environment ordinary context]
      (fimbriation/draw-line line line-one-data first-left outline? render-options)
-     (fimbriation/draw-line opposite-line line-reversed-data second-right outline? render-options)
-     (when outline?
-       [:g outline/style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ first-left line-one-start)
-                     (svg/stitch line-one)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ second-right line-reversed-start)
-                     (svg/stitch line-reversed)])}]])]))
+     (fimbriation/draw-line opposite-line line-reversed-data second-right outline? render-options)]))
