@@ -82,3 +82,33 @@
                                       (cljs.core/* (cljs.core/- x1 x0)
                                                    (cljs.core/- y2 y1))))
                (abs (- p1 p2))))
+
+(defn line-intersection [{x1 :x y1 :y}
+                         {x2 :x y2 :y :as end1}
+                         {x3 :x y3 :y :as start2}
+                         {x4 :x y4 :y}]
+  (let [- cljs.core/-
+        * cljs.core/*
+        D (- (* (- x1 x2)
+                (- y3 y4))
+             (* (- y1 y2)
+                (- x3 x4)))]
+    (if (zero? D)
+      ;; not expected, but if D = 0, then the lines are parallel,
+      ;; in that case just take the middle of end1 and start2
+      (-> end1
+          (+ start2)
+          (/ 2))
+      (/ (v (-> (* (- (* x1 y2)
+                      (* y1 x2))
+                   (- x3 x4))
+                (- (* (- x1 x2)
+                      (- (* x3 y4)
+                         (* y3 x4)))))
+            (-> (* (- (* x1 y2)
+                      (* y1 x2))
+                   (- y3 y4))
+                (- (* (- y1 y2)
+                      (- (* x3 y4)
+                         (* y3 x4))))))
+         D))))

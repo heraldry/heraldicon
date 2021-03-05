@@ -4,10 +4,8 @@
             [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
@@ -106,45 +104,14 @@
         field (if (counterchange/counterchangable? field parent)
                 (counterchange/counterchange-field field parent)
                 field)
-        [fimbriation-elements-upper fimbriation-outlines-upper] (fimbriation/render_
-                                                                 [left-upper :left]
-                                                                 [right-upper :right]
-                                                                 [line-left-upper-data
-                                                                  line-right-upper-data]
-                                                                 (:fimbriation line)
-                                                                 render-options)
-        [fimbriation-elements-lower fimbriation-outlines-lower] (fimbriation/render_
-                                                                 [right-lower :bottom]
-                                                                 [left-lower :bottom]
-                                                                 [line-right-lower-data
-                                                                  line-left-lower-data]
-                                                                 (:fimbriation opposite-line)
-                                                                 render-options)]
+        outline? (or (:outline? render-options)
+                     (:outline? hints))]
     [:<>
-     fimbriation-elements-upper
-     fimbriation-elements-lower
      [division-shared/make-division
       :ordinary-pale [field] parts
       [:all]
       environment ordinary context]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline/style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-upper
-                              line-right-upper-start)
-                     (svg/stitch line-right-upper)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ right-lower
-                              line-right-lower-start)
-                     (svg/stitch line-right-lower)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-lower
-                              line-left-lower-start)
-                     (svg/stitch line-left-lower)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ left-upper
-                              line-left-upper-start)
-                     (svg/stitch line-left-upper)])}]
-        fimbriation-outlines-upper
-        fimbriation-outlines-lower])]))
+     (line/render line [line-left-upper-data
+                        line-right-upper-data] left-upper outline? render-options)
+     (line/render opposite-line [line-right-lower-data
+                                 line-left-lower-data] right-lower outline? render-options)]))
