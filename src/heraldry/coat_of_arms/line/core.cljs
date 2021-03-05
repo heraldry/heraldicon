@@ -127,6 +127,11 @@
                  :alignment {:type :choice
                              :choices fimbriation-alignment-choices
                              :default :even}
+                 :corner {:type :choice
+                          :choices [["Round" :round]
+                                    ["Sharp" :sharp]
+                                    ["Bevel" :bevel]]
+                          :default :sharp}
                  :thickness-1 {:type :range
                                :min 1
                                :max 10
