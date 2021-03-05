@@ -233,7 +233,8 @@
                   adjusted-charge
                   (+ thickness outline/stroke-width)
                   outline/color render-options
-                  :transform reverse-transform])
+                  :transform reverse-transform
+                  :corner (-> fimbriation :corner)])
                [fimbriation/dilate-and-fill
                 adjusted-charge
                 (cond-> thickness
@@ -241,7 +242,8 @@
                 (-> fimbriation
                     :tincture-2
                     (tincture/pick render-options)) render-options
-                :transform reverse-transform]]))
+                :transform reverse-transform
+                :corner (-> fimbriation :corner)]]))
           (when (-> fimbriation :mode #{:single :double})
             (let [thickness (-> fimbriation
                                 :thickness-1
@@ -252,7 +254,8 @@
                   adjusted-charge
                   (+ thickness outline/stroke-width)
                   outline/color render-options
-                  :transform reverse-transform])
+                  :transform reverse-transform
+                  :corner (-> fimbriation :corner)])
                [fimbriation/dilate-and-fill
                 adjusted-charge
                 (cond-> thickness
@@ -260,7 +263,8 @@
                 (-> fimbriation
                     :tincture-1
                     (tincture/pick render-options)) render-options
-                :transform reverse-transform]]))
+                :transform reverse-transform
+                :corner (-> fimbriation :corner)]]))
 
           [:g {:clip-path (when-not svg-export?
                             (str "url(#" clip-path-id ")"))}

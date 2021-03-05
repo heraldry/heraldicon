@@ -109,10 +109,17 @@
                                    (svg/stitch fimbriation-2))])}])]]
     [elements outlines]))
 
+(defn linejoin [corner]
+  (case corner
+    :round "round"
+    :sharp "miter"
+    :bevel "bevel"
+    "round"))
+
 (defn dilate-and-fill-path [shape negate-shape thickness color {:keys [svg-export?]}
-                            & {:keys [linejoin fill?] :or {linejoin "round"
-                                                           fill?    true}}]
-  (let [mask-id (util/id "mask")]
+                            & {:keys [fill? corner] :or {fill? true}}]
+  (let [mask-id        (util/id "mask")
+        linejoin-value (linejoin corner)]
     [:<>
      [:defs
       [:mask {:id mask-id}
@@ -120,14 +127,14 @@
                :fill  (when fill? "#ffffff")
                :style {:stroke-width      thickness
                        :stroke            "#ffffff"
-                       :stroke-linejoin   linejoin
+                       :stroke-linejoin   linejoin-value
                        :stroke-miterlimit 10}}]
        (when negate-shape
          [:path {:d     negate-shape
                  :fill  "#000000"
                  :style {:stroke-width      thickness
                          :stroke            "#ffffff"
-                         :stroke-linejoin   linejoin
+                         :stroke-linejoin   linejoin-value
                          :stroke-miterlimit 10}}])]]
 
      [:rect {:x      -500
@@ -155,17 +162,18 @@
                  data))
 
 (defn dilate-and-fill [shape thickness color {:keys [svg-export?]}
-                       & {:keys [transform linejoin] :or {linejoin "round"}}]
-  (let [mask-id (util/id "mask")]
+                       & {:keys [transform corner]}]
+  (let [mask-id        (util/id "mask")
+        linejoin-value (linejoin corner)]
     [:<>
      [:defs
       [:mask {:id mask-id}
        [:g {:fill  "#ffffff"
             :style {:stroke-width      thickness
                     :stroke            "#ffffff"
-                    :stroke-linejoin   linejoin
+                    :stroke-linejoin   linejoin-value
                     :stroke-miterlimit 10}}
-        (dilate-recursively shape thickness "#ffffff" linejoin)]]]
+        (dilate-recursively shape thickness "#ffffff" linejoin-value)]]]
      [:g {:mask (str "url(#" mask-id ")")}
       [:g {:transform transform}
        [:rect {:x      -500
@@ -189,9 +197,11 @@
                 thickness-1
                 thickness-2
                 tincture-1
-                tincture-2]}      fimbriation
+                tincture-2
+                corner]}          fimbriation
         [thickness-1 thickness-2
-         tincture-1 tincture-2]   (if (= alignment :inside)
+         tincture-1 tincture-2]   (if (and (= alignment :inside)
+                                           (#{:double} mode))
                                     [thickness-2 thickness-1
                                      tincture-2 tincture-1]
                                     [thickness-1 thickness-2
@@ -227,7 +237,7 @@
             nil
             (+ thickness-2 outline/stroke-width)
             outline/color render-options
-            :linejoin "miter"
+            :corner corner
             :fill? false])
          [dilate-and-fill-path
           line-path
@@ -235,7 +245,7 @@
           (cond-> thickness-2
             outline? (- outline/stroke-width))
           (tincture/pick tincture-2 render-options) render-options
-          :linejoin "miter"
+          :corner corner
           :fill? false]])
       (when (#{:single :double} mode)
         [:<>
@@ -245,7 +255,7 @@
             nil
             (+ thickness-1 outline/stroke-width)
             outline/color render-options
-            :linejoin "miter"
+            :corner corner
             :fill? false])
          [dilate-and-fill-path
           line-path
@@ -253,5 +263,5 @@
           (cond-> thickness-1
             outline? (- outline/stroke-width))
           (tincture/pick tincture-1 render-options) render-options
-          :linejoin "miter"
+          :corner corner
           :fill? false]])]]))
