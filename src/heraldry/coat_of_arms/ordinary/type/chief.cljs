@@ -3,7 +3,6 @@
             [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.svg :as svg]
@@ -59,4 +58,4 @@
       :ordinary-chief [field] parts
       [:all]
       environment ordinary context]
-     (fimbriation/draw-line line line-reversed-data row-right outline? render-options)]))
+     (line/render line [line-reversed-data] row-right outline? render-options)]))

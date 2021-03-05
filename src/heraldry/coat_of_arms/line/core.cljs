@@ -31,8 +31,9 @@
                           int
                           inc)
         line-start    (v/v (min 0 offset-length) 0)]
-    {:line       (-> [["h" (cond-> 0
-                             (pos? offset-length) (+ offset-length))]]
+    {:line       (-> []
+                     (cond->
+                         (pos? offset-length) (into [["h" offset-length]]))
                      (into (repeat repetitions line-pattern))
                      (->> (apply merge))
                      vec)
@@ -181,10 +182,9 @@
                                       [(v/dot line-end (v/v -1 1))
                                        (v/dot line-start (v/v -1 1))]
                                       [line-start line-end])
-
-        line-flipped?      (:flipped? line-options-values)
-        effective-flipped? (or (and flipped? (not line-flipped?))
-                               (and (not flipped?) line-flipped?))]
+        line-flipped?               (:flipped? line-options-values)
+        effective-flipped?          (or (and flipped? (not line-flipped?))
+                                        (and (not flipped?) line-flipped?))]
     (-> line-data
         (assoc :line
                (-> line-path
@@ -196,49 +196,73 @@
                    (.rotate angle)
                    .toString))
         (assoc :line-start (when line-start (v/rotate line-start angle)))
-        (assoc :line-end (when line-end (v/rotate line-end angle)))
+        (assoc :line-end (when line-end (v/rotate (v/+ base-end line-end) angle)))
         (assoc :up (when line-up (v/rotate line-up angle)))
         (assoc :down (when line-down (v/rotate line-down angle))))))
 
-(defn render [line line-data start outline? render-options]
-  (let [{:keys [fimbriation]}     line
-        {line-path-snippet :line
-         line-start        :line-start
-         line-up           :up
-         line-down         :down} line-data
-        line-path                 (svg/make-path ["M" (v/+ start line-start)
-                                                  (svg/stitch line-path-snippet)])
+(defn mask-intersection-points [start line-datas direction]
+  (->> line-datas
+       (map (fn [{:keys [line-end up down]}]
+              (let [dv (case direction
+                         :up up
+                         down)]
+                {:start-offset dv
+                 :end-offset   (v/+ line-end dv)})))
+
+       (reduce (fn [current {:keys [start-offset end-offset]}]
+                 (if (empty? current)
+                   [{:start (v/+ start start-offset)
+                     :end   (v/+ start end-offset)}]
+                   (let [{previous-end :end} (last current)]
+                     (conj current {:start (v/+ previous-end start-offset)
+                                    :end   (v/+ previous-end end-offset)})))) [])
+       (partition 2 1)
+       (map (fn [[{start1 :start end1 :end}
+                  {start2 :start end2 :end}]]
+              (v/line-intersection start1 end1 start2 end2)))))
+
+(defn render [line line-datas start outline? render-options]
+  (let [{:keys [fimbriation]}   line
+        line-start              (-> line-datas first :line-start)
+        base-path               ["M" (v/+ start line-start)
+                                 (for [{line-path-snippet :line} line-datas]
+                                   (svg/stitch line-path-snippet))]
+        line-path               (svg/make-path base-path)
         {:keys [mode
                 alignment
                 thickness-1
                 thickness-2
                 tincture-1
                 tincture-2
-                corner]}          fimbriation
+                corner]}        fimbriation
         [thickness-1 thickness-2
-         tincture-1 tincture-2]   (if (and (= alignment :inside)
-                                           (= mode :double))
-                                    [thickness-2 thickness-1
-                                     tincture-2 tincture-1]
-                                    [thickness-1 thickness-2
-                                     tincture-1 tincture-2])
-        mask-shape-top            (when (#{:even :outside} alignment)
-                                    (svg/make-path ["M" (v/+ start line-start)
-                                                    (svg/stitch line-path-snippet)
-                                                    "l" line-up
-                                                    "L" (v/+ start line-start line-up)
-                                                    "z"]))
-        mask-shape-bottom         (when (#{:even :inside} alignment)
-                                    (svg/make-path ["M" (v/+ start line-start)
-                                                    (svg/stitch line-path-snippet)
-                                                    "l" line-down
-                                                    "L" (v/+ start line-start line-down)
-                                                    "z"]))
-        combined-thickness        (+ thickness-1 thickness-2)
-        mask-id-top               (when mask-shape-top
-                                    (util/id "mask-line-top"))
-        mask-id-bottom            (when mask-shape-bottom
-                                    (util/id "mask-line-bottom"))]
+         tincture-1 tincture-2] (if (and (= alignment :inside)
+                                         (= mode :double))
+                                  [thickness-2 thickness-1
+                                   tincture-2 tincture-1]
+                                  [thickness-1 thickness-2
+                                   tincture-1 tincture-2])
+        mask-shape-top          (when (#{:even :outside} alignment)
+                                  (let [mask-points (-> [(v/+ start line-start (-> line-datas first :up))]
+                                                        (into (mask-intersection-points start line-datas :up)))]
+                                    (svg/make-path [base-path
+                                                    "l" (-> line-datas last :up)
+                                                    (for [mask-point (reverse mask-points)]
+                                                      ["L" mask-point])
+                                                    "z"])))
+        mask-shape-bottom       (when (#{:even :inside} alignment)
+                                  (let [mask-points (-> [(v/+ start line-start (-> line-datas first :down))]
+                                                        (into (mask-intersection-points start line-datas :down)))]
+                                    (svg/make-path [base-path
+                                                    "l" (-> line-datas last :down)
+                                                    (for [mask-point (reverse mask-points)]
+                                                      ["L" mask-point])
+                                                    "z"])))
+        combined-thickness      (+ thickness-1 thickness-2)
+        mask-id-top             (when mask-shape-top
+                                  (util/id "mask-line-top"))
+        mask-id-bottom          (when mask-shape-bottom
+                                  (util/id "mask-line-bottom"))]
     [:<>
      (when (#{:single :double} mode)
        [:<>

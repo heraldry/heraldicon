@@ -3,10 +3,8 @@
             [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
@@ -150,79 +148,18 @@
         field                                                      (if (counterchange/counterchangable? field parent)
                                                                      (counterchange/counterchange-field field parent)
                                                                      field)
-        [fimbriation-elements-1 fimbriation-outlines-1]            (fimbriation/render_
-                                                                    [fess-top-left :left]
-                                                                    [pale-top-left :top]
-                                                                    [line-fess-top-left-data
-                                                                     line-pale-top-left-data]
-                                                                    (:fimbriation line)
-                                                                    render-options)
-        [fimbriation-elements-2 fimbriation-outlines-2]            (fimbriation/render_
-                                                                    [pale-top-right :top]
-                                                                    [fess-top-right :right]
-                                                                    [line-pale-top-right-data
-                                                                     line-fess-top-right-data]
-                                                                    (:fimbriation line)
-                                                                    render-options)
-        [fimbriation-elements-3 fimbriation-outlines-3]            (fimbriation/render_
-                                                                    [fess-bottom-right :right]
-                                                                    [pale-bottom-right :bottom]
-                                                                    [line-fess-bottom-right-data
-                                                                     line-pale-bottom-right-data]
-                                                                    (:fimbriation line)
-                                                                    render-options)
-        [fimbriation-elements-4 fimbriation-outlines-4]            (fimbriation/render_
-                                                                    [pale-bottom-left :bottom]
-                                                                    [fess-bottom-left :left]
-                                                                    [line-pale-bottom-left-data
-                                                                     line-fess-bottom-left-data]
-                                                                    (:fimbriation line)
-                                                                    render-options)]
+        outline?                                                   (or (:outline? render-options)
+                                                                       (:outline? hints))]
     [:<>
-     fimbriation-elements-1
-     fimbriation-elements-2
-     fimbriation-elements-3
-     fimbriation-elements-4
      [division-shared/make-division
       :ordinary-pale [field] parts
       [:all]
       environment ordinary context]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline/style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-top-left
-                              line-pale-top-left-start)
-                     (svg/stitch line-pale-top-left)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ pale-top-right
-                              line-pale-top-right-start)
-                     (svg/stitch line-pale-top-right)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-top-right
-                              line-fess-top-right-start)
-                     (svg/stitch line-fess-top-right)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ fess-bottom-right
-                              line-fess-bottom-right-start)
-                     (svg/stitch line-fess-bottom-right)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-bottom-right
-                              line-pale-bottom-right-start)
-                     (svg/stitch line-pale-bottom-right)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ pale-bottom-left
-                              line-pale-bottom-left-start)
-                     (svg/stitch line-pale-bottom-left)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-bottom-left
-                              line-fess-bottom-left-start)
-                     (svg/stitch line-fess-bottom-left)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ fess-top-left
-                              line-fess-top-left-start)
-                     (svg/stitch line-fess-top-left)])}]
-        fimbriation-outlines-1
-        fimbriation-outlines-2
-        fimbriation-outlines-3
-        fimbriation-outlines-4])]))
+     (line/render line [line-fess-top-left-data
+                        line-pale-top-left-data] fess-top-left outline? render-options)
+     (line/render line [line-pale-top-right-data
+                        line-fess-top-right-data] pale-top-right outline? render-options)
+     (line/render line [line-fess-bottom-right-data
+                        line-pale-bottom-right-data] fess-bottom-right outline? render-options)
+     (line/render line [line-pale-bottom-left-data
+                        line-fess-bottom-left-data] pale-bottom-left outline? render-options)]))
