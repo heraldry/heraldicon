@@ -5,7 +5,6 @@
    :value        :dancetty}
   [{:keys [height
            width]}
-   _fimbriation-offset
    _line-options]
   (let [half-width    (/ width 2)
         quarter-width (/ width 4)

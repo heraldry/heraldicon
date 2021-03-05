@@ -4,6 +4,5 @@
   {:display-name "Straight"
    :value        :straight}
   [{:keys [width]}
-   _fimbriation-offset
    _line-options]
   ["h" width])

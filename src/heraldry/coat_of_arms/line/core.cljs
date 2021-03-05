@@ -18,26 +18,9 @@
 
 (defn line-with-offset [{pattern-width :width
                          line-offset   :offset
-                         flipped?      :flipped?
                          :as           line}
-                        length line-function {:keys [joint-angle]
-                                              :as   line-options}]
-  (let [base-line       0
-        offset-x-factor (if joint-angle
-                          (-> joint-angle
-                              (/ 2)
-                              (* Math/PI)
-                              (/ 180)
-                              Math/tan
-                              (->> (/ 1))
-                              -)
-                          0)
-        line-start-x    (* base-line
-                           offset-x-factor)
-
-        line-pattern  (line-function line (if flipped?
-                                            (- base-line)
-                                            base-line) line-options)
+                        length line-function line-options]
+  (let [line-pattern  (line-function line line-options)
         offset-length (* line-offset pattern-width)
         repetitions   (-> length
                           (- offset-length)
@@ -51,9 +34,7 @@
                      (into (repeat repetitions line-pattern))
                      (->> (apply merge))
                      vec)
-     :line-start (v/+ (v/v line-start-x
-                           base-line)
-                      line-start)
+     :line-start line-start
      :up         (v/v 0 -50)
      :down       (v/v 0 50)}))
 
