@@ -17,8 +17,16 @@
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
-        left (assoc (:left points) :y (:y origin-point))
-        right (assoc (:right points) :y (:y origin-point))
+        real-left (assoc (:left points) :y (:y origin-point))
+        real-right (assoc (:right points) :y (:y origin-point))
+        effective-width (or (:width line) 1)
+        required-extra-length (-> 30
+                                  (/ effective-width)
+                                  Math/ceil
+                                  inc
+                                  (* effective-width))
+        left (v/- real-left (v/v required-extra-length 0))
+        right (v/+ real-right (v/v required-extra-length 0))
         bottom-right (:bottom-right points)
         {line-one :line
          line-one-start :line-start
@@ -37,7 +45,7 @@
                                       line-one-start)])
                  "z"]
                 [top-left
-                 right]]
+                 real-right]]
 
                [["M" (v/+ left
                           line-one-start)
@@ -49,7 +57,7 @@
                                  (v/+ left
                                       line-one-start)])
                  "z"]
-                [left
+                [real-left
                  bottom-right]]]
         outline? (or (:outline? render-options)
                      (:outline? hints))]
