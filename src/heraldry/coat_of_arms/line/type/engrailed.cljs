@@ -6,7 +6,6 @@
   [{:keys [eccentricity
            height
            width]}
-   _fimbriation-offset
    _line-options]
   (let [radius-x (-> width
                      (/ 2)

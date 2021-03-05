@@ -6,7 +6,6 @@
   [{:keys [eccentricity
            height
            width]}
-   _fimbriation-offset
    _line-options]
   (let [quarter-width (/ width 4)
         pointy-height (* quarter-width
