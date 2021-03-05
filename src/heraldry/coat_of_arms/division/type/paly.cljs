@@ -34,7 +34,6 @@
          line-down-start :line-start
          line-down-end   :line-end} (line/create line
                                                  height
-                                                 :flipped? true
                                                  :angle 90
                                                  :render-options render-options)
         {line-up       :line
@@ -42,6 +41,7 @@
          line-up-end   :line-end}   (line/create line
                                                  height
                                                  :angle -90
+                                                 :flipped? true
                                                  :reversed? true
                                                  :render-options render-options)
         parts                       (->> (range num-fields-x)
