@@ -280,7 +280,7 @@
           [:<>
            (if (= mode :single)
              [fimbriation/render line-path nil (/ thickness-1 2)
-              (tincture/pick tincture-2 render-options)
+              (tincture/pick tincture-1 render-options)
               outline? corner render-options]
              (cond
                (> thickness-1 thickness-2) [:<>
