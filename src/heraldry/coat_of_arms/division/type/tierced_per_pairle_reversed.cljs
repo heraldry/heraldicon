@@ -70,10 +70,8 @@
                                                  "z"]
                                                 [top-left
                                                  origin-point
-                                                 (v/+ diagonal-bottom-left
-                                                      line-bottom-left-start)
-                                                 (v/+ top
-                                                      line-top-reversed-start)]]
+                                                 diagonal-bottom-left
+                                                 top]]
 
                                                [["M" (v/+ diagonal-bottom-right
                                                           line-bottom-right-start)
@@ -89,10 +87,8 @@
                                                  "z"]
                                                 [top-right
                                                  origin-point
-                                                 (v/+ top
-                                                      line-top-start)
-                                                 (v/+ diagonal-bottom-right
-                                                      line-bottom-right-start)]]
+                                                 top
+                                                 diagonal-bottom-right]]
 
                                                [["M" (v/+ diagonal-bottom-right
                                                           line-bottom-right-start)

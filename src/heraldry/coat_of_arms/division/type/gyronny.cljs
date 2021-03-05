@@ -27,6 +27,10 @@
         diagonal-top-right                  (v/project-x origin-point (v/dot direction (v/v 1 -1)) (-> right :x (+ 50)))
         diagonal-bottom-left                (v/project-x origin-point (v/dot direction (v/v -1 1)) (-> left :x (- 50)))
         diagonal-bottom-right               (v/project-x origin-point (v/dot direction (v/v 1 1)) (-> right :x (+ 50)))
+        real-diagonal-top-left              (v/project-x origin-point (v/dot direction (v/v -1 -1)) (-> left :x))
+        real-diagonal-top-right             (v/project-x origin-point (v/dot direction (v/v 1 -1)) (-> right :x))
+        real-diagonal-bottom-left           (v/project-x origin-point (v/dot direction (v/v -1 1)) (-> left :x))
+        real-diagonal-bottom-right          (v/project-x origin-point (v/dot direction (v/v 1 1)) (-> right :x))
         angle-top-left                      (angle/angle-to-point origin-point diagonal-top-left)
         angle-top-right                     (angle/angle-to-point origin-point diagonal-top-right)
         angle-bottom-left                   (angle/angle-to-point origin-point diagonal-bottom-left)
@@ -87,10 +91,9 @@
                                                                (v/+ top
                                                                     line-top-start)])
                                                "z"]
-                                              [diagonal-top-left
+                                              [real-diagonal-top-left
                                                origin-point
-                                               (v/+ top
-                                                    line-top-start)]]
+                                               top]]
 
                                              [["M" (v/+ top
                                                         line-top-start)
@@ -103,10 +106,9 @@
                                                                (v/+ top
                                                                     line-top-start)])
                                                "z"]
-                                              [(v/+ top
-                                                    line-top-start)
+                                              [top
                                                origin-point
-                                               diagonal-top-right]]
+                                               real-diagonal-top-right]]
 
                                              [["M" (v/+ left
                                                         line-left-start)
@@ -119,10 +121,9 @@
                                                                (v/+ left
                                                                     line-left-start)])
                                                "z"]
-                                              [(v/+ left
-                                                    line-left-start)
+                                              [left
                                                origin-point
-                                               diagonal-top-left]]
+                                               real-diagonal-top-left]]
 
                                              [["M" (v/+ right
                                                         line-right-start)
@@ -135,10 +136,9 @@
                                                                (v/+ right
                                                                     line-right-start)])
                                                "z"]
-                                              [diagonal-top-right
+                                              [real-diagonal-top-right
                                                origin-point
-                                               (v/+ right
-                                                    line-right-start)]]
+                                               right]]
 
                                              [["M" (v/+ left
                                                         line-left-start)
@@ -151,10 +151,9 @@
                                                                (v/+ left
                                                                     line-left-start)])
                                                "z"]
-                                              [diagonal-bottom-left
+                                              [real-diagonal-bottom-left
                                                origin-point
-                                               (v/+ left
-                                                    line-left-start)]]
+                                               left]]
 
                                              [["M" (v/+ right
                                                         line-right-start)
@@ -167,10 +166,9 @@
                                                                (v/+ right
                                                                     line-right-start)])
                                                "z"]
-                                              [(v/+ right
-                                                    line-right-start)
+                                              [right
                                                origin-point
-                                               diagonal-bottom-right]]
+                                               real-diagonal-bottom-right]]
 
                                              [["M" (v/+ bottom
                                                         line-bottom-start)
@@ -183,10 +181,9 @@
                                                                (v/+ bottom
                                                                     line-bottom-start)])
                                                "z"]
-                                              [(v/+ bottom
-                                                    line-bottom-start)
+                                              [bottom
                                                origin-point
-                                               diagonal-bottom-left]]
+                                               real-diagonal-bottom-left]]
 
                                              [["M" (v/+ bottom
                                                         line-bottom-start)
@@ -199,10 +196,9 @@
                                                                (v/+ bottom
                                                                     line-bottom-start)])
                                                "z"]
-                                              [diagonal-bottom-right
+                                              [real-diagonal-bottom-right
                                                origin-point
-                                               (v/+ bottom
-                                                    line-bottom-start)]]]]
+                                               bottom]]]]
 
     [:<>
      [shared/make-division

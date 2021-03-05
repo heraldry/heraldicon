@@ -53,8 +53,7 @@
                                                              (v/+ first-left
                                                                   line-one-start)])
                                              "z"]
-                                            [top-left (v/+ first-right
-                                                           line-one-start)]]
+                                            [top-left first-right]]
 
                                            [["M" (v/+ first-left
                                                       line-one-start)
@@ -73,8 +72,7 @@
                                                              (v/+ first-left
                                                                   line-one-start)])
                                              "z"]
-                                            [(v/+ first-left
-                                                  line-one-start)
+                                            [first-left
                                              second-right]]
 
                                            [["M" (v/+ second-right
@@ -87,8 +85,7 @@
                                                              (v/+ second-right
                                                                   line-reversed-start)])
                                              "z"]
-                                            [(v/+ second-left
-                                                  line-reversed-start) bottom-right]]]]
+                                            [second-left bottom-right]]]]
     [:<>
      [shared/make-division
       (shared/division-context-key type) fields parts

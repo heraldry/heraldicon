@@ -55,8 +55,7 @@
                                                                   line-one-start)])
                                              "z"]
                                             [top-left
-                                             (v/+ first-bottom
-                                                  line-one-start)]]
+                                             first-bottom]]
 
                                            [["M" (v/+ second-bottom
                                                       line-reversed-start)
@@ -76,10 +75,8 @@
                                                                   line-reversed-start)
                                                              first-bottom second-bottom])
                                              "z"]
-                                            [(v/+ first-top
-                                                  line-one-start)
-                                             (v/+ second-bottom
-                                                  line-reversed-start)]]
+                                            [first-top
+                                             second-bottom]]
 
                                            [["M" (v/+ second-bottom
                                                       line-reversed-start)
@@ -91,8 +88,7 @@
                                                              (v/+ second-bottom
                                                                   line-reversed-start)])
                                              "z"]
-                                            [(v/+ second-top
-                                                  line-reversed-start)
+                                            [second-top
                                              bottom-right]]]]
     [:<>
      [shared/make-division

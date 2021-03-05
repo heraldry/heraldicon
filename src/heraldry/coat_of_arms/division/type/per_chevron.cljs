@@ -40,10 +40,10 @@
         {line-right     :line
          line-right-end :line-end
          :as            line-right-data}    (line/create line
-                                                       (v/abs (v/- diagonal-bottom-right origin-point))
-                                                       :angle angle-bottom-right
-                                                       :joint-angle (- joint-angle)
-                                                       :render-options render-options)
+                                                         (v/abs (v/- diagonal-bottom-right origin-point))
+                                                         :angle angle-bottom-right
+                                                         :joint-angle (- joint-angle)
+                                                         :render-options render-options)
         parts                               [[["M" (v/+ diagonal-bottom-left
                                                         line-left-start)
                                                (svg/stitch line-left)
@@ -57,10 +57,8 @@
                                                "z"]
                                               [top-left
                                                top-right
-                                               (v/+ diagonal-bottom-left
-                                                    line-left-start)
-                                               (v/+ diagonal-bottom-right
-                                                    line-left-start)]]
+                                               diagonal-bottom-left
+                                               diagonal-bottom-right]]
 
                                              [["M" (v/+ diagonal-bottom-left
                                                         line-left-start)
@@ -73,11 +71,9 @@
                                                                (v/+ diagonal-bottom-left
                                                                     line-left-start)])
                                                "z"]
-                                              [(v/+ diagonal-bottom-left
-                                                    line-left-start)
+                                              [diagonal-bottom-left
                                                origin-point
-                                               (v/+ diagonal-bottom-right
-                                                    line-right-end)
+                                               diagonal-bottom-right
                                                bottom-left
                                                bottom-right]]]
         outline? (or (:outline? render-options)
