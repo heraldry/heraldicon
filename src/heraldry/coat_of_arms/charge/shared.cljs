@@ -94,7 +94,8 @@
              charge-shape
              mask-shape
              (+ thickness outline/stroke-width)
-             outline/color render-options])
+             outline/color render-options
+             :corner (-> fimbriation :corner)])
           [fimbriation/dilate-and-fill-path
            charge-shape
            mask-shape
@@ -102,7 +103,8 @@
              outline? (- outline/stroke-width))
            (-> fimbriation
                :tincture-2
-               (tincture/pick render-options)) render-options]]))
+               (tincture/pick render-options)) render-options
+           :corner (-> fimbriation :corner)]]))
      (when (-> fimbriation :mode #{:single :double})
        (let [thickness (-> fimbriation
                            :thickness-1
@@ -113,7 +115,8 @@
              charge-shape
              mask-shape
              (+ thickness outline/stroke-width)
-             outline/color render-options])
+             outline/color render-options
+             :corner (-> fimbriation :corner)])
           [fimbriation/dilate-and-fill-path
            charge-shape
            mask-shape
@@ -121,7 +124,8 @@
              outline? (- outline/stroke-width))
            (-> fimbriation
                :tincture-1
-               (tincture/pick render-options)) render-options]]))
+               (tincture/pick render-options)) render-options
+           :corner (-> fimbriation :corner)]]))
      [:g {:id charge-id}
       [division-shared/make-division
        :charge-pale [field] parts

@@ -15,6 +15,8 @@
    :fimbriation (-> line/default-options
                     :fimbriation
                     (dissoc :alignment)
+                    (assoc-in [:corner :default] :round)
+                    (assoc-in [:thickness-1 :default] 10)
                     (assoc-in [:thickness-1 :max] 50)
                     (assoc-in [:thickness-1 :default] 10)
                     (assoc-in [:thickness-2 :max] 50)

@@ -83,41 +83,41 @@
         [element/select (conj path :mode) "Mode"
          (-> options :mode :choices)
          :default (or (:mode defaults) (-> options :mode :default))])
-      (when (and (not= mode :none)
-                 (-> options :alignment))
-        [element/select (conj path :alignment) "Alignment"
-         (-> options :alignment :choices)
-         :default (or (:alignment defaults) (-> options :alignment :default))])
-      (when (and (not= mode :none)
-                 (-> options :outline?))
-        [element/checkbox (conj path :outline?) "Outline"])
-      (when (and (#{:single :double} mode)
-                 (-> options :thickness-1))
-        [element/range-input (conj path :thickness-1)
-         (str "Thickness"
-              (when (#{:double} mode) " 1"))
-         (-> options :thickness-1 :min)
-         (-> options :thickness-1 :max)
-         :default (or (:thickness-1 defaults) (-> options :thickness-1 :default))
-         :step 0.1
-         :display-function #(str % "%")])
-      (when (and (#{:single :double} mode)
-                 (-> options :tincture-1))
-        [tincture/form (conj path :tincture-1)
-         :label (str "Tincture"
-                     (when (#{:double} mode) " 1"))])
-      (when (and (#{:double} mode)
-                 (-> options :thickness-2))
-        [element/range-input (conj path :thickness-2) "Thickness 2"
-         (-> options :thickness-2 :min)
-         (-> options :thickness-2 :max)
-         :default (or (:thickness-1 defaults) (-> options :thickness-1 :default))
-         :step 0.1
-         :display-function #(str % "%")])
-      (when (and (#{:double} mode)
-                 (-> options :tincture-2))
-        [tincture/form (conj path :tincture-2)
-         :label "Tincture 2"])]]))
+      (when (#{:single :double} mode)
+        [:<>
+         (when (-> options :alignment)
+           [element/select (conj path :alignment) "Alignment"
+            (-> options :alignment :choices)
+            :default (or (:alignment defaults) (-> options :alignment :default))])
+         (when (-> options :corner)
+           [element/select (conj path :corner) "Corner"
+            (-> options :corner :choices)
+            :default (or (:corner defaults) (-> options :corner :default))])
+         (when (-> options :thickness-1)
+           [element/range-input (conj path :thickness-1)
+            (str "Thickness"
+                 (when (#{:double} mode) " 1"))
+            (-> options :thickness-1 :min)
+            (-> options :thickness-1 :max)
+            :default (or (:thickness-1 defaults) (-> options :thickness-1 :default))
+            :step 0.1
+            :display-function #(str % "%")])
+         (when (-> options :tincture-1)
+           [tincture/form (conj path :tincture-1)
+            :label (str "Tincture"
+                        (when (#{:double} mode) " 1"))])
+         (when (and (#{:double} mode)
+                    (-> options :thickness-2))
+           [element/range-input (conj path :thickness-2) "Thickness 2"
+            (-> options :thickness-2 :min)
+            (-> options :thickness-2 :max)
+            :default (or (:thickness-1 defaults) (-> options :thickness-1 :default))
+            :step 0.1
+            :display-function #(str % "%")])
+         (when (and (#{:double} mode)
+                    (-> options :tincture-2))
+           [tincture/form (conj path :tincture-2)
+            :label "Tincture 2"])])]]))
 
 (defn form [path & {:keys [title options defaults] :or {title "Line"}}]
   (let [line @(rf/subscribe [:get path])
@@ -137,6 +137,8 @@
                                    (-> defaults :fimbriation :tincture-2))
         fimbriation-alignment (or (-> line :fimbriation :alignment)
                                   (-> defaults :fimbriation :alignment))
+        fimbriation-corner (or (-> line :fimbriation :corner)
+                               (-> defaults :fimbriation :corner))
         fimbriation-mode (options/get-value
                           (or (-> line :fimbriation :mode)
                               (-> defaults :fimbriation :mode))
@@ -184,7 +186,8 @@
          {:mode fimbriation-mode
           :alignment fimbriation-alignment
           :tincture-1 fimbriation-tincture-1
-          :tincture-2 fimbriation-tincture-2}
+          :tincture-2 fimbriation-tincture-2
+          :corner fimbriation-corner}
          :defaults {:mode (or (-> defaults :fimbriation :mode)
                               (options/get-value (-> line :fimbriation :mode)
                                                  (-> options :fimbriation :mode)))
@@ -196,4 +199,7 @@
                                                         (-> options :fimbriation :thickness-1)))
                     :thickness-2 (or (-> defaults :fimbriation :thickness-2)
                                      (options/get-value (-> line :fimbriation :thickness-2)
-                                                        (-> options :fimbriation :thickness-2)))}])]]))
+                                                        (-> options :fimbriation :thickness-2)))
+                    :corner (or (-> defaults :fimbriation :corner)
+                                (options/get-value (-> line :fimbriation :corner)
+                                                   (-> options :fimbriation :corner)))}])]]))
