@@ -57,10 +57,8 @@
                  "z"]
                 [top-left
                  top-right
-                 (v/+ diagonal-bottom-left
-                      line-left-start)
-                 (v/+ diagonal-bottom-right
-                      line-left-start)]]
+                 diagonal-bottom-left
+                 diagonal-bottom-right]]
 
                [["M" (v/+ diagonal-bottom-left
                           line-left-start)
@@ -73,11 +71,9 @@
                                  (v/+ diagonal-bottom-left
                                       line-left-start)])
                  "z"]
-                [(v/+ diagonal-bottom-left
-                      line-left-start)
+                [diagonal-bottom-left
                  origin-point
-                 (v/+ diagonal-bottom-right
-                      line-right-end)
+                 diagonal-bottom-right
                  bottom-left
                  bottom-right]]]
         outline? (or (:outline? render-options)
