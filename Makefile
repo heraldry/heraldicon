@@ -8,7 +8,8 @@ release-frontend-prod:
 	STAGE=prod npx shadow-cljs release frontend --config-merge '{:output-dir "release/output/js/generated"}'
 
 deploy-frontend-prod: release-frontend-prod
-	aws --profile heraldry-serverless s3 sync --acl public-read release/output s3://heraldry.digital && aws --profile heraldry cloudfront create-invalidation --distribution-id $(shell aws --profile heraldry cloudfront list-distributions | jq -r '.DistributionList.Items[] | select([.Aliases.Items[] == "heraldry.digital"] | any) | .Id') --paths '/*'
+	aws --profile heraldry-serverless s3 sync --acl public-read release/output s3://heraldry.digital && aws --profile heraldry cloudfront create-invalidation --distribution-id $(shell aws --profile heraldry cloudfront list-distributions | jq -r '.DistributionList.Items[] | select([.Aliases.Items[] == "heraldry.digital"] | any) | .Id') --paths '/*' | cat
+	git tag $(shell date +"deploy-frontend-%Y-%m-%d_%H-%M-%S")
 
 release-backend-prod:
 	rm -rf backend/generated/* 2> /dev/null || true
@@ -18,6 +19,8 @@ release-backend-prod:
 
 deploy-backend-prod: release-backend-prod
 	cd backend && npx sls deploy --stage prod
+	cd backend && git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
+	git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
 
 dev-local:
 	npx shadow-cljs watch frontend backend
