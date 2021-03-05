@@ -95,23 +95,11 @@
         field (if counterchanged?
                 (counterchange/counterchange-field field parent)
                 field)
-        [fimbriation-elements-top fimbriation-outlines-top] (fimbriation/render
-                                                             [first-left :left]
-                                                             [first-right :right]
-                                                             [line-one-data]
-                                                             (:fimbriation line)
-                                                             render-options)
-        [fimbriation-elements-bottom fimbriation-outlines-bottom] (fimbriation/render
-                                                                   [second-right :right]
-                                                                   [second-left :left]
-                                                                   [line-reversed-data]
-                                                                   (:fimbriation opposite-line)
-                                                                   render-options)]
+        outline? (or (:outline? render-options)
+                     (:outline? hints))]
     [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
                          "rotate(" angle ")"
                          "translate(" (- required-half-length) "," 0 ")")}
-     fimbriation-elements-top
-     fimbriation-elements-bottom
      [division-shared/make-division
       :ordinary-fess [field] parts
       [:all]
@@ -123,16 +111,5 @@
                               (str
                                "rotate(" (- angle) ") "
                                "translate(" (-> diagonal-start :x -) "," (-> diagonal-start :y -) ")"))))]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline/style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ first-left
-                              line-one-start)
-                     (svg/stitch line-one)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ second-right
-                              line-reversed-start)
-                     (svg/stitch line-reversed)])}]
-        fimbriation-outlines-top
-        fimbriation-outlines-bottom])]))
+     (fimbriation/draw-line line line-one-data first-left outline? render-options)
+     (fimbriation/draw-line opposite-line line-reversed-data second-right outline? render-options)]))

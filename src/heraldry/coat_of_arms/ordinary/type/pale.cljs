@@ -6,7 +6,6 @@
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
@@ -75,35 +74,12 @@
         field (if (counterchange/counterchangable? field parent)
                 (counterchange/counterchange-field field parent)
                 field)
-        [fimbriation-elements-left fimbriation-outlines-left] (fimbriation/render
-                                                               [first-bottom :bottom]
-                                                               [first-top :top]
-                                                               [line-one-data]
-                                                               (:fimbriation line)
-                                                               render-options)
-        [fimbriation-elements-right fimbriation-outlines-right] (fimbriation/render
-                                                                 [second-top :top]
-                                                                 [second-bottom :bottom]
-                                                                 [line-reversed-data]
-                                                                 (:fimbriation opposite-line)
-                                                                 render-options)]
+        outline? (or (:outline? render-options)
+                     (:outline? hints))]
     [:<>
-     fimbriation-elements-left
-     fimbriation-elements-right
      [division-shared/make-division
       :ordinary-pale [field] parts
       [:all]
       environment ordinary context]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline/style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ first-bottom
-                              line-one-start)
-                     (svg/stitch line-one)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ second-top
-                              line-reversed-start)
-                     (svg/stitch line-reversed)])}]
-        fimbriation-outlines-left
-        fimbriation-outlines-right])]))
+     (fimbriation/draw-line line line-one-data first-bottom outline? render-options)
+     (fimbriation/draw-line opposite-line line-reversed-data second-top outline? render-options)]))

@@ -6,7 +6,6 @@
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
@@ -53,23 +52,11 @@
         field (if (counterchange/counterchangable? field parent)
                 (counterchange/counterchange-field field parent)
                 field)
-        [fimbriation-elements fimbriation-outlines] (fimbriation/render
-                                                     [row-right :right]
-                                                     [row-left :left]
-                                                     [line-reversed-data]
-                                                     (:fimbriation line)
-                                                     render-options)]
+        outline? (or (:outline? render-options)
+                     (:outline? hints))]
     [:<>
-     fimbriation-elements
      [division-shared/make-division
       :ordinary-chief [field] parts
       [:all]
       environment ordinary context]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline/style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ row-right
-                              line-reversed-start)
-                     (svg/stitch line-reversed)])}]
-        fimbriation-outlines])]))
+     (fimbriation/draw-line line line-reversed-data row-right outline? render-options)]))
