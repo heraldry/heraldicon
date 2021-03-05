@@ -3,9 +3,7 @@
             [heraldry.coat-of-arms.division.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]))
@@ -53,24 +51,11 @@
                                           "z"]
                                          [left
                                           bottom-right]]]
-        [fimbriation-elements
-         fimbriation-outlines] (fimbriation/render_
-                                [left :left]
-                                [right :right]
-                                [line-one-data]
-                                (:fimbriation line)
-                                render-options)]
+        outline? (or (:outline? render-options)
+                     (:outline? hints))]
     [:<>
      [shared/make-division
       (shared/division-context-key type) fields parts
       [:all nil]
       environment division context]
-     fimbriation-elements
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline/style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ left
-                              line-one-start)
-                     (svg/stitch line-one)])}]
-        fimbriation-outlines])]))
+     (line/render line [line-one-data] left outline? render-options)]))
