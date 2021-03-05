@@ -178,50 +178,80 @@
 
 (defn draw-line [line line-data start outline? render-options]
   (let [{:keys [fimbriation]} line
-        line-path (svg/make-path ["M" (v/+ start
-                                           (:line-start line-data))
-                                  (svg/stitch (:line line-data))])
-        {:keys [thickness-1
-                thickness-2]} fimbriation
-        thickness-2 (+ thickness-1 thickness-2)]
+        {line-path-snippet :line
+         line-start :line-start
+         line-up :up
+         line-down :down} line-data
+        line-path (svg/make-path ["M" (v/+ start line-start)
+                                  (svg/stitch line-path-snippet)])
+        {:keys [mode
+                alignment
+                thickness-1
+                thickness-2
+                tincture-1
+                tincture-2]} fimbriation
+        [thickness-1 thickness-2
+         tincture-1 tincture-2] (if (= alignment :inside)
+                                  [thickness-2 thickness-1
+                                   tincture-2 tincture-1]
+                                  [thickness-1 thickness-2
+                                   tincture-1 tincture-2])
+        mask-shape (case alignment
+                     :outside (svg/make-path ["M" (v/+ start line-start)
+                                              (svg/stitch line-path-snippet)
+                                              "l" line-up
+                                              "L" (v/+ start line-start line-up)
+                                              "z"])
+                     :inside (svg/make-path ["M" (v/+ start line-start)
+                                             (svg/stitch line-path-snippet)
+                                             "l" line-down
+                                             "L" (v/+ start line-start line-down)
+                                             "z"])
+                     nil)
+        thickness-2 (+ thickness-1 thickness-2)
+        mask-id (when mask-shape
+                  (util/id "mask-line"))]
     [:<>
-     (when (-> fimbriation :mode #{:double})
-       [:<>
-        (when outline?
-          [dilate-and-fill-path
-           line-path
-           nil
-           (+ thickness-2 outline/stroke-width)
-           outline/color render-options
-           :linejoin "miter"
-           :fill? false])
-        [dilate-and-fill-path
-         line-path
-         nil
-         (cond-> thickness-2
-           outline? (- outline/stroke-width))
-         (-> fimbriation
-             :tincture-2
-             (tincture/pick render-options)) render-options
-         :linejoin "miter"
-         :fill? false]])
-     (when (-> fimbriation :mode #{:single :double})
-       [:<>
-        (when outline?
-          [dilate-and-fill-path
-           line-path
-           nil
-           (+ thickness-1 outline/stroke-width)
-           outline/color render-options
-           :linejoin "miter"
-           :fill? false])
-        [dilate-and-fill-path
-         line-path
-         nil
-         (cond-> thickness-1
-           outline? (- outline/stroke-width))
-         (-> fimbriation
-             :tincture-1
-             (tincture/pick render-options)) render-options
-         :linejoin "miter"
-         :fill? false]])]))
+     (when mask-shape
+       [:defs
+        [:mask {:id mask-id}
+         [:path {:d mask-shape
+                 :fill "#ffffff"}]]])
+     [:g {:mask (when mask-shape
+                  (str "url(#" mask-id ")"))}
+      (when (#{:double} mode)
+        [:<>
+         (when outline?
+           [dilate-and-fill-path
+            line-path
+            nil
+            (+ thickness-2 outline/stroke-width)
+            outline/color render-options
+            :linejoin "miter"
+            :fill? false])
+         [dilate-and-fill-path
+          line-path
+          nil
+          (cond-> thickness-2
+            outline? (- outline/stroke-width))
+          (tincture/pick tincture-2 render-options) render-options
+          :linejoin "miter"
+          :fill? false]])
+      (when (#{:single :double} mode)
+        [:<>
+         (when outline?
+           [dilate-and-fill-path
+            line-path
+            nil
+            (+ thickness-1 outline/stroke-width)
+            outline/color render-options
+            :linejoin "miter"
+            :fill? false])
+         [dilate-and-fill-path
+          line-path
+          nil
+          (cond-> thickness-1
+            outline? (- outline/stroke-width))
+          (tincture/pick tincture-1 render-options) render-options
+          :linejoin "miter"
+          :fill? false]])]]))

@@ -77,12 +77,12 @@
         outline? (or (:outline? render-options)
                      (:outline? hints))]
     [:<>
-     (fimbriation/draw-line line line-one-data first-left outline? render-options)
-     (fimbriation/draw-line opposite-line line-reversed-data second-right outline? render-options)
      [division-shared/make-division
       :ordinary-fess [field] parts
       [:all]
       environment ordinary context]
+     (fimbriation/draw-line line line-one-data first-left outline? render-options)
+     (fimbriation/draw-line opposite-line line-reversed-data second-right outline? render-options)
      (when outline?
        [:g outline/style
         [:path {:d (svg/make-path
