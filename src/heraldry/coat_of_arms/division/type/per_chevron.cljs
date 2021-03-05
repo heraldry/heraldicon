@@ -4,9 +4,7 @@
             [heraldry.coat-of-arms.division.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]))
@@ -40,7 +38,6 @@
                                           :reversed? true
                                           :render-options render-options)
         {line-right :line
-         line-right-start :line-start
          line-right-end :line-end
          :as line-right-data} (line/create line
                                            (v/abs (v/- diagonal-bottom-right origin-point))
@@ -83,28 +80,12 @@
                       line-right-end)
                  bottom-left
                  bottom-right]]]
-        [fimbriation-elements
-         fimbriation-outlines] (fimbriation/render_
-                                [diagonal-bottom-left :left]
-                                [diagonal-bottom-right :right]
-                                [line-left-data
-                                 line-right-data]
-                                (:fimbriation line)
-                                render-options)]
+        outline? (or (:outline? render-options)
+                     (:outline? hints))]
     [:<>
      [shared/make-division
       (shared/division-context-key type) fields parts
       [:all nil]
       environment division context]
-     fimbriation-elements
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline/style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ diagonal-bottom-left
-                              line-left-start)
-                     (svg/stitch line-left)
-                     "L" (v/+ origin-point
-                              line-right-start)
-                     (svg/stitch line-right)])}]
-        fimbriation-outlines])]))
+     (line/render line [line-left-data
+                        line-right-data] diagonal-bottom-left outline? render-options)]))
