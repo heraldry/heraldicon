@@ -62,7 +62,7 @@
                  bottom-right
                  diagonal-end]]]
         [fimbriation-elements
-         fimbriation-outlines] (fimbriation/render
+         fimbriation-outlines] (fimbriation/render_
                                 [diagonal-start :left]
                                 [diagonal-end :right]
                                 [line-one-data]
