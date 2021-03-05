@@ -4,10 +4,8 @@
             [heraldry.coat-of-arms.division.shared :as division-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
@@ -170,80 +168,18 @@
         field (if (counterchange/counterchangable? field parent)
                 (counterchange/counterchange-field field parent)
                 field)
-        [fimbriation-elements-1 fimbriation-outlines-1] (fimbriation/render_
-                                                         [top-left-upper :left]
-                                                         [top-right-upper :right]
-                                                         [line-top-left-upper-data
-                                                          line-top-right-upper-data]
-                                                         (:fimbriation line)
-                                                         render-options)
-        [fimbriation-elements-2 fimbriation-outlines-2] (fimbriation/render_
-                                                         [top-right-lower :right]
-                                                         [bottom-right-upper :right]
-                                                         [line-top-right-lower-data
-                                                          line-bottom-right-upper-data]
-                                                         (:fimbriation line)
-                                                         render-options)
-        [fimbriation-elements-3 fimbriation-outlines-3] (fimbriation/render_
-                                                         [bottom-right-lower :right]
-                                                         [bottom-left-lower :left]
-                                                         [line-bottom-right-lower-data
-                                                          line-bottom-left-lower-data]
-                                                         (:fimbriation line)
-                                                         render-options)
-        [fimbriation-elements-4 fimbriation-outlines-4] (fimbriation/render_
-                                                         [bottom-left-upper :left]
-                                                         [top-left-lower :left]
-                                                         [line-bottom-left-upper-data
-                                                          line-top-left-lower-data]
-                                                         (:fimbriation line)
-                                                         render-options)]
-
+        outline? (or (:outline? render-options)
+                     (:outline? hints))]
     [:<>
-     fimbriation-elements-1
-     fimbriation-elements-2
-     fimbriation-elements-3
-     fimbriation-elements-4
      [division-shared/make-division
       :ordinary-pale [field] parts
       [:all]
       environment ordinary context]
-     (when (or (:outline? render-options)
-               (:outline? hints))
-       [:g outline/style
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-left
-                              line-top-left-lower-start)
-                     (svg/stitch line-top-left-lower)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ top-left-upper
-                              line-top-left-upper-start)
-                     (svg/stitch line-top-left-upper)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-top
-                              line-top-right-upper-start)
-                     (svg/stitch line-top-right-upper)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ top-right-lower
-                              line-top-right-lower-start)
-                     (svg/stitch line-top-right-lower)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-right
-                              line-bottom-right-upper-start)
-                     (svg/stitch line-bottom-right-upper)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ bottom-right-lower
-                              line-bottom-right-lower-start)
-                     (svg/stitch line-bottom-right-lower)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ corner-bottom
-                              line-bottom-left-lower-start)
-                     (svg/stitch line-bottom-left-lower)])}]
-        [:path {:d (svg/make-path
-                    ["M" (v/+ bottom-left-upper
-                              line-bottom-left-upper-start)
-                     (svg/stitch line-bottom-left-upper)])}]
-        fimbriation-outlines-1
-        fimbriation-outlines-2
-        fimbriation-outlines-3
-        fimbriation-outlines-4])]))
+     (line/render line [line-top-left-upper-data
+                        line-top-right-upper-data] top-left-upper outline? render-options)
+     (line/render line [line-top-right-lower-data
+                        line-bottom-right-upper-data] top-right-lower outline? render-options)
+     (line/render line [line-bottom-right-lower-data
+                        line-bottom-left-lower-data] bottom-right-lower outline? render-options)
+     (line/render line [line-bottom-left-upper-data
+                        line-top-left-lower-data] bottom-left-upper outline? render-options)]))
