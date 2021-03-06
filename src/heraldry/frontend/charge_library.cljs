@@ -209,7 +209,10 @@
                     (.stopPropagation event)
                     (save-charge-clicked))
         logged-in? (-> (user/data)
-                       :logged-in?)]
+                       :logged-in?)
+        charge-data @(rf/subscribe [:get form-db-path])
+        saved-and-owned-by-me? (and (:id charge-data)
+                                    (= (:username charge-data) (:username charge-data)))]
     [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
@@ -335,6 +338,28 @@
                         :else nil))
           :style {:margin-right "5px"}}
          "View"]
+        (when saved-and-owned-by-me?
+          [:button.pure-button.pure-button
+           {:type "button"
+            :style {:margin-right "5px"}
+            :on-click #(do
+                         (rf/dispatch-sync [:clear-form-errors form-db-path])
+                         (state/set-async-fetch-data
+                          form-db-path
+                          :new
+                          (-> charge-data
+                              (dissoc :id)
+                              (dissoc :version)
+                              (dissoc :latest-version)
+                              (dissoc :username)
+                              (dissoc :user-id)
+                              (dissoc :created-at)
+                              (dissoc :first-version-created-at)
+                              (dissoc :is-current-version)
+                              (dissoc :name)))
+                         (rf/dispatch-sync [:set-form-message form-db-path "Created an unsaved copy."])
+                         (reife/push-state :create-charge))}
+           "Copy to new"])
         (let [disabled? (not logged-in?)]
           [:button.pure-button.pure-button-primary {:type "submit"
                                                     :class (when disabled?
