@@ -199,14 +199,17 @@
       "PNG Link"]]))
 
 (defn arms-form []
-  (let [error-message @(rf/subscribe [:get-form-error form-db-path])
-        form-message  @(rf/subscribe [:get-form-message form-db-path])
-        on-submit     (fn [event]
-                        (.preventDefault event)
-                        (.stopPropagation event)
-                        (save-arms-clicked))
-        logged-in?    (-> (user/data)
-                          :logged-in?)]
+  (let [error-message          @(rf/subscribe [:get-form-error form-db-path])
+        form-message           @(rf/subscribe [:get-form-message form-db-path])
+        on-submit              (fn [event]
+                                 (.preventDefault event)
+                                 (.stopPropagation event)
+                                 (save-arms-clicked))
+        user-data              (user/data)
+        logged-in?             (:logged-in? user-data)
+        arms-data              @(rf/subscribe [:get form-db-path])
+        saved-and-owned-by-me? (and (:id arms-data)
+                                    (= (:username user-data) (:username arms-data)))]
     [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
@@ -216,7 +219,8 @@
                                :width       "45%"}}
       [attribution/form (conj form-db-path :attribution)]
       [:form.pure-form.pure-form-aligned
-       {:style        {:display "inline-block"}
+       {:style        {:display "inline-block"
+                       :width   "100%"}
         :on-key-press (fn [event]
                         (when (-> event .-code (= "Enter"))
                           (on-submit event)))
@@ -252,6 +256,29 @@
                         :else                      nil))
           :style    {:margin-right "5px"}}
          "View"]
+        (when saved-and-owned-by-me?
+          [:button.pure-button.pure-button
+           {:type     "button"
+            :style    {:margin-right "5px"}
+            :on-click #(do
+                         (rf/dispatch-sync [:clear-form-errors form-db-path])
+                         (rf/dispatch-sync [:set saved-data-db-path nil])
+                         (state/set-async-fetch-data
+                          form-db-path
+                          :new
+                          (-> arms-data
+                              (dissoc :id)
+                              (dissoc :version)
+                              (dissoc :latest-version)
+                              (dissoc :username)
+                              (dissoc :user-id)
+                              (dissoc :created-at)
+                              (dissoc :first-version-created-at)
+                              (dissoc :is-current-version)
+                              (dissoc :name)))
+                         (rf/dispatch-sync [:set-form-message form-db-path "Created an unsaved copy."])
+                         (reife/push-state :create-arms))}
+           "Copy to new"])
         (let [disabled? (not logged-in?)]
           [:button.pure-button.pure-button-primary {:type  "submit"
                                                     :class (when disabled? "disabled")}

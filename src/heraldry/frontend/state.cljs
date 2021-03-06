@@ -106,6 +106,12 @@
   (rf/dispatch-sync effect)
   (.stopPropagation event))
 
+(defn set-async-fetch-data [db-path query-id data]
+  (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
+  (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id] {:state :done
+                                                                         :data  data}])
+  (rf/dispatch-sync [:set db-path data]))
+
 (defn async-fetch-data [db-path query-id async-function]
   (let [current-query @(rf/subscribe [:get [:async-fetch-data db-path :current]])
         query         @(rf/subscribe [:get [:async-fetch-data db-path :queries query-id]])
