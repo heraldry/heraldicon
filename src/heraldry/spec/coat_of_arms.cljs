@@ -114,9 +114,10 @@
 (s/def :heraldry.charge/field #(s/valid? :heraldry/field %))
 (s/def :heraldry.charge/geometry #(s/valid? :heraldry/geometry %))
 (s/def :heraldry.charge/tincture #(every? (fn [[key value]]
-                                            (and (get (-> attributes/tincture-modifier-map
-                                                          (assoc :eyes-and-teeth true)) key)
-                                                 (s/valid? :heraldry/tincture value))) %))
+                                            (case key
+                                              :shadow (number? value)
+                                              :highlight (number? value)
+                                              (s/valid? :heraldry/tincture value))) %))
 (s/def :heraldry.charge.hint/outline? boolean?)
 (s/def :heraldry.charge/hints (s/keys :opt-un [:heraldry.charge.hint/outline?]))
 (s/def :heraldry.charge/attitude (s/nilable attributes/attitude-map))
