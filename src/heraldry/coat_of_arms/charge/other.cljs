@@ -77,8 +77,7 @@
               {:keys [render-field
                       render-options
                       load-charge-data
-                      fn-select-component
-                      svg-export?]
+                      fn-select-component]
                :as   context}]
   (if-let [full-charge-data (or data (load-charge-data variant))]
     (let [{:keys [position
@@ -161,7 +160,6 @@
                                                   replacement    (tincture/pick replacement render-options)
                                                   (= kind :keep) colour
                                                   :else          "#000000"))))
-          clip-path-id                     (util/id "clip-path")
           shift                            (-> (v/v positional-charge-width positional-charge-height)
                                                (v// 2)
                                                (v/-))
@@ -203,14 +201,7 @@
         [:mask {:id mask-id}
          mask]
         [:mask {:id mask-inverted-id}
-         mask-inverted]
-        (when-not svg-export?
-          [:clipPath {:id clip-path-id}
-           [:rect {:x      0
-                   :y      0
-                   :width  positional-charge-width
-                   :height positional-charge-height
-                   :fill   "#fff"}]])]
+         mask-inverted]]
        (let [transform         (str "translate(" (:x center-point) "," (:y center-point) ")"
                                     "rotate(" rotation ")"
                                     "scale(" scale-x "," scale-y ")"
@@ -266,8 +257,7 @@
                 :transform reverse-transform
                 :corner (-> fimbriation :corner)]]))
 
-          [:g {:clip-path (when-not svg-export?
-                            (str "url(#" clip-path-id ")"))}
+          [:g
            [metadata/attribution charge-name username (util/full-url-for-username username) charge-url attribution]
            (when render-field?
              [:g {:mask (str "url(#" mask-inverted-id ")")}
