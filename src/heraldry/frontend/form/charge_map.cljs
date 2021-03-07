@@ -219,6 +219,9 @@
                         sort)]
      ^{:key attribute}
      [:div.tag.attribute (util/translate attribute)])
+   (when (or (-> charge :colours vals set :shadow)
+             (-> charge :colours vals set :highlight))
+     [:div.tag.shading "shading"])
    (when-let [fixed-tincture (-> charge
                                  :fixed-tincture
                                  (or :none)
@@ -231,7 +234,9 @@
                                     #{:primary
                                       :keep
                                       :outline
-                                      :eyes-and-teeth}
+                                      :eyes-and-teeth
+                                      :shadow
+                                      :highlight}
                                     not))
                        sort)]
      ^{:key modifier}
