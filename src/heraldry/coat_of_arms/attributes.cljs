@@ -113,7 +113,7 @@
             ["Primary" :primary]
             ["Outline" :outline]
             ["Eyes/teeth" :eyes-and-teeth]
-            ["Shading" :shading]]]
+            ["Shadow" :shadow]]]
           tincture-modifier-choices))
 
 (def tincture-modifier-for-charge-map
