@@ -138,45 +138,25 @@
                                     (into {}
                                           (map (fn [[k _]]
                                                  [k :keep])))))
-          ;; TODO: make this an option
-          tincture (assoc tincture :shadow true)
-          shading? (and (-> placeholder-colours
-                            vals
-                            set
-                            (get :shadow))
-                        (:shadow tincture))
+          render-shadow? (and (-> placeholder-colours
+                                  vals
+                                  set
+                                  (get :shadow))
+                              (:shadow tincture))
+          shadow-mask-id (when render-shadow?
+                           (util/id "mask"))
+          shadow-helper-mask-id (when render-shadow?
+                                  (util/id "mask"))
           adjusted-charge (-> charge-data
                               :data
                               svg/fix-string-style-values
                               (cond->
                                (not (or (-> hints :outline-mode (not= :remove))
                                         (:outline? render-options))) (remove-outlines placeholder-colours)))
-          adjusted-charge-without-shading (-> adjusted-charge
-                                              (remove-shadow placeholder-colours))
-          shading-helper-mask-id (util/id "mask")
-          shading-mask-id (util/id "mask")
-          shading-mask [:<>
-                        [:defs
-                         [:mask {:id shading-helper-mask-id}
-                          (replace-colours
-                           adjusted-charge-without-shading
-                           (fn [colour]
-                             (let [colour-lower (svg/normalize-colour colour)
-                                   kind (get placeholder-colours colour-lower)]
-                               (if (= kind :outline)
-                                 "#000"
-                                 "#fff"))))]]
-                        [:g {:mask (str "url(#" shading-helper-mask-id ")")}
-                         (replace-colours
-                          adjusted-charge
-                          (fn [colour]
-                            (let [colour-lower (svg/normalize-colour colour)
-                                  kind (get placeholder-colours colour-lower)]
-                              (if (= kind :shadow)
-                                "#fff"
-                                "#000"))))]]
+          adjusted-charge-without-shadow (-> adjusted-charge
+                                             (remove-shadow placeholder-colours))
           [mask-id mask
-           mask-inverted-id mask-inverted] (make-mask adjusted-charge-without-shading
+           mask-inverted-id mask-inverted] (make-mask adjusted-charge-without-shadow
                                                       placeholder-colours
                                                       tincture
                                                       (:outline-mode hints))
@@ -190,7 +170,7 @@
           ;; TODO: perhaps they can be removed entirely? there still is a faint dark edge in some cases,
           ;; much less than before, however, and the dark edge is less obvious than the bright one
           coloured-charge (replace-colours
-                           adjusted-charge-without-shading
+                           adjusted-charge-without-shadow
                            (fn [colour]
                              (let [colour-lower (svg/normalize-colour colour)
                                    kind (get placeholder-colours colour-lower)
@@ -237,9 +217,27 @@
                        (-> hints :outline-mode (= :keep)))]
       [:<>
        [:defs
-        (when shading?
-          [:mask {:id shading-mask-id}
-           shading-mask])
+        (when render-shadow?
+          [:mask {:id shadow-mask-id}
+           [:defs
+            [:mask {:id shadow-helper-mask-id}
+             (replace-colours
+              adjusted-charge-without-shadow
+              (fn [colour]
+                (let [colour-lower (svg/normalize-colour colour)
+                      kind (get placeholder-colours colour-lower)]
+                  (if (= kind :outline)
+                    "#000"
+                    "#fff"))))]]
+           [:g {:mask (str "url(#" shadow-helper-mask-id ")")}
+            (replace-colours
+             adjusted-charge
+             (fn [colour]
+               (let [colour-lower (svg/normalize-colour colour)
+                     kind (get placeholder-colours colour-lower)]
+                 (if (= kind :shadow)
+                   "#fff"
+                   "#000"))))]])
         [:mask {:id mask-id}
          mask]
         [:mask {:id mask-inverted-id}
@@ -315,11 +313,12 @@
                                                        (conj :field)))
                               (.stopPropagation event)))}
             coloured-charge]
-           (when shading?
-             [:g {:mask (str "url(#" shading-mask-id ")")}
+           (when render-shadow?
+             [:g {:mask (str "url(#" shadow-mask-id ")")}
               [:rect {:x -500
                       :y -500
                       :width 1100
                       :height 1100
-                      :fill "#000000"}]])]])])
+                      :fill "#000000"
+                      :style {:opacity (:shadow tincture)}}]])]])])
     [:<>]))
