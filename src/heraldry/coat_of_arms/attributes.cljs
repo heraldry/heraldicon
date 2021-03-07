@@ -112,7 +112,8 @@
             ["Don't replace" :keep]
             ["Primary" :primary]
             ["Outline" :outline]
-            ["Eyes/teeth" :eyes-and-teeth]]]
+            ["Eyes/teeth" :eyes-and-teeth]
+            ["Shading" :shading]]]
           tincture-modifier-choices))
 
 (def tincture-modifier-for-charge-map

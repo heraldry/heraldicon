@@ -21,6 +21,14 @@
                     %)
                  data))
 
+(defn remove-shading [data placeholder-colours]
+  (walk/postwalk #(if (and (vector? %)
+                           (->> % first (get #{:stroke :fill}))
+                           (->> % second svg/normalize-colour (get placeholder-colours) (= :shading)))
+                    [(first %) "none"]
+                    %)
+                 data))
+
 (defn replace-colours [data function]
   (walk/postwalk #(if (and (vector? %)
                            (-> % second string?)
@@ -130,14 +138,45 @@
                                     (into {}
                                           (map (fn [[k _]]
                                                  [k :keep])))))
+          ;; TODO: make this an option
+          tincture (assoc tincture :shading true)
+          shading? (and (-> placeholder-colours
+                            vals
+                            set
+                            (get :shading))
+                        (:shading tincture))
           adjusted-charge (-> charge-data
                               :data
                               svg/fix-string-style-values
                               (cond->
                                (not (or (-> hints :outline-mode (not= :remove))
                                         (:outline? render-options))) (remove-outlines placeholder-colours)))
+          adjusted-charge-without-shading (-> adjusted-charge
+                                              (remove-shading placeholder-colours))
+          shading-helper-mask-id (util/id "mask")
+          shading-mask-id (util/id "mask")
+          shading-mask [:<>
+                        [:defs
+                         [:mask {:id shading-helper-mask-id}
+                          (replace-colours
+                           adjusted-charge-without-shading
+                           (fn [colour]
+                             (let [colour-lower (svg/normalize-colour colour)
+                                   kind (get placeholder-colours colour-lower)]
+                               (if (= kind :outline)
+                                 "#000"
+                                 "#fff"))))]]
+                        [:g {:mask (str "url(#" shading-helper-mask-id ")")}
+                         (replace-colours
+                          adjusted-charge
+                          (fn [colour]
+                            (let [colour-lower (svg/normalize-colour colour)
+                                  kind (get placeholder-colours colour-lower)]
+                              (if (= kind :shading)
+                                "#fff"
+                                "#000"))))]]
           [mask-id mask
-           mask-inverted-id mask-inverted] (make-mask adjusted-charge
+           mask-inverted-id mask-inverted] (make-mask adjusted-charge-without-shading
                                                       placeholder-colours
                                                       tincture
                                                       (:outline-mode hints))
@@ -151,7 +190,7 @@
           ;; TODO: perhaps they can be removed entirely? there still is a faint dark edge in some cases,
           ;; much less than before, however, and the dark edge is less obvious than the bright one
           coloured-charge (replace-colours
-                           adjusted-charge
+                           adjusted-charge-without-shading
                            (fn [colour]
                              (let [colour-lower (svg/normalize-colour colour)
                                    kind (get placeholder-colours colour-lower)
@@ -198,6 +237,9 @@
                        (-> hints :outline-mode (= :keep)))]
       [:<>
        [:defs
+        (when shading?
+          [:mask {:id shading-mask-id}
+           shading-mask])
         [:mask {:id mask-id}
          mask]
         [:mask {:id mask-inverted-id}
@@ -272,5 +314,12 @@
                                                        :db-path
                                                        (conj :field)))
                               (.stopPropagation event)))}
-            coloured-charge]]])])
+            coloured-charge]
+           (when shading?
+             [:g {:mask (str "url(#" shading-mask-id ")")}
+              [:rect {:x -500
+                      :y -500
+                      :width 1100
+                      :height 1100
+                      :fill "#000000"}]])]])])
     [:<>]))
