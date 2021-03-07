@@ -21,10 +21,10 @@
                     %)
                  data))
 
-(defn remove-shadow [data placeholder-colours]
+(defn remove-shading [data placeholder-colours]
   (walk/postwalk #(if (and (vector? %)
                            (->> % first (get #{:stroke :fill}))
-                           (->> % second svg/normalize-colour (get placeholder-colours) (= :shadow)))
+                           (->> % second svg/normalize-colour (get placeholder-colours) #{:shadow :highlight}))
                     [(first %) "none"]
                     %)
                  data))
@@ -147,16 +147,25 @@
                                              (util/id "mask"))
           shadow-helper-mask-id            (when render-shadow?
                                              (util/id "mask"))
+          render-highlight?                (and (-> placeholder-colours
+                                                    vals
+                                                    set
+                                                    (get :highlight))
+                                                (:highlight tincture))
+          highlight-mask-id                (when render-highlight?
+                                             (util/id "mask"))
+          highlight-helper-mask-id         (when render-highlight?
+                                             (util/id "mask"))
           adjusted-charge                  (-> charge-data
                                                :data
                                                svg/fix-string-style-values
                                                (cond->
                                                    (not (or (-> hints :outline-mode (not= :remove))
                                                             (:outline? render-options))) (remove-outlines placeholder-colours)))
-          adjusted-charge-without-shadow   (-> adjusted-charge
-                                               (remove-shadow placeholder-colours))
+          adjusted-charge-without-shading  (-> adjusted-charge
+                                               (remove-shading placeholder-colours))
           [mask-id mask
-           mask-inverted-id mask-inverted] (make-mask adjusted-charge-without-shadow
+           mask-inverted-id mask-inverted] (make-mask adjusted-charge-without-shading
                                                       placeholder-colours
                                                       tincture
                                                       (:outline-mode hints))
@@ -170,7 +179,7 @@
           ;; TODO: perhaps they can be removed entirely? there still is a faint dark edge in some cases,
           ;; much less than before, however, and the dark edge is less obvious than the bright one
           coloured-charge                  (replace-colours
-                                            adjusted-charge-without-shadow
+                                            adjusted-charge-without-shading
                                             (fn [colour]
                                               (let [colour-lower (svg/normalize-colour colour)
                                                     kind         (get placeholder-colours colour-lower)
@@ -222,22 +231,49 @@
            [:defs
             [:mask {:id shadow-helper-mask-id}
              (replace-colours
-              adjusted-charge-without-shadow
+              adjusted-charge-without-shading
               (fn [colour]
                 (let [colour-lower (svg/normalize-colour colour)
                       kind         (get placeholder-colours colour-lower)]
-                  (if (= kind :outline)
-                    "#000"
-                    "#fff"))))]]
+                  (case kind
+                    :outline   "#000000"
+                    :shadow    "none"
+                    :highlight "none"
+                    "#ffffff"))))]]
            [:g {:mask (str "url(#" shadow-helper-mask-id ")")}
             (replace-colours
              adjusted-charge
              (fn [colour]
                (let [colour-lower (svg/normalize-colour colour)
                      kind         (get placeholder-colours colour-lower)]
-                 (if (= kind :shadow)
-                   "#fff"
-                   "#000"))))]])
+                 (case kind
+                   :shadow    "#ffffff"
+                   :highlight "none"
+                   "#000000"))))]])
+        (when render-highlight?
+          [:mask {:id highlight-mask-id}
+           [:defs
+            [:mask {:id highlight-helper-mask-id}
+             (replace-colours
+              adjusted-charge-without-shading
+              (fn [colour]
+                (let [colour-lower (svg/normalize-colour colour)
+                      kind         (get placeholder-colours colour-lower)]
+                  (case kind
+                    :outline   "#000000"
+                    :shadow    "none"
+                    :highlight "none"
+                    "#ffffff"))))]]
+           [:g {:mask (str "url(#" highlight-helper-mask-id ")")}
+            (replace-colours
+             adjusted-charge
+             (fn [colour]
+               (let [colour-lower (svg/normalize-colour colour)
+                     kind         (get placeholder-colours colour-lower)]
+                 (case kind
+                   :shadow    "none"
+                   :highlight "#ffffff"
+                   "#000000"))))]])
         [:mask {:id mask-id}
          mask]
         [:mask {:id mask-inverted-id}
@@ -320,5 +356,13 @@
                       :width  1100
                       :height 1100
                       :fill   "#000000"
-                      :style  {:opacity (:shadow tincture)}}]])]])])
+                      :style  {:opacity (:shadow tincture)}}]])
+           (when render-highlight?
+             [:g {:mask (str "url(#" highlight-mask-id ")")}
+              [:rect {:x      -500
+                      :y      -500
+                      :width  1100
+                      :height 1100
+                      :fill   "#ffffff"
+                      :style  {:opacity (:highlight tincture)}}]])]])])
     [:<>]))

@@ -139,6 +139,7 @@
                                        set
                                        (conj :eyes-and-teeth)
                                        (conj :shadow)
+                                       (conj :highlight)
                                        (set/intersection
                                         (-> charge-data
                                             :colours
@@ -147,6 +148,7 @@
         sorted-supported-tinctures (-> supported-tinctures
                                        (disj :eyes-and-teeth)
                                        (disj :shadow)
+                                       (disj :highlight)
                                        sort
                                        vec)
         tinctures-set              (-> charge
@@ -191,6 +193,14 @@
                [element/range-input-with-checkbox
                 (conj path :tincture :shadow)
                 "Shadow"
+                0
+                1
+                :step 0.01
+                :default 1])
+             (when (get supported-tinctures :highlight)
+               [element/range-input-with-checkbox
+                (conj path :tincture :highlight)
+                "Highlight"
                 0
                 1
                 :step 0.01
