@@ -138,6 +138,7 @@
                                 keys
                                 set
                                 (conj :eyes-and-teeth)
+                                (conj :shadow)
                                 (set/intersection
                                  (-> charge-data
                                      :colours
@@ -145,6 +146,7 @@
                                      set)))
         sorted-supported-tinctures (-> supported-tinctures
                                        (disj :eyes-and-teeth)
+                                       (disj :shadow)
                                        sort
                                        vec)
         tinctures-set (-> charge
@@ -185,6 +187,14 @@
                 :on-change #(rf/dispatch [:set
                                           (conj path :tincture :eyes-and-teeth)
                                           (if % :argent nil)])])
+             (when (get supported-tinctures :shadow)
+               [element/range-input-with-checkbox
+                (conj path :tincture :shadow)
+                "Shadow"
+                0
+                1
+                :step 0.01
+                :default 1])
              (for [t sorted-supported-tinctures]
                ^{:key t}
                [tincture/form
