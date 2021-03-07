@@ -128,6 +128,10 @@
                       :type      :roundel
                       :field     {:component :field
                                   :content   {:tincture :azure}}
+                      :tincture  {:eyes-and-teeth :or
+                                  :shadow         0.5
+                                  :highlight      0.5
+                                  :primary        :or}
                       :geometry  {:size 50}
                       :origin    {:point    :fess
                                   :offset-x -5
@@ -150,7 +154,28 @@
     :heraldry/charge {:component :charge
                       :type      :wolf
                       :attitude  :foobar
-                      :field     {:component :field}}))
+                      :field     {:component :field}}
+
+    :heraldry/charge {:component :charge
+                      :type      :wolf
+                      :attitude  :rampant
+                      :field     {:component :field
+                                  :content   {:tincture :azure}}
+                      :tincture  {:shadow true}}
+
+    :heraldry/charge {:component :charge
+                      :type      :wolf
+                      :attitude  :rampant
+                      :field     {:component :field
+                                  :content   {:tincture :azure}}
+                      :tincture  {:eyes-and-teeth 0.5}}
+
+    :heraldry/charge {:component :charge
+                      :type      :wolf
+                      :attitude  :rampant
+                      :field     {:component :field
+                                  :content   {:tincture :azure}}
+                      :tincture  {:highlight :or}}))
 
 (deftest valid-coat-of-arms
   (are [spec form] (do
