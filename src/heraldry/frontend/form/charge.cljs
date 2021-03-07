@@ -178,24 +178,18 @@
          [element/submenu (conj path :tincture) "Tinctures" tinctures-title {}
           (when sorted-supported-tinctures
             [:div.placeholders
-             {:style {:width "50%"
-                      :float "left"}}
+             (when (get supported-tinctures :eyes-and-teeth)
+               [element/checkbox
+                (conj path :tincture :eyes-and-teeth)
+                "White eyes and teeth"
+                :on-change #(rf/dispatch [:set
+                                          (conj path :tincture :eyes-and-teeth)
+                                          (if % :argent nil)])])
              (for [t sorted-supported-tinctures]
                ^{:key t}
                [tincture/form
                 (conj path :tincture t)
-                :label (util/translate-cap-first t)])])
-          [:div
-           {:style {:width "50%"
-                    :float "left"}}
-           (when (get supported-tinctures :eyes-and-teeth)
-             [element/checkbox
-              (conj path :tincture :eyes-and-teeth)
-              "White eyes and teeth"
-              :on-change #(rf/dispatch [:set
-                                        (conj path :tincture :eyes-and-teeth)
-                                        (if % :argent nil)])])]
-          [:div.spacer]]])
+                :label (util/translate-cap-first t)])])]])
       (let [charge-options (charge-options/options charge)]
         [:<>
          (when (:position charge-options)
