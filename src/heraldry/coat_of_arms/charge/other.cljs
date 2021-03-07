@@ -21,10 +21,10 @@
                     %)
                  data))
 
-(defn remove-shading [data placeholder-colours]
+(defn remove-shadow [data placeholder-colours]
   (walk/postwalk #(if (and (vector? %)
                            (->> % first (get #{:stroke :fill}))
-                           (->> % second svg/normalize-colour (get placeholder-colours) (= :shading)))
+                           (->> % second svg/normalize-colour (get placeholder-colours) (= :shadow)))
                     [(first %) "none"]
                     %)
                  data))
@@ -139,12 +139,12 @@
                                                        (map (fn [[k _]]
                                                               [k :keep])))))
           ;; TODO: make this an option
-          tincture                         (assoc tincture :shading true)
+          tincture                         (assoc tincture :shadow true)
           shading?                         (and (-> placeholder-colours
                                                     vals
                                                     set
-                                                    (get :shading))
-                                                (:shading tincture))
+                                                    (get :shadow))
+                                                (:shadow tincture))
           adjusted-charge                  (-> charge-data
                                                :data
                                                svg/fix-string-style-values
@@ -152,7 +152,7 @@
                                                    (not (or (-> hints :outline-mode (not= :remove))
                                                             (:outline? render-options))) (remove-outlines placeholder-colours)))
           adjusted-charge-without-shading  (-> adjusted-charge
-                                               (remove-shading placeholder-colours))
+                                               (remove-shadow placeholder-colours))
           shading-helper-mask-id           (util/id "mask")
           shading-mask-id                  (util/id "mask")
           shading-mask                     [:<>
@@ -172,7 +172,7 @@
                                               (fn [colour]
                                                 (let [colour-lower (svg/normalize-colour colour)
                                                       kind         (get placeholder-colours colour-lower)]
-                                                  (if (= kind :shading)
+                                                  (if (= kind :shadow)
                                                     "#fff"
                                                     "#000"))))]]
           [mask-id mask
