@@ -10,7 +10,8 @@
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [id-for-url]]
             [re-frame.core :as rf]
-            [reitit.frontend.easy :as reife]))
+            [reitit.frontend.easy :as reife]
+            [taoensso.timbre :as log]))
 
 (def form-db-path
   [:collection-form])
@@ -26,13 +27,13 @@
     (try
       (let [user-data (user/data)]
         (-> (api-request/call
-             :fetch-collections-for-user
+             :fetch-collections-for-use
              {:user-id user-id}
              user-data)
             <?
             :collection))
       (catch :default e
-        (println "fetch-collections-list-by-user error:" e)))))
+        (log/error "fetch collection list error:" e)))))
 
 (defn fetch-collection [collection-id version]
   (go
@@ -43,7 +44,7 @@
         (rf/dispatch [:set saved-data-db-path full-data])
         full-data)
       (catch :default e
-        (println "fetch-collection error:" e)))))
+        (log/error "fetch collection error:" e)))))
 
 ;; views
 
@@ -56,7 +57,6 @@
             user-data (user/data)
             response (<? (api-request/call :save-collection payload user-data))
             collection-id (-> response :collection-id)]
-        (println "save collection response" response)
         (rf/dispatch-sync [:set (conj form-db-path :id) collection-id])
         (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
         (state/invalidate-cache-without-current form-db-path [collection-id nil])
@@ -66,7 +66,7 @@
         (rf/dispatch-sync [:set-form-message form-db-path (str "Collection saved, new version: " (:version response))])
         (reife/push-state :edit-collection-by-id {:id (id-for-url collection-id)}))
       (catch :default e
-        (println "save-form error:" e)
+        (log/error "save-form error:" e)
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
 
 (defn collection-form []

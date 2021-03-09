@@ -7,7 +7,8 @@
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [taoensso.timbre :as log]))
 
 (def user-db-path [:user-data])
 
@@ -55,7 +56,7 @@
         (state/invalidate-cache-all)
         (modal/clear))
       (catch :default e
-        (println "error:" e)
+        (log/error "complete login error:" e)
         (rf/dispatch [:set-form-error db-path (:message e)])))))
 
 (defn login-clicked [db-path]
@@ -64,7 +65,6 @@
     (cognito/login username
                    password
                    :on-success (fn [user]
-                                 (println "login success" user)
                                  (complete-login db-path (-> user
                                                              .getAccessToken
                                                              .getJwtToken)))
@@ -73,7 +73,7 @@
                                              (rf/dispatch [:set (conj user-db-path :user) user])
                                              (confirmation-modal))
                    :on-failure (fn [error]
-                                 (println "login failure" error)
+                                 (log/error "login error:" error)
                                  (rf/dispatch [:set-form-error db-path (:message error)]))
                    :on-new-password-required (fn [user user-attributes]
                                                (rf/dispatch [:clear-form db-path])
@@ -92,10 +92,9 @@
        :on-success (fn [user]
                      (rf/dispatch [:clear-form db-path])
                      (rf/dispatch [:set (conj user-db-path :user) user])
-                     (println "password reset initiation success")
                      (password-reset-confirmation-modal))
        :on-failure (fn [error]
-                     (println "password reset initiation failure" error)
+                     (log/error "password reset initiation error:" error)
                      (rf/dispatch [:set-form-error db-path (:message error)]))))))
 
 (defn login-form [db-path]
@@ -154,17 +153,15 @@
     (if (not= password password-again)
       (rf/dispatch [:set-form-error (conj db-path :password-again) "Passwords don't match."])
       (cognito/sign-up username password email
-                       :on-success (fn [user]
-                                     (println "sign-up success" user)
+                       :on-success (fn [_user]
                                      (rf/dispatch [:clear-form db-path])
                                      (login-modal "Registration completed"))
                        :on-confirmation-needed (fn [user]
-                                                 (println "sign-up success, confirmation needed" user)
                                                  (rf/dispatch [:clear-form db-path])
                                                  (rf/dispatch [:set (conj user-db-path :user) user])
                                                  (confirmation-modal))
                        :on-failure (fn [error]
-                                     (println "sign-up failure" error)
+                                     (log/error "sign-up error" error)
                                      (rf/dispatch [:set-form-error db-path (:message error)]))))))
 
 (defn sign-up-form [db-path]
@@ -235,12 +232,11 @@
         user (:user user-data)]
     (rf/dispatch-sync [:clear-form-errors db-path])
     (cognito/confirm user code
-                     :on-success (fn [user]
-                                   (println "confirm success" user)
+                     :on-success (fn [_user]
                                    (rf/dispatch [:clear-form db-path])
                                    (login-modal "Registration completed"))
                      :on-failure (fn [error]
-                                   (println "confirm error" error)
+                                   (log/error "confirmation error:" error)
                                    (rf/dispatch [:set-form-error db-path (:message error)])))))
 
 (defn resend-code-clicked [db-path]
@@ -250,7 +246,7 @@
                          :on-success (fn []
                                        (js/alert "A new code was sent to your email address."))
                          :on-failure (fn [error]
-                                       (println "resend code error" error)
+                                       (log/error "resend code error:" error)
                                        (rf/dispatch [:set-form-error db-path (:message error)])))))
 
 (defn confirmation-form [db-path]
@@ -299,13 +295,12 @@
        new-password
        user-attributes
        :on-success (fn [user]
-                     (println "change password success" user)
                      (rf/dispatch [:clear-form db-path])
                      (complete-login db-path (-> user
                                                  .getAccessToken
                                                  .getJwtToken)))
        :on-failure (fn [error]
-                     (println "change password failure" error)
+                     (log/error "change password error:" error)
                      (rf/dispatch [:set-form-error db-path (:message error)]))))))
 
 (defn change-temporary-password-form [db-path]
@@ -365,12 +360,11 @@
        user
        code
        new-password
-       :on-success (fn [user]
-                     (println "password reset success" user)
+       :on-success (fn [_user]
                      (rf/dispatch [:clear-form db-path])
                      (login-modal "Password reset completed"))
        :on-failure (fn [error]
-                     (println "password reset error" error)
+                     (log/error "password reset error:" error)
                      (rf/dispatch [:set-form-error db-path (:message error)]))))))
 
 (defn password-reset-confirmation-form [db-path]
