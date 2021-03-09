@@ -51,7 +51,8 @@
                     (and (vector? %)
                          (-> % first (= :stroke-linejoin))) [(first %) linejoin]
                     (and (vector? %)
-                         (-> % first #{:stroke :fill})) [(first %) color]
+                         (-> % first #{:stroke :fill :stop-color})
+                         (-> % second (not= "none"))) [(first %) color]
                     :else %)
                  data))
 
