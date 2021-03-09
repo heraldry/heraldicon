@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.charge.other
-  (:require [clojure.walk :as walk]
+  (:require [clojure.string :as s]
+            [clojure.walk :as walk]
             [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field-environment :as field-environment]
@@ -15,16 +16,18 @@
 
 (defn remove-outlines [data placeholder-colours]
   (walk/postwalk #(if (and (vector? %)
-                           (->> % first (get #{:stroke :fill}))
-                           (->> % second svg/normalize-colour (get placeholder-colours) (= :outline)))
+                           (->> % first (get #{:stroke :fill :stop-color}))
+                           (or (-> % second (s/starts-with? "url"))
+                               (->> % second svg/normalize-colour (get placeholder-colours) (= :outline))))
                     [(first %) "none"]
                     %)
                  data))
 
 (defn remove-shading [data placeholder-colours]
   (walk/postwalk #(if (and (vector? %)
-                           (->> % first (get #{:stroke :fill}))
-                           (->> % second svg/normalize-colour (get placeholder-colours) #{:shadow :highlight}))
+                           (->> % first (get #{:stroke :fill :stop-color}))
+                           (or (-> % second (s/starts-with? "url"))
+                               (->> % second svg/normalize-colour (get placeholder-colours) #{:shadow :highlight})))
                     [(first %) "none"]
                     %)
                  data))
@@ -32,7 +35,7 @@
 (defn replace-colours [data function]
   (walk/postwalk #(if (and (vector? %)
                            (-> % second string?)
-                           (->> % first (get #{:stroke :fill}))
+                           (->> % first (get #{:stroke :fill :stop-color}))
                            (-> % second (not= "none")))
                     [(first %) (function (second %))]
                     %)
@@ -51,27 +54,31 @@
         mask (replace-colours
               data
               (fn [colour]
-                (let [colour-lower (svg/normalize-colour colour)
-                      kind (get placeholder-colours colour-lower)
-                      replacement (get-replacement kind provided-placeholder-colours)]
-                  (if (or (= kind :keep)
-                          (and (not (#{:transparent :primary} outline-mode))
-                               (= kind :outline))
-                          replacement)
-                    "#fff"
-                    "#000"))))
+                (if (s/starts-with? colour "url")
+                  "none"
+                  (let [colour-lower (svg/normalize-colour colour)
+                        kind (get placeholder-colours colour-lower)
+                        replacement (get-replacement kind provided-placeholder-colours)]
+                    (if (or (= kind :keep)
+                            (and (not (#{:transparent :primary} outline-mode))
+                                 (= kind :outline))
+                            replacement)
+                      "#fff"
+                      "#000")))))
         mask-inverted (replace-colours
                        data
                        (fn [colour]
-                         (let [colour-lower (svg/normalize-colour colour)
-                               kind (get placeholder-colours colour-lower)
-                               replacement (get-replacement kind provided-placeholder-colours)]
-                           (if (or (= kind :keep)
-                                   (and (not (#{:primary} outline-mode))
-                                        (= kind :outline))
-                                   replacement)
-                             "#000"
-                             "#fff"))))]
+                         (if (s/starts-with? colour "url")
+                           "none"
+                           (let [colour-lower (svg/normalize-colour colour)
+                                 kind (get placeholder-colours colour-lower)
+                                 replacement (get-replacement kind provided-placeholder-colours)]
+                             (if (or (= kind :keep)
+                                     (and (not (#{:primary} outline-mode))
+                                          (= kind :outline))
+                                     replacement)
+                               "#000"
+                               "#fff")))))]
     [mask-id mask mask-inverted-id mask-inverted]))
 
 (defn render [{:keys [field
@@ -230,54 +237,70 @@
           [:mask {:id shadow-mask-id}
            [:defs
             [:mask {:id shadow-helper-mask-id}
-             (replace-colours
+             (->
               adjusted-charge-without-shading
-              (fn [colour]
-                (let [colour-lower (svg/normalize-colour colour)
-                      kind (get placeholder-colours colour-lower)]
-                  (case kind
-                    :outline "#000000"
-                    :shadow "none"
-                    :highlight "none"
-                    "#ffffff"))))]]
+              (replace-colours
+               (fn [colour]
+                 (if (s/starts-with? colour "url")
+                   "none"
+                   (let [colour-lower (svg/normalize-colour colour)
+                         kind (get placeholder-colours colour-lower)]
+                     (case kind
+                       :outline "#000000"
+                       :shadow "none"
+                       :highlight "none"
+                       "#ffffff")))))
+              svg/make-unique-ids)]]
            [:g {:mask (str "url(#" shadow-helper-mask-id ")")}
-            (replace-colours
+            (->
              adjusted-charge
-             (fn [colour]
-               (let [colour-lower (svg/normalize-colour colour)
-                     kind (get placeholder-colours colour-lower)]
-                 (case kind
-                   :shadow "#ffffff"
-                   :highlight "none"
-                   "#000000"))))]])
+             (replace-colours
+              (fn [colour]
+                (if (s/starts-with? colour "url")
+                  colour
+                  (let [colour-lower (svg/normalize-colour colour)
+                        kind (get placeholder-colours colour-lower)]
+                    (case kind
+                      :shadow "#ffffff"
+                      :highlight "none"
+                      "#000000")))))
+             svg/make-unique-ids)]])
         (when render-highlight?
           [:mask {:id highlight-mask-id}
            [:defs
             [:mask {:id highlight-helper-mask-id}
-             (replace-colours
+             (->
               adjusted-charge-without-shading
-              (fn [colour]
-                (let [colour-lower (svg/normalize-colour colour)
-                      kind (get placeholder-colours colour-lower)]
-                  (case kind
-                    :outline "#000000"
-                    :shadow "none"
-                    :highlight "none"
-                    "#ffffff"))))]]
+              (replace-colours
+               (fn [colour]
+                 (if (s/starts-with? colour "url")
+                   "none"
+                   (let [colour-lower (svg/normalize-colour colour)
+                         kind (get placeholder-colours colour-lower)]
+                     (case kind
+                       :outline "#000000"
+                       :shadow "none"
+                       :highlight "none"
+                       "#ffffff")))))
+              svg/make-unique-ids)]]
            [:g {:mask (str "url(#" highlight-helper-mask-id ")")}
-            (replace-colours
+            (->
              adjusted-charge
-             (fn [colour]
-               (let [colour-lower (svg/normalize-colour colour)
-                     kind (get placeholder-colours colour-lower)]
-                 (case kind
-                   :shadow "none"
-                   :highlight "#ffffff"
-                   "#000000"))))]])
+             (replace-colours
+              (fn [colour]
+                (if (s/starts-with? colour "url")
+                  colour
+                  (let [colour-lower (svg/normalize-colour colour)
+                        kind (get placeholder-colours colour-lower)]
+                    (case kind
+                      :shadow "none"
+                      :highlight "#ffffff"
+                      "#000000")))))
+             svg/make-unique-ids)]])
         [:mask {:id mask-id}
-         mask]
+         (svg/make-unique-ids mask)]
         [:mask {:id mask-inverted-id}
-         mask-inverted]]
+         (svg/make-unique-ids mask-inverted)]]
        (let [transform (str "translate(" (:x center-point) "," (:y center-point) ")"
                             "rotate(" rotation ")"
                             "scale(" scale-x "," scale-y ")"
@@ -297,13 +320,13 @@
               [:<>
                (when outline?
                  [fimbriation/dilate-and-fill
-                  adjusted-charge
+                  adjusted-charge-without-shading
                   (+ thickness outline/stroke-width)
                   outline/color render-options
                   :transform reverse-transform
                   :corner (-> fimbriation :corner)])
                [fimbriation/dilate-and-fill
-                adjusted-charge
+                adjusted-charge-without-shading
                 (cond-> thickness
                   outline? (- outline/stroke-width))
                 (-> fimbriation
@@ -318,13 +341,13 @@
               [:<>
                (when outline?
                  [fimbriation/dilate-and-fill
-                  adjusted-charge
+                  adjusted-charge-without-shading
                   (+ thickness outline/stroke-width)
                   outline/color render-options
                   :transform reverse-transform
                   :corner (-> fimbriation :corner)])
                [fimbriation/dilate-and-fill
-                adjusted-charge
+                adjusted-charge-without-shading
                 (cond-> thickness
                   outline? (- outline/stroke-width))
                 (-> fimbriation
@@ -348,18 +371,21 @@
                                                        :db-path
                                                        (conj :field)))
                               (.stopPropagation event)))}
-            coloured-charge]
+            (svg/make-unique-ids coloured-charge)]
            (when render-shadow?
              [:g {:mask (str "url(#" shadow-mask-id ")")}
-              [:rect {:x -500
+              [:rect {:transform reverse-transform
+                      :x -500
                       :y -500
                       :width 1100
                       :height 1100
                       :fill "#000000"
                       :style {:opacity (:shadow tincture)}}]])
+
            (when render-highlight?
              [:g {:mask (str "url(#" highlight-mask-id ")")}
-              [:rect {:x -500
+              [:rect {:transform reverse-transform
+                      :x -500
                       :y -500
                       :width 1100
                       :height 1100
