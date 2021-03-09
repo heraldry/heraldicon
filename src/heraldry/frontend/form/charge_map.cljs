@@ -53,14 +53,15 @@
                            selected-charge remaining-path-to-charge
                            {:keys [still-on-path? render-variant open-all?]
                             :as   opts}]
-  (let [flag-path     (conj [:ui :charge-map] tree-path)
-        db-open?-path @(rf/subscribe [:get flag-path])
-        open?         (or open-all?
-                          (= node-type :_root)
-                          (and (nil? db-open?-path)
-                               still-on-path?)
-                          db-open?-path)
-        variant?      (= node-type :variant)]
+  (let [flag-path  (conj [:ui :charge-tree :nodes] tree-path)
+        flag-open? @(rf/subscribe [:get flag-path])
+        open?      (or (and open-all?
+                            (nil? flag-open?))
+                       (= node-type :_root)
+                       (and (nil? flag-open?)
+                            still-on-path?)
+                       flag-open?)
+        variant?   (= node-type :variant)]
     (cond-> [:<>]
       variant?            (conj
                            [:div.node-name {:on-click nil
@@ -71,7 +72,7 @@
            (not= node-type
                  :_root)) (conj
                            [:div.node-name.clickable
-                            {:on-click #(state/dispatch-on-event % [:toggle flag-path])
+                            {:on-click #(state/dispatch-on-event % [:set flag-path (not open?)])
                              :style    {:color (when still-on-path? "#1b6690")}}
                             (if open?
                               [:i.far {:class (-> node-icons (get node-type) :open)}]
@@ -261,9 +262,7 @@
                                                                                (and show-own?
                                                                                     (= (:username charge)
                                                                                        (:username user-data))))))))
-         filtered?            (or (and (not hide-access-filters?)
-                                       (not show-public?))
-                                  (-> filter-string count pos?))
+         filtered?            (-> filter-string count pos?)
          remove-empty-groups? (or remove-empty-groups?
                                   filtered?)
          open-all?            filtered?
