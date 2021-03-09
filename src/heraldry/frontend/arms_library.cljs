@@ -18,7 +18,8 @@
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [full-url-for-arms full-url-for-username id-for-url]]
             [re-frame.core :as rf]
-            [reitit.frontend.easy :as reife]))
+            [reitit.frontend.easy :as reife]
+            [taoensso.timbre :as log]))
 
 (def form-db-path
   [:arms-form])
@@ -40,7 +41,7 @@
             <?
             :arms))
       (catch :default e
-        (println "fetch-arms-list-by-user error:" e)))))
+        (log/error "fetch arms list by user error:" e)))))
 
 (defn fetch-arms [arms-id version]
   (go
@@ -54,7 +55,7 @@
         (rf/dispatch [:set saved-data-db-path full-data])
         full-data)
       (catch :default e
-        (println "fetch-arms error:" e)))))
+        (log/error "fetch arms error:" e)))))
 
 ;; views
 
@@ -127,10 +128,9 @@
                                                                  :render-options])
             user-data (user/data)
             response (<? (api-request/call :generate-svg-arms payload user-data))]
-        (println "generate-svg-arms response" response)
         (js/window.open (:svg-url response)))
       (catch :default e
-        (println "generate-svg-arms error:" e)))))
+        (log/error "generate svg arms error:" e)))))
 
 (defn generate-png-clicked [db-path]
   (go
@@ -140,10 +140,9 @@
                                                                  :render-options])
             user-data (user/data)
             response (<? (api-request/call :generate-png-arms payload user-data))]
-        (println "generate-png-arms response" response)
         (js/window.open (:png-url response)))
       (catch :default e
-        (println "generate-png-arms error:" e)))))
+        (log/error "generate png arms error:" e)))))
 
 (defn save-arms-clicked []
   (go
@@ -154,7 +153,6 @@
             user-data (user/data)
             response (<? (api-request/call :save-arms payload user-data))
             arms-id (-> response :arms-id)]
-        (println "save arms response" response)
         (rf/dispatch-sync [:set (conj form-db-path :id) arms-id])
         (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
         (state/invalidate-cache-without-current form-db-path [arms-id nil])
@@ -164,7 +162,7 @@
         (rf/dispatch-sync [:set-form-message form-db-path (str "Arms saved, new version: " (:version response))])
         (reife/push-state :edit-arms-by-id {:id (id-for-url arms-id)}))
       (catch :default e
-        (println "save-form error:" e)
+        (log/error "save form error:" e)
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
 
 (defn export-buttons [mode]

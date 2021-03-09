@@ -8,7 +8,8 @@
             [heraldry.frontend.form.charge-map :as charge-map-component]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [taoensso.timbre :as log]))
 
 (def user-info-db-path
   [:user-info])
@@ -19,7 +20,7 @@
       (let [user-data (user/data)]
         (<? (api-request/call :fetch-user {:username username} user-data)))
       (catch :default e
-        (println "fetch-user error:" e)))))
+        (log/error "fetch user error:" e)))))
 
 (defn view-charges-for-user [user-id]
   (let [[status charges] (state/async-fetch-data
