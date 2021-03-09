@@ -80,8 +80,7 @@
      " "
      [element/submenu path "Fimbriation" link-name {}
       (when (-> options :mode)
-        [element/select (conj path :mode) "Mode"
-         (-> options :mode :choices)
+        [element/radio-select (conj path :mode) (-> options :mode :choices)
          :default (or (:mode defaults) (-> options :mode :default))])
       (when (#{:single :double} mode)
         [:<>
