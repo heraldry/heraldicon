@@ -1,5 +1,6 @@
 (ns heraldry.frontend.form.state
-  (:require [heraldry.coat-of-arms.charge.options :as charge-options]
+  (:require [clojure.walk :as walk]
+            [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.options :as options]
@@ -110,6 +111,18 @@
                path (as-> db
                           (assoc-in db [:ui :component-selected? real-path] true))))
       :fx [[:dispatch [:ui-component-open real-path]]]})))
+
+(rf/reg-event-db
+ :prune-false-flags
+ (fn [db [_ path]]
+   (update-in db path (fn [flags]
+                        (walk/postwalk (fn [value]
+                                         (if (map? value)
+                                           (->> value
+                                                (filter #(-> % second (not= false)))
+                                                (into {}))
+                                           value))
+                                       flags)))))
 
 (rf/reg-event-db
  :set-division-type
