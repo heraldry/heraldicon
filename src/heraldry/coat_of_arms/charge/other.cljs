@@ -138,13 +138,8 @@
                           (/ target-height positional-charge-height)))
           scale-y (* (if reversed? -1 1)
                      (* (Math/abs scale-x) stretch))
-          placeholder-colours (-> full-charge-data
-                                  :colours
-                                  (cond->>
-                                   (:preview-original? render-options)
-                                    (into {}
-                                          (map (fn [[k _]]
-                                                 [k :keep])))))
+          placeholder-colours (:colours
+                               full-charge-data)
           render-shadow? (and (-> placeholder-colours
                                   vals
                                   set
@@ -163,9 +158,10 @@
                               (util/id "mask"))
           highlight-helper-mask-id (when render-highlight?
                                      (util/id "mask"))
-          adjusted-charge (-> charge-data
-                              :data
-                              svg/fix-string-style-values
+          unadjusted-charge (-> charge-data
+                                :data
+                                svg/fix-string-style-values)
+          adjusted-charge (-> unadjusted-charge
                               (cond->
                                (not (or (-> hints :outline-mode (not= :remove))
                                         (:outline? render-options))) (remove-outlines placeholder-colours)))
@@ -356,39 +352,41 @@
                 :transform reverse-transform
                 :corner (-> fimbriation :corner)]]))
 
-          [:g
-           [metadata/attribution charge-name username (util/full-url-for-username username) charge-url attribution]
-           (when render-field?
-             [:g {:mask (str "url(#" mask-inverted-id ")")}
-              [:g {:transform reverse-transform}
-               [render-field field charge-environment (-> context
-                                                          (update :db-path conj :field)
-                                                          (dissoc :fn-select-component))]]])
-           [:g {:mask (str "url(#" mask-id ")")
-                :on-click (when fn-select-component
-                            (fn [event]
-                              (fn-select-component (-> context
-                                                       :db-path
-                                                       (conj :field)))
-                              (.stopPropagation event)))}
-            (svg/make-unique-ids coloured-charge)]
-           (when render-shadow?
-             [:g {:mask (str "url(#" shadow-mask-id ")")}
-              [:rect {:transform reverse-transform
-                      :x -500
-                      :y -500
-                      :width 1100
-                      :height 1100
-                      :fill "#000000"
-                      :style {:opacity (:shadow tincture)}}]])
+          (if (:preview-original? render-options)
+            unadjusted-charge
+            [:g
+             [metadata/attribution charge-name username (util/full-url-for-username username) charge-url attribution]
+             (when render-field?
+               [:g {:mask (str "url(#" mask-inverted-id ")")}
+                [:g {:transform reverse-transform}
+                 [render-field field charge-environment (-> context
+                                                            (update :db-path conj :field)
+                                                            (dissoc :fn-select-component))]]])
+             [:g {:mask (str "url(#" mask-id ")")
+                  :on-click (when fn-select-component
+                              (fn [event]
+                                (fn-select-component (-> context
+                                                         :db-path
+                                                         (conj :field)))
+                                (.stopPropagation event)))}
+              (svg/make-unique-ids coloured-charge)]
+             (when render-shadow?
+               [:g {:mask (str "url(#" shadow-mask-id ")")}
+                [:rect {:transform reverse-transform
+                        :x -500
+                        :y -500
+                        :width 1100
+                        :height 1100
+                        :fill "#000000"
+                        :style {:opacity (:shadow tincture)}}]])
 
-           (when render-highlight?
-             [:g {:mask (str "url(#" highlight-mask-id ")")}
-              [:rect {:transform reverse-transform
-                      :x -500
-                      :y -500
-                      :width 1100
-                      :height 1100
-                      :fill "#ffffff"
-                      :style {:opacity (:highlight tincture)}}]])]])])
+             (when render-highlight?
+               [:g {:mask (str "url(#" highlight-mask-id ")")}
+                [:rect {:transform reverse-transform
+                        :x -500
+                        :y -500
+                        :width 1100
+                        :height 1100
+                        :fill "#ffffff"
+                        :style {:opacity (:highlight tincture)}}]])])])])
     [:<>]))
