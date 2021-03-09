@@ -364,3 +364,31 @@
       svg-path-parse/pathParse
       .relNormalize
       svg-path-parse/serializePath))
+
+(defn handle-styles [data]
+  (walk/postwalk
+   (fn [v]
+     (cond
+       (and (vector? v)
+            (-> v count (= 2))
+            (-> v first (= :style))
+            (or (-> v second map?)
+                (-> v second vector?)
+                (-> v second seq?))) [(first v) (s/join " "
+                                                        (map (fn [[style value]]
+                                                               (str (name style) ": " (str value) ";")) (second v)))]
+       :else                         v))
+   data))
+
+(defn fix-attribute-and-tag-names [data]
+  (walk/postwalk
+   (fn [v]
+     (cond
+       (keyword? v) (get {:pattern-units     :patternUnits
+                          :gradientunits     :gradientUnits
+                          :xlink:href        :href
+                          :gradienttransform :gradientTransform
+                          :lineargradient    :linearGradient
+                          :radialgradient    :radialGradient} v v)
+       :else        v))
+   data))

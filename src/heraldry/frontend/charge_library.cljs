@@ -104,6 +104,8 @@
          hickory/parse-fragment
          first
          hickory/as-hiccup
+         svg/handle-styles
+         svg/fix-attribute-and-tag-names
          (as-> parsed
              (let [edn-data       (-> parsed
                                       (assoc 0 :g)
