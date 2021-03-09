@@ -18,6 +18,7 @@
             [heraldry.frontend.form.coat-of-arms :as coat-of-arms-component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
+            [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [id-for-url]]
@@ -176,12 +177,14 @@
       result]]))
 
 (defn upload-file [event db-path]
+  (modal/start-loading)
   (let [file (-> event .-target .-files (.item 0))]
     (when file
       (let [reader (js/FileReader.)]
         (set! (.-onloadend reader) (fn []
                                      (let [raw-data (.-result reader)]
-                                       (load-svg-file db-path raw-data))))
+                                       (load-svg-file db-path raw-data))
+                                     (modal/stop-loading)))
         (set! (-> event .-target .-value) "")
         (.readAsText reader file)))))
 
@@ -192,6 +195,7 @@
     (rf/dispatch-sync [:clear-form-message form-db-path])
     (go
       (try
+        (modal/start-loading)
         (let [response (<? (api-request/call :save-charge payload user-data))
               charge-id (-> response :charge-id)]
           (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
@@ -201,9 +205,11 @@
           (state/invalidate-cache list-db-path (:user-id user-data))
           (rf/dispatch-sync [:set-form-message form-db-path (str "Charge saved, new version: " (:version response))])
           (reife/push-state :edit-charge-by-id {:id (id-for-url charge-id)}))
+        (modal/stop-loading)
         (catch :default e
           (log/error "save-form error:" e)
-          (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))]))))))
+          (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])
+          (modal/stop-loading))))))
 
 (defn charge-form []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
