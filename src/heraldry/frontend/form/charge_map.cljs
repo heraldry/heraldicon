@@ -48,12 +48,14 @@
                          words))
                charges))))
 
+(def node-flag-db-path [:ui :charge-tree :nodes])
+
 (defn tree-for-charge-map [{:keys [node-type name groups charges attitudes facings variants] :as node}
                            tree-path
                            selected-charge remaining-path-to-charge
                            {:keys [still-on-path? render-variant open-all?]
                             :as   opts}]
-  (let [flag-path  (conj [:ui :charge-tree :nodes] tree-path)
+  (let [flag-path  (conj node-flag-db-path tree-path)
         flag-open? @(rf/subscribe [:get flag-path])
         open?      (or (and open-all?
                             (nil? flag-open?))
@@ -174,7 +176,7 @@
                                        (-> opts
                                            (assoc :still-on-path? following-path?))]]))]))))
 
-(defn search-field [db-path]
+(defn search-field [db-path & {:keys [on-change]}]
   (let [current-value @(rf/subscribe [:get db-path])
         input-id      (id "input")]
     [:div {:style {:display       "inline-block"
@@ -192,7 +194,9 @@
               :value        current-value
               :autoComplete "off"
               :on-change    #(let [value (-> % .-target .-value)]
-                               (rf/dispatch-sync [:set db-path value]))
+                               (if on-change
+                                 (on-change value)
+                                 (rf/dispatch-sync [:set db-path value])))
               :style        {:outline     "none"
                              :border      "0"
                              :margin-left "0.5em"
@@ -270,7 +274,10 @@
                                filtered-charges
                                :remove-empty-groups? remove-empty-groups?)]
      [:<>
-      [search-field filter-db-path]
+      [search-field filter-db-path
+       :on-change (fn [value]
+                    (rf/dispatch-sync [:set filter-db-path value])
+                    (rf/dispatch-sync [:prune-false-flags node-flag-db-path]))]
       (when refresh-action
         [:a {:style    {:margin-left "0.5em"}
              :on-click #(do
