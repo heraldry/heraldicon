@@ -178,6 +178,7 @@
         (set! (.-onloadend reader) (fn []
                                      (let [raw-data (.-result reader)]
                                        (load-svg-file db-path raw-data))))
+        (set! (-> event .-target .-value) "")
         (.readAsText reader file)))))
 
 (defn save-charge-clicked []
