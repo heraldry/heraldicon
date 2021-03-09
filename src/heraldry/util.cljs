@@ -1,7 +1,8 @@
 (ns heraldry.util
   (:require [clojure.pprint :refer [pprint]]
             [clojure.string :as s]
-            [heraldry.config :as config]))
+            [heraldry.config :as config]
+            [taoensso.timbre :as log]))
 
 (def -current-id
   (atom 0))
@@ -59,7 +60,7 @@
        (into {})))
 
 (defn spy [value msg]
-  (println msg)
+  (log/debug "spy:" msg)
   (pprint value)
   value)
 
