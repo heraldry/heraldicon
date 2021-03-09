@@ -10,13 +10,13 @@
        [:div.error-message error])
      (function :value value
                :on-change #(let [new-value (-> % .-target .-value)]
-                             (rf/dispatch [:set db-path new-value])))]))
+                             (rf/dispatch-sync [:set db-path new-value])))]))
 
 (defn field-without-error [db-path function]
   (let [value @(rf/subscribe [:get db-path])]
     (function :value value
               :on-change #(let [new-value (-> % .-target .-value)]
-                            (rf/dispatch [:set db-path new-value])))))
+                            (rf/dispatch-sync [:set db-path new-value])))))
 
 (defn checkbox [path label & {:keys [style]}]
   (let [component-id (util/id "checkbox")
@@ -31,7 +31,7 @@
               :id component-id
               :checked checked?
               :on-change #(let [new-checked? (-> % .-target .-checked)]
-                            (rf/dispatch [:set path new-checked?]))
+                            (rf/dispatch-sync [:set path new-checked?]))
               :style {:vertical-align "-1px"}}]
      (str " " label)]))
 
@@ -49,7 +49,7 @@
                :on-change #(let [checked (keyword (-> % .-target .-value))]
                              (if on-change
                                (on-change checked)
-                               (rf/dispatch [:set path checked])))}
+                               (rf/dispatch-sync [:set path checked])))}
       (for [[group-name & group-choices] choices]
         (if (and (-> group-choices count (= 1))
                  (-> group-choices first keyword?))
