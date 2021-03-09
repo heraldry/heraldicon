@@ -14,6 +14,7 @@
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
             [heraldry.frontend.http :as http]
+            [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [full-url-for-arms full-url-for-username id-for-url]]
@@ -121,6 +122,7 @@
       [:<>])))
 
 (defn generate-svg-clicked [db-path]
+  (modal/start-loading)
   (go
     (try
       (let [payload   (select-keys @(rf/subscribe [:get db-path]) [:id
@@ -128,11 +130,14 @@
                                                                    :render-options])
             user-data (user/data)
             response  (<? (api-request/call :generate-svg-arms payload user-data))]
-        (js/window.open (:svg-url response)))
+        (js/window.open (:svg-url response))
+        (modal/stop-loading))
       (catch :default e
-        (log/error "generate svg arms error:" e)))))
+        (log/error "generate svg arms error:" e)
+        (modal/stop-loading)))))
 
 (defn generate-png-clicked [db-path]
+  (modal/start-loading)
   (go
     (try
       (let [payload   (select-keys @(rf/subscribe [:get db-path]) [:id
@@ -140,15 +145,18 @@
                                                                    :render-options])
             user-data (user/data)
             response  (<? (api-request/call :generate-png-arms payload user-data))]
-        (js/window.open (:png-url response)))
+        (js/window.open (:png-url response))
+        (modal/stop-loading))
       (catch :default e
-        (log/error "generate png arms error:" e)))))
+        (log/error "generate png arms error:" e)
+        (modal/stop-loading)))))
 
 (defn save-arms-clicked []
   (go
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (rf/dispatch-sync [:clear-form-message form-db-path])
     (try
+      (modal/start-loading)
       (let [payload   @(rf/subscribe [:get form-db-path])
             user-data (user/data)
             response  (<? (api-request/call :save-arms payload user-data))
@@ -161,9 +169,11 @@
         (state/invalidate-cache list-db-path (:user-id user-data))
         (rf/dispatch-sync [:set-form-message form-db-path (str "Arms saved, new version: " (:version response))])
         (reife/push-state :edit-arms-by-id {:id (id-for-url arms-id)}))
+      (modal/stop-loading)
       (catch :default e
         (log/error "save form error:" e)
-        (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
+        (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])
+        (modal/stop-loading)))))
 
 (defn export-buttons [mode]
   (let [logged-in?       (-> (user/data)
