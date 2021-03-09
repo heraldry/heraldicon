@@ -7,7 +7,8 @@
             [clojure.walk :as walk]
             [heraldry.coat-of-arms.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.random :as random]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.util :as util]))
 
 (defn clean-path [d]
   (s/replace d #"l *0 *[, ] *0" ""))
@@ -392,3 +393,35 @@
                           :radialgradient    :radialGradient} v v)
        :else        v))
    data))
+
+(defn replace-id-references [data id-map]
+  (let [prepared-id-map (->> id-map
+                             (map (fn [[k v]]
+                                    [[k v]
+                                     [(str "#" k) (str "#" v)]
+                                     [(str "url(#" k ")") (str "url(#" v ")")]]))
+                             (apply concat)
+                             (into {}))]
+    (walk/postwalk
+     #(if (and (vector? %)
+               (-> % second string?)
+               (->> % first (get #{:id :href :stroke :fill})))
+        (if-let [new-ref (->> % second (get prepared-id-map))]
+          [(first %) new-ref]
+          %)
+        %)
+     data)))
+
+(defn make-unique-ids [data]
+  (let [ids    (->> data
+                    (tree-seq (some-fn map? vector? seq?) seq)
+                    (filter #(and (vector? %)
+                                  (-> % first (= :id))))
+                    (map second)
+                    set)
+        id-map (->> ids
+                    (map (fn [id]
+                           [id (util/id (str "unique-" id))]))
+                    (into {}))]
+    (-> data
+        (replace-id-references id-map))))
