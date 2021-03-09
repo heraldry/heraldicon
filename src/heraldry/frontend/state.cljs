@@ -1,7 +1,8 @@
 (ns heraldry.frontend.state
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [taoensso.timbre :as log]))
 
 ;; subs
 
@@ -139,7 +140,7 @@
                                                                 :data  data}]))
                                           (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
                                           (catch :default e
-                                            (println "async-fetch-data error:" db-path query-id e))))
+                                            (log/error "async fetch data error:" db-path query-id e))))
                                       [:loading nil]))))
 
 (defn invalidate-cache-without-current [db-path query-id]

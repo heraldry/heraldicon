@@ -46,8 +46,7 @@
       [:div "Not found"])
     [modal/render]]])
 
-(defn stop []
-  (println "Stopping..."))
+(defn stop [])
 
 (defn start []
   (rf/dispatch-sync [:initialize-db])

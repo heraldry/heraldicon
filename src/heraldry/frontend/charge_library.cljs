@@ -23,7 +23,8 @@
             [heraldry.util :refer [id-for-url]]
             [hickory.core :as hickory]
             [re-frame.core :as rf]
-            [reitit.frontend.easy :as reife]))
+            [reitit.frontend.easy :as reife]
+            [taoensso.timbre :as log]))
 
 (def form-db-path
   [:charge-form])
@@ -145,7 +146,7 @@
                                                                    :height height}
                                                         :svg-data data}]))))
      (catch :default e
-       (println "error:" e)))))
+       (log/error "load svg file error:" e)))))
 
 (defn preview []
   (let [{:keys [data type]
@@ -193,7 +194,6 @@
       (try
         (let [response  (<? (api-request/call :save-charge payload user-data))
               charge-id (-> response :charge-id)]
-          (println "save charge response" response)
           (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
           (state/invalidate-cache-without-current form-db-path [charge-id nil])
           (state/invalidate-cache-without-current form-db-path [charge-id 0])
@@ -202,7 +202,7 @@
           (rf/dispatch-sync [:set-form-message form-db-path (str "Charge saved, new version: " (:version response))])
           (reife/push-state :edit-charge-by-id {:id (id-for-url charge-id)}))
         (catch :default e
-          (println "save-form error:" e)
+          (log/error "save-form error:" e)
           (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))]))))))
 
 (defn charge-form []

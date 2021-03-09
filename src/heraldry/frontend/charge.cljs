@@ -4,7 +4,8 @@
             [heraldry.api.request :as api-request]
             [heraldry.frontend.http :as http]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.user :as user]))
+            [heraldry.frontend.user :as user]
+            [taoensso.timbre :as log]))
 
 (defn fetch-charges-for-user [user-id]
   (go
@@ -15,7 +16,7 @@
             <?
             :charges))
       (catch :default e
-        (println "fetch-charges-for-user error:" e)))))
+        (log/error "fetch charges for user error:" e)))))
 
 (defn fetch-charges []
   (go
@@ -26,7 +27,7 @@
             <?
             :charges))
       (catch :default e
-        (println "fetch-charges error:" e)))))
+        (log/error "fetch charges error:" e)))))
 
 (defn fetch-charge-for-rendering [charge-id version]
   (go
@@ -38,7 +39,7 @@
         (-> charge-data
             (assoc-in [:data] edn-data)))
       (catch :default e
-        (println "fetch-charge-for-rendering error:" e)))))
+        (log/error "fetch charge for rendering error:" e)))))
 
 (defn fetch-charge-for-editing [charge-id version]
   (go
@@ -52,7 +53,7 @@
             (assoc-in [:data :edn-data] edn-data)
             (assoc-in [:data :svg-data] svg-data)))
       (catch :default e
-        (println "fetch-charge-for-editing error:" e)))))
+        (log/error "fetch charge for editing error:" e)))))
 
 (defn fetch-charge-data [{:keys [id version] :as variant}]
   (if (and id version)
@@ -63,4 +64,4 @@
                                 #(fetch-charge-for-rendering id version))]
       (when (= status :done)
         charge-data))
-    (println "error fetching charge data, variant:" variant)))
+    (log/error "error fetching charge data, invalid variant:" variant)))
