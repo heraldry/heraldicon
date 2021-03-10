@@ -78,3 +78,21 @@
                            types (:type v)))) [k (sanitize-or-nil (get values k) v)]
                 :else [k (get-sanitized-value-or-nil (get values k) v)])))
       remove-nil-values))
+
+(defn pick [opts paths & values]
+  (let [values (first values)
+        options (loop [options {}
+                       [path & rest] paths]
+                  (let [next-options (-> options
+                                         (assoc-in path (get-in opts path)))]
+                    (if (nil? rest)
+                      next-options
+                      (recur next-options rest))))]
+    (loop [options options
+           [[key value] & rest] values]
+      (let [next-options (if key
+                           (assoc-in options key value)
+                           options)]
+        (if (nil? rest)
+          next-options
+          (recur next-options rest))))))
