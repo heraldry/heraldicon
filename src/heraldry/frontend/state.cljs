@@ -49,6 +49,8 @@
            :ui {:component-open? {[:arms-form :render-options] true
                                   [:arms-form :coat-of-arms] true
                                   [:arms-form :coat-of-arms :field] true
+                                  [:arms-form :attribution] true
+                                  [:charge-form :attribution] true
                                   [:example-coa :render-options] true
                                   [:example-coa :coat-of-arms] true
                                   [:example-coa :coat-of-arms :field] true}
