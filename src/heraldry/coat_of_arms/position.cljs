@@ -26,6 +26,26 @@
 (def point-map
   (util/choices->map point-choices))
 
+(def anchor-point-choices
+  [["Top-left" :top-left]
+   ["Top-right" :top-right]
+   ["Top" :top]
+   ["Left" :left]
+   ["Right" :right]
+   ["Bottom-left" :bottom-left]
+   ["Bottom-right" :bottom-right]
+   ["Bottom" :bottom]
+   ["Fess" :fess]
+   ["Chief" :chief]
+   ["Base" :base]
+   ["Dexter" :dexter]
+   ["Sinister" :sinister]
+   ["Honour" :honour]
+   ["Nombril" :nombril]])
+
+(def anchor-point-map
+  (util/choices->map anchor-point-choices))
+
 (def default-options
   {:point {:type :choice
            :choices point-choices
@@ -40,7 +60,7 @@
               :default 0}})
 
 (defn calculate [{:keys [point offset-x offset-y] :or {offset-x 0
-                                                       offset-y 0}} environment default]
+                                                       offset-y 0}} environment & [default]]
   (let [ref (-> point
                 (or default))
         p (-> environment :points (get ref))

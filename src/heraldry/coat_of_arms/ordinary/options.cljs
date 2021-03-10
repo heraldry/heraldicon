@@ -38,6 +38,14 @@
 
 (def default-options
   {:origin position/default-options
+   :anchor (-> position/default-options
+               (assoc-in [:point :choices] position/anchor-point-choices))
+   :variant {:type :choice
+             :choices [["Base" :base]
+                       ["Chief" :chief]
+                       ["Dexter" :dexter]
+                       ["Sinister" :sinister]]
+             :default :base}
    :diagonal-mode {:type :choice
                    :default :top-left-origin}
    :line (set-line-defaults line/default-options)
@@ -91,7 +99,9 @@
                                      [:diagonal-mode :choices] (diagonal-mode-choices :bend-sinister)
                                      [:diagonal-mode :default] :top-right-origin})
        :chevron (options/pick default-options
-                              [[:origin]
+                              [[:variant]
+                               [:origin]
+                               [:anchor]
                                [:diagonal-mode]
                                [:line]
                                [:opposite-line]

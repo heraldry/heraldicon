@@ -70,10 +70,18 @@
            [element/select (conj path :diagonal-mode) "Diagonal"
             (-> ordinary-options :diagonal-mode :choices)
             :default (-> ordinary-options :diagonal-mode :default)])
+         (when (:variant ordinary-options)
+           [element/select (conj path :variant)
+            "Variant"
+            (-> ordinary-options :variant :choices)])
          (when (:origin ordinary-options)
            [position/form (conj path :origin)
             :title "Origin"
             :options (:origin ordinary-options)])
+         (when (:anchor ordinary-options)
+           [position/form (conj path :anchor)
+            :title "Anchor"
+            :options (:anchor ordinary-options)])
          (when (:geometry ordinary-options)
            [geometry/form (conj path :geometry)
             (:geometry ordinary-options)
