@@ -39,10 +39,6 @@
               :max     45
               :default 0}})
 
-(defn options [type]
-  [(get {} type)
-   default-options])
-
 (defn calculate [{:keys [point offset-x offset-y] :or {offset-x 0
                                                        offset-y 0}} environment default]
   (let [ref    (-> point
