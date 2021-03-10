@@ -11,11 +11,40 @@
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
+(defn arm-diagonals [variant origin-point anchor-point]
+  (let [direction    (-> (v/- anchor-point origin-point)
+                         v/normal
+                         (v/* 200))
+        [left right] (case variant
+                       :base     (if (-> direction :x (> 0))
+                                   [(v/v -1 1) (v/v 1 1)]
+                                   [(v/v 1 1) (v/v -1 1)])
+                       :chief    (if (-> direction :x (< 0))
+                                   [(v/v -1 1) (v/v 1 1)]
+                                   [(v/v 1 1) (v/v -1 1)])
+                       :dexter   (if (-> direction :y (< 0))
+                                   [(v/v 1 -1) (v/v 1 1)]
+                                   [(v/v 1 1) (v/v 1 -1)])
+                       :sinister (if (-> direction :y (> 0))
+                                   [(v/v 1 -1) (v/v 1 1)]
+                                   [(v/v 1 1) (v/v 1 -1)]))]
+    [(v/dot direction left)
+     (v/dot direction right)]))
+
+(defn sanitize-anchor [variant anchor]
+  (let [[allowed default] (case variant
+                            :base     [#{:bottom-right} :bottom-left]
+                            :chief    [#{:top-right} :top-left]
+                            :dexter   [#{:bottom-left} :top-left]
+                            :sinister [#{:bottom-right} :top-right])]
+    (update anchor :point #(or (allowed %) default))))
+
 (defn render
   {:display-name "Chevron"
    :value        :chevron}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode geometry]}   (options/sanitize ordinary (ordinary-options/options ordinary))
+  (let [{:keys [line origin anchor
+                variant geometry]}                     (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]}                                 geometry
         opposite-line                                  (ordinary-options/sanitize-opposite-line ordinary line)
         points                                         (:points environment)
@@ -27,22 +56,35 @@
         height                                         (:height environment)
         band-width                                     (-> size
                                                            ((util/percent-of height)))
-        direction                                      (angle/direction diagonal-mode points origin-point)
-        diagonal-left                                  (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
-        diagonal-right                                 (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
+        anchor                                         (sanitize-anchor variant anchor)
+        {origin-point :real-origin
+         anchor-point :real-anchor}                    (angle/calculate-origin-and-anchor environment origin anchor band-width)
+        [relative-left relative-right]                 (arm-diagonals variant origin-point anchor-point)
+        diagonal-left                                  (v/+ origin-point relative-left)
+        diagonal-right                                 (v/+ origin-point relative-right)
         angle-left                                     (angle/angle-to-point origin-point diagonal-left)
         angle-right                                    (angle/angle-to-point origin-point diagonal-right)
-        angle                                          (-> angle-right (* Math/PI) (/ 180))
         joint-angle                                    (- angle-left angle-right)
-        dy                                             (/ band-width 2 (Math/cos angle))
-        offset-top                                     (v/v 0 (- dy))
-        offset-bottom                                  (v/v 0 dy)
-        corner-upper                                   (v/+ origin-point offset-top)
-        corner-lower                                   (v/+ origin-point offset-bottom)
-        left-upper                                     (v/+ diagonal-left offset-top)
-        left-lower                                     (v/+ diagonal-left offset-bottom)
-        right-upper                                    (v/+ diagonal-right offset-top)
-        right-lower                                    (v/+ diagonal-right offset-bottom)
+        middle-angle                                   (-> (/ (+ angle-left angle-right) 2)
+                                                           (* Math/PI) (/ 180))
+        delta                                          (/ band-width 2 (Math/sin (-> joint-angle
+                                                                                     (* Math/PI)
+                                                                                     (/ 180)
+                                                                                     (/ 2))))
+        offset-lower                                   (v/v (* (Math/cos middle-angle)
+                                                               delta)
+                                                            (* (Math/sin middle-angle)
+                                                               delta))
+        offset-upper                                   (v/v (* (Math/cos middle-angle)
+                                                               (- delta))
+                                                            (* (Math/sin middle-angle)
+                                                               (- delta)))
+        corner-upper                                   (v/+ origin-point offset-upper)
+        corner-lower                                   (v/+ origin-point offset-lower)
+        left-upper                                     (v/+ diagonal-left offset-upper)
+        left-lower                                     (v/+ diagonal-left offset-lower)
+        right-upper                                    (v/+ diagonal-right offset-upper)
+        right-lower                                    (v/+ diagonal-right offset-lower)
         line                                           (-> line
                                                            (update-in [:fimbriation :thickness-1] (util/percent-of height))
                                                            (update-in [:fimbriation :thickness-2] (util/percent-of height)))

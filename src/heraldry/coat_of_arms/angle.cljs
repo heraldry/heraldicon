@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.angle
-  (:require [heraldry.coat-of-arms.vector :as v]))
+  (:require [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.vector :as v]))
 
 (defn angle-to-point [p1 p2]
   (let [d         (v/- p2 p1)
@@ -25,3 +26,9 @@
                         (v/v origin-height origin-height))]
     (v/v (-> dir :x Math/abs)
          (-> dir :y Math/abs))))
+
+(defn calculate-origin-and-anchor [environment origin anchor width]
+  (let [real-origin (position/calculate origin environment)
+        real-anchor (position/calculate anchor environment)]
+    {:real-origin real-origin
+     :real-anchor real-anchor}))

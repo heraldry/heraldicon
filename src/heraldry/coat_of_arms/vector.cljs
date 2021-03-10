@@ -36,6 +36,12 @@
               (cljs.core/* x x)
               (cljs.core/* y y))))
 
+(defn normal [v]
+  (let [d (abs v)]
+    (if (> d 0)
+      (/ v d)
+      v)))
+
 (defn avg [v1 v2]
   (-> v1
       (+ v2)
