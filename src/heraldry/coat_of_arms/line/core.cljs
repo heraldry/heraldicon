@@ -134,19 +134,50 @@
                                 :default :none}}})
 
 (defn options [line]
-  (options/merge
-   default-options
-   (get {:straight  {:eccentricity nil
-                     :offset       nil
-                     :height       nil
-                     :width        nil
-                     :flipped?     nil}
-         :indented  {:eccentricity nil}
-         :embattled {:eccentricity nil}
-         :dancetty  {:width        {:default 20}
-                     :eccentricity nil}
-         :wavy      {:width {:default 20}}}
-        (:type line))))
+  (when-let [type (:type line)]
+    (case type
+      :straight  (options/pick default-options
+                               [[:type]
+                                [:fimbriation]])
+      :indented  (options/pick default-options
+                               [[:type]
+                                [:height]
+                                [:width]
+                                [:offset]
+                                [:flipped?]
+                                [:fimbriation]])
+      :embattled (options/pick default-options
+                               [[:type]
+                                [:height]
+                                [:width]
+                                [:offset]
+                                [:flipped?]
+                                [:fimbriation]])
+      :dancetty  (options/pick default-options
+                               [[:type]
+                                [:height]
+                                [:width]
+                                [:offset]
+                                [:flipped?]
+                                [:fimbriation]]
+                               {[:width :default] 20})
+      :wavy      (options/pick default-options
+                               [[:type]
+                                [:eccentricity]
+                                [:height]
+                                [:width]
+                                [:offset]
+                                [:flipped?]
+                                [:fimbriation]]
+                               {[:width :default] 20})
+      (options/pick default-options
+                    [[:type]
+                     [:eccentricity]
+                     [:height]
+                     [:width]
+                     [:offset]
+                     [:flipped?]
+                     [:fimbriation]]))))
 
 (defn create [{:keys [type] :or {type :straight} :as line} length & {:keys [angle flipped? render-options seed reversed?] :as line-options}]
   (let [line-function               (get kinds-function-map type)
