@@ -23,7 +23,7 @@
                                                 :charges   #{:sphinx :griffin :unicorn}}
                                     :birds     {:node-type :group
                                                 :name      "birds"
-                                                :charges   #{:dove :crane :eagle :owl :corvus}}}}}})
+                                                :charges   #{:dove :crane :eagle :owl :raven}}}}}})
 
 (def known-charge-types
   (walk/postwalk (fn [data]
