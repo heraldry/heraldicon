@@ -3,7 +3,6 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
-
             [heraldry.util :as util]))
 
 (defn diagonal-mode-choices [type]
@@ -45,6 +44,7 @@
    :opposite-line (set-line-defaults line/default-options)
    :geometry (-> geometry/default-options
                  (assoc-in [:size :min] 10)
+                 (assoc-in [:size :max] 50)
                  (assoc-in [:size :default] 25)
                  (assoc :mirrored? nil)
                  (assoc :reversed? nil)
@@ -53,56 +53,72 @@
 
 (defn options [ordinary]
   (when ordinary
-    (let [type (:type ordinary)]
-      (->
-       default-options
-       (options/merge {:line (-> (get-in ordinary [:line])
-                                 line/options
-                                 set-line-defaults)})
-       (options/merge {:opposite-line (-> (get-in ordinary [:opposite-line])
-                                          line/options
-                                          set-line-defaults)})
-       (options/merge
-        (->
-         (get {:pale {:origin {:offset-y nil}
-                      :diagonal-mode nil
-                      :geometry {:size {:max 50}}}
-               :fess {:origin {:offset-x nil}
-                      :diagonal-mode nil
-                      :geometry {:size {:max 50}}}
-               :chief {:origin nil
-                       :diagonal-mode nil
-                       :opposite-line nil
-                       :geometry {:size {:max 50}}}
-               :base {:origin nil
-                      :opposite-line nil
-                      :diagonal-mode nil
-                      :geometry {:size {:max 50}}}
-               :bend {:origin {:point {:choices position/point-choices-y}}
-                      :diagonal-mode {:choices (diagonal-mode-choices
-                                                :bend)}
-                      :geometry {:size {:max 50}}}
-               :bend-sinister {:origin {:point {:choices position/point-choices-y}}
-                               :diagonal-mode {:choices (diagonal-mode-choices
-                                                         :bend-sinister)
-                                               :default :top-right-origin}
-                               :geometry {:size {:max 50}}}
-               :chevron {:diagonal-mode {:choices (diagonal-mode-choices
-                                                   :chevron)
-                                         :default :forty-five-degrees}
-                         :line {:offset {:min 0}}
-                         :opposite-line {:offset {:min 0}}
-                         :geometry {:size {:max 30}}}
-               :saltire {:diagonal-mode {:choices (diagonal-mode-choices
-                                                   :saltire)}
-                         :line {:offset {:min 0}}
-                         :opposite-line nil
-                         :geometry {:size {:max 30}}}
-               :cross {:diagonal-mode nil
-                       :line {:offset {:min 0}}
-                       :opposite-line nil
-                       :geometry {:size {:max 30}}}}
-              type)))))))
+    (->
+     (case (:type ordinary)
+       :pale (options/pick default-options
+                           [[:origin]
+                            [:line]
+                            [:opposite-line]
+                            [:geometry]]
+                           {[:offset-y] nil})
+       :fess (options/pick default-options
+                           [[:origin]
+                            [:line]
+                            [:opposite-line]
+                            [:geometry]]
+                           {[:offset-x] nil})
+       :chief (options/pick default-options
+                            [[:line]
+                             [:geometry]])
+       :base (options/pick default-options
+                           [[:line]
+                            [:geometry]])
+       :bend (options/pick default-options
+                           [[:origin]
+                            [:diagonal-mode]
+                            [:line]
+                            [:opposite-line]
+                            [:geometry]]
+                           {[:origin :point :choices] position/point-choices-y
+                            [:diagonal-mode :choices] (diagonal-mode-choices :bend)})
+       :bend-sinister (options/pick default-options
+                                    [[:origin]
+                                     [:diagonal-mode]
+                                     [:line]
+                                     [:opposite-line]
+                                     [:geometry]]
+                                    {[:origin :point :choices] position/point-choices-y
+                                     [:diagonal-mode :choices] (diagonal-mode-choices :bend-sinister)
+                                     [:diagonal-mode :default] :top-right-origin})
+       :chevron (options/pick default-options
+                              [[:origin]
+                               [:diagonal-mode]
+                               [:line]
+                               [:opposite-line]
+                               [:geometry]]
+                              {[:diagonal-mode :choices] (diagonal-mode-choices :chevron)
+                               [:diagonal-mode :default] :forty-five-degrees
+                               [:line :offset :min] 0
+                               [:opposite-line :offset :min] 0})
+       :saltire (options/pick default-options
+                              [[:origin]
+                               [:diagonal-mode]
+                               [:line]
+                               [:geometry]]
+                              {[:diagonal-mode :choices] (diagonal-mode-choices :saltire)
+                               [:line :offset :min] 0
+                               [:opposite-line :offset :min] 0})
+       :cross (options/pick default-options
+                            [[:origin]
+                             [:line]
+                             [:geometry]]
+                            {[:line :offset :min] 0}))
+     (update-in [:line] (fn [line]
+                          (when line
+                            (set-line-defaults line))))
+     (update-in [:opposite-line] (fn [opposite-line]
+                                   (when opposite-line
+                                     (set-line-defaults opposite-line)))))))
 
 (defn sanitize-opposite-line [ordinary line]
   (-> (options/sanitize
