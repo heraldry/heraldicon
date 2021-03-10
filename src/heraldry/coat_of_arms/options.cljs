@@ -37,12 +37,6 @@
                    (min (:max options))))
       nil)))
 
-#_{:clj-kondo/ignore [:redefined-var]}
-(defn merge [x other]
-  (util/deep-merge-with (fn [_current-value new-value]
-                          new-value)
-                        x (or other {})))
-
 (defn sanitize [values given-options]
   (into {}
         (for [[k v] given-options]
