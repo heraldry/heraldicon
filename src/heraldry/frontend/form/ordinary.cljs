@@ -74,6 +74,10 @@
            [position/form (conj path :origin)
             :title "Origin"
             :options (:origin ordinary-options)])
+         (when (:anchor ordinary-options)
+           [position/form (conj path :anchor)
+            :title "Anchor"
+            :options (:anchor ordinary-options)])
          (when (:geometry ordinary-options)
            [geometry/form (conj path :geometry)
             (:geometry ordinary-options)

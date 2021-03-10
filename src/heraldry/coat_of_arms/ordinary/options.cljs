@@ -38,6 +38,8 @@
 
 (def default-options
   {:origin        position/default-options
+   :anchor        (-> position/default-options
+                      (update-in [:point :choices] conj ["Relative" :relative]))
    :diagonal-mode {:type    :choice
                    :default :top-left-origin}
    :line          (set-line-defaults line/default-options)
@@ -92,6 +94,7 @@
                                      [:diagonal-mode :default] :top-right-origin})
        :chevron       (options/pick default-options
                                     [[:origin]
+                                     [:anchor]
                                      [:diagonal-mode]
                                      [:line]
                                      [:opposite-line]
