@@ -156,8 +156,7 @@
                                  [:layout :offset-y]
                                  [:layout :stretch-y]]
                                 {[:layout :num-fields-x :default] 3
-                                 [:layout :num-fields-y :default] 4
-                                 [:line :fimbriation] nil})
+                                 [:layout :num-fields-y :default] 4})
        :gyronny (options/pick default-options
                               [[:line]
                                [:origin :point]
@@ -189,8 +188,7 @@
                               [:layout :num-fields-y]
                               [:layout :offset-y]
                               [:layout :stretch-y]]
-                             {[:layout :num-fields-y :default] nil
-                              [:line :fimbriation] nil})
+                             {[:layout :num-fields-y :default] nil})
        :lozengy (options/pick default-options
                               [[:layout :num-fields-x]
                                [:layout :offset-x]
@@ -200,8 +198,7 @@
                                [:layout :stretch-y]
                                [:layout :rotation]]
                               {[:layout :num-fields-y :default] nil
-                               [:layout :stretch-y :max] 3
-                               [:line :fimbriation] nil})
+                               [:layout :stretch-y :max] 3})
        :vairy (options/pick default-options
                             [[:variant]
                              [:layout :num-fields-x]
@@ -210,8 +207,7 @@
                              [:layout :num-fields-y]
                              [:layout :offset-y]
                              [:layout :stretch-y]]
-                            {[:layout :num-fields-y :default] nil
-                             [:line] nil})
+                            {[:layout :num-fields-y :default] nil})
        :potenty (options/pick default-options
                               [[:variant]
                                [:layout :num-fields-x]
@@ -221,7 +217,6 @@
                                [:layout :offset-y]
                                [:layout :stretch-y]]
                               {[:layout :num-fields-y :default] nil
-                               [:line] nil
                                [:variant :choices] [["Default" :default]
                                                     ["Counter" :counter]
                                                     ["In pale" :in-pale]
@@ -234,8 +229,7 @@
                                  [:layout :num-fields-y]
                                  [:layout :offset-y]
                                  [:layout :stretch-y]]
-                                {[:layout :num-fields-y :default] nil
-                                 [:line] nil})
+                                {[:layout :num-fields-y :default] nil})
        :masonry (options/pick default-options
                               [[:thickness]
                                [:layout :num-fields-x]
@@ -244,8 +238,7 @@
                                [:layout :num-fields-y]
                                [:layout :offset-y]
                                [:layout :stretch-y]]
-                              {[:layout :num-fields-y :default] nil
-                               [:line] nil})
+                              {[:layout :num-fields-y :default] nil})
        :bendy (options/pick default-options
                             [[:line]
                              [:layout :num-base-fields]
