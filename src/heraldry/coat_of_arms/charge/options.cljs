@@ -23,29 +23,32 @@
                     (assoc-in [:thickness-2 :default] 10))})
 
 (defn options [charge]
-  (when charge
-    (let [type (:type charge)]
-      (->
-       default-options
-       (options/merge
-        (->
-         (get {:escutcheon {:geometry {:size {:default 30}
-                                       :mirrored? nil}}
-               :roundel {:geometry {:mirrored? nil
-                                    :reversed? nil}}
-               :annulet {:geometry {:mirrored? nil
-                                    :reversed? nil}}
-               :billet {:geometry {:mirrored? nil
-                                   :reversed? nil}}
-               :lozenge {:geometry {:mirrored? nil
-                                    :reversed? nil}}
-               :fusil {:geometry {:mirrored? nil
-                                  :reversed? nil}}
-               :mascle {:geometry {:mirrored? nil
-                                   :reversed? nil}}
-               :rustre {:geometry {:mirrored? nil
-                                   :reversed? nil}}
-               :crescent {:geometry {:mirrored? nil}}}
-              type)
-         (cond->
-          (not= type :escutcheon) (assoc :escutcheon nil))))))))
+  (when-let [type (:type charge)]
+    (cond
+      (= type :escutcheon) (options/pick default-options
+                                         [[:position]
+                                          [:geometry]
+                                          [:escutcheon]
+                                          [:fimbriation]]
+                                         {[:geometry :size :default] 30})
+      (#{:roundel
+         :annulet
+         :billet
+         :lozenge
+         :fusil
+         :mascle
+         :rustre} type) (options/pick default-options
+                                      [[:position]
+                                       [:geometry]
+                                       [:fimbriation]]
+                                      {[:geometry :reversed?] nil
+                                       [:geometry :mirrored?] nil})
+      (= type :crescent) (options/pick default-options
+                                       [[:position]
+                                        [:geometry]
+                                        [:fimbriation]]
+                                       {[:geometry :mirrored?] nil})
+      :else (options/pick default-options
+                          [[:position]
+                           [:geometry]
+                           [:fimbriation]]))))
