@@ -80,7 +80,7 @@
 
 (defn parse-width-height-from-viewbox [s]
   (when s
-    (let [[_ x0 y0 x1 y1] (re-matches #"(?i)^ *([0-9e.]*) *([0-9e.]*) *([0-9e.]*) *([0-9e.]*)$" s)
+    (let [[_ x0 y0 x1 y1] (re-matches #"(?i)^ *(-?[0-9e.]*) *(-?[0-9e.]*) *(-?[0-9e.]*) *(-?[0-9e.]*)$" s)
           x0 (if (-> x0 count (= 0))
                0
                (js/parseFloat x0))
@@ -94,9 +94,8 @@
                0
                (js/parseFloat y1))]
       (if (and x0 y0 y0 y1)
-        [(- x1 x0)
-         (- y1 y0)]
-        [nil nil]))))
+        [x0 y0 x1 y1]
+        [nil nil nil nil]))))
 
 (defn load-svg-file [db-path data]
   (go-catch
@@ -119,19 +118,26 @@
                      height (-> parsed
                                 (get-in [1 :height])
                                 parse-number-with-unit)
-                     [width height] (let [[viewbox-width viewbox-height] (-> parsed
+                     [shift-x shift-y
+                      width height] (let [[viewbox-x viewbox-y
+                                           viewbox-width viewbox-height] (-> parsed
                                                                              (get-in [1 :viewbox])
                                                                              parse-width-height-from-viewbox)]
                                       (if (and viewbox-width viewbox-height)
-                                        [viewbox-width viewbox-height]
-                                        [width height]))
+                                        [viewbox-x viewbox-y viewbox-width viewbox-height]
+                                        [0 0 width height]))
+                     [shift-x shift-y] (if (and shift-x shift-y)
+                                         [shift-x shift-y]
+                                         [100 100])
                      [width height] (if (and width height)
                                       [width height]
                                       [100 100])
                      colours (into {}
                                    (map (fn [c]
                                           [c :keep]) (find-colours
-                                                      edn-data)))]
+                                                      edn-data)))
+                     edn-data (-> edn-data
+                                  (assoc-in [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")")))]
                  (let [existing-colours @(rf/subscribe [:get (conj db-path :colours)])
                        new-colours (merge colours
                                           (select-keys existing-colours
