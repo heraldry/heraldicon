@@ -94,213 +94,225 @@
 
 (defn options [division]
   (when division
-    (->
-     (case (:type division)
-       :per-pale                    (options/pick default-options
-                                                  [[:line]
-                                                   [:origin :point]
-                                                   [:origin :offset-x]]
-                                                  {[:origin :point :choices] position/point-choices-x})
-       :per-fess                    (options/pick default-options
-                                                  [[:line]
-                                                   [:origin :point]
-                                                   [:origin :offset-y]]
-                                                  {[:origin :point :choices] position/point-choices-y})
-       :per-bend                    (options/pick default-options
-                                                  [[:line]
-                                                   [:origin :point]
-                                                   [:origin :offset-y]
-                                                   [:diagonal-mode]]
-                                                  {[:diagonal-mode :choices] (diagonal-mode-choices :per-bend)
-                                                   [:origin :point :choices] position/point-choices-y})
-       :per-bend-sinister           (options/pick default-options
-                                                  [[:line]
-                                                   [:origin :point]
-                                                   [:origin :offset-y]
-                                                   [:diagonal-mode]]
-                                                  {[:diagonal-mode :choices] (diagonal-mode-choices :per-bend-sinister)
-                                                   [:diagonal-mode :default] :top-right-origin
-                                                   [:origin :point :choices] position/point-choices-y})
-       :per-chevron                 (options/pick default-options
-                                                  [[:line]
-                                                   [:origin :point]
-                                                   [:origin :offset-x]
-                                                   [:origin :offset-y]
-                                                   [:diagonal-mode]]
-                                                  {[:diagonal-mode :choices] (diagonal-mode-choices :per-chevron)
-                                                   [:diagonal-mode :default] :forty-five-degrees
-                                                   [:origin :point :choices] position/point-choices-y
-                                                   [:line :offset :min]      0})
-       :per-saltire                 (options/pick default-options
-                                                  [[:line]
-                                                   [:origin :point]
-                                                   [:origin :offset-x]
-                                                   [:origin :offset-y]
-                                                   [:diagonal-mode]]
-                                                  {[:diagonal-mode :choices] (diagonal-mode-choices :per-saltire)
-                                                   [:line :offset :min]      0
-                                                   [:line :fimbriation]      nil})
-       :quartered                   (options/pick default-options
-                                                  [[:line]
-                                                   [:origin :point]
-                                                   [:origin :offset-x]
-                                                   [:origin :offset-y]]
-                                                  {[:line :offset :min] 0
-                                                   [:line :fimbriation] nil})
-       :quarterly                   (options/pick default-options
-                                                  [[:layout :num-base-fields]
-                                                   [:layout :num-fields-x]
-                                                   [:layout :offset-x]
-                                                   [:layout :stretch-x]
-                                                   [:layout :num-fields-y]
-                                                   [:layout :offset-y]
-                                                   [:layout :stretch-y]]
-                                                  {[:layout :num-fields-x :default] 3
-                                                   [:layout :num-fields-y :default] 4})
-       :gyronny                     (options/pick default-options
-                                                  [[:line]
-                                                   [:origin :point]
-                                                   [:origin :offset-x]
-                                                   [:origin :offset-y]
-                                                   [:diagonal-mode]]
-                                                  {[:diagonal-mode :choices] (diagonal-mode-choices :gyronny)
-                                                   [:line :offset :min]      0
-                                                   [:line :fimbriation]      nil})
-       :paly                        (options/pick default-options
-                                                  [[:line]
-                                                   [:layout :num-base-fields]
-                                                   [:layout :num-fields-x]
-                                                   [:layout :offset-x]
-                                                   [:layout :stretch-x]]
-                                                  {[:line :fimbriation] nil})
-       :barry                       (options/pick default-options
-                                                  [[:line]
-                                                   [:layout :num-base-fields]
-                                                   [:layout :num-fields-y]
-                                                   [:layout :offset-y]
-                                                   [:layout :stretch-y]]
-                                                  {[:line :fimbriation] nil})
-       :chequy                      (options/pick default-options
-                                                  [[:layout :num-base-fields]
-                                                   [:layout :num-fields-x]
-                                                   [:layout :offset-x]
-                                                   [:layout :stretch-x]
-                                                   [:layout :num-fields-y]
-                                                   [:layout :offset-y]
-                                                   [:layout :stretch-y]]
-                                                  {[:layout :num-fields-y :default] nil})
-       :lozengy                     (options/pick default-options
-                                                  [[:layout :num-fields-x]
-                                                   [:layout :offset-x]
-                                                   [:layout :stretch-x]
-                                                   [:layout :num-fields-y]
-                                                   [:layout :offset-y]
-                                                   [:layout :stretch-y]
-                                                   [:layout :rotation]]
-                                                  {[:layout :num-fields-y :default] nil
-                                                   [:layout :stretch-y :max]        3})
-       :vairy                       (options/pick default-options
-                                                  [[:variant]
-                                                   [:layout :num-fields-x]
-                                                   [:layout :offset-x]
-                                                   [:layout :stretch-x]
-                                                   [:layout :num-fields-y]
-                                                   [:layout :offset-y]
-                                                   [:layout :stretch-y]]
-                                                  {[:layout :num-fields-y :default] nil})
-       :potenty                     (options/pick default-options
-                                                  [[:variant]
-                                                   [:layout :num-fields-x]
-                                                   [:layout :offset-x]
-                                                   [:layout :stretch-x]
-                                                   [:layout :num-fields-y]
-                                                   [:layout :offset-y]
-                                                   [:layout :stretch-y]]
-                                                  {[:layout :num-fields-y :default] nil
-                                                   [:variant :choices]              [["Default" :default]
-                                                                                     ["Counter" :counter]
-                                                                                     ["In pale" :in-pale]
-                                                                                     ["En point" :en-point]]})
-       :papellony                   (options/pick default-options
-                                                  [[:thickness]
-                                                   [:layout :num-fields-x]
-                                                   [:layout :offset-x]
-                                                   [:layout :stretch-x]
-                                                   [:layout :num-fields-y]
-                                                   [:layout :offset-y]
-                                                   [:layout :stretch-y]]
-                                                  {[:layout :num-fields-y :default] nil})
-       :masonry                     (options/pick default-options
-                                                  [[:thickness]
-                                                   [:layout :num-fields-x]
-                                                   [:layout :offset-x]
-                                                   [:layout :stretch-x]
-                                                   [:layout :num-fields-y]
-                                                   [:layout :offset-y]
-                                                   [:layout :stretch-y]]
-                                                  {[:layout :num-fields-y :default] nil})
-       :bendy                       (options/pick default-options
-                                                  [[:line]
-                                                   [:layout :num-base-fields]
-                                                   [:layout :num-fields-y]
-                                                   [:layout :offset-y]
-                                                   [:layout :stretch-y]
-                                                   [:origin :point]
-                                                   [:origin :offset-x]
-                                                   [:origin :offset-y]
-                                                   [:diagonal-mode]]
-                                                  {[:diagonal-mode :choices] (diagonal-mode-choices :bendy)
-                                                   [:origin :point :choices] position/point-choices-y
-                                                   [:line :fimbriation]      nil})
-       :bendy-sinister              (options/pick default-options
-                                                  [[:line]
-                                                   [:layout :num-base-fields]
-                                                   [:layout :num-fields-y]
-                                                   [:layout :offset-y]
-                                                   [:layout :stretch-y]
-                                                   [:origin :point]
-                                                   [:origin :offset-x]
-                                                   [:origin :offset-y]
-                                                   [:diagonal-mode]]
-                                                  {[:diagonal-mode :choices] (diagonal-mode-choices :bendy)
-                                                   [:diagonal-mode :default] :top-right-origin
-                                                   [:origin :point :choices] position/point-choices-y
-                                                   [:line :fimbriation]      nil})
-       :tierced-per-pale            (options/pick default-options
-                                                  [[:line]
-                                                   [:layout :stretch-x]
-                                                   [:origin :point]
-                                                   [:origin :offset-x]]
-                                                  {[:origin :point :choices] position/point-choices-x
-                                                   [:line :fimbriation]      nil})
-       :tierced-per-fess            (options/pick default-options
-                                                  [[:line]
-                                                   [:layout :stretch-y]
-                                                   [:origin :point]
-                                                   [:origin :offset-y]]
-                                                  {[:origin :point :choices] position/point-choices-y
-                                                   [:line :fimbriation]      nil})
-       :tierced-per-pairle          (options/pick default-options
-                                                  [[:line]
-                                                   [:origin :point]
-                                                   [:origin :offset-x]
-                                                   [:origin :offset-y]
-                                                   [:diagonal-mode]]
-                                                  {[:diagonal-mode :choices] (diagonal-mode-choices :tierced-per-pairle)
-                                                   [:line :offset :min]      0
-                                                   [:line :fimbriation]      nil})
-       :tierced-per-pairle-reversed (options/pick default-options
-                                                  [[:line]
-                                                   [:origin :point]
-                                                   [:origin :offset-x]
-                                                   [:origin :offset-y]
-                                                   [:diagonal-mode]]
-                                                  {[:diagonal-mode :choices] (diagonal-mode-choices :tierced-per-pairle-reversed)
-                                                   [:diagonal-mode :default] :forty-five-debrees
-                                                   [:line :offset :min]      0
-                                                   [:line :fimbriation]      nil})
-       {})
-     (update-in [:line] (fn [line]
-                          (when line
-                            (options/merge (line/options (get-in division [:line]))
-                                           line)))))))
+    (let [line-style (line/options (:line division))]
+      (case (:type division)
+        :per-pale                    (options/pick default-options
+                                                   [[:line]
+                                                    [:origin :point]
+                                                    [:origin :offset-x]]
+                                                   {[:origin :point :choices] position/point-choices-x
+                                                    [:line]                   line-style})
+        :per-fess                    (options/pick default-options
+                                                   [[:line]
+                                                    [:origin :point]
+                                                    [:origin :offset-y]]
+                                                   {[:origin :point :choices] position/point-choices-y
+                                                    [:line]                   line-style})
+        :per-bend                    (options/pick default-options
+                                                   [[:line]
+                                                    [:origin :point]
+                                                    [:origin :offset-y]
+                                                    [:diagonal-mode]]
+                                                   {[:diagonal-mode :choices] (diagonal-mode-choices :per-bend)
+                                                    [:origin :point :choices] position/point-choices-y
+                                                    [:line]                   line-style})
+        :per-bend-sinister           (options/pick default-options
+                                                   [[:line]
+                                                    [:origin :point]
+                                                    [:origin :offset-y]
+                                                    [:diagonal-mode]]
+                                                   {[:diagonal-mode :choices] (diagonal-mode-choices :per-bend-sinister)
+                                                    [:diagonal-mode :default] :top-right-origin
+                                                    [:origin :point :choices] position/point-choices-y
+                                                    [:line]                   line-style})
+        :per-chevron                 (options/pick default-options
+                                                   [[:line]
+                                                    [:origin :point]
+                                                    [:origin :offset-x]
+                                                    [:origin :offset-y]
+                                                    [:diagonal-mode]]
+                                                   {[:diagonal-mode :choices] (diagonal-mode-choices :per-chevron)
+                                                    [:diagonal-mode :default] :forty-five-degrees
+                                                    [:origin :point :choices] position/point-choices-y
+                                                    [:line]                   line-style
+                                                    [:line :offset :min]      0})
+        :per-saltire                 (options/pick default-options
+                                                   [[:line]
+                                                    [:origin :point]
+                                                    [:origin :offset-x]
+                                                    [:origin :offset-y]
+                                                    [:diagonal-mode]]
+                                                   {[:diagonal-mode :choices] (diagonal-mode-choices :per-saltire)
+                                                    [:line]                   line-style
+                                                    [:line :offset :min]      0
+                                                    [:line :fimbriation]      nil})
+        :quartered                   (options/pick default-options
+                                                   [[:line]
+                                                    [:origin :point]
+                                                    [:origin :offset-x]
+                                                    [:origin :offset-y]]
+                                                   {[:line]              line-style
+                                                    [:line :offset :min] 0
+                                                    [:line :fimbriation] nil})
+        :quarterly                   (options/pick default-options
+                                                   [[:layout :num-base-fields]
+                                                    [:layout :num-fields-x]
+                                                    [:layout :offset-x]
+                                                    [:layout :stretch-x]
+                                                    [:layout :num-fields-y]
+                                                    [:layout :offset-y]
+                                                    [:layout :stretch-y]]
+                                                   {[:layout :num-fields-x :default] 3
+                                                    [:layout :num-fields-y :default] 4})
+        :gyronny                     (options/pick default-options
+                                                   [[:line]
+                                                    [:origin :point]
+                                                    [:origin :offset-x]
+                                                    [:origin :offset-y]
+                                                    [:diagonal-mode]]
+                                                   {[:diagonal-mode :choices] (diagonal-mode-choices :gyronny)
+                                                    [:line]                   line-style
+                                                    [:line :offset :min]      0
+                                                    [:line :fimbriation]      nil})
+        :paly                        (options/pick default-options
+                                                   [[:line]
+                                                    [:layout :num-base-fields]
+                                                    [:layout :num-fields-x]
+                                                    [:layout :offset-x]
+                                                    [:layout :stretch-x]]
+                                                   {[:line]              line-style
+                                                    [:line :fimbriation] nil})
+        :barry                       (options/pick default-options
+                                                   [[:line]
+                                                    [:layout :num-base-fields]
+                                                    [:layout :num-fields-y]
+                                                    [:layout :offset-y]
+                                                    [:layout :stretch-y]]
+                                                   {[:line]              line-style
+                                                    [:line :fimbriation] nil})
+        :chequy                      (options/pick default-options
+                                                   [[:layout :num-base-fields]
+                                                    [:layout :num-fields-x]
+                                                    [:layout :offset-x]
+                                                    [:layout :stretch-x]
+                                                    [:layout :num-fields-y]
+                                                    [:layout :offset-y]
+                                                    [:layout :stretch-y]]
+                                                   {[:layout :num-fields-y :default] nil})
+        :lozengy                     (options/pick default-options
+                                                   [[:layout :num-fields-x]
+                                                    [:layout :offset-x]
+                                                    [:layout :stretch-x]
+                                                    [:layout :num-fields-y]
+                                                    [:layout :offset-y]
+                                                    [:layout :stretch-y]
+                                                    [:layout :rotation]]
+                                                   {[:layout :num-fields-y :default] nil
+                                                    [:layout :stretch-y :max]        3})
+        :vairy                       (options/pick default-options
+                                                   [[:variant]
+                                                    [:layout :num-fields-x]
+                                                    [:layout :offset-x]
+                                                    [:layout :stretch-x]
+                                                    [:layout :num-fields-y]
+                                                    [:layout :offset-y]
+                                                    [:layout :stretch-y]]
+                                                   {[:layout :num-fields-y :default] nil})
+        :potenty                     (options/pick default-options
+                                                   [[:variant]
+                                                    [:layout :num-fields-x]
+                                                    [:layout :offset-x]
+                                                    [:layout :stretch-x]
+                                                    [:layout :num-fields-y]
+                                                    [:layout :offset-y]
+                                                    [:layout :stretch-y]]
+                                                   {[:layout :num-fields-y :default] nil
+                                                    [:variant :choices]              [["Default" :default]
+                                                                                      ["Counter" :counter]
+                                                                                      ["In pale" :in-pale]
+                                                                                      ["En point" :en-point]]})
+        :papellony                   (options/pick default-options
+                                                   [[:thickness]
+                                                    [:layout :num-fields-x]
+                                                    [:layout :offset-x]
+                                                    [:layout :stretch-x]
+                                                    [:layout :num-fields-y]
+                                                    [:layout :offset-y]
+                                                    [:layout :stretch-y]]
+                                                   {[:layout :num-fields-y :default] nil})
+        :masonry                     (options/pick default-options
+                                                   [[:thickness]
+                                                    [:layout :num-fields-x]
+                                                    [:layout :offset-x]
+                                                    [:layout :stretch-x]
+                                                    [:layout :num-fields-y]
+                                                    [:layout :offset-y]
+                                                    [:layout :stretch-y]]
+                                                   {[:layout :num-fields-y :default] nil})
+        :bendy                       (options/pick default-options
+                                                   [[:line]
+                                                    [:layout :num-base-fields]
+                                                    [:layout :num-fields-y]
+                                                    [:layout :offset-y]
+                                                    [:layout :stretch-y]
+                                                    [:origin :point]
+                                                    [:origin :offset-x]
+                                                    [:origin :offset-y]
+                                                    [:diagonal-mode]]
+                                                   {[:diagonal-mode :choices] (diagonal-mode-choices :bendy)
+                                                    [:origin :point :choices] position/point-choices-y
+                                                    [:line]                   line-style
+                                                    [:line :fimbriation]      nil})
+        :bendy-sinister              (options/pick default-options
+                                                   [[:line]
+                                                    [:layout :num-base-fields]
+                                                    [:layout :num-fields-y]
+                                                    [:layout :offset-y]
+                                                    [:layout :stretch-y]
+                                                    [:origin :point]
+                                                    [:origin :offset-x]
+                                                    [:origin :offset-y]
+                                                    [:diagonal-mode]]
+                                                   {[:diagonal-mode :choices] (diagonal-mode-choices :bendy)
+                                                    [:diagonal-mode :default] :top-right-origin
+                                                    [:origin :point :choices] position/point-choices-y
+                                                    [:line]                   line-style
+                                                    [:line :fimbriation]      nil})
+        :tierced-per-pale            (options/pick default-options
+                                                   [[:line]
+                                                    [:layout :stretch-x]
+                                                    [:origin :point]
+                                                    [:origin :offset-x]]
+                                                   {[:origin :point :choices] position/point-choices-x
+                                                    [:line]                   line-style
+                                                    [:line :fimbriation]      nil})
+        :tierced-per-fess            (options/pick default-options
+                                                   [[:line]
+                                                    [:layout :stretch-y]
+                                                    [:origin :point]
+                                                    [:origin :offset-y]]
+                                                   {[:origin :point :choices] position/point-choices-y
+                                                    [:line]                   line-style
+                                                    [:line :fimbriation]      nil})
+        :tierced-per-pairle          (options/pick default-options
+                                                   [[:line]
+                                                    [:origin :point]
+                                                    [:origin :offset-x]
+                                                    [:origin :offset-y]
+                                                    [:diagonal-mode]]
+                                                   {[:diagonal-mode :choices] (diagonal-mode-choices :tierced-per-pairle)
+                                                    [:line]                   line-style
+                                                    [:line :offset :min]      0
+                                                    [:line :fimbriation]      nil})
+        :tierced-per-pairle-reversed (options/pick default-options
+                                                   [[:line]
+                                                    [:origin :point]
+                                                    [:origin :offset-x]
+                                                    [:origin :offset-y]
+                                                    [:diagonal-mode]]
+                                                   {[:diagonal-mode :choices] (diagonal-mode-choices :tierced-per-pairle-reversed)
+                                                    [:diagonal-mode :default] :forty-five-debrees
+                                                    [:line]                   line-style
+                                                    [:line :offset :min]      0
+                                                    [:line :fimbriation]      nil})
+        {}))))
