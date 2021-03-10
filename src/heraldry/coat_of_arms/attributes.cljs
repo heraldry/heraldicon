@@ -98,10 +98,11 @@
     ["Collared" :collared]
     ["Erased" :erased]
     ["Garnished" :garnished]
-    ["Hilt" :hilt]
+    ["Handled" :handled]
+    ["Hilted" :hilted]
     ["Hooded" :hooded]
     ["Masoned" :masoned]
-    ["Pommel" :pommel]
+    ["Pommeled" :pommeled]
     ["Stringed" :stringed]]])
 
 (def tincture-modifier-map
