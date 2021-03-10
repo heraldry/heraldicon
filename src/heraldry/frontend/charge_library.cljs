@@ -119,11 +119,12 @@
                    height         (-> parsed
                                       (get-in [1 :height])
                                       parse-number-with-unit)
-                   [width height] (if (and width height)
-                                    [width height]
-                                    (-> parsed
-                                        (get-in [1 :viewbox])
-                                        parse-width-height-from-viewbox))
+                   [width height] (let [[viewbox-width viewbox-height] (-> parsed
+                                                                           (get-in [1 :viewbox])
+                                                                           parse-width-height-from-viewbox)]
+                                    (if (and viewbox-width viewbox-height)
+                                      [viewbox-width viewbox-height]
+                                      [width height]))
                    [width height] (if (and width height)
                                     [width height]
                                     [100 100])
