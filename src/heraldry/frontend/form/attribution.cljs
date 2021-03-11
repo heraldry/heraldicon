@@ -3,27 +3,48 @@
             [heraldry.license :as license]
             [re-frame.core :as rf]))
 
-(defn form [db-path]
-  (let [license-nature @(rf/subscribe [:get (conj db-path :nature)])
-        current-license @(rf/subscribe [:get (conj db-path :license)])
-        current-source-license @(rf/subscribe [:get (conj db-path :source-license)])]
+(defn form [db-path & {:keys [charge-presets?]}]
+  (let [current-data @(rf/subscribe [:get db-path])]
     [element/component db-path :attribution "Attribution / License" nil
+     (when charge-presets?
+       [element/select [:ui :dummy :attribution-preset]
+        "Presets"
+        [["-- auto fill for --" :none]
+         ["WappenWiki" :wappenwiki]]
+        :on-change (fn [value]
+                     (case value
+                       :wappenwiki (rf/dispatch [:set
+                                                 db-path
+                                                 (-> current-data
+                                                     (assoc :nature :derivative)
+                                                     (assoc :license :cc-attribution-non-commercial-share-alike)
+                                                     (assoc :license-version :v4)
+                                                     (assoc :source-license :cc-attribution-non-commercial-share-alike)
+                                                     (assoc :source-license-version :v3)
+                                                     (assoc :source-creator-name "WappenWiki")
+                                                     (assoc :source-creator-link "https://wappenwiki.org"))])
+                       nil))])
+
      [element/select (conj db-path :license) "License"
       (assoc-in
        license/license-choices
        [0 0]
        "None (no sharing)")]
-     (when (license/cc-license? current-license)
+     (when (-> current-data
+               :license
+               license/cc-license?)
        [element/select (conj db-path :license-version) "License version"
         license/cc-license-version-choices
         :default :v4])
      [element/radio-select (conj db-path :nature) license/nature-choices
       :default :own-work]
-     (when (= license-nature :derivative)
+     (when (-> current-data :nature (= :derivative))
        [:<>
         [element/select (conj db-path :source-license) "Source license"
          license/license-choices]
-        (when (license/cc-license? current-source-license)
+        (when (-> current-data
+                  :source-license
+                  license/cc-license?)
           [element/select (conj db-path :source-license-version) "License version"
            license/cc-license-version-choices
            :default :v4])
