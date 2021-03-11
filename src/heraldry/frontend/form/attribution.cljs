@@ -10,7 +10,8 @@
        [element/select [:ui :dummy :attribution-preset]
         "Presets"
         [["-- auto fill for --" :none]
-         ["WappenWiki" :wappenwiki]]
+         ["WappenWiki" :wappenwiki]
+         ["Wikimedia" :wikimedia]]
         :on-change (fn [value]
                      (case value
                        :wappenwiki (rf/dispatch [:set
@@ -23,6 +24,14 @@
                                                      (assoc :source-license-version :v3)
                                                      (assoc :source-creator-name "WappenWiki")
                                                      (assoc :source-creator-link "https://wappenwiki.org"))])
+                       :wikimedia  (rf/dispatch [:set
+                                                 db-path
+                                                 (-> current-data
+                                                     (assoc :nature :derivative)
+                                                     (assoc :license :cc-attribution-share-alike)
+                                                     (assoc :license-version :v4)
+                                                     (assoc :source-license :cc-attribution-share-alike)
+                                                     (assoc :source-license-version :v3))])
                        nil))])
 
      [element/select (conj db-path :license) "License"
