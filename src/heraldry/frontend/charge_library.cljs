@@ -346,6 +346,12 @@
                      :id "upload"
                      :on-change #(upload-file % form-db-path)
                      :style {:display "none"}}]])]
+        (when-let [svg-data-url (:svg-data-url charge-data)]
+          [:a {:href svg-data-url
+               :target "_blank"
+               :style {:float "left"
+                       :padding-top "0.5em"}}
+           "Original SVG"])
         [:button.pure-button.pure-button
          {:type "button"
           :on-click (let [match @(rf/subscribe [:get [:route-match]])
