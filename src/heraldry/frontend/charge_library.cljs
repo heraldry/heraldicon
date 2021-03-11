@@ -10,6 +10,7 @@
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.config :as config]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
@@ -407,8 +408,9 @@
          [credits/for-charge charge-data]]
         [:div {:style {:margin-bottom "0.5em"}}
          [charge-map-component/charge-properties charge-data]]
-        (when (= (:username charge-data)
-                 (:username user-data))
+        (when (or (= (:username charge-data)
+                     (:username user-data))
+                  ((config/get :admins) (:username user-data)))
           [:div.pure-control-group {:style {:text-align "right"
                                             :margin-top "10px"
                                             :margin-bottom "10px"}}
