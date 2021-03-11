@@ -2,6 +2,7 @@
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.api.request :as api-request]
+            [heraldry.config :as config]
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.attribution :as attribution]
             [heraldry.frontend.form.core :as form]
@@ -149,8 +150,9 @@
                                           :margin-top    "10px"
                                           :margin-bottom "10px"}}
 
-         (when (= (:username collection-data)
-                  (:username user-data))
+         (when (or (= (:username collection-data)
+                      (:username user-data))
+                   ((config/get :admins) (:username user-data)))
            [:button.pure-button.pure-button-primary {:type     "button"
                                                      :on-click #(do
                                                                   (rf/dispatch-sync [:clear-form-errors form-db-path])

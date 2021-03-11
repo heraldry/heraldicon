@@ -6,6 +6,7 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.render :as render]
+            [heraldry.config :as config]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
@@ -319,8 +320,9 @@
                                           :margin-bottom "10px"}}
 
          [export-buttons :display]
-         (when (= (:username arms-data)
-                  (:username user-data))
+         (when (or (= (:username arms-data)
+                      (:username user-data))
+                   ((config/get :admins) (:username user-data)))
            [:button.pure-button.pure-button-primary {:type     "button"
                                                      :on-click #(do
                                                                   (rf/dispatch-sync [:clear-form-errors form-db-path])
