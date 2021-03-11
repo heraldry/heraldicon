@@ -59,3 +59,24 @@
         :cc-attribution-non-commercial-share-alike (str "CC BY-NC-SA " version)
         :public-domain "public domain"
         "none"))))
+
+(defn compatible? [license source-license]
+  (let [compatible-licenses
+        (case (or source-license :none)
+          :none #{:none}
+          :public-domain #{:none
+                           :public-domain
+                           :cc-attribution
+                           :cc-attribution-share-alike
+                           :cc-attribution-non-commercial-share-alike}
+          :cc-attribution #{:none
+                            :cc-attribution
+                            :cc-attribution-share-alike
+                            :cc-attribution-non-commercial-share-alike:none}
+          :cc-attribution-share-alike #{:none
+                                        :cc-attribution-share-alike
+                                        :cc-attribution-non-commercial-share-alike}
+          :cc-attribution-non-commercial-share-alike #{:none
+                                                       :cc-attribution-non-commercial-share-alike})]
+
+    (compatible-licenses (or license :none))))
