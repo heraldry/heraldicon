@@ -1,6 +1,7 @@
 (ns heraldry.frontend.state
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
+            [heraldry.coat-of-arms.attributes :as attributes]
             [re-frame.core :as rf]
             [taoensso.timbre :as log]))
 
@@ -38,13 +39,18 @@
                                                         :components [{:component :charge
                                                                       :field     {:component :field
                                                                                   :content   {:tincture :azure}}
-                                                                      :tincture  {:eyes-and-teeth :argent
-                                                                                  :armed          :or
-                                                                                  :langued        :gules
-                                                                                  :attired        :argent
-                                                                                  :unguled        :vert
-                                                                                  :beaked         :or
-                                                                                  :winged         :purpure}}]}}}
+                                                                      :tincture  (merge (->> attributes/tincture-modifier-map
+                                                                                             (map (fn [[k _]]
+                                                                                                    [k :or]))
+                                                                                             (into {}))
+                                                                                        {:eyes-and-teeth :argent
+                                                                                         :armed          :or
+                                                                                         :langued        :gules
+                                                                                         :attired        :argent
+                                                                                         :unguled        :vert
+                                                                                         :beaked         :or
+                                                                                         :winged         :purpure
+                                                                                         :pommeled       :gules})}]}}}
            :coat-of-arms {:escutcheon :rectangle}
            :ui           {:component-open? {[:arms-form :render-options]        true
                                             [:arms-form :coat-of-arms]          true
