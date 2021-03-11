@@ -4,26 +4,109 @@
 
 (def group-map
   {:node-type :_root
-   :groups {:beasts {:node-type :group
-                     :name "beasts"
-                     :groups {:predators {:node-type :group
-                                          :name "predators"
-                                          :charges #{:lion :wolf :bear}}
-                              :ungulates {:node-type :group
-                                          :name "ungulates"
-                                          :charges #{:antelope :deer :boar :horse}}
-                              :reptiles {:node-type :group
-                                         :name "reptiles"
-                                         :charges #{:lizard :serpent}}
-                              :insects {:node-type :group
-                                        :name "insects"
-                                        :charges #{:bee :butterfly}}
-                              :hybrids {:node-type :group
-                                        :name "hybrids"
-                                        :charges #{:sphinx :griffin :unicorn}}
-                              :birds {:node-type :group
-                                      :name "birds"
-                                      :charges #{:dove :crane :eagle :owl :raven}}}}}})
+   :groups {:animals {:node-type :group
+                      :name "animals"
+                      :groups {:beasts {:node-type :group
+                                        :name "beasts"
+                                        :groups {:predators {:node-type :group
+                                                             :name "predators"
+                                                             :charges #{:bear
+                                                                        :lion
+                                                                        :wolf}}
+                                                 :ungulates {:node-type :group
+                                                             :name "ungulates"
+                                                             :charges #{:antelope
+                                                                        :boar
+                                                                        :deer
+                                                                        :horse}}
+                                                 :reptiles {:node-type :group
+                                                            :name "reptiles"
+                                                            :charges #{:lizard
+                                                                       :serpent}}
+                                                 :hybrids {:node-type :group
+                                                           :name "hybrids"
+                                                           :charges #{:griffin
+                                                                      :sphinx
+                                                                      :unicorn}}}}
+
+                               :insects {:node-type :group
+                                         :name "insects"
+                                         :charges #{:bee
+                                                    :butterfly}}
+                               :marine {:node-type :group
+                                        :name "marine"
+                                        :charges #{:dolphin
+                                                   :fish
+                                                   :pike}}
+                               :birds {:node-type :group
+                                       :name "birds"
+                                       :charges #{:crane
+                                                  :dove
+                                                  :eagle
+                                                  :owl
+                                                  :raven}}}}
+            :attire {:node-type :group
+                     :name "attire"
+                     :groups {:head {:node-type :group
+                                     :name "head"
+                                     :charges #{:cap
+                                                :crown
+                                                :hat
+                                                :helmet
+                                                :mitre}}}
+                     :charges #{:buckle
+                                :maunch
+                                :spurs}}
+            :symbols {:node-type :group
+                      :name "symbols"
+                      :charges #{:feather
+                                 :heart
+                                 :horseshoe
+                                 :torch}}
+            :tools {:node-type :group
+                    :name "tools"
+                    :charges #{:anvil
+                               :bucket
+                               :drinking-horn
+                               :ferule
+                               :firesteel
+                               :hammer
+                               :handmill
+                               :harrow
+                               :knife
+                               :hunting-horn
+                               :ladder
+                               :millrind
+                               :millwheel
+                               :nail
+                               :rake
+                               :scales
+                               :scissors
+                               :scythe
+                               :shears
+                               :shoemaker-tool
+                               :sickle
+                               :tassle
+                               :tongs
+                               :trivet
+                               :water-bouget
+                               :wolfseisen}}
+            :weapons {:node-type :group
+                      :name "weapons"
+                      :charges #{:arrow
+                                 :axe
+                                 :bow
+                                 :caltrop
+                                 :crossbow
+                                 :cutlass
+                                 :dagger
+                                 :falchion
+                                 :lance
+                                 :mace
+                                 :scimitar
+                                 :spear
+                                 :sword
+                                 :trident}}}})
 
 (def known-charge-types
   (walk/postwalk (fn [data]
