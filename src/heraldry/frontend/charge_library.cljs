@@ -237,7 +237,8 @@
       [preview]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
                                :width "45%"}}
-      [attribution/form (conj form-db-path :attribution)]
+      [attribution/form (conj form-db-path :attribution)
+       :charge-presets? true]
       [:form.pure-form.pure-form-aligned
        {:style {:display "inline-block"}
         :on-key-press (fn [event]
