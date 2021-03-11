@@ -14,6 +14,7 @@
 (def cc-license-version-choices
   [["4.0 (default)" :v4]
    ["3.0" :v3]
+   ["2.5" :v2.5]
    ["2.0" :v2]
    ["1.0" :v1]])
 
@@ -34,10 +35,11 @@
 
 (defn cc-version-string [version]
   (case version
-    :v4 "4.0"
-    :v3 "3.0"
-    :v2 "2.0"
-    :v1 "1.0"
+    :v4   "4.0"
+    :v3   "3.0"
+    :v2.5 "2.5"
+    :v2   "2.0"
+    :v1   "1.0"
     "4.0"))
 
 (defn url [license license-version]
