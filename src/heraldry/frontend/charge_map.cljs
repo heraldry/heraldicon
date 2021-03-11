@@ -137,11 +137,13 @@
                  (group-by type charges)
                  {})
         nil-group (if type
-                    (get groups nil)
+                    (concat (get groups nil)
+                            (get groups :none))
                     charges)
         non-nil-groups (when type
                          (into {}
-                               (filter first groups)))]
+                               (filter #(not (or (-> % first nil?)
+                                                 (-> % first (= :none)))) groups)))]
     (-> node
         (cond->
          non-nil-groups (assoc (-> type
