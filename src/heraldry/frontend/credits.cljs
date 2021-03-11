@@ -1,9 +1,16 @@
 (ns heraldry.frontend.credits
-  (:require [heraldry.util :as util]))
+  (:require [heraldry.license :as license]
+            [heraldry.util :as util]))
 
 (defn general [title url username data]
-  (let [license (-> data :license)
-        source-license (-> data :source-license)]
+  (let [{:keys [license
+                license-version
+                source-license
+                source-license-version]} data
+        license-url (license/url license license-version)
+        license-display-name (license/display-name license license-version)
+        source-license-url (license/url source-license source-license-version)
+        source-license-display-name (license/display-name source-license source-license-version)]
     [:div.credit
      [:a {:href url
           :target "_blank"} title]
@@ -11,15 +18,11 @@
      [:a {:href (util/full-url-for-username username)
           :target "_blank"} username]
      " "
-     (cond
-       (= license :cc-attribution) [:<> "is licensed under "
-                                    [:a {:href "https://creativecommons.org/licenses/by/4.0"
-                                         :target "_blank"} "CC BY"]]
-       (= license :cc-attribution-share-alike) [:<> "is licensed under "
-                                                [:a {:href "https://creativecommons.org/licenses/by-sa/4.0"
-                                                     :target "_blank"} "CC BY-SA"]]
-       (= license :public-domain) [:<> "is in the public domain"]
-       :else "is private")
+     (case (or license :none)
+       :none "is private"
+       :public-domain "is in the public domain"
+       [:<> "is licensed under "
+        [:a {:href license-url :target "_blank"} license-display-name]])
      (when (-> data :nature (= :derivative))
        [:div.sub-credit
         "source: "
@@ -29,17 +32,11 @@
         [:a {:href (-> data :source-creator-link)
              :target "_blank"} (-> data :source-creator-name)]
         " "
-        (cond
-          (= source-license :cc-attribution) [:<> "is licensed under "
-                                              [:a {:href "https://creativecommons.org/licenses/by/4.0"
-                                                   :target "_blank"} "CC BY"]]
-          (= source-license :cc-attribution-share-alike) [:<> "is licensed under "
-                                                          [:a {:href "https://creativecommons.org/licenses/by-sa/4.0"
-                                                               :target "_blank"} "CC BY-SA"]]
-          (= source-license :public-domain) [:<> "is in the "
-                                             [:a {:href "https://creativecommons.org/publicdomain/mark/1.0/"
-                                                  :target "_blank"} "public domain"]]
-          :else "is private")])]))
+        (case (or source-license :none)
+          :none "is private"
+          :public-domain "is in the public domain"
+          [:<> "is licensed under "
+           [:a {:href source-license-url :target "_blank"} source-license-display-name]])])]))
 
 (defn for-charge [charge]
   (when (:id charge)
