@@ -109,14 +109,12 @@
                                       :trident}}}})
 
 (def known-charge-types
-  (walk/postwalk (fn [data]
-                   (cond
-                     (:charges data) (:charges data)
-                     (:groups data)  (:groups data)
-                     (map? data)     (->> data
-                                          (map second)
-                                          (apply set/union))
-                     :else           data)) group-map))
+  (->> group-map
+       (tree-seq map? vals)
+       (filter #(and (map? %)
+                     (:charges %)))
+       (map :charges)
+       (apply set/union)))
 
 (defn count-variants [node]
   (cond
