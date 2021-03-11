@@ -34,6 +34,6 @@
          [:div.content content]]])
      (when loader
        [:<>
-        [:div.modal-background]
-        [:div.modal
+        [:div.modal-background {:style {:z-index 2000}}]
+        [:div.modal {:style {:z-index 2001}}
          [:div.loader]]])]))
