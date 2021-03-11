@@ -37,6 +37,7 @@
                                         :name "marine"
                                         :charges #{:dolphin
                                                    :fish
+                                                   :lucy
                                                    :pike}}
                                :birds {:node-type :group
                                        :name "birds"
