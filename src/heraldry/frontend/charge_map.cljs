@@ -111,12 +111,13 @@
 (def known-charge-types
   (walk/postwalk (fn [data]
                    (cond
-                     (:charges data) (:charges data)
-                     (:groups data)  (:groups data)
-                     (map? data)     (->> data
-                                          (map second)
-                                          (apply set/union))
-                     :else           data)) group-map))
+                     (or (:charges data)
+                         (:groups data)) (merge (:charges data)
+                                                (:grops data))
+                     (map? data)         (->> data
+                                              (map second)
+                                              (apply set/union))
+                     :else               data)) group-map))
 
 (defn count-variants [node]
   (cond
