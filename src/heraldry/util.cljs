@@ -1,6 +1,8 @@
 (ns heraldry.util
   (:require [clojure.pprint :refer [pprint]]
             [clojure.string :as s]
+            [goog.crypt :as crypt]
+            [goog.crypt.base64 :as b64]
             [heraldry.config :as config]
             [taoensso.timbre :as log]))
 
@@ -100,3 +102,8 @@
       (-> v
           (* base-value)
           (/ 100)))))
+
+(defn base64-decode-utf-8 [data]
+  (-> data
+      (b64/decodeStringToByteArray true)
+      crypt/utf8ByteArrayToString))
