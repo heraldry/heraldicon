@@ -79,6 +79,7 @@
     ["Attired" :attired]
     ["Beaked" :beaked]
     ["Eyed (peacock)" :eyed]
+    ["Finned" :finned]
     ["Jelloped" :jelloped]
     ["Langued" :langued]
     ["Legged" :legged]
