@@ -23,7 +23,7 @@
                                                      (assoc :source-license :cc-attribution-non-commercial-share-alike)
                                                      (assoc :source-license-version :v3)
                                                      (assoc :source-creator-name "WappenWiki")
-                                                     (assoc :source-creator-link "https://wappenwiki.org"))])
+                                                     (assoc :source-creator-link "http://wappenwiki.org"))])
                        :wikimedia  (rf/dispatch [:set
                                                  db-path
                                                  (-> current-data
