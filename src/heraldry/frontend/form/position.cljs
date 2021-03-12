@@ -7,14 +7,13 @@
 (defn form [path & {:keys [title options] :or {title "Position"}}]
   (let [position      @(rf/subscribe [:get path])
         point-path    (conj path :point)
+        angle-path    (conj path :angle)
         offset-x-path (conj path :offset-x)
         offset-y-path (conj path :offset-y)]
     [:div.setting
      [:label title]
      " "
-     [element/submenu path title (str (-> position
-                                          :point
-                                          (or :fess)
+     [element/submenu path title (str (-> (options/get-value (:point position) (:point options))
                                           (util/translate-cap-first))
                                       " point" (when (or (-> position :offset-x (or 0) zero? not)
                                                          (-> position :offset-y (or 0) zero? not))
@@ -22,8 +21,15 @@
       [element/select point-path "Point" (-> options :point :choices)
        :on-change #(do
                      (rf/dispatch [:set point-path %])
+                     (rf/dispatch [:set angle-path nil])
                      (rf/dispatch [:set offset-x-path nil])
                      (rf/dispatch [:set offset-y-path nil]))]
+      (when (-> options :angle)
+        [element/range-input-with-checkbox angle-path "Angle"
+         (-> options :angle :min)
+         (-> options :angle :max)
+         :step 1
+         :default (options/get-value (:angle position) (:angle options))])
       (when (:offset-x options)
         [element/range-input-with-checkbox offset-x-path "Offset x"
          (-> options :offset-x :min)

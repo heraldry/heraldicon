@@ -1,6 +1,7 @@
 (ns heraldry.util
   (:require [clojure.pprint :refer [pprint]]
             [clojure.string :as s]
+            [clojure.walk :as walk]
             [goog.crypt :as crypt]
             [goog.crypt.base64 :as b64]
             [heraldry.config :as config]
@@ -60,6 +61,21 @@
                      (map (comp vec reverse))))))
        (apply concat)
        (into {})))
+
+(defn filter-choices [choices values]
+  (let [value-set (set values)]
+    (walk/postwalk (fn [v]
+                     (cond
+                       (and (vector? v)
+                            (-> v count (= 2))
+                            (-> v second keyword?)
+                            (-> v second value-set not)) nil
+                       (and (vector? v)
+                            (-> v count (= 2))
+                            (-> v second vector?)
+                            (-> v second count zero?))   nil
+                       (vector? v)                       (filterv identity v)
+                       :else                             v)) choices)))
 
 (defn spy [value msg]
   (log/debug "spy:" msg)
