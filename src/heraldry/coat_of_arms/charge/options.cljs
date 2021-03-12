@@ -23,7 +23,7 @@
                     (assoc-in [:thickness-2 :default] 10))})
 
 (defn options [charge]
-  (when-let [type (:type charge)]
+  (let [type (:type charge)]
     (cond
       (= type :escutcheon) (options/pick default-options
                                          [[:position]
