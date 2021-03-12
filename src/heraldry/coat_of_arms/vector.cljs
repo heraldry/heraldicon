@@ -118,3 +118,73 @@
                       (- (* x3 y4)
                          (* y3 x4))))))
          D))))
+
+(defn tangent-point [{cx :x cy :y} r {px :x py :y}]
+  (let [+ cljs.core/+
+        - cljs.core/-
+        * cljs.core/*
+        / cljs.core//
+        dx (- px cx)
+        dy (- py cy)
+        r2 (* r r)
+        dx2 (* dx dx)
+        dy2 (* dy dy)
+        sum-d2 (+ dx2 dy2)
+        D (- sum-d2 r2)
+        dir-factor 1]
+    (when (>= D 0)
+      (let [sqrtD (Math/sqrt D)]
+        (v (-> (+ (* r2 dx) (* dir-factor r dy sqrtD))
+               (/ sum-d2)
+               (+ cx))
+           (-> (- (* r2 dy) (* dir-factor r dx sqrtD))
+               (/ sum-d2)
+               (+ cy)))))))
+
+(defn outer-tangent-between-circles [{x0 :x y0 :y} r0
+                                     {x1 :x y1 :y} r1
+                                     edge]
+  (let [+ cljs.core/+
+        - cljs.core/-
+        * cljs.core/*
+        / cljs.core//
+        dir-factor (if (= edge :left)
+                     1
+                     -1)
+        dx (- x1 x0)
+        dy (- y1 y0)
+        dist (Math/sqrt (+ (* dx dx) (* dy dy)))
+        gamma (- (Math/atan2 dy dx))
+        beta (-> (- r1 r0)
+                 (/ dist)
+                 Math/asin
+                 (* dir-factor))
+        alpha (- gamma beta)]
+    [(v (+ x0 (* dir-factor r0 (Math/sin alpha)))
+        (+ y0 (* dir-factor r0 (Math/cos alpha))))
+     (v (+ x1 (* dir-factor r1 (Math/sin alpha)))
+        (+ y1 (* dir-factor r1 (Math/cos alpha))))]))
+
+(defn inner-tangent-between-circles [{x0 :x y0 :y} r0
+                                     {x1 :x y1 :y} r1
+                                     edge]
+  (let [+ cljs.core/+
+        - cljs.core/-
+        * cljs.core/*
+        / cljs.core//
+        dir-factor (if (= edge :left)
+                     1
+                     -1)
+        dx (- x1 x0)
+        dy (- y1 y0)
+        dist (Math/sqrt (+ (* dx dx) (* dy dy)))
+        gamma (- (Math/atan2 dy dx))
+        beta (-> (+ r0 r1)
+                 (/ dist)
+                 Math/asin
+                 (* dir-factor))
+        alpha (- gamma beta)]
+    [(v (- x0 (* dir-factor r0 (Math/sin alpha)))
+        (- y0 (* dir-factor r0 (Math/cos alpha))))
+     (v (+ x1 (* dir-factor r1 (Math/sin alpha)))
+        (+ y1 (* dir-factor r1 (Math/cos alpha))))]))
