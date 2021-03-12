@@ -101,13 +101,10 @@
                                   [[:variant]
                                    [:origin]
                                    [:anchor]
-                                   [:diagonal-mode]
                                    [:line]
                                    [:opposite-line]
                                    [:geometry]]
-                                  {[:diagonal-mode :choices] (diagonal-mode-choices :chevron)
-                                   [:diagonal-mode :default] :forty-five-degrees
-                                   [:line :offset :min] 0
+                                  {[:line :offset :min] 0
                                    [:opposite-line :offset :min] 0})
                     (assoc-in
                      [:anchor :point :choices]
