@@ -47,18 +47,26 @@
 (def anchor-point-map
   (util/choices->map anchor-point-choices))
 
+(def alignment-choices
+  [["Middle" :middle]
+   ["Left edge" :left]
+   ["Right edge" :right]])
+
 (def default-options
-  {:point    {:type    :choice
-              :choices point-choices
-              :default :fess}
-   :offset-x {:type    :range
-              :min     -45
-              :max     45
-              :default 0}
-   :offset-y {:type    :range
-              :min     -45
-              :max     45
-              :default 0}})
+  {:point     {:type    :choice
+               :choices point-choices
+               :default :fess}
+   :alignment {:type    :choice
+               :choices alignment-choices
+               :default :middle}
+   :offset-x  {:type    :range
+               :min     -45
+               :max     45
+               :default 0}
+   :offset-y  {:type    :range
+               :min     -45
+               :max     45
+               :default 0}})
 
 (def anchor-default-options
   (-> default-options
@@ -73,7 +81,8 @@
     (-> values :point (not= :angle)) (dissoc :angle)
     (-> values :point (= :angle))    (->
                                       (dissoc :offset-x)
-                                      (dissoc :offset-y))))
+                                      (dissoc :offset-y)
+                                      (dissoc :alignment))))
 
 (defn calculate [{:keys [point offset-x offset-y] :or {offset-x 0
                                                        offset-y 0}} environment & [default]]
@@ -101,6 +110,7 @@
     (let [angle-rad (-> angle
                         (+ base-angle)
                         (* Math/PI) (/ 180))]
-      (v/+ origin (v/v (Math/cos angle-rad)
-                       (Math/sin angle-rad))))
+      (v/+ origin (v/* (v/v (Math/cos angle-rad)
+                            (Math/sin angle-rad))
+                       200)))
     (calculate anchor environment)))

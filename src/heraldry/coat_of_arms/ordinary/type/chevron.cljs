@@ -39,6 +39,14 @@
                             :sinister [#{:angle :bottom-right} :top-right])]
     (update anchor :point #(or (allowed %) default))))
 
+(defn mirror-point [variant center point]
+  (-> point
+      (v/- center)
+      (v/dot (if (#{:base :chief} variant)
+               (v/v -1 1)
+               (v/v 1 -1)))
+      (v/+ center)))
+
 (defn render
   {:display-name "Chevron"
    :value        :chevron}
@@ -48,11 +56,11 @@
         {:keys [size]}                                 geometry
         opposite-line                                  (ordinary-options/sanitize-opposite-line ordinary line)
         points                                         (:points environment)
-        origin-point                                   (position/calculate origin environment :fess)
-        top                                            (assoc (:top points) :x (:x origin-point))
-        bottom                                         (assoc (:bottom points) :x (:x origin-point))
-        left                                           (assoc (:left points) :y (:y origin-point))
-        right                                          (assoc (:right points) :y (:y origin-point))
+        unadjusted-origin-point                        (position/calculate origin environment)
+        top                                            (assoc (:top points) :x (:x unadjusted-origin-point))
+        bottom                                         (assoc (:bottom points) :x (:x unadjusted-origin-point))
+        left                                           (assoc (:left points) :y (:y unadjusted-origin-point))
+        right                                          (assoc (:right points) :y (:y unadjusted-origin-point))
         height                                         (:height environment)
         band-width                                     (-> size
                                                            ((util/percent-of height)))
@@ -68,6 +76,10 @@
                                                           :chief  -90
                                                           :dexter 180
                                                           0))
+        [mirrored-origin mirrored-anchor]              [(mirror-point variant unadjusted-origin-point origin-point)
+                                                        (mirror-point variant unadjusted-origin-point anchor-point)]
+        origin-point                                   (v/line-intersection origin-point anchor-point
+                                                                            mirrored-origin mirrored-anchor)
         [relative-left relative-right]                 (arm-diagonals variant origin-point anchor-point)
         diagonal-left                                  (v/+ origin-point relative-left)
         diagonal-right                                 (v/+ origin-point relative-right)

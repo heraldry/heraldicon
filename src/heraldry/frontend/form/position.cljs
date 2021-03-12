@@ -5,11 +5,12 @@
             [re-frame.core :as rf]))
 
 (defn form [path & {:keys [title options] :or {title "Position"}}]
-  (let [position      @(rf/subscribe [:get path])
-        point-path    (conj path :point)
-        angle-path    (conj path :angle)
-        offset-x-path (conj path :offset-x)
-        offset-y-path (conj path :offset-y)]
+  (let [position       @(rf/subscribe [:get path])
+        point-path     (conj path :point)
+        alignment-path (conj path :alignment)
+        angle-path     (conj path :angle)
+        offset-x-path  (conj path :offset-x)
+        offset-y-path  (conj path :offset-y)]
     [:div.setting
      [:label title]
      " "
@@ -24,6 +25,8 @@
                      (rf/dispatch [:set angle-path nil])
                      (rf/dispatch [:set offset-x-path nil])
                      (rf/dispatch [:set offset-y-path nil]))]
+      (when (-> options :alignment)
+        [element/select alignment-path "Alignment" (-> options :alignment :choices)])
       (when (-> options :angle)
         [element/range-input-with-checkbox angle-path "Angle"
          (-> options :angle :min)
