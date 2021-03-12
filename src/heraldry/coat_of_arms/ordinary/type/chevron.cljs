@@ -54,31 +54,27 @@
          :as                    line-right-upper-data} (line/create line
                                                                     (v/abs (v/- corner-upper right-upper))
                                                                     :angle angle-right
-                                                                    :render-options render-options
-                                                                    :joint-angle (- joint-angle))
+                                                                    :render-options render-options)
         {line-right-lower       :line
          line-right-lower-start :line-start
          :as                    line-right-lower-data} (line/create opposite-line
                                                                     (v/abs (v/- corner-lower right-lower))
                                                                     :angle (- angle-right 180)
                                                                     :reversed? true
-                                                                    :render-options render-options
-                                                                    :joint-angle joint-angle)
+                                                                    :render-options render-options)
         {line-left-lower       :line
          line-left-lower-start :line-start
          :as                   line-left-lower-data}   (line/create opposite-line
                                                                     (v/abs (v/- corner-lower left-lower))
                                                                     :angle angle-left
-                                                                    :render-options render-options
-                                                                    :joint-angle joint-angle)
+                                                                    :render-options render-options)
         {line-left-upper       :line
          line-left-upper-start :line-start
          :as                   line-left-upper-data}   (line/create line
                                                                     (v/abs (v/- corner-upper left-upper))
                                                                     :angle (- angle-left 180)
                                                                     :reversed? true
-                                                                    :render-options render-options
-                                                                    :joint-angle (- joint-angle))
+                                                                    :render-options render-options)
         parts                                          [[["M" (v/+ corner-upper
                                                                    line-right-upper-start)
                                                           (svg/stitch line-right-upper)

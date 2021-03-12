@@ -68,7 +68,6 @@
          :as                       line-top-left-lower-data}         (line/create line
                                                                                   (v/abs (v/- corner-left top-left-lower))
                                                                                   :angle  angle-top-left
-                                                                                  :joint-angle joint-angle-horizontal
                                                                                   :render-options   render-options)
         {line-top-left-upper       :line
          line-top-left-upper-start :line-start
@@ -76,14 +75,12 @@
                                                                                   (v/abs (v/- corner-top top-left-upper))
                                                                                   :angle     (- angle-top-left 180)
                                                                                   :reversed? true
-                                                                                  :joint-angle joint-angle-vertical
                                                                                   :render-options render-options)
         {line-top-right-upper       :line
          line-top-right-upper-start :line-start
          :as                        line-top-right-upper-data}       (line/create line
                                                                                   (v/abs (v/- corner-top top-right-upper))
                                                                                   :angle angle-top-right
-                                                                                  :joint-angle joint-angle-vertical
                                                                                   :render-options render-options)
         {line-top-right-lower       :line
          line-top-right-lower-start :line-start
@@ -91,14 +88,12 @@
                                                                                   (v/abs (v/- corner-right top-right-lower))
                                                                                   :angle (- angle-top-right 180)
                                                                                   :reversed? true
-                                                                                  :joint-angle joint-angle-horizontal
                                                                                   :render-options render-options)
         {line-bottom-right-upper       :line
          line-bottom-right-upper-start :line-start
          :as                           line-bottom-right-upper-data} (line/create line
                                                                                   (v/abs (v/- corner-right bottom-right-upper))
                                                                                   :angle angle-bottom-right
-                                                                                  :joint-angle joint-angle-horizontal
                                                                                   :render-options render-options)
         {line-bottom-right-lower       :line
          line-bottom-right-lower-start :line-start
@@ -106,14 +101,12 @@
                                                                                   (v/abs (v/- corner-bottom bottom-right-lower))
                                                                                   :angle (- angle-bottom-right 180)
                                                                                   :reversed? true
-                                                                                  :joint-angle joint-angle-vertical
                                                                                   :render-options render-options)
         {line-bottom-left-lower       :line
          line-bottom-left-lower-start :line-start
          :as                          line-bottom-left-lower-data}   (line/create line
                                                                                   (v/abs (v/- corner-bottom bottom-left-lower))
                                                                                   :angle angle-bottom-left
-                                                                                  :joint-angle joint-angle-vertical
                                                                                   :render-options render-options)
         {line-bottom-left-upper       :line
          line-bottom-left-upper-start :line-start
@@ -121,7 +114,6 @@
                                                                                   (v/abs (v/- corner-left bottom-left-upper))
                                                                                   :angle (- angle-bottom-left 180)
                                                                                   :reversed? true
-                                                                                  :joint-angle joint-angle-horizontal
                                                                                   :render-options render-options)
         parts                                                        [[["M" (v/+ corner-left
                                                                                  line-top-left-lower-start)

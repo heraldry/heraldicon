@@ -50,7 +50,6 @@
          :as                      line-pale-top-left-data}         (line/create line
                                                                                 (v/abs (v/- corner-top-left pale-top-left))
                                                                                 :angle -90
-                                                                                :joint-angle 90
                                                                                 :render-options render-options)
         {line-pale-top-right       :line
          line-pale-top-right-start :line-start
@@ -58,13 +57,11 @@
                                                                                 (v/abs (v/- corner-top-right pale-top-right))
                                                                                 :angle 90
                                                                                 :reversed? true
-                                                                                :joint-angle 90
                                                                                 :render-options render-options)
         {line-fess-top-right       :line
          line-fess-top-right-start :line-start
          :as                       line-fess-top-right-data}       (line/create line
                                                                                 (v/abs (v/- corner-top-right fess-top-right))
-                                                                                :joint-angle 90
                                                                                 :render-options render-options)
         {line-fess-bottom-right       :line
          line-fess-bottom-right-start :line-start
@@ -72,14 +69,12 @@
                                                                                 (v/abs (v/- corner-bottom-right fess-bottom-right))
                                                                                 :angle 180
                                                                                 :reversed? true
-                                                                                :joint-angle 90
                                                                                 :render-options render-options)
         {line-pale-bottom-right       :line
          line-pale-bottom-right-start :line-start
          :as                          line-pale-bottom-right-data} (line/create line
                                                                                 (v/abs (v/- corner-bottom-right pale-bottom-right))
                                                                                 :angle 90
-                                                                                :joint-angle 90
                                                                                 :render-options render-options)
         {line-pale-bottom-left       :line
          line-pale-bottom-left-start :line-start
@@ -87,21 +82,18 @@
                                                                                 (v/abs (v/- corner-bottom-left pale-bottom-left))
                                                                                 :angle -90
                                                                                 :reversed? true
-                                                                                :joint-angle 90
                                                                                 :render-options render-options)
         {line-fess-bottom-left       :line
          line-fess-bottom-left-start :line-start
          :as                         line-fess-bottom-left-data}   (line/create line
                                                                                 (v/abs (v/- corner-bottom-left fess-bottom-left))
                                                                                 :angle 180
-                                                                                :joint-angle 90
                                                                                 :render-options render-options)
         {line-fess-top-left       :line
          line-fess-top-left-start :line-start
          :as                      line-fess-top-left-data}         (line/create line
                                                                                 (v/abs (v/- corner-top-left fess-top-left))
                                                                                 :reversed? true
-                                                                                :joint-angle 90
                                                                                 :render-options render-options)
         parts                                                      [[["M" (v/+ corner-top-left
                                                                                line-pale-top-left-start)

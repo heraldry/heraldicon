@@ -28,13 +28,11 @@
         diagonal-bottom-right               (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
         angle-bottom-left                   (angle/angle-to-point origin-point diagonal-bottom-left)
         angle-bottom-right                  (angle/angle-to-point origin-point diagonal-bottom-right)
-        joint-angle                         (- angle-bottom-left angle-bottom-right)
         {line-left       :line
          line-left-start :line-start
          :as             line-left-data}    (line/create line
                                                          (v/abs (v/- diagonal-bottom-left origin-point))
                                                          :angle (+ angle-bottom-left 180)
-                                                         :joint-angle (- joint-angle)
                                                          :reversed? true
                                                          :render-options render-options)
         {line-right     :line
@@ -42,7 +40,6 @@
          :as            line-right-data}    (line/create line
                                                          (v/abs (v/- diagonal-bottom-right origin-point))
                                                          :angle angle-bottom-right
-                                                         :joint-angle (- joint-angle)
                                                          :render-options render-options)
         parts                               [[["M" (v/+ diagonal-bottom-left
                                                         line-left-start)
