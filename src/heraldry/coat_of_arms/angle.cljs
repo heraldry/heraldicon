@@ -27,8 +27,8 @@
     (v/v (-> dir :x Math/abs)
          (-> dir :y Math/abs))))
 
-(defn calculate-origin-and-anchor [environment origin anchor width]
+(defn calculate-origin-and-anchor [environment origin anchor width base-angle]
   (let [real-origin (position/calculate origin environment)
-        real-anchor (position/calculate anchor environment)]
+        real-anchor (position/calculate-anchor anchor environment real-origin base-angle)]
     {:real-origin real-origin
      :real-anchor real-anchor}))

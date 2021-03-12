@@ -33,10 +33,10 @@
 
 (defn sanitize-anchor [variant anchor]
   (let [[allowed default] (case variant
-                            :base [#{:bottom-right} :bottom-left]
-                            :chief [#{:top-right} :top-left]
-                            :dexter [#{:bottom-left} :top-left]
-                            :sinister [#{:bottom-right} :top-right])]
+                            :base [#{:angle :bottom-right} :bottom-left]
+                            :chief [#{:angle :top-right} :top-left]
+                            :dexter [#{:angle :bottom-left} :top-left]
+                            :sinister [#{:angle :bottom-right} :top-right])]
     (update anchor :point #(or (allowed %) default))))
 
 (defn render
@@ -58,7 +58,16 @@
                        ((util/percent-of height)))
         anchor (sanitize-anchor variant anchor)
         {origin-point :real-origin
-         anchor-point :real-anchor} (angle/calculate-origin-and-anchor environment origin anchor band-width)
+         anchor-point :real-anchor} (angle/calculate-origin-and-anchor
+                                     environment
+                                     origin
+                                     anchor
+                                     band-width
+                                     (case variant
+                                       :base 90
+                                       :chief -90
+                                       :dexter 180
+                                       0))
         [relative-left relative-right] (arm-diagonals variant origin-point anchor-point)
         diagonal-left (v/+ origin-point relative-left)
         diagonal-right (v/+ origin-point relative-right)
