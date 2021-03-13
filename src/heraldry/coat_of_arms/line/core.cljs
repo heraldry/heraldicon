@@ -4,6 +4,7 @@
             [heraldry.coat-of-arms.line.type.dancetty :as dancetty]
             [heraldry.coat-of-arms.line.type.dovetailed :as dovetailed]
             [heraldry.coat-of-arms.line.type.embattled :as embattled]
+            [heraldry.coat-of-arms.line.type.embattled-grady :as embattled-grady]
             [heraldry.coat-of-arms.line.type.embattled-in-crosses :as embattled-in-crosses]
             [heraldry.coat-of-arms.line.type.engrailed :as engrailed]
             [heraldry.coat-of-arms.line.type.fir-tree-topped :as fir-tree-topped]
@@ -51,6 +52,7 @@
    #'invected/pattern
    #'engrailed/pattern
    #'embattled/pattern
+   #'embattled-grady/pattern
    #'embattled-in-crosses/pattern
    #'potenty/pattern
    #'indented/pattern
@@ -163,6 +165,13 @@
                                 [:offset]
                                 [:flipped?]
                                 [:fimbriation]])
+      :embattled-grady (options/pick default-options
+                                     [[:type]
+                                      [:height]
+                                      [:width]
+                                      [:offset]
+                                      [:flipped?]
+                                      [:fimbriation]])
       :dancetty (options/pick default-options
                               [[:type]
                                [:height]
