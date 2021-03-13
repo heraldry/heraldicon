@@ -234,14 +234,18 @@
                                       [:layout :num-fields-y :default] 4})
             :gyronny (options/pick default-options
                                    [[:line]
-                                    [:origin :point]
-                                    [:origin :offset-x]
-                                    [:origin :offset-y]
-                                    [:diagonal-mode]]
-                                   {[:diagonal-mode :choices] (diagonal-mode-choices :gyronny)
-                                    [:line] line-style
-                                    [:line :offset :min] 0
-                                    [:line :fimbriation] nil})
+                                    [:origin]
+                                    [:anchor]]
+                                   {[:line] (-> line-style
+                                                (options/override-if-exists [:offset :min] 0)
+                                                (dissoc :fimbriation))
+                                    [:opposite-line] (-> line-style
+                                                         (options/override-if-exists [:offset :min] 0)
+                                                         (dissoc :fimbriation))
+                                    [:origin :alignment] nil
+                                    [:anchor :point :choices] (util/filter-choices
+                                                               position/anchor-point-choices
+                                                               [:top-left :top-right :bottom-left :bottom-right :angle])})
             :paly (options/pick default-options
                                 [[:line]
                                  [:layout :num-base-fields]
