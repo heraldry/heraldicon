@@ -6,7 +6,6 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
@@ -15,23 +14,36 @@
   {:display-name "Bend"
    :value :bend}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
+  (let [{:keys [line origin anchor
+                geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
         opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
         top-left (:top-left points)
-        origin-point (position/calculate origin environment :fess)
         left (:left points)
         right (:right points)
+        top (:top points)
+        bottom (:bottom points)
         height (:height environment)
         band-height (-> size
                         ((util/percent-of height)))
-        direction (angle/direction diagonal-mode points origin-point)
+        {origin-point :real-origin
+         anchor-point :real-anchor} (angle/calculate-origin-and-anchor
+                                     environment
+                                     origin
+                                     anchor
+                                     band-height
+                                     nil)
+        center-point (v/line-intersection origin-point anchor-point
+                                          top bottom)
+        direction (v/- anchor-point origin-point)
+        direction (v/v (-> direction :x Math/abs)
+                       (-> direction :y Math/abs))
         direction-orthogonal (v/v (-> direction :y) (-> direction :x -))
-        diagonal-start (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
-        diagonal-end (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
+        diagonal-start (v/project-x center-point (v/dot direction (v/v -1 -1)) (:x left))
+        diagonal-end (v/project-x center-point (v/dot direction (v/v 1 1)) (:x right))
         angle (angle/angle-to-point diagonal-start diagonal-end)
-        required-half-length (v/distance-point-to-line top-left origin-point (v/+ origin-point direction-orthogonal))
+        required-half-length (v/distance-point-to-line top-left center-point (v/+ center-point direction-orthogonal))
         bend-length (* required-half-length 2)
         line-length (-> diagonal-end
                         (v/- diagonal-start)
@@ -95,7 +107,7 @@
                 field)
         outline? (or (:outline? render-options)
                      (:outline? hints))]
-    [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
+    [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
                          "rotate(" angle ")"
                          "translate(" (- required-half-length) "," 0 ")")}
      [division-shared/make-division
