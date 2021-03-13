@@ -2,7 +2,6 @@
   (:require [heraldry.coat-of-arms.angle :as angle]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.division.shared :as division-shared]
-            [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
@@ -86,19 +85,11 @@
         parts                                    [[["M" (v/+ first-left
                                                              line-one-start)
                                                     (svg/stitch line-one)
-                                                    (infinity/path :clockwise
-                                                                   [:right :right]
-                                                                   [(v/+ first-right
-                                                                         line-one-start)
-                                                                    (v/+ second-right
-                                                                         line-reversed-start)])
+                                                    "L" (v/+ second-right
+                                                             line-reversed-start)
                                                     (svg/stitch line-reversed)
-                                                    (infinity/path :clockwise
-                                                                   [:left :left]
-                                                                   [(v/+ second-left
-                                                                         line-reversed-start)
-                                                                    (v/+ first-left
-                                                                         line-one-start)])
+                                                    "L" (v/+ first-left
+                                                             line-one-start)
                                                     "z"]
                                                    [(v/v 0 row1) (v/v bend-length row2)]]]
         counterchanged?                          (counterchange/counterchangable? field parent)
