@@ -41,7 +41,7 @@
    ["Sinister" :sinister]
    ["Honour" :honour]
    ["Nombril" :nombril]
-   ["Angle" :angle]])
+   ["Fixed angle" :angle]])
 
 (def anchor-point-map
   (util/choices->map anchor-point-choices))
