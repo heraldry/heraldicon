@@ -5,33 +5,6 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.util :as util]))
 
-(defn diagonal-mode-choices [type]
-  (let [options {:forty-five-degrees "45°"
-                 :top-left-origin "Top-left to origin"
-                 :top-right-origin "Top-right to origin"
-                 :bottom-left-origin "Bottom-left to origin"
-                 :bottom-right-origin "Bottom-right to origin"}]
-    (->> type
-         (get {:bend [:forty-five-degrees
-                      :top-left-origin]
-               :bend-sinister [:forty-five-degrees
-                               :top-right-origin]
-               :chevron [:forty-five-degrees
-                         :bottom-left-origin
-                         :bottom-right-origin]
-               :saltire [:forty-five-degrees
-                         :top-left-origin
-                         :top-right-origin
-                         :bottom-left-origin
-                         :bottom-right-origin]})
-         (map (fn [key]
-                [(get options key) key])))))
-
-(defn diagonal-default [type]
-  (or (get {:bend-sinister :top-right-origin
-            :chevron :forty-five-degrees} type)
-      :top-left-origin))
-
 (defn set-line-defaults [options]
   (-> options
       (assoc-in [:fimbriation :alignment :default] :outside)))
@@ -45,8 +18,6 @@
                        ["Dexter" :dexter]
                        ["Sinister" :sinister]]
              :default :base}
-   :diagonal-mode {:type :choice
-                   :default :top-left-origin}
    :line (set-line-defaults line/default-options)
    :opposite-line (set-line-defaults line/default-options)
    :geometry (-> geometry/default-options
