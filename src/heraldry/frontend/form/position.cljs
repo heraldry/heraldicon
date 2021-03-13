@@ -1,5 +1,7 @@
 (ns heraldry.frontend.form.position
-  (:require [heraldry.coat-of-arms.options :as options]
+  (:require [clojure.string :as s]
+            [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.position :as position]
             [heraldry.frontend.form.element :as element]
             [heraldry.frontend.util :as util]
             [re-frame.core :as rf]))
@@ -10,15 +12,23 @@
         alignment-path (conj path :alignment)
         angle-path (conj path :angle)
         offset-x-path (conj path :offset-x)
-        offset-y-path (conj path :offset-y)]
+        offset-y-path (conj path :offset-y)
+        current-point (options/get-value (:point position) (:point options))
+        current-alignment (options/get-value (:alignment position) (:alignment options))
+        current-offset-x (options/get-value (:offset-x position) (:offset-x options))
+        current-offset-y (options/get-value (:offset-y position) (:offset-y options))]
     [:div.setting
      [:label title]
      " "
-     [element/submenu path title (str (-> (options/get-value (:point position) (:point options))
-                                          (util/translate-cap-first))
-                                      " point" (when (or (-> position :offset-x (or 0) zero? not)
-                                                         (-> position :offset-y (or 0) zero? not))
-                                                 " (adjusted)")) {}
+     [element/submenu path title (if (= current-point :angle)
+                                   "Angle"
+                                   (str
+                                    (util/translate-cap-first current-point)
+                                    (when (or (-> current-offset-x zero? not)
+                                              (-> current-offset-y zero? not))
+                                      " (adjusted)")
+                                    (when (-> current-alignment (or :middle) (not= :middle))
+                                      (str ", " (s/lower-case (position/alignment-map current-alignment)))))) {}
       [element/select point-path "Point" (-> options :point :choices)
        :on-change #(do
                      (rf/dispatch [:set point-path %])
