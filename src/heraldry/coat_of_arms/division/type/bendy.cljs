@@ -4,7 +4,6 @@
             [heraldry.coat-of-arms.division.shared :as shared]
             [heraldry.coat-of-arms.division.type.barry :as barry]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.vector :as v]))
 
 (defn render
@@ -15,22 +14,34 @@
   (let [{:keys [line
                 layout
                 origin
-                diagonal-mode]}  (options/sanitize division (division-options/options division))
-        points                   (:points environment)
-        top-left                 (:top-left points)
-        top-right                (:top-right points)
-        origin-point             (position/calculate origin environment :fess)
-        direction                (angle/direction diagonal-mode points origin-point)
-        direction-orthogonal     (v/v (-> direction :y) (-> direction :x -))
-        angle                    (angle/angle-to-point (v/v 0 0) direction)
-        required-half-width      (v/distance-point-to-line top-left origin-point (v/+ origin-point direction-orthogonal))
-        required-half-height     (v/distance-point-to-line top-right origin-point (v/+ origin-point direction))
-        [parts overlap outlines] (barry/barry-parts
-                                  layout
-                                  (v/v (- required-half-width) (- required-half-height))
-                                  (v/v required-half-width required-half-height)
-                                  line hints render-options)]
-    [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
+                anchor]}            (options/sanitize division (division-options/options division))
+        points                      (:points environment)
+        top-left                    (:top-left points)
+        top-right                   (:top-right points)
+        top                         (:top points)
+        bottom                      (:bottom points)
+        {origin-point :real-origin
+         anchor-point :real-anchor} (angle/calculate-origin-and-anchor
+                                     environment
+                                     origin
+                                     anchor
+                                     0
+                                     nil)
+        center-point                (v/line-intersection origin-point anchor-point
+                                                         top bottom)
+        direction                   (v/- anchor-point origin-point)
+        direction                   (v/v (-> direction :x Math/abs)
+                                         (-> direction :y Math/abs))
+        direction-orthogonal        (v/v (-> direction :y) (-> direction :x -))
+        angle                       (angle/angle-to-point (v/v 0 0) direction)
+        required-half-width         (v/distance-point-to-line top-left center-point (v/+ center-point direction-orthogonal))
+        required-half-height        (v/distance-point-to-line top-right center-point (v/+ center-point direction))
+        [parts overlap outlines]    (barry/barry-parts
+                                     layout
+                                     (v/v (- required-half-width) (- required-half-height))
+                                     (v/v required-half-width required-half-height)
+                                     line hints render-options)]
+    [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
                          "rotate(" angle ")")}
      [shared/make-division
       (shared/division-context-key type) fields parts
