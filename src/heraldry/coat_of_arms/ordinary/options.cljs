@@ -105,23 +105,21 @@
                                    [:opposite-line]
                                    [:geometry]]
                                   {[:line :offset :min] 0
-                                   [:opposite-line :offset :min] 0})
-                    (assoc-in
-                     [:anchor :point :choices]
-                     (case (-> ordinary :variant (or :base))
-                       :chief (util/filter-choices
-                               position/anchor-point-choices
-                               [:top-left :top-right :angle])
-                       :dexter (util/filter-choices
-                                position/anchor-point-choices
-                                [:top-left :bottom-left :angle])
-                       :sinister (util/filter-choices
-                                  position/anchor-point-choices
-                                  [:top-right :bottom-right :angle])
-                             ;; otherwise, assume :base
-                       (util/filter-choices
-                        position/anchor-point-choices
-                        [:bottom-left :bottom-right :angle]))))
+                                   [:opposite-line :offset :min] 0
+                                   [:anchor :point :choices] (case (-> ordinary :variant (or :base))
+                                                               :chief (util/filter-choices
+                                                                       position/anchor-point-choices
+                                                                       [:top-left :top-right :angle])
+                                                               :dexter (util/filter-choices
+                                                                        position/anchor-point-choices
+                                                                        [:top-left :bottom-left :angle])
+                                                               :sinister (util/filter-choices
+                                                                          position/anchor-point-choices
+                                                                          [:top-right :bottom-right :angle])
+                                                                         ;; otherwise, assume :base
+                                                               (util/filter-choices
+                                                                position/anchor-point-choices
+                                                                [:bottom-left :bottom-right :angle]))}))
        :saltire (options/pick default-options
                               [[:origin]
                                [:diagonal-mode]
