@@ -146,6 +146,8 @@
                                                                   position/anchor-point-choices
                                                                   [:bottom-left :bottom-right :angle]))
                                      [:line] line-style}))
+         ;; TODO: perhaps there should be origin options for the corners?
+         ;; so one can align fro top-left to bottom-right
          :saltire (options/pick default-options
                                 [[:origin]
                                  [:anchor]
