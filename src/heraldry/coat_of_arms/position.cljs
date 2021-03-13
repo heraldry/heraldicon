@@ -18,10 +18,9 @@
        vec))
 
 (def point-choices-y
-  (->> point-choices
-       (filter (fn [[_ k]]
-                 (#{:chief :honour :fess :nombril :base} k)))
-       vec))
+  (util/filter-choices
+   point-choices
+   #{:chief :honour :fess :nombril :base}))
 
 (def point-map
   (util/choices->map point-choices))
