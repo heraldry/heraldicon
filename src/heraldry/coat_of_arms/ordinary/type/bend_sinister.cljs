@@ -61,8 +61,6 @@
                           inc))
                    -)
         first-left (v/v offset row1)
-        first-right (v/v (+ offset line-length) row1)
-        second-left (v/v offset row2)
         second-right (v/v (+ offset line-length) row2)
         line (-> line
                  (update-in [:fimbriation :thickness-1] (util/percent-of height))
