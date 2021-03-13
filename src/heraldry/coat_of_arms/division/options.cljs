@@ -411,25 +411,31 @@
                                              [:line :fimbriation] nil})
             :tierced-per-pairle (options/pick default-options
                                               [[:line]
-                                               [:origin :point]
-                                               [:origin :offset-x]
-                                               [:origin :offset-y]
-                                               [:diagonal-mode]]
-                                              {[:diagonal-mode :choices] (diagonal-mode-choices :tierced-per-pairle)
-                                               [:line] line-style
-                                               [:line :offset :min] 0
-                                               [:line :fimbriation] nil})
+                                               [:origin]
+                                               [:anchor]]
+                                              {[:line] (-> line-style
+                                                           (options/override-if-exists [:offset :min] 0)
+                                                           (dissoc :fimbriation))
+                                               [:opposite-line] (-> line-style
+                                                                    (options/override-if-exists [:offset :min] 0)
+                                                                    (dissoc :fimbriation))
+                                               [:anchor :point :choices] (util/filter-choices
+                                                                          position/anchor-point-choices
+                                                                          [:top-left :top-right :angle])})
             :tierced-per-pairle-reversed (options/pick default-options
                                                        [[:line]
-                                                        [:origin :point]
-                                                        [:origin :offset-x]
-                                                        [:origin :offset-y]
-                                                        [:diagonal-mode]]
-                                                       {[:diagonal-mode :choices] (diagonal-mode-choices :tierced-per-pairle-reversed)
-                                                        [:diagonal-mode :default] :forty-five-debrees
-                                                        [:line] line-style
-                                                        [:line :offset :min] 0
-                                                        [:line :fimbriation] nil})
+                                                        [:origin]
+                                                        [:anchor]]
+                                                       {[:line] (-> line-style
+                                                                    (options/override-if-exists [:offset :min] 0)
+                                                                    (dissoc :fimbriation))
+                                                        [:opposite-line] (-> line-style
+                                                                             (options/override-if-exists [:offset :min] 0)
+                                                                             (dissoc :fimbriation))
+                                                        [:anchor :point :choices] (util/filter-choices
+                                                                                   position/anchor-point-choices
+                                                                                   [:bottom-left :bottom-right :angle])})
+
             {})
           (update-in [:anchor] (fn [anchor]
                                  (when anchor

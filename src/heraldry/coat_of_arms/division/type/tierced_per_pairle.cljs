@@ -7,6 +7,7 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]))
 
@@ -15,17 +16,28 @@
    :value :tierced-per-pairle
    :parts ["chief" "dexter" "sinister"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (division-options/options division))
+  (let [{:keys [line origin anchor]} (options/sanitize division (division-options/options division))
         points (:points environment)
-        origin-point (position/calculate origin environment :fess)
+        unadjusted-origin-point (position/calculate origin environment)
+        {origin-point :real-origin
+         anchor-point :real-anchor} (angle/calculate-origin-and-anchor
+                                     environment
+                                     origin
+                                     anchor
+                                     0
+                                     -90)
         bottom (assoc (:bottom points) :x (:x origin-point))
+        top-left (:top-left points)
+        top-right (:top-right points)
         bottom-left (:bottom-left points)
         bottom-right (:bottom-right points)
-        left (assoc (:left points) :y (:y origin-point))
-        right (assoc (:right points) :y (:y origin-point))
-        direction (angle/direction diagonal-mode points origin-point)
-        diagonal-top-left (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
-        diagonal-top-right (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
+        [mirrored-origin mirrored-anchor] [(chevron/mirror-point :chief unadjusted-origin-point origin-point)
+                                           (chevron/mirror-point :chief unadjusted-origin-point anchor-point)]
+        origin-point (v/line-intersection origin-point anchor-point
+                                          mirrored-origin mirrored-anchor)
+        [relative-right relative-left] (chevron/arm-diagonals :chief origin-point anchor-point)
+        diagonal-top-left (v/+ origin-point relative-left)
+        diagonal-top-right (v/+ origin-point relative-right)
         angle-top-left (angle/angle-to-point origin-point diagonal-top-left)
         angle-top-right (angle/angle-to-point origin-point diagonal-top-right)
         {line-top-left :line
@@ -64,9 +76,9 @@
                                  (v/+ diagonal-top-left
                                       line-top-left-start)])
                  "z"]
-                [diagonal-top-left
+                [top-left
                  origin-point
-                 diagonal-top-right]]
+                 top-right]]
 
                [["M" (v/+ bottom
                           line-bottom-reversed-start)
@@ -81,9 +93,8 @@
                                       line-bottom-reversed-start)])
                  "z"]
                 [origin-point
-                 diagonal-top-right
                  bottom
-                 diagonal-top-right
+                 top-right
                  bottom-right]]
 
                [["M" (v/+ diagonal-top-left
@@ -101,7 +112,7 @@
                 [origin-point
                  bottom-left
                  bottom
-                 diagonal-top-left]]]]
+                 top-left]]]]
     [:<>
      [shared/make-division
       (shared/division-context-key type) fields parts
