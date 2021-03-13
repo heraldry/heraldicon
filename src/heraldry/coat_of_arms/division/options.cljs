@@ -5,97 +5,58 @@
             [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.util :as util]))
 
-(defn diagonal-mode-choices [type]
-  (let [options {:forty-five-degrees  "45°"
-                 :top-left-origin     "Top-left to origin"
-                 :top-right-origin    "Top-right to origin"
-                 :bottom-left-origin  "Bottom-left to origin"
-                 :bottom-right-origin "Bottom-right to origin"}]
-    (->> type
-         (get {:per-bend                    [:forty-five-degrees
-                                             :top-left-origin]
-               :bendy                       [:forty-five-degrees
-                                             :top-left-origin]
-               :per-bend-sinister           [:forty-five-degrees
-                                             :top-right-origin]
-               :bendy-sinister              [:forty-five-degrees
-                                             :top-right-origin]
-               :per-chevron                 [:forty-five-degrees
-                                             :bottom-left-origin
-                                             :bottom-right-origin]
-               :per-saltire                 [:forty-five-degrees
-                                             :top-left-origin
-                                             :top-right-origin
-                                             :bottom-left-origin
-                                             :bottom-right-origin]
-               :gyronny                     [:forty-five-degrees
-                                             :top-left-origin
-                                             :top-right-origin
-                                             :bottom-left-origin
-                                             :bottom-right-origin]
-               :tierced-per-pairle          [:forty-five-degrees
-                                             :top-left-origin
-                                             :top-right-origin]
-               :tierced-per-pairle-reversed [:forty-five-degrees
-                                             :bottom-left-origin
-                                             :bottom-right-origin]})
-         (map (fn [key]
-                [(get options key) key])))))
-
 (def default-options
-  {:line          line/default-options
-   :origin        (-> position/default-options
-                      (dissoc :alignment))
-   :anchor        (-> position/anchor-default-options
-                      (dissoc :alignment))
-   :diagonal-mode {:type    :choice
-                   :default :top-left-origin}
-   :variant       {:type    :choice
-                   :choices [["Default" :default]
-                             ["Counter" :counter]
-                             ["In pale" :in-pale]
-                             ["En point" :en-point]
-                             ["Ancien" :ancien]]
-                   :default :default}
-   :thickness     {:type    :range
-                   :min     0
-                   :max     0.5
-                   :default 0.1}
-   :layout        {:num-fields-x    {:type     :range
-                                     :min      1
-                                     :max      20
-                                     :default  6
-                                     :integer? true}
-                   :num-fields-y    {:type     :range
-                                     :min      1
-                                     :max      20
-                                     :default  6
-                                     :integer? true}
-                   :num-base-fields {:type     :range
-                                     :min      2
-                                     :max      8
-                                     :default  2
-                                     :integer? true}
-                   :offset-x        {:type    :range
-                                     :min     -1
-                                     :max     1
-                                     :default 0}
-                   :offset-y        {:type    :range
-                                     :min     -1
-                                     :max     1
-                                     :default 0}
-                   :stretch-x       {:type    :range
-                                     :min     0.5
-                                     :max     2
-                                     :default 1}
-                   :stretch-y       {:type    :range
-                                     :min     0.5
-                                     :max     2
-                                     :default 1}
-                   :rotation        {:type    :range
-                                     :min     -90
-                                     :max     90
-                                     :default 0}}})
+  {:line      line/default-options
+   :origin    (-> position/default-options
+                  (dissoc :alignment))
+   :anchor    (-> position/anchor-default-options
+                  (dissoc :alignment))
+   :variant   {:type    :choice
+               :choices [["Default" :default]
+                         ["Counter" :counter]
+                         ["In pale" :in-pale]
+                         ["En point" :en-point]
+                         ["Ancien" :ancien]]
+               :default :default}
+   :thickness {:type    :range
+               :min     0
+               :max     0.5
+               :default 0.1}
+   :layout    {:num-fields-x    {:type     :range
+                                 :min      1
+                                 :max      20
+                                 :default  6
+                                 :integer? true}
+               :num-fields-y    {:type     :range
+                                 :min      1
+                                 :max      20
+                                 :default  6
+                                 :integer? true}
+               :num-base-fields {:type     :range
+                                 :min      2
+                                 :max      8
+                                 :default  2
+                                 :integer? true}
+               :offset-x        {:type    :range
+                                 :min     -1
+                                 :max     1
+                                 :default 0}
+               :offset-y        {:type    :range
+                                 :min     -1
+                                 :max     1
+                                 :default 0}
+               :stretch-x       {:type    :range
+                                 :min     0.5
+                                 :max     2
+                                 :default 1}
+               :stretch-y       {:type    :range
+                                 :min     0.5
+                                 :max     2
+                                 :default 1}
+               :rotation        {:type    :range
+                                 :min     -90
+                                 :max     90
+                                 :default 0}}})
 
 (defn options [division]
   (when division
