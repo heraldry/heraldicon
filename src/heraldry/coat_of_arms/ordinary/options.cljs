@@ -122,17 +122,21 @@
                                                                 [:bottom-left :bottom-right :angle]))}))
        :saltire (options/pick default-options
                               [[:origin]
-                               [:diagonal-mode]
+                               [:anchor]
                                [:line]
                                [:geometry]]
-                              {[:diagonal-mode :choices] (diagonal-mode-choices :saltire)
-                               [:line :offset :min] 0
-                               [:opposite-line :offset :min] 0})
+                              {[:line :offset :min] 0
+                               [:opposite-line :offset :min] 0
+                               [:origin :alignment] nil
+                               [:anchor :point :choices] (util/filter-choices
+                                                          position/anchor-point-choices
+                                                          [:top-left :top-right :bottom-left :bottom-right :angle])})
        :cross (options/pick default-options
                             [[:origin]
                              [:line]
                              [:geometry]]
-                            {[:line :offset :min] 0}))
+                            {[:line :offset :min] 0
+                             [:origin :alignment] nil}))
      (update-in [:line] (fn [line]
                           (when line
                             (set-line-defaults line))))
