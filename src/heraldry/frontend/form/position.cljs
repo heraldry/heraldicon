@@ -3,7 +3,6 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.frontend.form.element :as element]
-            [heraldry.frontend.util :as util]
             [re-frame.core :as rf]))
 
 (defn form [path & {:keys [title options] :or {title "Position"}}]
@@ -21,9 +20,9 @@
      [:label title]
      " "
      [element/submenu path title (if (= current-point :angle)
-                                   "Angle"
+                                   (position/anchor-point-map current-point)
                                    (str
-                                    (util/translate-cap-first current-point)
+                                    (position/anchor-point-map current-point)
                                     (when (or (-> current-offset-x zero? not)
                                               (-> current-offset-y zero? not))
                                       " (adjusted)")
