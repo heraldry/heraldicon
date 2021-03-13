@@ -4,6 +4,7 @@
             [heraldry.coat-of-arms.line.type.dancetty :as dancetty]
             [heraldry.coat-of-arms.line.type.dovetailed :as dovetailed]
             [heraldry.coat-of-arms.line.type.embattled :as embattled]
+            [heraldry.coat-of-arms.line.type.embattled-in-crosses :as embattled-in-crosses]
             [heraldry.coat-of-arms.line.type.engrailed :as engrailed]
             [heraldry.coat-of-arms.line.type.fir-tree-topped :as fir-tree-topped]
             [heraldry.coat-of-arms.line.type.fir-twigged :as fir-twigged]
@@ -49,6 +50,7 @@
    #'invected/pattern
    #'engrailed/pattern
    #'embattled/pattern
+   #'embattled-in-crosses/pattern
    #'indented/pattern
    #'dancetty/pattern
    #'wavy/pattern
