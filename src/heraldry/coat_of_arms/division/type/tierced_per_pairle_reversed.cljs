@@ -7,6 +7,7 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]))
 
@@ -15,19 +16,28 @@
    :value        :tierced-per-pairle-reversed
    :parts        ["dexter" "sinister" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode]}   (options/sanitize division (division-options/options division))
+  (let [{:keys [line origin anchor]}          (options/sanitize division (division-options/options division))
         points                                (:points environment)
-        origin-point                          (position/calculate origin environment :fess)
+        unadjusted-origin-point               (position/calculate origin environment)
+        {origin-point :real-origin
+         anchor-point :real-anchor}           (angle/calculate-origin-and-anchor
+                                               environment
+                                               origin
+                                               anchor
+                                               0
+                                               0)
         top                                   (assoc (:top points) :x (:x origin-point))
         top-left                              (:top-left points)
         top-right                             (:top-right points)
         bottom-left                           (:bottom-left points)
         bottom-right                          (:bottom-right points)
-        left                                  (assoc (:left points) :y (:y origin-point))
-        right                                 (assoc (:right points) :y (:y origin-point))
-        direction                             (angle/direction diagonal-mode points origin-point)
-        diagonal-bottom-left                  (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
-        diagonal-bottom-right                 (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
+        [mirrored-origin mirrored-anchor]     [(chevron/mirror-point :base unadjusted-origin-point origin-point)
+                                               (chevron/mirror-point :base unadjusted-origin-point anchor-point)]
+        origin-point                          (v/line-intersection origin-point anchor-point
+                                                                   mirrored-origin mirrored-anchor)
+        [relative-left relative-right]        (chevron/arm-diagonals :base origin-point anchor-point)
+        diagonal-bottom-left                  (v/+ origin-point relative-left)
+        diagonal-bottom-right                 (v/+ origin-point relative-right)
         angle-bottom-left                     (angle/angle-to-point origin-point diagonal-bottom-left)
         angle-bottom-right                    (angle/angle-to-point origin-point diagonal-bottom-right)
         line                                  (-> line
@@ -70,7 +80,7 @@
                                                  "z"]
                                                 [top-left
                                                  origin-point
-                                                 diagonal-bottom-left
+                                                 bottom-left
                                                  top]]
 
                                                [["M" (v/+ diagonal-bottom-right
@@ -88,7 +98,7 @@
                                                 [top-right
                                                  origin-point
                                                  top
-                                                 diagonal-bottom-right]]
+                                                 bottom-right]]
 
                                                [["M" (v/+ diagonal-bottom-right
                                                           line-bottom-right-start)
