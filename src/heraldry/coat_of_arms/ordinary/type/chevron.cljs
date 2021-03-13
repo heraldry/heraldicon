@@ -56,6 +56,10 @@
         opposite-line                                  (ordinary-options/sanitize-opposite-line ordinary line)
         points                                         (:points environment)
         unadjusted-origin-point                        (position/calculate origin environment)
+        top-left                                       (:top-left points)
+        top-right                                      (:top-right points)
+        bottom-left                                    (:bottom-left points)
+        bottom-right                                   (:bottom-right points)
         top                                            (assoc (:top points) :x (:x unadjusted-origin-point))
         bottom                                         (assoc (:bottom points) :x (:x unadjusted-origin-point))
         left                                           (assoc (:left points) :y (:y unadjusted-origin-point))
@@ -150,7 +154,13 @@
                                                                    line-left-upper-start)
                                                           (svg/stitch line-left-upper)
                                                           "z"]
-                                                         [top bottom left right]]]
+                                                         (-> [corner-upper corner-lower]
+                                                             (concat (case variant
+                                                                       :chief    [top-left top-right]
+                                                                       :dexter   [top-left bottom-left]
+                                                                       :sinister [top-right bottom-right]
+                                                                       [bottom-left bottom-right]))
+                                                             vec)]]
         field                                          (if (counterchange/counterchangable? field parent)
                                                          (counterchange/counterchange-field field parent)
                                                          field)
