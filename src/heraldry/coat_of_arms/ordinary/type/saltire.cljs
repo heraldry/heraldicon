@@ -2,7 +2,6 @@
   (:require [heraldry.coat-of-arms.angle :as angle]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.division.shared :as division-shared]
-            [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
@@ -134,42 +133,26 @@
         parts [[["M" (v/+ corner-left
                           line-top-left-lower-start)
                  (svg/stitch line-top-left-lower)
-                 (infinity/path :clockwise
-                                [:left :left]
-                                [(v/+ top-left-lower
-                                      line-top-left-lower-start)
-                                 (v/+ top-left-upper
-                                      line-top-left-upper-start)])
+                 "L" (v/+ top-left-upper
+                          line-top-left-upper-start)
                  (svg/stitch line-top-left-upper)
                  "L" (v/+ corner-top
                           line-top-right-upper-start)
                  (svg/stitch line-top-right-upper)
-                 (infinity/path :clockwise
-                                [:right :right]
-                                [(v/+ top-right-upper
-                                      line-top-right-upper-start)
-                                 (v/+ top-right-lower
-                                      line-top-right-lower-start)])
+                 "L" (v/+ top-right-lower
+                          line-top-right-lower-start)
                  (svg/stitch line-top-right-lower)
                  "L" (v/+ corner-right
                           line-bottom-right-upper-start)
                  (svg/stitch line-bottom-right-upper)
-                 (infinity/path :clockwise
-                                [:right :right]
-                                [(v/+ bottom-right-upper
-                                      line-bottom-right-upper-start)
-                                 (v/+ bottom-right-lower
-                                      line-bottom-right-lower-start)])
+                 "L" (v/+ bottom-right-lower
+                          line-bottom-right-lower-start)
                  (svg/stitch line-bottom-right-lower)
                  "L" (v/+ corner-bottom
                           line-bottom-left-lower-start)
                  (svg/stitch line-bottom-left-lower)
-                 (infinity/path :clockwise
-                                [:left :left]
-                                [(v/+ bottom-left-lower
-                                      line-bottom-left-lower)
-                                 (v/+ bottom-left-upper
-                                      line-bottom-left-upper-start)])
+                 "L" (v/+ bottom-left-upper
+                          line-bottom-left-upper-start)
                  (svg/stitch line-bottom-left-upper)
                  "z"]
                 [top bottom left right]]]
