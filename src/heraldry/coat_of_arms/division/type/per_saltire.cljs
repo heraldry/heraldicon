@@ -6,7 +6,7 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.shared.saltire :as saltire]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]))
 
@@ -15,22 +15,25 @@
    :value :per-saltire
    :parts ["chief" "dexter" "sinister" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (division-options/options division))
+  (let [{:keys [line origin anchor]} (options/sanitize division (division-options/options division))
         points (:points environment)
-        origin-point (position/calculate origin environment :fess)
-        top (:top points)
-        bottom (:bottom points)
-        left (:left points)
-        right (:right points)
-        direction (angle/direction diagonal-mode points origin-point)
-        diagonal-top-left (v/project-x origin-point (v/dot direction (v/v -1 -1)) (-> left :x (- 50)))
-        diagonal-top-right (v/project-x origin-point (v/dot direction (v/v 1 -1)) (-> right :x (+ 50)))
-        diagonal-bottom-left (v/project-x origin-point (v/dot direction (v/v -1 1)) (-> left :x (- 50)))
-        diagonal-bottom-right (v/project-x origin-point (v/dot direction (v/v 1 1)) (-> right :x (+ 50)))
-        real-diagonal-top-left (v/project-x origin-point (v/dot direction (v/v -1 -1)) (-> left :x))
-        real-diagonal-top-right (v/project-x origin-point (v/dot direction (v/v 1 -1)) (-> right :x))
-        real-diagonal-bottom-left (v/project-x origin-point (v/dot direction (v/v -1 1)) (-> left :x))
-        real-diagonal-bottom-right (v/project-x origin-point (v/dot direction (v/v 1 1)) (-> right :x))
+        top-left (:top-left points)
+        top-right (:top-right points)
+        bottom-left (:bottom-left points)
+        bottom-right (:bottom-right points)
+        {origin-point :real-origin
+         anchor-point :real-anchor} (angle/calculate-origin-and-anchor
+                                     environment
+                                     origin
+                                     anchor
+                                     0
+                                     nil)
+        [relative-top-left relative-top-right
+         relative-bottom-left relative-bottom-right] (saltire/arm-diagonals origin-point anchor-point)
+        diagonal-top-left (v/+ origin-point relative-top-left)
+        diagonal-top-right (v/+ origin-point relative-top-right)
+        diagonal-bottom-left (v/+ origin-point relative-bottom-left)
+        diagonal-bottom-right (v/+ origin-point relative-bottom-right)
         angle-top-left (angle/angle-to-point origin-point diagonal-top-left)
         angle-top-right (angle/angle-to-point origin-point diagonal-top-right)
         angle-bottom-left (angle/angle-to-point origin-point diagonal-bottom-left)
@@ -61,6 +64,8 @@
                                                           :angle angle-bottom-left
                                                           :flipped? true
                                                           :render-options render-options)
+        ;; TODO: sub fields need better environment determination, especially with an adjusted origin,
+        ;; the resulting environments won't be very well centered
         parts [[["M" (v/+ diagonal-top-left
                           line-top-left-start)
                  (svg/stitch line-top-left)
@@ -73,10 +78,9 @@
                                  (v/+ diagonal-top-left
                                       line-top-left-start)])
                  "z"]
-                [top
-                 real-diagonal-top-right
-                 origin-point
-                 real-diagonal-top-left]]
+                [top-left
+                 top-right
+                 origin-point]]
 
                [["M" (v/+ diagonal-top-left
                           line-top-left-start)
@@ -90,10 +94,9 @@
                                  (v/+ diagonal-top-left
                                       line-top-left-start)])
                  "z"]
-                [left
-                 real-diagonal-bottom-left
-                 origin-point
-                 real-diagonal-top-left]]
+                [top-left
+                 bottom-left
+                 origin-point]]
 
                [["M" (v/+ diagonal-bottom-right
                           line-bottom-right-start)
@@ -107,10 +110,9 @@
                                  (v/+ diagonal-bottom-right
                                       line-bottom-right-start)])
                  "z"]
-                [right
-                 real-diagonal-top-right
-                 origin-point
-                 real-diagonal-bottom-right]]
+                [top-right
+                 bottom-right
+                 origin-point]]
 
                [["M" (v/+ diagonal-bottom-right
                           line-bottom-right-start)
@@ -124,10 +126,9 @@
                                  (v/+ diagonal-bottom-right
                                       line-bottom-right-start)])
                  "z"]
-                [bottom
-                 real-diagonal-bottom-left
-                 origin-point
-                 real-diagonal-bottom-right]]]]
+                [bottom-left
+                 bottom-right
+                 origin-point]]]]
 
     [:<>
      [shared/make-division
