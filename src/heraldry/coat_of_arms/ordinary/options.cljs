@@ -87,13 +87,37 @@
                                       {[:line] line-style})
          :bend          (options/pick default-options
                                       [[:origin]
-                                       [:diagonal-mode]
+                                       [:anchor]
                                        [:line]
                                        [:opposite-line]
                                        [:geometry]]
-                                      {[:origin :point :choices] position/point-choices-y
-                                       [:diagonal-mode :choices] (diagonal-mode-choices :bend)
-                                       [:line]                   line-style})
+                                      (let [useful-points        #{:top-left :bottom-right
+                                                                   :chief :honour :fess :nombril :base}
+                                            point-choices        (util/filter-choices
+                                                                  position/anchor-point-choices
+                                                                  useful-points)
+                                            anchor-point-choices (util/filter-choices
+                                                                  position/anchor-point-choices
+                                                                  (conj useful-points :angle))]
+                                        {[:origin :point :choices] point-choices
+                                         [:origin :point :default] :top-left
+                                         [:anchor :point :choices] (case (-> ordinary :origin :point (or :top-left))
+                                                                     :top-left     (util/filter-choices
+                                                                                    anchor-point-choices
+                                                                                    #{:bottom-right
+                                                                                      :chief :honour :fess :nombril :base :angle})
+                                                                     :bottom-right (util/filter-choices
+                                                                                    anchor-point-choices
+                                                                                    #{:top-left
+                                                                                      :chief :honour :fess :nombril :base :angle})
+                                                                     (util/filter-choices
+                                                                      anchor-point-choices
+                                                                      [:top-left :bottom-right :angle]))
+                                         [:anchor :point :default] (case (-> ordinary :origin :point (or :top-left))
+                                                                     :top-left     :fess
+                                                                     :bottom-right :fess
+                                                                     :top-left)
+                                         [:line]                   line-style}))
          :bend-sinister (options/pick default-options
                                       [[:origin]
                                        [:diagonal-mode]
