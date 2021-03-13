@@ -70,7 +70,8 @@
                                             anchor-point-choices (util/filter-choices
                                                                   position/anchor-point-choices
                                                                   (conj useful-points :angle))]
-                                        {[:origin :point :choices] point-choices
+                                        {[:line]                   line-style
+                                         [:origin :point :choices] point-choices
                                          [:origin :point :default] :top-left
                                          [:anchor :point :choices] (case (-> ordinary :origin :point (or :top-left))
                                                                      :top-left     (util/filter-choices
@@ -87,8 +88,7 @@
                                          [:anchor :point :default] (case (-> ordinary :origin :point (or :top-left))
                                                                      :top-left     :fess
                                                                      :bottom-right :fess
-                                                                     :top-left)
-                                         [:line]                   line-style}))
+                                                                     :top-left)}))
          :bend-sinister (options/pick default-options
                                       [[:origin]
                                        [:anchor]
@@ -103,7 +103,8 @@
                                             anchor-point-choices (util/filter-choices
                                                                   position/anchor-point-choices
                                                                   (conj useful-points :angle))]
-                                        {[:origin :point :choices] point-choices
+                                        {[:line]                   line-style
+                                         [:origin :point :choices] point-choices
                                          [:origin :point :default] :top-left
                                          [:anchor :point :choices] (case (-> ordinary :origin :point (or :top-right))
                                                                      :top-right   (util/filter-choices
@@ -120,8 +121,7 @@
                                          [:anchor :point :default] (case (-> ordinary :origin :point (or :top-right))
                                                                      :top-right   :fess
                                                                      :bottom-left :fess
-                                                                     :top-right)
-                                         [:line]                   line-style}))
+                                                                     :top-right)}))
          :chevron       (-> (options/pick default-options
                                           [[:variant]
                                            [:origin]
@@ -129,23 +129,24 @@
                                            [:line]
                                            [:opposite-line]
                                            [:geometry]]
-                                          {[:line :offset :min]          0
-                                           [:opposite-line :offset :min] 0
-                                           [:anchor :point :choices]     (case (-> ordinary :variant (or :base))
-                                                                           :chief    (util/filter-choices
-                                                                                      position/anchor-point-choices
-                                                                                      [:top-left :top-right :angle])
-                                                                           :dexter   (util/filter-choices
-                                                                                      position/anchor-point-choices
-                                                                                      [:top-left :bottom-left :angle])
-                                                                           :sinister (util/filter-choices
-                                                                                      position/anchor-point-choices
-                                                                                      [:top-right :bottom-right :angle])
-                                                                           ;; otherwise, assume :base
-                                                                           (util/filter-choices
-                                                                            position/anchor-point-choices
-                                                                            [:bottom-left :bottom-right :angle]))
-                                           [:line]                       line-style}))
+                                          {[:line]                   (-> line-style
+                                                                         (assoc-in [:offset :min] 0))
+                                           [:opposite-line]          (-> line-style
+                                                                         (assoc-in [:offset :min] 0))
+                                           [:anchor :point :choices] (case (-> ordinary :variant (or :base))
+                                                                       :chief    (util/filter-choices
+                                                                                  position/anchor-point-choices
+                                                                                  [:top-left :top-right :angle])
+                                                                       :dexter   (util/filter-choices
+                                                                                  position/anchor-point-choices
+                                                                                  [:top-left :bottom-left :angle])
+                                                                       :sinister (util/filter-choices
+                                                                                  position/anchor-point-choices
+                                                                                  [:top-right :bottom-right :angle])
+                                                                       ;; otherwise, assume :base
+                                                                       (util/filter-choices
+                                                                        position/anchor-point-choices
+                                                                        [:bottom-left :bottom-right :angle]))}))
          ;; TODO: perhaps there should be origin options for the corners?
          ;; so one can align fro top-left to bottom-right
          :saltire       (options/pick default-options
@@ -153,20 +154,21 @@
                                        [:anchor]
                                        [:line]
                                        [:geometry]]
-                                      {[:line :offset :min]          0
-                                       [:opposite-line :offset :min] 0
-                                       [:origin :alignment]          nil
-                                       [:anchor :point :choices]     (util/filter-choices
-                                                                      position/anchor-point-choices
-                                                                      [:top-left :top-right :bottom-left :bottom-right :angle])
-                                       [:line]                       line-style})
+                                      {[:line]                   (-> line-style
+                                                                     (assoc-in [:offset :min] 0))
+                                       [:opposite-line]          (-> line-style
+                                                                     (assoc-in [:offset :min] 0))
+                                       [:origin :alignment]      nil
+                                       [:anchor :point :choices] (util/filter-choices
+                                                                  position/anchor-point-choices
+                                                                  [:top-left :top-right :bottom-left :bottom-right :angle])})
          :cross         (options/pick default-options
                                       [[:origin]
                                        [:line]
                                        [:geometry]]
-                                      {[:line :offset :min] 0
-                                       [:origin :alignment] nil
-                                       [:line]              line-style}))
+                                      {[:line]              (-> line-style
+                                                                (assoc-in [:offset :min] 0))
+                                       [:origin :alignment] nil}))
        (update-in [:line] (fn [line]
                             (when line
                               (set-line-defaults line))))
