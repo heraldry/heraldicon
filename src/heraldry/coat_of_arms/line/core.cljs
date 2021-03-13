@@ -59,11 +59,11 @@
    #'indented/pattern
    #'dancetty/pattern
    #'wavy/pattern
+   #'nebuly/pattern
    #'dovetailed/pattern
    #'raguly/pattern
    #'thorny/pattern
    #'urdy/pattern
-   #'nebuly/pattern
    #'fir-tree-topped/pattern
    #'fir-twigged/pattern])
 
