@@ -138,6 +138,8 @@
                                        keys
                                        set
                                        (conj :eyes-and-teeth)
+                                       (conj :secondary)
+                                       (conj :tertiary)
                                        (conj :shadow)
                                        (conj :highlight)
                                        (set/intersection

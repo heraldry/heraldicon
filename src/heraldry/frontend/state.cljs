@@ -44,6 +44,8 @@
                                                                                                     [k :or]))
                                                                                              (into {}))
                                                                                         {:eyes-and-teeth :argent
+                                                                                         :secondary      :gules
+                                                                                         :tertiary       :vert
                                                                                          :armed          :or
                                                                                          :langued        :gules
                                                                                          :attired        :argent
