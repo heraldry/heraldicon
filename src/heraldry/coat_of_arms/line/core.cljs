@@ -15,6 +15,7 @@
             [heraldry.coat-of-arms.line.type.potenty :as potenty]
             [heraldry.coat-of-arms.line.type.raguly :as raguly]
             [heraldry.coat-of-arms.line.type.straight :as straight]
+            [heraldry.coat-of-arms.line.type.thorny :as thorny]
             [heraldry.coat-of-arms.line.type.urdy :as urdy]
             [heraldry.coat-of-arms.line.type.wavy :as wavy]
             [heraldry.coat-of-arms.options :as options]
@@ -60,6 +61,7 @@
    #'wavy/pattern
    #'dovetailed/pattern
    #'raguly/pattern
+   #'thorny/pattern
    #'urdy/pattern
    #'nebuly/pattern
    #'fir-tree-topped/pattern
