@@ -6,45 +6,10 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
-
-(defn arm-diagonals [variant origin-point anchor-point]
-  (let [direction (-> (v/- anchor-point origin-point)
-                      v/normal
-                      (v/* 200))
-        [left right] (case variant
-                       :base (if (-> direction :x (> 0))
-                               [(v/v -1 1) (v/v 1 1)]
-                               [(v/v 1 1) (v/v -1 1)])
-                       :chief (if (-> direction :x (< 0))
-                                [(v/v -1 1) (v/v 1 1)]
-                                [(v/v 1 1) (v/v -1 1)])
-                       :dexter (if (-> direction :y (< 0))
-                                 [(v/v 1 -1) (v/v 1 1)]
-                                 [(v/v 1 1) (v/v 1 -1)])
-                       :sinister (if (-> direction :y (> 0))
-                                   [(v/v 1 -1) (v/v 1 1)]
-                                   [(v/v 1 1) (v/v 1 -1)]))]
-    [(v/dot direction left)
-     (v/dot direction right)]))
-
-(defn sanitize-anchor [variant anchor]
-  (let [[allowed default] (case variant
-                            :base [#{:angle :bottom-right} :bottom-left]
-                            :chief [#{:angle :top-right} :top-left]
-                            :dexter [#{:angle :bottom-left} :top-left]
-                            :sinister [#{:angle :bottom-right} :top-right])]
-    (update anchor :point #(or (allowed %) default))))
-
-(defn mirror-point [variant center point]
-  (-> point
-      (v/- center)
-      (v/dot (if (#{:base :chief} variant)
-               (v/v -1 1)
-               (v/v 1 -1)))
-      (v/+ center)))
 
 (defn render
   {:display-name "Chevron"
@@ -67,7 +32,7 @@
         height (:height environment)
         band-width (-> size
                        ((util/percent-of height)))
-        anchor (sanitize-anchor variant anchor)
+        anchor (chevron/sanitize-anchor variant anchor)
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment
@@ -79,11 +44,11 @@
                                        :chief -90
                                        :dexter 180
                                        0))
-        [mirrored-origin mirrored-anchor] [(mirror-point variant unadjusted-origin-point origin-point)
-                                           (mirror-point variant unadjusted-origin-point anchor-point)]
+        [mirrored-origin mirrored-anchor] [(chevron/mirror-point variant unadjusted-origin-point origin-point)
+                                           (chevron/mirror-point variant unadjusted-origin-point anchor-point)]
         origin-point (v/line-intersection origin-point anchor-point
                                           mirrored-origin mirrored-anchor)
-        [relative-left relative-right] (arm-diagonals variant origin-point anchor-point)
+        [relative-left relative-right] (chevron/arm-diagonals variant origin-point anchor-point)
         diagonal-left (v/+ origin-point relative-left)
         diagonal-right (v/+ origin-point relative-right)
         angle-left (angle/angle-to-point origin-point diagonal-left)
