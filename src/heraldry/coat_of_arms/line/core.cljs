@@ -5,6 +5,7 @@
             [heraldry.coat-of-arms.line.type.dovetailed :as dovetailed]
             [heraldry.coat-of-arms.line.type.embattled :as embattled]
             [heraldry.coat-of-arms.line.type.engrailed :as engrailed]
+            [heraldry.coat-of-arms.line.type.fir-tree-topped :as fir-tree-topped]
             [heraldry.coat-of-arms.line.type.indented :as indented]
             [heraldry.coat-of-arms.line.type.invected :as invected]
             [heraldry.coat-of-arms.line.type.nebuly :as nebuly]
@@ -53,7 +54,8 @@
    #'dovetailed/pattern
    #'raguly/pattern
    #'urdy/pattern
-   #'nebuly/pattern])
+   #'nebuly/pattern
+   #'fir-tree-topped/pattern])
 
 (def kinds-function-map
   (->> lines
