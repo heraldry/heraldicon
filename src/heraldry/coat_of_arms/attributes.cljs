@@ -113,6 +113,8 @@
   (concat [["Technical"
             ["Don't replace" :keep]
             ["Primary" :primary]
+            ["Secondary" :secondary]
+            ["Tertiary" :tertiary]
             ["Outline" :outline]
             ["Eyes/teeth" :eyes-and-teeth]
             ["Shadow" :shadow]
