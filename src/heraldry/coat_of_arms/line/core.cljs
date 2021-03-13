@@ -6,6 +6,7 @@
             [heraldry.coat-of-arms.line.type.embattled :as embattled]
             [heraldry.coat-of-arms.line.type.engrailed :as engrailed]
             [heraldry.coat-of-arms.line.type.fir-tree-topped :as fir-tree-topped]
+            [heraldry.coat-of-arms.line.type.fir-twigged :as fir-twigged]
             [heraldry.coat-of-arms.line.type.indented :as indented]
             [heraldry.coat-of-arms.line.type.invected :as invected]
             [heraldry.coat-of-arms.line.type.nebuly :as nebuly]
@@ -55,7 +56,8 @@
    #'raguly/pattern
    #'urdy/pattern
    #'nebuly/pattern
-   #'fir-tree-topped/pattern])
+   #'fir-tree-topped/pattern
+   #'fir-twigged/pattern])
 
 (def kinds-function-map
   (->> lines
@@ -174,6 +176,13 @@
                            [:flipped?]
                            [:fimbriation]]
                           {[:width :default] 20})
+      :fir-twigged (options/pick default-options
+                                 [[:type]
+                                  [:height]
+                                  [:width]
+                                  [:offset]
+                                  [:flipped?]
+                                  [:fimbriation]])
       (options/pick default-options
                     [[:type]
                      [:eccentricity]
