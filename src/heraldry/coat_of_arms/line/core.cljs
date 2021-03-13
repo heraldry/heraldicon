@@ -7,6 +7,7 @@
             [heraldry.coat-of-arms.line.type.engrailed :as engrailed]
             [heraldry.coat-of-arms.line.type.indented :as indented]
             [heraldry.coat-of-arms.line.type.invected :as invected]
+            [heraldry.coat-of-arms.line.type.nebuly :as nebuly]
             [heraldry.coat-of-arms.line.type.raguly :as raguly]
             [heraldry.coat-of-arms.line.type.straight :as straight]
             [heraldry.coat-of-arms.line.type.urdy :as urdy]
@@ -51,7 +52,8 @@
    #'wavy/pattern
    #'dovetailed/pattern
    #'raguly/pattern
-   #'urdy/pattern])
+   #'urdy/pattern
+   #'nebuly/pattern])
 
 (def kinds-function-map
   (->> lines
