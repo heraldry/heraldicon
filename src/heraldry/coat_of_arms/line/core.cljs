@@ -11,6 +11,7 @@
             [heraldry.coat-of-arms.line.type.indented :as indented]
             [heraldry.coat-of-arms.line.type.invected :as invected]
             [heraldry.coat-of-arms.line.type.nebuly :as nebuly]
+            [heraldry.coat-of-arms.line.type.potenty :as potenty]
             [heraldry.coat-of-arms.line.type.raguly :as raguly]
             [heraldry.coat-of-arms.line.type.straight :as straight]
             [heraldry.coat-of-arms.line.type.urdy :as urdy]
@@ -51,6 +52,7 @@
    #'engrailed/pattern
    #'embattled/pattern
    #'embattled-in-crosses/pattern
+   #'potenty/pattern
    #'indented/pattern
    #'dancetty/pattern
    #'wavy/pattern
