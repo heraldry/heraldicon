@@ -162,10 +162,6 @@
               [position/form (conj path :division :anchor)
                :title "Anchor"
                :options (:anchor division-options)])
-            (when (-> division-options :diagonal-mode)
-              [element/select (conj path :division :diagonal-mode) "Diagonal"
-               (-> division-options :diagonal-mode :choices)
-               :default (-> division-options :diagonal-mode :default)])
             (when (:layout division-options)
               [form-for-layout path :options (:layout division-options)])
             (when (:line division-options)
