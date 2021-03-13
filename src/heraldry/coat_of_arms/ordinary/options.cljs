@@ -60,92 +60,102 @@
 
 (defn options [ordinary]
   (when ordinary
-    (->
-     (case (:type ordinary)
-       :pale (options/pick default-options
-                           [[:origin]
-                            [:line]
-                            [:opposite-line]
-                            [:geometry]]
-                           {[:offset-y] nil})
-       :fess (options/pick default-options
-                           [[:origin]
-                            [:line]
-                            [:opposite-line]
-                            [:geometry]]
-                           {[:offset-x] nil})
-       :chief (options/pick default-options
-                            [[:line]
-                             [:geometry]])
-       :base (options/pick default-options
-                           [[:line]
-                            [:geometry]])
-       :bend (options/pick default-options
-                           [[:origin]
-                            [:diagonal-mode]
-                            [:line]
-                            [:opposite-line]
-                            [:geometry]]
-                           {[:origin :point :choices] position/point-choices-y
-                            [:diagonal-mode :choices] (diagonal-mode-choices :bend)})
-       :bend-sinister (options/pick default-options
-                                    [[:origin]
-                                     [:diagonal-mode]
+    (let [line-style (line/options (:line ordinary))]
+      (->
+       (case (:type ordinary)
+         :pale (options/pick default-options
+                             [[:origin]
+                              [:line]
+                              [:opposite-line]
+                              [:geometry]]
+                             {[:offset-y] nil
+                              [:line] line-style})
+         :fess (options/pick default-options
+                             [[:origin]
+                              [:line]
+                              [:opposite-line]
+                              [:geometry]]
+                             {[:offset-x] nil
+                              [:line] line-style})
+         :chief (options/pick default-options
+                              [[:line]
+                               [:geometry]]
+                              {[:line] line-style})
+         :base (options/pick default-options
+                             [[:line]
+                              [:geometry]]
+                             {[:line] line-style})
+         :bend (options/pick default-options
+                             [[:origin]
+                              [:diagonal-mode]
+                              [:line]
+                              [:opposite-line]
+                              [:geometry]]
+                             {[:origin :point :choices] position/point-choices-y
+                              [:diagonal-mode :choices] (diagonal-mode-choices :bend)
+                              [:line] line-style})
+         :bend-sinister (options/pick default-options
+                                      [[:origin]
+                                       [:diagonal-mode]
+                                       [:line]
+                                       [:opposite-line]
+                                       [:geometry]]
+                                      {[:origin :point :choices] position/point-choices-y
+                                       [:diagonal-mode :choices] (diagonal-mode-choices :bend-sinister)
+                                       [:diagonal-mode :default] :top-right-origin
+                                       [:line] line-style})
+         :chevron (-> (options/pick default-options
+                                    [[:variant]
+                                     [:origin]
+                                     [:anchor]
                                      [:line]
                                      [:opposite-line]
                                      [:geometry]]
-                                    {[:origin :point :choices] position/point-choices-y
-                                     [:diagonal-mode :choices] (diagonal-mode-choices :bend-sinister)
-                                     [:diagonal-mode :default] :top-right-origin})
-       :chevron (-> (options/pick default-options
-                                  [[:variant]
-                                   [:origin]
-                                   [:anchor]
-                                   [:line]
-                                   [:opposite-line]
-                                   [:geometry]]
-                                  {[:line :offset :min] 0
-                                   [:opposite-line :offset :min] 0
-                                   [:anchor :point :choices] (case (-> ordinary :variant (or :base))
-                                                               :chief (util/filter-choices
-                                                                       position/anchor-point-choices
-                                                                       [:top-left :top-right :angle])
-                                                               :dexter (util/filter-choices
-                                                                        position/anchor-point-choices
-                                                                        [:top-left :bottom-left :angle])
-                                                               :sinister (util/filter-choices
+                                    {[:line :offset :min] 0
+                                     [:opposite-line :offset :min] 0
+                                     [:anchor :point :choices] (case (-> ordinary :variant (or :base))
+                                                                 :chief (util/filter-choices
+                                                                         position/anchor-point-choices
+                                                                         [:top-left :top-right :angle])
+                                                                 :dexter (util/filter-choices
                                                                           position/anchor-point-choices
-                                                                          [:top-right :bottom-right :angle])
-                                                                         ;; otherwise, assume :base
-                                                               (util/filter-choices
-                                                                position/anchor-point-choices
-                                                                [:bottom-left :bottom-right :angle]))}))
-       :saltire (options/pick default-options
+                                                                          [:top-left :bottom-left :angle])
+                                                                 :sinister (util/filter-choices
+                                                                            position/anchor-point-choices
+                                                                            [:top-right :bottom-right :angle])
+                                                                           ;; otherwise, assume :base
+                                                                 (util/filter-choices
+                                                                  position/anchor-point-choices
+                                                                  [:bottom-left :bottom-right :angle]))
+                                     [:line] line-style}))
+         :saltire (options/pick default-options
+                                [[:origin]
+                                 [:anchor]
+                                 [:line]
+                                 [:geometry]]
+                                {[:line :offset :min] 0
+                                 [:opposite-line :offset :min] 0
+                                 [:origin :alignment] nil
+                                 [:anchor :point :choices] (util/filter-choices
+                                                            position/anchor-point-choices
+                                                            [:top-left :top-right :bottom-left :bottom-right :angle])
+                                 [:line] line-style})
+         :cross (options/pick default-options
                               [[:origin]
-                               [:anchor]
                                [:line]
                                [:geometry]]
                               {[:line :offset :min] 0
-                               [:opposite-line :offset :min] 0
                                [:origin :alignment] nil
-                               [:anchor :point :choices] (util/filter-choices
-                                                          position/anchor-point-choices
-                                                          [:top-left :top-right :bottom-left :bottom-right :angle])})
-       :cross (options/pick default-options
-                            [[:origin]
-                             [:line]
-                             [:geometry]]
-                            {[:line :offset :min] 0
-                             [:origin :alignment] nil}))
-     (update-in [:line] (fn [line]
-                          (when line
-                            (set-line-defaults line))))
-     (update-in [:opposite-line] (fn [opposite-line]
-                                   (when opposite-line
-                                     (set-line-defaults opposite-line))))
-     (update-in [:anchor] (fn [anchor]
-                            (when anchor
-                              (position/adjust-options anchor (-> ordinary :anchor))))))))
+                               [:line] line-style}))
+       (update-in [:line] (fn [line]
+                            (when line
+                              (set-line-defaults line))))
+       (update-in [:opposite-line] (fn [opposite-line]
+                                     (when opposite-line
+                                       (set-line-defaults opposite-line))))
+       (update-in [:anchor] (fn [anchor]
+                              (when anchor
+                                (position/adjust-options anchor (-> ordinary :anchor)))))))))
 
 (defn sanitize-opposite-line [ordinary line]
   (-> (options/sanitize
