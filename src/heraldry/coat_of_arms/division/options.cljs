@@ -2,6 +2,7 @@
   (:require [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.util :as util]))
 
 (defn diagonal-mode-choices [type]
@@ -176,15 +177,28 @@
                                                                             :top-right)}))
             :per-chevron (options/pick default-options
                                        [[:line]
-                                        [:origin :point]
-                                        [:origin :offset-x]
-                                        [:origin :offset-y]
-                                        [:diagonal-mode]]
-                                       {[:diagonal-mode :choices] (diagonal-mode-choices :per-chevron)
-                                        [:diagonal-mode :default] :forty-five-degrees
-                                        [:origin :point :choices] position/point-choices-y
-                                        [:line] line-style
-                                        [:line :offset :min] 0})
+                                        [:origin]
+                                        [:anchor]
+                                        [:variant]]
+                                       {[:line] (-> line-style
+                                                    (assoc-in [:offset :min] 0))
+                                        [:opposite-line] (-> line-style
+                                                             (assoc-in [:offset :min] 0))
+                                        [:anchor :point :choices] (case (-> division :variant (or :base))
+                                                                    :chief (util/filter-choices
+                                                                            position/anchor-point-choices
+                                                                            [:top-left :top-right :angle])
+                                                                    :dexter (util/filter-choices
+                                                                             position/anchor-point-choices
+                                                                             [:top-left :bottom-left :angle])
+                                                                    :sinister (util/filter-choices
+                                                                               position/anchor-point-choices
+                                                                               [:top-right :bottom-right :angle])
+                                                                                    ;; otherwise, assume :base
+                                                                    (util/filter-choices
+                                                                     position/anchor-point-choices
+                                                                     [:bottom-left :bottom-right :angle]))
+                                        [:variant :choices] chevron/variant-choices})
             :per-saltire (options/pick default-options
                                        [[:line]
                                         [:origin :point]
