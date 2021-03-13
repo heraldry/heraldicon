@@ -128,9 +128,9 @@
                                            [:opposite-line]
                                            [:geometry]]
                                           {[:line]                   (-> line-style
-                                                                         (assoc-in [:offset :min] 0))
+                                                                         (options/override-if-exists [:offset :min] 0))
                                            [:opposite-line]          (-> line-style
-                                                                         (assoc-in [:offset :min] 0))
+                                                                         (options/override-if-exists [:offset :min] 0))
                                            [:anchor :point :choices] (case (-> ordinary :variant (or :base))
                                                                        :chief    (util/filter-choices
                                                                                   position/anchor-point-choices
@@ -153,9 +153,9 @@
                                        [:line]
                                        [:geometry]]
                                       {[:line]                   (-> line-style
-                                                                     (assoc-in [:offset :min] 0))
+                                                                     (options/override-if-exists [:offset :min] 0))
                                        [:opposite-line]          (-> line-style
-                                                                     (assoc-in [:offset :min] 0))
+                                                                     (options/override-if-exists [:offset :min] 0))
                                        [:origin :alignment]      nil
                                        [:anchor :point :choices] (util/filter-choices
                                                                   position/anchor-point-choices
@@ -165,7 +165,7 @@
                                        [:line]
                                        [:geometry]]
                                       {[:line]              (-> line-style
-                                                                (assoc-in [:offset :min] 0))
+                                                                (options/override-if-exists [:offset :min] 0))
                                        [:origin :alignment] nil}))
        (update-in [:line] (fn [line]
                             (when line
