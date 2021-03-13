@@ -51,6 +51,9 @@
    ["Left edge" :left]
    ["Right edge" :right]])
 
+(def alignment-map
+  (util/choices->map alignment-choices))
+
 (def default-options
   {:point     {:type    :choice
                :choices point-choices
