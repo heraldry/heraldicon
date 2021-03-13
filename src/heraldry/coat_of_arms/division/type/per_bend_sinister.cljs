@@ -5,7 +5,6 @@
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]))
 
@@ -14,14 +13,22 @@
    :value :per-bend-sinister
    :parts ["chief" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode]} (options/sanitize division (division-options/options division))
+  (let [{:keys [line origin anchor]} (options/sanitize division (division-options/options division))
         points (:points environment)
-        origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
         left (:left points)
         right (:right points)
-        direction (angle/direction diagonal-mode points origin-point)
+        {origin-point :real-origin
+         anchor-point :real-anchor} (angle/calculate-origin-and-anchor
+                                     environment
+                                     origin
+                                     anchor
+                                     0
+                                     nil)
+        direction (v/- anchor-point origin-point)
+        direction (v/v (-> direction :x Math/abs)
+                       (-> direction :y Math/abs))
         real-diagonal-start (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x left))
         real-diagonal-end (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x right))
         angle (angle/angle-to-point real-diagonal-start real-diagonal-end)
