@@ -181,9 +181,9 @@
                                         [:anchor]
                                         [:variant]]
                                        {[:line] (-> line-style
-                                                    (assoc-in [:offset :min] 0))
+                                                    (options/override-if-exists [:offset :min] 0))
                                         [:opposite-line] (-> line-style
-                                                             (assoc-in [:offset :min] 0))
+                                                             (options/override-if-exists [:offset :min] 0))
                                         [:anchor :point :choices] (case (-> division :variant (or :base))
                                                                     :chief (util/filter-choices
                                                                             position/anchor-point-choices
@@ -205,10 +205,10 @@
                                         [:anchor]
                                         [:anchor]]
                                        {[:line] (-> line-style
-                                                    (assoc-in [:offset :min] 0)
+                                                    (options/override-if-exists [:offset :min] 0)
                                                     (dissoc :fimbriation))
                                         [:opposite-line] (-> line-style
-                                                             (assoc-in [:offset :min] 0)
+                                                             (options/override-if-exists [:offset :min] 0)
                                                              (dissoc :fimbriation))
                                         [:origin :alignment] nil
                                         [:anchor :point :choices] (util/filter-choices
