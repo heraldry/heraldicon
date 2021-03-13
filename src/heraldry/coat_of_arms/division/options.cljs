@@ -201,14 +201,19 @@
                                                         [:variant :choices]       chevron/variant-choices})
             :per-saltire                 (options/pick default-options
                                                        [[:line]
-                                                        [:origin :point]
-                                                        [:origin :offset-x]
-                                                        [:origin :offset-y]
-                                                        [:diagonal-mode]]
-                                                       {[:diagonal-mode :choices] (diagonal-mode-choices :per-saltire)
-                                                        [:line]                   line-style
-                                                        [:line :offset :min]      0
-                                                        [:line :fimbriation]      nil})
+                                                        [:origin]
+                                                        [:anchor]
+                                                        [:anchor]]
+                                                       {[:line]                   (-> line-style
+                                                                                      (assoc-in [:offset :min] 0)
+                                                                                      (dissoc :fimbriation))
+                                                        [:opposite-line]          (-> line-style
+                                                                                      (assoc-in [:offset :min] 0)
+                                                                                      (dissoc :fimbriation))
+                                                        [:origin :alignment]      nil
+                                                        [:anchor :point :choices] (util/filter-choices
+                                                                                   position/anchor-point-choices
+                                                                                   [:top-left :top-right :bottom-left :bottom-right :angle])})
             :quartered                   (options/pick default-options
                                                        [[:line]
                                                         [:origin :point]
