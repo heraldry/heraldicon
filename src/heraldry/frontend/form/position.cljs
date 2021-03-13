@@ -33,7 +33,8 @@
                      (rf/dispatch [:set point-path %])
                      (rf/dispatch [:set angle-path nil])
                      (rf/dispatch [:set offset-x-path nil])
-                     (rf/dispatch [:set offset-y-path nil]))]
+                     (rf/dispatch [:set offset-y-path nil]))
+       :default (-> options :point :default)]
       (when (-> options :alignment)
         [element/select alignment-path "Alignment" (-> options :alignment :choices)])
       (when (-> options :angle)
