@@ -6,21 +6,10 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.shared.saltire :as saltire]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
-
-(defn arm-diagonals [origin-point anchor-point]
-  (let [direction (-> (v/- anchor-point origin-point)
-                      v/normal
-                      (v/* 200))
-        direction (v/v (-> direction :x Math/abs -)
-                       (-> direction :y Math/abs -))]
-
-    [(v/dot direction (v/v 1 1))
-     (v/dot direction (v/v -1 1))
-     (v/dot direction (v/v 1 -1))
-     (v/dot direction (v/v -1 -1))]))
 
 (defn render
   {:display-name "Saltire"
@@ -47,7 +36,7 @@
                                      band-width
                                      nil)
         [relative-top-left relative-top-right
-         relative-bottom-left relative-bottom-right] (arm-diagonals origin-point anchor-point)
+         relative-bottom-left relative-bottom-right] (saltire/arm-diagonals origin-point anchor-point)
         diagonal-top-left (v/+ origin-point relative-top-left)
         diagonal-top-right (v/+ origin-point relative-top-right)
         diagonal-bottom-left (v/+ origin-point relative-bottom-left)
