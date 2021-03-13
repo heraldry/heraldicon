@@ -3,6 +3,7 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.util :as util]))
 
 (defn set-line-defaults [options]
@@ -13,10 +14,7 @@
   {:origin        position/default-options
    :anchor        position/anchor-default-options
    :variant       {:type    :choice
-                   :choices [["Base" :base]
-                             ["Chief" :chief]
-                             ["Dexter" :dexter]
-                             ["Sinister" :sinister]]
+                   :choices chevron/variant-choices
                    :default :base}
    :line          (set-line-defaults line/default-options)
    :opposite-line (set-line-defaults line/default-options)
