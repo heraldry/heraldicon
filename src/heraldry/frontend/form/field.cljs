@@ -158,6 +158,10 @@
               [position/form (conj path :division :origin)
                :title "Origin"
                :options (:origin division-options)])
+            (when (-> division-options :anchor)
+              [position/form (conj path :division :anchor)
+               :title "Anchor"
+               :options (:anchor division-options)])
             (when (-> division-options :diagonal-mode)
               [element/select (conj path :division :diagonal-mode) "Diagonal"
                (-> division-options :diagonal-mode :choices)
