@@ -23,8 +23,8 @@
                                    (position/anchor-point-map current-point)
                                    (str
                                     (position/anchor-point-map current-point)
-                                    (when (or (-> current-offset-x zero? not)
-                                              (-> current-offset-y zero? not))
+                                    (when (or (-> current-offset-x (or 0) zero? not)
+                                              (-> current-offset-y (or 0) zero? not))
                                       " (adjusted)")
                                     (when (-> current-alignment (or :middle) (not= :middle))
                                       (str ", " (s/lower-case (position/alignment-map current-alignment)))))) {}
