@@ -79,3 +79,8 @@
         (if (nil? rest)
           next-options
           (recur next-options rest))))))
+
+(defn override-if-exists [options path value]
+  (if (get-in options path)
+    (assoc-in options path value)
+    options))
