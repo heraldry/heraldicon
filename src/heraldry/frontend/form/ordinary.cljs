@@ -66,10 +66,6 @@
             :options (:opposite-line ordinary-options)
             :defaults (options/sanitize (:line ordinary) (:line ordinary-options))
             :title "Opposite Line"])
-         (when (:diagonal-mode ordinary-options)
-           [element/select (conj path :diagonal-mode) "Diagonal"
-            (-> ordinary-options :diagonal-mode :choices)
-            :default (-> ordinary-options :diagonal-mode :default)])
          (when (:variant ordinary-options)
            [element/select (conj path :variant)
             "Variant"
