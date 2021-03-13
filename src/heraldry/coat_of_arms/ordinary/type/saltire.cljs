@@ -11,37 +11,53 @@
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
+(defn arm-diagonals [origin-point anchor-point]
+  (let [direction (-> (v/- anchor-point origin-point)
+                      v/normal
+                      (v/* 200))
+        direction (v/v (-> direction :x Math/abs -)
+                       (-> direction :y Math/abs -))]
+
+    [(v/dot direction (v/v 1 1))
+     (v/dot direction (v/v -1 1))
+     (v/dot direction (v/v 1 -1))
+     (v/dot direction (v/v -1 -1))]))
+
 (defn render
   {:display-name "Saltire"
    :value        :saltire}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin diagonal-mode geometry]}                 (options/sanitize ordinary (ordinary-options/options ordinary))
+  (let [{:keys [line origin anchor
+                geometry]}                                           (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]}                                               geometry
         points                                                       (:points environment)
-        origin-point                                                 (position/calculate origin environment :fess)
-        top                                                          (assoc (:top points) :x (:x origin-point))
-        bottom                                                       (assoc (:bottom points) :x (:x origin-point))
-        left                                                         (assoc (:left points) :y (:y origin-point))
-        right                                                        (assoc (:right points) :y (:y origin-point))
+        unadjusted-origin-point                                      (position/calculate origin environment :fess)
+        top                                                          (assoc (:top points) :x (:x unadjusted-origin-point))
+        bottom                                                       (assoc (:bottom points) :x (:x unadjusted-origin-point))
+        left                                                         (assoc (:left points) :y (:y unadjusted-origin-point))
+        right                                                        (assoc (:right points) :y (:y unadjusted-origin-point))
         width                                                        (:width environment)
         height                                                       (:height environment)
         band-width                                                   (-> size
                                                                          ((util/percent-of width)))
-        direction                                                    (angle/direction diagonal-mode points origin-point)
-        arm-length                                                   (-> direction
-                                                                         v/abs
-                                                                         (->> (/ height)))
-        diagonal-top-left                                            (v/+ origin-point (v/* (v/dot direction (v/v -1 -1)) arm-length))
-        diagonal-top-right                                           (v/+ origin-point (v/* (v/dot direction (v/v 1 -1)) arm-length))
-        diagonal-bottom-left                                         (v/+ origin-point (v/* (v/dot direction (v/v -1 1)) arm-length))
-        diagonal-bottom-right                                        (v/+ origin-point (v/* (v/dot direction (v/v 1 1)) arm-length))
+        {origin-point :real-origin
+         anchor-point :real-anchor}                                  (angle/calculate-origin-and-anchor
+                                                                      environment
+                                                                      origin
+                                                                      anchor
+                                                                      band-width
+                                                                      nil)
+        [relative-top-left relative-top-right
+         relative-bottom-left relative-bottom-right]                 (arm-diagonals origin-point anchor-point)
+        diagonal-top-left                                            (v/+ origin-point relative-top-left)
+        diagonal-top-right                                           (v/+ origin-point relative-top-right)
+        diagonal-bottom-left                                         (v/+ origin-point relative-bottom-left)
+        diagonal-bottom-right                                        (v/+ origin-point relative-bottom-right)
         angle-top-left                                               (angle/angle-to-point origin-point diagonal-top-left)
         angle-top-right                                              (angle/angle-to-point origin-point diagonal-top-right)
         angle-bottom-left                                            (angle/angle-to-point origin-point diagonal-bottom-left)
         angle-bottom-right                                           (angle/angle-to-point origin-point diagonal-bottom-right)
         angle                                                        (-> angle-bottom-right (* Math/PI) (/ 180))
-        joint-angle-horizontal                                       (+ 360 (- angle-top-left angle-bottom-left))
-        joint-angle-vertical                                         (- angle-top-right angle-top-left)
         dx                                                           (/ band-width 2 (Math/sin angle))
         dy                                                           (/ band-width 2 (Math/cos angle))
         offset-top                                                   (v/v 0 (- dy))

@@ -30,11 +30,12 @@
 
 (defn calculate-origin-and-anchor [environment origin anchor width base-angle]
   (let [target-origin             (position/calculate origin environment)
-        target-anchor             (position/calculate-anchor anchor environment target-origin base-angle)
-        origin-align              (:alignment origin)
+        target-anchor             (position/calculate-anchor anchor environment target-origin
+                                                             (or base-angle 0))
+        origin-align              (or (:alignment origin) :middle)
         anchor-align              (if (-> anchor :point (= :angle))
-                                    (:alignment origin)
-                                    (:alignment anchor))
+                                    origin-align
+                                    (or (:alignment anchor) :middle))
         r                         (/ width 2)
         alignments                (set [origin-align anchor-align])
         outer-tangent?            (or (set/subset? alignments #{:middle :left})
