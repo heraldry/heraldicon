@@ -213,6 +213,7 @@
                                                               "l" (v/v 0 (- (:y clip-size)))
                                                               "z"])
                                               {:parent               field
+                                               :parent-environment   environment
                                                :context              [:charge]
                                                :bounding-box         (svg/bounding-box
                                                                       [position (v/+ position
