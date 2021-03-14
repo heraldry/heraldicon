@@ -31,7 +31,7 @@
                                        :heraldry.line/offset
                                        :heraldry.line/flipped?]))
 
-(s/def :heraldry.position/point (s/nilable position/point-map))
+(s/def :heraldry.position/point (s/nilable position/anchor-point-map))
 (s/def :heraldry.position/offset-x (s/nilable number?))
 (s/def :heraldry.position/offset-y (s/nilable number?))
 (s/def :heraldry/position (s/keys :opt-un [:heraldry.position/point
