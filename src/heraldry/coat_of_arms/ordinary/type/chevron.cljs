@@ -25,10 +25,6 @@
         top-right (:top-right points)
         bottom-left (:bottom-left points)
         bottom-right (:bottom-right points)
-        top (assoc (:top points) :x (:x unadjusted-origin-point))
-        bottom (assoc (:bottom points) :x (:x unadjusted-origin-point))
-        left (assoc (:left points) :y (:y unadjusted-origin-point))
-        right (assoc (:right points) :y (:y unadjusted-origin-point))
         height (:height environment)
         band-width (-> size
                        ((util/percent-of height)))
