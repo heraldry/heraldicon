@@ -54,7 +54,7 @@
         "a 24.156226 24.156226 0 0 1 -48,0"
         "z")
    {:context :root
-    :bounding-box [0 56 0 59.1]}))
+    :bounding-box [0 56 0 56.5]}))
 
 (def
   ^{:display-name "French modern"}
@@ -149,7 +149,7 @@
         "h 8"
         "z")
    {:context :root
-    :bounding-box [-8 8 0 (* 2 8)]}))
+    :bounding-box [-8 8 0 (+ (* 2 8) 1)]}))
 
 (def
   ^{:display-name "Polish"}
