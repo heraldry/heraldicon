@@ -36,22 +36,28 @@
                      (rf/dispatch [:set offset-y-path nil]))
        :default (-> options :point :default)]
       (when (-> options :alignment)
-        [element/select alignment-path "Alignment" (-> options :alignment :choices)])
+        [element/select alignment-path "Alignment" (-> options :alignment :choices)
+         :default (-> options :alignment :default)])
       (when (-> options :angle)
         [element/range-input-with-checkbox angle-path "Angle"
          (-> options :angle :min)
          (-> options :angle :max)
          :step 1
-         :default (options/get-value (:angle position) (:angle options))])
+         :default (-> options :angle :default)])
       (when (:offset-x options)
         [element/range-input-with-checkbox offset-x-path "Offset x"
          (-> options :offset-x :min)
          (-> options :offset-x :max)
-         :default (options/get-value (:offset-x position) (:offset-x options))
+         :default (-> options :offset-x :default)
          :display-function #(str % "%")])
       (when (:offset-y options)
         [element/range-input-with-checkbox offset-y-path "Offset y"
          (-> options :offset-y :min)
          (-> options :offset-y :max)
-         :default (options/get-value (:offset-y position) (:offset-y options))
-         :display-function #(str % "%")])]]))
+         :default (-> options :offset-y :default)
+         :display-function #(str % "%")])
+      (when (:type options)
+        [element/select (conj path :type)
+         "Type"
+         (-> options :type :choices)
+         :default (-> options :type :default)])]]))

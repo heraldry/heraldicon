@@ -7,6 +7,7 @@
             [heraldry.coat-of-arms.ordinary.type.cross :as cross]
             [heraldry.coat-of-arms.ordinary.type.fess :as fess]
             [heraldry.coat-of-arms.ordinary.type.pale :as pale]
+            [heraldry.coat-of-arms.ordinary.type.pile :as pile]
             [heraldry.coat-of-arms.ordinary.type.saltire :as saltire]
             [heraldry.util :as util]))
 
@@ -19,7 +20,8 @@
    #'bend-sinister/render
    #'cross/render
    #'saltire/render
-   #'chevron/render])
+   #'chevron/render
+   #'pile/render])
 
 (def kinds-function-map
   (->> ordinaries
