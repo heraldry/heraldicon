@@ -27,13 +27,13 @@
 
 (def anchor-point-choices
   [["Top-left" :top-left]
-   ["Top-right" :top-right]
    ["Top" :top]
+   ["Top-right" :top-right]
    ["Left" :left]
    ["Right" :right]
    ["Bottom-left" :bottom-left]
-   ["Bottom-right" :bottom-right]
    ["Bottom" :bottom]
+   ["Bottom-right" :bottom-right]
    ["Fess" :fess]
    ["Chief" :chief]
    ["Base" :base]
