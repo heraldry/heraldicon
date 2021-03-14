@@ -188,3 +188,6 @@
         (- y0 (* dir-factor r0 (Math/cos alpha))))
      (v (+ x1 (* dir-factor r1 (Math/sin alpha)))
         (+ y1 (* dir-factor r1 (Math/cos alpha))))]))
+
+(defn orthogonal [{:keys [x y]}]
+  (v y (- x)))

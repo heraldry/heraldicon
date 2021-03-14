@@ -38,7 +38,7 @@
         direction                                (v/- anchor-point origin-point)
         direction                                (v/v (-> direction :x Math/abs)
                                                       (-> direction :y Math/abs))
-        direction-orthogonal                     (v/v (-> direction :y) (-> direction :x -))
+        direction-orthogonal                     (v/orthogonal direction)
         diagonal-start                           (v/project-x center-point (v/dot direction (v/v -1 -1)) (:x left))
         diagonal-end                             (v/project-x center-point (v/dot direction (v/v 1 1)) (:x right))
         angle                                    (angle/angle-to-point diagonal-start diagonal-end)
