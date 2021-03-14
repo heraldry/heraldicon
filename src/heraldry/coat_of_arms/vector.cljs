@@ -1,4 +1,5 @@
-(ns heraldry.coat-of-arms.vector)
+(ns heraldry.coat-of-arms.vector
+  (:require ["path-intersection" :as path-intersection]))
 
 (defn v [x y]
   {:x x
@@ -191,3 +192,27 @@
 
 (defn orthogonal [{:keys [x y]}]
   (v y (cljs.core/- x)))
+
+(defn find-intersection [origin anchor environment]
+  (let [shapes (->> environment
+                    (tree-seq map? (comp list :parent-environment :meta))
+                    (map :shape)
+                    (filter identity))
+        direction-vector (- anchor origin)
+        line-end (-> direction-vector
+                     normal
+                     (* 1000))
+        line-path (str "M" (:x origin) "," (:y origin)
+                       "l" (:x line-end) "," (:y line-end))
+        intersections (->> shapes
+                           (map (fn [shape]
+                                  (-> (path-intersection line-path shape)
+                                      (js->clj :keywordize-keys true)
+                                      (->> (sort-by :t1 #(compare %2 %1)))
+                                      first)))
+                           (apply vector))]
+    (-> intersections
+        (->> (filter (comp pos? :t1))
+             (sort-by :t1))
+        first
+        (select-keys [:x :y]))))
