@@ -32,7 +32,7 @@
         direction (v/- anchor-point origin-point)
         direction (v/v (-> direction :x Math/abs)
                        (-> direction :y Math/abs))
-        direction-orthogonal (v/v (-> direction :y) (-> direction :x -))
+        direction-orthogonal (v/orthogonal direction)
         angle (angle/angle-to-point (v/v 0 0) direction)
         required-half-width (v/distance-point-to-line top-left center-point (v/+ center-point direction-orthogonal))
         required-half-height (v/distance-point-to-line top-right center-point (v/+ center-point direction))
