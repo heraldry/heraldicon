@@ -190,4 +190,4 @@
         (+ y1 (* dir-factor r1 (Math/cos alpha))))]))
 
 (defn orthogonal [{:keys [x y]}]
-  (v y (- x)))
+  (v y (cljs.core/- x)))
