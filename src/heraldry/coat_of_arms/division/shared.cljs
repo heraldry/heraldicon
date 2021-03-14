@@ -27,6 +27,7 @@
                                            (field-environment/create
                                             (svg/make-path shape-path)
                                             {:parent               parent
+                                             :parent-environment   parent-environment
                                              :context              [type idx]
                                              :bounding-box         (svg/bounding-box bounding-box)
                                              :override-environment (when (or (:inherit-environment? field)
