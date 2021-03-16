@@ -79,7 +79,7 @@
                      (:outline? hints))]
     [:<>
      [division-shared/make-division
-      :ordinary-pale [field] parts
+      :ordinary-pile [field] parts
       [:all]
       environment ordinary context]
      (line/render line [line-left-data
