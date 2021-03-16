@@ -163,7 +163,7 @@
                                                                      :default :thickness}
                                          [:geometry :size :min]     5
                                          [:geometry :size :max]     100
-                                         [:geometry :size :default] (case (-> ordinary :geometry :size-mode)
+                                         [:geometry :size :default] (case (-> ordinary :geometry :size-mode (or :thickness))
                                                                       :thickness 75
                                                                       30)
                                          [:geometry :stretch]       {:type    :range
