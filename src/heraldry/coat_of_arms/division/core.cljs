@@ -15,6 +15,7 @@
             [heraldry.coat-of-arms.division.type.per-chevron :as per-chevron]
             [heraldry.coat-of-arms.division.type.per-fess :as per-fess]
             [heraldry.coat-of-arms.division.type.per-pale :as per-pale]
+            [heraldry.coat-of-arms.division.type.per-pile :as per-pile]
             [heraldry.coat-of-arms.division.type.per-saltire :as per-saltire]
             [heraldry.coat-of-arms.division.type.potenty :as potenty]
             [heraldry.coat-of-arms.division.type.quartered :as quartered]
@@ -37,6 +38,7 @@
         :tierced-per-fess 3
         :tierced-per-pairle 3
         :tierced-per-pairle-reversed 3
+        :tierced-per-pile 3
         2))))
 
 (defn counterchangable? [division]
@@ -109,8 +111,9 @@
       (#{:tierced-per-pale
          :tierced-per-fess
          :tierced-per-pairle
-         :tierced-per-pairle-reversed} type) (into (subvec defaults 0 2)
-                                                   [(nth defaults 2)])
+         :tierced-per-pairle-reversed
+         :per-pile} type) (into (subvec defaults 0 2)
+                                [(nth defaults 2)])
       :else (subvec defaults 0 2))))
 
 (def divisions
@@ -127,6 +130,7 @@
    #'tierced-per-fess/render
    #'tierced-per-pairle/render
    #'tierced-per-pairle-reversed/render
+   #'per-pile/render
    #'paly/render
    #'barry/render
    #'bendy/render
