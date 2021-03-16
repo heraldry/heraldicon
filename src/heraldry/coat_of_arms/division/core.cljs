@@ -15,6 +15,7 @@
             [heraldry.coat-of-arms.division.type.per-chevron :as per-chevron]
             [heraldry.coat-of-arms.division.type.per-fess :as per-fess]
             [heraldry.coat-of-arms.division.type.per-pale :as per-pale]
+            [heraldry.coat-of-arms.division.type.per-pile :as per-pile]
             [heraldry.coat-of-arms.division.type.per-saltire :as per-saltire]
             [heraldry.coat-of-arms.division.type.potenty :as potenty]
             [heraldry.coat-of-arms.division.type.quartered :as quartered]
@@ -37,6 +38,7 @@
         :tierced-per-fess            3
         :tierced-per-pairle          3
         :tierced-per-pairle-reversed 3
+        :tierced-per-pile            3
         2))))
 
 (defn counterchangable? [division]
@@ -61,57 +63,58 @@
                                                              (-> default/field
                                                                  (assoc-in [:content :tincture] :vert))]]
     (cond
-      (= :per-saltire type)                  (-> (subvec defaults 0 2)
-                                                 (into [{:ref 1} {:ref 0}]))
-      (= :quartered type)                    (-> (subvec defaults 0 2)
-                                                 (into [{:ref 1} {:ref 0}]))
-      (= :quarterly type)                    (-> (subvec defaults 0 2)
-                                                 (into (map (fn [i]
-                                                              (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
-                                                 (into (->> (for [j (range num-fields-y)
-                                                                  i (range num-fields-x)]
-                                                              {:ref (mod (+ i j) num-base-fields)})
-                                                            (drop num-base-fields))))
-      (= :gyronny type)                      (-> (subvec defaults 0 2)
-                                                 (into [{:ref 1} {:ref 0} {:ref 0} {:ref 1} {:ref 1} {:ref 0}]))
-      (= :paly type)                         (if (= num-fields-y 1)
-                                               (subvec defaults 0 1)
-                                               (-> (subvec defaults 0 2)
-                                                   (into (map (fn [i]
-                                                                (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
-                                                   (into (map (fn [i]
-                                                                {:ref (mod i num-base-fields)}) (range (- num-fields-x num-base-fields))))))
-      (= :barry type)                        (if (= num-fields-y 1)
-                                               (subvec defaults 0 1)
-                                               (-> (subvec defaults 0 2)
-                                                   (into (map (fn [i]
-                                                                (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
-                                                   (into (map (fn [i]
-                                                                {:ref (mod i num-base-fields)}) (range (- num-fields-y num-base-fields))))))
-      (= :chequy type)                       (if (= [num-fields-x num-fields-y] [1 1])
-                                               (subvec defaults 0 1)
-                                               (-> (subvec defaults 0 2)
-                                                   (into (map (fn [i]
-                                                                (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))))
+      (= :per-saltire type)     (-> (subvec defaults 0 2)
+                                    (into [{:ref 1} {:ref 0}]))
+      (= :quartered type)       (-> (subvec defaults 0 2)
+                                    (into [{:ref 1} {:ref 0}]))
+      (= :quarterly type)       (-> (subvec defaults 0 2)
+                                    (into (map (fn [i]
+                                                 (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
+                                    (into (->> (for [j (range num-fields-y)
+                                                     i (range num-fields-x)]
+                                                 {:ref (mod (+ i j) num-base-fields)})
+                                               (drop num-base-fields))))
+      (= :gyronny type)         (-> (subvec defaults 0 2)
+                                    (into [{:ref 1} {:ref 0} {:ref 0} {:ref 1} {:ref 1} {:ref 0}]))
+      (= :paly type)            (if (= num-fields-y 1)
+                                  (subvec defaults 0 1)
+                                  (-> (subvec defaults 0 2)
+                                      (into (map (fn [i]
+                                                   (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
+                                      (into (map (fn [i]
+                                                   {:ref (mod i num-base-fields)}) (range (- num-fields-x num-base-fields))))))
+      (= :barry type)           (if (= num-fields-y 1)
+                                  (subvec defaults 0 1)
+                                  (-> (subvec defaults 0 2)
+                                      (into (map (fn [i]
+                                                   (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
+                                      (into (map (fn [i]
+                                                   {:ref (mod i num-base-fields)}) (range (- num-fields-y num-base-fields))))))
+      (= :chequy type)          (if (= [num-fields-x num-fields-y] [1 1])
+                                  (subvec defaults 0 1)
+                                  (-> (subvec defaults 0 2)
+                                      (into (map (fn [i]
+                                                   (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))))
       (#{:vairy
          :potenty
          :papellony
-         :masonry} type)                     [(-> default/field
-                                                  (assoc-in [:content :tincture] :azure))
-                                              (-> default/field
-                                                  (assoc-in [:content :tincture] :argent))]
+         :masonry} type)        [(-> default/field
+                                     (assoc-in [:content :tincture] :azure))
+                                 (-> default/field
+                                     (assoc-in [:content :tincture] :argent))]
       (#{:bendy
-         :bendy-sinister} type)              (-> (subvec defaults 0 2)
-                                                 (into (map (fn [i]
-                                                              (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
-                                                 (into (map (fn [i]
-                                                              {:ref (mod i num-base-fields)}) (range (- num-fields-y num-base-fields)))))
+         :bendy-sinister} type) (-> (subvec defaults 0 2)
+                                    (into (map (fn [i]
+                                                 (nth defaults (mod (+ i 2) (count defaults)))) (range (- num-base-fields 2))))
+                                    (into (map (fn [i]
+                                                 {:ref (mod i num-base-fields)}) (range (- num-fields-y num-base-fields)))))
       (#{:tierced-per-pale
          :tierced-per-fess
          :tierced-per-pairle
-         :tierced-per-pairle-reversed} type) (into (subvec defaults 0 2)
-                                                   [(nth defaults 2)])
-      :else                                  (subvec defaults 0 2))))
+         :tierced-per-pairle-reversed
+         :per-pile} type)       (into (subvec defaults 0 2)
+                                      [(nth defaults 2)])
+      :else                     (subvec defaults 0 2))))
 
 (def divisions
   [#'per-pale/render
@@ -127,6 +130,7 @@
    #'tierced-per-fess/render
    #'tierced-per-pairle/render
    #'tierced-per-pairle-reversed/render
+   #'per-pile/render
    #'paly/render
    #'barry/render
    #'bendy/render

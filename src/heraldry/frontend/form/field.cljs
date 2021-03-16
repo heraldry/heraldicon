@@ -6,6 +6,7 @@
             [heraldry.frontend.form.charge :as charge]
             [heraldry.frontend.form.division :as division-form]
             [heraldry.frontend.form.element :as element]
+            [heraldry.frontend.form.geometry :as geometry]
             [heraldry.frontend.form.line :as line]
             [heraldry.frontend.form.ordinary :as ordinary]
             [heraldry.frontend.form.position :as position]
@@ -162,6 +163,10 @@
               [position/form (conj path :division :anchor)
                :title "Anchor"
                :options (:anchor division-options)])
+            (when (:geometry division-options)
+              [geometry/form (conj path :division :geometry)
+               (:geometry division-options)
+               :current (:geometry division)])
             (when (:layout division-options)
               [form-for-layout path :options (:layout division-options)])
             (when (:line division-options)

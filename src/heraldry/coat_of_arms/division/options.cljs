@@ -160,6 +160,53 @@
                                                                                      position/anchor-point-choices
                                                                                      [:bottom-left :bottom-right :angle]))
                                                         [:variant :choices]       chevron/variant-choices})
+            :per-pile                    (options/pick default-options
+                                                       [[:origin]
+                                                        [:anchor]
+                                                        [:line]]
+                                                       (let [anchor-points #{:top-left :top :top-right
+                                                                             :left :right
+                                                                             :bottom-left :bottom :bottom-right
+                                                                             :fess :honour :nombril :base :chief
+                                                                             :angle}]
+                                                         {[:line]                   (-> line-style
+                                                                                        (options/override-if-exists [:offset :min] 0))
+                                                          [:geometry]               {:size      {:type    :range
+                                                                                                 :min     5
+                                                                                                 :max     100
+                                                                                                 :default (case (-> division :geometry :size-mode (or :thickness))
+                                                                                                            :thickness 75
+                                                                                                            30)}
+                                                                                     :size-mode {:type    :choice
+                                                                                                 :choices [["Thickness" :thickness]
+                                                                                                           ["Angle" :angle]]
+                                                                                                 :default :thickness}}
+                                                          [:origin :point :choices] (util/filter-choices
+                                                                                     position/anchor-point-choices
+                                                                                     [:top-left :top :top-right
+                                                                                      :left :right
+                                                                                      :bottom-left :bottom :bottom-right])
+                                                          [:origin :point :default] :top
+                                                          [:origin :alignment]      (:alignment position/default-options)
+                                                          [:anchor :point :choices] (util/filter-choices
+                                                                                     position/anchor-point-choices
+                                                                                     (disj anchor-points (-> division :origin :point (or :top))))
+                                                          [:anchor :point :default] :fess
+                                                          [:anchor :alignment]      nil
+                                                          [:anchor :angle :default] (cond
+                                                                                      (#{:top-left
+                                                                                         :top-right
+                                                                                         :bottom-left
+                                                                                         :bottom-right} (-> division :origin :point (or :top))) 45
+                                                                                      :else                                                     0)
+                                                          [:anchor :angle :min]     (cond
+                                                                                      (#{:top-left
+                                                                                         :top-right
+                                                                                         :bottom-left
+                                                                                         :bottom-right} (-> division :origin :point (or :top))) 0
+                                                                                      :else                                                     -90)
+                                                          [:anchor :angle :max]     90
+                                                          [:anchor :type]           nil}))
             :per-saltire                 (options/pick default-options
                                                        [[:line]
                                                         [:origin]
