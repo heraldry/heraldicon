@@ -22,6 +22,8 @@
                                    :components [{:component :ordinary
                                                  :type key
                                                  :escutcheon (if (= key :escutcheon) :heater nil)
+                                                 :geometry (when (= key :pile)
+                                                             {:stretch 0.85})
                                                  :field {:content {:tincture (if (= current key) :or :azure)}}}]}}
                           100
                           (-> shared/coa-select-option-context
