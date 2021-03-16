@@ -15,6 +15,7 @@
                                                   (:mirrored? options)) "mirrored")
                                        (when (and (:reversed? current)
                                                   (:reversed? options)) "reversed")])
+        size-mode       (options/get-value (:size-mode current) (:size-mode options))
         current-display (-> (if (-> changes count (> 0))
                               (util/combine ", " changes)
                               "default")
@@ -24,12 +25,17 @@
      " "
      [element/submenu path "Geometry" current-display {}
       [:div.settings
+       (when (:size-mode options)
+         [element/radio-select (conj path :size-mode) (-> options :size-mode :choices)
+          :default (-> options :size-mode :default)])
        (when (:size options)
          [element/range-input-with-checkbox (conj path :size) "Size"
           (-> options :size :min)
           (-> options :size :max)
           :default (options/get-value (:size current) (:size options))
-          :display-function #(str % "%")])
+          :display-function #(str % (case size-mode
+                                      :angle "°"
+                                      "%"))])
        (when (:stretch options)
          [element/range-input-with-checkbox (conj path :stretch) "Stretch"
           (-> options :stretch :min)

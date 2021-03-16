@@ -16,7 +16,6 @@
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
                 geometry]}               (options/sanitize ordinary (ordinary-options/options ordinary))
-        {:keys [size stretch]}           geometry
         points                           (:points environment)
         top-left                         (:top-left points)
         top-right                        (:top-right points)
@@ -25,10 +24,9 @@
         thickness-base                   (if (#{:left :right} (:point origin))
                                            (:height environment)
                                            (:width environment))
-        thickness                        (-> size
-                                             ((util/percent-of thickness-base)))
-        {origin-point :real-origin
-         anchor-point :real-anchor}      (angle/calculate-origin-and-anchor
+        {origin-point :origin
+         point        :point
+         thickness    :thickness}        (pile/calculate-properties
                                           environment
                                           origin
                                           (cond-> anchor
@@ -36,7 +34,8 @@
                                                :right
                                                :bottom-left} (:point origin)) (update :angle #(when %
                                                                                                 (- %))))
-                                          thickness
+                                          geometry
+                                          thickness-base
                                           (case (:point origin)
                                             :top-left     0
                                             :top          90
@@ -48,9 +47,7 @@
                                             :bottom-right 180
                                             0))
         {left-point  :left
-         right-point :right
-         point       :point}             (pile/diagonals origin-point anchor-point
-                                                         thickness stretch anchor environment)
+         right-point :right}             (pile/diagonals origin-point point thickness)
         angle-left                       (angle/angle-to-point left-point point)
         angle-right                      (angle/angle-to-point right-point point)
         line                             (-> line

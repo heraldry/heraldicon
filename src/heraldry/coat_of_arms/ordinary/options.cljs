@@ -157,9 +157,15 @@
                                                             :angle}]
                                         {[:line]                    (-> line-style
                                                                         (options/override-if-exists [:offset :min] 0))
+                                         [:geometry :size-mode]     {:type    :choice
+                                                                     :choices [["Thickness" :thickness]
+                                                                               ["Angle" :angle]]
+                                                                     :default :thickness}
                                          [:geometry :size :min]     5
                                          [:geometry :size :max]     100
-                                         [:geometry :size :default] 80
+                                         [:geometry :size :default] (case (-> ordinary :geometry :size-mode)
+                                                                      :thickness 75
+                                                                      30)
                                          [:geometry :stretch]       {:type    :range
                                                                      :min     0.33
                                                                      :max     2
