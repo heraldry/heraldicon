@@ -5,6 +5,7 @@ release-frontend-prod:
 	rm -rf release/output 2> /dev/null || true
 	cp -r frontend/assets release/output
 	rm -rf release/output/js/generated 2> /dev/null || true
+	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(shell git rev-parse --short HEAD)/" release/output/index.html
 	STAGE=prod npx shadow-cljs release frontend --config-merge '{:output-dir "release/output/js/generated"}'
 
 deploy-frontend-prod: check-before-deploy-frontend release-frontend-prod
