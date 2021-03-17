@@ -6,46 +6,81 @@
   {:node-type :_root
    :groups    {:animals {:node-type :group
                          :name      "animals"
-                         :groups    {:beasts {:node-type :group
-                                              :name      "beasts"
-                                              :groups    {:predators {:node-type :group
-                                                                      :name      "predators"
-                                                                      :charges   #{:bear
-                                                                                   :lion
-                                                                                   :wolf}}
-                                                          :ungulates {:node-type :group
-                                                                      :name      "ungulates"
-                                                                      :charges   #{:antelope
-                                                                                   :boar
-                                                                                   :deer
-                                                                                   :horse}}
-                                                          :reptiles  {:node-type :group
-                                                                      :name      "reptiles"
-                                                                      :charges   #{:lizard
-                                                                                   :serpent}}
-                                                          :hybrids   {:node-type :group
-                                                                      :name      "hybrids"
-                                                                      :charges   #{:griffin
-                                                                                   :sphinx
-                                                                                   :unicorn}}}}
+                         :groups    {:birds {:node-type :group
+                                             :name      "birds"
+                                             :charges   #{:crane
+                                                          :dove
+                                                          :eagle
+                                                          :owl
+                                                          :raven}}
+
+                                     :hybrids {:node-type :group
+                                               :name      "hybrids"
+                                               :charges   #{:griffin
+                                                            :sphinx
+                                                            :unicorn}}
 
                                      :insects {:node-type :group
                                                :name      "insects"
                                                :charges   #{:bee
                                                             :butterfly}}
-                                     :marine  {:node-type :group
-                                               :name      "marine"
-                                               :charges   #{:dolphin
-                                                            :fish
-                                                            :lucy
-                                                            :pike}}
-                                     :birds   {:node-type :group
-                                               :name      "birds"
-                                               :charges   #{:crane
-                                                            :dove
-                                                            :eagle
-                                                            :owl
-                                                            :raven}}}}
+                                     :mammals {:node-type :group
+                                               :name      "mammals"
+                                               :charges   #{:elephant
+                                                            :rabbit
+                                                            :squirrel}}
+
+                                     :marine {:node-type :group
+                                              :name      "marine"
+                                              :charges   #{:dolphin
+                                                           :fish
+                                                           :lucy
+                                                           :pike}}
+
+                                     :monsters {:node-type :group
+                                                :name      "monsters"
+                                                :charges   #{:camelopard
+                                                             :centaur
+                                                             :chimera
+                                                             :cockatrice
+                                                             :double-headed-eagle
+                                                             :dragon
+                                                             :gryphon
+                                                             :harpy
+                                                             :hydra
+                                                             :man-lion
+                                                             :mermaid
+                                                             :melusine
+                                                             :pegasus
+                                                             :phoenix
+                                                             :satyr
+                                                             :sphinx
+                                                             :unicorn
+                                                             :wyvern}}
+
+                                     :predators {:node-type :group
+                                                 :name      "predators"
+                                                 :charges   #{:bear
+                                                              :dog
+                                                              :fox
+                                                              :leopard
+                                                              :lion
+                                                              :wolf}}
+
+                                     :reptiles {:node-type :group
+                                                :name      "reptiles"
+                                                :charges   #{:lizard
+                                                             :serpent}}
+
+                                     :ungulates {:node-type :group
+                                                 :name      "ungulates"
+                                                 :charges   #{:antelope
+                                                              :boar
+                                                              :bull
+                                                              :deer
+                                                              :goat
+                                                              :horse
+                                                              :ram}}}}
                :attire  {:node-type :group
                          :name      "attire"
                          :groups    {:head {:node-type :group
@@ -56,6 +91,7 @@
                                                          :helmet
                                                          :mitre}}}
                          :charges   #{:buckle
+                                      :gauntlet
                                       :maunch
                                       :spurs}}
                :symbols {:node-type :group
@@ -96,8 +132,10 @@
                          :name      "weapons"
                          :charges   #{:arrow
                                       :axe
+                                      :battering-ram
                                       :bow
                                       :caltrop
+                                      :chaine-shot
                                       :crossbow
                                       :cutlass
                                       :dagger
