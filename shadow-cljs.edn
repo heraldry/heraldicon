@@ -2,9 +2,8 @@
 {:source-paths ["src"
                 "backend/src"]
 
- :dependencies [[cider/cider-nrepl "0.25.5"]
-                [cider/piggieback "0.5.2"]
-                [refactor-nrepl "2.5.0"]
+ :dependencies [[cider/cider-nrepl "0.25.9"]
+                [refactor-nrepl "2.5.1"]
                 [reagent "1.0.0" :exclusions [cljsjs/react cljsjs/react-dom]]
                 [re-frame "1.1.2"]
                 [binaryage/devtools "1.0.2"]
