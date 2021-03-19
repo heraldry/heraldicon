@@ -49,13 +49,10 @@
   (go
     (try
       (let [user-data (user/data)
-            response (<? (api-request/call :fetch-arms {:id arms-id
-                                                        :version version} user-data))
-            edn-data (<? (http/fetch (:edn-data-url response)))
-            full-data (-> response
-                          (merge edn-data))]
-        (rf/dispatch [:set saved-data-db-path full-data])
-        full-data)
+            arms-data (<? (api-request/call :fetch-arms {:id arms-id
+                                                         :version version} user-data))]
+        (rf/dispatch [:set saved-data-db-path arms-data])
+        arms-data)
       (catch :default e
         (log/error "fetch arms error:" e)))))
 
