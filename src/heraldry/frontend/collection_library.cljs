@@ -1,8 +1,8 @@
 (ns heraldry.frontend.collection-library
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
-            [heraldry.api.request :as api-request]
             [heraldry.config :as config]
+            [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.attribution :as attribution]
             [heraldry.frontend.form.core :as form]

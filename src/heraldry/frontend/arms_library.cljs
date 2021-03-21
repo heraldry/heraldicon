@@ -1,12 +1,12 @@
 (ns heraldry.frontend.arms-library
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
-            [heraldry.api.request :as api-request]
             [heraldry.coat-of-arms.blazon :as blazon]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.config :as config]
+            [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
@@ -14,11 +14,12 @@
             [heraldry.frontend.form.coat-of-arms :as coat-of-arms-component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
-            [heraldry.frontend.http :as http]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
-            [heraldry.util :refer [full-url-for-arms full-url-for-username id-for-url]]
+            [heraldry.util
+             :refer
+             [full-url-for-arms full-url-for-username id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
             [taoensso.timbre :as log]))
