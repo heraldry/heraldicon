@@ -43,10 +43,10 @@
 
           :backend
           {:target           :node-library
-           :exports          {:handler           heraldry.api.core/handler
-                              :options_handler   heraldry.api.core/options-handler
-                              :migration_handler heraldry.migration.core/migrate-handler
-                              :rollback_handler  heraldry.migration.core/rollback-handler}
+           :exports          {:handler           heraldry.backend.api.core/handler
+                              :options_handler   heraldry.backend.api.core/options-handler
+                              :migration_handler heraldry.backend.migration.core/migrate-handler
+                              :rollback_handler  heraldry.backend.migration.core/rollback-handler}
            :js-options       {:js-package-dirs ["./backend/node_modules"]}
            :output-to        "backend/generated/backend.js"
            :devtools         {:repl-pprint true}
