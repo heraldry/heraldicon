@@ -57,11 +57,11 @@ p {
 }
 
 .modal {
-  position: absolute;
+  position: fixed;
   left: 50%;
-  top: 25%;
-  -webkit-transform: translate(-50%, 0);
-  transform: translate(-50%, 0);
+  top: 40%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
   z-index: 1001;
 }
 
