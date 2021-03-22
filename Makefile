@@ -22,6 +22,8 @@ deploy-backend-prod: check-before-deploy-backend release-backend-prod
 	cd backend && npx sls deploy --stage prod
 	cd backend && git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
 	git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
+	rm -rf backend/node_modules/sharp > /dev/null || true
+	ln -s ../osx-sharp backend/node_modules/sharp
 
 dev-local:
 	npx shadow-cljs watch frontend backend
