@@ -16,7 +16,7 @@ release-backend-prod:
 	rm -rf backend/generated/* 2> /dev/null || true
 	rm -rf backend/node_modules/sharp 2> /dev/null || true
 	cp -r backend/linux-sharp/ backend/node_modules/sharp
-	STAGE=prod npx shadow-cljs release backend
+	STAGE=prod npx shadow-cljs release backend --config-merge '{:output-to "backend/release/backend.js"}'
 
 deploy-backend-prod: check-before-deploy-backend release-backend-prod
 	cd backend && npx sls deploy --stage prod
