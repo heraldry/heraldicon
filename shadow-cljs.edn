@@ -19,8 +19,7 @@
                 [reagent "1.0.0" :exclusions [cljsjs/react cljsjs/react-dom]]
                 [refactor-nrepl "2.5.1"]]
 
- :nrepl {:middleware [cider.piggieback/wrap-cljs-repl
-                      refactor-nrepl.middleware/wrap-refactor]}
+ :nrepl {:middleware [refactor-nrepl.middleware/wrap-refactor]}
 
  :builds {:frontend
           {:target :browser
