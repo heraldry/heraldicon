@@ -11,6 +11,11 @@
   (let [l (-> width (/ 4) (* (util/map-to-interval eccentricity 0.6 1.4)))
         t (-> width (/ 2) (- l))]
     ["l"
+     [(/ t 2) 0]
+     [0 (- (* l height))]
+     [l 0]
+     [0 (- (* t height))]
+     [(- l) 0]
      [0 (- (* t height))]
      [l 0]
      [0 (- (* l height))]
@@ -22,8 +27,4 @@
      [0 (* t height)]
      [l 0]
      [0 (* l height)]
-     [t 0]
-     [0 (- (* l height))]
-     [l 0]
-     [0 (- (* t height))]
-     [(- l) 0]]))
+     [(/ t 2) 0]]))
