@@ -17,7 +17,8 @@
                 [mhuebert/shadow-env "0.1.6"]
                 [re-frame "1.2.0"]
                 [reagent "1.0.0" :exclusions [cljsjs/react cljsjs/react-dom]]
-                [refactor-nrepl "2.5.1"]]
+                [refactor-nrepl "2.5.1"]
+                [zprint "1.1.1"]]
 
  :nrepl {:middleware [refactor-nrepl.middleware/wrap-refactor]}
 
