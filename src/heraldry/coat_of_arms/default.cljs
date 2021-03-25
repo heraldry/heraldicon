@@ -18,6 +18,8 @@
   {:component :charge
    :type      :roundel
    :field     field
+   :tincture  {:shadow    1
+               :highlight 1}
    :hints     {:outline-mode :keep}})
 
 (def coat-of-arms
