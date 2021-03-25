@@ -20,7 +20,8 @@
                 [refactor-nrepl "2.5.1"]
                 [zprint "1.1.1"]]
 
- :nrepl {:middleware [refactor-nrepl.middleware/wrap-refactor]}
+ :nrepl {:middleware [refactor-nrepl.middleware/wrap-refactor]
+         :port       9700}
 
  :builds {:frontend
           {:target           :browser
