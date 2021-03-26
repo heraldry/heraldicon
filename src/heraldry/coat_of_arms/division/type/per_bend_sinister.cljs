@@ -29,9 +29,16 @@
         direction (v/- anchor-point origin-point)
         direction (v/v (-> direction :x Math/abs)
                        (-> direction :y Math/abs))
-        real-diagonal-start (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x left))
-        real-diagonal-end (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x right))
-        angle (angle/angle-to-point real-diagonal-start real-diagonal-end)
+        real-diagonal-start (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
+        real-diagonal-end (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
+        intersections (v/find-intersections real-diagonal-start real-diagonal-end environment)
+        real-diagonal-start (-> intersections
+                                first
+                                (or real-diagonal-start))
+        real-diagonal-end (-> intersections
+                              last
+                              (or real-diagonal-end))
+
         effective-width (or (:width line) 1)
         required-extra-length (-> 30
                                   (/ effective-width)
@@ -40,25 +47,26 @@
                                   (* effective-width))
         diagonal-start (v/+ real-diagonal-start (-> direction
                                                     (v/dot (v/v 1 -1))
-                                                    (v// (- (v/abs direction)))
+                                                    (v// (v/abs direction))
                                                     (v/* required-extra-length)))
         diagonal-end (v/+ real-diagonal-end (-> direction
                                                 (v/dot (v/v -1 1))
-                                                (v// (- (v/abs direction)))
+                                                (v// (v/abs direction))
                                                 (v/* required-extra-length)))
         {line-one :line
          line-one-start :line-start
          line-one-end :line-end
-         :as line-one-data} (line/create line
-                                         (v/abs (v/- diagonal-end diagonal-start))
-                                         :angle angle
-                                         :reversed? true
-                                         :render-options render-options)
+         :as line-one-data} (line/create2 line
+                                          diagonal-start diagonal-end
+                                          :flipped? true
+                                          :reversed? true
+                                          :render-options render-options
+                                          :environment environment)
         parts [[["M" (v/+ diagonal-start
                           line-one-start)
                  (svg/stitch line-one)
-                 (infinity/path :counter-clockwise
-                                [:top :left]
+                 (infinity/path :clockwise
+                                [:left :top]
                                 [(v/+ diagonal-end
                                       line-one-end)
                                  (v/+ diagonal-start
@@ -71,8 +79,8 @@
                [["M" (v/+ diagonal-start
                           line-one-start)
                  (svg/stitch line-one)
-                 (infinity/path :clockwise
-                                [:top :left]
+                 (infinity/path :counter-clockwise
+                                [:left :top]
                                 [(v/+ diagonal-end
                                       line-one-end)
                                  (v/+ diagonal-start

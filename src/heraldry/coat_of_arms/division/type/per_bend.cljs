@@ -31,7 +31,13 @@
                        (-> direction :y Math/abs))
         real-diagonal-start (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
         real-diagonal-end (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
-        angle (angle/angle-to-point real-diagonal-start real-diagonal-end)
+        intersections (v/find-intersections real-diagonal-start real-diagonal-end environment)
+        real-diagonal-start (-> intersections
+                                first
+                                (or real-diagonal-start))
+        real-diagonal-end (-> intersections
+                              last
+                              (or real-diagonal-end))
         effective-width (or (:width line) 1)
         required-extra-length (-> 30
                                   (/ effective-width)
@@ -48,10 +54,10 @@
         {line-one :line
          line-one-start :line-start
          line-one-end :line-end
-         :as line-one-data} (line/create line
-                                         (v/abs (v/- diagonal-end diagonal-start))
-                                         :angle angle
-                                         :render-options render-options)
+         :as line-one-data} (line/create2 line
+                                          diagonal-start diagonal-end
+                                          :render-options render-options
+                                          :environment environment)
         parts [[["M" (v/+ diagonal-start
                           line-one-start)
                  (svg/stitch line-one)

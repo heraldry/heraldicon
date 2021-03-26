@@ -290,9 +290,7 @@
         [start-t end-t] (get-intersections-before-and-after 0.5 intersections)
         real-start (* length start-t)
         real-end (* length end-t)
-        angle (-> (Math/atan2 (:y direction) (:x direction))
-                  (* 180)
-                  (/ Math/PI))]
+        angle (v/angle-to-point from to)]
     (apply create (into [line length
                          :real-start real-start
                          :real-end real-end
