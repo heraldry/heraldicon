@@ -193,26 +193,47 @@
 (defn orthogonal [{:keys [x y]}]
   (v y (cljs.core/- x)))
 
-(defn find-intersection [origin anchor environment]
+(defn find-intersections [from to environment]
   (let [shapes           (->> environment
                               (tree-seq map? (comp list :parent-environment :meta))
                               (map :shape)
                               (filter identity))
-        direction-vector (- anchor origin)
+        line-path        (str  "M" (:x from) "," (:y from)
+                               "l" (:x to) "," (:y to))
+        intersections    (->> shapes
+                              (map-indexed (fn [idx shape]
+                                             (-> (path-intersection line-path shape)
+                                                 (js->clj :keywordize-keys true)
+                                                 (->> (sort-by :t1 #(compare %2 %1))
+                                                      (map #(assoc % :parent-level idx))))))
+                              (apply concat)
+                              vec)]
+    (sort-by :t1 intersections)))
+
+(defn find-first-intersection-of-ray [origin anchor environment]
+  (let [direction-vector (- anchor origin)
         line-end         (-> direction-vector
                              normal
                              (* 1000))
-        line-path        (str  "M" (:x origin) "," (:y origin)
-                               "l" (:x line-end) "," (:y line-end))
-        intersections    (->> shapes
-                              (map (fn [shape]
-                                     (-> (path-intersection line-path shape)
-                                         (js->clj :keywordize-keys true)
-                                         (->> (sort-by :t1 #(compare %2 %1)))
-                                         first)))
-                              (apply vector))]
+        intersections    (find-intersections origin line-end environment)]
     (-> intersections
-        (->> (filter (comp pos? :t1))
-             (sort-by :t1))
+        (->> (filter (comp pos? :t1)))
         first
         (select-keys [:x :y]))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
