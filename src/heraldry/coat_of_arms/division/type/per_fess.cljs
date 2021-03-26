@@ -33,7 +33,10 @@
          line-one-end   :line-end
          :as            line-one-data} (line/create line
                                                     (:x (v/- right left))
-                                                    :render-options render-options)
+                                                    :render-options render-options
+                                                    :real-start required-extra-length
+                                                    :real-end (+ (:x (v/- real-right real-left))
+                                                                 required-extra-length))
         parts                          [[["M" (v/+ left
                                                    line-one-start)
                                           (svg/stitch line-one)
@@ -67,3 +70,6 @@
       [:all nil]
       environment division context]
      (line/render line [line-one-data] left outline? render-options)]))
+
+
+

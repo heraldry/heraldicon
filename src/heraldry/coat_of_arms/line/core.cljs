@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.line.core
   (:require ["svgpath" :as svgpath]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
+            [heraldry.coat-of-arms.line.type.bevilled :as bevilled]
             [heraldry.coat-of-arms.line.type.dancetty :as dancetty]
             [heraldry.coat-of-arms.line.type.dovetailed :as dovetailed]
             [heraldry.coat-of-arms.line.type.embattled :as embattled]
@@ -25,10 +26,10 @@
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
-(defn line-with-offset [{pattern-width :width
-                         line-offset   :offset
-                         :as           line}
-                        length line-function line-options]
+(defn pattern-line-with-offset [{pattern-width :width
+                                 line-offset   :offset
+                                 :as           line}
+                                length line-function line-options]
   (let [line-pattern  (line-function line line-options)
         offset-length (* line-offset pattern-width)
         repetitions   (-> length
@@ -40,11 +41,16 @@
         line-start    (v/v (min 0 offset-length) 0)]
     {:line       (-> []
                      (cond->
-                         (pos? offset-length) (into [["h" offset-length]]))
+                      (pos? offset-length) (into [["h" offset-length]]))
                      (into (repeat repetitions line-pattern))
                      (->> (apply merge))
                      vec)
      :line-start line-start}))
+
+(defn full-line [line length line-function line-options]
+  (let [line-pattern  (line-function line length line-options)]
+    {:line       line-pattern
+     :line-start (v/v 0 0)}))
 
 (def lines
   [#'straight/pattern
@@ -63,7 +69,8 @@
    #'thorny/pattern
    #'urdy/pattern
    #'fir-tree-topped/pattern
-   #'fir-twigged/pattern])
+   #'fir-twigged/pattern
+   #'bevilled/full])
 
 (def kinds-function-map
   (->> lines
@@ -211,11 +218,19 @@
                                       (= type :straight) (-> (assoc :width length)
                                                              (assoc :offset 0)))
         base-end                    (v/v length 0)
-        line-data                   (line-with-offset
-                                     line-options-values
-                                     length
-                                     line-function
-                                     line-options)
+        line-data                   (if (-> line-function
+                                            meta
+                                            :full?)
+                                      (full-line
+                                       line-options-values
+                                       length
+                                       line-function
+                                       line-options)
+                                      (pattern-line-with-offset
+                                       line-options-values
+                                       length
+                                       line-function
+                                       line-options))
         line-path                   (-> line-data
                                         :line
                                         (->> (into ["M" 0 0]))
@@ -244,10 +259,10 @@
         (assoc :line
                (-> line-path
                    (cond->
-                       (:squiggly? render-options) (svg/squiggly-path :seed seed))
+                    (:squiggly? render-options) (svg/squiggly-path :seed seed))
                    svgpath
                    (cond->
-                       effective-flipped? (.scale 1 -1))
+                    effective-flipped? (.scale 1 -1))
                    (.rotate angle)
                    .toString))
         (assoc :line-start (when line-start (v/rotate line-start angle)))
@@ -394,3 +409,13 @@
                           (#{:single :double} mode))))
        [:g outline/style
         [:path {:d line-path}]])]))
+
+
+
+
+
+
+
+
+
+

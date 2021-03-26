@@ -34,7 +34,10 @@
          :as            line-one-data} (line/create line
                                                     (:y (v/- bottom top))
                                                     :angle 90
-                                                    :render-options render-options)
+                                                    :render-options render-options
+                                                    :real-start required-extra-length
+                                                    :real-end (+ (:y (v/- real-bottom real-top))
+                                                                 required-extra-length))
         parts                          [[["M" (v/+ top
                                                    line-one-start)
                                           (svg/stitch line-one)
@@ -68,3 +71,5 @@
       [:all nil]
       environment division context]
      (line/render line [line-one-data] top outline? render-options)]))
+
+
