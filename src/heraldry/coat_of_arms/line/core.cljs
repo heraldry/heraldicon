@@ -270,6 +270,35 @@
         (assoc :up (v/rotate (v/v 0 -50) angle))
         (assoc :down (v/rotate (v/v 0 50) angle)))))
 
+(defn get-intersections-before-and-after [t intersections]
+  (let [before (or (-> intersections
+                       (->> (filter #(<= (:t1 %) t)))
+                       last
+                       :t1)
+                   0)
+        after (or (-> intersections
+                      (->> (filter #(> (:t1 %) t)))
+                      first
+                      :t1)
+                  1)]
+    [before after]))
+
+(defn create2 [line from to & {:keys [environment] :as line-options}]
+  (let [direction (v/- to from)
+        length (v/abs direction)
+        intersections (v/find-intersections from to environment)
+        [start-t end-t] (get-intersections-before-and-after 0.5 intersections)
+        real-start (* length start-t)
+        real-end (* length end-t)
+        angle (-> (Math/atan2 (:y direction) (:x direction))
+                  (* 180)
+                  (/ Math/PI))]
+    (apply create (into [line length
+                         :real-start real-start
+                         :real-end real-end
+                         :angle angle]
+                        (mapcat identity line-options)))))
+
 (defn mask-intersection-points [start line-datas direction]
   (->> line-datas
        (map (fn [{:keys [line-end up down]}]
