@@ -1,25 +1,5 @@
 ;; shadow-cljs configuration
-{:source-paths ["src"
-                "backend/src"]
-
- :dependencies [[aero "1.1.6"]
-                [binaryage/devtools "1.0.2"]
-                [cider/cider-nrepl "0.25.9"]
-                [cljs-http "0.1.46"]
-                [com.andrewmcveigh/cljs-time "0.5.2"]
-                [com.taoensso/timbre "5.1.2"]
-                [com.wsscode/async "2021.01.15"]
-                [day8.re-frame/re-frame-10x "1.0.1"]
-                [funcool/hodgepodge "0.1.4"]
-                [hiccups "0.3.0"]
-                [hickory "0.7.1"]
-                [metosin/reitit "0.5.12"]
-                [mhuebert/shadow-env "0.1.6"]
-                [re-frame "1.2.0"]
-                [reagent "1.0.0" :exclusions [cljsjs/react cljsjs/react-dom]]
-                [refactor-nrepl "2.5.1"]
-                [zprint "1.1.1"]
-                [borkdude/sci "0.2.4"]]
+{:deps true
 
  :nrepl {:middleware [refactor-nrepl.middleware/wrap-refactor]
          :port 9700}
