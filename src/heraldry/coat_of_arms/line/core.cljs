@@ -44,9 +44,7 @@
                (into (repeat repetitions line-pattern))
                (->> (apply merge))
                vec)
-     :line-start line-start
-     :up (v/v 0 -50)
-     :down (v/v 0 50)}))
+     :line-start line-start}))
 
 (def lines
   [#'straight/pattern
@@ -229,8 +227,6 @@
         line-end (-> line-start
                      (v/+ line-reversed-start)
                      (v/- base-end))
-        line-up (:up line-data)
-        line-down (:down line-data)
         line-path (if reversed?
                     (-> line-reversed
                         svgpath
@@ -256,8 +252,8 @@
                    .toString))
         (assoc :line-start (when line-start (v/rotate line-start angle)))
         (assoc :line-end (when line-end (v/rotate (v/+ base-end line-end) angle)))
-        (assoc :up (when line-up (v/rotate line-up angle)))
-        (assoc :down (when line-down (v/rotate line-down angle))))))
+        (assoc :up (v/rotate (v/v 0 -50) angle))
+        (assoc :down (v/rotate (v/v 0 50) angle)))))
 
 (defn mask-intersection-points [start line-datas direction]
   (->> line-datas
