@@ -291,11 +291,12 @@
         real-start (* length start-t)
         real-end (* length end-t)
         angle (v/angle-to-point from to)]
-    (apply create (into [line length
-                         :real-start real-start
-                         :real-end real-end
-                         :angle angle]
-                        (mapcat identity line-options)))))
+    (apply create (into [line length]
+                        (mapcat identity (merge
+                                          {:real-start real-start
+                                           :real-end real-end
+                                           :angle angle}
+                                          line-options))))))
 
 (defn mask-intersection-points [start line-datas direction]
   (->> line-datas
