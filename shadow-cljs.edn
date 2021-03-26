@@ -18,7 +18,8 @@
                 [re-frame "1.2.0"]
                 [reagent "1.0.0" :exclusions [cljsjs/react cljsjs/react-dom]]
                 [refactor-nrepl "2.5.1"]
-                [zprint "1.1.1"]]
+                [zprint "1.1.1"]
+                [borkdude/sci "0.2.4"]]
 
  :nrepl {:middleware [refactor-nrepl.middleware/wrap-refactor]
          :port       9700}
