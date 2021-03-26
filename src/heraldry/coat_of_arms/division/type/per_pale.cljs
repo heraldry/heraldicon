@@ -31,13 +31,12 @@
         {line-one       :line
          line-one-start :line-start
          line-one-end   :line-end
-         :as            line-one-data} (line/create line
-                                                    (:y (v/- bottom top))
-                                                    :angle 90
-                                                    :render-options render-options
-                                                    :real-start required-extra-length
-                                                    :real-end (+ (:y (v/- real-bottom real-top))
-                                                                 required-extra-length))
+         :as            line-one-data} (line/create2 line
+                                                     top
+                                                     bottom
+                                                     :render-options render-options
+                                                     :environment environment)
+
         parts                          [[["M" (v/+ top
                                                    line-one-start)
                                           (svg/stitch line-one)
