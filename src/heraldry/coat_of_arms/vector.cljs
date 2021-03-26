@@ -199,13 +199,12 @@
                     (map :shape)
                     (filter identity))
         line-path (str "M" (:x from) "," (:y from)
-                       "l" (:x to) "," (:y to))
+                       "L" (:x to) "," (:y to))
         intersections (->> shapes
                            (map-indexed (fn [idx shape]
                                           (-> (path-intersection line-path shape)
                                               (js->clj :keywordize-keys true)
-                                              (->> (sort-by :t1 #(compare %2 %1))
-                                                   (map #(assoc % :parent-level idx))))))
+                                              (->> (map #(assoc % :parent-level idx))))))
                            (apply concat)
                            vec)]
     (sort-by :t1 intersections)))
@@ -214,7 +213,8 @@
   (let [direction-vector (- anchor origin)
         line-end (-> direction-vector
                      normal
-                     (* 1000))
+                     (* 1000)
+                     (+ origin))
         intersections (find-intersections origin line-end environment)]
     (-> intersections
         (->> (filter (comp pos? :t1)))
