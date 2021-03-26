@@ -57,7 +57,7 @@
                                     0
                                     base-angle)
         target-point (case anchor-type
-                       :edge (v/find-intersection
+                       :edge (v/find-first-intersection-of-ray
                               real-origin real-anchor
                               environment)
                        real-anchor)
@@ -108,7 +108,7 @@
                                     thickness
                                     base-angle)
         target-point (case anchor-type
-                       :edge (v/find-intersection
+                       :edge (v/find-first-intersection-of-ray
                               real-origin real-anchor
                               environment)
                        real-anchor)
