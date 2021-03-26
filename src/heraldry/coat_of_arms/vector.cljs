@@ -221,19 +221,10 @@
         first
         (select-keys [:x :y]))))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+(defn angle-to-point [p1 p2]
+  (let [d         (- p2 p1)
+        angle-rad (Math/atan2 (:y d) (:x d))]
+    (-> angle-rad
+        (cljs.core// Math/PI)
+        (cljs.core/* 180))))
 
