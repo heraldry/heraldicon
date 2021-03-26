@@ -31,7 +31,8 @@
                                             (-> direction :y Math/abs))
         real-diagonal-start            (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
         real-diagonal-end              (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
-        intersections (v/find-intersections real-diagonal-start real-diagonal-end environment)
+        intersections (-> (v/find-intersections real-diagonal-start real-diagonal-end environment)
+                          (->> (filter (comp zero? :parent-level))))
         real-diagonal-start (-> intersections
                                 first
                                 (or real-diagonal-start))
