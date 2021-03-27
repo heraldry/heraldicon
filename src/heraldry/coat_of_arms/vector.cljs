@@ -193,13 +193,21 @@
 (defn orthogonal [{:keys [x y]}]
   (v y (cljs.core/- x)))
 
+(defn ->str [{:keys [x y]}]
+  (str x "," y))
+
+(defn prune-duplicates [intersections]
+  (->> intersections
+       (group-by (juxt :x :y))
+       (map (comp first second))))
+
 (defn find-intersections [from to environment]
   (let [shapes           (->> environment
                               (tree-seq map? (comp list :parent-environment :meta))
                               (map :shape)
                               (filter identity))
-        line-path        (str  "M" (:x from) "," (:y from)
-                               "L" (:x to) "," (:y to))
+        line-path        (str "M" (->str from)
+                              "L" (->str to))
         intersections    (->> shapes
                               (map-indexed (fn [idx shape]
                                              (-> (path-intersection line-path shape)
@@ -207,7 +215,9 @@
                                                  (->> (map #(assoc % :parent-level idx))))))
                               (apply concat)
                               vec)]
-    (sort-by :t1 intersections)))
+    (->> intersections
+         prune-duplicates
+         (sort-by :t1))))
 
 (defn find-first-intersection-of-ray [origin anchor environment]
   (let [direction-vector (- anchor origin)
@@ -227,4 +237,19 @@
     (-> angle-rad
         (cljs.core// Math/PI)
         (cljs.core/* 180))))
+
+(defn bounding-box-intersections [from to environment]
+  (let [{:keys [top-left top-right
+                bottom-left bottom-right]} (:points environment)
+        line-path        (str "M" (->str from)
+                              "L" (->str to))
+        box-shape (str "M" (->str top-left)
+                       "L" (->str top-right)
+                       "L" (->str bottom-right)
+                       "L" (->str bottom-left)
+                       "z")]
+    (-> (path-intersection line-path box-shape)
+        (js->clj :keywordize-keys true)
+        prune-duplicates
+        (->> (sort-by :t1)))))
 
