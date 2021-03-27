@@ -252,3 +252,10 @@
         (js->clj :keywordize-keys true)
         prune-duplicates
         (->> (sort-by :t1)))))
+
+(defn environment-intersections [from to environment]
+  (let [[bbox-first bbox-second] (bounding-box-intersections from to environment)
+        middle (-> (+ bbox-first bbox-second)
+                   (/ 2))]
+    [(find-first-intersection-of-ray middle from environment)
+     (find-first-intersection-of-ray middle to environment)]))
