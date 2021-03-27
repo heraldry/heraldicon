@@ -25,20 +25,19 @@
                                         0
                                         nil)
         direction                      (v/- anchor-point origin-point)
-        direction                      (v/v (-> direction :x Math/abs)
-                                            (-> direction :y Math/abs))
+        direction                      (v/normal (v/v (-> direction :x Math/abs)
+                                                      (-> direction :y Math/abs -)))
         initial-diagonal-start         (-> direction
-                                           (v/dot (v/v -1000 1000))
+                                           (v/* -1000)
                                            (v/+ origin-point))
         initial-diagonal-end           (-> direction
-                                           (v/dot  (v/v 1000 -1000))
+                                           (v/* 1000)
                                            (v/+ origin-point))
-        intersections                  (v/bounding-box-intersections
+        [real-diagonal-start
+         real-diagonal-end]            (v/environment-intersections
                                         initial-diagonal-start
                                         initial-diagonal-end
                                         environment)
-        real-diagonal-start            (first intersections)
-        real-diagonal-end              (last intersections)
         effective-width                (or (:width line) 1)
         required-extra-length          (-> 30
                                            (/ effective-width)
@@ -46,7 +45,6 @@
                                            inc
                                            (* effective-width))
         extra-dir                      (-> direction
-                                           (v/dot (v/v 1 -1))
                                            (v/* required-extra-length))
         diagonal-start                 (v/- real-diagonal-start extra-dir)
         diagonal-end                   (v/+ real-diagonal-end extra-dir)
