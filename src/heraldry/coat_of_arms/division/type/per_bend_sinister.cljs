@@ -28,10 +28,10 @@
         direction                      (v/v (-> direction :x Math/abs)
                                             (-> direction :y Math/abs))
         initial-diagonal-start         (-> direction
-                                           (v/dot (v/v 1000 -1000))
+                                           (v/dot (v/v -1000 1000))
                                            (v/+ origin-point))
         initial-diagonal-end           (-> direction
-                                           (v/dot  (v/v -1000 1000))
+                                           (v/dot  (v/v 1000 -1000))
                                            (v/+ origin-point))
         intersections                  (v/bounding-box-intersections
                                         initial-diagonal-start
@@ -46,7 +46,7 @@
                                            inc
                                            (* effective-width))
         extra-dir                      (-> direction
-                                           (v/dot (v/v -1 1))
+                                           (v/dot (v/v 1 -1))
                                            (v/* required-extra-length))
         diagonal-start                 (v/- real-diagonal-start extra-dir)
         diagonal-end                   (v/+ real-diagonal-end extra-dir)
@@ -55,15 +55,13 @@
          line-one-end   :line-end
          :as            line-one-data} (line/create2 line
                                                      diagonal-start diagonal-end
-                                                     :flipped? true
-                                                     :reversed? true
                                                      :render-options render-options
                                                      :environment environment)
         parts                          [[["M" (v/+ diagonal-start
                                                    line-one-start)
                                           (svg/stitch line-one)
-                                          (infinity/path :clockwise
-                                                         [:left :top]
+                                          (infinity/path :counter-clockwise
+                                                         [:top :left]
                                                          [(v/+ diagonal-end
                                                                line-one-end)
                                                           (v/+ diagonal-start
@@ -76,8 +74,8 @@
                                         [["M" (v/+ diagonal-start
                                                    line-one-start)
                                           (svg/stitch line-one)
-                                          (infinity/path :counter-clockwise
-                                                         [:left :top]
+                                          (infinity/path :clockwise
+                                                         [:top :left]
                                                          [(v/+ diagonal-end
                                                                line-one-end)
                                                           (v/+ diagonal-start
