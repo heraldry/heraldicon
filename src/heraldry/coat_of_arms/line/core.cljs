@@ -291,11 +291,14 @@
                   1)]
     [before after]))
 
-(defn create2 [line from to & {:keys [environment] :as line-options}]
+(defn create2 [line from to & {:keys [environment reversed?] :as line-options}]
   (let [direction (v/- to from)
         length (v/abs direction)
         intersections (v/find-intersections from to environment)
         [start-t end-t] (get-intersections-before-and-after 0.5 intersections)
+        [start-t end-t] (if reversed?
+                          [(- 1 end-t) (- 1 start-t)]
+                          [start-t end-t])
         real-start (* length start-t)
         real-end (* length end-t)
         angle (v/angle-to-point from to)]

@@ -17,8 +17,6 @@
         points (:points environment)
         top-right (:top-right points)
         bottom-left (:bottom-left points)
-        left (:left points)
-        right (:right points)
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment
@@ -29,29 +27,30 @@
         direction (v/- anchor-point origin-point)
         direction (v/v (-> direction :x Math/abs)
                        (-> direction :y Math/abs))
-        real-diagonal-start (v/project-x origin-point (v/dot direction (v/v -1 -1)) (:x left))
-        real-diagonal-end (v/project-x origin-point (v/dot direction (v/v 1 1)) (:x right))
-        intersections (-> (v/find-intersections real-diagonal-start real-diagonal-end environment)
-                          (->> (filter (comp zero? :parent-level))))
-        real-diagonal-start (-> intersections
-                                first
-                                (or real-diagonal-start))
-        real-diagonal-end (-> intersections
-                              last
-                              (or real-diagonal-end))
+        initial-diagonal-start (-> direction
+                                   (v/dot (v/v -1000 -1000))
+                                   (v/+ origin-point))
+        initial-diagonal-end (-> direction
+                                 (v/dot (v/v 1000 1000))
+                                 (v/+ origin-point))
+        intersections (v/bounding-box-intersections
+                       initial-diagonal-start
+                       initial-diagonal-end
+                       environment)
+        real-diagonal-start (first intersections)
+        real-diagonal-end (last intersections)
         effective-width (or (:width line) 1)
         required-extra-length (-> 30
                                   (/ effective-width)
                                   Math/ceil
                                   inc
                                   (* effective-width))
-        diagonal-start (v/+ real-diagonal-start (-> direction
-                                                    (v/dot (v/v -1 -1))
-                                                    (v// (v/abs direction))
-                                                    (v/* required-extra-length)))
-        diagonal-end (v/+ real-diagonal-end (-> direction
-                                                (v// (v/abs direction))
-                                                (v/* required-extra-length)))
+        diagonal-start (v/+ real-diagonal-start
+                            (-> direction
+                                (v/* (- required-extra-length))))
+        diagonal-end (v/+ real-diagonal-end
+                          (-> direction
+                              (v/* required-extra-length)))
         {line-one :line
          line-one-start :line-start
          line-one-end :line-end
