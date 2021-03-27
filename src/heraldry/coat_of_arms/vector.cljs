@@ -198,7 +198,7 @@
 
 (defn prune-duplicates [intersections]
   (->> intersections
-       (group-by (juxt :x :y))
+       (group-by (juxt :x :y :parent-index))
        (map (comp first second))))
 
 (defn find-intersections [from to environment]
@@ -209,10 +209,10 @@
         line-path        (str "M" (->str from)
                               "L" (->str to))
         intersections    (->> shapes
-                              (map-indexed (fn [idx shape]
+                              (map-indexed (fn [parent-idx shape]
                                              (-> (path-intersection line-path shape)
                                                  (js->clj :keywordize-keys true)
-                                                 (->> (map #(assoc % :parent-level idx))))))
+                                                 (->> (map #(assoc % :parent-index parent-idx))))))
                               (apply concat)
                               vec)]
     (->> intersections
