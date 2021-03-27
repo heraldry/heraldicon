@@ -299,9 +299,9 @@
         [start-t end-t] (if reversed?
                           [(- 1 end-t) (- 1 start-t)]
                           [start-t end-t])
-        real-start (* length start-t)
-        real-end (* length end-t)
-        angle (v/angle-to-point from to)]
+        real-start      (* length start-t)
+        real-end        (* length end-t)
+        angle           (v/angle-to-point from to)]
     (apply create (into [line length]
                         (mapcat identity (merge
                                           {:real-start real-start
