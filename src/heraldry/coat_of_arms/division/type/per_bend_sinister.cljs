@@ -17,8 +17,6 @@
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        left (:left points)
-        right (:right points)
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment
@@ -29,17 +27,18 @@
         direction (v/- anchor-point origin-point)
         direction (v/v (-> direction :x Math/abs)
                        (-> direction :y Math/abs))
-        real-diagonal-start (v/project-x origin-point (v/dot direction (v/v 1 -1)) (:x right))
-        real-diagonal-end (v/project-x origin-point (v/dot direction (v/v -1 1)) (:x left))
-        intersections (-> (v/find-intersections real-diagonal-start real-diagonal-end environment)
-                          (->> (filter (comp zero? :parent-level))))
-        real-diagonal-start (-> intersections
-                                first
-                                (or real-diagonal-start))
-        real-diagonal-end (-> intersections
-                              last
-                              (or real-diagonal-end))
-
+        initial-diagonal-start (-> direction
+                                   (v/dot (v/v 1000 -1000))
+                                   (v/+ origin-point))
+        initial-diagonal-end (-> direction
+                                 (v/dot (v/v -1000 1000))
+                                 (v/+ origin-point))
+        intersections (v/bounding-box-intersections
+                       initial-diagonal-start
+                       initial-diagonal-end
+                       environment)
+        real-diagonal-start (first intersections)
+        real-diagonal-end (last intersections)
         effective-width (or (:width line) 1)
         required-extra-length (-> 30
                                   (/ effective-width)
