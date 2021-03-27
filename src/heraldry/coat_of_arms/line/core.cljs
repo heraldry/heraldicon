@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.line.core
   (:require ["svgpath" :as svgpath]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
+            [heraldry.coat-of-arms.line.type.angled :as angled]
             [heraldry.coat-of-arms.line.type.bevilled :as bevilled]
             [heraldry.coat-of-arms.line.type.dancetty :as dancetty]
             [heraldry.coat-of-arms.line.type.dovetailed :as dovetailed]
@@ -70,6 +71,7 @@
    #'urdy/pattern
    #'fir-tree-topped/pattern
    #'fir-twigged/pattern
+   #'angled/full
    #'bevilled/full])
 
 (def kinds-function-map
@@ -203,6 +205,15 @@
                                   [:offset]
                                   [:flipped?]
                                   [:fimbriation]])
+      :angled (options/pick default-options
+                            [[:type]
+                             [:eccentricity]
+                             [:height]
+                             [:flipped?]
+                             [:fimbriation]]
+                            {[:height :min] 1
+                             [:height :max] 50
+                             [:height :default] 15})
       :bevilled (options/pick default-options
                               [[:type]
                                [:eccentricity]
