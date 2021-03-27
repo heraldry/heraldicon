@@ -41,51 +41,62 @@
         origin-point (v/line-intersection origin-point anchor-point
                                           mirrored-origin mirrored-anchor)
         [relative-left relative-right] (chevron/arm-diagonals variant origin-point anchor-point)
-        diagonal-bottom-left (v/+ origin-point relative-left)
-        diagonal-bottom-right (v/+ origin-point relative-right)
-        angle-bottom-left (angle/angle-to-point origin-point diagonal-bottom-left)
-        angle-bottom-right (angle/angle-to-point origin-point diagonal-bottom-right)
+        diagonal-left (v/+ origin-point relative-left)
+        diagonal-right (v/+ origin-point relative-right)
+        intersection-left (v/find-first-intersection-of-ray origin-point diagonal-left environment)
+        intersection-right (v/find-first-intersection-of-ray origin-point diagonal-right environment)
+        end-left (-> intersection-left
+                     (v/- origin-point)
+                     v/abs)
+        end-right (-> intersection-right
+                      (v/- origin-point)
+                      v/abs)
+        end (max end-left end-right)
         {line-left :line
          line-left-start :line-start
-         :as line-left-data} (line/create line
-                                          (v/abs (v/- diagonal-bottom-left origin-point))
-                                          :angle (+ angle-bottom-left 180)
-                                          :reversed? true
-                                          :render-options render-options)
+         :as line-left-data} (line/create2 line
+                                           origin-point diagonal-left
+                                           :real-start 0
+                                           :real-end end
+                                           :reversed? true
+                                           :render-options render-options
+                                           :environment environment)
         {line-right :line
          line-right-end :line-end
-         :as line-right-data} (line/create line
-                                           (v/abs (v/- diagonal-bottom-right origin-point))
-                                           :angle angle-bottom-right
-                                           :render-options render-options)
+         :as line-right-data} (line/create2 line
+                                            origin-point diagonal-right
+                                            :real-start 0
+                                            :real-end end
+                                            :render-options render-options
+                                            :environment environment)
         infinity-points (case variant
                           :chief [:left :right]
                           :dexter [:bottom :top]
                           :sinister [:top :bottom]
                           [:right :left])
-        parts [[["M" (v/+ diagonal-bottom-left
+        parts [[["M" (v/+ diagonal-left
                           line-left-start)
                  (svg/stitch line-left)
                  (svg/stitch line-right)
                  (infinity/path :counter-clockwise
                                 infinity-points
-                                [(v/+ diagonal-bottom-right
+                                [(v/+ diagonal-right
                                       line-right-end)
-                                 (v/+ diagonal-bottom-left
+                                 (v/+ diagonal-left
                                       line-left-start)])
                  "z"]
                 [top-left top-right
                  bottom-left bottom-right]]
 
-               [["M" (v/+ diagonal-bottom-left
+               [["M" (v/+ diagonal-left
                           line-left-start)
                  (svg/stitch line-left)
                  (svg/stitch line-right)
                  (infinity/path :clockwise
                                 infinity-points
-                                [(v/+ diagonal-bottom-right
+                                [(v/+ diagonal-right
                                       line-right-end)
-                                 (v/+ diagonal-bottom-left
+                                 (v/+ diagonal-left
                                       line-left-start)])
                  "z"]
                 (-> [origin-point]
@@ -103,4 +114,4 @@
       [:all nil]
       environment division context]
      (line/render line [line-left-data
-                        line-right-data] diagonal-bottom-left outline? render-options)]))
+                        line-right-data] diagonal-left outline? render-options)]))
