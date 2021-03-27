@@ -45,12 +45,10 @@
                                   Math/ceil
                                   inc
                                   (* effective-width))
-        diagonal-start (v/+ real-diagonal-start
-                            (-> direction
-                                (v/* (- required-extra-length))))
-        diagonal-end (v/+ real-diagonal-end
-                          (-> direction
-                              (v/* required-extra-length)))
+        extra-dir (-> direction
+                      (v/* required-extra-length))
+        diagonal-start (v/- real-diagonal-start extra-dir)
+        diagonal-end (v/+ real-diagonal-end extra-dir)
         {line-one :line
          line-one-start :line-start
          line-one-end :line-end
