@@ -203,6 +203,14 @@
                                       [:offset]
                                       [:flipped?]
                                       [:fimbriation]])
+      :bevilled            (options/pick default-options
+                                         [[:type]
+                                          [:eccentricity]
+                                          [:height]
+                                          [:width]
+                                          [:flipped?]
+                                          [:fimbriation]]
+                                         {[:width :default] 15})
       (options/pick default-options
                     [[:type]
                      [:eccentricity]
