@@ -291,16 +291,31 @@
                   1)]
     [before after]))
 
-(defn create2 [line from to & {:keys [environment reversed?] :as line-options}]
-  (let [direction (v/- to from)
+(defn find-real-start-and-end [from to {:keys [environment reversed?
+                                               real-start real-end]}]
+  (if (and real-start real-end)
+    [real-start real-end]
+    (let [[from to] (if reversed?
+                      [to from]
+                      [from to])
+          direction (v/- to from)
+          length (v/abs direction)
+          intersections (v/find-intersections from to environment)
+          [start-t end-t] (get-intersections-before-and-after 0.5 intersections)
+          [start-t end-t] (if reversed?
+                            [(- 1 end-t) (- 1 start-t)]
+                            [start-t end-t])
+          real-start      (* length start-t)
+          real-end        (* length end-t)]
+      [real-start real-end])))
+
+(defn create2 [line from to & {:keys [reversed?] :as line-options}]
+  (let [[from to] (if reversed?
+                    [to from]
+                    [from to])
+        direction (v/- to from)
         length (v/abs direction)
-        intersections (v/find-intersections from to environment)
-        [start-t end-t] (get-intersections-before-and-after 0.5 intersections)
-        [start-t end-t] (if reversed?
-                          [(- 1 end-t) (- 1 start-t)]
-                          [start-t end-t])
-        real-start      (* length start-t)
-        real-end        (* length end-t)
+        [real-start real-end] (find-real-start-and-end from to line-options)
         angle           (v/angle-to-point from to)]
     (apply create (into [line length]
                         (mapcat identity (merge
