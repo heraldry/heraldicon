@@ -210,7 +210,6 @@
             :per-saltire (options/pick default-options
                                        [[:line]
                                         [:origin]
-                                        [:anchor]
                                         [:anchor]]
                                        {[:line] (-> line-style
                                                     (options/override-if-exists [:offset :min] 0)
@@ -227,9 +226,9 @@
                                       [:origin :point]
                                       [:origin :offset-x]
                                       [:origin :offset-y]]
-                                     {[:line] line-style
-                                      [:line :offset :min] 0
-                                      [:line :fimbriation] nil})
+                                     {[:line] (-> line-style
+                                                  (options/override-if-exists [:offset :min] 0)
+                                                  (dissoc :fimbriation))})
             :quarterly (options/pick default-options
                                      [[:layout :num-base-fields]
                                       [:layout :num-fields-x]
