@@ -11,7 +11,8 @@
         real-end (or real-end length)
         relevant-length (- real-end real-start)
         pos-x (-> relevant-length
-                  (* eccentricity))]
+                  (* eccentricity))
+        height (* height relevant-length)]
     ["h" real-start
      "h" pos-x
      "v" height

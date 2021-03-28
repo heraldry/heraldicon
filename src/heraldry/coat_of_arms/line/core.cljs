@@ -211,9 +211,9 @@
                              [:height]
                              [:flipped?]
                              [:fimbriation]]
-                            {[:height :min] 1
-                             [:height :max] 50
-                             [:height :default] 15})
+                            {[:height :min] 0
+                             [:height :max] 1
+                             [:height :default] 0.1})
       :bevilled (options/pick default-options
                               [[:type]
                                [:eccentricity]
