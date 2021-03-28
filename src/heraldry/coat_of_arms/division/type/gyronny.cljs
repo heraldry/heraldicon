@@ -38,169 +38,219 @@
         diagonal-top-right (v/+ origin-point relative-top-right)
         diagonal-bottom-left (v/+ origin-point relative-bottom-left)
         diagonal-bottom-right (v/+ origin-point relative-bottom-right)
-        angle-top-left (angle/angle-to-point origin-point diagonal-top-left)
-        angle-top-right (angle/angle-to-point origin-point diagonal-top-right)
-        angle-bottom-left (angle/angle-to-point origin-point diagonal-bottom-left)
-        angle-bottom-right (angle/angle-to-point origin-point diagonal-bottom-right)
+        intersection-top-left (v/find-first-intersection-of-ray origin-point diagonal-top-left environment)
+        intersection-top-right (v/find-first-intersection-of-ray origin-point diagonal-top-right environment)
+        intersection-bottom-left (v/find-first-intersection-of-ray origin-point diagonal-bottom-left environment)
+        intersection-bottom-right (v/find-first-intersection-of-ray origin-point diagonal-bottom-right environment)
+        intersection-top (v/find-first-intersection-of-ray origin-point top environment)
+        intersection-bottom (v/find-first-intersection-of-ray origin-point bottom environment)
+        intersection-left (v/find-first-intersection-of-ray origin-point left environment)
+        intersection-right (v/find-first-intersection-of-ray origin-point right environment)
+        arm-length (->> [intersection-top-left
+                         intersection-top-right
+                         intersection-bottom-left
+                         intersection-bottom-right
+                         intersection-top
+                         intersection-bottom
+                         intersection-left
+                         intersection-right]
+                        (map #(-> %
+                                  (v/- origin-point)
+                                  v/abs))
+                        (apply max))
+        full-arm-length (+ arm-length 30)
+        point-top (-> (v/v 0 -1)
+                      (v/* full-arm-length)
+                      (v/+ origin-point))
+        point-bottom (-> (v/v 0 1)
+                         (v/* full-arm-length)
+                         (v/+ origin-point))
+        point-left (-> (v/v -1 0)
+                       (v/* full-arm-length)
+                       (v/+ origin-point))
+        point-right (-> (v/v 1 0)
+                        (v/* full-arm-length)
+                        (v/+ origin-point))
+        point-top-left diagonal-top-left
+        point-top-right diagonal-top-right
+        point-bottom-left diagonal-bottom-left
+        point-bottom-right diagonal-bottom-right
         line (-> line
                  (dissoc :fimbriation))
         {line-top :line
-         line-top-start :line-start} (line/create line
-                                                  (v/abs (v/- top origin-point))
-                                                  :angle 90
-                                                  :reversed? true
-                                                  :render-options render-options)
-        {line-right :line
-         line-right-start :line-start} (line/create line
-                                                    (v/abs (v/- right origin-point))
-                                                    :reversed? true
-                                                    :angle 180
-                                                    :render-options render-options)
-        {line-bottom :line
-         line-bottom-start :line-start} (line/create line
-                                                     (v/abs (v/- bottom origin-point))
-                                                     :angle -90
-                                                     :reversed? true
-                                                     :render-options render-options)
-        {line-left :line
-         line-left-start :line-start} (line/create line
-                                                   (v/abs (v/- left origin-point))
+         line-top-start :line-start} (line/create2 line
+                                                   origin-point point-top
                                                    :reversed? true
-                                                   :render-options render-options)
-        {line-top-left :line} (line/create line
-                                           (v/abs (v/- diagonal-top-left origin-point))
-                                           :flipped? true
-                                           :angle angle-top-left
-                                           :render-options render-options)
-        {line-top-right :line} (line/create line
-                                            (v/abs (v/- diagonal-top-right origin-point))
+                                                   :real-start 0
+                                                   :real-end arm-length
+                                                   :render-options render-options
+                                                   :environment environment)
+        {line-right :line
+         line-right-start :line-start} (line/create2 line
+                                                     origin-point point-right
+                                                     :reversed? true
+                                                     :real-start 0
+                                                     :real-end arm-length
+                                                     :render-options render-options
+                                                     :environment environment)
+        {line-bottom :line
+         line-bottom-start :line-start} (line/create2 line
+                                                      origin-point point-bottom
+                                                      :reversed? true
+                                                      :real-start 0
+                                                      :real-end arm-length
+                                                      :render-options render-options
+                                                      :environment environment)
+        {line-left :line
+         line-left-start :line-start} (line/create2 line
+                                                    origin-point point-left
+                                                    :reversed? true
+                                                    :real-start 0
+                                                    :real-end arm-length
+                                                    :render-options render-options
+                                                    :environment environment)
+        {line-top-left :line} (line/create2 line
+                                            origin-point point-top-left
                                             :flipped? true
-                                            :angle angle-top-right
-                                            :render-options render-options)
-        {line-bottom-right :line} (line/create line
-                                               (v/abs (v/- diagonal-bottom-right origin-point))
+                                            :real-start 0
+                                            :real-end arm-length
+                                            :render-options render-options
+                                            :environment environment)
+        {line-top-right :line} (line/create2 line
+                                             origin-point point-top-right
+                                             :flipped? true
+                                             :real-start 0
+                                             :real-end arm-length
+                                             :render-options render-options
+                                             :environment environment)
+        {line-bottom-right :line} (line/create2 line
+                                                origin-point point-bottom-right
+                                                :flipped? true
+                                                :real-start 0
+                                                :real-end arm-length
+                                                :render-options render-options
+                                                :environment environment)
+        {line-bottom-left :line} (line/create2 line
+                                               origin-point point-bottom-left
                                                :flipped? true
-                                               :angle angle-bottom-right
-                                               :render-options render-options)
-        {line-bottom-left :line} (line/create line
-                                              (v/abs (v/- diagonal-bottom-left origin-point))
-                                              :flipped? true
-                                              :angle angle-bottom-left
-                                              :render-options render-options)
-        parts [[["M" (v/+ top
+                                               :real-start 0
+                                               :real-end arm-length
+                                               :render-options render-options
+                                               :environment environment)
+        parts [[["M" (v/+ point-top
                           line-top-start)
                  (svg/stitch line-top)
                  "L" origin-point
                  (svg/stitch line-top-left)
                  (infinity/path :clockwise
                                 [:left :top]
-                                [diagonal-top-left
-                                 (v/+ top
+                                [point-top-left
+                                 (v/+ point-top
                                       line-top-start)])
                  "z"]
                 [top-left
                  origin-point
                  top]]
 
-               [["M" (v/+ top
+               [["M" (v/+ point-top
                           line-top-start)
                  (svg/stitch line-top)
                  "L" origin-point
                  (svg/stitch line-top-right)
                  (infinity/path :counter-clockwise
                                 [:right :top]
-                                [diagonal-top-right
-                                 (v/+ top
+                                [point-top-right
+                                 (v/+ point-top
                                       line-top-start)])
                  "z"]
                 [top
                  origin-point
                  top-right]]
 
-               [["M" (v/+ left
+               [["M" (v/+ point-left
                           line-left-start)
                  (svg/stitch line-left)
                  "L" origin-point
                  (svg/stitch line-top-left)
                  (infinity/path :counter-clockwise
                                 [:left :left]
-                                [diagonal-top-left
-                                 (v/+ left
+                                [point-top-left
+                                 (v/+ point-left
                                       line-left-start)])
                  "z"]
                 [left
                  origin-point
                  top-left]]
 
-               [["M" (v/+ right
+               [["M" (v/+ point-right
                           line-right-start)
                  (svg/stitch line-right)
                  "L" origin-point
                  (svg/stitch line-top-right)
                  (infinity/path :clockwise
                                 [:right :right]
-                                [diagonal-top-right
-                                 (v/+ right
+                                [point-top-right
+                                 (v/+ point-right
                                       line-right-start)])
                  "z"]
                 [top-right
                  origin-point
                  right]]
 
-               [["M" (v/+ left
+               [["M" (v/+ point-left
                           line-left-start)
                  (svg/stitch line-left)
                  "L" origin-point
                  (svg/stitch line-bottom-left)
                  (infinity/path :clockwise
                                 [:left :left]
-                                [diagonal-bottom-left
-                                 (v/+ left
+                                [point-bottom-left
+                                 (v/+ point-left
                                       line-left-start)])
                  "z"]
                 [bottom-left
                  origin-point
                  left]]
 
-               [["M" (v/+ right
+               [["M" (v/+ point-right
                           line-right-start)
                  (svg/stitch line-right)
                  "L" origin-point
                  (svg/stitch line-bottom-right)
                  (infinity/path :counter-clockwise
                                 [:right :right]
-                                [diagonal-bottom-right
-                                 (v/+ right
+                                [point-bottom-right
+                                 (v/+ point-right
                                       line-right-start)])
                  "z"]
                 [right
                  origin-point
                  bottom-right]]
 
-               [["M" (v/+ bottom
+               [["M" (v/+ point-bottom
                           line-bottom-start)
                  (svg/stitch line-bottom)
                  "L" origin-point
                  (svg/stitch line-bottom-left)
                  (infinity/path :counter-clockwise
                                 [:left :bottom]
-                                [diagonal-bottom-left
-                                 (v/+ bottom
+                                [point-bottom-left
+                                 (v/+ point-bottom
                                       line-bottom-start)])
                  "z"]
                 [bottom
                  origin-point
                  bottom-left]]
 
-               [["M" (v/+ bottom
+               [["M" (v/+ point-bottom
                           line-bottom-start)
                  (svg/stitch line-bottom)
                  "L" origin-point
                  (svg/stitch line-bottom-right)
                  (infinity/path :clockwise
                                 [:right :bottom]
-                                [diagonal-bottom-right
-                                 (v/+ bottom
+                                [point-bottom-right
+                                 (v/+ point-bottom
                                       line-bottom-start)])
                  "z"]
                 [bottom-right
@@ -215,11 +265,11 @@
          ["M" origin-point
           (svg/stitch line-top-right)])]
        [(svg/make-path
-         ["M" (v/+ left
+         ["M" (v/+ point-left
                    line-left-start)
           (svg/stitch line-left)])]
        [(svg/make-path
-         ["M" (v/+ right
+         ["M" (v/+ point-right
                    line-right-start)
           (svg/stitch line-right)])]
        [(svg/make-path
@@ -229,7 +279,7 @@
          ["M" origin-point
           (svg/stitch line-bottom-right)])]
        [(svg/make-path
-         ["M" (v/+ bottom
+         ["M" (v/+ point-bottom
                    line-bottom-start)
           (svg/stitch line-bottom)])]
        nil]
@@ -241,27 +291,27 @@
                     ["M" origin-point
                      (svg/stitch line-top-left)])}]
         [:path {:d (svg/make-path
-                    ["M" (v/+ top
+                    ["M" (v/+ point-top
                               line-top-start)
                      (svg/stitch line-top)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (svg/stitch line-top-right)])}]
         [:path {:d (svg/make-path
-                    ["M" (v/+ right
+                    ["M" (v/+ point-right
                               line-right-start)
                      (svg/stitch line-right)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (svg/stitch line-bottom-right)])}]
         [:path {:d (svg/make-path
-                    ["M" (v/+ bottom
+                    ["M" (v/+ point-bottom
                               line-bottom-start)
                      (svg/stitch line-bottom)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (svg/stitch line-bottom-left)])}]
         [:path {:d (svg/make-path
-                    ["M" (v/+ left
+                    ["M" (v/+ point-left
                               line-left-start)
                      (svg/stitch line-left)])}]])]))
