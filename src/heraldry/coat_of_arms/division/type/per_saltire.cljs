@@ -16,11 +16,6 @@
    :parts ["chief" "dexter" "sinister" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor]} (options/sanitize division (division-options/options division))
-        points (:points environment)
-        top-left (:top-left points)
-        top-right (:top-right points)
-        bottom-left (:bottom-left points)
-        bottom-right (:bottom-right points)
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment
@@ -34,36 +29,52 @@
         diagonal-top-right (v/+ origin-point relative-top-right)
         diagonal-bottom-left (v/+ origin-point relative-bottom-left)
         diagonal-bottom-right (v/+ origin-point relative-bottom-right)
-        angle-top-left (angle/angle-to-point origin-point diagonal-top-left)
-        angle-top-right (angle/angle-to-point origin-point diagonal-top-right)
-        angle-bottom-left (angle/angle-to-point origin-point diagonal-bottom-left)
-        angle-bottom-right (angle/angle-to-point origin-point diagonal-bottom-right)
+        intersection-top-left (v/find-first-intersection-of-ray origin-point diagonal-top-left environment)
+        intersection-top-right (v/find-first-intersection-of-ray origin-point diagonal-top-right environment)
+        intersection-bottom-left (v/find-first-intersection-of-ray origin-point diagonal-bottom-left environment)
+        intersection-bottom-right (v/find-first-intersection-of-ray origin-point diagonal-bottom-right environment)
+        arm-length (->> [intersection-top-left
+                         intersection-top-right
+                         intersection-bottom-left
+                         intersection-bottom-right]
+                        (map #(-> %
+                                  (v/- origin-point)
+                                  v/abs))
+                        (apply max))
         line (-> line
                  (dissoc :fimbriation))
         {line-top-left :line
-         line-top-left-start :line-start} (line/create line
-                                                       (v/abs (v/- diagonal-top-left origin-point))
-                                                       :angle (+ angle-top-left 180)
-                                                       :reversed? true
-                                                       :render-options render-options)
+         line-top-left-start :line-start} (line/create2 line
+                                                        origin-point diagonal-top-left
+                                                        :reversed? true
+                                                        :real-start 0
+                                                        :real-end arm-length
+                                                        :render-options render-options
+                                                        :environment environment)
         {line-top-right :line
-         line-top-right-start :line-start} (line/create line
-                                                        (v/abs (v/- diagonal-top-right origin-point))
-                                                        :angle angle-top-right
-                                                        :flipped? true
-                                                        :render-options render-options)
+         line-top-right-start :line-start} (line/create2 line
+                                                         origin-point diagonal-top-right
+                                                         :flipped? true
+                                                         :real-start 0
+                                                         :real-end arm-length
+                                                         :render-options render-options
+                                                         :environment environment)
         {line-bottom-right :line
-         line-bottom-right-start :line-start} (line/create line
-                                                           (v/abs (v/- diagonal-bottom-right origin-point))
-                                                           :angle (+ angle-bottom-right 180)
-                                                           :reversed? true
-                                                           :render-options render-options)
+         line-bottom-right-start :line-start} (line/create2 line
+                                                            origin-point diagonal-bottom-right
+                                                            :reversed? true
+                                                            :real-start 0
+                                                            :real-end arm-length
+                                                            :render-options render-options
+                                                            :environment environment)
         {line-bottom-left :line
-         line-bottom-left-start :line-start} (line/create line
-                                                          (v/abs (v/- diagonal-bottom-left origin-point))
-                                                          :angle angle-bottom-left
-                                                          :flipped? true
-                                                          :render-options render-options)
+         line-bottom-left-start :line-start} (line/create2 line
+                                                           origin-point diagonal-bottom-left
+                                                           :flipped? true
+                                                           :real-start 0
+                                                           :real-end arm-length
+                                                           :render-options render-options
+                                                           :environment environment)
         ;; TODO: sub fields need better environment determination, especially with an adjusted origin,
         ;; the resulting environments won't be very well centered
         parts [[["M" (v/+ diagonal-top-left
@@ -78,8 +89,8 @@
                                  (v/+ diagonal-top-left
                                       line-top-left-start)])
                  "z"]
-                [top-left
-                 top-right
+                [intersection-top-left
+                 intersection-top-right
                  origin-point]]
 
                [["M" (v/+ diagonal-top-left
@@ -94,8 +105,8 @@
                                  (v/+ diagonal-top-left
                                       line-top-left-start)])
                  "z"]
-                [top-left
-                 bottom-left
+                [intersection-top-left
+                 intersection-bottom-left
                  origin-point]]
 
                [["M" (v/+ diagonal-bottom-right
@@ -110,8 +121,8 @@
                                  (v/+ diagonal-bottom-right
                                       line-bottom-right-start)])
                  "z"]
-                [top-right
-                 bottom-right
+                [intersection-top-right
+                 intersection-bottom-right
                  origin-point]]
 
                [["M" (v/+ diagonal-bottom-right
@@ -126,8 +137,8 @@
                                  (v/+ diagonal-bottom-right
                                       line-bottom-right-start)])
                  "z"]
-                [bottom-left
-                 bottom-right
+                [intersection-bottom-left
+                 intersection-bottom-right
                  origin-point]]]]
 
     [:<>
