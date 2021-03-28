@@ -28,21 +28,42 @@
                                (* stretch-y))
         row1 (- (:y origin-point) middle-half-height)
         row2 (+ (:y origin-point) middle-half-height)
-        first-left (v/v (:x left) row1)
-        first-right (v/v (:x right) row1)
-        second-left (v/v (:x left) row2)
-        second-right (v/v (:x right) row2)
+        [first-left first-right] (v/environment-intersections
+                                  (v/v (:x left) row1)
+                                  (v/v (:x right) row1)
+                                  environment)
+        [second-left second-right] (v/environment-intersections
+                                    (v/v (:x left) row2)
+                                    (v/v (:x right) row2)
+                                    environment)
+        shared-start-x (- (min (:x first-left)
+                               (:x second-left))
+                          30)
+        real-start (min (-> first-left :x (- shared-start-x))
+                        (-> second-left :x (- shared-start-x)))
+        real-end (max (-> first-right :x (- shared-start-x))
+                      (-> second-right :x (- shared-start-x)))
+        shared-end-x (+ real-end 30)
+        first-left (v/v shared-start-x (:y first-left))
+        second-left (v/v shared-start-x (:y second-left))
+        first-right (v/v shared-end-x (:y first-right))
+        second-right (v/v shared-end-x (:y second-right))
         {line-one :line
-         line-one-start :line-start} (line/create line
-                                                  (:x (v/- right left))
-                                                  :render-options render-options)
+         line-one-start :line-start} (line/create2 line
+                                                   first-left first-right
+                                                   :real-start real-start
+                                                   :real-end real-end
+                                                   :render-options render-options
+                                                   :environment environment)
         {line-reversed :line
-         line-reversed-start :line-start} (line/create line
-                                                       (:x (v/- right left))
-                                                       :reversed? true
-                                                       :flipped? true
-                                                       :angle 180
-                                                       :render-options render-options)
+         line-reversed-start :line-start} (line/create2 line
+                                                        second-left second-right
+                                                        :reversed? true
+                                                        :flipped? true
+                                                        :real-start real-start
+                                                        :real-end real-end
+                                                        :render-options render-options
+                                                        :environment environment)
         parts [[["M" (v/+ first-left
                           line-one-start)
                  (svg/stitch line-one)
