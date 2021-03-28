@@ -8,6 +8,7 @@
             [heraldry.coat-of-arms.line.type.embattled :as embattled]
             [heraldry.coat-of-arms.line.type.embattled-grady :as embattled-grady]
             [heraldry.coat-of-arms.line.type.embattled-in-crosses :as embattled-in-crosses]
+            [heraldry.coat-of-arms.line.type.enarched :as enarched]
             [heraldry.coat-of-arms.line.type.engrailed :as engrailed]
             [heraldry.coat-of-arms.line.type.fir-tree-topped :as fir-tree-topped]
             [heraldry.coat-of-arms.line.type.fir-twigged :as fir-twigged]
@@ -72,7 +73,8 @@
    #'fir-tree-topped/pattern
    #'fir-twigged/pattern
    #'angled/full
-   #'bevilled/full])
+   #'bevilled/full
+   #'enarched/full])
 
 (def kinds-function-map
   (->> lines
@@ -222,6 +224,19 @@
                                [:flipped?]
                                [:fimbriation]]
                               {[:width :default] 15})
+      :enarched (options/pick default-options
+                              [[:type]
+                               [:eccentricity]
+                               [:height]
+                               [:width]
+                               [:flipped?]
+                               [:fimbriation]]
+                              {[:width :min] 1
+                               [:width :max] 100
+                               [:width :default] 50
+                               [:height :min] 0
+                               [:height :max] 1
+                               [:height :default] 0.5})
       (options/pick default-options
                     [[:type]
                      [:eccentricity]
