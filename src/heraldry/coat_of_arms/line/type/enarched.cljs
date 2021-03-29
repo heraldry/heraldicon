@@ -5,8 +5,7 @@
   {:display-name "Enarched / Embowed"
    :value :enarched
    :full? true}
-  [{:keys [height width
-           eccentricity] :as _line-data}
+  [{:keys [height width eccentricity] :as _line-data}
    length
    {:keys [real-start real-end] :as _line-options}]
   (let [real-start (or real-start 0)
