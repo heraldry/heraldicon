@@ -17,6 +17,8 @@
    :parts        ["chief" "dexter" "sinister"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor]}             (options/sanitize division (division-options/options division))
+        opposite-line                            (division-options/sanitize-opposite-line division line)
+        extra-line                               (division-options/sanitize-extra-line division line)
         points                                   (:points environment)
         unadjusted-origin-point                  (position/calculate origin environment)
         {origin-point :real-origin
@@ -47,19 +49,19 @@
                                                               :reversed? true
                                                               :render-options render-options)
         {line-top-right       :line
-         line-top-right-start :line-start}       (line/create line
+         line-top-right-start :line-start}       (line/create opposite-line
                                                               (v/abs (v/- diagonal-top-right origin-point))
                                                               :angle angle-top-right
                                                               :flipped? true
                                                               :render-options render-options)
         {line-bottom       :line
-         line-bottom-start :line-start}          (line/create line
+         line-bottom-start :line-start}          (line/create extra-line
                                                               (v/abs (v/- bottom origin-point))
                                                               :flipped? true
                                                               :angle 90
                                                               :render-options render-options)
         {line-bottom-reversed       :line
-         line-bottom-reversed-start :line-start} (line/create line
+         line-bottom-reversed-start :line-start} (line/create extra-line
                                                               (v/abs (v/- bottom origin-point))
                                                               :angle -90
                                                               :reversed? true
@@ -136,3 +138,4 @@
         [:path {:d (svg/make-path
                     ["M" origin-point
                      (svg/stitch line-bottom)])}]])]))
+

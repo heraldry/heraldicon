@@ -6,57 +6,59 @@
             [heraldry.util :as util]))
 
 (def default-options
-  {:line      line/default-options
-   :origin    (-> position/default-options
-                  (dissoc :alignment))
-   :anchor    (-> position/anchor-default-options
-                  (dissoc :alignment))
-   :variant   {:type    :choice
-               :choices [["Default" :default]
-                         ["Counter" :counter]
-                         ["In pale" :in-pale]
-                         ["En point" :en-point]
-                         ["Ancien" :ancien]]
-               :default :default}
-   :thickness {:type    :range
-               :min     0
-               :max     0.5
-               :default 0.1}
-   :layout    {:num-fields-x    {:type     :range
-                                 :min      1
-                                 :max      20
-                                 :default  6
-                                 :integer? true}
-               :num-fields-y    {:type     :range
-                                 :min      1
-                                 :max      20
-                                 :default  6
-                                 :integer? true}
-               :num-base-fields {:type     :range
-                                 :min      2
-                                 :max      8
-                                 :default  2
-                                 :integer? true}
-               :offset-x        {:type    :range
-                                 :min     -1
-                                 :max     1
-                                 :default 0}
-               :offset-y        {:type    :range
-                                 :min     -1
-                                 :max     1
-                                 :default 0}
-               :stretch-x       {:type    :range
-                                 :min     0.5
-                                 :max     2
-                                 :default 1}
-               :stretch-y       {:type    :range
-                                 :min     0.5
-                                 :max     2
-                                 :default 1}
-               :rotation        {:type    :range
-                                 :min     -90
-                                 :max     90
-                                 :default 0}}})
+  {:line          line/default-options
+   :opposite-line line/default-options
+   :extra-line    line/default-options
+   :origin        (-> position/default-options
+                      (dissoc :alignment))
+   :anchor        (-> position/anchor-default-options
+                      (dissoc :alignment))
+   :variant       {:type    :choice
+                   :choices [["Default" :default]
+                             ["Counter" :counter]
+                             ["In pale" :in-pale]
+                             ["En point" :en-point]
+                             ["Ancien" :ancien]]
+                   :default :default}
+   :thickness     {:type    :range
+                   :min     0
+                   :max     0.5
+                   :default 0.1}
+   :layout        {:num-fields-x    {:type     :range
+                                     :min      1
+                                     :max      20
+                                     :default  6
+                                     :integer? true}
+                   :num-fields-y    {:type     :range
+                                     :min      1
+                                     :max      20
+                                     :default  6
+                                     :integer? true}
+                   :num-base-fields {:type     :range
+                                     :min      2
+                                     :max      8
+                                     :default  2
+                                     :integer? true}
+                   :offset-x        {:type    :range
+                                     :min     -1
+                                     :max     1
+                                     :default 0}
+                   :offset-y        {:type    :range
+                                     :min     -1
+                                     :max     1
+                                     :default 0}
+                   :stretch-x       {:type    :range
+                                     :min     0.5
+                                     :max     2
+                                     :default 1}
+                   :stretch-y       {:type    :range
+                                     :min     0.5
+                                     :max     2
+                                     :default 1}
+                   :rotation        {:type    :range
+                                     :min     -90
+                                     :max     90
+                                     :default 0}}})
 
 (defn options [division]
   (when division
@@ -214,9 +216,6 @@
                                                        {[:line]                   (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
                                                                                       (dissoc :fimbriation))
-                                                        [:opposite-line]          (-> line-style
-                                                                                      (options/override-if-exists [:offset :min] 0)
-                                                                                      (dissoc :fimbriation))
                                                         [:origin :alignment]      nil
                                                         [:anchor :point :choices] (util/filter-choices
                                                                                    position/anchor-point-choices
@@ -244,9 +243,6 @@
                                                         [:origin]
                                                         [:anchor]]
                                                        {[:line]                   (-> line-style
-                                                                                      (options/override-if-exists [:offset :min] 0)
-                                                                                      (dissoc :fimbriation))
-                                                        [:opposite-line]          (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
                                                                                       (dissoc :fimbriation))
                                                         [:origin :alignment]      nil
@@ -418,6 +414,8 @@
                                                         [:line :fimbriation]      nil})
             :tierced-per-pairle          (options/pick default-options
                                                        [[:line]
+                                                        [:opposite-line]
+                                                        [:extra-line]
                                                         [:origin]
                                                         [:anchor]]
                                                        {[:line]                   (-> line-style
@@ -426,11 +424,16 @@
                                                         [:opposite-line]          (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
                                                                                       (dissoc :fimbriation))
+                                                        [:extra-line]          (-> line-style
+                                                                                   (options/override-if-exists [:offset :min] 0)
+                                                                                   (dissoc :fimbriation))
                                                         [:anchor :point :choices] (util/filter-choices
                                                                                    position/anchor-point-choices
                                                                                    [:top-left :top-right :angle])})
             :tierced-per-pairle-reversed (options/pick default-options
                                                        [[:line]
+                                                        [:opposite-line]
+                                                        [:extra-line]
                                                         [:origin]
                                                         [:anchor]]
                                                        {[:line]                   (-> line-style
@@ -439,6 +442,9 @@
                                                         [:opposite-line]          (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
                                                                                       (dissoc :fimbriation))
+                                                        [:extra-line]          (-> line-style
+                                                                                   (options/override-if-exists [:offset :min] 0)
+                                                                                   (dissoc :fimbriation))
                                                         [:anchor :point :choices] (util/filter-choices
                                                                                    position/anchor-point-choices
                                                                                    [:bottom-left :bottom-right :angle])})
@@ -447,4 +453,30 @@
           (update-in [:anchor] (fn [anchor]
                                  (when anchor
                                    (position/adjust-options anchor (-> division :anchor)))))))))
+
+(defn sanitize-opposite-line [division line]
+  (-> (options/sanitize
+       (util/deep-merge-with (fn [_current-value new-value]
+                               new-value) line
+                             (into {}
+                                   (filter (fn [[_ v]]
+                                             (some? v))
+                                           (:opposite-line division))))
+       (-> division options :opposite-line))
+      (assoc :flipped? (if (-> division :opposite-line :flipped?)
+                         (not (:flipped? line))
+                         (:flipped? line)))))
+
+(defn sanitize-extra-line [division line]
+  (-> (options/sanitize
+       (util/deep-merge-with (fn [_current-value new-value]
+                               new-value) line
+                             (into {}
+                                   (filter (fn [[_ v]]
+                                             (some? v))
+                                           (:extra-line division))))
+       (-> division options :extra-line))
+      (assoc :flipped? (if (-> division :extra-line :flipped?)
+                         (not (:flipped? line))
+                         (:flipped? line)))))
 
