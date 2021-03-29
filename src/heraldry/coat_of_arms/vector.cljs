@@ -201,20 +201,50 @@
        (group-by (juxt :x :y :parent-index))
        (map (comp first second))))
 
+(defn prune-point [intersections point]
+  (->> intersections
+       (filter #(not= (select-keys % [:x :y])
+                      (select-keys point [:x :y])))))
+
+(defn inside-shape? [point shape]
+  (let [ray           (str "M" (->str point) "l" 10000 "," 9000)
+        intersections (-> (path-intersection ray shape)
+                          (js->clj :keywordize-keys true)
+                          prune-duplicates
+                          (prune-point point))]
+    (-> intersections
+        count
+        odd?)))
+
+(defn inside-environment? [point environment]
+  (->> environment
+       (tree-seq map? (comp list :parent-environment :meta))
+       (map :shape)
+       (filter identity)
+       (map-indexed (fn [parent-idx shape]
+                      ;; there's some inaccuracy, where a point that previously was found
+                      ;; as intersection won't be considered inside a shape when tested on
+                      ;; its own, so for those cases check whether it was detected as an
+                      ;; intersection for this parent index
+                      (or (-> point :parent-index (= parent-idx))
+                          (inside-shape? point shape))))
+       (every? true?)))
+
 (defn find-intersections [from to environment]
-  (let [shapes           (->> environment
-                              (tree-seq map? (comp list :parent-environment :meta))
-                              (map :shape)
-                              (filter identity))
-        line-path        (str "M" (->str from)
-                              "L" (->str to))
-        intersections    (->> shapes
-                              (map-indexed (fn [parent-idx shape]
-                                             (-> (path-intersection line-path shape)
-                                                 (js->clj :keywordize-keys true)
-                                                 (->> (map #(assoc % :parent-index parent-idx))))))
-                              (apply concat)
-                              vec)]
+  (let [shapes        (->> environment
+                           (tree-seq map? (comp list :parent-environment :meta))
+                           (map :shape)
+                           (filter identity))
+        line-path     (str "M" (->str from)
+                           "L" (->str to))
+        intersections (->> shapes
+                           (map-indexed (fn [parent-idx shape]
+                                          (-> (path-intersection line-path shape)
+                                              (js->clj :keywordize-keys true)
+                                              (->> (map #(assoc % :parent-index parent-idx))))))
+                           (apply concat)
+                           (filter #(inside-environment? % environment))
+                           vec)]
     (->> intersections
          prune-duplicates
          (sort-by :t1))))
@@ -225,10 +255,14 @@
                              normal
                              (* 1000)
                              (+ origin))
-        intersections    (find-intersections origin line-end environment)]
+        intersections    (find-intersections origin line-end environment)
+        origin-inside?   (inside-environment? origin environment)
+        select-fn        (if origin-inside?
+                           first
+                           second)]
     (-> intersections
         (->> (filter (comp pos? :t1)))
-        first
+        select-fn
         (select-keys [:x :y]))))
 
 (defn angle-to-point [p1 p2]
@@ -241,13 +275,13 @@
 (defn bounding-box-intersections [from to environment]
   (let [{:keys [top-left top-right
                 bottom-left bottom-right]} (:points environment)
-        line-path        (str "M" (->str from)
-                              "L" (->str to))
-        box-shape (str "M" (->str top-left)
-                       "L" (->str top-right)
-                       "L" (->str bottom-right)
-                       "L" (->str bottom-left)
-                       "z")]
+        line-path                          (str "M" (->str from)
+                                                "L" (->str to))
+        box-shape                          (str "M" (->str top-left)
+                                                "L" (->str top-right)
+                                                "L" (->str bottom-right)
+                                                "L" (->str bottom-left)
+                                                "z")]
     (-> (path-intersection line-path box-shape)
         (js->clj :keywordize-keys true)
         prune-duplicates
@@ -255,8 +289,8 @@
 
 (defn environment-intersections [from to environment]
   (let [[bbox-first bbox-second] (bounding-box-intersections from to environment)
-        middle (-> (+ bbox-first bbox-second)
-                   (/ 2))]
+        middle                   (-> (+ bbox-first bbox-second)
+                                     (/ 2))]
     [(find-first-intersection-of-ray middle from environment)
      (find-first-intersection-of-ray middle to environment)]))
 
