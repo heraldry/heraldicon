@@ -16,6 +16,7 @@
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
                 geometry]}               (options/sanitize ordinary (ordinary-options/options ordinary))
+        opposite-line                    (ordinary-options/sanitize-opposite-line ordinary line)
         points                           (:points environment)
         top-left                         (:top-left points)
         top-right                        (:top-right points)
@@ -70,7 +71,7 @@
                                                        :render-options render-options
                                                        :environment environment)
         {line-right :line
-         :as        line-right-data}     (line/create2 line
+         :as        line-right-data}     (line/create2 opposite-line
                                                        point right-point
                                                        :real-start 0
                                                        :real-end end

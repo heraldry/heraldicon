@@ -149,6 +149,7 @@
                                       [[:origin]
                                        [:anchor]
                                        [:line]
+                                       [:opposite-line]
                                        [:geometry]]
                                       (let [anchor-points #{:top-left :top :top-right
                                                             :left :right
@@ -156,6 +157,8 @@
                                                             :fess :honour :nombril :base :chief
                                                             :angle}]
                                         {[:line]                    (-> line-style
+                                                                        (options/override-if-exists [:offset :min] 0))
+                                         [:opposite-line]           (-> line-style
                                                                         (options/override-if-exists [:offset :min] 0))
                                          [:geometry :size-mode]     {:type    :choice
                                                                      :choices [["Thickness" :thickness]
