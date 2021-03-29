@@ -18,9 +18,9 @@
    #'base/render
    #'bend/render
    #'bend-sinister/render
-   #'cross/render
-   #'saltire/render
    #'chevron/render
+   #'saltire/render
+   #'cross/render
    #'pile/render])
 
 (def kinds-function-map
