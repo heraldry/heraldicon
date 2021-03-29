@@ -53,25 +53,36 @@
                                   0))
         {left-point :left
          right-point :right} (pile/diagonals origin-point point thickness)
-        angle-left (angle/angle-to-point left-point point)
-        angle-right (angle/angle-to-point right-point point)
+        intersection-left (v/find-first-intersection-of-ray point left-point environment)
+        intersection-right (v/find-first-intersection-of-ray point right-point environment)
+        end-left (-> intersection-left
+                     (v/- point)
+                     v/abs)
+        end-right (-> intersection-right
+                      (v/- point)
+                      v/abs)
+        end (max end-left end-right)
         line (-> line
                  (update-in [:fimbriation :thickness-1] (util/percent-of thickness-base))
                  (update-in [:fimbriation :thickness-2] (util/percent-of thickness-base)))
         {line-left :line
          line-left-start :line-start
          line-left-end :line-end
-         :as line-left-data} (line/create line
-                                          (v/abs (v/- left-point point))
-                                          :angle angle-left
-                                          :reversed? true
-                                          :render-options render-options)
+         :as line-left-data} (line/create2 line
+                                           point left-point
+                                           :reversed? true
+                                           :real-start 0
+                                           :real-end end
+                                           :render-options render-options
+                                           :environment environment)
         {line-right :line
          line-right-start :line-start
-         :as line-right-data} (line/create opposite-line
-                                           (v/abs (v/- right-point point))
-                                           :angle (- angle-right 180)
-                                           :render-options render-options)
+         :as line-right-data} (line/create2 opposite-line
+                                            point right-point
+                                            :real-start 0
+                                            :real-end end
+                                            :render-options render-options
+                                            :environment environment)
         parts [[["M" (v/+ left-point
                           line-left-end)
                  (svg/stitch line-right)
