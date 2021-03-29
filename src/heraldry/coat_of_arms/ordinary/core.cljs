@@ -18,9 +18,9 @@
    #'base/render
    #'bend/render
    #'bend-sinister/render
-   #'cross/render
-   #'saltire/render
    #'chevron/render
+   #'saltire/render
+   #'cross/render
    #'pile/render])
 
 (def kinds-function-map
@@ -40,3 +40,4 @@
 (defn render [{:keys [type] :as ordinary} parent environment context]
   (let [function (get kinds-function-map type)]
     [function ordinary parent environment context]))
+
