@@ -215,9 +215,13 @@
                                                           [:anchor :type]           nil}))
             :per-saltire                 (options/pick default-options
                                                        [[:line]
+                                                        [:opposite-line]
                                                         [:origin]
                                                         [:anchor]]
                                                        {[:line]                   (-> line-style
+                                                                                      (options/override-if-exists [:offset :min] 0)
+                                                                                      (dissoc :fimbriation))
+                                                        [:opposite-line]          (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
                                                                                       (dissoc :fimbriation))
                                                         [:origin :alignment]      nil
@@ -226,12 +230,16 @@
                                                                                    [:top-left :top-right :bottom-left :bottom-right :angle])})
             :quartered                   (options/pick default-options
                                                        [[:line]
+                                                        [:opposite-line]
                                                         [:origin :point]
                                                         [:origin :offset-x]
                                                         [:origin :offset-y]]
                                                        {[:line] (-> line-style
                                                                     (options/override-if-exists [:offset :min] 0)
-                                                                    (dissoc :fimbriation))})
+                                                                    (dissoc :fimbriation))
+                                                        [:opposite-line]          (-> line-style
+                                                                                      (options/override-if-exists [:offset :min] 0)
+                                                                                      (dissoc :fimbriation))})
             :quarterly                   (options/pick default-options
                                                        [[:layout :num-base-fields]
                                                         [:layout :num-fields-x]
@@ -244,9 +252,13 @@
                                                         [:layout :num-fields-y :default] 4})
             :gyronny                     (options/pick default-options
                                                        [[:line]
+                                                        [:opposite-line]
                                                         [:origin]
                                                         [:anchor]]
                                                        {[:line]                   (-> line-style
+                                                                                      (options/override-if-exists [:offset :min] 0)
+                                                                                      (dissoc :fimbriation))
+                                                        [:opposite-line]          (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
                                                                                       (dissoc :fimbriation))
                                                         [:origin :alignment]      nil

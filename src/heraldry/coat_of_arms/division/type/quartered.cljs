@@ -15,6 +15,7 @@
    :parts        ["I" "II" "III" "IV"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]}           (options/sanitize division (division-options/options division))
+        opposite-line                   (division-options/sanitize-opposite-line division line)
         points                          (:points environment)
         origin-point                    (position/calculate origin environment :fess)
         top                             (assoc (:top points) :x (:x origin-point))
@@ -41,13 +42,13 @@
         point-top                       (-> (v/v 0 -1)
                                             (v/* full-arm-length)
                                             (v/+ origin-point))
-        point-bottom                       (-> (v/v 0 1)
+        point-bottom                    (-> (v/v 0 1)
                                                (v/* full-arm-length)
                                                (v/+ origin-point))
-        point-left                       (-> (v/v -1 0)
+        point-left                      (-> (v/v -1 0)
                                              (v/* full-arm-length)
                                              (v/+ origin-point))
-        point-right                       (-> (v/v 1 0)
+        point-right                     (-> (v/v 1 0)
                                               (v/* full-arm-length)
                                               (v/+ origin-point))
         line                            (-> line
@@ -61,7 +62,7 @@
                                                       :render-options render-options
                                                       :environment environment)
         {line-right       :line
-         line-right-start :line-start}  (line/create2 line
+         line-right-start :line-start}  (line/create2 opposite-line
                                                       origin-point point-right
                                                       :flipped? true
                                                       :real-start 0
@@ -77,7 +78,7 @@
                                                       :render-options render-options
                                                       :environment environment)
         {line-left       :line
-         line-left-start :line-start}   (line/create2 line
+         line-left-start :line-start}   (line/create2 opposite-line
                                                       origin-point point-left
                                                       :flipped? true
                                                       :real-start 0

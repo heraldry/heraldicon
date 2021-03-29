@@ -16,6 +16,7 @@
    :parts        ["chief" "dexter" "sinister" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor]}                 (options/sanitize division (division-options/options division))
+        opposite-line                                (division-options/sanitize-opposite-line division line)
         {origin-point :real-origin
          anchor-point :real-anchor}                  (angle/calculate-origin-and-anchor
                                                       environment
@@ -52,7 +53,7 @@
                                                                    :render-options render-options
                                                                    :environment environment)
         {line-top-right       :line
-         line-top-right-start :line-start}           (line/create2 line
+         line-top-right-start :line-start}           (line/create2 opposite-line
                                                                    origin-point diagonal-top-right
                                                                    :flipped? true
                                                                    :real-start 0
@@ -68,7 +69,7 @@
                                                                    :render-options render-options
                                                                    :environment environment)
         {line-bottom-left       :line
-         line-bottom-left-start :line-start}         (line/create2 line
+         line-bottom-left-start :line-start}         (line/create2 opposite-line
                                                                    origin-point diagonal-bottom-left
                                                                    :flipped? true
                                                                    :real-start 0
