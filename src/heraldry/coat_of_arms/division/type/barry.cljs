@@ -10,7 +10,7 @@
 
 (defn barry-parts [{:keys [num-fields-y
                            offset-y
-                           stretch-y]} top-left bottom-right line hints render-options]
+                           stretch-y]} top-left bottom-right line hints render-options environment]
   (let [offset-y (or offset-y 0)
         stretch-y (or stretch-y 1)
         height (- (:y bottom-right)
@@ -32,17 +32,24 @@
         width (- x2 x1)
         {line-right :line
          line-right-start :line-start
-         line-right-end :line-end} (line/create line
-                                                width
-                                                :render-options render-options)
+         line-right-end :line-end} (line/create2 line
+                                                 top-left
+                                                 (v/+ top-left (v/v width 0))
+                                                 :real-start 0
+                                                 :real-end width
+                                                 :render-options render-options
+                                                 :environment environment)
         {line-left :line
          line-left-start :line-start
-         line-left-end :line-end} (line/create line
-                                               width
-                                               :angle 180
-                                               :flipped? true
-                                               :reversed? true
-                                               :render-options render-options)
+         line-left-end :line-end} (line/create2 line
+                                                top-left
+                                                (v/+ top-left (v/v width 0))
+                                                :flipped? true
+                                                :reversed? true
+                                                :real-start 0
+                                                :real-end width
+                                                :render-options render-options
+                                                :environment environment)
         parts (->> (range num-fields-y)
                    (map (fn [i]
                           (let [y1 (+ y0 (* i bar-height))
@@ -157,7 +164,7 @@
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (barry-parts layout top-left bottom-right line hints render-options)]
+        [parts overlap outlines] (barry-parts layout top-left bottom-right line hints render-options environment)]
     [:<>
      [shared/make-division
       (shared/division-context-key type) fields parts
