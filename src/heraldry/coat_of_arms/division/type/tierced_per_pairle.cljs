@@ -40,32 +40,43 @@
         [relative-right relative-left] (chevron/arm-diagonals :chief origin-point anchor-point)
         diagonal-top-left (v/+ origin-point relative-left)
         diagonal-top-right (v/+ origin-point relative-right)
-        angle-top-left (angle/angle-to-point origin-point diagonal-top-left)
-        angle-top-right (angle/angle-to-point origin-point diagonal-top-right)
+        intersection-left (v/find-first-intersection-of-ray origin-point diagonal-top-left environment)
+        intersection-right (v/find-first-intersection-of-ray origin-point diagonal-top-right environment)
+        end-left (-> intersection-left
+                     (v/- origin-point)
+                     v/abs)
+        end-right (-> intersection-right
+                      (v/- origin-point)
+                      v/abs)
+        end (max end-left end-right)
         {line-top-left :line
-         line-top-left-start :line-start} (line/create line
-                                                       (v/abs (v/- diagonal-top-left origin-point))
-                                                       :angle (+ angle-top-left 180)
-                                                       :reversed? true
-                                                       :render-options render-options)
+         line-top-left-start :line-start} (line/create2 line
+                                                        origin-point diagonal-top-left
+                                                        :reversed? true
+                                                        :real-start 0
+                                                        :real-end end
+                                                        :render-options render-options
+                                                        :environment environment)
         {line-top-right :line
-         line-top-right-start :line-start} (line/create opposite-line
-                                                        (v/abs (v/- diagonal-top-right origin-point))
-                                                        :angle angle-top-right
-                                                        :flipped? true
-                                                        :render-options render-options)
+         line-top-right-start :line-start} (line/create2 opposite-line
+                                                         origin-point diagonal-top-right
+                                                         :flipped? true
+                                                         :real-start 0
+                                                         :real-end end
+                                                         :render-options render-options
+                                                         :environment environment)
         {line-bottom :line
-         line-bottom-start :line-start} (line/create extra-line
-                                                     (v/abs (v/- bottom origin-point))
-                                                     :flipped? true
-                                                     :angle 90
-                                                     :render-options render-options)
+         line-bottom-start :line-start} (line/create2 extra-line
+                                                      origin-point bottom
+                                                      :flipped? true
+                                                      :render-options render-options
+                                                      :environment environment)
         {line-bottom-reversed :line
-         line-bottom-reversed-start :line-start} (line/create extra-line
-                                                              (v/abs (v/- bottom origin-point))
-                                                              :angle -90
-                                                              :reversed? true
-                                                              :render-options render-options)
+         line-bottom-reversed-start :line-start} (line/create2 extra-line
+                                                               origin-point bottom
+                                                               :reversed? true
+                                                               :render-options render-options
+                                                               :environment environment)
         parts [[["M" (v/+ diagonal-top-left
                           line-top-left-start)
                  (svg/stitch line-top-left)
