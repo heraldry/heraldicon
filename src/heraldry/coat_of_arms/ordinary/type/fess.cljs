@@ -26,6 +26,26 @@
                         ((util/percent-of height)))
         row1 (- (:y origin-point) (/ band-height 2))
         row2 (+ row1 band-height)
+        [first-left first-right] (v/environment-intersections
+                                  (v/v (:x left) row1)
+                                  (v/v (:x right) row1)
+                                  environment)
+        [second-left second-right] (v/environment-intersections
+                                    (v/v (:x left) row2)
+                                    (v/v (:x right) row2)
+                                    environment)
+        shared-start-x (- (min (:x first-left)
+                               (:x second-left))
+                          30)
+        real-start (min (-> first-left :x (- shared-start-x))
+                        (-> second-left :x (- shared-start-x)))
+        real-end (max (-> first-right :x (- shared-start-x))
+                      (-> second-right :x (- shared-start-x)))
+        shared-end-x (+ real-end 30)
+        first-left (v/v shared-start-x (:y first-left))
+        second-left (v/v shared-start-x (:y second-left))
+        first-right (v/v shared-end-x (:y first-right))
+        second-right (v/v shared-end-x (:y second-right))
         line (-> line
                  (update-in [:fimbriation :thickness-1] (util/percent-of height))
                  (update-in [:fimbriation :thickness-2] (util/percent-of height)))
@@ -34,20 +54,21 @@
                           (update-in [:fimbriation :thickness-2] (util/percent-of height)))
         {line-one :line
          line-one-start :line-start
-         :as line-one-data} (line/create line
-                                         (:x (v/- right left))
-                                         :render-options render-options)
+         :as line-one-data} (line/create2 line
+                                          first-left first-right
+                                          :real-start real-start
+                                          :real-end real-end
+                                          :render-options render-options
+                                          :environment environment)
         {line-reversed :line
          line-reversed-start :line-start
-         :as line-reversed-data} (line/create opposite-line
-                                              (:x (v/- right left))
-                                              :reversed? true
-                                              :angle 180
-                                              :render-options render-options)
-        first-left (v/v (:x left) row1)
-        first-right (v/v (:x right) row1)
-        second-left (v/v (:x left) row2)
-        second-right (v/v (:x right) row2)
+         :as line-reversed-data} (line/create2 opposite-line
+                                               second-left second-right
+                                               :reversed? true
+                                               :real-start real-start
+                                               :real-end real-end
+                                               :render-options render-options
+                                               :environment environment)
         parts [[["M" (v/+ first-left
                           line-one-start)
                  (svg/stitch line-one)
