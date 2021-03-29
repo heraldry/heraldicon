@@ -115,7 +115,7 @@
                   :max 1
                   :default 0.5}
    :height {:type :range
-            :min 0.2
+            :min 0
             :max 3
             :default 1}
    :width {:type :range
