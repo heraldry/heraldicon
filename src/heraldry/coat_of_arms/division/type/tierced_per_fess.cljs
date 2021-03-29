@@ -44,10 +44,10 @@
         real-end                          (max (-> first-right :x (- shared-start-x))
                                                (-> second-right :x (- shared-start-x)))
         shared-end-x                      (+ real-end 30)
-        first-left                         (v/v shared-start-x (:y first-left))
-        second-left                        (v/v shared-start-x (:y second-left))
-        first-right                      (v/v shared-end-x (:y first-right))
-        second-right                     (v/v shared-end-x (:y second-right))
+        first-left                        (v/v shared-start-x (:y first-left))
+        second-left                       (v/v shared-start-x (:y second-left))
+        first-right                       (v/v shared-end-x (:y first-right))
+        second-right                      (v/v shared-end-x (:y second-right))
         {line-one       :line
          line-one-start :line-start}      (line/create2 line
                                                         first-left first-right
