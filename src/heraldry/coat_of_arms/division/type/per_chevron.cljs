@@ -18,6 +18,7 @@
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
                 variant]} (options/sanitize division (division-options/options division))
+        opposite-line (division-options/sanitize-opposite-line division line)
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment)
         top-left (:top-left points)
@@ -63,7 +64,7 @@
                                            :environment environment)
         {line-right :line
          line-right-end :line-end
-         :as line-right-data} (line/create2 line
+         :as line-right-data} (line/create2 opposite-line
                                             origin-point diagonal-right
                                             :real-start 0
                                             :real-end end
