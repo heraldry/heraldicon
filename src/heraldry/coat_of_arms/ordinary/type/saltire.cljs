@@ -41,9 +41,6 @@
         diagonal-top-right                                           (v/+ origin-point relative-top-right)
         diagonal-bottom-left                                         (v/+ origin-point relative-bottom-left)
         diagonal-bottom-right                                        (v/+ origin-point relative-bottom-right)
-        angle-top-left                                               (angle/angle-to-point origin-point diagonal-top-left)
-        angle-top-right                                              (angle/angle-to-point origin-point diagonal-top-right)
-        angle-bottom-left                                            (angle/angle-to-point origin-point diagonal-bottom-left)
         angle-bottom-right                                           (angle/angle-to-point origin-point diagonal-bottom-right)
         angle                                                        (-> angle-bottom-right (* Math/PI) (/ 180))
         dx                                                           (/ band-width 2 (Math/sin angle))
@@ -64,61 +61,117 @@
         bottom-left-lower                                            (v/+ diagonal-bottom-left offset-bottom)
         bottom-right-upper                                           (v/+ diagonal-bottom-right offset-top)
         bottom-right-lower                                           (v/+ diagonal-bottom-right offset-bottom)
+        intersection-top-left-upper                                  (v/find-first-intersection-of-ray corner-top top-left-upper environment)
+        intersection-top-right-upper                                 (v/find-first-intersection-of-ray corner-top top-right-upper environment)
+        intersection-top-left-lower                                  (v/find-first-intersection-of-ray corner-left top-left-lower environment)
+        intersection-top-right-lower                                 (v/find-first-intersection-of-ray corner-right top-right-lower environment)
+        intersection-bottom-left-upper                               (v/find-first-intersection-of-ray corner-left bottom-left-upper environment)
+        intersection-bottom-right-upper                              (v/find-first-intersection-of-ray corner-right bottom-right-upper environment)
+        intersection-bottom-left-lower                               (v/find-first-intersection-of-ray corner-bottom bottom-left-lower environment)
+        intersection-bottom-right-lower                              (v/find-first-intersection-of-ray corner-bottom bottom-right-lower environment)
+        end-top-left-upper                                           (-> intersection-top-left-upper
+                                                                         (v/- corner-top)
+                                                                         v/abs)
+        end-top-right-upper                                          (-> intersection-top-right-upper
+                                                                         (v/- corner-top)
+                                                                         v/abs)
+        end-top-left-lower                                           (-> intersection-top-left-lower
+                                                                         (v/- corner-left)
+                                                                         v/abs)
+        end-top-right-lower                                          (-> intersection-top-right-lower
+                                                                         (v/- corner-right)
+                                                                         v/abs)
+        end-bottom-left-upper                                        (-> intersection-bottom-left-upper
+                                                                         (v/- corner-left)
+                                                                         v/abs)
+        end-bottom-right-upper                                       (-> intersection-bottom-right-upper
+                                                                         (v/- corner-right)
+                                                                         v/abs)
+        end-bottom-left-lower                                        (-> intersection-bottom-left-lower
+                                                                         (v/- corner-bottom)
+                                                                         v/abs)
+        end-bottom-right-lower                                       (-> intersection-bottom-right-lower
+                                                                         (v/- corner-bottom)
+                                                                         v/abs)
+        end                                                          (max end-top-left-upper
+                                                                          end-top-right-upper
+                                                                          end-top-left-lower
+                                                                          end-top-right-lower
+                                                                          end-bottom-left-upper
+                                                                          end-bottom-right-upper
+                                                                          end-bottom-left-lower
+                                                                          end-bottom-right-lower)
         line                                                         (-> line
                                                                          (update-in [:fimbriation :thickness-1] (util/percent-of height))
                                                                          (update-in [:fimbriation :thickness-2] (util/percent-of height)))
         {line-top-left-lower       :line
          line-top-left-lower-start :line-start
-         :as                       line-top-left-lower-data}         (line/create line
-                                                                                  (v/abs (v/- corner-left top-left-lower))
-                                                                                  :angle  angle-top-left
-                                                                                  :render-options   render-options)
+         :as                       line-top-left-lower-data}         (line/create2 line
+                                                                                   corner-left top-left-lower
+                                                                                   :real-start 0
+                                                                                   :real-end end
+                                                                                   :render-options   render-options
+                                                                                   :environment environment)
         {line-top-left-upper       :line
          line-top-left-upper-start :line-start
-         :as                       line-top-left-upper-data}         (line/create line
-                                                                                  (v/abs (v/- corner-top top-left-upper))
-                                                                                  :angle     (- angle-top-left 180)
-                                                                                  :reversed? true
-                                                                                  :render-options render-options)
+         :as                       line-top-left-upper-data}         (line/create2 line
+                                                                                   corner-top top-left-upper
+                                                                                   :reversed? true
+                                                                                   :real-start 0
+                                                                                   :real-end end
+                                                                                   :render-options render-options
+                                                                                   :environment environment)
         {line-top-right-upper       :line
          line-top-right-upper-start :line-start
-         :as                        line-top-right-upper-data}       (line/create line
-                                                                                  (v/abs (v/- corner-top top-right-upper))
-                                                                                  :angle angle-top-right
-                                                                                  :render-options render-options)
+         :as                        line-top-right-upper-data}       (line/create2 line
+                                                                                   corner-top top-right-upper
+                                                                                   :real-start 0
+                                                                                   :real-end end
+                                                                                   :render-options render-options
+                                                                                   :environment environment)
         {line-top-right-lower       :line
          line-top-right-lower-start :line-start
-         :as                        line-top-right-lower-data}       (line/create line
-                                                                                  (v/abs (v/- corner-right top-right-lower))
-                                                                                  :angle (- angle-top-right 180)
-                                                                                  :reversed? true
-                                                                                  :render-options render-options)
+         :as                        line-top-right-lower-data}       (line/create2 line
+                                                                                   corner-right top-right-lower
+                                                                                   :reversed? true
+                                                                                   :real-start 0
+                                                                                   :real-end end
+                                                                                   :render-options render-options
+                                                                                   :environment environment)
         {line-bottom-right-upper       :line
          line-bottom-right-upper-start :line-start
-         :as                           line-bottom-right-upper-data} (line/create line
-                                                                                  (v/abs (v/- corner-right bottom-right-upper))
-                                                                                  :angle angle-bottom-right
-                                                                                  :render-options render-options)
+         :as                           line-bottom-right-upper-data} (line/create2 line
+                                                                                   corner-right bottom-right-upper
+                                                                                   :real-start 0
+                                                                                   :real-end end
+                                                                                   :render-options render-options
+                                                                                   :environment environment)
         {line-bottom-right-lower       :line
          line-bottom-right-lower-start :line-start
-         :as                           line-bottom-right-lower-data} (line/create line
-                                                                                  (v/abs (v/- corner-bottom bottom-right-lower))
-                                                                                  :angle (- angle-bottom-right 180)
-                                                                                  :reversed? true
-                                                                                  :render-options render-options)
+         :as                           line-bottom-right-lower-data} (line/create2 line
+                                                                                   corner-bottom bottom-right-lower
+                                                                                   :reversed? true
+                                                                                   :real-start 0
+                                                                                   :real-end end
+                                                                                   :render-options render-options
+                                                                                   :environment environment)
         {line-bottom-left-lower       :line
          line-bottom-left-lower-start :line-start
-         :as                          line-bottom-left-lower-data}   (line/create line
-                                                                                  (v/abs (v/- corner-bottom bottom-left-lower))
-                                                                                  :angle angle-bottom-left
-                                                                                  :render-options render-options)
+         :as                          line-bottom-left-lower-data}   (line/create2 line
+                                                                                   corner-bottom bottom-left-lower
+                                                                                   :real-start 0
+                                                                                   :real-end end
+                                                                                   :render-options render-options
+                                                                                   :environment environment)
         {line-bottom-left-upper       :line
          line-bottom-left-upper-start :line-start
-         :as                          line-bottom-left-upper-data}   (line/create line
-                                                                                  (v/abs (v/- corner-left bottom-left-upper))
-                                                                                  :angle (- angle-bottom-left 180)
-                                                                                  :reversed? true
-                                                                                  :render-options render-options)
+         :as                          line-bottom-left-upper-data}   (line/create2 line
+                                                                                   corner-left bottom-left-upper
+                                                                                   :reversed? true
+                                                                                   :real-start 0
+                                                                                   :real-end end
+                                                                                   :render-options render-options
+                                                                                   :environment environment)
         parts                                                        [[["M" (v/+ corner-left
                                                                                  line-top-left-lower-start)
                                                                         (svg/stitch line-top-left-lower)
@@ -163,3 +216,4 @@
                         line-bottom-left-lower-data] bottom-right-lower outline? render-options)
      (line/render line [line-bottom-left-upper-data
                         line-top-left-lower-data] bottom-left-upper outline? render-options)]))
+
