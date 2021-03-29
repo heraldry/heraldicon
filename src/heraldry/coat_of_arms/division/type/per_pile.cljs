@@ -16,6 +16,7 @@
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
                 geometry]}                 (options/sanitize division (division-options/options division))
+        opposite-line                      (division-options/sanitize-opposite-line division line)
         anchor                             (-> anchor
                                                (assoc :type :edge))
         geometry                           (-> geometry
@@ -67,7 +68,7 @@
                                                         :render-options render-options)
         {line-right       :line
          line-right-start :line-start
-         :as              line-right-data} (line/create line
+         :as              line-right-data} (line/create opposite-line
                                                         (v/abs (v/- right-point point))
                                                         :angle (- angle-right 180)
                                                         :render-options render-options)
@@ -140,3 +141,4 @@
       environment division context]
      (line/render line [line-left-data
                         line-right-data] left-point outline? render-options)]))
+

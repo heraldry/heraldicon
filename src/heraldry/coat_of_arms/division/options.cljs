@@ -140,6 +140,7 @@
                                                                                       :top-right)}))
             :per-chevron                 (options/pick default-options
                                                        [[:line]
+                                                        [:opposite-line]
                                                         [:origin]
                                                         [:anchor]
                                                         [:variant]]
@@ -165,7 +166,8 @@
             :per-pile                    (options/pick default-options
                                                        [[:origin]
                                                         [:anchor]
-                                                        [:line]]
+                                                        [:line]
+                                                        [:opposite-line]]
                                                        (let [anchor-points #{:top-left :top :top-right
                                                                              :left :right
                                                                              :bottom-left :bottom :bottom-right
@@ -173,6 +175,8 @@
                                                                              :angle}]
                                                          {[:line]                   (-> line-style
                                                                                         (options/override-if-exists [:offset :min] 0))
+                                                          [:opposite-line]                   (-> line-style
+                                                                                                 (options/override-if-exists [:offset :min] 0))
                                                           [:geometry]               {:size      {:type    :range
                                                                                                  :min     5
                                                                                                  :max     100
