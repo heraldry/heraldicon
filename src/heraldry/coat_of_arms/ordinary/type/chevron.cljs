@@ -70,6 +70,26 @@
         left-lower                                     (v/+ diagonal-left offset-lower)
         right-upper                                    (v/+ diagonal-right offset-upper)
         right-lower                                    (v/+ diagonal-right offset-lower)
+        intersection-left-upper                        (v/find-first-intersection-of-ray corner-upper left-upper environment)
+        intersection-right-upper                       (v/find-first-intersection-of-ray corner-upper left-upper environment)
+        intersection-left-lower                        (v/find-first-intersection-of-ray corner-lower left-lower environment)
+        intersection-right-lower                       (v/find-first-intersection-of-ray corner-lower left-lower environment)
+        end-left-upper                                 (-> intersection-left-upper
+                                                           (v/- corner-upper)
+                                                           v/abs)
+        end-right-upper                                (-> intersection-right-upper
+                                                           (v/- corner-upper)
+                                                           v/abs)
+        end-left-lower                                 (-> intersection-left-lower
+                                                           (v/- corner-lower)
+                                                           v/abs)
+        end-right-lower                                (-> intersection-right-lower
+                                                           (v/- corner-lower)
+                                                           v/abs)
+        end                                            (max end-left-upper
+                                                            end-right-upper
+                                                            end-left-lower
+                                                            end-right-lower)
         line                                           (-> line
                                                            (update-in [:fimbriation :thickness-1] (util/percent-of height))
                                                            (update-in [:fimbriation :thickness-2] (util/percent-of height)))
@@ -78,30 +98,38 @@
                                                            (update-in [:fimbriation :thickness-2] (util/percent-of height)))
         {line-right-upper       :line
          line-right-upper-start :line-start
-         :as                    line-right-upper-data} (line/create line
-                                                                    (v/abs (v/- corner-upper right-upper))
-                                                                    :angle angle-right
-                                                                    :render-options render-options)
+         :as                    line-right-upper-data} (line/create2 line
+                                                                     corner-upper right-upper
+                                                                     :real-start 0
+                                                                     :real-end end
+                                                                     :render-options render-options
+                                                                     :environment environment)
         {line-right-lower       :line
          line-right-lower-start :line-start
-         :as                    line-right-lower-data} (line/create opposite-line
-                                                                    (v/abs (v/- corner-lower right-lower))
-                                                                    :angle (- angle-right 180)
-                                                                    :reversed? true
-                                                                    :render-options render-options)
+         :as                    line-right-lower-data} (line/create2 opposite-line
+                                                                     corner-lower right-lower
+                                                                     :reversed? true
+                                                                     :real-start 0
+                                                                     :real-end end
+                                                                     :render-options render-options
+                                                                     :environment environment)
         {line-left-lower       :line
          line-left-lower-start :line-start
-         :as                   line-left-lower-data}   (line/create opposite-line
-                                                                    (v/abs (v/- corner-lower left-lower))
-                                                                    :angle angle-left
-                                                                    :render-options render-options)
+         :as                   line-left-lower-data}   (line/create2 opposite-line
+                                                                     corner-lower left-lower
+                                                                     :real-start 0
+                                                                     :real-end end
+                                                                     :render-options render-options
+                                                                     :environment environment)
         {line-left-upper       :line
          line-left-upper-start :line-start
-         :as                   line-left-upper-data}   (line/create line
-                                                                    (v/abs (v/- corner-upper left-upper))
-                                                                    :angle (- angle-left 180)
-                                                                    :reversed? true
-                                                                    :render-options render-options)
+         :as                   line-left-upper-data}   (line/create2 line
+                                                                     corner-upper left-upper
+                                                                     :reversed? true
+                                                                     :real-start 0
+                                                                     :real-end end
+                                                                     :render-options render-options
+                                                                     :environment environment)
         parts                                          [[["M" (v/+ corner-upper
                                                                    line-right-upper-start)
                                                           (svg/stitch line-right-upper)
@@ -136,3 +164,4 @@
                         line-right-upper-data] left-upper outline? render-options)
      (line/render opposite-line [line-right-lower-data
                                  line-left-lower-data] right-lower outline? render-options)]))
+
