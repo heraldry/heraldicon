@@ -7,6 +7,8 @@
 
 (def default-options
   {:line line/default-options
+   :opposite-line line/default-options
+   :extra-line line/default-options
    :origin (-> position/default-options
                (dissoc :alignment))
    :anchor (-> position/anchor-default-options
@@ -214,9 +216,6 @@
                                        {[:line] (-> line-style
                                                     (options/override-if-exists [:offset :min] 0)
                                                     (dissoc :fimbriation))
-                                        [:opposite-line] (-> line-style
-                                                             (options/override-if-exists [:offset :min] 0)
-                                                             (dissoc :fimbriation))
                                         [:origin :alignment] nil
                                         [:anchor :point :choices] (util/filter-choices
                                                                    position/anchor-point-choices
@@ -246,9 +245,6 @@
                                    {[:line] (-> line-style
                                                 (options/override-if-exists [:offset :min] 0)
                                                 (dissoc :fimbriation))
-                                    [:opposite-line] (-> line-style
-                                                         (options/override-if-exists [:offset :min] 0)
-                                                         (dissoc :fimbriation))
                                     [:origin :alignment] nil
                                     [:anchor :point :choices] (util/filter-choices
                                                                position/anchor-point-choices
@@ -418,6 +414,8 @@
                                              [:line :fimbriation] nil})
             :tierced-per-pairle (options/pick default-options
                                               [[:line]
+                                               [:opposite-line]
+                                               [:extra-line]
                                                [:origin]
                                                [:anchor]]
                                               {[:line] (-> line-style
@@ -426,11 +424,16 @@
                                                [:opposite-line] (-> line-style
                                                                     (options/override-if-exists [:offset :min] 0)
                                                                     (dissoc :fimbriation))
+                                               [:extra-line] (-> line-style
+                                                                 (options/override-if-exists [:offset :min] 0)
+                                                                 (dissoc :fimbriation))
                                                [:anchor :point :choices] (util/filter-choices
                                                                           position/anchor-point-choices
                                                                           [:top-left :top-right :angle])})
             :tierced-per-pairle-reversed (options/pick default-options
                                                        [[:line]
+                                                        [:opposite-line]
+                                                        [:extra-line]
                                                         [:origin]
                                                         [:anchor]]
                                                        {[:line] (-> line-style
@@ -439,6 +442,9 @@
                                                         [:opposite-line] (-> line-style
                                                                              (options/override-if-exists [:offset :min] 0)
                                                                              (dissoc :fimbriation))
+                                                        [:extra-line] (-> line-style
+                                                                          (options/override-if-exists [:offset :min] 0)
+                                                                          (dissoc :fimbriation))
                                                         [:anchor :point :choices] (util/filter-choices
                                                                                    position/anchor-point-choices
                                                                                    [:bottom-left :bottom-right :angle])})
@@ -447,3 +453,29 @@
           (update-in [:anchor] (fn [anchor]
                                  (when anchor
                                    (position/adjust-options anchor (-> division :anchor)))))))))
+
+(defn sanitize-opposite-line [division line]
+  (-> (options/sanitize
+       (util/deep-merge-with (fn [_current-value new-value]
+                               new-value) line
+                             (into {}
+                                   (filter (fn [[_ v]]
+                                             (some? v))
+                                           (:opposite-line division))))
+       (-> division options :opposite-line))
+      (assoc :flipped? (if (-> division :opposite-line :flipped?)
+                         (not (:flipped? line))
+                         (:flipped? line)))))
+
+(defn sanitize-extra-line [division line]
+  (-> (options/sanitize
+       (util/deep-merge-with (fn [_current-value new-value]
+                               new-value) line
+                             (into {}
+                                   (filter (fn [[_ v]]
+                                             (some? v))
+                                           (:extra-line division))))
+       (-> division options :extra-line))
+      (assoc :flipped? (if (-> division :extra-line :flipped?)
+                         (not (:flipped? line))
+                         (:flipped? line)))))
