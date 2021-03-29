@@ -211,8 +211,6 @@
                                        [:geometry]]
                                       {[:line]                   (-> line-style
                                                                      (options/override-if-exists [:offset :min] 0))
-                                       [:opposite-line]          (-> line-style
-                                                                     (options/override-if-exists [:offset :min] 0))
                                        [:origin :alignment]      nil
                                        [:anchor :point :choices] (util/filter-choices
                                                                   position/anchor-point-choices
