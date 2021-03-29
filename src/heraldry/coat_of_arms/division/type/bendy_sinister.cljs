@@ -41,7 +41,7 @@
                                   layout
                                   (v/v (- required-half-width) (- required-half-height))
                                   (v/v required-half-width required-half-height)
-                                  line hints render-options)]
+                                  line hints render-options environment)]
     [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
                          "rotate(" angle ")")}
      [shared/make-division

@@ -10,7 +10,7 @@
 
 (defn paly-parts [{:keys [num-fields-x
                           offset-x
-                          stretch-x]} top-left bottom-right line hints render-options]
+                          stretch-x]} top-left bottom-right line hints render-options environment]
   (let [offset-x (or offset-x 0)
         stretch-x (or stretch-x 1)
         width (- (:x bottom-right)
@@ -32,18 +32,24 @@
         height (- y2 y1)
         {line-down :line
          line-down-start :line-start
-         line-down-end :line-end} (line/create line
-                                               height
-                                               :angle 90
-                                               :render-options render-options)
+         line-down-end :line-end} (line/create2 line
+                                                top-left
+                                                (v/+ top-left (v/v 0 height))
+                                                :real-start 0
+                                                :real-end height
+                                                :render-options render-options
+                                                :environment environment)
         {line-up :line
          line-up-start :line-start
-         line-up-end :line-end} (line/create line
-                                             height
-                                             :angle -90
-                                             :flipped? true
-                                             :reversed? true
-                                             :render-options render-options)
+         line-up-end :line-end} (line/create2 line
+                                              top-left
+                                              (v/+ top-left (v/v 0 height))
+                                              :flipped? true
+                                              :reversed? true
+                                              :real-start 0
+                                              :real-end height
+                                              :render-options render-options
+                                              :environment environment)
         parts (->> (range num-fields-x)
                    (map (fn [i]
                           (let [x1 (+ x0 (* i pallet-width))
@@ -161,7 +167,7 @@
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (paly-parts layout top-left bottom-right line hints render-options)]
+        [parts overlap outlines] (paly-parts layout top-left bottom-right line hints render-options environment)]
     [:<>
      [shared/make-division
       (shared/division-context-key type) fields parts
