@@ -243,3 +243,4 @@
       (assoc :flipped? (if (-> ordinary :opposite-line :flipped?)
                          (not (:flipped? line))
                          (:flipped? line)))))
+
