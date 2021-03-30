@@ -198,7 +198,7 @@
 
 (defn prune-duplicates [intersections]
   (->> intersections
-       (group-by (juxt :x :y :parent-index))
+       (group-by (juxt :x :y))
        (map (comp first second))))
 
 (defn prune-point [intersections point]
