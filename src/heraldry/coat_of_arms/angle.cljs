@@ -3,13 +3,6 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.vector :as v]))
 
-(defn angle-to-point [p1 p2]
-  (let [d (v/- p2 p1)
-        angle-rad (Math/atan2 (:y d) (:x d))]
-    (-> angle-rad
-        (/ Math/PI)
-        (* 180))))
-
 (defn calculate-origin-and-anchor [environment origin anchor width base-angle]
   (let [target-origin (position/calculate origin environment)
         target-anchor (position/calculate-anchor anchor environment target-origin
