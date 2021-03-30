@@ -45,7 +45,7 @@
         line                                         (-> line
                                                          (dissoc :fimbriation))
         {line-top-left       :line
-         line-top-left-start :line-start}            (line/create2 line
+         line-top-left-start :line-start}            (line/create line
                                                                    origin-point diagonal-top-left
                                                                    :reversed? true
                                                                    :real-start 0
@@ -53,7 +53,7 @@
                                                                    :render-options render-options
                                                                    :environment environment)
         {line-top-right       :line
-         line-top-right-start :line-start}           (line/create2 opposite-line
+         line-top-right-start :line-start}           (line/create opposite-line
                                                                    origin-point diagonal-top-right
                                                                    :flipped? true
                                                                    :real-start 0
@@ -61,7 +61,7 @@
                                                                    :render-options render-options
                                                                    :environment environment)
         {line-bottom-right       :line
-         line-bottom-right-start :line-start}        (line/create2 line
+         line-bottom-right-start :line-start}        (line/create line
                                                                    origin-point diagonal-bottom-right
                                                                    :reversed? true
                                                                    :real-start 0
@@ -69,7 +69,7 @@
                                                                    :render-options render-options
                                                                    :environment environment)
         {line-bottom-left       :line
-         line-bottom-left-start :line-start}         (line/create2 opposite-line
+         line-bottom-left-start :line-start}         (line/create opposite-line
                                                                    origin-point diagonal-bottom-left
                                                                    :flipped? true
                                                                    :real-start 0

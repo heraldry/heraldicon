@@ -31,11 +31,11 @@
                                                      (update-in [:fimbriation :thickness-2] (util/percent-of height)))
         {line-reversed       :line
          line-reversed-start :line-start
-         :as                 line-reversed-data} (line/create2 line
-                                                               row-left row-right
-                                                               :reversed? true
-                                                               :render-options render-options
-                                                               :environment environment)
+         :as                 line-reversed-data} (line/create line
+                                                              row-left row-right
+                                                              :reversed? true
+                                                              :render-options render-options
+                                                              :environment environment)
         parts                                    [[["M" (v/+ row-right
                                                              line-reversed-start)
                                                     (svg/stitch line-reversed)

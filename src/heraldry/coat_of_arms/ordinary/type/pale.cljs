@@ -54,7 +54,7 @@
                                                      (update-in [:fimbriation :thickness-2] (util/percent-of width)))
         {line-one       :line
          line-one-start :line-start
-         :as            line-one-data}           (line/create2 line
+         :as            line-one-data}           (line/create line
                                                                first-top first-bottom
                                                                :reversed? true
                                                                :real-start real-start
@@ -63,7 +63,7 @@
                                                                :environment environment)
         {line-reversed       :line
          line-reversed-start :line-start
-         :as                 line-reversed-data} (line/create2 opposite-line
+         :as                 line-reversed-data} (line/create opposite-line
                                                                second-top second-bottom
                                                                :real-start real-start
                                                                :real-end real-end

@@ -106,72 +106,72 @@
                                                                          (update-in [:fimbriation :thickness-2] (util/percent-of height)))
         {line-top-left-lower       :line
          line-top-left-lower-start :line-start
-         :as                       line-top-left-lower-data}         (line/create2 line
-                                                                                   corner-left top-left-lower
-                                                                                   :real-start 0
-                                                                                   :real-end end
-                                                                                   :render-options   render-options
-                                                                                   :environment environment)
+         :as                       line-top-left-lower-data}         (line/create line
+                                                                                  corner-left top-left-lower
+                                                                                  :real-start 0
+                                                                                  :real-end end
+                                                                                  :render-options   render-options
+                                                                                  :environment environment)
         {line-top-left-upper       :line
          line-top-left-upper-start :line-start
-         :as                       line-top-left-upper-data}         (line/create2 line
-                                                                                   corner-top top-left-upper
-                                                                                   :reversed? true
-                                                                                   :real-start 0
-                                                                                   :real-end end
-                                                                                   :render-options render-options
-                                                                                   :environment environment)
+         :as                       line-top-left-upper-data}         (line/create line
+                                                                                  corner-top top-left-upper
+                                                                                  :reversed? true
+                                                                                  :real-start 0
+                                                                                  :real-end end
+                                                                                  :render-options render-options
+                                                                                  :environment environment)
         {line-top-right-upper       :line
          line-top-right-upper-start :line-start
-         :as                        line-top-right-upper-data}       (line/create2 line
-                                                                                   corner-top top-right-upper
-                                                                                   :real-start 0
-                                                                                   :real-end end
-                                                                                   :render-options render-options
-                                                                                   :environment environment)
+         :as                        line-top-right-upper-data}       (line/create line
+                                                                                  corner-top top-right-upper
+                                                                                  :real-start 0
+                                                                                  :real-end end
+                                                                                  :render-options render-options
+                                                                                  :environment environment)
         {line-top-right-lower       :line
          line-top-right-lower-start :line-start
-         :as                        line-top-right-lower-data}       (line/create2 line
-                                                                                   corner-right top-right-lower
-                                                                                   :reversed? true
-                                                                                   :real-start 0
-                                                                                   :real-end end
-                                                                                   :render-options render-options
-                                                                                   :environment environment)
+         :as                        line-top-right-lower-data}       (line/create line
+                                                                                  corner-right top-right-lower
+                                                                                  :reversed? true
+                                                                                  :real-start 0
+                                                                                  :real-end end
+                                                                                  :render-options render-options
+                                                                                  :environment environment)
         {line-bottom-right-upper       :line
          line-bottom-right-upper-start :line-start
-         :as                           line-bottom-right-upper-data} (line/create2 line
-                                                                                   corner-right bottom-right-upper
-                                                                                   :real-start 0
-                                                                                   :real-end end
-                                                                                   :render-options render-options
-                                                                                   :environment environment)
+         :as                           line-bottom-right-upper-data} (line/create line
+                                                                                  corner-right bottom-right-upper
+                                                                                  :real-start 0
+                                                                                  :real-end end
+                                                                                  :render-options render-options
+                                                                                  :environment environment)
         {line-bottom-right-lower       :line
          line-bottom-right-lower-start :line-start
-         :as                           line-bottom-right-lower-data} (line/create2 line
-                                                                                   corner-bottom bottom-right-lower
-                                                                                   :reversed? true
-                                                                                   :real-start 0
-                                                                                   :real-end end
-                                                                                   :render-options render-options
-                                                                                   :environment environment)
+         :as                           line-bottom-right-lower-data} (line/create line
+                                                                                  corner-bottom bottom-right-lower
+                                                                                  :reversed? true
+                                                                                  :real-start 0
+                                                                                  :real-end end
+                                                                                  :render-options render-options
+                                                                                  :environment environment)
         {line-bottom-left-lower       :line
          line-bottom-left-lower-start :line-start
-         :as                          line-bottom-left-lower-data}   (line/create2 line
-                                                                                   corner-bottom bottom-left-lower
-                                                                                   :real-start 0
-                                                                                   :real-end end
-                                                                                   :render-options render-options
-                                                                                   :environment environment)
+         :as                          line-bottom-left-lower-data}   (line/create line
+                                                                                  corner-bottom bottom-left-lower
+                                                                                  :real-start 0
+                                                                                  :real-end end
+                                                                                  :render-options render-options
+                                                                                  :environment environment)
         {line-bottom-left-upper       :line
          line-bottom-left-upper-start :line-start
-         :as                          line-bottom-left-upper-data}   (line/create2 line
-                                                                                   corner-left bottom-left-upper
-                                                                                   :reversed? true
-                                                                                   :real-start 0
-                                                                                   :real-end end
-                                                                                   :render-options render-options
-                                                                                   :environment environment)
+         :as                          line-bottom-left-upper-data}   (line/create line
+                                                                                  corner-left bottom-left-upper
+                                                                                  :reversed? true
+                                                                                  :real-start 0
+                                                                                  :real-end end
+                                                                                  :render-options render-options
+                                                                                  :environment environment)
         parts                                                        [[["M" (v/+ corner-left
                                                                                  line-top-left-lower-start)
                                                                         (svg/stitch line-top-left-lower)

@@ -49,14 +49,14 @@
         first-right                       (v/v shared-end-x (:y first-right))
         second-right                      (v/v shared-end-x (:y second-right))
         {line-one       :line
-         line-one-start :line-start}      (line/create2 line
+         line-one-start :line-start}      (line/create line
                                                         first-left first-right
                                                         :real-start real-start
                                                         :real-end real-end
                                                         :render-options render-options
                                                         :environment environment)
         {line-reversed       :line
-         line-reversed-start :line-start} (line/create2 line
+         line-reversed-start :line-start} (line/create line
                                                         second-left second-right
                                                         :reversed? true
                                                         :flipped? true

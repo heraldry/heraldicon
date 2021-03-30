@@ -32,7 +32,7 @@
         height                      (- y2 y1)
         {line-down       :line
          line-down-start :line-start
-         line-down-end   :line-end} (line/create2 line
+         line-down-end   :line-end} (line/create line
                                                   top-left
                                                   (v/+ top-left (v/v 0 height))
                                                   :real-start 0
@@ -41,7 +41,7 @@
                                                   :environment environment)
         {line-up       :line
          line-up-start :line-start
-         line-up-end   :line-end}   (line/create2 line
+         line-up-end   :line-end}   (line/create line
                                                   top-left
                                                   (v/+ top-left (v/v 0 height))
                                                   :flipped? true

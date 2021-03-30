@@ -52,7 +52,7 @@
         line                                  (-> line
                                                   (update :offset max 0))
         {line-bottom-right       :line
-         line-bottom-right-start :line-start} (line/create2 line
+         line-bottom-right-start :line-start} (line/create line
                                                             origin-point diagonal-bottom-right
                                                             :reversed? true
                                                             :real-start 0
@@ -60,7 +60,7 @@
                                                             :render-options render-options
                                                             :environment environment)
         {line-bottom-left       :line
-         line-bottom-left-start :line-start}  (line/create2 opposite-line
+         line-bottom-left-start :line-start}  (line/create opposite-line
                                                             origin-point diagonal-bottom-left
                                                             :flipped? true
                                                             :real-start 0
@@ -68,13 +68,13 @@
                                                             :render-options render-options
                                                             :environment environment)
         {line-top       :line
-         line-top-start :line-start}          (line/create2 extra-line
+         line-top-start :line-start}          (line/create extra-line
                                                             origin-point top
                                                             :flipped? true
                                                             :render-options render-options
                                                             :environment environment)
         {line-top-reversed       :line
-         line-top-reversed-start :line-start} (line/create2 extra-line
+         line-top-reversed-start :line-start} (line/create extra-line
                                                             origin-point top
                                                             :reversed? true
                                                             :render-options render-options

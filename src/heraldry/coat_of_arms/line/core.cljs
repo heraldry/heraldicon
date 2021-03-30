@@ -43,14 +43,14 @@
         line-start    (v/v (min 0 offset-length) 0)]
     {:line       (-> []
                      (cond->
-                      (pos? offset-length) (into [["h" offset-length]]))
+                         (pos? offset-length) (into [["h" offset-length]]))
                      (into (repeat repetitions line-pattern))
                      (->> (apply merge))
                      vec)
      :line-start line-start}))
 
 (defn full-line [line length line-function line-options]
-  (let [line-pattern  (line-function line length line-options)]
+  (let [line-pattern (line-function line length line-options)]
     {:line       line-pattern
      :line-start (v/v 0 0)}))
 
@@ -207,36 +207,36 @@
                                       [:offset]
                                       [:flipped?]
                                       [:fimbriation]])
-      :angled            (options/pick default-options
-                                       [[:type]
-                                        [:eccentricity]
-                                        [:height]
-                                        [:flipped?]
-                                        [:fimbriation]]
-                                       {[:height :min] 0
-                                        [:height :max] 1
-                                        [:height :default] 0.1})
-      :bevilled            (options/pick default-options
-                                         [[:type]
-                                          [:eccentricity]
-                                          [:height]
-                                          [:width]
-                                          [:flipped?]
-                                          [:fimbriation]]
-                                         {[:width :default] 15})
-      :enarched            (options/pick default-options
-                                         [[:type]
-                                          [:eccentricity]
-                                          [:height]
-                                          [:width]
-                                          [:flipped?]
-                                          [:fimbriation]]
-                                         {[:width :min] 1
-                                          [:width :max] 100
-                                          [:width :default] 50
-                                          [:height :min] 0
-                                          [:height :max] 1
-                                          [:height :default] 0.5})
+      :angled          (options/pick default-options
+                                     [[:type]
+                                      [:eccentricity]
+                                      [:height]
+                                      [:flipped?]
+                                      [:fimbriation]]
+                                     {[:height :min]     0
+                                      [:height :max]     1
+                                      [:height :default] 0.1})
+      :bevilled        (options/pick default-options
+                                     [[:type]
+                                      [:eccentricity]
+                                      [:height]
+                                      [:width]
+                                      [:flipped?]
+                                      [:fimbriation]]
+                                     {[:width :default] 15})
+      :enarched        (options/pick default-options
+                                     [[:type]
+                                      [:eccentricity]
+                                      [:height]
+                                      [:width]
+                                      [:flipped?]
+                                      [:fimbriation]]
+                                     {[:width :min]      1
+                                      [:width :max]      100
+                                      [:width :default]  50
+                                      [:height :min]     0
+                                      [:height :max]     1
+                                      [:height :default] 0.5})
       (options/pick default-options
                     [[:type]
                      [:eccentricity]
@@ -246,7 +246,8 @@
                      [:flipped?]
                      [:fimbriation]]))))
 
-(defn create [{:keys [type] :or {type :straight} :as line} length & {:keys [angle flipped? render-options seed reversed?] :as line-options}]
+(defn create-raw [{:keys [type] :or {type :straight} :as line} length
+                  & {:keys [angle flipped? render-options seed reversed?] :as line-options}]
   (let [line-function               (get kinds-function-map type)
         line-options-values         (cond-> (options/sanitize line (options line))
                                       (= type :straight) (-> (assoc :width length)
@@ -293,10 +294,10 @@
         (assoc :line
                (-> line-path
                    (cond->
-                    (:squiggly? render-options) (svg/squiggly-path :seed seed))
+                       (:squiggly? render-options) (svg/squiggly-path :seed seed))
                    svgpath
                    (cond->
-                    effective-flipped? (.scale 1 -1))
+                       effective-flipped? (.scale 1 -1))
                    (.rotate angle)
                    .toString))
         (assoc :line-start (when line-start (v/rotate line-start angle)))
@@ -310,23 +311,23 @@
                        last
                        :t1)
                    0)
-        after (or (-> intersections
-                      (->> (filter #(> (:t1 %) t)))
-                      first
-                      :t1)
-                  1)]
+        after  (or (-> intersections
+                       (->> (filter #(> (:t1 %) t)))
+                       first
+                       :t1)
+                   1)]
     [before after]))
 
 (defn find-real-start-and-end [from to {:keys [environment reversed?
                                                real-start real-end]}]
   (if (and real-start real-end)
     [real-start real-end]
-    (let [[from to] (if reversed?
-                      [to from]
-                      [from to])
-          direction (v/- to from)
-          length (v/abs direction)
-          intersections (v/find-intersections from to environment)
+    (let [[from to]       (if reversed?
+                            [to from]
+                            [from to])
+          direction       (v/- to from)
+          length          (v/abs direction)
+          intersections   (v/find-intersections from to environment)
           [start-t end-t] (get-intersections-before-and-after 0.5 intersections)
           [start-t end-t] (if reversed?
                             [(- 1 end-t) (- 1 start-t)]
@@ -335,20 +336,20 @@
           real-end        (* length end-t)]
       [real-start real-end])))
 
-(defn create2 [line from to & {:keys [reversed?] :as line-options}]
-  (let [[from to] (if reversed?
-                    [to from]
-                    [from to])
-        direction (v/- to from)
-        length (v/abs direction)
+(defn create [line from to & {:keys [reversed?] :as line-options}]
+  (let [[from to]             (if reversed?
+                                [to from]
+                                [from to])
+        direction             (v/- to from)
+        length                (v/abs direction)
         [real-start real-end] (find-real-start-and-end from to line-options)
-        angle           (v/angle-to-point from to)]
-    (apply create (into [line length]
-                        (mapcat identity (merge
-                                          {:real-start real-start
-                                           :real-end real-end
-                                           :angle angle}
-                                          line-options))))))
+        angle                 (v/angle-to-point from to)]
+    (apply create-raw (into [line length]
+                            (mapcat identity (merge
+                                              {:real-start real-start
+                                               :real-end   real-end
+                                               :angle      angle}
+                                              line-options))))))
 
 (defn mask-intersection-points [start line-datas direction]
   (->> line-datas

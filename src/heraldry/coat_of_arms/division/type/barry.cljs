@@ -32,7 +32,7 @@
         width                        (- x2 x1)
         {line-right       :line
          line-right-start :line-start
-         line-right-end   :line-end} (line/create2 line
+         line-right-end   :line-end} (line/create line
                                                    top-left
                                                    (v/+ top-left (v/v width 0))
                                                    :real-start 0
@@ -41,7 +41,7 @@
                                                    :environment environment)
         {line-left       :line
          line-left-start :line-start
-         line-left-end   :line-end}  (line/create2 line
+         line-left-end   :line-end}  (line/create line
                                                    top-left
                                                    (v/+ top-left (v/v width 0))
                                                    :flipped? true
