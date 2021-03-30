@@ -216,6 +216,16 @@
         count
         odd?)))
 
+(defn close-to-edge? [point shape]
+  (let [radius 0.0001
+        left (- point (v radius 0))
+        right (+ point (v radius 0))
+        neighbourhood (str "M" (->str left)
+                           "A" radius " " radius " 0 0 0 " (->str right)
+                           "A" radius " " radius " 0 0 1 " (->str left))
+        intersections (path-intersection neighbourhood shape)]
+    (-> intersections count pos?)))
+
 (defn inside-environment? [point environment]
   (->> environment
        (tree-seq map? (comp list :parent-environment :meta))
@@ -226,7 +236,11 @@
                       ;; as intersection won't be considered inside a shape when tested on
                       ;; its own, so for those cases check whether it was detected as an
                       ;; intersection for this parent index
+                      ;; for other cases check whether a neighbourhood around the point
+                      ;; intersects with the shape, then we consider the point close enough
+                      ;; and "on" the edge
                       (or (-> point :parent-index (= parent-idx))
+                          (close-to-edge? point shape)
                           (inside-shape? point shape))))
        (every? true?)))
 
