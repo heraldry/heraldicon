@@ -79,65 +79,65 @@
         line (-> line
                  (dissoc :fimbriation))
         {line-top :line
-         line-top-start :line-start} (line/create2 opposite-line
-                                                   origin-point point-top
-                                                   :reversed? true
-                                                   :real-start 0
-                                                   :real-end arm-length
-                                                   :render-options render-options
-                                                   :environment environment)
+         line-top-start :line-start} (line/create opposite-line
+                                                  origin-point point-top
+                                                  :reversed? true
+                                                  :real-start 0
+                                                  :real-end arm-length
+                                                  :render-options render-options
+                                                  :environment environment)
         {line-right :line
-         line-right-start :line-start} (line/create2 opposite-line
-                                                     origin-point point-right
-                                                     :reversed? true
-                                                     :real-start 0
-                                                     :real-end arm-length
-                                                     :render-options render-options
-                                                     :environment environment)
-        {line-bottom :line
-         line-bottom-start :line-start} (line/create2 opposite-line
-                                                      origin-point point-bottom
-                                                      :reversed? true
-                                                      :real-start 0
-                                                      :real-end arm-length
-                                                      :render-options render-options
-                                                      :environment environment)
-        {line-left :line
-         line-left-start :line-start} (line/create2 opposite-line
-                                                    origin-point point-left
+         line-right-start :line-start} (line/create opposite-line
+                                                    origin-point point-right
                                                     :reversed? true
                                                     :real-start 0
                                                     :real-end arm-length
                                                     :render-options render-options
                                                     :environment environment)
-        {line-top-left :line} (line/create2 line
-                                            origin-point point-top-left
+        {line-bottom :line
+         line-bottom-start :line-start} (line/create opposite-line
+                                                     origin-point point-bottom
+                                                     :reversed? true
+                                                     :real-start 0
+                                                     :real-end arm-length
+                                                     :render-options render-options
+                                                     :environment environment)
+        {line-left :line
+         line-left-start :line-start} (line/create opposite-line
+                                                   origin-point point-left
+                                                   :reversed? true
+                                                   :real-start 0
+                                                   :real-end arm-length
+                                                   :render-options render-options
+                                                   :environment environment)
+        {line-top-left :line} (line/create line
+                                           origin-point point-top-left
+                                           :flipped? true
+                                           :real-start 0
+                                           :real-end arm-length
+                                           :render-options render-options
+                                           :environment environment)
+        {line-top-right :line} (line/create line
+                                            origin-point point-top-right
                                             :flipped? true
                                             :real-start 0
                                             :real-end arm-length
                                             :render-options render-options
                                             :environment environment)
-        {line-top-right :line} (line/create2 line
-                                             origin-point point-top-right
-                                             :flipped? true
-                                             :real-start 0
-                                             :real-end arm-length
-                                             :render-options render-options
-                                             :environment environment)
-        {line-bottom-right :line} (line/create2 line
-                                                origin-point point-bottom-right
-                                                :flipped? true
-                                                :real-start 0
-                                                :real-end arm-length
-                                                :render-options render-options
-                                                :environment environment)
-        {line-bottom-left :line} (line/create2 line
-                                               origin-point point-bottom-left
+        {line-bottom-right :line} (line/create line
+                                               origin-point point-bottom-right
                                                :flipped? true
                                                :real-start 0
                                                :real-end arm-length
                                                :render-options render-options
                                                :environment environment)
+        {line-bottom-left :line} (line/create line
+                                              origin-point point-bottom-left
+                                              :flipped? true
+                                              :real-start 0
+                                              :real-end arm-length
+                                              :render-options render-options
+                                              :environment environment)
         parts [[["M" (v/+ point-top
                           line-top-start)
                  (svg/stitch line-top)

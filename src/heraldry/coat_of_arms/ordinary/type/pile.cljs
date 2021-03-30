@@ -63,20 +63,20 @@
                  (update-in [:fimbriation :thickness-2] (util/percent-of thickness-base)))
         {line-left :line
          line-left-start :line-start
-         :as line-left-data} (line/create2 line
-                                           point left-point
-                                           :reversed? true
+         :as line-left-data} (line/create line
+                                          point left-point
+                                          :reversed? true
+                                          :real-start 0
+                                          :real-end end
+                                          :render-options render-options
+                                          :environment environment)
+        {line-right :line
+         :as line-right-data} (line/create opposite-line
+                                           point right-point
                                            :real-start 0
                                            :real-end end
                                            :render-options render-options
                                            :environment environment)
-        {line-right :line
-         :as line-right-data} (line/create2 opposite-line
-                                            point right-point
-                                            :real-start 0
-                                            :real-end end
-                                            :render-options render-options
-                                            :environment environment)
         parts [[["M" (v/+ left-point
                           line-left-start)
                  (svg/stitch line-left)

@@ -49,21 +49,21 @@
         first-bottom (v/v (:x first-bottom) shared-end-y)
         second-bottom (v/v (:x second-bottom) shared-end-y)
         {line-one :line
-         line-one-start :line-start} (line/create2 line
-                                                   first-top first-bottom
-                                                   :real-start real-start
-                                                   :real-end real-end
-                                                   :render-options render-options
-                                                   :environment environment)
+         line-one-start :line-start} (line/create line
+                                                  first-top first-bottom
+                                                  :real-start real-start
+                                                  :real-end real-end
+                                                  :render-options render-options
+                                                  :environment environment)
         {line-reversed :line
-         line-reversed-start :line-start} (line/create2 line
-                                                        second-top second-bottom
-                                                        :reversed? true
-                                                        :flipped? true
-                                                        :real-start real-start
-                                                        :real-end real-end
-                                                        :render-options render-options
-                                                        :environment environment)
+         line-reversed-start :line-start} (line/create line
+                                                       second-top second-bottom
+                                                       :reversed? true
+                                                       :flipped? true
+                                                       :real-start real-start
+                                                       :real-end real-end
+                                                       :render-options render-options
+                                                       :environment environment)
         parts [[["M" (v/+ first-top
                           line-one-start)
                  (svg/stitch line-one)
