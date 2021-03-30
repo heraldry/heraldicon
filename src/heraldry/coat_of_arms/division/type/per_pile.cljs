@@ -53,8 +53,10 @@
                                   0))
         {left-point :left
          right-point :right} (pile/diagonals origin-point point thickness)
-        intersection-left (v/find-first-intersection-of-ray point left-point environment)
-        intersection-right (v/find-first-intersection-of-ray point right-point environment)
+        intersection-left (-> (v/environment-intersections point left-point environment)
+                              last)
+        intersection-right (-> (v/environment-intersections point right-point environment)
+                               last)
         end-left (-> intersection-left
                      (v/- point)
                      v/abs)
@@ -77,14 +79,15 @@
                                           :environment environment)
         {line-right :line
          line-right-start :line-start
+         line-right-end :line-end
          :as line-right-data} (line/create opposite-line
                                            point right-point
                                            :real-start 0
                                            :real-end end
                                            :render-options render-options
                                            :environment environment)
-        parts [[["M" (v/+ left-point
-                          line-left-end)
+        parts [[["M" (v/+ point
+                          line-right-start)
                  (svg/stitch line-right)
                  (infinity/path
                   :counter-clockwise
@@ -98,10 +101,10 @@
                        :bottom
                        :bottom-right} (:point origin)) [:bottom :top]
                     :else [:top :bottom])
-                  [(v/+ right-point
-                        line-right-start)
-                   (v/+ left-point
-                        line-left-end)])
+                  [(v/+ point
+                        line-right-end)
+                   (v/+ point
+                        line-right-start)])
                  "z"]
                                              ;; TODO: these fields inherit the whole parent
                                              ;; environment points, but it can probably be reduced
