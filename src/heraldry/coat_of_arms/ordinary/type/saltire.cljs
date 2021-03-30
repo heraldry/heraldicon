@@ -41,7 +41,7 @@
         diagonal-top-right                                           (v/+ origin-point relative-top-right)
         diagonal-bottom-left                                         (v/+ origin-point relative-bottom-left)
         diagonal-bottom-right                                        (v/+ origin-point relative-bottom-right)
-        angle-bottom-right                                           (angle/angle-to-point origin-point diagonal-bottom-right)
+        angle-bottom-right                                           (v/angle-to-point origin-point diagonal-bottom-right)
         angle                                                        (-> angle-bottom-right (* Math/PI) (/ 180))
         dx                                                           (/ band-width 2 (Math/sin angle))
         dy                                                           (/ band-width 2 (Math/cos angle))
