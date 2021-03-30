@@ -51,10 +51,10 @@
         {line-one :line
          line-one-start :line-start
          line-one-end :line-end
-         :as line-one-data} (line/create2 line
-                                          diagonal-start diagonal-end
-                                          :render-options render-options
-                                          :environment environment)
+         :as line-one-data} (line/create line
+                                         diagonal-start diagonal-end
+                                         :render-options render-options
+                                         :environment environment)
         parts [[["M" (v/+ diagonal-start
                           line-one-start)
                  (svg/stitch line-one)

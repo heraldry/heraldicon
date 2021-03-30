@@ -32,24 +32,24 @@
         height (- y2 y1)
         {line-down :line
          line-down-start :line-start
-         line-down-end :line-end} (line/create2 line
-                                                top-left
-                                                (v/+ top-left (v/v 0 height))
-                                                :real-start 0
-                                                :real-end height
-                                                :render-options render-options
-                                                :environment environment)
+         line-down-end :line-end} (line/create line
+                                               top-left
+                                               (v/+ top-left (v/v 0 height))
+                                               :real-start 0
+                                               :real-end height
+                                               :render-options render-options
+                                               :environment environment)
         {line-up :line
          line-up-start :line-start
-         line-up-end :line-end} (line/create2 line
-                                              top-left
-                                              (v/+ top-left (v/v 0 height))
-                                              :flipped? true
-                                              :reversed? true
-                                              :real-start 0
-                                              :real-end height
-                                              :render-options render-options
-                                              :environment environment)
+         line-up-end :line-end} (line/create line
+                                             top-left
+                                             (v/+ top-left (v/v 0 height))
+                                             :flipped? true
+                                             :reversed? true
+                                             :real-start 0
+                                             :real-end height
+                                             :render-options render-options
+                                             :environment environment)
         parts (->> (range num-fields-x)
                    (map (fn [i]
                           (let [x1 (+ x0 (* i pallet-width))

@@ -31,11 +31,11 @@
         {line-one :line
          line-one-start :line-start
          line-one-end :line-end
-         :as line-one-data} (line/create2 line
-                                          top
-                                          bottom
-                                          :render-options render-options
-                                          :environment environment)
+         :as line-one-data} (line/create line
+                                         top
+                                         bottom
+                                         :render-options render-options
+                                         :environment environment)
 
         parts [[["M" (v/+ top
                           line-one-start)

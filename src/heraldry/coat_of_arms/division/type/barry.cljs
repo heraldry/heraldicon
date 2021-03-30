@@ -32,24 +32,24 @@
         width (- x2 x1)
         {line-right :line
          line-right-start :line-start
-         line-right-end :line-end} (line/create2 line
-                                                 top-left
-                                                 (v/+ top-left (v/v width 0))
-                                                 :real-start 0
-                                                 :real-end width
-                                                 :render-options render-options
-                                                 :environment environment)
-        {line-left :line
-         line-left-start :line-start
-         line-left-end :line-end} (line/create2 line
+         line-right-end :line-end} (line/create line
                                                 top-left
                                                 (v/+ top-left (v/v width 0))
-                                                :flipped? true
-                                                :reversed? true
                                                 :real-start 0
                                                 :real-end width
                                                 :render-options render-options
                                                 :environment environment)
+        {line-left :line
+         line-left-start :line-start
+         line-left-end :line-end} (line/create line
+                                               top-left
+                                               (v/+ top-left (v/v width 0))
+                                               :flipped? true
+                                               :reversed? true
+                                               :real-start 0
+                                               :real-end width
+                                               :render-options render-options
+                                               :environment environment)
         parts (->> (range num-fields-y)
                    (map (fn [i]
                           (let [y1 (+ y0 (* i bar-height))

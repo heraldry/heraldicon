@@ -87,72 +87,72 @@
                  (update-in [:fimbriation :thickness-2] (util/percent-of height)))
         {line-pale-top-left :line
          line-pale-top-left-start :line-start
-         :as line-pale-top-left-data} (line/create2 line
-                                                    corner-top-left pale-top-left
-                                                    :real-start 0
-                                                    :real-end end
-                                                    :render-options render-options
-                                                    :environment environment)
+         :as line-pale-top-left-data} (line/create line
+                                                   corner-top-left pale-top-left
+                                                   :real-start 0
+                                                   :real-end end
+                                                   :render-options render-options
+                                                   :environment environment)
         {line-pale-top-right :line
          line-pale-top-right-start :line-start
-         :as line-pale-top-right-data} (line/create2 line
-                                                     corner-top-right pale-top-right
-                                                     :reversed? true
-                                                     :real-start 0
-                                                     :real-end end
-                                                     :render-options render-options
-                                                     :environment environment)
-        {line-fess-top-right :line
-         line-fess-top-right-start :line-start
-         :as line-fess-top-right-data} (line/create2 line
-                                                     corner-top-right fess-top-right
-                                                     :real-start 0
-                                                     :real-end end
-                                                     :render-options render-options
-                                                     :environment environment)
-        {line-fess-bottom-right :line
-         line-fess-bottom-right-start :line-start
-         :as line-fess-bottom-right-data} (line/create2 line
-                                                        corner-bottom-right fess-bottom-right
-                                                        :reversed? true
-                                                        :real-start 0
-                                                        :real-end end
-                                                        :render-options render-options
-                                                        :environment environment)
-        {line-pale-bottom-right :line
-         line-pale-bottom-right-start :line-start
-         :as line-pale-bottom-right-data} (line/create2 line
-                                                        corner-bottom-right pale-bottom-right
-                                                        :real-start 0
-                                                        :real-end end
-                                                        :render-options render-options
-                                                        :environment environment)
-        {line-pale-bottom-left :line
-         line-pale-bottom-left-start :line-start
-         :as line-pale-bottom-left-data} (line/create2 line
-                                                       corner-bottom-left pale-bottom-left
-                                                       :reversed? true
-                                                       :real-start 0
-                                                       :real-end end
-                                                       :render-options render-options
-                                                       :environment environment)
-        {line-fess-bottom-left :line
-         line-fess-bottom-left-start :line-start
-         :as line-fess-bottom-left-data} (line/create2 line
-                                                       corner-bottom-left fess-bottom-left
-                                                       :real-start 0
-                                                       :real-end end
-                                                       :render-options render-options
-                                                       :environment environment)
-        {line-fess-top-left :line
-         line-fess-top-left-start :line-start
-         :as line-fess-top-left-data} (line/create2 line
-                                                    corner-top-left fess-top-left
+         :as line-pale-top-right-data} (line/create line
+                                                    corner-top-right pale-top-right
                                                     :reversed? true
                                                     :real-start 0
                                                     :real-end end
                                                     :render-options render-options
                                                     :environment environment)
+        {line-fess-top-right :line
+         line-fess-top-right-start :line-start
+         :as line-fess-top-right-data} (line/create line
+                                                    corner-top-right fess-top-right
+                                                    :real-start 0
+                                                    :real-end end
+                                                    :render-options render-options
+                                                    :environment environment)
+        {line-fess-bottom-right :line
+         line-fess-bottom-right-start :line-start
+         :as line-fess-bottom-right-data} (line/create line
+                                                       corner-bottom-right fess-bottom-right
+                                                       :reversed? true
+                                                       :real-start 0
+                                                       :real-end end
+                                                       :render-options render-options
+                                                       :environment environment)
+        {line-pale-bottom-right :line
+         line-pale-bottom-right-start :line-start
+         :as line-pale-bottom-right-data} (line/create line
+                                                       corner-bottom-right pale-bottom-right
+                                                       :real-start 0
+                                                       :real-end end
+                                                       :render-options render-options
+                                                       :environment environment)
+        {line-pale-bottom-left :line
+         line-pale-bottom-left-start :line-start
+         :as line-pale-bottom-left-data} (line/create line
+                                                      corner-bottom-left pale-bottom-left
+                                                      :reversed? true
+                                                      :real-start 0
+                                                      :real-end end
+                                                      :render-options render-options
+                                                      :environment environment)
+        {line-fess-bottom-left :line
+         line-fess-bottom-left-start :line-start
+         :as line-fess-bottom-left-data} (line/create line
+                                                      corner-bottom-left fess-bottom-left
+                                                      :real-start 0
+                                                      :real-end end
+                                                      :render-options render-options
+                                                      :environment environment)
+        {line-fess-top-left :line
+         line-fess-top-left-start :line-start
+         :as line-fess-top-left-data} (line/create line
+                                                   corner-top-left fess-top-left
+                                                   :reversed? true
+                                                   :real-start 0
+                                                   :real-end end
+                                                   :render-options render-options
+                                                   :environment environment)
         parts [[["M" (v/+ corner-top-left
                           line-pale-top-left-start)
                  (svg/stitch line-pale-top-left)

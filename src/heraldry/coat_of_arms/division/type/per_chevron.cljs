@@ -55,21 +55,21 @@
         end (max end-left end-right)
         {line-left :line
          line-left-start :line-start
-         :as line-left-data} (line/create2 line
-                                           origin-point diagonal-left
-                                           :real-start 0
-                                           :real-end end
-                                           :reversed? true
-                                           :render-options render-options
-                                           :environment environment)
+         :as line-left-data} (line/create line
+                                          origin-point diagonal-left
+                                          :real-start 0
+                                          :real-end end
+                                          :reversed? true
+                                          :render-options render-options
+                                          :environment environment)
         {line-right :line
          line-right-end :line-end
-         :as line-right-data} (line/create2 opposite-line
-                                            origin-point diagonal-right
-                                            :real-start 0
-                                            :real-end end
-                                            :render-options render-options
-                                            :environment environment)
+         :as line-right-data} (line/create opposite-line
+                                           origin-point diagonal-right
+                                           :real-start 0
+                                           :real-end end
+                                           :render-options render-options
+                                           :environment environment)
         infinity-points (case variant
                           :chief [:left :right]
                           :dexter [:bottom :top]

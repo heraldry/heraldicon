@@ -246,7 +246,8 @@
                      [:flipped?]
                      [:fimbriation]]))))
 
-(defn create [{:keys [type] :or {type :straight} :as line} length & {:keys [angle flipped? render-options seed reversed?] :as line-options}]
+(defn create-raw [{:keys [type] :or {type :straight} :as line} length
+                  & {:keys [angle flipped? render-options seed reversed?] :as line-options}]
   (let [line-function (get kinds-function-map type)
         line-options-values (cond-> (options/sanitize line (options line))
                               (= type :straight) (-> (assoc :width length)
@@ -335,7 +336,7 @@
           real-end (* length end-t)]
       [real-start real-end])))
 
-(defn create2 [line from to & {:keys [reversed?] :as line-options}]
+(defn create [line from to & {:keys [reversed?] :as line-options}]
   (let [[from to] (if reversed?
                     [to from]
                     [from to])
@@ -343,12 +344,12 @@
         length (v/abs direction)
         [real-start real-end] (find-real-start-and-end from to line-options)
         angle (v/angle-to-point from to)]
-    (apply create (into [line length]
-                        (mapcat identity (merge
-                                          {:real-start real-start
-                                           :real-end real-end
-                                           :angle angle}
-                                          line-options))))))
+    (apply create-raw (into [line length]
+                            (mapcat identity (merge
+                                              {:real-start real-start
+                                               :real-end real-end
+                                               :angle angle}
+                                              line-options))))))
 
 (defn mask-intersection-points [start line-datas direction]
   (->> line-datas
