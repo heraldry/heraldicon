@@ -17,7 +17,7 @@
   (keyword (str "division-" (name key))))
 
 (defn make-division [type fields parts mask-overlaps parent-environment parent
-                     {:keys [render-field db-path transform svg-export?] :as context}]
+                     {:keys [render-field db-path svg-export?] :as context}]
   (let [mask-ids     (->> (range (count fields))
                           (map (fn [idx] [(util/id (str (name type) "-" idx))
                                           (util/id (str (name type) "-" idx))])))
@@ -72,9 +72,8 @@
          [:g {(if svg-export?
                 :mask
                 :clip-path) (str "url(#" clip-path-id ")")}
-          [:g {:transform transform
-               :mask      (when (-> env :meta :mask)
-                            (str "url(#" mask-id ")"))}
+          [:g {:mask (when (-> env :meta :mask)
+                       (str "url(#" mask-id ")"))}
            [render-field
             (get-field fields idx)
             (get environments idx)
@@ -86,3 +85,4 @@
                                         (->> (get #{"charge" "ordinary"}))) ;; FIXME: bit of a hack
                                   (conj db-path :field)
                                   (conj db-path :fields idx))))]]]))]))
+
