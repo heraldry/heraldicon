@@ -49,8 +49,10 @@
                                             0))
         {left-point  :left
          right-point :right}             (pile/diagonals origin-point point thickness)
-        intersection-left                (v/find-first-intersection-of-ray point left-point environment)
-        intersection-right               (v/find-first-intersection-of-ray point right-point environment)
+        intersection-left                (-> (v/environment-intersections point left-point environment)
+                                             last)
+        intersection-right               (-> (v/environment-intersections point right-point environment)
+                                             last)
         end-left                         (-> intersection-left
                                              (v/- point)
                                              v/abs)
