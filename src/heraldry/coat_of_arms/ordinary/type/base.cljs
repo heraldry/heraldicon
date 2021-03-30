@@ -31,10 +31,10 @@
                  (update-in [:fimbriation :thickness-2] (util/percent-of height)))
         {line-one :line
          line-one-start :line-start
-         :as line-one-data} (line/create2 line
-                                          row-left row-right
-                                          :render-options render-options
-                                          :environment environment)
+         :as line-one-data} (line/create line
+                                         row-left row-right
+                                         :render-options render-options
+                                         :environment environment)
         parts [[["M" (v/+ row-left
                           line-one-start)
                  (svg/stitch line-one)

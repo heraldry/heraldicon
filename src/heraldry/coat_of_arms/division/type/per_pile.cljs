@@ -68,21 +68,21 @@
         {line-left :line
          line-left-start :line-start
          line-left-end :line-end
-         :as line-left-data} (line/create2 line
-                                           point left-point
-                                           :reversed? true
+         :as line-left-data} (line/create line
+                                          point left-point
+                                          :reversed? true
+                                          :real-start 0
+                                          :real-end end
+                                          :render-options render-options
+                                          :environment environment)
+        {line-right :line
+         line-right-start :line-start
+         :as line-right-data} (line/create opposite-line
+                                           point right-point
                                            :real-start 0
                                            :real-end end
                                            :render-options render-options
                                            :environment environment)
-        {line-right :line
-         line-right-start :line-start
-         :as line-right-data} (line/create2 opposite-line
-                                            point right-point
-                                            :real-start 0
-                                            :real-end end
-                                            :render-options render-options
-                                            :environment environment)
         parts [[["M" (v/+ left-point
                           line-left-end)
                  (svg/stitch line-right)

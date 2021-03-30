@@ -98,38 +98,38 @@
                           (update-in [:fimbriation :thickness-2] (util/percent-of height)))
         {line-right-upper :line
          line-right-upper-start :line-start
-         :as line-right-upper-data} (line/create2 line
-                                                  corner-upper right-upper
-                                                  :real-start 0
-                                                  :real-end end
-                                                  :render-options render-options
-                                                  :environment environment)
-        {line-right-lower :line
-         line-right-lower-start :line-start
-         :as line-right-lower-data} (line/create2 opposite-line
-                                                  corner-lower right-lower
-                                                  :reversed? true
-                                                  :real-start 0
-                                                  :real-end end
-                                                  :render-options render-options
-                                                  :environment environment)
-        {line-left-lower :line
-         line-left-lower-start :line-start
-         :as line-left-lower-data} (line/create2 opposite-line
-                                                 corner-lower left-lower
+         :as line-right-upper-data} (line/create line
+                                                 corner-upper right-upper
                                                  :real-start 0
                                                  :real-end end
                                                  :render-options render-options
                                                  :environment environment)
-        {line-left-upper :line
-         line-left-upper-start :line-start
-         :as line-left-upper-data} (line/create2 line
-                                                 corner-upper left-upper
+        {line-right-lower :line
+         line-right-lower-start :line-start
+         :as line-right-lower-data} (line/create opposite-line
+                                                 corner-lower right-lower
                                                  :reversed? true
                                                  :real-start 0
                                                  :real-end end
                                                  :render-options render-options
                                                  :environment environment)
+        {line-left-lower :line
+         line-left-lower-start :line-start
+         :as line-left-lower-data} (line/create opposite-line
+                                                corner-lower left-lower
+                                                :real-start 0
+                                                :real-end end
+                                                :render-options render-options
+                                                :environment environment)
+        {line-left-upper :line
+         line-left-upper-start :line-start
+         :as line-left-upper-data} (line/create line
+                                                corner-upper left-upper
+                                                :reversed? true
+                                                :real-start 0
+                                                :real-end end
+                                                :render-options render-options
+                                                :environment environment)
         parts [[["M" (v/+ corner-upper
                           line-right-upper-start)
                  (svg/stitch line-right-upper)

@@ -31,10 +31,10 @@
         {line-one :line
          line-one-start :line-start
          line-one-end :line-end
-         :as line-one-data} (line/create2 line
-                                          left right
-                                          :render-options render-options
-                                          :environment environment)
+         :as line-one-data} (line/create line
+                                         left right
+                                         :render-options render-options
+                                         :environment environment)
         parts [[["M" (v/+ left
                           line-one-start)
                  (svg/stitch line-one)

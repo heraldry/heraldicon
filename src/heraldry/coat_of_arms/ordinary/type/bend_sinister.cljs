@@ -87,23 +87,23 @@
                           (update-in [:fimbriation :thickness-2] (util/percent-of height)))
         {line-one :line
          line-one-start :line-start
-         :as line-one-data} (line/create2 line
-                                          first-start
-                                          first-end
-                                          :real-start real-start
-                                          :real-end real-end
-                                          :render-options render-options
-                                          :environment environment)
+         :as line-one-data} (line/create line
+                                         first-start
+                                         first-end
+                                         :real-start real-start
+                                         :real-end real-end
+                                         :render-options render-options
+                                         :environment environment)
         {line-reversed :line
          line-reversed-start :line-start
-         :as line-reversed-data} (line/create2 opposite-line
-                                               second-start
-                                               second-end
-                                               :reversed? true
-                                               :real-start real-start
-                                               :real-end real-end
-                                               :render-options render-options
-                                               :environment environment)
+         :as line-reversed-data} (line/create opposite-line
+                                              second-start
+                                              second-end
+                                              :reversed? true
+                                              :real-start real-start
+                                              :real-end real-end
+                                              :render-options render-options
+                                              :environment environment)
         counterchanged? (counterchange/counterchangable? field parent)
         use-parent-environment? (or counterchanged?
                                     (:inherit-environment? field))
