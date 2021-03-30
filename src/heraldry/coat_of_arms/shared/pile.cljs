@@ -4,9 +4,9 @@
             [heraldry.util :as util]))
 
 (defn diagonals [origin-point point-point size]
-  (let [direction-vector (v/- point-point origin-point)
-        direction-length (v/abs direction-vector)
-        direction (v// direction-vector direction-length)
+  (let [direction (-> point-point
+                      (v/- origin-point)
+                      v/normal)
         direction-orthogonal (v/orthogonal direction)
         left-point (v/+ origin-point
                         (v/* direction-orthogonal (/ size 2)))
@@ -15,12 +15,12 @@
     {:left (-> left-point
                (v/- point-point)
                v/normal
-               (v/* 500)
+               (v/* 200)
                (v/+ point-point))
      :right (-> right-point
                 (v/- point-point)
                 v/normal
-                (v/* 500)
+                (v/* 200)
                 (v/+ point-point))}))
 
 (defn calculate-angle [target-beta edge-length stretch]
@@ -57,9 +57,9 @@
                                     0
                                     base-angle)
         target-point (case anchor-type
-                       :edge (v/find-first-intersection-of-ray
-                              real-origin real-anchor
-                              environment)
+                       :edge (-> (v/environment-intersections
+                                  real-origin real-anchor environment)
+                                 last)
                        real-anchor)
         direction-vector (v/- target-point real-origin)
         direction-length (v/abs direction-vector)
@@ -108,9 +108,9 @@
                                     thickness
                                     base-angle)
         target-point (case anchor-type
-                       :edge (v/find-first-intersection-of-ray
-                              real-origin real-anchor
-                              environment)
+                       :edge (-> (v/environment-intersections
+                                  real-origin real-anchor environment)
+                                 last)
                        real-anchor)
         direction-vector (v/- target-point real-origin)
         direction-length (v/abs direction-vector)
