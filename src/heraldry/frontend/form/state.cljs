@@ -168,15 +168,33 @@
                                                                                 (map #(update % :field dissoc :counterchanged?))
                                                                                 vec))))))))
 
+(defn -default-line-style-of-ordinary-type [ordinary-type]
+  (case ordinary-type
+    :gore :enarched
+    :straight))
+
 (rf/reg-event-db
  :set-ordinary-type
  (fn [db [_ path new-type]]
-   (-> db
-       (assoc-in (conj path :type) new-type)
-       (update-in path #(deep-merge-with (fn [_current-value new-value]
-                                           new-value)
-                                         %
-                                         (options/sanitize-or-nil % (ordinary-options/options %)))))))
+   (let [current (get-in db path)
+         has-default-line-style? (-> current
+                                     :line
+                                     :type
+                                     (= (-default-line-style-of-ordinary-type (:type current))))
+         new-default-line-style (-default-line-style-of-ordinary-type new-type)
+         new-flipped (case new-type
+                       :gore true
+                       false)]
+     (-> db
+         (assoc-in (conj path :type) new-type)
+         (cond->
+          has-default-line-style? (->
+                                   (assoc-in (conj path :line :type) new-default-line-style)
+                                   (assoc-in (conj path :line :flipped?) new-flipped)))
+         (update-in path #(deep-merge-with (fn [_current-value new-value]
+                                             new-value)
+                                           %
+                                           (options/sanitize-or-nil % (ordinary-options/options %))))))))
 (rf/reg-event-db
  :set-charge-type
  (fn [db [_ path new-type]]
