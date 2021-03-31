@@ -88,8 +88,8 @@
                  "z"]
                 [first-right
                  second-left]]]
-        field (if (counterchange/counterchangable? field parent)
-                (counterchange/counterchange-field field parent)
+        field (if (:counterchanged? field)
+                (counterchange/counterchange-field ordinary parent)
                 field)
         outline? (or (:outline? render-options)
                      (:outline? hints))]
