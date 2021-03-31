@@ -3,7 +3,8 @@
 (defn release-image [img-src]
   [:a {:href   img-src
        :target "_blank"}
-   [:img {:style {:width "100%"}
+   [:img {:style {:width       "calc(90% - 1em)"
+                  :margin-left "1em"}
           :src   img-src
           :alt   "release update overview"}]])
 
@@ -12,6 +13,19 @@
    [:h2 "News"]
    [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll "
     "group some features and new development and post an update here, so it is easy to stay informed."]
+
+   [:h3 "2021-03-31 - Embowed/enarched, nonrepeating line styles"]
+   [:div.pure-g
+    [:div.pure-u-2-3 {:style {:text-align "justify"
+                              :min-width  "30em"}}
+     [:p "A big refactoring line styles, allowing line styles that are not pattern-based but extend across the full length of the line."]
+     [:ul
+      [:li "support of full-length line styles, such as bevilled, angled, and enarched"]
+      [:li "new pattern-based line styles, such as potenty, embattled-grady, embattled-in-crosses, nebuly, fir-twigged, fir-tree-topped, thorny"]
+      [:li "gore ordinaries, which also uses the enarched line style, but can use all other line styles as well"]
+      [:li "bug fixes"]]]
+    [:div.pure-u-1-3
+     (release-image "/img/2021-03-16-release-update.png")]]
 
    [:h3 "2021-03-16 - Chevron and pile"]
    [:div.pure-g
@@ -28,7 +42,6 @@
        "not just the middle axis"]
       [:li "more support of arbitrary SVGs for the charge library"]
       [:li "WappenWiki and Wikimedia licensing presets for charge attribution"]
-      [:li "more line styles"]
       [:li "bug fixes"]]]
     [:div.pure-u-1-3
      (release-image "/img/2021-03-16-release-update.png")]]
