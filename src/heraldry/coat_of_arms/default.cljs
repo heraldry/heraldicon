@@ -26,3 +26,4 @@
   {:component  :coat-of-arms
    :escutcheon :heater
    :field      field})
+

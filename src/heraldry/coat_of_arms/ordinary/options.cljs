@@ -221,7 +221,32 @@
                                        [:geometry]]
                                       {[:line]              (-> line-style
                                                                 (options/override-if-exists [:offset :min] 0))
-                                       [:origin :alignment] nil}))
+                                       [:origin :alignment] nil})
+         :gore          (options/pick default-options
+                                      [[:origin]
+                                       [:anchor]
+                                       [:line]
+                                       [:opposite-line]]
+                                      {[:line]                   (-> line-style
+                                                                     (options/override-if-exists [:offset :min] 0)
+                                                                     (options/override-if-exists [:type :default] :enarched)
+                                                                     (options/override-if-exists [:flipped? :default] true))
+                                       [:opposite-line]          (-> line-style
+                                                                     (options/override-if-exists [:offset :min] 0)
+                                                                     (options/override-if-exists [:type :default] :enarched)
+                                                                     (options/override-if-exists [:flipped? :default] true))
+                                       [:origin :point :choices] (util/filter-choices
+                                                                  position/anchor-point-choices
+                                                                  [:fess :chief :base])
+                                       [:origin :alignment]      nil
+                                       [:origin :point :default] :fess
+                                       [:anchor :point :choices] (util/filter-choices
+                                                                  position/anchor-point-choices
+                                                                  [:top-left :top-right :angle])
+                                       [:anchor :point :default] :top-left
+                                       [:anchor :angle :min]     -80
+                                       [:anchor :angle :max]     80
+                                       [:anchor :alignment]      nil}))
        (update-in [:line] (fn [line]
                             (when line
                               (set-line-defaults line))))
