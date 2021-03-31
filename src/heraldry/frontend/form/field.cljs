@@ -145,6 +145,18 @@
          [division-form/form path]
          (let [division-options (division-options/options (:division field))]
            [:<>
+            (when (:line division-options)
+              [line/form (conj path :division :line) :options (:line division-options)])
+            (when (:opposite-line division-options)
+              [line/form (conj path :division :opposite-line)
+               :options (:opposite-line division-options)
+               :defaults (options/sanitize (:line division) (:line division-options))
+               :title "Opposite Line"])
+            (when (:extra-line division-options)
+              [line/form (conj path :division :extra-line)
+               :options (:extra-line division-options)
+               :defaults (options/sanitize (:line division) (:line division-options))
+               :title "Extra Line"])
             (when (-> division-options :variant)
               [element/select (conj path :division :variant) "Variant"
                (-> division-options :variant :choices)
@@ -168,19 +180,7 @@
                (:geometry division-options)
                :current (:geometry division)])
             (when (:layout division-options)
-              [form-for-layout path :options (:layout division-options)])
-            (when (:line division-options)
-              [line/form (conj path :division :line) :options (:line division-options)])
-            (when (:opposite-line division-options)
-              [line/form (conj path :division :opposite-line)
-               :options (:opposite-line division-options)
-               :defaults (options/sanitize (:line division) (:line division-options))
-               :title "Opposite Line"])
-            (when (:extra-line division-options)
-              [line/form (conj path :division :extra-line)
-               :options (:extra-line division-options)
-               :defaults (options/sanitize (:line division) (:line division-options))
-               :title "Extra Line"])])
+              [form-for-layout path :options (:layout division-options)])])
          (if (= division-type :none)
            [form-for-content (conj path :content)]
            [element/checkbox (conj path :division :hints :outline?) "Outline"])])]
