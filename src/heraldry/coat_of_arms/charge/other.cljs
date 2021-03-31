@@ -219,9 +219,10 @@
                                                                       [position (v/+ position
                                                                                      clip-size)])
                                                :override-environment (when (or (:inherit-environment? field)
-                                                                               (counterchange/counterchangable? field parent)) environment)})
-            field                            (if (counterchange/counterchangable? field parent)
-                                               (counterchange/counterchange-field field parent)
+                                                                               (:counterchanged? field))
+                                                                       environment)})
+            field                            (if (:counterchanged? field)
+                                               (counterchange/counterchange-field charge parent)
                                                field)
             charge-name                      (or (:name full-charge-data) "")
             username                         (:username full-charge-data)
@@ -392,3 +393,4 @@
                           :fill      "#ffffff"
                           :style     {:opacity (:highlight tincture)}}]])])])])
       [:<>])))
+

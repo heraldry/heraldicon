@@ -28,7 +28,11 @@
         {:keys [shape
                 mask
                 charge-width
-                charge-height]}       (function target-arg-value)
+                charge-height
+                charge-top-left]}     (function target-arg-value)
+        charge-top-left               (or charge-top-left
+                                          (-> (v/v charge-width charge-height)
+                                              (v// -2)))
         charge-shape                  (-> shape
                                           svg/make-path
                                           (->
@@ -56,26 +60,21 @@
                                                                    (.rotate rotation)
                                                                    (.toString)))
                                             (svg/translate (:x position-point) (:y position-point))))
-        [min-x max-x min-y max-y]     (svg/rotated-bounding-box (v//
-                                                                 (v/v charge-width
-                                                                      charge-height)
-                                                                 -2)
-                                                                (v//
-                                                                 (v/v charge-width
-                                                                      charge-height)
-                                                                 2)
+        [min-x max-x min-y max-y]     (svg/rotated-bounding-box charge-top-left
+                                                                (v/+ charge-top-left
+                                                                     (v/v charge-width
+                                                                          charge-height))
                                                                 rotation
+                                                                :middle (v/v 0 0)
                                                                 :scale (v/v scale-x scale-y))
-        box-size                      (v/v (- max-x min-x)
-                                           (- max-y min-y))
         parts                         [[charge-shape
-                                        [(v/- position-point
-                                              (v// box-size 2))
+                                        [(v/+ position-point
+                                              (v/v min-x min-y))
                                          (v/+ position-point
-                                              (v// box-size 2))]
+                                              (v/v max-x max-y))]
                                         mask-shape]]
-        field                         (if (counterchange/counterchangable? field parent)
-                                        (counterchange/counterchange-field field parent)
+        field                         (if (:counterchanged? field)
+                                        (counterchange/counterchange-field charge parent)
                                         field)
         charge-id                     (util/id "charge")
         outline?                      (or (:outline? render-options)
@@ -136,3 +135,4 @@
          [:path {:d charge-shape}]
          (when mask-shape
            [:path {:d mask-shape}])])]]))
+
