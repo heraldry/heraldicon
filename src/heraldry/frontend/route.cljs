@@ -1,5 +1,6 @@
 (ns heraldry.frontend.route
   (:require [clojure.string :as s]
+            [heraldry.frontend.about :as about]
             [heraldry.frontend.account :as account]
             [heraldry.frontend.arms-library :as arms-library]
             [heraldry.frontend.charge-library :as charge-library]
@@ -17,6 +18,10 @@
   [["/"
     {:name :home
      :view home/view}]
+
+   ["/about/"
+    {:name :about
+     :view about/view}]
 
    ["/collections/"
     {:name :collections
@@ -191,3 +196,4 @@
    (fn [m] (reset! current-match m))
    ;; set to false to enable HistoryAPI
    {:use-fragment false}))
+

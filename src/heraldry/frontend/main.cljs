@@ -18,6 +18,7 @@
        #_[route/nav-link {:to :collections} "Collections"]
        [route/nav-link {:to :arms} "Arms"]
        [route/nav-link {:to :charges} "Charges"]
+       [route/nav-link {:to :about} "About"]
        [:span.horizontal-spacer {:style {:width "5em"}}]
        (if (:logged-in? user-data)
          [:li.pure-menu-item.pure-menu-has-children.pure-menu-allow-hover
@@ -58,3 +59,4 @@
 
 (defn ^:export init []
   (start))
+
