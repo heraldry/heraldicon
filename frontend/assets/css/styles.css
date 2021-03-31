@@ -1,3 +1,14 @@
+@font-face {
+  font-family: "SiteDefault";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../font/Gotham-Light.otf") format("opentype");
+}
+
+body {
+  font-family: "SiteDefault", sans-serif;
+}
+
 a,
 a:hover,
 a:focus,
