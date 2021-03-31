@@ -1,62 +1,79 @@
 (ns heraldry.frontend.home)
 
+(defn release-image [img-src]
+  [:a {:href img-src
+       :target "_blank"}
+   [:img {:style {:width "100%"}
+          :src img-src
+          :alt "release update overview"}]])
+
 (defn view []
-  [:div.pure-u-1-2 {:style {:padding "10px"
-                            :text-align "justify"
-                            :min-width "30em"}}
-   [:h2 "Welcome to this thing"]
-   [:h3 "Why is this thing?"]
-   [:p
-    [:a {:href "https://en.wikipedia.org/wiki/Heraldry"
-         :target "_blank"} "Heraldry"] " is interesting and fun, but it has a myriad of conventions and "
-    "rules, as it's been around for almost a millennium."]
-   [:p
-    "Creating a coat of arms is a time-consuming process and requires knowledge of various design tools. "
-    "But even if you put in that time, the result usually is somewhat static, it can't easily be adjusted without "
-    "more manual work, for instance to change the style, the tinctures, or the shape of the escutcheon."]
-   [:p
-    "That is what heraldry.digital wants to improve. You can " [:i "describe"] " a coat of arms, and let the rendering "
-    "figure out the rest. After that it can be themed, the escutcheon can be changed, it can be used for impalement in "
-    "other coats, charges can be swapped for other variants of a different style, etc.."]
-   [:p
-    "Obviously it won't replace human skills and artistry, but it might provide a starting point "
-    "to try out some concepts and generate a base of things that can be automated, "
-    "e.g. divisions, ordinaries, and line styles."]
-   [:h3 "Goals"]
-   [:ul
-    [:li "Provide an open charge library, which anyone can add to"]
-    [:li "Provide means to create online armories for reference or research"]
-    [:li "Support as many heraldic concepts and elements as possible"]]
-   [:h3 "Status"]
-   [:p
-    "This entire website is pretty beta still, so please be patient "
-    "if you run into bugs or missing features. See my contact details below to report anything weird."]
-   [:p
-    "I'll try to set up some sort of system for bug tracking and feature requesting before too long."]
-   [:h3 "Licensing"]
-   [:p
-    "Charges and arms made public on this site " [:b "require a Creative Commons license"]
-    " or be declared in the public domain. Derivative work "
-    [:b "requires attribution of the source"] ", and the source license must be compatible with the chosen "
-    "CC license."]
-   [:p
-    "You can specify this while editing a charge or arms, and viewing or exporting work will include "
-    "the license and attribution. It's your responsibility to provide this information, if you make the work public."]
-   [:p
-    [:b
-     "If you see your work without proper attribution or have other concerns or feedback regarding the "
-     "implementation of these features, then please contact me."]]
-   [:p
-    "Note: SVGs get the proper metadata of license/attribution for the coat of arms and all used "
-    "charges, PNGs are a work in progress."]
-   [:h3 "Contact"]
-   [:p "The project is on " [:a {:href "https://github.com/heraldry" :target "_blank"} "github:heraldry"]
-    " if you want to get involved in some way."]
-   [:p
-    "You can email me at oliver [at] heraldry.digital for feedback, questions, complaints, feature "
-    "requests, or deep and meaningful friendship."]
-   [:p "I can also be found on:"]
-   [:ul
-    [:li [:a {:href "https://github.com/or" :target "_blank"} "github:or"]]
-    [:li [:a {:href "https://www.reddit.com/r/heraldry/" :target "_blank"} "reddit/heraldry"] ", where my username is " [:b "tierced"]]
-    [:li [:a {:href "https://discord.gg/fJuWx8S" :target "_blank"} "discord:heraldry"] ", which is operated by the heraldry subreddit, there my username is " [:b "or#5915"]]]])
+  [:div {:style {:padding "10px"}}
+   [:h2 "News"]
+   [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll "
+    "group some features and new development and post an update here, so it is easy to stay informed."]
+
+   [:h3 "2021-03-16 - Chevron and pile"]
+   [:div.pure-g
+    [:div.pure-u-2-3 {:style {:text-align "justify"
+                              :min-width "30em"}}
+     [:p "A total refactoring of angular alignment necessary for chevron and pile variants."]
+     [:ul
+      [:li "chevron ordinary and division variants issuant from chief, dexter, and sinister"]
+      [:li "pile ordinary and division variants issuant from anywhere, pointing at specific points or the opposite edge"]
+      [:li "edge detection of the surrounding field for piles is dynamic and works for any shape and orientation"]
+      [:li "orientation based on an " [:b "origin"] " and an " [:b "anchor"]
+       ", which allows precise construction of bends, chevrons, saltires, piles, etc."]
+      [:li "new concept of " [:b "alignment"] " allows aligning ordinary edges with the chosen origin/anchor, "
+       "not just the middle axis"]
+      [:li "more support of arbitrary SVGs for the charge library"]
+      [:li "WappenWiki and Wikimedia licensing presets for charge attribution"]
+      [:li "more line styles"]
+      [:li "bug fixes"]]]
+    [:div.pure-u-1-3
+     (release-image "/img/2021-03-16-release-update.png")]]
+
+   [:h3 "2021-03-07 - Paly and fimbriation"]
+   [:div.pure-g
+    [:div.pure-u-2-3 {:style {:text-align "justify"
+                              :min-width "30em"}}
+     [:p "The main new features are:"]
+     [:ul
+      [:li "paly/barry/bendy/chequy/lozengy field divisions with configurable layout"]
+      [:li "quarterly division of MxN fields"]
+      [:li "vairy treatment and its variations"]
+      [:li "potenty treatment and its variations"]
+      [:li "papellony and masoned treatment"]
+      [:li "line fimbriation (single and double) with configurable thickness, which can handle intersecting with itself and optional outlines"]
+      [:li "charge fimbriation with configurable thickness"]
+      [:li "shininess and shield textures, which also can be used as displacement maps for various effects"]
+      [:li "optional alpha transparency shadow/highlight in charges, which is applied dynamically after rendering "
+       "the charge field, i.e. it works with any tincture or treatment or division of the charge's field"]
+      [:li "bug fixes"]]]
+    [:div.pure-u-1-3
+     (release-image "/img/2021-03-07-release-update.png")]]
+
+   [:h3 "2021-02-08 - First release"]
+   [:div.pure-g
+    [:div.pure-u-2-3 {:style {:text-align "justify"
+                              :min-width "30em"}}
+     [:p "Following a browser-only prototype, this site now has a backend, where users can build a public "
+      "and private library of charges and arms."]
+     [:p
+      "Features include:"]
+     [:ul
+      [:li "various escutcheons with their own relevant points, e.g. fess, honour, nombril, etc."]
+      [:li "several divisions"]
+      [:li "several ordinaries"]
+      [:li "several line styles"]
+      [:li "some common charge shapes"]
+      [:li "lion and wolf charges in various attitudes"]
+      [:li "counterchanged ordinaries and charges"]
+      [:li "ermine-like furs"]
+      [:li "dimidiation"]
+      [:li "very basic blazoning of the constructed arms"]
+      [:li "tincture themes, including hatching"]
+      [:li "licensing information and attribution can be given for charges and arms, and indeed is required to make either public"]
+      [:li "SVG/PNG export of saved arms; the saving is necessary for proper attribution"]]]
+    [:div.pure-u-1-3
+     (release-image "/img/2021-02-08-release-update.png")]]])
