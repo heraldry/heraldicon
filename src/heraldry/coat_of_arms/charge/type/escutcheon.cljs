@@ -4,7 +4,8 @@
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.svg :as svg]))
+            [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.coat-of-arms.vector :as v]))
 
 (defn render
   {:display-name "Escutcheon"
@@ -19,9 +20,12 @@
                        (escutcheon/field (if (= escutcheon :none)
                                            root-escutcheon
                                            escutcheon)) width)
-             env-fess (-> env :points :fess)]
-         {:shape         (svg/translate (:shape env)
-                                        (-> env-fess :x -)
-                                        (-> env-fess :y -))
-          :charge-width  width
-          :charge-height width})))))
+             env-fess (-> env :points :fess)
+             offset   (v/* env-fess -1)]
+         {:shape           (svg/translate (:shape env)
+                                          (:x offset)
+                                          (:y offset))
+          :charge-top-left offset
+          :charge-width    (:width env)
+          :charge-height   (:height env)})))))
+
