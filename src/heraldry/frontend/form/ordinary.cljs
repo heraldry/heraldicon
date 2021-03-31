@@ -21,6 +21,9 @@
                                    :content {:tincture :argent}
                                    :components [{:component :ordinary
                                                  :type key
+                                                 :line (when (= key :gore)
+                                                         {:type :enarched
+                                                          :flipped? true})
                                                  :escutcheon (if (= key :escutcheon) :heater nil)
                                                  :geometry (when (= key :pile)
                                                              {:stretch 0.85})
