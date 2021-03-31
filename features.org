@@ -65,6 +65,7 @@ Here's a list of things already supported and things I'm working on.
 - [ ] write blazonry parser
 - [X] add attribution on the site
 - [X] add attribution in SVG metadata
+- [X] add line styles that are not pattern based
 
 ** Backend
 - [X] have backend with user pool
