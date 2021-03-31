@@ -62,8 +62,6 @@
       [form-for-ordinary-type path]
       (let [ordinary-options (ordinary-options/options ordinary)]
         [:<>
-         (when (:escutcheon ordinary-options)
-           [escutcheon/form (conj path :escutcheon)])
          (when (:line ordinary-options)
            [line/form (conj path :line) :options (:line ordinary-options)])
          (when (:opposite-line ordinary-options)
@@ -71,6 +69,8 @@
             :options (:opposite-line ordinary-options)
             :defaults (options/sanitize (:line ordinary) (:line ordinary-options))
             :title "Opposite Line"])
+         (when (:escutcheon ordinary-options)
+           [escutcheon/form (conj path :escutcheon)])
          (when (:variant ordinary-options)
            [element/select (conj path :variant)
             "Variant"
