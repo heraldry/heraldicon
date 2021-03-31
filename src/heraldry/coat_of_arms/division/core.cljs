@@ -41,13 +41,6 @@
         :tierced-per-pile 3
         2))))
 
-(defn counterchangable? [division]
-  ;; TODO: potentially also should look at the parts, maybe demand no
-  ;; ordinaries and charges as well, but for now this check suffices
-  (and (-> division mandatory-part-count (= 2))
-       (-> division :fields (get 0) :division :type not)
-       (-> division :fields (get 1) :division :type not)))
-
 (defn default-fields [{:keys [type] :as division}]
   (let [{:keys [layout]} (options/sanitize division (division-options/options division))
         {:keys [num-fields-x num-fields-y num-base-fields]} layout

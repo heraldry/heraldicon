@@ -1,5 +1,6 @@
 (ns heraldry.frontend.form.field
-  (:require [heraldry.coat-of-arms.default :as default]
+  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
+            [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.options :as options]
@@ -126,8 +127,7 @@
                           :type
                           (or :none))
         field @(rf/subscribe [:get path])
-        counterchanged? (and @(rf/subscribe [:get (conj path :counterchanged?)])
-                             (division/counterchangable? (-> parent-field :division)))
+        counterchanged? @(rf/subscribe [:get (conj path :counterchanged?)])
         root-field? (= path [:coat-of-arms :field])]
     [element/component path :field (cond
                                      (:counterchanged? field) "Counterchanged"
@@ -138,8 +138,7 @@
         [element/checkbox (conj path :inherit-environment?) "Inherit environment (dimidiation)"])
       (when (and (not= path [:coat-of-arms :field])
                  parent-field)
-        [element/checkbox (conj path :counterchanged?) "Counterchanged"
-         :disabled? (not (division/counterchangable? (-> parent-field :division)))])
+        [element/checkbox (conj path :counterchanged?) "Counterchanged"])
       (when (not counterchanged?)
         [:<>
          [division-form/form path]

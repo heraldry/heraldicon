@@ -160,13 +160,7 @@
                                                 vec))))))
          (update-in (conj path :division) #(merge %
                                                   (options/sanitize-or-nil % (division-options/options %))))
-         (update-in path dissoc :content)
-         (cond->
-          (not (division/counterchangable? {:type new-type})) (update-in (conj path :components)
-                                                                         (fn [components]
-                                                                           (->> components
-                                                                                (map #(update % :field dissoc :counterchanged?))
-                                                                                vec))))))))
+         (update-in path dissoc :content)))))
 
 (defn -default-line-style-of-ordinary-type [ordinary-type]
   (case ordinary-type
