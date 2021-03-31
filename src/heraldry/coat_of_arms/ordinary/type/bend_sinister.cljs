@@ -104,7 +104,7 @@
                                               :real-end real-end
                                               :render-options render-options
                                               :environment environment)
-        counterchanged? (counterchange/counterchangable? field parent)
+        counterchanged? (:counterchanged? field)
         use-parent-environment? (or counterchanged?
                                     (:inherit-environment? field))
         parts [[["M" (v/+ first-start
@@ -122,7 +122,7 @@
                   [(v/v 0 0)
                    (v/v band-length band-height)])]]
         field (if counterchanged?
-                (counterchange/counterchange-field field parent)
+                (counterchange/counterchange-field ordinary parent)
                 field)
         outline? (or (:outline? render-options)
                      (:outline? hints))]
