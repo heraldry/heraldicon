@@ -25,7 +25,7 @@
       [:li "gore ordinaries, which also uses the enarched line style, but can use all other line styles as well"]
       [:li "bug fixes"]]]
     [:div.pure-u-1-3
-     (release-image "/img/2021-03-16-release-update.png")]]
+     (release-image "/img/2021-03-31-release-update.png")]]
 
    [:h3 "2021-03-16 - Chevron and pile"]
    [:div.pure-g
