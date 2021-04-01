@@ -149,7 +149,7 @@
                                                            (-> existing-colours
                                                                keys
                                                                set))))]
-                 (rf/dispatch [:set (conj db-path :colours) new-colours]))
+                   (rf/dispatch [:set (conj db-path :colours) new-colours]))
                (rf/dispatch [:set (conj db-path :data) {:edn-data {:data   edn-data
                                                                    :width  width
                                                                    :height height}
@@ -196,6 +196,13 @@
         (set! (-> event .-target .-value) "")
         (.readAsText reader file)))))
 
+(defn invalidate-charges-cache []
+  (let [user-data (user/data)
+        user-id   (:user-id user-data)]
+    (rf/dispatch-sync [:set list-db-path nil])
+    (state/invalidate-cache list-db-path user-id)
+    (state/invalidate-cache [:all-charges] :all-charges)))
+
 (defn save-charge-clicked []
   (let [payload   @(rf/subscribe [:get form-db-path])
         user-data (user/data)]
@@ -209,8 +216,7 @@
           (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
           (state/invalidate-cache-without-current form-db-path [charge-id nil])
           (state/invalidate-cache-without-current form-db-path [charge-id 0])
-          (rf/dispatch-sync [:set list-db-path nil])
-          (state/invalidate-cache list-db-path (:user-id user-data))
+          (invalidate-charges-cache)
           (rf/dispatch-sync [:set-form-message form-db-path (str "Charge saved, new version: " (:version response))])
           (reife/push-state :edit-charge-by-id {:id (id-for-url charge-id)}))
         (modal/stop-loading)
@@ -459,9 +465,6 @@
     (when (= status :done)
       [charge-form])))
 
-(defn invalidate-charges-cache []
-  (state/invalidate-cache [:all-charges] :all-charges))
-
 (defn view-list-charges []
   (let [[status charges] (state/async-fetch-data
                           [:all-charges]
@@ -501,3 +504,4 @@
         version   (-> parameters :path :version)
         charge-id (str "charge:" id)]
     [charge-display charge-id version]))
+
