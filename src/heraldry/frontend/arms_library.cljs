@@ -150,6 +150,9 @@
         (log/error "generate png arms error:" e)
         (modal/stop-loading)))))
 
+(defn invalidate-arms-cache [user-id]
+  (state/invalidate-cache list-db-path user-id))
+
 (defn save-arms-clicked []
   (go
     (rf/dispatch-sync [:clear-form-errors form-db-path])
@@ -158,6 +161,7 @@
       (modal/start-loading)
       (let [payload @(rf/subscribe [:get form-db-path])
             user-data (user/data)
+            user-id (:user-id user-data)
             response (<? (api-request/call :save-arms payload user-data))
             arms-id (-> response :arms-id)]
         (rf/dispatch-sync [:set (conj form-db-path :id) arms-id])
@@ -165,7 +169,7 @@
         (state/invalidate-cache-without-current form-db-path [arms-id nil])
         (state/invalidate-cache-without-current form-db-path [arms-id 0])
         (rf/dispatch-sync [:set list-db-path nil])
-        (state/invalidate-cache list-db-path (:user-id user-data))
+        (invalidate-arms-cache user-id)
         (rf/dispatch-sync [:set-form-message form-db-path (str "Arms saved, new version: " (:version response))])
         (reife/push-state :edit-arms-by-id {:id (id-for-url arms-id)}))
       (modal/stop-loading)
@@ -352,9 +356,6 @@
                                  (rf/dispatch-sync [:clear-form-message form-db-path]))}
                 (:name arms)])]))])
       [:div "loading..."])))
-
-(defn invalidate-arms-cache [user-id]
-  (state/invalidate-cache list-db-path user-id))
 
 (defn list-my-arms []
   (let [user-data (user/data)]
