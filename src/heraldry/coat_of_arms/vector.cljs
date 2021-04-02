@@ -1,5 +1,8 @@
 (ns heraldry.coat-of-arms.vector
-  (:require ["path-intersection" :as path-intersection]))
+  (:require ["path-intersection" :as -path-intersection]))
+
+(def path-intersection
+  (memoize -path-intersection))
 
 (defn v [x y]
   {:x x
