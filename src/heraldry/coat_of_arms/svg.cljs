@@ -290,7 +290,7 @@
     {:x (+ x dx)
      :y (+ y dy)}))
 
-(defn squiggly-path [path & {:keys [seed]}]
+(defn -squiggly-path [path & {:keys [seed]}]
   (random/seed (if seed
                  [seed path]
                  path))
@@ -303,6 +303,9 @@
         curve    (catmullrom/catmullrom points)
         new-path (catmullrom/curve->svg-path-relative curve)]
     new-path))
+
+(def squiggly-path
+  (memoize -squiggly-path))
 
 (defn squiggly-paths [data]
   (walk/postwalk #(cond-> %
