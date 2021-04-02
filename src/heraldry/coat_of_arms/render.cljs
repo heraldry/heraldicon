@@ -10,10 +10,12 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.util :as util]))
 
-(defn coat-of-arms [coat-of-arms width {:keys [render-options
-                                               svg-export?
-                                               metadata
-                                               texture-link] :as context}]
+(defn coat-of-arms [coat-of-arms width
+                    {:keys
+                     [render-options
+                      svg-export?
+                      metadata
+                      texture-link] :as context}]
   (let [escutcheon (if (-> render-options
                            :escutcheon-override
                            (or :none)
@@ -102,6 +104,7 @@
                  [:path {:d (:shape environment)
                          :fill "#f0f0f0"}]
                  [field/render field environment (-> context
+                                                     (dissoc :metadata)
                                                      (update :db-path conj :field)
                                                      (assoc :root-escutcheon escutcheon))]]]]
               (when (:outline? render-options)
