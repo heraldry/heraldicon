@@ -12,7 +12,7 @@
    :type :pale
    :line {:type :straight}
    :field field
-   :hints {:outline-mode :keep}})
+   :hints {:outline? true}})
 
 (def charge
   {:component :charge
