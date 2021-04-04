@@ -40,18 +40,20 @@ dev-local:
 dev-test:
 	npx shadow-cljs watch test
 
-check-println-frontend:
-	! rg println src
+check-debug-print-frontend:
+	! rg debug-print src
+	! rg js/console src
 
 check-dirty-frontend:
 	git diff --quiet || (echo ". is dirty" && false)
 
-check-println-backend:
-	! rg println backend/src
+check-debug-print-backend:
+	! rg debug-print backend/src
+	! rg js/console backend/src
 
 check-dirty-backend:
 	cd backend && git diff --quiet || (echo "backend is dirty" && false)
 
-check-before-deploy-frontend: check-println-frontend check-dirty-frontend
+check-before-deploy-frontend: check-debug-print-frontend check-dirty-frontend
 
-check-before-deploy-backend: check-println-frontend check-dirty-frontend check-println-backend check-dirty-backend
+check-before-deploy-backend: check-debug-print-frontend check-dirty-frontend check-debug-print-backend check-dirty-backend
