@@ -6,7 +6,6 @@
 
  :builds {:frontend
           {:target           :browser
-           :modules          {:main {:entries [heraldry.frontend.main]}}
            :asset-path       "/js/generated"
            :js-options       {:js-package-dirs ["./frontend/node_modules"]}
            :devtools         {:before-load heraldry.frontend.main/stop
@@ -20,11 +19,13 @@
                               :warnings           {:redef false}}
            :build-hooks      [(shadow-env.core/hook)]
 
-           :dev {:output-dir       "./frontend/build/dev/generated"
+           :dev {:modules          {:main {:init-fn heraldry.frontend.main/dev-init}}
+                 :output-dir       "./frontend/build/dev/generated"
                  :compiler-options {:closure-defines {re-frame.trace.trace-enabled?       true
                                                       re_frame.trace.trace_enabled_QMARK_ true}}}
 
-           :release {:output-dir "./frontend/build/prod/js/generated"}}
+           :release {:modules    {:main {:entries [heraldry.frontend.main]}}
+                     :output-dir "./frontend/build/prod/js/generated"}}
 
           :backend
           {:target           :node-library

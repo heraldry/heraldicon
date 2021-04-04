@@ -1,5 +1,6 @@
 (ns heraldry.frontend.main
-  (:require [heraldry.frontend.modal :as modal]
+  (:require [devtools.core :as devtools]
+            [heraldry.frontend.modal :as modal]
             [heraldry.frontend.route :as route]
             [heraldry.frontend.user :as user]
             [re-frame.core :as rf]
@@ -58,5 +59,15 @@
    (.getElementById js/document "app")))
 
 (defn ^:export init []
+  (start))
+
+(defn setup-devtools []
+  (let [{:keys [cljs-land-style]} (devtools/get-prefs)]
+    (devtools/set-pref! :cljs-land-style (str "filter:invert(1);" cljs-land-style)))
+  (devtools/install!))
+
+(defn dev-init []
+  (println "dev-init")
+  (setup-devtools)
   (start))
 
