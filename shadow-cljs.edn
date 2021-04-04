@@ -7,7 +7,6 @@
  :builds {:frontend
           {:target           :browser
            :modules          {:main {:entries [heraldry.frontend.main]}}
-           :output-dir       "./frontend/assets/js/generated"
            :asset-path       "/js/generated"
            :js-options       {:js-package-dirs ["./frontend/node_modules"]}
            :devtools         {:before-load heraldry.frontend.main/stop
@@ -17,11 +16,15 @@
                               :preloads    [devtools.preload
                                             day8.re-frame-10x.preload]
                               :repl-pprint true}
-           :compiler-options {:closure-defines    {re-frame.trace.trace-enabled?       true
-                                                   re_frame.trace.trace_enabled_QMARK_ true}
-                              :output-feature-set :es6
+           :compiler-options {:output-feature-set :es6
                               :warnings           {:redef false}}
-           :build-hooks      [(shadow-env.core/hook)]}
+           :build-hooks      [(shadow-env.core/hook)]
+
+           :dev {:output-dir       "./frontend/build/dev/generated"
+                 :compiler-options {:closure-defines {re-frame.trace.trace-enabled?       true
+                                                      re_frame.trace.trace_enabled_QMARK_ true}}}
+
+           :release {:output-dir "./frontend/build/prod/js/generated"}}
 
           :backend
           {:target           :node-library
@@ -31,15 +34,19 @@
                               :rollback_handler           heraldry.backend.migration.core/rollback-handler
                               :collect_statistics_handler heraldry.backend.monitoring.core/collect-statistics-handler}
            :js-options       {:js-package-dirs ["./backend/node_modules"]}
-           :output-to        "backend/generated/backend.js"
            :devtools         {:repl-pprint true}
            :compiler-options {:warnings           {:redef false}
                               :output-feature-set :es6}
-           :build-hooks      [(shadow-env.core/hook)]}
+           :build-hooks      [(shadow-env.core/hook)]
+
+           :dev {:output-to "./backend/build/dev/backend.js"}
+
+           :release {:output-to "./backend/build/prod/backend.js"}}
 
           :test
           {:target           :node-test
-           :output-to        "./backend/out/node-tests.js"
+           :output-to        "./build/test/node-tests.js"
            :compiler-options {:warnings {:redef false}}
            :ns-regexp        "test"
            :autorun          true}}}
+
