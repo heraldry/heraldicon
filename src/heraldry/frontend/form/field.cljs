@@ -17,17 +17,17 @@
             [heraldry.frontend.util :as util]
             [re-frame.core :as rf]))
 
-(defn form-for-content [path]
-  [:div.form-content
+(defn form-for-plain-field [path]
+  [:div.form-plain-field
    [tincture/form (conj path :tincture)]])
 
 (defn form-for-layout [field-path & {:keys [title options] :or {title "Layout"}}]
-  (let [layout-path (conj field-path :division :layout)
-        division @(rf/subscribe [:get (conj field-path :division)])
-        layout (:layout division)
-        division-type (:type division)
-        current-data (:layout (options/sanitize-or-nil division (division-options/options division)))
-        effective-data (:layout (options/sanitize division (division-options/options division)))
+  (let [layout-path (conj field-path :layout)
+        field @(rf/subscribe [:get field-path])
+        layout (:layout field)
+        division-type (:type field)
+        field (:layout (options/sanitize-or-nil field (division-options/options field)))
+        effective-data (:layout (options/sanitize field (division-options/options field)))
         link-name (util/combine
                    ", "
                    [(cond
@@ -35,16 +35,16 @@
                       (#{:barry
                          :bendy
                          :bendy-sinister} division-type) (str (:num-fields-y effective-data) " fields"))
-                    (when (and (:num-base-fields current-data)
-                               (not= (:num-base-fields current-data) 2))
+                    (when (and (:num-base-fields field)
+                               (not= (:num-base-fields field) 2))
                       (str (:num-base-fields effective-data) " base fields"))
-                    (when (or (:offset-x current-data)
-                              (:offset-y current-data))
+                    (when (or (:offset-x field)
+                              (:offset-y field))
                       (str "shifted"))
-                    (when (or (:stretch-x current-data)
-                              (:stretch-y current-data))
+                    (when (or (:stretch-x field)
+                              (:stretch-y field))
                       (str "stretched"))
-                    (when (:rotation current-data)
+                    (when (:rotation field)
                       (str "rotated"))])
         link-name (if (-> link-name count (= 0))
                     "Default"
@@ -121,17 +121,13 @@
          :default (options/get-value (:rotation layout) (:rotation options))])]]))
 
 (defn form [path & {:keys [parent-field title-prefix]}]
-  (let [division (-> @(rf/subscribe [:get path])
-                     :division)
-        division-type (-> division
-                          :type
-                          (or :none))
-        field @(rf/subscribe [:get path])
+  (let [field @(rf/subscribe [:get path])
+        division-type (:type field)
         counterchanged? @(rf/subscribe [:get (conj path :counterchanged?)])
         root-field? (= path [:coat-of-arms :field])]
     [element/component path :field (cond
                                      (:counterchanged? field) "Counterchanged"
-                                     (= division-type :none) (-> field :content :tincture util/translate-tincture util/upper-case-first)
+                                     (= division-type :plain) (-> field :tincture util/translate-tincture util/upper-case-first)
                                      :else (-> division-type util/translate-cap-first)) title-prefix
      [:div.settings
       (when (not root-field?)
@@ -142,47 +138,47 @@
       (when (not counterchanged?)
         [:<>
          [division-form/form path]
-         (let [division-options (division-options/options (:division field))]
+         (let [options (division-options/options field)]
            [:<>
-            (when (:line division-options)
-              [line/form (conj path :division :line) :options (:line division-options)])
-            (when (:opposite-line division-options)
-              [line/form (conj path :division :opposite-line)
-               :options (:opposite-line division-options)
-               :defaults (options/sanitize (:line division) (:line division-options))
+            (when (:line options)
+              [line/form (conj path :line) :options (:line options)])
+            (when (:opposite-line options)
+              [line/form (conj path :opposite-line)
+               :options (:opposite-line options)
+               :defaults (options/sanitize (:line field) (:line options))
                :title "Opposite Line"])
-            (when (:extra-line division-options)
-              [line/form (conj path :division :extra-line)
-               :options (:extra-line division-options)
-               :defaults (options/sanitize (:line division) (:line division-options))
+            (when (:extra-line options)
+              [line/form (conj path :extra-line)
+               :options (:extra-line options)
+               :defaults (options/sanitize (:line field) (:line options))
                :title "Extra Line"])
-            (when (-> division-options :variant)
-              [element/select (conj path :division :variant) "Variant"
-               (-> division-options :variant :choices)
-               :default (-> division-options :variant :default)])
-            (when (-> division-options :thickness)
-              [element/range-input-with-checkbox (conj path :division :thickness) "Thickness"
-               (-> division-options :thickness :min)
-               (-> division-options :thickness :max)
+            (when (-> options :variant)
+              [element/select (conj path :variant) "Variant"
+               (-> options :variant :choices)
+               :default (-> options :variant :default)])
+            (when (-> options :thickness)
+              [element/range-input-with-checkbox (conj path :thickness) "Thickness"
+               (-> options :thickness :min)
+               (-> options :thickness :max)
                :step 0.01
-               :default (-> division-options :thickness :default)])
-            (when (-> division-options :origin)
-              [position/form (conj path :division :origin)
+               :default (-> options :thickness :default)])
+            (when (-> options :origin)
+              [position/form (conj path :origin)
                :title "Origin"
-               :options (:origin division-options)])
-            (when (-> division-options :anchor)
-              [position/form (conj path :division :anchor)
+               :options (:origin options)])
+            (when (-> options :anchor)
+              [position/form (conj path :anchor)
                :title "Anchor"
-               :options (:anchor division-options)])
-            (when (:geometry division-options)
-              [geometry/form (conj path :division :geometry)
-               (:geometry division-options)
-               :current (:geometry division)])
-            (when (:layout division-options)
-              [form-for-layout path :options (:layout division-options)])])
-         (if (= division-type :none)
-           [form-for-content (conj path :content)]
-           [element/checkbox (conj path :division :hints :outline?) "Outline"])])]
+               :options (:anchor options)])
+            (when (:geometry options)
+              [geometry/form (conj path :geometry)
+               (:geometry options)
+               :current (:geometry field)])
+            (when (:layout options)
+              [form-for-layout path :options (:layout options)])])
+         (if (= division-type :plain)
+           [form-for-plain-field path]
+           [element/checkbox (conj path :hints :outline?) "Outline"])])]
      (cond
        (#{:chequy
           :lozengy
@@ -191,18 +187,18 @@
           :papellony
           :masonry} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
                                     [:ul
-                                     (let [tinctures @(rf/subscribe [:get (conj path :division :fields)])]
+                                     (let [tinctures @(rf/subscribe [:get (conj path :fields)])]
                                        (for [idx (range (count tinctures))]
                                          ^{:key idx}
                                          [:li
-                                          [tincture/form (conj path :division :fields idx :content :tincture)
+                                          [tincture/form (conj path :fields idx :tincture)
                                            :label (str "Tincture " (inc idx))]]))]]
        (not counterchanged?) [:div.parts.components
                               [:ul
-                               (let [content @(rf/subscribe [:get (conj path :division :fields)])
-                                     mandatory-part-count (division/mandatory-part-count division)]
+                               (let [content @(rf/subscribe [:get (conj path :fields)])
+                                     mandatory-part-count (division/mandatory-part-count field)]
                                  (for [[idx part] (map-indexed vector content)]
-                                   (let [part-path (conj path :division :fields idx)
+                                   (let [part-path (conj path :fields idx)
                                          part-name (division/part-name division-type idx)
                                          ref (:ref part)]
                                      ^{:key idx}
@@ -218,7 +214,7 @@
                                           [:i.far.fa-edit]]
                                          (when (>= idx mandatory-part-count)
                                            [:a {:on-click #(state/dispatch-on-event % [:set (conj part-path :ref)
-                                                                                       (-> (division/default-fields division)
+                                                                                       (-> (division/default-fields field)
                                                                                            (get idx)
                                                                                            :ref)])}
                                             [:i.far.fa-times-circle]]))]])))]])

@@ -43,18 +43,20 @@
 
 (defn default-fields [{:keys [type] :as division}]
   (let [{:keys [layout]} (options/sanitize division (division-options/options division))
-        {:keys [num-fields-x num-fields-y num-base-fields]} layout
+        {:keys [num-fields-x
+                num-fields-y
+                num-base-fields]} layout
         defaults [default/field
                   (-> default/field
-                      (assoc-in [:content :tincture] :azure))
+                      (assoc :tincture :azure))
                   (-> default/field
-                      (assoc-in [:content :tincture] :sable))
+                      (assoc :tincture :sable))
                   (-> default/field
-                      (assoc-in [:content :tincture] :gules))
+                      (assoc :tincture :gules))
                   (-> default/field
-                      (assoc-in [:content :tincture] :or))
+                      (assoc :tincture :or))
                   (-> default/field
-                      (assoc-in [:content :tincture] :vert))]]
+                      (assoc :tincture :vert))]]
     (cond
       (= :per-saltire type) (-> (subvec defaults 0 2)
                                 (into [{:ref 1} {:ref 0}]))
@@ -92,9 +94,9 @@
          :potenty
          :papellony
          :masonry} type) [(-> default/field
-                              (assoc-in [:content :tincture] :azure))
+                              (assoc :tincture :azure))
                           (-> default/field
-                              (assoc-in [:content :tincture] :argent))]
+                              (assoc :tincture :argent))]
       (#{:bendy
          :bendy-sinister} type) (-> (subvec defaults 0 2)
                                     (into (map (fn [i]

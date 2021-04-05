@@ -138,7 +138,6 @@
        (let [mask-id (util/id "mask")
              tincture (-> fields
                           (get idx)
-                          :content
                           :tincture)]
          ^{:key idx}
          [:<>

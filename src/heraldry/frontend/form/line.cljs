@@ -14,17 +14,18 @@
   (let [options (line/options {:type key})
         {:keys [result]} (render/coat-of-arms
                           {:escutcheon :flag
-                           :field {:component :field
-                                   :division {:type :per-fess
-                                              :line {:type key
-                                                     :width (case key
-                                                              :enarched nil
-                                                              (* 2 (options/get-value nil (:width options))))
-                                                     :height (case key
-                                                               :enarched 0.25
-                                                               nil)}
-                                              :fields [{:content {:tincture :argent}}
-                                                       {:content {:tincture (if (= key current) :or :azure)}}]}}}
+                           :field {:type :per-fess
+                                   :line {:type key
+                                          :width (case key
+                                                   :enarched nil
+                                                   (* 2 (options/get-value nil (:width options))))
+                                          :height (case key
+                                                    :enarched 0.25
+                                                    nil)}
+                                   :fields [{:type :plain
+                                             :tincture :argent}
+                                            {:type :plain
+                                             :tincture (if (= key current) :or :azure)}]}}
                           100
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
