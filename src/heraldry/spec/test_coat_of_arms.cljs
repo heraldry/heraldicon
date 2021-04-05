@@ -3,10 +3,15 @@
             [cljs.test :refer-macros [deftest are]]
             [heraldry.spec.coat-of-arms]))
 
+(defn check-spec [spec form]
+  (let [explain-output (with-out-str (s/explain spec form))
+        conforms? (s/valid? spec form)]
+    (when-not conforms?
+      (println explain-output))
+    conforms?))
+
 (deftest valid-fields
-  (are [spec form] (do
-                     (s/explain spec form)
-                     (s/valid? spec form))
+  (are [spec form] (check-spec spec form)
 
     :heraldry/field {:type :plain
                      :tincture :azure}
@@ -67,9 +72,7 @@
                                    :tincture :or}]}))
 
 (deftest valid-ordinaries
-  (are [spec form] (do
-                     (s/explain spec form)
-                     (s/valid? spec form))
+  (are [spec form] (check-spec spec form)
 
     :heraldry/ordinary {:type :pale
                         :field {:type :plain
@@ -110,9 +113,7 @@
                         :field {}}))
 
 (deftest valid-charges
-  (are [spec form] (do
-                     (s/explain spec form)
-                     (s/valid? spec form))
+  (are [spec form] (check-spec spec form)
 
     :heraldry/charge {:type :roundel
                       :attitude nil
@@ -171,9 +172,7 @@
                       :tincture {:highlight :or}}))
 
 (deftest valid-coat-of-arms
-  (are [spec form] (do
-                     (s/explain spec form)
-                     (s/valid? spec form))
+  (are [spec form] (check-spec spec form)
 
     :heraldry/coat-of-arms {:spec-version 1
                             :type :coat-of-arms
@@ -218,9 +217,7 @@
                                     :tincture :azure}}))
 
 (deftest valid-render-options
-  (are [spec form] (do
-                     (s/explain spec form)
-                     (s/valid? spec form))
+  (are [spec form] (check-spec spec form)
 
     :heraldry/render-options {}
 
