@@ -22,13 +22,14 @@
 (defn charge-type-choice [path key display-name & {:keys [current]}]
   (let [{:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
-                           :field {:component :field
-                                   :content {:tincture :argent}
+                           :field {:type :plain
+                                   :tincture :argent
                                    :components [{:component :charge
                                                  :type key
                                                  :geometry {:size 75}
                                                  :escutcheon (if (= key :escutcheon) :heater nil)
-                                                 :field {:content {:tincture (if (= current key) :or :azure)}}}]}}
+                                                 :field {:type :plain
+                                                         :tincture (if (= current key) :or :azure)}}]}}
                           100
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
@@ -52,12 +53,13 @@
 (defn charge-type-selected-choice [charge display-name]
   (let [{:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
-                           :field {:component :field
-                                   :content {:tincture :argent}
+                           :field {:type :plain
+                                   :tincture :argent
                                    :components [{:component :charge
                                                  :type (:type charge)
                                                  :variant (:variant charge)
-                                                 :field {:content {:tincture :or}}}]}}
+                                                 :field {:type :plain
+                                                         :tincture :or}}]}}
                           100
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)

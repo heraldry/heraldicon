@@ -12,26 +12,25 @@
         {:keys [result]} (render/coat-of-arms
                           {:component :coat-of-arms
                            :escutcheon :rectangle
-                           :field {:component :field
-                                   :division {:type :bendy-sinister
-                                              :line {:type :straight}
-                                              :layout {:num-base-fields 7
-                                                       :num-fields-y 7}
-                                              :fields [{:component :field
-                                                        :content {:tincture :argent}}
-                                                       {:component :field
-                                                        :content {:tincture :gules}}
-                                                       {:component :field
-                                                        :content {:tincture :or}}
-                                                       {:component :field
-                                                        :content {:tincture :vert}}
-                                                       {:component :field
-                                                        :content {:tincture :azure}}
-                                                       {:component :field
-                                                        :content {:tincture :purpure}}
-                                                       {:component :field
-                                                        :content {:tincture :sable}}
-                                                       {:ref 0}]}}}
+                           :field {:type :bendy-sinister
+                                   :line {:type :straight}
+                                   :layout {:num-base-fields 7
+                                            :num-fields-y 7}
+                                   :fields [{:type :plain
+                                             :tincture :argent}
+                                            {:type :plain
+                                             :tincture :gules}
+                                            {:type :plain
+                                             :tincture :or}
+                                            {:type :plain
+                                             :tincture :vert}
+                                            {:type :plain
+                                             :tincture :azure}
+                                            {:type :plain
+                                             :tincture :purpure}
+                                            {:type :plain
+                                             :tincture :sable}
+                                            {:ref 0}]}}
                           80
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
