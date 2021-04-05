@@ -8,15 +8,15 @@
                       (seq? %)) (fn [data]
                                   (if (map? data)
                                     ;; look in this order to really find the most important two tinctures
-                                    (concat (-> data :division :fields)
+                                    (concat (-> data :fields)
                                             [(-> data :field)]
                                             (-> data :components))
                                     (seq data))))
 
        (filter #(and (map? %)
-                     (-> % :component (= :field))
-                     (-> % :content :tincture)))
-       (map (comp :tincture :content))
+                     (-> % :type (= :plain))
+                     (-> % :tincture)))
+       (map :tincture)
        distinct))
 
 (defn field-up-to-component [component field]

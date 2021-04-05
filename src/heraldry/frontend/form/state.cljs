@@ -33,7 +33,7 @@
          (let [parent-field-path (-> path
                                      (->> (drop-last 6))
                                      vec
-                                     (conj :division :fields (last path)))]
+                                     (conj :fields (last path)))]
            (get-in db [:ui :component-selected? parent-field-path]))))))
 
 
@@ -103,7 +103,7 @@
                      (-> path
                          (->> (drop-last 6))
                          vec
-                         (conj :division :fields (last path)))
+                         (conj :fields (last path)))
                      path)]
      {:db (-> db
               (update-in [:ui] dissoc :component-selected?)
@@ -127,21 +127,21 @@
 (rf/reg-event-db
  :set-division-type
  (fn [db [_ path new-type num-fields-x num-fields-y num-base-fields]]
-   (if (= new-type :none)
+   (if (= new-type :plain)
      (-> db
-         (update-in path dissoc :division)
-         (update-in (conj path :content) #(or % {:tincture :none})))
+         (assoc-in (conj path :type) new-type)
+         (update-in (conj path :tincture) #(or % :none)))
      (-> db
-         (assoc-in (conj path :division :type) new-type)
-         (update-in (conj path :division :line :type) #(or % :straight))
-         (assoc-in (conj path :division :layout :num-fields-x) num-fields-x)
-         (assoc-in (conj path :division :layout :num-fields-y) num-fields-y)
-         (assoc-in (conj path :division :layout :num-base-fields) num-base-fields)
-         (update-in (conj path :division)
+         (assoc-in (conj path :type) new-type)
+         (update-in (conj path :line :type) #(or % :straight))
+         (assoc-in (conj path :layout :num-fields-x) num-fields-x)
+         (assoc-in (conj path :layout :num-fields-y) num-fields-y)
+         (assoc-in (conj path :layout :num-base-fields) num-base-fields)
+         (update-in path
                     (fn [prepared-division]
                       (let [current (or (:fields prepared-division) [])
                             default (division/default-fields prepared-division)
-                            previous-default (division/default-fields (get-in db (conj path :division)))
+                            previous-default (division/default-fields (get-in db path))
                             previous-default (cond
                                                (< (count previous-default) (count default)) (into previous-default (subvec default (count previous-default)))
                                                (> (count previous-default) (count default)) (subvec previous-default 0 (count default))
@@ -158,9 +158,9 @@
                                                          cur
                                                          def)))
                                                 vec))))))
-         (update-in (conj path :division) #(merge %
-                                                  (options/sanitize-or-nil % (division-options/options %))))
-         (update-in path dissoc :content)))))
+         (update-in path #(merge %
+                                 (options/sanitize-or-nil % (division-options/options %))))
+         (update-in path dissoc :tincture)))))
 
 (defn -default-line-style-of-ordinary-type [ordinary-type]
   (case ordinary-type

@@ -41,38 +41,37 @@
     :ordinary (encode-ordinary component)
     :charge (encode-charge component)))
 
-(defn encode-field [{:keys [division components counterchanged?] :as field} & {:keys [root?]}]
+(defn encode-field [{:keys [components counterchanged?] :as field} & {:keys [root?]}]
   (if counterchanged?
     "counterchanged"
-    (let [tincture (get-in field [:content :tincture])
-          field-description (cond
-                              tincture (util/translate-tincture tincture)
-                              division (let [{:keys [type line fields]} division
-                                             mandatory-part-count (division/mandatory-part-count division)]
-                                         (util/combine
-                                          " "
-                                          [(util/translate type)
-                                           (util/translate-line line)
-                                           (util/combine " and "
-                                                         (map
-                                                          (fn [[index part]]
-                                                            (cond
-                                                              (< index
-                                                                 mandatory-part-count) (encode-field part)
-                                                              (not (:ref part)) (util/combine
-                                                                                 " "
-                                                                                 [(when (-> fields
-                                                                                            count
-                                                                                            (> 3))
-                                                                                    (division/part-name type index))
-                                                                                  (encode-field part)])))
-                                                          (map-indexed vector fields)))])))
+    (let [field-description (case (:type field)
+                              :plain (util/translate-tincture (:tincture field))
+                              (let [{:keys [type line fields]} field
+                                    mandatory-part-count (division/mandatory-part-count field)]
+                                (util/combine
+                                 " "
+                                 [(util/translate type)
+                                  (util/translate-line line)
+                                  (util/combine " and "
+                                                (map
+                                                 (fn [[index part]]
+                                                   (cond
+                                                     (< index
+                                                        mandatory-part-count) (encode-field part)
+                                                     (not (:ref part)) (util/combine
+                                                                        " "
+                                                                        [(when (-> fields
+                                                                                   count
+                                                                                   (> 3))
+                                                                           (division/part-name type index))
+                                                                         (encode-field part)])))
+                                                 (map-indexed vector fields)))])))
           components-description (util/combine ", " (map encode-component components))
           blazon (util/upper-case-first
                   (util/combine ", " [field-description
                                       components-description]))]
       (if (or root?
-              (and tincture
+              (and (-> field :type (= :plain))
                    (-> components-description count zero?)))
         blazon
         (str "[" blazon "]")))))

@@ -12,11 +12,11 @@
         {:keys [result]} (render/coat-of-arms
                           (if (= key :none)
                             {:escutcheon :rectangle
-                             :field {:component :field
-                                     :content {:tincture :void}}}
+                             :field {:type :plain
+                                     :tincture :void}}
                             {:escutcheon key
-                             :field {:component :field
-                                     :content {:tincture (if (= value key) :or :azure)}}})
+                             :field {:type :plain
+                                     :tincture (if (= value key) :or :azure)}})
                           100
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
