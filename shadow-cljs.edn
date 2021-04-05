@@ -46,7 +46,7 @@
 
           :test
           {:target           :node-test
-           :output-to        "./build/test/node-tests.js"
+           :output-to        "./backend/build/test/node-tests.js"
            :compiler-options {:warnings {:redef false}}
            :ns-regexp        "test"
            :autorun          true}}}
