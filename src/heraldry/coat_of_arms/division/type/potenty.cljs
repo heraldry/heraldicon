@@ -324,7 +324,6 @@
        (let [mask-id  (util/id "mask")
              tincture (-> fields
                           (get idx)
-                          :content
                           :tincture)]
          ^{:key idx}
          [:<>
@@ -347,3 +346,4 @@
                :width  1100
                :height 1100
                :fill   (str "url(#" pattern-id "-outline)")}])]))
+

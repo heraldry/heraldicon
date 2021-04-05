@@ -217,8 +217,7 @@
                                         form-db-path
                                         :new
                                         #(go
-                                           {:render-options {:component :render-options
-                                                             :mode      :colours
+                                           {:render-options {:mode      :colours
                                                              :outline?  false
                                                              :squiggly? false
                                                              :ui        {:selectable-fields? true}}}))]
@@ -248,3 +247,4 @@
         version       (-> parameters :path :version)
         collection-id (str "collection:" id)]
     [collection-display collection-id version]))
+

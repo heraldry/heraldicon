@@ -4,11 +4,11 @@
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.coat-of-arms.tincture.core :as tincture]))
 
-(defn render [{:keys [division components] :as field} environment
+(defn render [{:keys [components] :as field} environment
               {:keys
                [db-path render-options fn-component-selected?
                 fn-select-component svg-export? transform] :as context}]
-  (let [tincture  (get-in field [:content :tincture])
+  (let [type      (:type field)
         selected? (when fn-component-selected?
                     (fn-component-selected? db-path))
         context   (-> context
@@ -22,16 +22,15 @@
                        {:pointer-events "visiblePainted"
                         :cursor         "pointer"})
           :transform transform}
-      (cond
-        tincture (let [fill (tincture/pick tincture render-options)]
-                   [:rect {:x      -500
-                           :y      -500
-                           :width  1100
-                           :height 1100
-                           :fill   fill
-                           :stroke fill}])
-        division [division/render division environment (-> context
-                                                           (update :db-path conj :division))])
+      (case type
+        :plain (let [fill (tincture/pick (:tincture field) render-options)]
+                 [:rect {:x      -500
+                         :y      -500
+                         :width  1100
+                         :height 1100
+                         :fill   fill
+                         :stroke fill}])
+        [division/render field environment context])
       (for [[idx element] (map-indexed vector components)]
         (if (-> element :component (= :ordinary))
           ^{:key idx} [ordinary/render element field environment (-> context

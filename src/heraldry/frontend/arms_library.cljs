@@ -389,8 +389,7 @@
                                   :new
                                   #(go
                                      {:coat-of-arms   default/coat-of-arms
-                                      :render-options {:component :render-options
-                                                       :mode      :colours
+                                      :render-options {:mode      :colours
                                                        :outline?  false
                                                        :squiggly? false
                                                        :ui        {:selectable-fields? true}}}))]

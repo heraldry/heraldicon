@@ -1,11 +1,8 @@
 (ns heraldry.coat-of-arms.default)
 
-(def content
-  {:tincture :none})
-
 (def field
-  {:component :field
-   :content   content})
+  {:type     :plain
+   :tincture :none})
 
 (def ordinary
   {:component :ordinary
@@ -23,7 +20,7 @@
    :hints     {:outline-mode :keep}})
 
 (def coat-of-arms
-  {:component  :coat-of-arms
-   :escutcheon :heater
-   :field      field})
+  {:spec-version 1
+   :escutcheon   :heater
+   :field        field})
 

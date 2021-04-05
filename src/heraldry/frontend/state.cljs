@@ -28,8 +28,7 @@
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:example-coa  {:render-options {:component :render-options
-                                           :mode      :colours
+   (merge {:example-coa  {:render-options {:mode      :colours
                                            :outline?  false
                                            :squiggly? false
                                            :ui        {:selectable-fields? true}}
@@ -167,3 +166,4 @@
 
 (defn invalidate-cache-all []
   (rf/dispatch-sync [:set [:async-fetch-data] nil]))
+
