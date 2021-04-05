@@ -21,6 +21,7 @@ setup-sharp-osx:
 
 deploy-frontend-prod: check-before-deploy-frontend release-frontend-prod
 	aws --profile heraldry-serverless s3 sync --acl public-read $(FRONTEND_RELEASE_DIR) s3://heraldry.digital && aws --profile heraldry cloudfront create-invalidation --distribution-id $(shell aws --profile heraldry cloudfront list-distributions | jq -r '.DistributionList.Items[] | select([.Aliases.Items[] == "heraldry.digital"] | any) | .Id') --paths '/*' | cat
+	aws --profile heraldry-serverless s3 cp --acl public-read $(FRONTEND_RELEASE_DIR)/index.html s3://heraldry.digital/index.html --metadata '{"Cache-Control": "max-age=0", "Content-Type": "text/html"}'
 	git tag $(shell date +"deploy-frontend-%Y-%m-%d_%H-%M-%S")
 
 release-backend-prod:
