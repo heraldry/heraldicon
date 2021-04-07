@@ -2,7 +2,7 @@
   (:require [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.charge.shared :as charge-shared]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
-            [heraldry.coat-of-arms.field-environment :as field-environment]
+            [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]))
@@ -16,7 +16,7 @@
      charge parent environment context
      :width
      (fn [width]
-       (let [env (field-environment/transform-to-width
+       (let [env (environment/transform-to-width
                   (escutcheon/field (if (= escutcheon :none)
                                       root-escutcheon
                                       escutcheon)) width)

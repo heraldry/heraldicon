@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.division.shared
   (:require [clojure.string :as s]
-            [heraldry.coat-of-arms.field-environment :as field-environment]
+            [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.util :as util]))
 
@@ -24,7 +24,7 @@
         environments (->> parts
                           (map-indexed (fn [idx [shape-path bounding-box & extra]]
                                          (let [field (get-field fields idx)]
-                                           (field-environment/create
+                                           (environment/create
                                             (svg/make-path shape-path)
                                             {:parent parent
                                              :parent-environment parent-environment
