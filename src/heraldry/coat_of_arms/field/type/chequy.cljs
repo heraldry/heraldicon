@@ -9,8 +9,8 @@
   {:display-name "Chequy"
    :value :chequy
    :parts []}
-  [{:keys [fields hints] :as division} environment {:keys [render-options]}]
-  (let [{:keys [layout]} (options/sanitize division (field-options/options division))
+  [{:keys [fields hints] :as field} environment {:keys [render-options]}]
+  (let [{:keys [layout]} (options/sanitize field (field-options/options field))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
