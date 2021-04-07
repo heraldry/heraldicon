@@ -1,7 +1,7 @@
 (ns heraldry.frontend.form.field
   (:require [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.division.core :as division]
+            [heraldry.coat-of-arms.field.core :as division]
             [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.frontend.form.charge :as charge]

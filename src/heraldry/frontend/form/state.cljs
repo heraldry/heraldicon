@@ -1,7 +1,7 @@
 (ns heraldry.frontend.form.state
   (:require [clojure.walk :as walk]
             [heraldry.coat-of-arms.charge.options :as charge-options]
-            [heraldry.coat-of-arms.division.core :as division]
+            [heraldry.coat-of-arms.field.core :as division]
             [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
