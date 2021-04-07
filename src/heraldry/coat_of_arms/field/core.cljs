@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.field
+(ns heraldry.coat-of-arms.field.core
   (:require [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.division.core :as division]
             [heraldry.coat-of-arms.ordinary.core :as ordinary]

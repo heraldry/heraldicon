@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.render
   (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
-            [heraldry.coat-of-arms.field :as field]
+            [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.field-environment :as field-environment]
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
