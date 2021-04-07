@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.division.type.papellony
+(ns heraldry.coat-of-arms.field.type.papellony
   (:require [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]

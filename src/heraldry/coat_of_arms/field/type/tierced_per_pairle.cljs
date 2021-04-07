@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.division.type.tierced-per-pairle
+(ns heraldry.coat-of-arms.field.type.tierced-per-pairle
   (:require [heraldry.coat-of-arms.angle :as angle]
             [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.division.shared :as shared]

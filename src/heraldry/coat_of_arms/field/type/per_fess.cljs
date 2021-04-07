@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.division.type.per-pale
+(ns heraldry.coat-of-arms.field.type.per-fess
   (:require [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.division.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
@@ -9,58 +9,56 @@
             [heraldry.coat-of-arms.vector :as v]))
 
 (defn render
-  {:display-name "Per pale"
-   :value :per-pale
-   :parts ["dexter" "sinister"]}
+  {:display-name "Per fess"
+   :value :per-fess
+   :parts ["chief" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]} (options/sanitize division (division-options/options division))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
-        real-top (assoc (:top points) :x (:x origin-point))
-        real-bottom (assoc (:bottom points) :x (:x origin-point))
-        bottom-right (:bottom-right points)
+        real-left (assoc (:left points) :y (:y origin-point))
+        real-right (assoc (:right points) :y (:y origin-point))
         effective-width (or (:width line) 1)
         required-extra-length (-> 30
                                   (/ effective-width)
                                   Math/ceil
                                   inc
                                   (* effective-width))
-        top (v/- real-top (v/v 0 required-extra-length))
-        bottom (v/+ real-bottom (v/v 0 required-extra-length))
+        left (v/- real-left (v/v required-extra-length 0))
+        right (v/+ real-right (v/v required-extra-length 0))
+        bottom-right (:bottom-right points)
         {line-one :line
          line-one-start :line-start
          line-one-end :line-end
          :as line-one-data} (line/create line
-                                         top
-                                         bottom
+                                         left right
                                          :render-options render-options
                                          :environment environment)
-
-        parts [[["M" (v/+ top
-                          line-one-start)
-                 (svg/stitch line-one)
-                 (infinity/path :clockwise
-                                [:bottom :top]
-                                [(v/+ bottom
-                                      line-one-end)
-                                 (v/+ top
-                                      line-one-start)])
-                 "z"]
-                [top-left
-                 real-bottom]]
-
-               [["M" (v/+ top
+        parts [[["M" (v/+ left
                           line-one-start)
                  (svg/stitch line-one)
                  (infinity/path :counter-clockwise
-                                [:bottom :top]
-                                [(v/+ bottom
+                                [:right :left]
+                                [(v/+ right
                                       line-one-end)
-                                 (v/+ top
+                                 (v/+ left
                                       line-one-start)])
                  "z"]
-                [real-top
+                [top-left
+                 real-right]]
+
+               [["M" (v/+ left
+                          line-one-start)
+                 (svg/stitch line-one)
+                 (infinity/path :clockwise
+                                [:right :left]
+                                [(v/+ right
+                                      line-one-end)
+                                 (v/+ left
+                                      line-one-start)])
+                 "z"]
+                [real-left
                  bottom-right]]]
         outline? (or (:outline? render-options)
                      (:outline? hints))]
@@ -69,4 +67,4 @@
       (shared/division-context-key type) fields parts
       [:all nil]
       environment division context]
-     (line/render line [line-one-data] top outline? render-options)]))
+     (line/render line [line-one-data] left outline? render-options)]))
