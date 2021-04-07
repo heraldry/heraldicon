@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.field.core
   (:require [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.field.options :as division-options]
+            [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.type.barry :as barry]
             [heraldry.coat-of-arms.field.type.bendy :as bendy]
             [heraldry.coat-of-arms.field.type.bendy-sinister :as bendy-sinister]
@@ -29,11 +29,10 @@
             [heraldry.coat-of-arms.field.type.vairy :as vairy]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.util :as util]))
 
-(defn mandatory-part-count [{:keys [type] :as division}]
-  (let [{:keys [layout]} (options/sanitize division (division-options/options division))]
+(defn mandatory-part-count [{:keys [type] :as field}]
+  (let [{:keys [layout]} (options/sanitize field (field-options/options field))]
     (if (:num-base-fields layout)
       (:num-base-fields layout)
       (case type
@@ -45,8 +44,8 @@
         :tierced-per-pile 3
         2))))
 
-(defn default-fields [{:keys [type] :as division}]
-  (let [{:keys [layout]} (options/sanitize division (division-options/options division))
+(defn default-fields [{:keys [type] :as field}]
+  (let [{:keys [layout]} (options/sanitize field (field-options/options field))
         {:keys [num-fields-x
                 num-fields-y
                 num-base-fields]} layout

@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.field.type.chequy
-  (:require [heraldry.coat-of-arms.field.options :as division-options]
+  (:require [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
@@ -10,7 +10,7 @@
    :value :chequy
    :parts []}
   [{:keys [fields hints] :as division} environment {:keys [render-options]}]
-  (let [{:keys [layout]} (options/sanitize division (division-options/options division))
+  (let [{:keys [layout]} (options/sanitize division (field-options/options division))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)

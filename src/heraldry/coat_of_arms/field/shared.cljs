@@ -13,8 +13,8 @@
       (get fields ref)
       part)))
 
-(defn division-context-key [key]
-  (keyword (str "division-" (name key))))
+(defn field-context-key [key]
+  (keyword (str "field-" (name key))))
 
 (defn make-division [type fields parts mask-overlaps parent-environment parent
                      {:keys [render-field db-path svg-export?] :as context}]

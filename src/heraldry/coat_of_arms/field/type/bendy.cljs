@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.bendy
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.options :as division-options]
+            [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.field.type.barry :as barry]
             [heraldry.coat-of-arms.options :as options]
@@ -14,7 +14,7 @@
   (let [{:keys [line
                 layout
                 origin
-                anchor]} (options/sanitize division (division-options/options division))
+                anchor]} (options/sanitize division (field-options/options division))
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)
@@ -44,7 +44,7 @@
     [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
                          "rotate(" angle ")")}
      [shared/make-division
-      (shared/division-context-key type) fields parts
+      (shared/field-context-key type) fields parts
       overlap
       environment division context]
      outlines]))
