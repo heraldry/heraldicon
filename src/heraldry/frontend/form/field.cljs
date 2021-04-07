@@ -21,11 +21,9 @@
   [:div.form-plain-field
    [tincture/form (conj path :tincture)]])
 
-(defn division-choice [path key display-name]
+(defn field-type-choice [path key display-name]
   (let [field @(rf/subscribe [:get path])
-        value (-> field
-                  :type
-                  (or :none))
+        value (:type field)
         {:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
                            :field (if (= key :plain)
@@ -56,12 +54,12 @@
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
                               (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
-    [:div.choice.tooltip {:on-click #(let [new-division (assoc field :type key)
+    [:div.choice.tooltip {:on-click #(let [new-field (assoc field :type key)
                                            {:keys [num-fields-x
                                                    num-fields-y
                                                    num-base-fields]} (:layout (options/sanitize-or-nil
-                                                                               new-division
-                                                                               (field-options/options new-division)))]
+                                                                               new-field
+                                                                               (field-options/options new-field)))]
                                        (state/dispatch-on-event % [:set-field-type path key num-fields-x num-fields-y num-base-fields]))}
      [:svg {:style {:width "4em"
                     :height "4.5em"}
@@ -86,7 +84,7 @@
      [element/submenu path "Select Division" (get names field-type) {:min-width "17.5em"}
       (for [[display-name key] field/choices]
         ^{:key key}
-        [division-choice path key display-name])]]))
+        [field-type-choice path key display-name])]]))
 
 (defn form-for-layout [field-path & {:keys [title options] :or {title "Layout"}}]
   (let [layout-path (conj field-path :layout)

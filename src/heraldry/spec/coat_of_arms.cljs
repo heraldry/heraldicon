@@ -1,8 +1,8 @@
 (ns heraldry.spec.coat-of-arms
   (:require [cljs.spec.alpha :as s]
             [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.coat-of-arms.field.core :as division]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
+            [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.coat-of-arms.position :as position]
