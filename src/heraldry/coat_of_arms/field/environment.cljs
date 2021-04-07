@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.field-environment
+(ns heraldry.coat-of-arms.field.environment
   (:require ["svgpath" :as svgpath]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]))
