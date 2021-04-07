@@ -90,8 +90,8 @@
   (let [layout-path    (conj field-path :layout)
         field          @(rf/subscribe [:get field-path])
         layout         (:layout field)
-        field-type     (:type field)
-        field          (:layout (options/sanitize-or-nil field (field-options/options field)))
+        field-type     (-> field :type name keyword)
+        current-data   (options/sanitize-or-nil field (field-options/options field))
         effective-data (:layout (options/sanitize field (field-options/options field)))
         link-name      (util/combine
                         ", "
@@ -100,16 +100,16 @@
                            (#{:barry
                               :bendy
                               :bendy-sinister} field-type) (str (:num-fields-y effective-data) " fields"))
-                         (when (and (:num-base-fields field)
-                                    (not= (:num-base-fields field) 2))
+                         (when (and (:num-base-fields current-data)
+                                    (not= (:num-base-fields current-data) 2))
                            (str (:num-base-fields effective-data) " base fields"))
-                         (when (or (:offset-x field)
-                                   (:offset-y field))
+                         (when (or (:offset-x current-data)
+                                   (:offset-y current-data))
                            (str "shifted"))
-                         (when (or (:stretch-x field)
-                                   (:stretch-y field))
+                         (when (or (:stretch-x current-data)
+                                   (:stretch-y current-data))
                            (str "stretched"))
-                         (when (:rotation field)
+                         (when (:rotation current-data)
                            (str "rotated"))])
         link-name      (if (-> link-name count (= 0))
                          "Default"
