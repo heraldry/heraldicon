@@ -22,12 +22,12 @@
 (defn charge-type-choice [path key display-name & {:keys [current]}]
   (let [{:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
-                           :field {:type :plain
+                           :field {:type :heraldry.field.type/plain
                                    :tincture :argent
                                    :components [{:type key
                                                  :geometry {:size 75}
                                                  :escutcheon (if (= key :heraldry.charge.type/escutcheon) :heater nil)
-                                                 :field {:type :plain
+                                                 :field {:type :heraldry.field.type/plain
                                                          :tincture (if (= current key) :or :azure)}}]}}
                           100
                           (-> shared/coa-select-option-context
@@ -52,11 +52,11 @@
 (defn charge-type-selected-choice [charge display-name]
   (let [{:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
-                           :field {:type :plain
+                           :field {:type :heraldry.field.type/plain
                                    :tincture :argent
                                    :components [{:type (:type charge)
                                                  :variant (:variant charge)
-                                                 :field {:type :plain
+                                                 :field {:type :heraldry.field.type/plain
                                                          :tincture :or}}]}}
                           100
                           (-> shared/coa-select-option-context

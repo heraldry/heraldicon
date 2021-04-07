@@ -32,7 +32,8 @@
             [heraldry.util :as util]))
 
 (defn mandatory-part-count [{:keys [type] :as field}]
-  (let [{:keys [layout]} (options/sanitize field (field-options/options field))]
+  (let [type (-> type name keyword)
+        {:keys [layout]} (options/sanitize field (field-options/options field))]
     (if (:num-base-fields layout)
       (:num-base-fields layout)
       (case type
@@ -45,7 +46,8 @@
         2))))
 
 (defn default-fields [{:keys [type] :as field}]
-  (let [{:keys [layout]} (options/sanitize field (field-options/options field))
+  (let [type (-> type name keyword)
+        {:keys [layout]} (options/sanitize field (field-options/options field))
         {:keys [num-fields-x
                 num-fields-y
                 num-base-fields]} layout

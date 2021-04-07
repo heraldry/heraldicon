@@ -102,7 +102,7 @@
 
 (defn render
   {:display-name "Papellony"
-   :value :papellony
+   :value :heraldry.field.type/papellony
    :parts []}
   [{:keys [fields hints] :as field} environment {:keys [render-options]}]
   (let [{:keys [layout thickness]} (options/sanitize field (field-options/options field))

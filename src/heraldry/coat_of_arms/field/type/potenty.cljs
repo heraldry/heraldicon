@@ -239,7 +239,7 @@
 
 (defn render
   {:display-name "Potenty"
-   :value :potenty
+   :value :heraldry.field.type/potenty
    :parts []}
   [{:keys [fields hints] :as field} environment {:keys [render-options]}]
   (let [{:keys [layout variant]} (options/sanitize field (field-options/options field))

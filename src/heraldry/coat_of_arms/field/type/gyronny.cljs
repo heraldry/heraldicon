@@ -12,7 +12,7 @@
 
 (defn render
   {:display-name "Gyronny"
-   :value :gyronny
+   :value :heraldry.field.type/gyronny
    :parts ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor]} (options/sanitize field (field-options/options field))

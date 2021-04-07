@@ -45,7 +45,7 @@
   (if counterchanged?
     "counterchanged"
     (let [field-description (case (:type field)
-                              :plain (util/translate-tincture (:tincture field))
+                              :heraldry.field.type/plain (util/translate-tincture (:tincture field))
                               (let [{:keys [type line fields]} field
                                     mandatory-part-count (field/mandatory-part-count field)]
                                 (util/combine
@@ -71,7 +71,7 @@
                   (util/combine ", " [field-description
                                       components-description]))]
       (if (or root?
-              (and (-> field :type (= :plain))
+              (and (-> field :type (= :heraldry.field.type/plain))
                    (-> components-description count zero?)))
         blazon
         (str "[" blazon "]")))))
