@@ -4,7 +4,7 @@
 
 (defn render
   {:display-name "Annulet"
-   :value :annulet}
+   :value :heraldry.charge.type/annulet}
   [charge parent environment context]
   (charge-shared/make-charge
    charge parent environment context
