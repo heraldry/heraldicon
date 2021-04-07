@@ -35,7 +35,8 @@
                          :coat-of-arms {:escutcheon :rectangle
                                         :field {:type :plain
                                                 :tincture :argent
-                                                :components [{:field {:type :plain
+                                                :components [{:type :heraldry.charge.type/preview
+                                                              :field {:type :plain
                                                                       :tincture :azure}
                                                               :tincture (merge (->> attributes/tincture-modifier-map
                                                                                     (map (fn [[k _]]
