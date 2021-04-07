@@ -3,7 +3,7 @@
             [clojure.walk :as walk]
             [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.field-environment :as field-environment]
+            [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.options :as options]
@@ -205,7 +205,7 @@
                                                  (v/-)
                                                  (v// 2)
                                                  (v/+ center-point))
-            charge-environment               (field-environment/create
+            charge-environment               (environment/create
                                               (svg/make-path ["M" position
                                                               "l" (v/v (:x clip-size) 0)
                                                               "l" (v/v 0 (:y clip-size))

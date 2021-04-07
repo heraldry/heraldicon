@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.render
   (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.core :as field]
-            [heraldry.coat-of-arms.field-environment :as field-environment]
+            [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
             [heraldry.coat-of-arms.outline :as outline]
@@ -23,7 +23,7 @@
                                 (:escutcheon-override render-options)
                                 (:escutcheon coat-of-arms))
         shield                (escutcheon/field escutcheon)
-        environment           (-> (field-environment/transform-to-width shield width)
+        environment           (-> (environment/transform-to-width shield width)
                                   (cond->
                                       (:squiggly? render-options) (update :shape svg/squiggly-path)))
         field                 (:field coat-of-arms)
