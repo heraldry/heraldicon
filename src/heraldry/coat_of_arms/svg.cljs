@@ -378,9 +378,10 @@
             (-> v first (= :style))
             (or (-> v second map?)
                 (-> v second vector?)
-                (-> v second seq?))) [(first v) (s/join " "
-                                                        (map (fn [[style value]]
-                                                               (str (name style) ": " (str value) ";")) (second v)))]
+                (-> v second seq?))) [(first v)
+                                      (s/join " "
+                                              (map (fn [[style value]]
+                                                     (str (name style) ": " (str value) ";")) (second v)))]
        :else                         v))
    data))
 
