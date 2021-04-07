@@ -33,10 +33,10 @@
                                            :squiggly? false
                                            :ui        {:selectable-fields? true}}
                           :coat-of-arms   {:escutcheon :rectangle
-                                           :field      {:type       :plain
+                                           :field      {:type       :heraldry.field.type/plain
                                                         :tincture   :argent
                                                         :components [{:type     :heraldry.charge.type/preview
-                                                                      :field    {:type     :plain
+                                                                      :field    {:type     :heraldry.field.type/plain
                                                                                  :tincture :azure}
                                                                       :tincture (merge (->> attributes/tincture-modifier-map
                                                                                             (map (fn [[k _]]

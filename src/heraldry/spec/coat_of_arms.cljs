@@ -75,9 +75,9 @@
                          (if (some-> type namespace (= "heraldry.field.type"))
                            (-> type name keyword)
                            type))))
-(defmethod field-type :plain [_]
+(defmethod field-type :heraldry.field.type/plain [_]
   (s/keys :req-un [:heraldry/tincture]))
-(defmethod field-type :per-pale [_]
+(defmethod field-type :heraldry.field.type/per-pale [_]
   (s/keys :req-un [:heraldry/fields]))
 
 (s/def :heraldry/field (s/and (s/multi-spec field-type :heraldry.field/type)
@@ -113,7 +113,7 @@
 (s/def :heraldry.charge.variant/version number?)
 (s/def :heraldry.charge/variant (s/nilable (s/keys :req-un [:heraldry.charge.variant/id
                                                             :heraldry.charge.variant/version])))
-(s/def :heraldry.charge/escutcheon #(or (= % :none)
+(s/def :heraldry.charge/escutcheon #(or (= % :root)
                                         (s/valid? :heraldry/escutcheon %)))
 (s/def :heraldry/charge (s/keys :req-un [:heraldry.charge/type
                                          :heraldry/field]

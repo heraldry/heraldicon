@@ -13,7 +13,7 @@
 
 (defn render
   {:display-name "Tierced per pairle"
-   :value        :tierced-per-pairle
+   :value         :heraldry.field.type/tierced-per-pairle
    :parts        ["chief" "dexter" "sinister"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor]}             (options/sanitize field (field-options/options field))

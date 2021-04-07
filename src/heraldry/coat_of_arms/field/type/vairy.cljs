@@ -202,7 +202,7 @@
 
 (defn render
   {:display-name "Vairy"
-   :value        :vairy
+   :value         :heraldry.field.type/vairy
    :parts        []}
   [{:keys [fields hints] :as field} environment {:keys [render-options]}]
   (let [{:keys [layout variant]}  (options/sanitize field (field-options/options field))

@@ -7,7 +7,7 @@
 
 (defn render
   {:display-name "Chequy"
-   :value        :chequy
+   :value         :heraldry.field.type/chequy
    :parts        []}
   [{:keys [fields hints] :as field} environment {:keys [render-options]}]
   (let [{:keys [layout]}        (options/sanitize field (field-options/options field))

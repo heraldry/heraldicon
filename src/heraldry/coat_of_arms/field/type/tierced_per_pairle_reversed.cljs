@@ -13,7 +13,7 @@
 
 (defn render
   {:display-name "Tierced per pairle reversed"
-   :value        :tierced-per-pairle-reversed
+   :value         :heraldry.field.type/tierced-per-pairle-reversed
    :parts        ["dexter" "sinister" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor]}          (options/sanitize field (field-options/options field))

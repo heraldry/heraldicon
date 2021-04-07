@@ -14,7 +14,7 @@
   (let [options          (line/options {:type key})
         {:keys [result]} (render/coat-of-arms
                           {:escutcheon :flag
-                           :field      {:type   :per-fess
+                           :field      {:type   :heraldry.field.type/per-fess
                                         :line   {:type   key
                                                  :width  (case key
                                                            :enarched nil
@@ -22,9 +22,9 @@
                                                  :height (case key
                                                            :enarched 0.25
                                                            nil)}
-                                        :fields [{:type     :plain
+                                        :fields [{:type     :heraldry.field.type/plain
                                                   :tincture :argent}
-                                                 {:type     :plain
+                                                 {:type     :heraldry.field.type/plain
                                                   :tincture (if (= key current) :or :azure)}]}}
                           100
                           (-> shared/coa-select-option-context

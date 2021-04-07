@@ -157,7 +157,7 @@
 
 (defn render
   {:display-name "Barry"
-   :value        :barry
+   :value         :heraldry.field.type/barry
    :parts        []}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line layout]}    (options/sanitize field (field-options/options field))

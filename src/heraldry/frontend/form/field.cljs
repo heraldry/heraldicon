@@ -26,8 +26,8 @@
         value            (:type field)
         {:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
-                           :field      (if (= key :plain)
-                                         {:type     :plain
+                           :field      (if (= key :heraldry.field.type/plain)
+                                         {:type     :heraldry.field.type/plain
                                           :tincture (if (= value key) :or :azure)}
                                          {:type   key
                                           :fields (-> (field/default-fields {:type key})
@@ -35,20 +35,20 @@
                                                       (cond->
                                                           (= value key) (util/replace-recursively :azure :or)))
                                           :layout {:num-fields-x (case key
-                                                                   :chequy    4
-                                                                   :lozengy   3
-                                                                   :vairy     2
-                                                                   :potenty   2
-                                                                   :papellony 2
-                                                                   :masonry   2
+                                                                   :heraldry.field.type/chequy    4
+                                                                   :heraldry.field.type/lozengy   3
+                                                                   :heraldry.field.type/vairy     2
+                                                                   :heraldry.field.type/potenty   2
+                                                                   :heraldry.field.type/papellony 2
+                                                                   :heraldry.field.type/masonry   2
                                                                    nil)
                                                    :num-fields-y (case key
-                                                                   :chequy    5
-                                                                   :lozengy   4
-                                                                   :vairy     3
-                                                                   :potenty   3
-                                                                   :papellony 4
-                                                                   :masonry   4
+                                                                   :heraldry.field.type/chequy    5
+                                                                   :heraldry.field.type/lozengy   4
+                                                                   :heraldry.field.type/vairy     3
+                                                                   :heraldry.field.type/potenty   3
+                                                                   :heraldry.field.type/papellony 4
+                                                                   :heraldry.field.type/masonry   4
                                                                    nil)}})}
                           100
                           (-> shared/coa-select-option-context
@@ -87,33 +87,34 @@
         [field-type-choice path key display-name])]]))
 
 (defn form-for-layout [field-path & {:keys [title options] :or {title "Layout"}}]
-  (let [layout-path    (conj field-path :layout)
-        field          @(rf/subscribe [:get field-path])
-        layout         (:layout field)
-        field-type     (-> field :type name keyword)
-        current-data   (options/sanitize-or-nil field (field-options/options field))
-        effective-data (:layout (options/sanitize field (field-options/options field)))
-        link-name      (util/combine
-                        ", "
-                        [(cond
-                           (= field-type :paly)            (str (:num-fields-x effective-data) " fields")
-                           (#{:barry
-                              :bendy
-                              :bendy-sinister} field-type) (str (:num-fields-y effective-data) " fields"))
-                         (when (and (:num-base-fields current-data)
-                                    (not= (:num-base-fields current-data) 2))
-                           (str (:num-base-fields effective-data) " base fields"))
-                         (when (or (:offset-x current-data)
-                                   (:offset-y current-data))
-                           (str "shifted"))
-                         (when (or (:stretch-x current-data)
-                                   (:stretch-y current-data))
-                           (str "stretched"))
-                         (when (:rotation current-data)
-                           (str "rotated"))])
-        link-name      (if (-> link-name count (= 0))
-                         "Default"
-                         link-name)]
+  (let [layout-path         (conj field-path :layout)
+        field               @(rf/subscribe [:get field-path])
+        layout              (:layout field)
+        field-type          (:type field)
+        stripped-field-type (-> field-type name keyword)
+        current-data        (options/sanitize-or-nil field (field-options/options field))
+        effective-data      (:layout (options/sanitize field (field-options/options field)))
+        link-name           (util/combine
+                             ", "
+                             [(cond
+                                (= stripped-field-type :paly)            (str (:num-fields-x effective-data) " fields")
+                                (#{:barry
+                                   :bendy
+                                   :bendy-sinister} stripped-field-type) (str (:num-fields-y effective-data) " fields"))
+                              (when (and (:num-base-fields current-data)
+                                         (not= (:num-base-fields current-data) 2))
+                                (str (:num-base-fields effective-data) " base fields"))
+                              (when (or (:offset-x current-data)
+                                        (:offset-y current-data))
+                                (str "shifted"))
+                              (when (or (:stretch-x current-data)
+                                        (:stretch-y current-data))
+                                (str "stretched"))
+                              (when (:rotation current-data)
+                                (str "rotated"))])
+        link-name           (if (-> link-name count (= 0))
+                              "Default"
+                              link-name)]
     [:div.setting
      [:label title]
      " "
@@ -191,9 +192,9 @@
         counterchanged? @(rf/subscribe [:get (conj path :counterchanged?)])
         root-field?     (= path [:coat-of-arms :field])]
     [element/component path :field (cond
-                                     (:counterchanged? field) "Counterchanged"
-                                     (= field-type :plain)    (-> field :tincture util/translate-tincture util/upper-case-first)
-                                     :else                    (-> field-type util/translate-cap-first)) title-prefix
+                                     (:counterchanged? field)                  "Counterchanged"
+                                     (= field-type :heraldry.field.type/plain) (-> field :tincture util/translate-tincture util/upper-case-first)
+                                     :else                                     (-> field-type util/translate-cap-first)) title-prefix
      [:div.settings
       (when (not root-field?)
         [element/checkbox (conj path :inherit-environment?) "Inherit environment (dimidiation)"])
@@ -241,7 +242,7 @@
                :current (:geometry field)])
             (when (:layout options)
               [form-for-layout path :options (:layout options)])])
-         (if (= field-type :plain)
+         (if (= field-type :heraldry.field.type/plain)
            [form-for-plain-field path]
            [element/checkbox (conj path :hints :outline?) "Outline"])])]
      (cond

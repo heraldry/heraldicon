@@ -172,7 +172,7 @@
 
 (defn render
   {:display-name "Quarterly NxM"
-   :value        :quarterly
+   :value        :heraldry.field.type/quarterly
    :parts        []}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [layout]}         (options/sanitize field (field-options/options field))
@@ -186,3 +186,4 @@
       overlap
       environment field context]
      outlines]))
+

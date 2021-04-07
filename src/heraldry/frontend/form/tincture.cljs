@@ -11,7 +11,7 @@
   (let [value            @(rf/subscribe [:get path])
         {:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
-                           :field      {:type     :plain
+                           :field      {:type     :heraldry.field.type/plain
                                         :tincture key}}
                           40
                           (-> shared/coa-select-option-context

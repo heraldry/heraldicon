@@ -10,7 +10,7 @@
 
 (defn render
   {:display-name "Per fess"
-   :value        :per-fess
+   :value         :heraldry.field.type/per-fess
    :parts        ["chief" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]}          (options/sanitize field (field-options/options field))

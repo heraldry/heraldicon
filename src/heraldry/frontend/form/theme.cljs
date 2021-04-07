@@ -11,23 +11,23 @@
   (let [value            @(rf/subscribe [:get path])
         {:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
-                           :field      {:type   :bendy-sinister
+                           :field      {:type   :heraldry.field.type/bendy-sinister
                                         :line   {:type :straight}
                                         :layout {:num-base-fields 7
                                                  :num-fields-y    7}
-                                        :fields [{:type     :plain
+                                        :fields [{:type     :heraldry.field.type/plain
                                                   :tincture :argent}
-                                                 {:type     :plain
+                                                 {:type     :heraldry.field.type/plain
                                                   :tincture :gules}
-                                                 {:type     :plain
+                                                 {:type     :heraldry.field.type/plain
                                                   :tincture :or}
-                                                 {:type     :plain
+                                                 {:type     :heraldry.field.type/plain
                                                   :tincture :vert}
-                                                 {:type     :plain
+                                                 {:type     :heraldry.field.type/plain
                                                   :tincture :azure}
-                                                 {:type     :plain
+                                                 {:type     :heraldry.field.type/plain
                                                   :tincture :purpure}
-                                                 {:type     :plain
+                                                 {:type     :heraldry.field.type/plain
                                                   :tincture :sable}
                                                  {:ref 0}]}}
                           80

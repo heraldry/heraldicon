@@ -3,7 +3,7 @@
 
 (defn render
   {:display-name "Plain"
-   :value        :plain}
+   :value        :heraldry.field.type/plain}
   [field _environment {:keys [render-options] :as _context}]
   (let [fill (tincture/pick (:tincture field) render-options)]
     [:rect {:x      -500

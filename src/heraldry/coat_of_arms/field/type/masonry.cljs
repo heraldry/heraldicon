@@ -60,7 +60,7 @@
 
 (defn render
   {:display-name "Masonry"
-   :value        :masonry
+   :value         :heraldry.field.type/masonry
    :parts        []}
   [{:keys [fields hints] :as field} environment {:keys [render-options]}]
   (let [{:keys [layout thickness]} (options/sanitize field (field-options/options field))
