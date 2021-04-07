@@ -13,7 +13,7 @@
 
 (defn render
   {:display-name "Chevron"
-   :value :chevron}
+   :value :heraldry.ordinary.type/chevron}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
                 variant geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))

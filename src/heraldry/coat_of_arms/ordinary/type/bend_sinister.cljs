@@ -11,7 +11,7 @@
 
 (defn render
   {:display-name "Bend sinister"
-   :value :bend-sinister}
+   :value :heraldry.ordinary.type/bend-sinister}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry

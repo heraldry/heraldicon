@@ -5,8 +5,7 @@
    :tincture :none})
 
 (def ordinary
-  {:component :ordinary
-   :type :pale
+  {:type :heraldry.ordinary.type/pale
    :line {:type :straight}
    :field field
    :hints {:outline? true}})
