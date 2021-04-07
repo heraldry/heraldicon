@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.division.type.paly
+(ns heraldry.coat-of-arms.field.type.paly
   (:require [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.division.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]

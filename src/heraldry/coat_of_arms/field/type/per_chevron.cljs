@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.division.type.per-chevron
+(ns heraldry.coat-of-arms.field.type.per-chevron
   (:require [heraldry.coat-of-arms.angle :as angle]
             [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.division.shared :as shared]
