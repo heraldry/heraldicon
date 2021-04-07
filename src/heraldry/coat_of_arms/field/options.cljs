@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.division.options
+(ns heraldry.coat-of-arms.field.options
   (:require [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
@@ -175,8 +175,8 @@
                                                                              :angle}]
                                                          {[:line]                   (-> line-style
                                                                                         (options/override-if-exists [:offset :min] 0))
-                                                          [:opposite-line]                   (-> line-style
-                                                                                                 (options/override-if-exists [:offset :min] 0))
+                                                          [:opposite-line]          (-> line-style
+                                                                                        (options/override-if-exists [:offset :min] 0))
                                                           [:geometry]               {:size      {:type    :range
                                                                                                  :min     5
                                                                                                  :max     100
@@ -234,12 +234,12 @@
                                                         [:origin :point]
                                                         [:origin :offset-x]
                                                         [:origin :offset-y]]
-                                                       {[:line] (-> line-style
-                                                                    (options/override-if-exists [:offset :min] 0)
-                                                                    (dissoc :fimbriation))
-                                                        [:opposite-line]          (-> line-style
-                                                                                      (options/override-if-exists [:offset :min] 0)
-                                                                                      (dissoc :fimbriation))})
+                                                       {[:line]          (-> line-style
+                                                                             (options/override-if-exists [:offset :min] 0)
+                                                                             (dissoc :fimbriation))
+                                                        [:opposite-line] (-> line-style
+                                                                             (options/override-if-exists [:offset :min] 0)
+                                                                             (dissoc :fimbriation))})
             :quarterly                   (options/pick default-options
                                                        [[:layout :num-base-fields]
                                                         [:layout :num-fields-x]
@@ -440,9 +440,9 @@
                                                         [:opposite-line]          (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
                                                                                       (dissoc :fimbriation))
-                                                        [:extra-line]          (-> line-style
-                                                                                   (options/override-if-exists [:offset :min] 0)
-                                                                                   (dissoc :fimbriation))
+                                                        [:extra-line]             (-> line-style
+                                                                                      (options/override-if-exists [:offset :min] 0)
+                                                                                      (dissoc :fimbriation))
                                                         [:anchor :point :choices] (util/filter-choices
                                                                                    position/anchor-point-choices
                                                                                    [:top-left :top-right :angle])})
@@ -458,9 +458,9 @@
                                                         [:opposite-line]          (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
                                                                                       (dissoc :fimbriation))
-                                                        [:extra-line]          (-> line-style
-                                                                                   (options/override-if-exists [:offset :min] 0)
-                                                                                   (dissoc :fimbriation))
+                                                        [:extra-line]             (-> line-style
+                                                                                      (options/override-if-exists [:offset :min] 0)
+                                                                                      (dissoc :fimbriation))
                                                         [:anchor :point :choices] (util/filter-choices
                                                                                    position/anchor-point-choices
                                                                                    [:bottom-left :bottom-right :angle])})

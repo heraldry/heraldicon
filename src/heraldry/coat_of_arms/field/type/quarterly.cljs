@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.field.type.quarterly
-  (:require [heraldry.coat-of-arms.division.options :as division-options]
+  (:require [heraldry.coat-of-arms.field.options :as division-options]
             [heraldry.coat-of-arms.division.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.options :as options]
