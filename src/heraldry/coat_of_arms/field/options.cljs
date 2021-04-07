@@ -63,7 +63,7 @@
 (defn options [field]
   (when field
     (let [line-style (line/options (:line field))]
-      (-> (case (:type field)
+      (-> (case (-> field :type name keyword)
             :per-pale (options/pick default-options
                                     [[:line]
                                      [:origin :point]

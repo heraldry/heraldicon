@@ -14,7 +14,7 @@
                                     (seq data))))
 
        (filter #(and (map? %)
-                     (-> % :type (= :plain))
+                     (-> % :type (= :heraldry.field.type/plain))
                      (-> % :tincture)))
        (map :tincture)
        distinct))

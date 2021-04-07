@@ -11,7 +11,7 @@
 
 (defn render
   {:display-name "Tierced per pale"
-   :value :tierced-per-pale
+   :value :heraldry.field.type/tierced-per-pale
    :parts ["dexter" "fess" "sinister"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line layout origin]} (options/sanitize field (field-options/options field))

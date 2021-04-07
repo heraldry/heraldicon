@@ -13,10 +13,10 @@
 (deftest valid-fields
   (are [spec form] (check-spec spec form)
 
-    :heraldry/field {:type :plain
+    :heraldry/field {:type :heraldry.field.type/plain
                      :tincture :azure}
 
-    :heraldry/field {:type :per-pale
+    :heraldry/field {:type :heraldry.field.type/per-pale
                      :origin {:point :fess
                               :offset-x 0
                               :offset-y nil}
@@ -25,23 +25,23 @@
                             :width nil
                             :offset 0.2
                             :flipped? false}
-                     :fields [{:type :plain
+                     :fields [{:type :heraldry.field.type/plain
                                :tincture :azure}
-                              {:type :plain
+                              {:type :heraldry.field.type/plain
                                :tincture :or}
                               {:type :ref
                                :index 1}]
                      :hints {:outline? true}}
 
-    :heraldry/field {:type :plain
+    :heraldry/field {:type :heraldry.field.type/plain
                      :tincture :azure
                      :components [{:type :heraldry.ordinary.type/pale
-                                   :field {:type :plain
+                                   :field {:type :heraldry.field.type/plain
                                            :tincture :azure}}
-                                  {:type :lion
+                                  {:type :heraldry.charge.type/lion
                                    :attitude :rampant
                                    :facing :reguardant
-                                   :field {:type :plain
+                                   :field {:type :heraldry.field.type/plain
                                            :tincture :azure}}]}))
 
 (deftest invalid-fields
@@ -52,34 +52,34 @@
     :heraldry/field {:type :heraldry.charge.type/roundel
                      :tincture :or}
 
-    :heraldry/field {:type :per-pale
+    :heraldry/field {:type :heraldry.field.type/per-pale
                      :tincture :azure}
 
-    :heraldry/field {:type :plain
-                     :fields [{:type :plain
+    :heraldry/field {:type :heraldry.field.type/plain
+                     :fields [{:type :heraldry.field.type/plain
                                :tincture :azure}
-                              {:type :plain
+                              {:type :heraldry.field.type/plain
                                :tincture :or}
                               {:type :ref
                                :index 1}]}
 
     :heraldry/field {:type :does-not-exist}
 
-    :heraldry/field {:type :plain
+    :heraldry/field {:type :heraldry.field.type/plain
                      :tincture :azure
                      ;; the component here is just a field, not a charge or ordinary
-                     :components [{:type :plain
+                     :components [{:type :heraldry.field.type/plain
                                    :tincture :or}]}))
 
 (deftest valid-ordinaries
   (are [spec form] (check-spec spec form)
 
     :heraldry/ordinary {:type :heraldry.ordinary.type/pale
-                        :field {:type :plain
+                        :field {:type :heraldry.field.type/plain
                                 :tincture :azure}}
 
     :heraldry/ordinary {:type :heraldry.ordinary.type/fess
-                        :field {:type :plain
+                        :field {:type :heraldry.field.type/plain
                                 :tincture :azure}
                         :geometry {:size 50}
                         :origin {:point :fess
@@ -101,12 +101,12 @@
 
     :heraldry/ordinary {}
 
-    :heraldry/ordinary {:type :per-pale
-                        :field {:type :plain
+    :heraldry/ordinary {:type :heraldry.field.type/per-pale
+                        :field {:type :heraldry.field.type/plain
                                 :tincture :azure}}
 
     :heraldry/ordinary {:type :does-not-exist
-                        :field {:type :plain
+                        :field {:type :heraldry.field.type/plain
                                 :tincture :azure}}
 
     :heraldry/ordinary {:type :fess
@@ -119,17 +119,17 @@
                       :attitude nil
                       :facing nil
                       :variant nil
-                      :field {:type :plain
+                      :field {:type :heraldry.field.type/plain
                               :tincture :azure}}
 
     :heraldry/charge {:type :heraldry.charge.type/lion
                       :attitude :rampant
                       :facing :reguardant
-                      :field {:type :plain
+                      :field {:type :heraldry.field.type/plain
                               :tincture :azure}}
 
     :heraldry/charge {:type :heraldry.charge.type/roundel
-                      :field {:type :plain
+                      :field {:type :heraldry.field.type/plain
                               :tincture :azure}
                       :tincture {:eyes-and-teeth :or
                                  :shadow 0.5
@@ -150,24 +150,24 @@
 
     :heraldry/charge {:type :heraldry.charge.type/wolf
                       :attitude :foobar
-                      :field {:type :plain
+                      :field {:type :heraldry.field.type/plain
                               :tincture :azure}}
 
     :heraldry/charge {:type :heraldry.charge.type/wolf
                       :attitude :rampant
-                      :field {:type :plain
+                      :field {:type :heraldry.field.type/plain
                               :tincture :azure}
                       :tincture {:shadow true}}
 
     :heraldry/charge {:type :heraldry.charge.type/wolf
                       :attitude :rampant
-                      :field {:type :plain
+                      :field {:type :heraldry.field.type/plain
                               :tincture :azure}
                       :tincture {:eyes-and-teeth 0.5}}
 
     :heraldry/charge {:type :heraldry.charge.type/wolf
                       :attitude :rampant
-                      :field {:type :plain
+                      :field {:type :heraldry.field.type/plain
                               :tincture :azure}
                       :tincture {:highlight :or}}))
 
@@ -177,7 +177,7 @@
     :heraldry/coat-of-arms {:spec-version 1
                             :type :coat-of-arms
                             :escutcheon :heater
-                            :field {:type :plain
+                            :field {:type :heraldry.field.type/plain
                                     :tincture :azure}}
 
     :heraldry/coat-of-arms {:spec-version 1
@@ -189,9 +189,9 @@
                                            :width 2
                                            :offset 0.2
                                            :flipped? false}
-                                    :fields [{:type :plain
+                                    :fields [{:type :heraldry.field.type/plain
                                               :tincture :azure}
-                                             {:type :plain
+                                             {:type :heraldry.field.type/plain
                                               :tincture :or}]
                                     :hints {:outline? true}}}))
 
@@ -204,16 +204,16 @@
                             :escutcheon :heater}
 
     :heraldry/coat-of-arms {:spec-version 1
-                            :field {:type :plain
+                            :field {:type :heraldry.field.type/plain
                                     :tincture :azure}}
 
     :heraldry/coat-of-arms {:spec-version 1
                             :escutcheon :does-not-exist
-                            :field {:type :plain
+                            :field {:type :heraldry.field.type/plain
                                     :tincture :azure}}
 
     :heraldry/coat-of-arms {:escutcheon :heater
-                            :field {:type :plain
+                            :field {:type :heraldry.field.type/plain
                                     :tincture :azure}}))
 
 (deftest valid-render-options

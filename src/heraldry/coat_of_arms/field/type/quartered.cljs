@@ -11,7 +11,7 @@
 
 (defn render
   {:display-name "Quarterly 2x2"
-   :value :quartered
+   :value :heraldry.field.type/quartered
    :parts ["I" "II" "III" "IV"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]} (options/sanitize field (field-options/options field))

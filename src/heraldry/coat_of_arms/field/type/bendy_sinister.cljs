@@ -8,7 +8,7 @@
 
 (defn render
   {:display-name "Bendy sinister"
-   :value :bendy-sinister
+   :value :heraldry.field.type/bendy-sinister
    :parts []}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line

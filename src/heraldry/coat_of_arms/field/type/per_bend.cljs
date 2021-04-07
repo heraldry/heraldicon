@@ -10,7 +10,7 @@
 
 (defn render
   {:display-name "Per bend"
-   :value :per-bend
+   :value :heraldry.field.type/per-bend
    :parts ["chief" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor]} (options/sanitize field (field-options/options field))

@@ -12,7 +12,7 @@
 
 (defn render
   {:display-name "Per pile"
-   :value :per-pile}
+   :value :heraldry.field.type/per-pile}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
                 geometry]} (options/sanitize field (field-options/options field))

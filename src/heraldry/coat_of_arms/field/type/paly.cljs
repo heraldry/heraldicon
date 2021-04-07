@@ -160,7 +160,7 @@
 
 (defn render
   {:display-name "Paly"
-   :value :paly
+   :value :heraldry.field.type/paly
    :parts []}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line layout]} (options/sanitize field (field-options/options field))

@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.default)
 
 (def field
-  {:type :plain
+  {:type :heraldry.field.type/plain
    :tincture :none})
 
 (def ordinary
