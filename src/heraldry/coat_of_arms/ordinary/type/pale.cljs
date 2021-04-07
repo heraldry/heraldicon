@@ -12,7 +12,7 @@
 
 (defn render
   {:display-name "Pale"
-   :value :pale}
+   :value :heraldry.ordinary.type/pale}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
