@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.field.core
   (:require [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.division.options :as division-options]
+            [heraldry.coat-of-arms.field.options :as division-options]
             [heraldry.coat-of-arms.field.type.barry :as barry]
             [heraldry.coat-of-arms.field.type.bendy :as bendy]
             [heraldry.coat-of-arms.field.type.bendy-sinister :as bendy-sinister]
