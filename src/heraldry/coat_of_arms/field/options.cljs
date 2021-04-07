@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.division.options
+(ns heraldry.coat-of-arms.field.options
   (:require [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]

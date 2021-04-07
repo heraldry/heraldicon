@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.bendy
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.division.options :as division-options]
+            [heraldry.coat-of-arms.field.options :as division-options]
             [heraldry.coat-of-arms.division.shared :as shared]
             [heraldry.coat-of-arms.field.type.barry :as barry]
             [heraldry.coat-of-arms.options :as options]

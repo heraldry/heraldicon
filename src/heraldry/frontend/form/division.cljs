@@ -1,6 +1,6 @@
 (ns heraldry.frontend.form.division
   (:require [heraldry.coat-of-arms.field.core :as division]
-            [heraldry.coat-of-arms.division.options :as division-options]
+            [heraldry.coat-of-arms.field.options :as division-options]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.form.element :as element]

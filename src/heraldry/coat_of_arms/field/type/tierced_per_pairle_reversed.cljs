@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.tierced-per-pairle-reversed
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.division.options :as division-options]
+            [heraldry.coat-of-arms.field.options :as division-options]
             [heraldry.coat-of-arms.division.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
