@@ -126,7 +126,7 @@
                (tincture/pick render-options)) render-options
            :corner (-> fimbriation :corner)]]))
      [:g {:id charge-id}
-      [field-shared/make-division
+      [field-shared/make-subfields
        :charge-pale [field] parts
        [:all]
        environment charge context]

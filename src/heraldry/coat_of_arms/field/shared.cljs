@@ -16,8 +16,8 @@
 (defn field-context-key [key]
   (keyword (str "field-" (name key))))
 
-(defn make-division [type fields parts mask-overlaps parent-environment parent
-                     {:keys [render-field db-path svg-export?] :as context}]
+(defn make-subfields [type fields parts mask-overlaps parent-environment parent
+                      {:keys [render-field db-path svg-export?] :as context}]
   (let [mask-ids (->> (range (count fields))
                       (map (fn [idx] [(util/id (str (name type) "-" idx))
                                       (util/id (str (name type) "-" idx))])))

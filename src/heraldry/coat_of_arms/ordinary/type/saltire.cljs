@@ -204,7 +204,7 @@
         outline? (or (:outline? render-options)
                      (:outline? hints))]
     [:<>
-     [division-shared/make-division
+     [division-shared/make-subfields
       :ordinary-pale [field] parts
       [:all]
       environment ordinary context]
