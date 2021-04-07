@@ -4,7 +4,7 @@
 
 (defn render
   {:display-name "Roundel"
-   :value :roundel}
+   :value :heraldry.charge.type/roundel}
   [charge parent environment context]
   (charge-shared/make-charge
    charge parent environment context

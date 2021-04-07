@@ -33,10 +33,9 @@
                                           :squiggly? false
                                           :ui {:selectable-fields? true}}
                          :coat-of-arms {:escutcheon :rectangle
-                                        :field {:component :field
-                                                :content {:tincture :argent}
-                                                :components [{:component :charge
-                                                              :field {:component :field
+                                        :field {:type :plain
+                                                :tincture :argent
+                                                :components [{:field {:component :field
                                                                       :content {:tincture :azure}}
                                                               :tincture (merge (->> attributes/tincture-modifier-map
                                                                                     (map (fn [[k _]]

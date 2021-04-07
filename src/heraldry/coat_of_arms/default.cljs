@@ -11,8 +11,7 @@
    :hints {:outline? true}})
 
 (def charge
-  {:component :charge
-   :type :roundel
+  {:type :heraldry.charge.type/roundel
    :field field
    :tincture {:shadow 1
               :highlight 1}
