@@ -4,7 +4,7 @@
 
 (defn render
   {:display-name "Rustre"
-   :value        :rustre}
+   :value         :heraldry.charge.type/rustre}
   [charge parent environment context]
   (charge-shared/make-charge
    charge parent environment context

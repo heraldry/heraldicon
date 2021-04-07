@@ -316,8 +316,8 @@
                   :parent-field field
                   :form-for-field form])]
               [:div {:style {:padding-left "10px"}}
-               (when (not (and (-> component :component (= :charge))
-                               (-> component :type keyword? not)))
+               (when (not (and (some-> component :type namespace (= "heraldry.charge.type"))
+                               (-> component :data)))
                  [:a {:on-click #(state/dispatch-on-event % [:remove-component component-path])}
                   [:i.far.fa-trash-alt]])]])))]]]))
 

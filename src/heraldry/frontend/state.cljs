@@ -33,27 +33,26 @@
                                            :squiggly? false
                                            :ui        {:selectable-fields? true}}
                           :coat-of-arms   {:escutcheon :rectangle
-                                           :field      {:component  :field
-                                                        :content    {:tincture :argent}
-                                                        :components [{:component :charge
-                                                                      :field     {:component :field
-                                                                                  :content   {:tincture :azure}}
-                                                                      :tincture  (merge (->> attributes/tincture-modifier-map
-                                                                                             (map (fn [[k _]]
-                                                                                                    [k :or]))
-                                                                                             (into {}))
-                                                                                        {:eyes-and-teeth :argent
-                                                                                         :secondary      :gules
-                                                                                         :tertiary       :vert
-                                                                                         :armed          :or
-                                                                                         :langued        :gules
-                                                                                         :attired        :argent
-                                                                                         :unguled        :vert
-                                                                                         :beaked         :or
-                                                                                         :winged         :purpure
-                                                                                         :pommeled       :gules
-                                                                                         :shadow         1.0
-                                                                                         :highlight      1.0})}]}}}
+                                           :field      {:type       :plain
+                                                        :tincture   :argent
+                                                        :components [{:field    {:component :field
+                                                                                 :content   {:tincture :azure}}
+                                                                      :tincture (merge (->> attributes/tincture-modifier-map
+                                                                                            (map (fn [[k _]]
+                                                                                                   [k :or]))
+                                                                                            (into {}))
+                                                                                       {:eyes-and-teeth :argent
+                                                                                        :secondary      :gules
+                                                                                        :tertiary       :vert
+                                                                                        :armed          :or
+                                                                                        :langued        :gules
+                                                                                        :attired        :argent
+                                                                                        :unguled        :vert
+                                                                                        :beaked         :or
+                                                                                        :winged         :purpure
+                                                                                        :pommeled       :gules
+                                                                                        :shadow         1.0
+                                                                                        :highlight      1.0})}]}}}
            :coat-of-arms {:escutcheon :rectangle}
            :ui           {:component-open? {[:arms-form :render-options]        true
                                             [:arms-form :coat-of-arms]          true

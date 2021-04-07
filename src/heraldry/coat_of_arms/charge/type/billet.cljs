@@ -4,7 +4,7 @@
 
 (defn render
   {:display-name "Billet"
-   :value        :billet}
+   :value         :heraldry.charge.type/billet}
   [charge parent environment context]
   (charge-shared/make-charge
    charge parent environment context

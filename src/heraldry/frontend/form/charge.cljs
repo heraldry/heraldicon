@@ -24,10 +24,9 @@
                           {:escutcheon :rectangle
                            :field      {:type       :plain
                                         :tincture   :argent
-                                        :components [{:component  :charge
-                                                      :type       key
+                                        :components [{:type       key
                                                       :geometry   {:size 75}
-                                                      :escutcheon (if (= key :escutcheon) :heater nil)
+                                                      :escutcheon (if (= key :heraldry.charge.type/escutcheon) :heater nil)
                                                       :field      {:type     :plain
                                                                    :tincture (if (= current key) :or :azure)}}]}}
                           100
@@ -55,11 +54,10 @@
                           {:escutcheon :rectangle
                            :field      {:type       :plain
                                         :tincture   :argent
-                                        :components [{:component :charge
-                                                      :type      (:type charge)
-                                                      :variant   (:variant charge)
-                                                      :field     {:type     :plain
-                                                                  :tincture :or}}]}}
+                                        :components [{:type    (:type charge)
+                                                      :variant (:variant charge)
+                                                      :field   {:type     :plain
+                                                                :tincture :or}}]}}
                           100
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
@@ -174,8 +172,7 @@
                                                 (-> charge :attitude util/translate)])]
     [element/component path :charge title nil
      [:div.settings
-      (when (and (:type charge)
-                 (-> charge :type :map? not))
+      (when (:type charge)
         [form-for-charge-type path])
       (when (-> supported-tinctures
                 count

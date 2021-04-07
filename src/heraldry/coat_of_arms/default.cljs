@@ -11,12 +11,11 @@
    :hints {:outline? true}})
 
 (def charge
-  {:component :charge
-   :type      :roundel
-   :field     field
-   :tincture  {:shadow    1
-               :highlight 1}
-   :hints     {:outline-mode :keep}})
+  {:type     :heraldry.charge.type/roundel
+   :field    field
+   :tincture {:shadow    1
+              :highlight 1}
+   :hints    {:outline-mode :keep}})
 
 (def coat-of-arms
   {:spec-version 1

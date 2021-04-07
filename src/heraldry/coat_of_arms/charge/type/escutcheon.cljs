@@ -9,7 +9,7 @@
 
 (defn render
   {:display-name "Escutcheon"
-   :value        :escutcheon}
+   :value        :heraldry.charge.type/escutcheon}
   [charge parent environment {:keys [root-escutcheon] :as context}]
   (let [{:keys [escutcheon]} (options/sanitize charge (charge-options/options charge))]
     (charge-shared/make-charge
