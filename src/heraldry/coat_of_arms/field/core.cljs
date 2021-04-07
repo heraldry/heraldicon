@@ -18,6 +18,7 @@
             [heraldry.coat-of-arms.field.type.per-pale :as per-pale]
             [heraldry.coat-of-arms.field.type.per-pile :as per-pile]
             [heraldry.coat-of-arms.field.type.per-saltire :as per-saltire]
+            [heraldry.coat-of-arms.field.type.plain :as plain]
             [heraldry.coat-of-arms.field.type.potenty :as potenty]
             [heraldry.coat-of-arms.field.type.quartered :as quartered]
             [heraldry.coat-of-arms.field.type.quarterly :as quarterly]
@@ -114,8 +115,9 @@
                                 [(nth defaults 2)])
       :else (subvec defaults 0 2))))
 
-(def divisions
-  [#'per-pale/render
+(def fields
+  [#'plain/render
+   #'per-pale/render
    #'per-fess/render
    #'per-bend/render
    #'per-bend-sinister/render
@@ -141,36 +143,32 @@
    #'masonry/render])
 
 (def kinds-function-map
-  (->> divisions
+  (->> fields
        (map (fn [function]
               [(-> function meta :value) function]))
        (into {})))
 
 (def choices
-  (->> divisions
+  (->> fields
        (map (fn [function]
               [(-> function meta :display-name) (-> function meta :value)]))))
 
-(def division-map
+(def field-map
   (util/choices->map choices))
 
 (defn part-name [type index]
   (let [function (get kinds-function-map type)]
     (-> function meta :parts (get index) (or (util/to-roman (inc index))))))
 
-(defn render-division [{:keys [type] :as division} environment context]
-  (let [function (get kinds-function-map type)]
-    [function division environment context]))
-
-(defn render [{:keys [components] :as field} environment
+(defn render [{:keys [type components] :as field} environment
               {:keys
-               [db-path render-options fn-component-selected?
+               [db-path fn-component-selected?
                 fn-select-component svg-export? transform] :as context}]
-  (let [type (:type field)
-        selected? (when fn-component-selected?
+  (let [selected? (when fn-component-selected?
                     (fn-component-selected? db-path))
         context (-> context
-                    (assoc :render-field render))]
+                    (assoc :render-field render))
+        render-function (get kinds-function-map type)]
     [:<>
      [:g {:on-click (when fn-select-component
                       (fn [event]
@@ -180,15 +178,7 @@
                    {:pointer-events "visiblePainted"
                     :cursor "pointer"})
           :transform transform}
-      (case type
-        :plain (let [fill (tincture/pick (:tincture field) render-options)]
-                 [:rect {:x -500
-                         :y -500
-                         :width 1100
-                         :height 1100
-                         :fill fill
-                         :stroke fill}])
-        [render-division field environment context])
+      [render-function field environment context]
       (for [[idx element] (map-indexed vector components)]
         (if (-> element :component (= :ordinary))
           ^{:key idx} [ordinary/render element field environment (-> context
