@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.field.type.tierced-per-fess
-  (:require [heraldry.coat-of-arms.field.options :as division-options]
+  (:require [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -14,7 +14,7 @@
    :value        :tierced-per-fess
    :parts        ["chief" "fess" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line layout origin]}      (options/sanitize division (division-options/options division))
+  (let [{:keys [line layout origin]}      (options/sanitize division (field-options/options division))
         {:keys [stretch-y]}               layout
         points                            (:points environment)
         origin-point                      (position/calculate origin environment :fess)
@@ -109,7 +109,7 @@
                                             [second-left bottom-right]]]]
     [:<>
      [shared/make-division
-      (shared/division-context-key type) fields parts
+      (shared/field-context-key type) fields parts
       [:all
        [(svg/make-path
          ["M" (v/+ second-right

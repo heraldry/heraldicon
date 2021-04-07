@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.per-saltire
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.options :as division-options]
+            [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -15,8 +15,8 @@
    :value        :per-saltire
    :parts        ["chief" "dexter" "sinister" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]}                 (options/sanitize division (division-options/options division))
-        opposite-line                                (division-options/sanitize-opposite-line division line)
+  (let [{:keys [line origin anchor]}                 (options/sanitize division (field-options/options division))
+        opposite-line                                (field-options/sanitize-opposite-line division line)
         {origin-point :real-origin
          anchor-point :real-anchor}                  (angle/calculate-origin-and-anchor
                                                       environment
@@ -144,7 +144,7 @@
 
     [:<>
      [shared/make-division
-      (shared/division-context-key type) fields parts
+      (shared/field-context-key type) fields parts
       [:all
        [(svg/make-path
          ["M" (v/+ origin-point

@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.per-pile
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.options :as division-options]
+            [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -15,8 +15,8 @@
    :value        :per-pile}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
-                geometry]}                 (options/sanitize division (division-options/options division))
-        opposite-line                      (division-options/sanitize-opposite-line division line)
+                geometry]}                 (options/sanitize division (field-options/options division))
+        opposite-line                      (field-options/sanitize-opposite-line division line)
         anchor                             (-> anchor
                                                (assoc :type :edge))
         geometry                           (-> geometry
@@ -150,7 +150,7 @@
                      (:outline? hints))]
     [:<>
      [shared/make-division
-      (shared/division-context-key type) fields parts
+      (shared/field-context-key type) fields parts
       [:all nil nil]
       environment division context]
      (line/render line [line-left-data

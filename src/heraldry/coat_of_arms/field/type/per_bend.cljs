@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.per-bend
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.options :as division-options]
+            [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -13,7 +13,7 @@
    :value        :per-bend
    :parts        ["chief" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]}   (options/sanitize division (division-options/options division))
+  (let [{:keys [line origin anchor]}   (options/sanitize division (field-options/options division))
         points                         (:points environment)
         top-right                      (:top-right points)
         bottom-left                    (:bottom-left points)
@@ -86,7 +86,7 @@
                                            (:outline? hints))]
     [:<>
      [shared/make-division
-      (shared/division-context-key type) fields parts
+      (shared/field-context-key type) fields parts
       [:all nil]
       environment division context]
      (line/render line [line-one-data] diagonal-start outline? render-options)]))

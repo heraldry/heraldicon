@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.tierced-per-pairle-reversed
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.options :as division-options]
+            [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -16,9 +16,9 @@
    :value        :tierced-per-pairle-reversed
    :parts        ["dexter" "sinister" "base"]}
   [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]}          (options/sanitize division (division-options/options division))
-        opposite-line                         (division-options/sanitize-opposite-line division line)
-        extra-line                            (division-options/sanitize-extra-line division line)
+  (let [{:keys [line origin anchor]}          (options/sanitize division (field-options/options division))
+        opposite-line                         (field-options/sanitize-opposite-line division line)
+        extra-line                            (field-options/sanitize-extra-line division line)
         points                                (:points environment)
         unadjusted-origin-point               (position/calculate origin environment)
         {origin-point :real-origin
@@ -128,7 +128,7 @@
                                                 [origin-point bottom-left bottom-right]]]]
     [:<>
      [shared/make-division
-      (shared/division-context-key type) fields parts
+      (shared/field-context-key type) fields parts
       [:all
        [(svg/make-path
          ["M" (v/+ diagonal-bottom-right

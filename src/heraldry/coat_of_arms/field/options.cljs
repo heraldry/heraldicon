@@ -60,10 +60,10 @@
                                      :max     90
                                      :default 0}}})
 
-(defn options [division]
-  (when division
-    (let [line-style (line/options (:line division))]
-      (-> (case (:type division)
+(defn options [field]
+  (when field
+    (let [line-style (line/options (:line field))]
+      (-> (case (:type field)
             :per-pale                    (options/pick default-options
                                                        [[:line]
                                                         [:origin :point]
@@ -91,7 +91,7 @@
                                                          {[:line]                   line-style
                                                           [:origin :point :choices] point-choices
                                                           [:origin :point :default] :top-left
-                                                          [:anchor :point :choices] (case (-> division :origin :point (or :top-left))
+                                                          [:anchor :point :choices] (case (-> field :origin :point (or :top-left))
                                                                                       :top-left     (util/filter-choices
                                                                                                      anchor-point-choices
                                                                                                      #{:bottom-right
@@ -103,7 +103,7 @@
                                                                                       (util/filter-choices
                                                                                        anchor-point-choices
                                                                                        [:top-left :bottom-right :angle]))
-                                                          [:anchor :point :default] (case (-> division :origin :point (or :top-left))
+                                                          [:anchor :point :default] (case (-> field :origin :point (or :top-left))
                                                                                       :top-left     :fess
                                                                                       :bottom-right :fess
                                                                                       :top-left)}))
@@ -122,7 +122,7 @@
                                                          {[:line]                   line-style
                                                           [:origin :point :choices] point-choices
                                                           [:origin :point :default] :top-left
-                                                          [:anchor :point :choices] (case (-> division :origin :point (or :top-right))
+                                                          [:anchor :point :choices] (case (-> field :origin :point (or :top-right))
                                                                                       :top-right   (util/filter-choices
                                                                                                     anchor-point-choices
                                                                                                     #{:bottom-left
@@ -134,7 +134,7 @@
                                                                                       (util/filter-choices
                                                                                        anchor-point-choices
                                                                                        [:top-right :bottom-left :angle]))
-                                                          [:anchor :point :default] (case (-> division :origin :point (or :top-right))
+                                                          [:anchor :point :default] (case (-> field :origin :point (or :top-right))
                                                                                       :top-right   :fess
                                                                                       :bottom-left :fess
                                                                                       :top-right)}))
@@ -148,7 +148,7 @@
                                                                                       (options/override-if-exists [:offset :min] 0))
                                                         [:opposite-line]          (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0))
-                                                        [:anchor :point :choices] (case (-> division :variant (or :base))
+                                                        [:anchor :point :choices] (case (-> field :variant (or :base))
                                                                                     :chief    (util/filter-choices
                                                                                                position/anchor-point-choices
                                                                                                [:top-left :top-right :angle])
@@ -180,7 +180,7 @@
                                                           [:geometry]               {:size      {:type    :range
                                                                                                  :min     5
                                                                                                  :max     100
-                                                                                                 :default (case (-> division :geometry :size-mode (or :thickness))
+                                                                                                 :default (case (-> field :geometry :size-mode (or :thickness))
                                                                                                             :thickness 75
                                                                                                             30)}
                                                                                      :size-mode {:type    :choice
@@ -196,21 +196,21 @@
                                                           [:origin :alignment]      (:alignment position/default-options)
                                                           [:anchor :point :choices] (util/filter-choices
                                                                                      position/anchor-point-choices
-                                                                                     (disj anchor-points (-> division :origin :point (or :top))))
+                                                                                     (disj anchor-points (-> field :origin :point (or :top))))
                                                           [:anchor :point :default] :fess
                                                           [:anchor :alignment]      nil
                                                           [:anchor :angle :default] (cond
                                                                                       (#{:top-left
                                                                                          :top-right
                                                                                          :bottom-left
-                                                                                         :bottom-right} (-> division :origin :point (or :top))) 45
-                                                                                      :else                                                     0)
+                                                                                         :bottom-right} (-> field :origin :point (or :top))) 45
+                                                                                      :else                                                  0)
                                                           [:anchor :angle :min]     (cond
                                                                                       (#{:top-left
                                                                                          :top-right
                                                                                          :bottom-left
-                                                                                         :bottom-right} (-> division :origin :point (or :top))) 0
-                                                                                      :else                                                     -90)
+                                                                                         :bottom-right} (-> field :origin :point (or :top))) 0
+                                                                                      :else                                                  -90)
                                                           [:anchor :angle :max]     90
                                                           [:anchor :type]           nil}))
             :per-saltire                 (options/pick default-options
@@ -360,7 +360,7 @@
                                                                                         (dissoc :fimbriation))
                                                           [:origin :point :choices] point-choices
                                                           [:origin :point :default] :top-left
-                                                          [:anchor :point :choices] (case (-> division :origin :point (or :top-left))
+                                                          [:anchor :point :choices] (case (-> field :origin :point (or :top-left))
                                                                                       :top-left     (util/filter-choices
                                                                                                      anchor-point-choices
                                                                                                      #{:bottom-right
@@ -372,7 +372,7 @@
                                                                                       (util/filter-choices
                                                                                        anchor-point-choices
                                                                                        [:top-left :bottom-right :angle]))
-                                                          [:anchor :point :default] (case (-> division :origin :point (or :top-left))
+                                                          [:anchor :point :default] (case (-> field :origin :point (or :top-left))
                                                                                       :top-left     :fess
                                                                                       :bottom-right :fess
                                                                                       :top-left)}))
@@ -396,7 +396,7 @@
                                                                                         (dissoc :fimbriation))
                                                           [:origin :point :choices] point-choices
                                                           [:origin :point :default] :top-left
-                                                          [:anchor :point :choices] (case (-> division :origin :point (or :top-right))
+                                                          [:anchor :point :choices] (case (-> field :origin :point (or :top-right))
                                                                                       :top-right   (util/filter-choices
                                                                                                     anchor-point-choices
                                                                                                     #{:bottom-left
@@ -408,7 +408,7 @@
                                                                                       (util/filter-choices
                                                                                        anchor-point-choices
                                                                                        [:top-right :bottom-left :angle]))
-                                                          [:anchor :point :default] (case (-> division :origin :point (or :top-right))
+                                                          [:anchor :point :default] (case (-> field :origin :point (or :top-right))
                                                                                       :top-right   :fess
                                                                                       :bottom-left :fess
                                                                                       :top-right)}))
@@ -468,31 +468,31 @@
             {})
           (update-in [:anchor] (fn [anchor]
                                  (when anchor
-                                   (position/adjust-options anchor (-> division :anchor)))))))))
+                                   (position/adjust-options anchor (-> field :anchor)))))))))
 
-(defn sanitize-opposite-line [division line]
+(defn sanitize-opposite-line [field line]
   (-> (options/sanitize
        (util/deep-merge-with (fn [_current-value new-value]
                                new-value) line
                              (into {}
                                    (filter (fn [[_ v]]
                                              (some? v))
-                                           (:opposite-line division))))
-       (-> division options :opposite-line))
-      (assoc :flipped? (if (-> division :opposite-line :flipped?)
+                                           (:opposite-line field))))
+       (-> field options :opposite-line))
+      (assoc :flipped? (if (-> field :opposite-line :flipped?)
                          (not (:flipped? line))
                          (:flipped? line)))))
 
-(defn sanitize-extra-line [division line]
+(defn sanitize-extra-line [field line]
   (-> (options/sanitize
        (util/deep-merge-with (fn [_current-value new-value]
                                new-value) line
                              (into {}
                                    (filter (fn [[_ v]]
                                              (some? v))
-                                           (:extra-line division))))
-       (-> division options :extra-line))
-      (assoc :flipped? (if (-> division :extra-line :flipped?)
+                                           (:extra-line field))))
+       (-> field options :extra-line))
+      (assoc :flipped? (if (-> field :extra-line :flipped?)
                          (not (:flipped? line))
                          (:flipped? line)))))
 
