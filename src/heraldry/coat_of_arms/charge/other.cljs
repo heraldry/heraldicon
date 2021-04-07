@@ -159,9 +159,7 @@
                                                (util/id "mask"))
             highlight-helper-mask-id         (when render-highlight?
                                                (util/id "mask"))
-            unadjusted-charge                (-> charge-data
-                                                 :data
-                                                 svg/fix-string-style-values)
+            unadjusted-charge                (:data charge-data)
             adjusted-charge                  (-> unadjusted-charge
                                                  (cond->
                                                      (not (or (-> hints :outline-mode (not= :remove))
