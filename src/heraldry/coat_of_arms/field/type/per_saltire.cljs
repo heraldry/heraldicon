@@ -14,9 +14,9 @@
   {:display-name "Per saltire"
    :value :per-saltire
    :parts ["chief" "dexter" "sinister" "base"]}
-  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]} (options/sanitize division (field-options/options division))
-        opposite-line (field-options/sanitize-opposite-line division line)
+  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin anchor]} (options/sanitize field (field-options/options field))
+        opposite-line (field-options/sanitize-opposite-line field line)
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment
@@ -155,7 +155,7 @@
                    line-bottom-right-start)
           (svg/stitch line-bottom-right)])]
        nil]
-      environment division context]
+      environment field context]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline/style

@@ -13,9 +13,9 @@
   {:display-name "Quarterly 2x2"
    :value :quartered
    :parts ["I" "II" "III" "IV"]}
-  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin]} (options/sanitize division (field-options/options division))
-        opposite-line (field-options/sanitize-opposite-line division line)
+  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin]} (options/sanitize field (field-options/options field))
+        opposite-line (field-options/sanitize-opposite-line field line)
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -152,7 +152,7 @@
                    line-bottom-start)
           (svg/stitch line-bottom)])]
        nil]
-      environment division context]
+      environment field context]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline/style

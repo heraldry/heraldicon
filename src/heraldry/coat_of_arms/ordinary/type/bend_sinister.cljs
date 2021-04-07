@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.ordinary.type.bend-sinister
   (:require [heraldry.coat-of-arms.angle :as angle]
             [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.field.shared :as division-shared]
+            [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
@@ -127,7 +127,7 @@
         outline? (or (:outline? render-options)
                      (:outline? hints))]
     [:<>
-     [division-shared/make-subfields
+     [field-shared/make-subfields
       :ordinary-fess [field] parts
       [:all]
       environment

@@ -174,8 +174,8 @@
   {:display-name "Quarterly NxM"
    :value :quarterly
    :parts []}
-  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [layout]} (options/sanitize division (field-options/options division))
+  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [layout]} (options/sanitize field (field-options/options field))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
@@ -184,5 +184,5 @@
      [shared/make-subfields
       (shared/field-context-key type) fields parts
       overlap
-      environment division context]
+      environment field context]
      outlines]))
