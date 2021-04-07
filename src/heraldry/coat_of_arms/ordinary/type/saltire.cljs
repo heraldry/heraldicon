@@ -13,7 +13,7 @@
 
 (defn render
   {:display-name "Saltire"
-   :value        :saltire}
+   :value         :heraldry.ordinary.type/saltire}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
                 geometry]}                                           (options/sanitize ordinary (ordinary-options/options ordinary))

@@ -37,9 +37,9 @@
                                                       sort)))])))
 
 (defn encode-component [component]
-  (case (:component component)
-    :ordinary (encode-ordinary component)
-    :charge   (encode-charge component)))
+  (if (-> component :type namespace (= "heraldry.ordinary.type"))
+    (encode-ordinary component)
+    (encode-charge component)))
 
 (defn encode-field [{:keys [components counterchanged?] :as field} & {:keys [root?]}]
   (if counterchanged?

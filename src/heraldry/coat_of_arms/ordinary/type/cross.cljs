@@ -12,7 +12,7 @@
 
 (defn render
   {:display-name "Cross"
-   :value        :cross}
+   :value         :heraldry.ordinary.type/cross}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin geometry]}                             (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]}                                             geometry

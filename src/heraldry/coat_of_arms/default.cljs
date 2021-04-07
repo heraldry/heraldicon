@@ -5,11 +5,10 @@
    :tincture :none})
 
 (def ordinary
-  {:component :ordinary
-   :type      :pale
-   :line      {:type :straight}
-   :field     field
-   :hints     {:outline? true}})
+  {:type  :heraldry.ordinary.type/pale
+   :line  {:type :straight}
+   :field field
+   :hints {:outline? true}})
 
 (def charge
   {:component :charge

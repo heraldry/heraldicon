@@ -12,7 +12,7 @@
 
 (defn render
   {:display-name "Pile"
-   :value        :pile}
+   :value         :heraldry.ordinary.type/pile}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
                 geometry]}               (options/sanitize ordinary (ordinary-options/options ordinary))

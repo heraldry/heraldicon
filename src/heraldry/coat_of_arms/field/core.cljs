@@ -179,7 +179,7 @@
           :transform transform}
       [render-function field environment context]
       (for [[idx element] (map-indexed vector components)]
-        (if (-> element :component (= :ordinary))
+        (if (-> element :type namespace (= "heraldry.ordinary.type"))
           ^{:key idx} [ordinary/render element field environment (-> context
                                                                      (update :db-path conj :components idx))]
           ^{:key idx} [charge/render element field environment (-> context

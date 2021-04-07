@@ -35,7 +35,7 @@
 
     :heraldry/field {:type       :plain
                      :tincture   :azure
-                     :components [{:type  :pale
+                     :components [{:type  :heraldry.ordinary.type/pale
                                    :field {:type     :plain
                                            :tincture :azure}}
                                   {:type     :lion
@@ -74,11 +74,11 @@
 (deftest valid-ordinaries
   (are [spec form] (check-spec spec form)
 
-    :heraldry/ordinary {:type  :pale
+    :heraldry/ordinary {:type  :heraldry.ordinary.type/pale
                         :field {:type     :plain
                                 :tincture :azure}}
 
-    :heraldry/ordinary {:type          :fess
+    :heraldry/ordinary {:type          :heraldry.ordinary.type/fess
                         :field         {:type     :plain
                                         :tincture :azure}
                         :geometry      {:size 50}

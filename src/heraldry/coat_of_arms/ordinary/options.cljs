@@ -31,7 +31,7 @@
   (when ordinary
     (let [line-style (line/options (:line ordinary))]
       (->
-       (case (:type ordinary)
+       (case (-> ordinary :type name keyword)
          :pale          (options/pick default-options
                                       [[:origin]
                                        [:line]

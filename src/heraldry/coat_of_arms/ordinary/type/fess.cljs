@@ -12,7 +12,7 @@
 
 (defn render
   {:display-name "Fess"
-   :value        :fess}
+   :value         :heraldry.ordinary.type/fess}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin geometry]}           (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]}                           geometry
