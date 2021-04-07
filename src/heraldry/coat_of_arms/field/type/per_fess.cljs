@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.division.type.per-fess
+(ns heraldry.coat-of-arms.field.type.per-fess
   (:require [heraldry.coat-of-arms.division.options :as division-options]
             [heraldry.coat-of-arms.division.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
