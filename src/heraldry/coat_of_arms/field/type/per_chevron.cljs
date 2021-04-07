@@ -15,10 +15,10 @@
    :value        :per-chevron
    ;; TODO: this naming now depends on the variant
    :parts        ["chief" "base"]}
-  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
+  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
-                variant]}                 (options/sanitize division (field-options/options division))
-        opposite-line                     (field-options/sanitize-opposite-line division line)
+                variant]}                 (options/sanitize field (field-options/options field))
+        opposite-line                     (field-options/sanitize-opposite-line field line)
         points                            (:points environment)
         unadjusted-origin-point           (position/calculate origin environment)
         top-left                          (:top-left points)
@@ -113,7 +113,7 @@
      [shared/make-subfields
       (shared/field-context-key type) fields parts
       [:all nil]
-      environment division context]
+      environment field context]
      (line/render line [line-left-data
                         line-right-data] diagonal-left outline? render-options)]))
 

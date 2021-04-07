@@ -15,10 +15,10 @@
   {:display-name "Tierced per pairle reversed"
    :value        :tierced-per-pairle-reversed
    :parts        ["dexter" "sinister" "base"]}
-  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]}          (options/sanitize division (field-options/options division))
-        opposite-line                         (field-options/sanitize-opposite-line division line)
-        extra-line                            (field-options/sanitize-extra-line division line)
+  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin anchor]}          (options/sanitize field (field-options/options field))
+        opposite-line                         (field-options/sanitize-opposite-line field line)
+        extra-line                            (field-options/sanitize-extra-line field line)
         points                                (:points environment)
         unadjusted-origin-point               (position/calculate origin environment)
         {origin-point :real-origin
@@ -135,7 +135,7 @@
                    line-bottom-right-start)
           (svg/stitch line-bottom-right)])]
        nil]
-      environment division context]
+      environment field context]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline/style

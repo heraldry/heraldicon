@@ -14,9 +14,9 @@
   {:display-name "Gyronny"
    :value        :gyronny
    :parts        ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"]}
-  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]}                 (options/sanitize division (field-options/options division))
-        opposite-line                                (field-options/sanitize-opposite-line division line)
+  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin anchor]}                 (options/sanitize field (field-options/options field))
+        opposite-line                                (field-options/sanitize-opposite-line field line)
         points                                       (:points environment)
         top-left                                     (:top-left points)
         top-right                                    (:top-right points)
@@ -284,7 +284,7 @@
                    line-bottom-start)
           (svg/stitch line-bottom)])]
        nil]
-      environment division context]
+      environment field context]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline/style

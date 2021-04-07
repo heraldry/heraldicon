@@ -10,11 +10,11 @@
   {:display-name "Bendy sinister"
    :value        :bendy-sinister
    :parts        []}
-  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
+  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line
                 layout
                 origin
-                anchor]}            (options/sanitize division (field-options/options division))
+                anchor]}            (options/sanitize field (field-options/options field))
         points                      (:points environment)
         top-left                    (:top-left points)
         top-right                   (:top-right points)
@@ -47,6 +47,6 @@
      [shared/make-subfields
       (shared/field-context-key type) fields parts
       overlap
-      environment division context]
+      environment field context]
      outlines]))
 

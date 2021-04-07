@@ -12,8 +12,8 @@
   {:display-name "Per bend"
    :value        :per-bend
    :parts        ["chief" "base"]}
-  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]}   (options/sanitize division (field-options/options division))
+  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin anchor]}   (options/sanitize field (field-options/options field))
         points                         (:points environment)
         top-right                      (:top-right points)
         bottom-left                    (:bottom-left points)
@@ -88,6 +88,6 @@
      [shared/make-subfields
       (shared/field-context-key type) fields parts
       [:all nil]
-      environment division context]
+      environment field context]
      (line/render line [line-one-data] diagonal-start outline? render-options)]))
 

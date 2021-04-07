@@ -13,8 +13,8 @@
   {:display-name "Tierced per pale"
    :value        :tierced-per-pale
    :parts        ["dexter" "fess" "sinister"]}
-  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
-  (let [{:keys [line layout origin]}      (options/sanitize division (field-options/options division))
+  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line layout origin]}      (options/sanitize field (field-options/options field))
         {:keys [stretch-x]}               layout
         points                            (:points environment)
         origin-point                      (position/calculate origin environment :fess)
@@ -119,7 +119,7 @@
                    line-reversed-start)
           (svg/stitch line-reversed)])]
        nil]
-      environment division context]
+      environment field context]
      (when (or (:outline? render-options)
                (:outline? hints))
        [:g outline/style

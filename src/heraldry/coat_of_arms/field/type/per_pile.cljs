@@ -13,10 +13,10 @@
 (defn render
   {:display-name "Per pile"
    :value        :per-pile}
-  [{:keys [type fields hints] :as division} environment {:keys [render-options] :as context}]
+  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
-                geometry]}                 (options/sanitize division (field-options/options division))
-        opposite-line                      (field-options/sanitize-opposite-line division line)
+                geometry]}                 (options/sanitize field (field-options/options field))
+        opposite-line                      (field-options/sanitize-opposite-line field line)
         anchor                             (-> anchor
                                                (assoc :type :edge))
         geometry                           (-> geometry
@@ -152,7 +152,7 @@
      [shared/make-subfields
       (shared/field-context-key type) fields parts
       [:all nil nil]
-      environment division context]
+      environment field context]
      (line/render line [line-left-data
                         line-right-data] left-point outline? render-options)]))
 
