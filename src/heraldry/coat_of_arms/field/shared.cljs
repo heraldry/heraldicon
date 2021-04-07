@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.division.shared
+(ns heraldry.coat-of-arms.field.shared
   (:require [clojure.string :as s]
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.svg :as svg]
