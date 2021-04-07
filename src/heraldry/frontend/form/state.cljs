@@ -125,7 +125,7 @@
                                        flags)))))
 
 (rf/reg-event-db
- :set-division-type
+ :set-field-type
  (fn [db [_ path new-type num-fields-x num-fields-y num-base-fields]]
    (if (= new-type :plain)
      (-> db
