@@ -1,7 +1,7 @@
 (ns heraldry.frontend.form.field
   (:require [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.field.core :as division]
-            [heraldry.coat-of-arms.field.options :as division-options]
+            [heraldry.coat-of-arms.field.core :as field]
+            [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.form.charge :as charge]
@@ -32,7 +32,7 @@
                                     {:type :plain
                                      :tincture (if (= value key) :or :azure)}
                                     {:type key
-                                     :fields (-> (division/default-fields {:type key})
+                                     :fields (-> (field/default-fields {:type key})
                                                  (util/replace-recursively :none :argent)
                                                  (cond->
                                                   (= value key) (util/replace-recursively :azure :or)))
@@ -61,8 +61,8 @@
                                                    num-fields-y
                                                    num-base-fields]} (:layout (options/sanitize-or-nil
                                                                                new-division
-                                                                               (division-options/options new-division)))]
-                                       (state/dispatch-on-event % [:set-division-type path key num-fields-x num-fields-y num-base-fields]))}
+                                                                               (field-options/options new-division)))]
+                                       (state/dispatch-on-event % [:set-field-type path key num-fields-x num-fields-y num-base-fields]))}
      [:svg {:style {:width "4em"
                     :height "4.5em"}
             :viewBox "0 0 120 200"
@@ -74,19 +74,17 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn division-form [path]
-  (let [division-type (-> @(rf/subscribe [:get path])
-                          :type)
-        names (->> (into [["Plain" :plain]]
-                         division/choices)
+(defn field-type-form [path]
+  (let [field-type (-> @(rf/subscribe [:get path])
+                       :type)
+        names (->> field/choices
                    (map (comp vec reverse))
                    (into {}))]
     [:div.setting
      [:label "Division"]
      " "
-     [element/submenu path "Select Division" (get names division-type) {:min-width "17.5em"}
-      (for [[display-name key] (into [["Plain" :plain]]
-                                     division/choices)]
+     [element/submenu path "Select Division" (get names field-type) {:min-width "17.5em"}
+      (for [[display-name key] field/choices]
         ^{:key key}
         [division-choice path key display-name])]]))
 
@@ -94,16 +92,16 @@
   (let [layout-path (conj field-path :layout)
         field @(rf/subscribe [:get field-path])
         layout (:layout field)
-        division-type (:type field)
-        field (:layout (options/sanitize-or-nil field (division-options/options field)))
-        effective-data (:layout (options/sanitize field (division-options/options field)))
+        field-type (:type field)
+        field (:layout (options/sanitize-or-nil field (field-options/options field)))
+        effective-data (:layout (options/sanitize field (field-options/options field)))
         link-name (util/combine
                    ", "
                    [(cond
-                      (= division-type :paly) (str (:num-fields-x effective-data) " fields")
+                      (= field-type :paly) (str (:num-fields-x effective-data) " fields")
                       (#{:barry
                          :bendy
-                         :bendy-sinister} division-type) (str (:num-fields-y effective-data) " fields"))
+                         :bendy-sinister} field-type) (str (:num-fields-y effective-data) " fields"))
                     (when (and (:num-base-fields field)
                                (not= (:num-base-fields field) 2))
                       (str (:num-base-fields effective-data) " base fields"))
@@ -128,9 +126,9 @@
          (-> options :num-base-fields :max)
          :default (options/get-value (:num-base-fields layout) (:num-base-fields options))
          :on-change (fn [value]
-                      (rf/dispatch [:set-division-type
+                      (rf/dispatch [:set-field-type
                                     field-path
-                                    division-type
+                                    field-type
                                     (:num-fields-x layout)
                                     (:num-fields-y layout)
                                     value]))])
@@ -140,9 +138,9 @@
          (-> options :num-fields-x :max)
          :default (options/get-value (:num-fields-x layout) (:num-fields-x options))
          :on-change (fn [value]
-                      (rf/dispatch [:set-division-type
+                      (rf/dispatch [:set-field-type
                                     field-path
-                                    division-type
+                                    field-type
                                     value
                                     (:num-fields-y layout)
                                     (:num-base-fields layout)]))])
@@ -152,9 +150,9 @@
          (-> options :num-fields-y :max)
          :default (options/get-value (:num-fields-y layout) (:num-fields-y options))
          :on-change (fn [value]
-                      (rf/dispatch [:set-division-type
+                      (rf/dispatch [:set-field-type
                                     field-path
-                                    division-type
+                                    field-type
                                     (:num-fields-x layout)
                                     value
                                     (:num-base-fields layout)]))])
@@ -191,13 +189,13 @@
 
 (defn form [path & {:keys [parent-field title-prefix]}]
   (let [field @(rf/subscribe [:get path])
-        division-type (:type field)
+        field-type (:type field)
         counterchanged? @(rf/subscribe [:get (conj path :counterchanged?)])
         root-field? (= path [:coat-of-arms :field])]
     [element/component path :field (cond
                                      (:counterchanged? field) "Counterchanged"
-                                     (= division-type :plain) (-> field :tincture util/translate-tincture util/upper-case-first)
-                                     :else (-> division-type util/translate-cap-first)) title-prefix
+                                     (= field-type :plain) (-> field :tincture util/translate-tincture util/upper-case-first)
+                                     :else (-> field-type util/translate-cap-first)) title-prefix
      [:div.settings
       (when (not root-field?)
         [element/checkbox (conj path :inherit-environment?) "Inherit environment (dimidiation)"])
@@ -206,8 +204,8 @@
         [element/checkbox (conj path :counterchanged?) "Counterchanged"])
       (when (not counterchanged?)
         [:<>
-         [division-form path]
-         (let [options (division-options/options field)]
+         [field-type-form path]
+         (let [options (field-options/options field)]
            [:<>
             (when (:line options)
               [line/form (conj path :line) :options (:line options)])
@@ -245,7 +243,7 @@
                :current (:geometry field)])
             (when (:layout options)
               [form-for-layout path :options (:layout options)])])
-         (if (= division-type :plain)
+         (if (= field-type :plain)
            [form-for-plain-field path]
            [element/checkbox (conj path :hints :outline?) "Outline"])])]
      (cond
@@ -254,27 +252,27 @@
           :vairy
           :potenty
           :papellony
-          :masonry} division-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
-                                    [:ul
-                                     (let [tinctures @(rf/subscribe [:get (conj path :fields)])]
-                                       (for [idx (range (count tinctures))]
-                                         ^{:key idx}
-                                         [:li
-                                          [tincture/form (conj path :fields idx :tincture)
-                                           :label (str "Tincture " (inc idx))]]))]]
+          :masonry} field-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
+                                 [:ul
+                                  (let [tinctures @(rf/subscribe [:get (conj path :fields)])]
+                                    (for [idx (range (count tinctures))]
+                                      ^{:key idx}
+                                      [:li
+                                       [tincture/form (conj path :fields idx :tincture)
+                                        :label (str "Tincture " (inc idx))]]))]]
        (not counterchanged?) [:div.parts.components
                               [:ul
                                (let [content @(rf/subscribe [:get (conj path :fields)])
-                                     mandatory-part-count (division/mandatory-part-count field)]
+                                     mandatory-part-count (field/mandatory-part-count field)]
                                  (for [[idx part] (map-indexed vector content)]
                                    (let [part-path (conj path :fields idx)
-                                         part-name (division/part-name division-type idx)
+                                         part-name (field/part-name field-type idx)
                                          ref (:ref part)]
                                      ^{:key idx}
                                      [:li
                                       [:div
                                        (if ref
-                                         [element/component part-path :ref (str "Same as " (division/part-name division-type ref)) part-name]
+                                         [element/component part-path :ref (str "Same as " (field/part-name field-type ref)) part-name]
                                          [form part-path :title-prefix part-name])]
                                       [:div {:style {:padding-left "10px"}}
                                        (if ref
@@ -283,7 +281,7 @@
                                           [:i.far.fa-edit]]
                                          (when (>= idx mandatory-part-count)
                                            [:a {:on-click #(state/dispatch-on-event % [:set (conj part-path :ref)
-                                                                                       (-> (division/default-fields field)
+                                                                                       (-> (field/default-fields field)
                                                                                            (get idx)
                                                                                            :ref)])}
                                             [:i.far.fa-times-circle]]))]])))]])
