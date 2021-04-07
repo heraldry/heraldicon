@@ -1,17 +1,17 @@
 (ns heraldry.frontend.form.field
-  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.default :as default]
+  (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.core :as division]
             [heraldry.coat-of-arms.field.options :as division-options]
             [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.form.charge :as charge]
-            [heraldry.frontend.form.division :as division-form]
             [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.geometry :as geometry]
             [heraldry.frontend.form.line :as line]
             [heraldry.frontend.form.ordinary :as ordinary]
             [heraldry.frontend.form.position :as position]
-            [heraldry.frontend.form.state]
+            [heraldry.frontend.form.shared :as shared]
+            heraldry.frontend.form.state
             [heraldry.frontend.form.tincture :as tincture]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.util :as util]
@@ -20,6 +20,75 @@
 (defn form-for-plain-field [path]
   [:div.form-plain-field
    [tincture/form (conj path :tincture)]])
+
+(defn division-choice [path key display-name]
+  (let [field @(rf/subscribe [:get path])
+        value (-> field
+                  :type
+                  (or :none))
+        {:keys [result]} (render/coat-of-arms
+                          {:escutcheon :rectangle
+                           :field (if (= key :plain)
+                                    {:type :plain
+                                     :tincture (if (= value key) :or :azure)}
+                                    {:type key
+                                     :fields (-> (division/default-fields {:type key})
+                                                 (util/replace-recursively :none :argent)
+                                                 (cond->
+                                                  (= value key) (util/replace-recursively :azure :or)))
+                                     :layout {:num-fields-x (case key
+                                                              :chequy 4
+                                                              :lozengy 3
+                                                              :vairy 2
+                                                              :potenty 2
+                                                              :papellony 2
+                                                              :masonry 2
+                                                              nil)
+                                              :num-fields-y (case key
+                                                              :chequy 5
+                                                              :lozengy 4
+                                                              :vairy 3
+                                                              :potenty 3
+                                                              :papellony 4
+                                                              :masonry 4
+                                                              nil)}})}
+                          100
+                          (-> shared/coa-select-option-context
+                              (assoc-in [:render-options :outline?] true)
+                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
+    [:div.choice.tooltip {:on-click #(let [new-division (assoc field :type key)
+                                           {:keys [num-fields-x
+                                                   num-fields-y
+                                                   num-base-fields]} (:layout (options/sanitize-or-nil
+                                                                               new-division
+                                                                               (division-options/options new-division)))]
+                                       (state/dispatch-on-event % [:set-division-type path key num-fields-x num-fields-y num-base-fields]))}
+     [:svg {:style {:width "4em"
+                    :height "4.5em"}
+            :viewBox "0 0 120 200"
+            :preserveAspectRatio "xMidYMin slice"}
+      [:g {:filter "url(#shadow)"}
+       [:g {:transform "translate(10,10)"}
+        result]]]
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} display-name]
+      [:i]]]))
+
+(defn division-form [path]
+  (let [division-type (-> @(rf/subscribe [:get path])
+                          :type)
+        names (->> (into [["Plain" :plain]]
+                         division/choices)
+                   (map (comp vec reverse))
+                   (into {}))]
+    [:div.setting
+     [:label "Division"]
+     " "
+     [element/submenu path "Select Division" (get names division-type) {:min-width "17.5em"}
+      (for [[display-name key] (into [["Plain" :plain]]
+                                     division/choices)]
+        ^{:key key}
+        [division-choice path key display-name])]]))
 
 (defn form-for-layout [field-path & {:keys [title options] :or {title "Layout"}}]
   (let [layout-path (conj field-path :layout)
@@ -137,7 +206,7 @@
         [element/checkbox (conj path :counterchanged?) "Counterchanged"])
       (when (not counterchanged?)
         [:<>
-         [division-form/form path]
+         [division-form path]
          (let [options (division-options/options field)]
            [:<>
             (when (:line options)
