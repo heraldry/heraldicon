@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.ordinary.type.chief
   (:require [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.field.shared :as division-shared]
+            [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
@@ -53,7 +53,7 @@
         outline? (or (:outline? render-options)
                      (:outline? hints))]
     [:<>
-     [division-shared/make-division
+     [field-shared/make-division
       :ordinary-chief [field] parts
       [:all]
       environment ordinary context]

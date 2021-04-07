@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.blazon
   (:require [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.coat-of-arms.field.core :as division]
+            [heraldry.coat-of-arms.field.core :as field]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.util :as util]))
 
@@ -47,7 +47,7 @@
     (let [field-description (case (:type field)
                               :plain (util/translate-tincture (:tincture field))
                               (let [{:keys [type line fields]} field
-                                    mandatory-part-count (division/mandatory-part-count field)]
+                                    mandatory-part-count (field/mandatory-part-count field)]
                                 (util/combine
                                  " "
                                  [(util/translate type)
@@ -63,7 +63,7 @@
                                                                         [(when (-> fields
                                                                                    count
                                                                                    (> 3))
-                                                                           (division/part-name type index))
+                                                                           (field/part-name type index))
                                                                          (encode-field part)])))
                                                  (map-indexed vector fields)))])))
           components-description (util/combine ", " (map encode-component components))
