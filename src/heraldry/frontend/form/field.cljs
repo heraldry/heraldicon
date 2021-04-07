@@ -308,7 +308,7 @@
                      {:on-click #(state/dispatch-on-event % [:move-component-up component-path])})
                 [:i.fas.fa-chevron-up]]]
               [:div
-               (if (-> component :component (= :ordinary))
+               (if (-> component :type namespace (= "heraldry.ordinary.type"))
                  [ordinary/form component-path
                   :parent-field field
                   :form-for-field form]

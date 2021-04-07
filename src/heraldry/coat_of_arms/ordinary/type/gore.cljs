@@ -16,7 +16,7 @@
 
 (defn render
   {:display-name "Gore"
-   :value :gore}
+   :value :heraldry.ordinary.type/gore}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor]} (options/sanitize ordinary (ordinary-options/options ordinary))
         opposite-line (ordinary-options/sanitize-opposite-line ordinary line)

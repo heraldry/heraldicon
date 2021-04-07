@@ -11,7 +11,7 @@
 
 (defn render
   {:display-name "Chief"
-   :value :chief}
+   :value :heraldry.ordinary.type/chief}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry

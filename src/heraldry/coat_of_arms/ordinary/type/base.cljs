@@ -11,7 +11,7 @@
 
 (defn render
   {:display-name "Base"
-   :value :base}
+   :value :heraldry.ordinary.type/base}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry

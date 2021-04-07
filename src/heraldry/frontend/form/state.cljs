@@ -164,7 +164,7 @@
 
 (defn -default-line-style-of-ordinary-type [ordinary-type]
   (case ordinary-type
-    :gore :enarched
+    :heraldry.ordinary.type/gore :enarched
     :straight))
 
 (rf/reg-event-db
@@ -177,7 +177,7 @@
                                      (= (-default-line-style-of-ordinary-type (:type current))))
          new-default-line-style (-default-line-style-of-ordinary-type new-type)
          new-flipped (case new-type
-                       :gore true
+                       :heraldry.ordinary.type/gore true
                        false)]
      (-> db
          (assoc-in (conj path :type) new-type)
@@ -207,9 +207,9 @@
      {:db (update-in db components-path #(-> %
                                              (conj value)
                                              vec))
-      :fx [[:dispatch [:ui-submenu-open (conj components-path index (case (:component value)
-                                                                      :ordinary "Select Ordinary"
-                                                                      :charge "Select Charge"))]]
+      :fx [[:dispatch [:ui-submenu-open (conj components-path index (if (-> value :type namespace (= "heraldry.ordinary.type"))
+                                                                      "Select Ordinary"
+                                                                      "Select Charge"))]]
            [:dispatch [:ui-component-open (conj components-path index)]]
            [:dispatch [:ui-component-open (conj components-path index :field)]]]})))
 
