@@ -35,8 +35,8 @@
                           :coat-of-arms   {:escutcheon :rectangle
                                            :field      {:type       :plain
                                                         :tincture   :argent
-                                                        :components [{:field    {:component :field
-                                                                                 :content   {:tincture :azure}}
+                                                        :components [{:field    {:type     :plain
+                                                                                 :tincture :azure}
                                                                       :tincture (merge (->> attributes/tincture-modifier-map
                                                                                             (map (fn [[k _]]
                                                                                                    [k :or]))
