@@ -10,8 +10,7 @@
 (defn theme-choice [path key display-name]
   (let [value @(rf/subscribe [:get path])
         {:keys [result]} (render/coat-of-arms
-                          {:component :coat-of-arms
-                           :escutcheon :rectangle
+                          {:escutcheon :rectangle
                            :field {:type :bendy-sinister
                                    :line {:type :straight}
                                    :layout {:num-base-fields 7
