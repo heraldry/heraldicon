@@ -17,7 +17,7 @@
 (defn ordinary-type-choice [path key display-name & {:keys [current]}]
   (let [{:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
-                           :field {:type :plain
+                           :field {:type :heraldry.field.type/plain
                                    :tincture :argent
                                    :components [{:type key
                                                  :line (when (= key :heraldry.ordinary.type/gore)
@@ -25,7 +25,7 @@
                                                           :flipped? true})
                                                  :geometry (when (= key :heraldry.ordinary.type/pile)
                                                              {:stretch 0.85})
-                                                 :field {:type :plain
+                                                 :field {:type :heraldry.field.type/plain
                                                          :tincture (if (= current key) :or :azure)}}]}}
                           100
                           (-> shared/coa-select-option-context

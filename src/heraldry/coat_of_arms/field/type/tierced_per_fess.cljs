@@ -11,7 +11,7 @@
 
 (defn render
   {:display-name "Tierced per fess"
-   :value :tierced-per-fess
+   :value :heraldry.field.type/tierced-per-fess
    :parts ["chief" "fess" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line layout origin]} (options/sanitize field (field-options/options field))

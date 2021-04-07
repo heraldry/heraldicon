@@ -8,7 +8,7 @@
 
 (defn render
   {:display-name "Lozengy"
-   :value :lozengy
+   :value :heraldry.field.type/lozengy
    :parts []}
   [{:keys [fields hints] :as field} environment {:keys [render-options]}]
   (let [{:keys [layout]} (options/sanitize field (field-options/options field))

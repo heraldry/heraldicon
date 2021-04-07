@@ -127,7 +127,7 @@
 (rf/reg-event-db
  :set-field-type
  (fn [db [_ path new-type num-fields-x num-fields-y num-base-fields]]
-   (if (= new-type :plain)
+   (if (= new-type :heraldry.field.type/plain)
      (-> db
          (assoc-in (conj path :type) new-type)
          (update-in (conj path :tincture) #(or % :none)))

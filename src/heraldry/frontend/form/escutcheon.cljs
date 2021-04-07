@@ -12,10 +12,10 @@
         {:keys [result]} (render/coat-of-arms
                           (if (= key :none)
                             {:escutcheon :rectangle
-                             :field {:type :plain
+                             :field {:type :heraldry.field.type/plain
                                      :tincture :void}}
                             {:escutcheon key
-                             :field {:type :plain
+                             :field {:type :heraldry.field.type/plain
                                      :tincture (if (= value key) :or :azure)}})
                           100
                           (-> shared/coa-select-option-context
