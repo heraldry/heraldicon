@@ -1,11 +1,11 @@
 (ns heraldry.coat-of-arms.escutcheon
-  (:require [heraldry.coat-of-arms.field-environment :as field-environment]))
+  (:require [heraldry.coat-of-arms.field.environment :as environment]))
 
 (def
   ^{:display-name "Heater"}
   heater
   ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
-  (field-environment/create
+  (environment/create
    (str "m 0,0"
         "h 3"
         "v 2"
@@ -19,7 +19,7 @@
 (def
   ^{:display-name "Square French"}
   square-french
-  (field-environment/create
+  (environment/create
    (str "m 0,0"
         "v 15.7"
         "c 0,6 6,12 12,13"
@@ -32,7 +32,7 @@
 (def
   ^{:display-name "Square Iberian"}
   square-iberian
-  (field-environment/create
+  (environment/create
    (str "m 0,0"
         "h 5"
         "v 7"
@@ -45,7 +45,7 @@
 (def
   ^{:display-name "Square Czech"}
   square-czech
-  (field-environment/create
+  (environment/create
    ;; diff(sqrt(r*r - x*x))
    ;; solve(-24/sqrt(r^2 - 24^2) - (-35/4)) ~ 24.156226
    (str "m 0,0"
@@ -59,7 +59,7 @@
 (def
   ^{:display-name "French modern"}
   french-modern
-  (field-environment/create
+  (environment/create
    (str "m 0,0"
         "h 7"
         "v 15"
@@ -78,7 +78,7 @@
 (def
   ^{:display-name "Lozenge"}
   lozenge
-  (field-environment/create
+  (environment/create
    (str "m 0,0"
         "L 5,6.5"
         "L 0,13"
@@ -91,7 +91,7 @@
 (def
   ^{:display-name "Oval"}
   oval
-  (field-environment/create
+  (environment/create
    (str "m 0,0"
         "A 5 6.8 0 0 1 5,6.5"
         "A 5 6.8 0 0 1 0,13"
@@ -105,7 +105,7 @@
 (def
   ^{:display-name "Roundel"}
   roundel
-  (field-environment/create
+  (environment/create
    (str "m 0,0"
         "a 5 5 0 0 1 0,10"
         "a 5 5 0 0 1 0,-10"
@@ -118,7 +118,7 @@
   ^{:display-name "Swiss"}
   swiss
   ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
-  (field-environment/create
+  (environment/create
    (str "m 0,0"
         "a 6 6 0 0 0 3,0"
         "v 2"
@@ -133,7 +133,7 @@
 (def
   ^{:display-name "English"}
   english
-  (field-environment/create
+  (environment/create
    (str "m 0,0"
         "h 8"
         "a 1 1 0 0 0 -1,1"
@@ -154,7 +154,7 @@
 (def
   ^{:display-name "Polish"}
   polish
-  (field-environment/create
+  (environment/create
    (str "m 43.402145,5e-7 "
         "c -8.662508,0 -14.063932,7.322064 -27.53457,9.380727 0.01086,7.9371285 -3.321499,15.7448405 -7.7644202,20.8881635 0,0 8.6550412,4.035941 8.6550412,12.967045 0,13.48538 -14.3402146,13.50873 -14.3402146,13.50873 0,0 -2.4179809,4.962539 -2.4179809,15.009696 0,22.996861 15.7236635,40.377428 27.6621895,45.737558 11.938525,5.36013 18.80961,7.63894 22.359194,12.50808 3.549585,-4.86914 10.377904,-7.14795 22.316426,-12.50808 11.938526,-5.36013 27.662185,-22.742701 27.662185,-45.737557 0,-10.047158 -2.41798,-15.009697 -2.41798,-15.009697 0,0 -14.340209,-0.02335 -14.340209,-13.50873 0,-8.931104 8.655042,-12.967045 8.655042,-12.967045 "
         "C 87.453242,25.123567 84.122242,17.317856 84.132428,9.3807275 70.661111,7.3213975 65.259687,5.0000001e-7 56.597858,5.0000001e-7 51.658715,5.0000001e-7 50.021384,2.5016165 50.021384,2.5016165 "
@@ -167,7 +167,7 @@
 (def
   ^{:display-name "Polish 19th century"}
   polish-19th-century
-  (field-environment/create
+  (environment/create
    (str
     "M 9.5919374,7.6420451e-7 6.7196191e-7,9.9320533 "
     "C 13.91585,26.565128 6.4383768,51.856026 6.0545095,76.190405 5.7210271,97.330758 24.557556,120 50.136084,120 75.714614,120 94.551144,97.330758 94.217662,76.190405 93.833795,51.856026 86.356321,26.565129 100.27217,9.9320533 "
@@ -181,7 +181,7 @@
 (def
   ^{:display-name "Renaissance"}
   renaissance
-  (field-environment/create
+  (environment/create
    (str
     "M 43.672061,112.35743 "
     "C 20.076921,107.21428 1.2267205,96.616647 5.1084778e-7,62.761658 9.9757105,57.299078 13.336031,28.673358 3.0804505,13.816518 "
@@ -199,7 +199,7 @@
 (def
   ^{:display-name "Rectangle"}
   rectangle
-  (field-environment/create
+  (environment/create
    (str
     "M 0,0"
     "h 10"
@@ -213,7 +213,7 @@
 (def
   ^{:display-name "Flag"}
   flag
-  (field-environment/create
+  (environment/create
    (str
     "M 0,0"
     "h 15"
