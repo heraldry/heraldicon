@@ -49,7 +49,7 @@
 
     :heraldry/field {}
 
-    :heraldry/field {:type :roundel
+    :heraldry/field {:type :heraldry.charge.type/roundel
                      :tincture :or}
 
     :heraldry/field {:type :per-pale
@@ -115,20 +115,20 @@
 (deftest valid-charges
   (are [spec form] (check-spec spec form)
 
-    :heraldry/charge {:type :roundel
+    :heraldry/charge {:type :heraldry.charge.type/roundel
                       :attitude nil
                       :facing nil
                       :variant nil
                       :field {:type :plain
                               :tincture :azure}}
 
-    :heraldry/charge {:type :lion
+    :heraldry/charge {:type :heraldry.charge.type/lion
                       :attitude :rampant
                       :facing :reguardant
                       :field {:type :plain
                               :tincture :azure}}
 
-    :heraldry/charge {:type :roundel
+    :heraldry/charge {:type :heraldry.charge.type/roundel
                       :field {:type :plain
                               :tincture :azure}
                       :tincture {:eyes-and-teeth :or
@@ -145,27 +145,27 @@
 
     :heraldry/charge {}
 
-    :heraldry/charge {:type :wolf
+    :heraldry/charge {:type :heraldry.charge.type/wolf
                       :field {}}
 
-    :heraldry/charge {:type :wolf
+    :heraldry/charge {:type :heraldry.charge.type/wolf
                       :attitude :foobar
                       :field {:type :plain
                               :tincture :azure}}
 
-    :heraldry/charge {:type :wolf
+    :heraldry/charge {:type :heraldry.charge.type/wolf
                       :attitude :rampant
                       :field {:type :plain
                               :tincture :azure}
                       :tincture {:shadow true}}
 
-    :heraldry/charge {:type :wolf
+    :heraldry/charge {:type :heraldry.charge.type/wolf
                       :attitude :rampant
                       :field {:type :plain
                               :tincture :azure}
                       :tincture {:eyes-and-teeth 0.5}}
 
-    :heraldry/charge {:type :wolf
+    :heraldry/charge {:type :heraldry.charge.type/wolf
                       :attitude :rampant
                       :field {:type :plain
                               :tincture :azure}

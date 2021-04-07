@@ -23,7 +23,6 @@
                                                  :line (when (= key :heraldry.ordinary.type/gore)
                                                          {:type :enarched
                                                           :flipped? true})
-                                                 :escutcheon (if (= key :escutcheon) :heater nil)
                                                  :geometry (when (= key :heraldry.ordinary.type/pile)
                                                              {:stretch 0.85})
                                                  :field {:type :plain
