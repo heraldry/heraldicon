@@ -85,7 +85,7 @@
         outline?                       (or (:outline? render-options)
                                            (:outline? hints))]
     [:<>
-     [shared/make-division
+     [shared/make-subfields
       (shared/field-context-key type) fields parts
       [:all nil]
       environment division context]

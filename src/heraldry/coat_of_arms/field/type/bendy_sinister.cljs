@@ -44,7 +44,7 @@
                                      line hints render-options environment)]
     [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
                          "rotate(" angle ")")}
-     [shared/make-division
+     [shared/make-subfields
       (shared/field-context-key type) fields parts
       overlap
       environment division context]

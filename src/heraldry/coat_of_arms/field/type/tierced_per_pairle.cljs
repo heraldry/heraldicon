@@ -127,7 +127,7 @@
                                                     bottom
                                                     top-left]]]]
     [:<>
-     [shared/make-division
+     [shared/make-subfields
       (shared/field-context-key type) fields parts
       [:all
        [(svg/make-path

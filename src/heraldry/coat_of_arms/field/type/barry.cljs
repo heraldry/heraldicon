@@ -166,7 +166,7 @@
         bottom-right             (:bottom-right points)
         [parts overlap outlines] (barry-parts layout top-left bottom-right line hints render-options environment)]
     [:<>
-     [shared/make-division
+     [shared/make-subfields
       (shared/field-context-key type) fields parts
       overlap
       environment division context]
