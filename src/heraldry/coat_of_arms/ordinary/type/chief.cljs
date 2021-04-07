@@ -53,7 +53,7 @@
         outline? (or (:outline? render-options)
                      (:outline? hints))]
     [:<>
-     [field-shared/make-division
+     [field-shared/make-subfields
       :ordinary-chief [field] parts
       [:all]
       environment ordinary context]
