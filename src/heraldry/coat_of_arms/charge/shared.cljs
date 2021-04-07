@@ -2,7 +2,7 @@
   (:require ["svgpath" :as svgpath]
             [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.division.shared :as division-shared]
+            [heraldry.coat-of-arms.field.shared :as division-shared]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
