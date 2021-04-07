@@ -158,7 +158,7 @@
        (log/error "load svg file error:" e)))))
 
 (defn preview []
-  (let [{:keys [data type]
+  (let [{:keys [data]
          :as   form-data}      @(rf/subscribe [:get form-db-path])
         {:keys [edn-data]}     data
         prepared-charge-data   (-> form-data
@@ -170,7 +170,6 @@
         {:keys [result
                 environment]}  (render/coat-of-arms
                                 (-> coat-of-arms
-                                    (assoc-in [:field :components 0 :type] type)
                                     (assoc-in [:field :components 0 :data] prepared-charge-data))
                                 100
                                 (merge
