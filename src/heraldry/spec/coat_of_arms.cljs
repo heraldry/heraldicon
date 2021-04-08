@@ -70,14 +70,19 @@
 (s/def :heraldry.field/ref (s/keys :req-un [:heraldry.field.ref/index]))
 
 (defmulti field-type (fn [field]
-                       (let [type ((some-fn :heraldry.field/type :type) field)]
-                         ;; strip the namespace, but only if it is the right one
-                         (if (some-> type namespace (= "heraldry.field.type"))
-                           (-> type name keyword)
-                           type))))
-(defmethod field-type :heraldry.field.type/plain [_]
+                       (let [type ((some-fn :heraldry.field/type :type) field)
+                             type ;; strip the namespace, but only if it is the right one
+                             (if (some-> type namespace (= "heraldry.field.type"))
+                               (-> type name keyword)
+                               type)]
+                         (if (= type :plain)
+                           :plain
+                           :division))))
+
+(defmethod field-type :plain [_]
   (s/keys :req-un [:heraldry/tincture]))
-(defmethod field-type :heraldry.field.type/per-pale [_]
+
+(defmethod field-type :division [_]
   (s/keys :req-un [:heraldry/fields]))
 
 (s/def :heraldry/field (s/and (s/multi-spec field-type :heraldry.field/type)
