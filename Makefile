@@ -1,4 +1,4 @@
-.PHONY: release-frontend-prod release-backend-prod dev-local
+.PHONY: release-frontend-prod release-backend-prod dev-local release-backend-local
 
 FRONTEND_RELEASE_DIR = frontend/build/prod
 BACKEND_RELEASE_DIR = backend/build/prod
@@ -34,6 +34,15 @@ deploy-backend-prod: check-before-deploy-backend release-backend-prod
 	make setup-sharp-osx
 	cd backend && git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
 	git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
+
+release-backend-local:
+	rm -rf $(BACKEND_RELEASE_DIR) 2> /dev/null || true
+	STAGE=local npx shadow-cljs release backend --config-merge '{:output-to "./backend/build/dev/backend.js"}'
+
+deploy-backend-local: release-backend-local
+	make setup-sharp-linux
+	cd backend && npx sls deploy --stage local
+	make setup-sharp-osx
 
 dev-local:
 	npx shadow-cljs watch frontend backend
