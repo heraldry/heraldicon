@@ -51,14 +51,14 @@ dev-test:
 	npx shadow-cljs watch test
 
 check-debug-print-frontend:
-	! rg println src
+	! rg println src --glob=!src/**/*test*.cljs
 	! rg js/console src
 
 check-dirty-frontend:
 	git diff --quiet || (echo ". is dirty" && false)
 
 check-debug-print-backend:
-	! rg println backend/src
+	! rg println backend/src --glob!=!src/**/*test*.cljs
 	! rg js/console backend/src
 
 check-dirty-backend:
