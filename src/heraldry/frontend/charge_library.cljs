@@ -112,7 +112,15 @@
          (as-> parsed
              (let [edn-data          (-> parsed
                                          (assoc 0 :g)
-                                         (assoc 1 {}))
+                                         ;; add fill and stroke at top level as default
+                                         ;; some SVGs don't specify them for elements if
+                                         ;; they are black, but for that to work we need
+                                         ;; the root element to specify them
+                                         ;; disadvantage: this colour will now always show
+                                         ;; im the interface, even if the charge doesn't
+                                         ;; contain and black elements, but they usually will
+                                         (assoc 1 {:fill   "#000000"
+                                                   :stroke "#000000"}))
                    width             (-> parsed
                                          (get-in [1 :width])
                                          parse-number-with-unit)
