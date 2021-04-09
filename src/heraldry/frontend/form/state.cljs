@@ -189,15 +189,6 @@
                                              new-value)
                                            %
                                            (options/sanitize-or-nil % (ordinary-options/options %))))))))
-(rf/reg-event-db
- :set-charge-type
- (fn [db [_ path new-type]]
-   (-> db
-       (assoc-in (conj path :type) new-type)
-       (update-in path #(deep-merge-with (fn [_current-value new-value]
-                                           new-value)
-                                         %
-                                         (options/sanitize-or-nil % (charge-options/options %)))))))
 
 (rf/reg-event-fx
  :add-component
