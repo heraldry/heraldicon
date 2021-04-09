@@ -115,7 +115,10 @@
                                                 %
                                                 [:update-charge
                                                  path
-                                                 (merge {:type    (:type charge-data)
+                                                 (merge {:type    (->> charge-data
+                                                                       :type
+                                                                       name
+                                                                       (keyword "heraldry.charge.type"))
                                                          :variant {:id      (:id charge-data)
                                                                    :version (:latest-version charge-data)}}
                                                         (select-keys charge-data
