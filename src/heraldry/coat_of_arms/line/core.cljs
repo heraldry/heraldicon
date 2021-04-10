@@ -151,7 +151,7 @@
             :default 0}
    :base-line {:type :choice
                :choices base-line-choices
-               :default :bottom}
+               :default :middle}
    :flipped? {:type :boolean
               :default false}
    :fimbriation {:mode {:type :choice

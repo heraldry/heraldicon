@@ -6,12 +6,9 @@
             [heraldry.util :as util]))
 
 (def default-options
-  {:line (-> line/default-options
-             (options/override-if-exists [:base-line :default] :middle))
-   :opposite-line (-> line/default-options
-                      (options/override-if-exists [:base-line :default] :middle))
-   :extra-line (-> line/default-options
-                   (options/override-if-exists [:base-line :default] :middle))
+  {:line line/default-options
+   :opposite-line line/default-options
+   :extra-line line/default-options
    :origin (-> position/default-options
                (dissoc :alignment))
    :anchor (-> position/anchor-default-options
@@ -65,8 +62,7 @@
 
 (defn options [field]
   (when field
-    (let [line-style (-> (line/options (:line field))
-                         (options/override-if-exists [:base-line :default] :middle))]
+    (let [line-style (line/options (:line field))]
       (-> (case (-> field :type name keyword)
             :per-pale (options/pick default-options
                                     [[:line]
