@@ -246,46 +246,47 @@
            [form-for-plain-field path]
            [element/checkbox (conj path :hints :outline?) "Outline"])])]
      (cond
-       (#{:chequy
-          :lozengy
-          :vairy
-          :potenty
-          :papellony
-          :masonry} field-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
-                                 [:ul
-                                  (let [tinctures @(rf/subscribe [:get (conj path :fields)])]
-                                    (for [idx (range (count tinctures))]
-                                      ^{:key idx}
-                                      [:li
-                                       [tincture/form (conj path :fields idx :tincture)
-                                        :label (str "Tincture " (inc idx))]]))]]
-       (not counterchanged?) [:div.parts.components
-                              [:ul
-                               (let [content @(rf/subscribe [:get (conj path :fields)])
-                                     mandatory-part-count (field/mandatory-part-count field)]
-                                 (for [[idx part] (map-indexed vector content)]
-                                   (let [part-path (conj path :fields idx)
-                                         part-name (field/part-name field-type idx)
-                                         ref (when (-> part
-                                                       :type
-                                                       (= :heraldry.field.type/ref))
-                                               (:index part))]
-                                     ^{:key idx}
-                                     [:li
-                                      [:div
-                                       (if ref
-                                         [element/component part-path :ref (str "Same as " (field/part-name field-type ref)) part-name]
-                                         [form part-path :title-prefix part-name])]
-                                      [:div {:style {:padding-left "10px"}}
-                                       (if ref
-                                         [:a {:on-click #(do (state/dispatch-on-event % [:set part-path (get content ref)])
-                                                             (state/dispatch-on-event % [:ui-component-open part-path]))}
-                                          [:i.far.fa-edit]]
-                                         (when (>= idx mandatory-part-count)
-                                           [:a {:on-click #(state/dispatch-on-event % [:set part-path
-                                                                                       (-> (field/default-fields field)
-                                                                                           (get idx))])}
-                                            [:i.far.fa-times-circle]]))]])))]])
+       (#{:heraldry.field.type/chequy
+          :heraldry.field.type/lozengy
+          :heraldry.field.type/vairy
+          :heraldry.field.type/potenty
+          :heraldry.field.type/papellony
+          :heraldry.field.type/masonry} field-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
+                                                     [:ul
+                                                      (let [tinctures @(rf/subscribe [:get (conj path :fields)])]
+                                                        (for [idx (range (count tinctures))]
+                                                          ^{:key idx}
+                                                          [:li
+                                                           [tincture/form (conj path :fields idx :tincture)
+                                                            :label (str "Tincture " (inc idx))]]))]]
+       (and (not counterchanged?)
+            (not= field-type :heraldry.field.type/plain)) [:div.parts.components
+                                                           [:ul
+                                                            (let [content @(rf/subscribe [:get (conj path :fields)])
+                                                                  mandatory-part-count (field/mandatory-part-count field)]
+                                                              (for [[idx part] (map-indexed vector content)]
+                                                                (let [part-path (conj path :fields idx)
+                                                                      part-name (field/part-name field-type idx)
+                                                                      ref (when (-> part
+                                                                                    :type
+                                                                                    (= :heraldry.field.type/ref))
+                                                                            (:index part))]
+                                                                  ^{:key idx}
+                                                                  [:li
+                                                                   [:div
+                                                                    (if ref
+                                                                      [element/component part-path :ref (str "Same as " (field/part-name field-type ref)) part-name]
+                                                                      [form part-path :title-prefix part-name])]
+                                                                   [:div {:style {:padding-left "10px"}}
+                                                                    (if ref
+                                                                      [:a {:on-click #(do (state/dispatch-on-event % [:set part-path (get content ref)])
+                                                                                          (state/dispatch-on-event % [:ui-component-open part-path]))}
+                                                                       [:i.far.fa-edit]]
+                                                                      (when (>= idx mandatory-part-count)
+                                                                        [:a {:on-click #(state/dispatch-on-event % [:set part-path
+                                                                                                                    (-> (field/default-fields field)
+                                                                                                                        (get idx))])}
+                                                                         [:i.far.fa-times-circle]]))]])))]])
      [:div {:style {:margin-bottom "0.5em"}}
       [:button {:on-click #(state/dispatch-on-event % [:add-component path default/ordinary])}
        [:i.fas.fa-plus] " Add ordinary"]
