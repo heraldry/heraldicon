@@ -15,9 +15,11 @@
                (* (-> eccentricity
                       (* 0.7)
                       (+ 0.3))))]
-    ["l"
-     [quarter-width 0]
-     [(- dx) (- height)]
-     [half-width 0]
-     [dx height]
-     [quarter-width 0]]))
+    {:pattern ["l"
+               [quarter-width 0]
+               [(- dx) (- height)]
+               [half-width 0]
+               [dx height]
+               [quarter-width 0]]
+     :min (- height)
+     :max 0}))
