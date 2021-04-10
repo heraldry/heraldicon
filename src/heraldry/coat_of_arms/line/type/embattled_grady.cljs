@@ -8,13 +8,16 @@
    _line-options]
   (let [dx (/ width 4)
         dy (* dx height)]
-    ["l"
-     [(/ dx 2) 0]
-     [0 (- dy)]
-     [dx 0]
-     [0 (- dy)]
-     [dx 0]
-     [0 dy]
-     [dx 0]
-     [0 dy]
-     [(/ dx 2) 0]]))
+    {:pattern ["l"
+               [(/ dx 2) 0]
+               [0 (- dy)]
+               [dx 0]
+               [0 (- dy)]
+               [dx 0]
+               [0 dy]
+               [dx 0]
+               [0 dy]
+               [(/ dx 2) 0]]
+     :min (+ (- dy)
+             (- dy))
+     :max 0}))
