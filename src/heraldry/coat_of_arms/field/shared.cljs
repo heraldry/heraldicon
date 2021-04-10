@@ -7,10 +7,9 @@
 (def overlap-stroke-width 0.1)
 
 (defn get-field [fields index]
-  (let [part (get fields index)
-        ref  (:ref part)]
-    (if ref
-      (get fields ref)
+  (let [part (get fields index)]
+    (case (:type part)
+      :heraldry.field.type/ref (get fields (:index part))
       part)))
 
 (defn field-context-key [key]
