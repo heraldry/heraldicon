@@ -29,8 +29,8 @@
                                :tincture :azure}
                               {:type :heraldry.field.type/plain
                                :tincture :or}
-                              {:type :ref
-                               :index 1}]
+                              {:type :heraldry.field.type/ref
+                               :index 0}]
                      :hints {:outline? true}}
 
     :heraldry/field {:type :heraldry.field.type/plain
@@ -60,7 +60,7 @@
                                :tincture :azure}
                               {:type :heraldry.field.type/plain
                                :tincture :or}
-                              {:type :ref
+                              {:type :heraldry.field.type/ref
                                :index 1}]}
 
     :heraldry/field {:type :does-not-exist}
