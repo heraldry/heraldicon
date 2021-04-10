@@ -12,7 +12,7 @@
 
 (defn render
   {:display-name "Per chevron"
-   :value         :heraldry.field.type/per-chevron
+   :value        :heraldry.field.type/per-chevron
    ;; TODO: this naming now depends on the variant
    :parts        ["chief" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
