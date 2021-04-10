@@ -29,7 +29,8 @@
                                              :tincture :purpure}
                                             {:type :heraldry.field.type/plain
                                              :tincture :sable}
-                                            {:ref 0}]}}
+                                            {:type :heraldry.field.type/ref
+                                             :index 0}]}}
                           80
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)

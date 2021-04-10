@@ -58,13 +58,15 @@
                                                    (cond
                                                      (< index
                                                         mandatory-part-count) (encode-field part)
-                                                     (not (:ref part)) (util/combine
-                                                                        " "
-                                                                        [(when (-> fields
-                                                                                   count
-                                                                                   (> 3))
-                                                                           (field/part-name type index))
-                                                                         (encode-field part)])))
+                                                     (-> part
+                                                         :type
+                                                         (not= :heraldry.field.type/ref)) (util/combine
+                                                                                           " "
+                                                                                           [(when (-> fields
+                                                                                                      count
+                                                                                                      (> 3))
+                                                                                              (field/part-name type index))
+                                                                                            (encode-field part)])))
                                                  (map-indexed vector fields)))])))
           components-description (util/combine ", " (map encode-component components))
           blazon (util/upper-case-first
