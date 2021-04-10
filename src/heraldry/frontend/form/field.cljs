@@ -266,7 +266,10 @@
                                  (for [[idx part] (map-indexed vector content)]
                                    (let [part-path (conj path :fields idx)
                                          part-name (field/part-name field-type idx)
-                                         ref (:ref part)]
+                                         ref (when (-> part
+                                                       :type
+                                                       (= :heraldry.field.type/ref))
+                                               (:index part))]
                                      ^{:key idx}
                                      [:li
                                       [:div
@@ -279,10 +282,9 @@
                                                              (state/dispatch-on-event % [:ui-component-open part-path]))}
                                           [:i.far.fa-edit]]
                                          (when (>= idx mandatory-part-count)
-                                           [:a {:on-click #(state/dispatch-on-event % [:set (conj part-path :ref)
+                                           [:a {:on-click #(state/dispatch-on-event % [:set part-path
                                                                                        (-> (field/default-fields field)
-                                                                                           (get idx)
-                                                                                           :ref)])}
+                                                                                           (get idx))])}
                                             [:i.far.fa-times-circle]]))]])))]])
      [:div {:style {:margin-bottom "0.5em"}}
       [:button {:on-click #(state/dispatch-on-event % [:add-component path default/ordinary])}
