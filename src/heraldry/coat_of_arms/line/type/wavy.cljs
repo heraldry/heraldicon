@@ -15,6 +15,13 @@
                             (+ 1.5))))
         radius-y (* radius-x height)
         tx (-> width
-               (/ 2))]
-    ["a" radius-x radius-y 0 0 1 [tx 0]
-     "a" radius-x radius-y 0 0 0 [tx 0]]))
+               (/ 2))
+        arc-height (-> (- 1 (/ (* (/ tx 2) (/ tx 2))
+                               (* radius-x radius-x)))
+                       Math/sqrt
+                       (* radius-y)
+                       (->> (- radius-y)))]
+    {:pattern ["a" radius-x radius-y 0 0 1 [tx 0]
+               "a" radius-x radius-y 0 0 0 [tx 0]]
+     :min (- arc-height)
+     :max arc-height}))

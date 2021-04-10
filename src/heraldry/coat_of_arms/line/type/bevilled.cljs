@@ -17,12 +17,14 @@
                   (- width)
                   (* eccentricity)
                   (+ half-width))]
-    ["h" real-start
-     "h" (+ pos-x
-            half-width)
-     "l" [(- width) height]
-     "h" (-> relevant-length
-             (- pos-x)
-             (+ half-width))
-     "h" (- length real-end)
-     "v" (- height)]))
+    {:pattern ["h" real-start
+               "h" (+ pos-x
+                      half-width)
+               "l" [(- width) height]
+               "h" (-> relevant-length
+                       (- pos-x)
+                       (+ half-width))
+               "h" (- length real-end)
+               "v" (- height)]
+     :min 0
+     :max height}))

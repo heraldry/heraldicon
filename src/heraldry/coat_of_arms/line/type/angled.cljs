@@ -13,9 +13,11 @@
         pos-x (-> relevant-length
                   (* eccentricity))
         height (* height relevant-length)]
-    ["h" real-start
-     "h" pos-x
-     "v" height
-     "h" (- relevant-length pos-x)
-     "h" (- length real-end)
-     "v" (- height)]))
+    {:pattern ["h" real-start
+               "h" pos-x
+               "v" height
+               "h" (- relevant-length pos-x)
+               "h" (- length real-end)
+               "v" (- height)]
+     :min 0
+     :max height}))
