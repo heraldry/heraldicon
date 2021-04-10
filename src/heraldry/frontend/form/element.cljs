@@ -48,24 +48,29 @@
              ^{:key key}
              [:option {:value (name key)} display-name])]))]]))
 
-(defn radio-select [path choices & {:keys [on-change default]}]
+(defn radio-select [path choices & {:keys [on-change default label]}]
   [:div.setting
-   (let [current-value (or @(rf/subscribe [:get path])
-                           default)]
-     (for [[display-name key] choices]
-       (let [component-id (id "radio")]
-         ^{:key key}
-         [:<>
-          [:input {:id        component-id
-                   :type      "radio"
-                   :value     (name key)
-                   :checked   (= key current-value)
-                   :on-change #(let [value (keyword (-> % .-target .-value))]
-                                 (if on-change
-                                   (on-change value)
-                                   (rf/dispatch [:set path value])))}]
-          [:label {:for   component-id
-                   :style {:margin-right "10px"}} display-name]])))])
+   (when label
+     [:label label])
+   [:div (when label
+           {:class "other"
+            :style {:display "inline-block"}})
+    (let [current-value (or @(rf/subscribe [:get path])
+                            default)]
+      (for [[display-name key] choices]
+        (let [component-id (id "radio")]
+          ^{:key key}
+          [:<>
+           [:input {:id        component-id
+                    :type      "radio"
+                    :value     (name key)
+                    :checked   (= key current-value)
+                    :on-change #(let [value (keyword (-> % .-target .-value))]
+                                  (if on-change
+                                    (on-change value)
+                                    (rf/dispatch [:set path value])))}]
+           [:label {:for   component-id
+                    :style {:margin-right "10px"}} display-name]])))]])
 
 (defn range-input [path label min-value max-value & {:keys [value on-change default display-function step
                                                             disabled?]}]
@@ -194,3 +199,4 @@
          " " title]
         (into [:div.content]
               content)])]))
+
