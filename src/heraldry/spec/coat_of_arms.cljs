@@ -56,8 +56,7 @@
                                                :heraldry.field.layout/stretch-x
                                                :heraldry.field.layout/stretch-y
                                                :heraldry.field.layout/rotation]))
-(s/def :heraldry.field/fields (s/coll-of #(s/or :heraldry/field
-                                                :heraldry.field/ref) :into []))
+(s/def :heraldry.field/fields (s/coll-of :heraldry/field :into []))
 (s/def :heraldry.field.hint/outline? boolean?)
 (s/def :heraldry.field/hints (s/keys :opt-un [:heraldry.hint/outline?]))
 (s/def :heraldry.field/inherit-environment? boolean?)
@@ -67,7 +66,6 @@
 
 (s/def :heraldry.field.ref/index #(and (number? %)
                                        (>=  % 0)))
-(s/def :heraldry.field/ref (s/keys :req-un [:heraldry.field.ref/index]))
 
 (defmulti field-type (fn [field]
                        (let [type ((some-fn :heraldry.field/type :type) field)
@@ -75,15 +73,19 @@
                              (if (some-> type namespace (= "heraldry.field.type"))
                                (-> type name keyword)
                                type)]
-                         (if (= type :plain)
-                           :plain
+                         (case type
+                           :plain :plain
+                           :ref   :ref
                            :division))))
 
 (defmethod field-type :plain [_]
   (s/keys :req-un [:heraldry/tincture]))
 
 (defmethod field-type :division [_]
-  (s/keys :req-un [:heraldry/fields]))
+  (s/keys :req-un [:heraldry.field/fields]))
+
+(defmethod field-type :ref [_]
+  (s/keys :req-un [:heraldry.field.ref/index]))
 
 (s/def :heraldry/field (s/and (s/multi-spec field-type :heraldry.field/type)
                               (s/keys :opt-un [:heraldry.field/inherit-environment?
