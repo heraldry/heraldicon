@@ -17,14 +17,16 @@
                             (* eccentricity))
         anchor-1        (- 1 (/ width 100))
         anchor-2        (- 1 anchor-1)]
-    ["h" real-start
-     "c"
-     (-> pos-x
-         (* anchor-1)) "," (- height) " "
-     (-> relevant-length
-         (- pos-x)
-         (* anchor-2)
-         (+ pos-x)) "," (- height) " "
-     relevant-length "," 0
-     "h" (- length real-end)]))
+    {:pattern ["h" real-start
+               "c"
+               (-> pos-x
+                   (* anchor-1)) "," (- height) " "
+               (-> relevant-length
+                   (- pos-x)
+                   (* anchor-2)
+                   (+ pos-x)) "," (- height) " "
+               relevant-length "," 0
+               "h" (- length real-end)]
+     :min     (* 0.75 (- height)) ; should be the max point of the curve at t = 0.5
+     :max     0}))
 

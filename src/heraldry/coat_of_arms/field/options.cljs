@@ -6,9 +6,12 @@
             [heraldry.util :as util]))
 
 (def default-options
-  {:line          line/default-options
-   :opposite-line line/default-options
-   :extra-line    line/default-options
+  {:line          (-> line/default-options
+                      (options/override-if-exists [:base-line :default] :middle))
+   :opposite-line (-> line/default-options
+                      (options/override-if-exists [:base-line :default] :middle))
+   :extra-line    (-> line/default-options
+                      (options/override-if-exists [:base-line :default] :middle))
    :origin        (-> position/default-options
                       (dissoc :alignment))
    :anchor        (-> position/anchor-default-options
@@ -62,7 +65,8 @@
 
 (defn options [field]
   (when field
-    (let [line-style (line/options (:line field))]
+    (let [line-style (-> (line/options (:line field))
+                         (options/override-if-exists [:base-line :default] :middle))]
       (-> (case (-> field :type name keyword)
             :per-pale                    (options/pick default-options
                                                        [[:line]
@@ -145,9 +149,11 @@
                                                         [:anchor]
                                                         [:variant]]
                                                        {[:line]                   (-> line-style
-                                                                                      (options/override-if-exists [:offset :min] 0))
+                                                                                      (options/override-if-exists [:offset :min] 0)
+                                                                                      (options/override-if-exists [:base-line] nil))
                                                         [:opposite-line]          (-> line-style
-                                                                                      (options/override-if-exists [:offset :min] 0))
+                                                                                      (options/override-if-exists [:offset :min] 0)
+                                                                                      (options/override-if-exists [:base-line] nil))
                                                         [:anchor :point :choices] (case (-> field :variant (or :base))
                                                                                     :chief    (util/filter-choices
                                                                                                position/anchor-point-choices
@@ -174,9 +180,11 @@
                                                                              :fess :honour :nombril :base :chief
                                                                              :angle}]
                                                          {[:line]                   (-> line-style
-                                                                                        (options/override-if-exists [:offset :min] 0))
+                                                                                        (options/override-if-exists [:offset :min] 0)
+                                                                                        (options/override-if-exists [:base-line] nil))
                                                           [:opposite-line]          (-> line-style
-                                                                                        (options/override-if-exists [:offset :min] 0))
+                                                                                        (options/override-if-exists [:offset :min] 0)
+                                                                                        (options/override-if-exists [:base-line] nil))
                                                           [:geometry]               {:size      {:type    :range
                                                                                                  :min     5
                                                                                                  :max     100
@@ -220,9 +228,11 @@
                                                         [:anchor]]
                                                        {[:line]                   (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
+                                                                                      (options/override-if-exists [:base-line] nil)
                                                                                       (dissoc :fimbriation))
                                                         [:opposite-line]          (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
+                                                                                      (options/override-if-exists [:base-line] nil)
                                                                                       (dissoc :fimbriation))
                                                         [:origin :alignment]      nil
                                                         [:anchor :point :choices] (util/filter-choices
@@ -236,9 +246,11 @@
                                                         [:origin :offset-y]]
                                                        {[:line]          (-> line-style
                                                                              (options/override-if-exists [:offset :min] 0)
+                                                                             (options/override-if-exists [:base-line] nil)
                                                                              (dissoc :fimbriation))
                                                         [:opposite-line] (-> line-style
                                                                              (options/override-if-exists [:offset :min] 0)
+                                                                             (options/override-if-exists [:base-line] nil)
                                                                              (dissoc :fimbriation))})
             :quarterly                   (options/pick default-options
                                                        [[:layout :num-base-fields]
@@ -257,9 +269,11 @@
                                                         [:anchor]]
                                                        {[:line]                   (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
+                                                                                      (options/override-if-exists [:base-line] nil)
                                                                                       (dissoc :fimbriation))
                                                         [:opposite-line]          (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
+                                                                                      (options/override-if-exists [:base-line] nil)
                                                                                       (dissoc :fimbriation))
                                                         [:origin :alignment]      nil
                                                         [:anchor :point :choices] (util/filter-choices
@@ -436,12 +450,15 @@
                                                         [:anchor]]
                                                        {[:line]                   (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
+                                                                                      (options/override-if-exists [:base-line] nil)
                                                                                       (dissoc :fimbriation))
                                                         [:opposite-line]          (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
+                                                                                      (options/override-if-exists [:base-line] nil)
                                                                                       (dissoc :fimbriation))
                                                         [:extra-line]             (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
+                                                                                      (options/override-if-exists [:base-line] nil)
                                                                                       (dissoc :fimbriation))
                                                         [:anchor :point :choices] (util/filter-choices
                                                                                    position/anchor-point-choices
@@ -454,12 +471,15 @@
                                                         [:anchor]]
                                                        {[:line]                   (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
+                                                                                      (options/override-if-exists [:base-line] nil)
                                                                                       (dissoc :fimbriation))
                                                         [:opposite-line]          (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
+                                                                                      (options/override-if-exists [:base-line] nil)
                                                                                       (dissoc :fimbriation))
                                                         [:extra-line]             (-> line-style
                                                                                       (options/override-if-exists [:offset :min] 0)
+                                                                                      (options/override-if-exists [:base-line] nil)
                                                                                       (dissoc :fimbriation))
                                                         [:anchor :point :choices] (util/filter-choices
                                                                                    position/anchor-point-choices

@@ -21,5 +21,8 @@
                      Math/sqrt
                      (* radius-y)
                      (->> (- radius-y)))]
-    ["a" radius-x radius-y 0 0 0 [tx (- ty)]
-     "a" radius-x radius-y 0 0 0 [tx ty]]))
+    {:pattern ["a" radius-x radius-y 0 0 0 [tx (- ty)]
+               "a" radius-x radius-y 0 0 0 [tx ty]]
+     :min     (- ty)
+     :max     0}))
+

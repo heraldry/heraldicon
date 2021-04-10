@@ -28,19 +28,32 @@
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
+(defn line-base [{:keys [base-line]} {line-min :min
+                                      line-max :max}]
+  (let [line-height (- line-max line-min)
+        line-base   (case base-line
+                      :bottom (- line-max)
+                      :middle (- (- line-min)
+                                 (/ line-height 2))
+                      :top    (- line-min)
+                      0)]
+    line-base))
+
 (defn pattern-line-with-offset [{pattern-width :width
                                  line-offset   :offset
                                  :as           line}
                                 length line-function line-options]
-  (let [line-pattern  (line-function line line-options)
-        offset-length (* line-offset pattern-width)
-        repetitions   (-> length
-                          (- offset-length)
-                          (/ pattern-width)
-                          Math/ceil
-                          int
-                          inc)
-        line-start    (v/v (min 0 offset-length) 0)]
+  (let [{line-pattern :pattern
+         :as          pattern-data} (line-function line line-options)
+        line-base                   (line-base line pattern-data)
+        offset-length               (* line-offset pattern-width)
+        repetitions                 (-> length
+                                        (- offset-length)
+                                        (/ pattern-width)
+                                        Math/ceil
+                                        int
+                                        inc)
+        line-start                  (v/v (min 0 offset-length) line-base)]
     {:line       (-> []
                      (cond->
                          (pos? offset-length) (into [["h" offset-length]]))
@@ -50,9 +63,11 @@
      :line-start line-start}))
 
 (defn full-line [line length line-function line-options]
-  (let [line-pattern (line-function line length line-options)]
+  (let [{line-pattern :pattern
+         :as          pattern-data} (line-function line length line-options)
+        line-base                   (line-base line pattern-data)]
     {:line       line-pattern
-     :line-start (v/v 0 0)}))
+     :line-start (v/v 0 line-base)}))
 
 (def lines
   [#'straight/pattern
@@ -106,6 +121,14 @@
 (def fimbriation-alignment-map
   (util/choices->map fimbriation-alignment-choices))
 
+(def base-line-choices
+  [["Bottom" :bottom]
+   ["Middle" :middle]
+   ["Top" :top]])
+
+(def base-line-map
+  (util/choices->map base-line-choices))
+
 (def default-options
   {:type         {:type    :choice
                   :choices choices
@@ -126,6 +149,9 @@
                   :min     -1
                   :max     3
                   :default 0}
+   :base-line    {:type    :choice
+                  :choices base-line-choices
+                  :default :bottom}
    :flipped?     {:type    :boolean
                   :default false}
    :fimbriation  {:mode        {:type    :choice
@@ -159,84 +185,129 @@
 (defn options [line]
   (when-let [type (:type line)]
     (case type
-      :straight        (options/pick default-options
-                                     [[:type]
-                                      [:fimbriation]])
-      :indented        (options/pick default-options
-                                     [[:type]
-                                      [:height]
-                                      [:width]
-                                      [:offset]
-                                      [:flipped?]
-                                      [:fimbriation]])
-      :embattled       (options/pick default-options
-                                     [[:type]
-                                      [:height]
-                                      [:width]
-                                      [:offset]
-                                      [:flipped?]
-                                      [:fimbriation]])
-      :embattled-grady (options/pick default-options
-                                     [[:type]
-                                      [:height]
-                                      [:width]
-                                      [:offset]
-                                      [:flipped?]
-                                      [:fimbriation]])
-      :dancetty        (options/pick default-options
-                                     [[:type]
-                                      [:height]
-                                      [:width]
-                                      [:offset]
-                                      [:flipped?]
-                                      [:fimbriation]]
-                                     {[:width :default] 20})
-      :wavy            (options/pick default-options
-                                     [[:type]
-                                      [:eccentricity]
-                                      [:height]
-                                      [:width]
-                                      [:offset]
-                                      [:flipped?]
-                                      [:fimbriation]]
-                                     {[:width :default] 20})
-      :fir-twigged     (options/pick default-options
-                                     [[:type]
-                                      [:height]
-                                      [:width]
-                                      [:offset]
-                                      [:flipped?]
-                                      [:fimbriation]])
-      :angled          (options/pick default-options
-                                     [[:type]
-                                      [:eccentricity]
-                                      [:height]
-                                      [:flipped?]
-                                      [:fimbriation]]
-                                     {[:height :min]     0
-                                      [:height :max]     1
-                                      [:height :default] 0.1})
-      :bevilled        (options/pick default-options
-                                     [[:type]
-                                      [:eccentricity]
-                                      [:height]
-                                      [:width]
-                                      [:flipped?]
-                                      [:fimbriation]]
-                                     {[:width :default] 15})
-      :enarched        (options/pick default-options
-                                     [[:type]
-                                      [:eccentricity]
-                                      [:height]
-                                      [:width]
-                                      [:flipped?]
-                                      [:fimbriation]]
-                                     {[:width :min]      1
-                                      [:width :max]      100
-                                      [:width :default]  50
-                                      [:height :min]     0
-                                      [:height :max]     1
-                                      [:height :default] 0.5})
+      :straight             (options/pick default-options
+                                          [[:type]
+                                           [:fimbriation]])
+      :invected             (options/pick default-options
+                                          [[:type]
+                                           [:eccentricity]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]])
+      :engrailed            (options/pick default-options
+                                          [[:type]
+                                           [:eccentricity]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]])
+      :indented             (options/pick default-options
+                                          [[:type]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]])
+      :embattled            (options/pick default-options
+                                          [[:type]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]])
+      :embattled-grady      (options/pick default-options
+                                          [[:type]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]])
+      :embattled-in-crosses (options/pick default-options
+                                          [[:type]
+                                           [:eccentricity]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]])
+      :potenty              (options/pick default-options
+                                          [[:type]
+                                           [:eccentricity]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]])
+      :dancetty             (options/pick default-options
+                                          [[:type]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]]
+                                          {[:width :default] 20})
+      :wavy                 (options/pick default-options
+                                          [[:type]
+                                           [:eccentricity]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]]
+                                          {[:width :default] 20})
+      :fir-twigged          (options/pick default-options
+                                          [[:type]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]])
+      :angled               (options/pick default-options
+                                          [[:type]
+                                           [:eccentricity]
+                                           [:height]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]]
+                                          {[:height :min]     0
+                                           [:height :max]     1
+                                           [:height :default] 0.1})
+      :bevilled             (options/pick default-options
+                                          [[:type]
+                                           [:eccentricity]
+                                           [:height]
+                                           [:width]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]]
+                                          {[:width :default] 15})
+      :enarched             (options/pick default-options
+                                          [[:type]
+                                           [:eccentricity]
+                                           [:height]
+                                           [:width]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]]
+                                          {[:width :min]      1
+                                           [:width :max]      100
+                                           [:width :default]  50
+                                           [:height :min]     0
+                                           [:height :max]     1
+                                           [:height :default] 0.5})
       (options/pick default-options
                     [[:type]
                      [:eccentricity]
@@ -244,14 +315,15 @@
                      [:width]
                      [:offset]
                      [:flipped?]
+                     [:base-line]
                      [:fimbriation]]))))
 
 (defn create-raw [{:keys [type] :or {type :straight} :as line} length
                   & {:keys [angle flipped? render-options seed reversed?] :as line-options}]
   (let [line-function               (get kinds-function-map type)
-        line-options-values         (cond-> (options/sanitize line (options line))
-                                      (= type :straight) (-> (assoc :width length)
-                                                             (assoc :offset 0)))
+        line-options-values         (cond-> line #_            (options/sanitize line (options line))
+                                            (= type :straight) (-> (assoc :width length)
+                                                                   (assoc :offset 0)))
         base-end                    (v/v length 0)
         line-data                   (if (-> line-function
                                             meta
@@ -289,7 +361,11 @@
                                       [line-start line-end])
         line-flipped?               (:flipped? line-options-values)
         effective-flipped?          (or (and flipped? (not line-flipped?))
-                                        (and (not flipped?) line-flipped?))]
+                                        (and (not flipped?) line-flipped?))
+        [line-start line-end]       (if effective-flipped?
+                                      [(v/dot line-end (v/v 1 -1))
+                                       (v/dot line-start (v/v 1 -1))]
+                                      [line-start line-end])]
     (-> line-data
         (assoc :line
                (-> line-path

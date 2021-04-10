@@ -5,4 +5,7 @@
    :value        :straight}
   [{:keys [width]}
    _line-options]
-  ["h" width])
+  {:pattern ["h" width]
+   :min     0
+   :max     0})
+

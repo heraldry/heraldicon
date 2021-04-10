@@ -10,7 +10,10 @@
         quarter-width (/ width 4)
         half-height   (* quarter-width height)
         height        (* half-height 2)]
-    ["l"
-     [quarter-width (- half-height)]
-     [half-width height]
-     [quarter-width (- half-height)]]))
+    {:pattern ["l"
+               [quarter-width (- half-height)]
+               [half-width height]
+               [quarter-width (- half-height)]]
+     :min     (- half-height)
+     :max     half-height}))
+
