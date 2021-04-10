@@ -1,1 +1,2 @@
-{:linters {:unsorted-required-namespaces {:level :warning}}}
+{:linters {:unsorted-required-namespaces {:level :warning}}
+ :lint-as {heraldry.backend.migration.macros/defmigration clojure.core/defn}}
