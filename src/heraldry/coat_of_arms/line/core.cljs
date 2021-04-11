@@ -278,13 +278,10 @@
       :angled (options/pick default-options
                             [[:type]
                              [:eccentricity]
-                             [:height]
+                             [:width]
                              [:flipped?]
                              [:base-line]
-                             [:fimbriation]]
-                            {[:height :min] 0
-                             [:height :max] 1
-                             [:height :default] 0.1})
+                             [:fimbriation]])
       :bevilled (options/pick default-options
                               [[:type]
                                [:eccentricity]
