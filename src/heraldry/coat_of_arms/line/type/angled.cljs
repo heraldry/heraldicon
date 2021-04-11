@@ -4,7 +4,7 @@
   {:display-name "Angled"
    :value        :angled
    :full?        true}
-  [{:keys [height eccentricity] :as _line-data}
+  [{:keys [width eccentricity] :as _line-data}
    length
    {:keys [real-start real-end] :as _line-options}]
   (let [real-start      (or real-start 0)
@@ -12,7 +12,7 @@
         relevant-length (- real-end real-start)
         pos-x           (-> relevant-length
                             (* eccentricity))
-        height          (* height relevant-length)]
+        height          width]
     {:pattern ["h" real-start
                "h" pos-x
                "v" height
