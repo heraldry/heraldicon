@@ -24,8 +24,9 @@
                       (assoc-in [:size :default] 25)
                       (assoc :mirrored? nil)
                       (assoc :reversed? nil)
-                      (assoc :stretch nil)
-                      (assoc :rotation nil))})
+                      (assoc :stretch nil))
+   :cottise       {:line          (set-line-defaults line/default-options)
+                   :opposite-line (set-line-defaults line/default-options)}})
 
 (defn options [ordinary]
   (when ordinary

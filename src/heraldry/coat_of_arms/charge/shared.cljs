@@ -1,12 +1,12 @@
 (ns heraldry.coat-of-arms.charge.shared
   (:require ["svgpath" :as svgpath]
+            [heraldry.coat-of-arms.angle :as angle]
             [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
@@ -14,12 +14,21 @@
 
 (defn make-charge
   [{:keys [field hints] :as charge} parent environment {:keys [render-options] :as context} arg function]
-  (let [{:keys [position
+  (let [{:keys [origin
+                anchor
                 geometry
                 fimbriation]}         (options/sanitize charge (charge-options/options charge))
-        {:keys [size stretch rotation
+        {:keys [size stretch
                 mirrored? reversed?]} geometry
-        position-point                (position/calculate position environment :fess)
+        {origin-point :real-origin
+         anchor-point :real-anchor}   (angle/calculate-origin-and-anchor
+                                       environment
+                                       origin
+                                       anchor
+                                       0
+                                       -90)
+        angle                         (+ (v/angle-to-point origin-point anchor-point)
+                                         90)
         arg-value                     (get environment arg)
         target-arg-value              (-> size
                                           ((util/percent-of arg-value)))
@@ -41,11 +50,11 @@
                                            (.toString))
                                           (cond->
                                               (:squiggly? render-options) svg/squiggly-path
-                                              (not= rotation 0) (->
-                                                                 (svgpath)
-                                                                 (.rotate rotation)
-                                                                 (.toString)))
-                                          (svg/translate (:x position-point) (:y position-point)))
+                                              (not= angle 0) (->
+                                                              (svgpath)
+                                                              (.rotate angle)
+                                                              (.toString)))
+                                          (svg/translate (:x origin-point) (:y origin-point)))
         mask-shape                    (when mask
                                         (-> mask
                                             svg/make-path
@@ -55,22 +64,22 @@
                                              (.toString))
                                             (cond->
                                                 (:squiggly? render-options) svg/squiggly-path
-                                                (not= rotation 0) (->
-                                                                   (svgpath)
-                                                                   (.rotate rotation)
-                                                                   (.toString)))
-                                            (svg/translate (:x position-point) (:y position-point))))
+                                                (not= angle 0) (->
+                                                                (svgpath)
+                                                                (.rotate angle)
+                                                                (.toString)))
+                                            (svg/translate (:x origin-point) (:y origin-point))))
         [min-x max-x min-y max-y]     (svg/rotated-bounding-box charge-top-left
                                                                 (v/+ charge-top-left
                                                                      (v/v charge-width
                                                                           charge-height))
-                                                                rotation
+                                                                angle
                                                                 :middle (v/v 0 0)
                                                                 :scale (v/v scale-x scale-y))
         parts                         [[charge-shape
-                                        [(v/+ position-point
+                                        [(v/+ origin-point
                                               (v/v min-x min-y))
-                                         (v/+ position-point
+                                         (v/+ origin-point
                                               (v/v max-x max-y))]
                                         mask-shape]]
         field                         (if (:counterchanged? field)

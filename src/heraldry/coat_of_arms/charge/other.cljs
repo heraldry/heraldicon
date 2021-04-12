@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.charge.other
   (:require [clojure.string :as s]
             [clojure.walk :as walk]
+            [heraldry.coat-of-arms.angle :as angle]
             [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field.environment :as environment]
@@ -8,7 +9,6 @@
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
@@ -96,12 +96,12 @@
                :as   context}]
   (let [full-charge-data (or data (when variant (load-charge-data variant)))]
     (if (:data full-charge-data)
-      (let [{:keys [position
+      (let [{:keys [origin
+                    anchor
                     geometry
                     fimbriation]}            (options/sanitize charge (charge-options/options charge))
             {:keys [size stretch
-                    mirrored? reversed?
-                    rotation]}               geometry
+                    mirrored? reversed?]}    geometry
             charge-data                      (:data full-charge-data)
             render-field?                    (-> charge-data
                                                  :fixed-tincture
@@ -120,11 +120,19 @@
             positional-charge-height         (js/parseFloat (-> charge-data :height (or "1")))
             width                            (:width environment)
             height                           (:height environment)
-            center-point                     (position/calculate position environment :fess)
-            min-x-distance                   (min (- (:x center-point) (:x left))
-                                                  (- (:x right) (:x center-point)))
-            min-y-distance                   (min (- (:y center-point) (:y top))
-                                                  (- (:y bottom) (:y center-point)))
+            {origin-point :real-origin
+             anchor-point :real-anchor}      (angle/calculate-origin-and-anchor
+                                              environment
+                                              origin
+                                              anchor
+                                              0
+                                              -90)
+            angle                            (+ (v/angle-to-point origin-point anchor-point)
+                                                90)
+            min-x-distance                   (min (- (:x origin-point) (:x left))
+                                                  (- (:x right) (:x origin-point)))
+            min-y-distance                   (min (- (:y origin-point) (:y top))
+                                                  (- (:y bottom) (:y origin-point)))
             target-width                     (if size
                                                (-> size
                                                    ((util/percent-of width)))
@@ -196,13 +204,13 @@
             [min-x max-x min-y max-y]        (svg/rotated-bounding-box
                                               shift
                                               (v/dot shift (v/v -1 -1))
-                                              rotation
+                                              angle
                                               :scale (v/v scale-x scale-y))
             clip-size                        (v/v (- max-x min-x) (- max-y min-y))
             position                         (-> clip-size
                                                  (v/-)
                                                  (v// 2)
-                                                 (v/+ center-point))
+                                                 (v/+ origin-point))
             charge-environment               (environment/create
                                               (svg/make-path ["M" position
                                                               "l" (v/v (:x clip-size) 0)
@@ -298,14 +306,14 @@
            (svg/make-unique-ids mask)]
           [:mask {:id mask-inverted-id}
            (svg/make-unique-ids mask-inverted)]]
-         (let [transform         (str "translate(" (:x center-point) "," (:y center-point) ")"
-                                      "rotate(" rotation ")"
+         (let [transform         (str "translate(" (:x origin-point) "," (:y origin-point) ")"
+                                      "rotate(" angle ")"
                                       "scale(" scale-x "," scale-y ")"
                                       "translate(" (-> shift :x) "," (-> shift :y) ")")
                reverse-transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ")"
                                       "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
-                                      "rotate(" (- rotation) ")"
-                                      "translate(" (- (:x center-point)) "," (- (:y center-point)) ")")]
+                                      "rotate(" (- angle) ")"
+                                      "translate(" (- (:x origin-point)) "," (- (:y origin-point)) ")")]
            [:g {:transform transform}
             (when (-> fimbriation :mode #{:double})
               (let [thickness (+ (-> fimbriation
