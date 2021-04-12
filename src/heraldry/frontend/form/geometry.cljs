@@ -9,8 +9,6 @@
                                           (:size options)) "resized")
                                (when (and (:stretch current)
                                           (:stretch options)) "stretched")
-                               (when (and (:rotation current)
-                                          (:rotation options)) "rotated")
                                (when (and (:mirrored? current)
                                           (:mirrored? options)) "mirrored")
                                (when (and (:reversed? current)
@@ -42,12 +40,6 @@
           (-> options :stretch :max)
           :step 0.01
           :default (options/get-value (:stretch current) (:stretch options))])
-       (when (:rotation options)
-         [element/range-input-with-checkbox (conj path :rotation) "Rotation"
-          (-> options :rotation :min)
-          (-> options :rotation :max)
-          :step 5
-          :default (options/get-value (:rotation current) (:rotation options))])
        (when (:mirrored? options)
          [element/checkbox (conj path :mirrored?) "Mirrored"])
        (when (:reversed? options)
