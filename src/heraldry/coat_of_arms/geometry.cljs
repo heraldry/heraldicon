@@ -12,8 +12,4 @@
    :mirrored? {:type :boolean
                :default false}
    :reversed? {:type :boolean
-               :default false}
-   :rotation {:type :range
-              :min -180
-              :max 180
-              :default 0}})
+               :default false}})

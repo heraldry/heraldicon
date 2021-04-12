@@ -216,10 +216,14 @@
                 :label (util/translate-cap-first t)])])]])
       (let [charge-options (charge-options/options charge)]
         [:<>
-         (when (:position charge-options)
-           [position/form (conj path :position)
-            :title "Position"
-            :options (:position charge-options)])
+         (when (:origin charge-options)
+           [position/form (conj path :origin)
+            :title "Origin"
+            :options (:origin charge-options)])
+         (when (:anchor charge-options)
+           [position/form (conj path :anchor)
+            :title "Anchor"
+            :options (:anchor charge-options)])
          (when (:geometry charge-options)
            [geometry/form (conj path :geometry)
             (:geometry charge-options)
