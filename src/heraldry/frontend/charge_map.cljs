@@ -11,6 +11,7 @@
                                        :charges #{:crane
                                                   :dove
                                                   :eagle
+                                                  :falcon
                                                   :owl
                                                   :raven}}
 
@@ -94,11 +95,27 @@
                                 :gauntlet
                                 :maunch
                                 :spurs}}
+            :objects {:node-type :group
+                      :name "objects"
+                      :charges #{:castle
+                                 :ship
+                                 :well}}
+            :plants {:node-type :group
+                     :name "plants"
+                     :charges #{:flower
+                                :rose}}
             :symbols {:node-type :group
                       :name "symbols"
-                      :charges #{:feather
+                      :charges #{:book
+                                 :caduceus
+                                 :cross
+                                 :crozier
+                                 :feather
+                                 :fleur-de-lis
+                                 :key
                                  :heart
                                  :horseshoe
+                                 :sun
                                  :torch}}
             :tools {:node-type :group
                     :name "tools"
