@@ -11,6 +11,7 @@
                                              :charges   #{:crane
                                                           :dove
                                                           :eagle
+                                                          :falcon
                                                           :owl
                                                           :raven}}
 
@@ -94,11 +95,26 @@
                                       :gauntlet
                                       :maunch
                                       :spurs}}
+               :objects {:node-type :group
+                         :name      "objects"
+                         :charges   #{:book
+                                      :castle
+                                      :ship
+                                      :well}}
+               :plants  {:node-type :group
+                         :name      "plants"
+                         :charges   #{:flower
+                                      :rose}}
                :symbols {:node-type :group
                          :name      "symbols"
-                         :charges   #{:feather
+                         :charges   #{:caduceus
+                                      :cross
+                                      :crozier
+                                      :feather
+                                      :fleur-de-lis
                                       :heart
                                       :horseshoe
+                                      :sun
                                       :torch}}
                :tools   {:node-type :group
                          :name      "tools"
@@ -261,3 +277,4 @@
   (-> charges
       (->> (group-by :type))
       (build-map group-map :remove-empty-groups? remove-empty-groups?)))
+
