@@ -4,7 +4,7 @@
             [heraldry.config :as config]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.credits :as credits]
-            [heraldry.frontend.form.attribution :as attribution]
+            [heraldry.frontend.form.collection :as collection]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
             [heraldry.frontend.state :as state]
@@ -85,7 +85,6 @@
      [:div.pure-u-1-2 {:style {:position "fixed"}}]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
                                :width "45%"}}
-      [attribution/form (conj form-db-path :attribution)]
       [:form.pure-form.pure-form-aligned
        {:style {:display "inline-block"}
         :on-key-press (fn [event]
@@ -127,7 +126,8 @@
                                                     :class (when disabled? "disabled")}
            "Save"])
         [:div.spacer]]]
-      [render-options/form (conj form-db-path :render-options)]]]))
+      [render-options/form (conj form-db-path :render-options)]
+      [collection/form form-db-path]]]))
 
 (defn collection-display [collection-id version]
   (let [user-data (user/data)
@@ -217,7 +217,9 @@
                                         form-db-path
                                         :new
                                         #(go
-                                           {:render-options {:mode :colours
+                                           {:num-columns 6
+                                            :elements []
+                                            :render-options {:mode :colours
                                                              :outline? false
                                                              :squiggly? false
                                                              :ui {:selectable-fields? true}}}))]
