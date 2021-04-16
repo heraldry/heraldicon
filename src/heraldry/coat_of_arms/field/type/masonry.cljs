@@ -60,7 +60,7 @@
 
 (defn render
   {:display-name "Masonry"
-   :value         :heraldry.field.type/masonry
+   :value        :heraldry.field.type/masonry
    :parts        []}
   [{:keys [fields hints] :as field} environment {:keys [render-options]}]
   (let [{:keys [layout thickness]} (options/sanitize field (field-options/options field))
@@ -73,6 +73,7 @@
                 num-fields-y
                 offset-y
                 stretch-y]}        layout
+        raw-num-fields-y           (-> field :layout :num-fields-y)
         offset-x                   (or offset-x 0)
         stretch-x                  (or stretch-x 1)
         width                      (- (:x bottom-right)
@@ -85,7 +86,7 @@
         stretch-y                  (or stretch-y 1)
         height                     (- (:y bottom-right)
                                       (:y top-left))
-        unstretched-part-height    (if num-fields-y
+        unstretched-part-height    (if raw-num-fields-y
                                      (-> height
                                          (/ num-fields-y))
                                      (/ part-width 2))
