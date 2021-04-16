@@ -61,8 +61,9 @@
 (s/def :heraldry.field/hints (s/keys :opt-un [:heraldry.hint/outline?]))
 (s/def :heraldry.field/inherit-environment? boolean?)
 (s/def :heraldry.field/counterchanged? boolean?)
-(s/def :heraldry.field/components (s/coll-of (s/or :heraldry/ordinary
-                                                   :heraldry/charge) :into []))
+(s/def :heraldry.field/components (s/coll-of #(or (s/valid? :heraldry/ordinary %)
+                                                  (s/valid? :heraldry/charge %)
+                                                  (s/valid? :heraldry/semy %)) :into []))
 
 (s/def :heraldry.field.ref/index #(and (number? %)
                                        (>= % 0)))
@@ -132,6 +133,12 @@
                                          :heraldry.charge/tincture
                                          :heraldry.charge/hints
                                          :heraldry.charge/variant]))
+
+(s/def :heraldry.semy/type #(= % :heraldry.component/semy))
+(s/def :heraldry.semy/layout #(s/valid? :heraldry.field/layout %))
+(s/def :heraldry/semy (s/keys :req-un [:heraldry.semy/type
+                                       :heraldry/charge]
+                              :opt-un [:heraldry.semy/layout]))
 
 (s/def :heraldry/coat-of-arms (s/keys :req-un [:heraldry/spec-version
                                                :heraldry/escutcheon

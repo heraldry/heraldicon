@@ -120,7 +120,8 @@
                                          ;; im the interface, even if the charge doesn't
                                          ;; contain and black elements, but they usually will
                                   (assoc 1 {:fill "#000000"
-                                            :stroke "#000000"}))
+                                            :stroke "#000000"
+                                            :stroke-width 0}))
                      width (-> parsed
                                (get-in [1 :width])
                                parse-number-with-unit)

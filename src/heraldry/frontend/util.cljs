@@ -14,7 +14,9 @@
   (when keyword
     (-> keyword
         name
-        (s/replace "-" " "))))
+        (s/replace "-" " ")
+        (s/replace "fleur de lis" "fleur-de-lis")
+        (s/replace "fleur de lys" "fleur-de-lys"))))
 
 (defn translate-tincture [keyword]
   (case keyword

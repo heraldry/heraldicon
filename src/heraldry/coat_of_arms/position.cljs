@@ -9,7 +9,15 @@
    ["Dexter" :dexter]
    ["Sinister" :sinister]
    ["Honour" :honour]
-   ["Nombril" :nombril]])
+   ["Nombril" :nombril]
+   ["Top-left" :top-left]
+   ["Top" :top]
+   ["Top-right" :top-right]
+   ["Left" :left]
+   ["Right" :right]
+   ["Bottom-left" :bottom-left]
+   ["Bottom" :bottom]
+   ["Bottom-right" :bottom-right]])
 
 (def point-choices-x
   (->> point-choices

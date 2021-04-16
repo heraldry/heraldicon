@@ -9,4 +9,6 @@
                                         :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
                                 :prod {:UserPoolId "eu-central-1_WXqnJUEOT"
                                        :ClientId "21pvp6cc4l3gptoj4bl3jc9s7r"
-                                       :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_WXqnJUEOT/.well-known/jwks.json"}}}
+                                       :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_WXqnJUEOT/.well-known/jwks.json"}}
+ :fleur-de-lis-charge-id #profile {:local "charge:RnHzw8"
+                                   :prod "charge:ZfqrIl"}}
