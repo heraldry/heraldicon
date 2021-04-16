@@ -119,6 +119,10 @@
                                          ;; disadvantage: this colour will now always show
                                          ;; im the interface, even if the charge doesn't
                                          ;; contain and black elements, but they usually will
+                                         ;;
+                                         ;; the stroke-width is also set to 0, because areas
+                                         ;; that really should not get an outline otherwise
+                                         ;; would default to one of width 1
                                          (assoc 1 {:fill         "#000000"
                                                    :stroke       "#000000"
                                                    :stroke-width 0}))
