@@ -43,7 +43,7 @@ Here's a list of things already supported and things I'm working on.
 - [X] configure charge position and size
 - [X] configure charge mirroring, reversing, and rotation
 - [ ] configure charge number and arrangements
-- [ ] add *semy*
+- [X] add *semy*
 - [X] add configurable *paly divisions*
 - [X] add configurable *chequered divisions*
 - [ ] add undo functionality in the form
