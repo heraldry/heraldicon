@@ -200,9 +200,10 @@
      {:db (update-in db components-path #(-> %
                                              (conj value)
                                              vec))
-      :fx [[:dispatch [:ui-submenu-open (conj components-path index (if (-> value :type namespace (= "heraldry.ordinary.type"))
-                                                                      "Select Ordinary"
-                                                                      "Select Charge"))]]
+      :fx [[:dispatch [:ui-submenu-open (conj components-path index (case (-> value :type namespace)
+                                                                      "heraldry.ordinary.type" "Select Ordinary"
+                                                                      "heraldry.charge.type"   "Select Charge"
+                                                                      "heraldry.component"     "Select Semy"))]]
            [:dispatch [:ui-component-open (conj components-path index)]]
            [:dispatch [:ui-component-open (conj components-path index :field)]]]})))
 

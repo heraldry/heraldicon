@@ -10,6 +10,7 @@
             [heraldry.frontend.form.line :as line]
             [heraldry.frontend.form.ordinary :as ordinary]
             [heraldry.frontend.form.position :as position]
+            [heraldry.frontend.form.semy :as semy]
             [heraldry.frontend.form.shared :as shared]
             heraldry.frontend.form.state
             [heraldry.frontend.form.tincture :as tincture]
@@ -292,7 +293,10 @@
        [:i.fas.fa-plus] " Add ordinary"]
       " "
       [:button {:on-click #(state/dispatch-on-event % [:add-component path default/charge])}
-       [:i.fas.fa-plus] " Add charge"]]
+       [:i.fas.fa-plus] " Add charge"]
+      " "
+      [:button {:on-click #(state/dispatch-on-event % [:add-component path default/semy])}
+       [:i.fas.fa-plus] " Add semy"]]
      [:div.components
       [:ul
        (let [components @(rf/subscribe [:get (conj path :components)])]
@@ -312,13 +316,17 @@
                      {:on-click #(state/dispatch-on-event % [:move-component-up component-path])})
                 [:i.fas.fa-chevron-up]]]
               [:div
-               (if (-> component :type namespace (= "heraldry.ordinary.type"))
-                 [ordinary/form component-path
-                  :parent-field field
-                  :form-for-field form]
-                 [charge/form component-path
-                  :parent-field field
-                  :form-for-field form])]
+               (case (-> component :type namespace)
+                 "heraldry.ordinary.type" [ordinary/form component-path
+                                           :parent-field field
+                                           :form-for-field form]
+                 "heraldry.charge.type"   [charge/form component-path
+                                           :parent-field field
+                                           :form-for-field form]
+                 "heraldry.component"     [semy/form component-path
+                                           :parent-field field
+                                           :form-for-layout form-for-layout
+                                           :form-for-field form])]
               [:div {:style {:padding-left "10px"}}
                (when (not (and (some-> component :type namespace (= "heraldry.charge.type"))
                                (-> component :data)))

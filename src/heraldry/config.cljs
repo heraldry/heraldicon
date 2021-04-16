@@ -20,9 +20,11 @@
 
 (defn get [setting]
   (case setting
-    :region              region
-    :stage               stage
-    :heraldry-url        (heraldry.config/get-static :heraldry-url)
-    :cognito-pool-config (heraldry.config/get-static :cognito-pool-config)
-    :admins              #{"or"}
+    :region                 region
+    :stage                  stage
+    :heraldry-url           (heraldry.config/get-static :heraldry-url)
+    :cognito-pool-config    (heraldry.config/get-static :cognito-pool-config)
+    :admins                 #{"or"}
+    :fleur-de-lis-charge-id (heraldry.config/get-static :fleur-de-lis-charge-id)
     nil))
+

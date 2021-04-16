@@ -36,10 +36,14 @@
                                                       keys
                                                       sort)))])))
 
+(defn encode-semy [component]
+  (str "semy of " (-> component :charge :type util/translate)))
+
 (defn encode-component [component]
-  (if (-> component :type namespace (= "heraldry.ordinary.type"))
-    (encode-ordinary component)
-    (encode-charge component)))
+  (case (-> component :type namespace)
+    "heraldry.ordinary.type" (encode-ordinary component)
+    "heraldry.charge.type"   (encode-charge component)
+    "heraldry.component"     (encode-semy component)))
 
 (defn encode-field [{:keys [components counterchanged?] :as field} & {:keys [root?]}]
   (if counterchanged?

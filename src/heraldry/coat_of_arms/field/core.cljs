@@ -29,6 +29,7 @@
             [heraldry.coat-of-arms.field.type.vairy :as vairy]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
+            [heraldry.coat-of-arms.semy.core :as semy]
             [heraldry.util :as util]))
 
 (defn mandatory-part-count [{:keys [type] :as field}]
@@ -210,11 +211,13 @@
           :transform transform}
       [render-function field environment context]
       (for [[idx element] (map-indexed vector components)]
-        (if (-> element :type namespace (= "heraldry.ordinary.type"))
-          ^{:key idx} [ordinary/render element field environment (-> context
-                                                                     (update :db-path conj :components idx))]
-          ^{:key idx} [charge/render element field environment (-> context
-                                                                   (update :db-path conj :components idx))]))]
+        (case (-> element :type namespace)
+          "heraldry.ordinary.type" ^{:key idx} [ordinary/render element field environment (-> context
+                                                                                              (update :db-path conj :components idx))]
+          "heraldry.charge.type"   ^{:key idx} [charge/render element field environment (-> context
+                                                                                            (update :db-path conj :components idx))]
+          "heraldry.component"     ^{:key idx} [semy/render element environment (-> context
+                                                                                    (update :db-path conj :components idx))]))]
      (when selected?
        [:path {:d     (:shape environment)
                :style {:opacity 0.25}
