@@ -21,6 +21,7 @@
             [heraldry.coat-of-arms.line.type.thorny :as thorny]
             [heraldry.coat-of-arms.line.type.urdy :as urdy]
             [heraldry.coat-of-arms.line.type.wavy :as wavy]
+            [heraldry.coat-of-arms.line.type.wolf-toothed :as wolf-toothed]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
@@ -87,6 +88,7 @@
    #'urdy/pattern
    #'fir-tree-topped/pattern
    #'fir-twigged/pattern
+   #'wolf-toothed/pattern
    #'angled/full
    #'bevilled/full
    #'enarched/full])
@@ -275,6 +277,16 @@
                                   [:flipped?]
                                   [:base-line]
                                   [:fimbriation]])
+      :wolf-toothed (options/pick default-options
+                                  [[:type]
+                                   [:eccentricity]
+                                   [:height]
+                                   [:width]
+                                   [:offset]
+                                   [:flipped?]
+                                   [:base-line]
+                                   [:fimbriation]]
+                                  {[:eccentricity :default] 0.5})
       :angled (options/pick default-options
                             [[:type]
                              [:eccentricity]
