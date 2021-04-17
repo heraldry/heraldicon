@@ -23,8 +23,15 @@
                                                       :line     (when (= key :heraldry.ordinary.type/gore)
                                                                   {:type     :enarched
                                                                    :flipped? true})
-                                                      :geometry (when (= key :heraldry.ordinary.type/pile)
-                                                                  {:stretch 0.85})
+                                                      :origin   (case key
+                                                                  :heraldry.ordinary.type/label {:alignment :left}
+                                                                  nil)
+                                                      :geometry (case key
+                                                                  :heraldry.ordinary.type/label {:width     75
+                                                                                                 :size      12
+                                                                                                 :thickness 20}
+                                                                  :heraldry.ordinary.type/pile  {:stretch 0.85}
+                                                                  nil)
                                                       :field    {:type     :heraldry.field.type/plain
                                                                  :tincture (if (= current key) :or :azure)}}]}}
                           100
