@@ -70,7 +70,7 @@
      :line-start (v/v 0 line-base)}))
 
 (def lines
-  [#'straight/pattern
+  [#'straight/full
    #'invected/pattern
    #'engrailed/pattern
    #'embattled/pattern
