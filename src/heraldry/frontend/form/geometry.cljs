@@ -26,6 +26,18 @@
        (when (:size-mode options)
          [element/radio-select (conj path :size-mode) (-> options :size-mode :choices)
           :default (-> options :size-mode :default)])
+       (when (:width options)
+         [element/range-input-with-checkbox (conj path :width) "Width"
+          (-> options :width :min)
+          (-> options :width :max)
+          :default (options/get-value (:width current) (:width options))
+          :display-function #(str % "%")])
+       (when (:thickness options)
+         [element/range-input-with-checkbox (conj path :thickness) "Thickness"
+          (-> options :thickness :min)
+          (-> options :thickness :max)
+          :default (options/get-value (:thickness current) (:thickness options))
+          :display-function #(str % "%")])
        (when (:size options)
          [element/range-input-with-checkbox (conj path :size) "Size"
           (-> options :size :min)
@@ -40,6 +52,12 @@
           (-> options :stretch :max)
           :step 0.01
           :default (options/get-value (:stretch current) (:stretch options))])
+       (when (:eccentricity options)
+         [element/range-input-with-checkbox (conj path :eccentricity) "Eccentricity"
+          (-> options :eccentricity :min)
+          (-> options :eccentricity :max)
+          :step 0.01
+          :default (options/get-value (:eccentricity current) (:eccentricity options))])
        (when (:mirrored? options)
          [element/checkbox (conj path :mirrored?) "Mirrored"])
        (when (:reversed? options)
