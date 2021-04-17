@@ -269,8 +269,7 @@
                                               :max 16
                                               :default 3}
                                [:fimbriation] (-> line/default-options
-                                                  :fimbriation
-                                                  #_(dissoc :alignment))
+                                                  :fimbriation)
                                [:geometry :size :min] 2
                                [:geometry :size :default] 10
                                [:geometry :width] {:type :range
