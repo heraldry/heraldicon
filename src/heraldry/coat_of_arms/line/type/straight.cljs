@@ -1,8 +1,9 @@
 (ns heraldry.coat-of-arms.line.type.straight)
 
-(defn pattern
+(defn full
   {:display-name "Straight"
-   :value :straight}
+   :value :straight
+   :full? true}
   [{:keys [width]}
    _line-options]
   {:pattern ["h" width]
