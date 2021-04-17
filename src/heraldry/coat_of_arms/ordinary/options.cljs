@@ -255,7 +255,40 @@
                                        [:anchor :point :default] :top-left
                                        [:anchor :angle :min]     -80
                                        [:anchor :angle :max]     80
-                                       [:anchor :alignment]      nil}))
+                                       [:anchor :alignment]      nil})
+         :label         (options/pick default-options
+                                      [[:origin]
+                                       [:geometry]]
+                                      {[:origin :point :default]  :chief
+                                       [:variant]                 {:type    :choice
+                                                                   :choices [["Full" :full]
+                                                                             ["Truncated" :truncated]]
+                                                                   :default :full}
+                                       [:num-points]              {:type    :range
+                                                                   :min     2
+                                                                   :max     16
+                                                                   :default 3}
+                                       [:fimbriation]             (-> line/default-options
+                                                                      :fimbriation
+                                                                      #_(dissoc :alignment))
+                                       [:geometry :size :min]     2
+                                       [:geometry :size :default] 10
+                                       [:geometry :width]         {:type    :range
+                                                                   :min     10
+                                                                   :max     150
+                                                                   :default 66}
+                                       [:geometry :thickness]     {:type    :range
+                                                                   :min     0
+                                                                   :max     20
+                                                                   :default 5}
+                                       [:geometry :eccentricity]  {:type    :range
+                                                                   :min     0
+                                                                   :max     1
+                                                                   :default 0}
+                                       [:geometry :stretch]       {:type    :range
+                                                                   :min     0.33
+                                                                   :max     10
+                                                                   :default 2}}))
        (update-in [:line] (fn [line]
                             (when line
                               (set-line-defaults line))))
