@@ -11,7 +11,7 @@
 
 (defn render
   {:display-name "Quarterly 2x2"
-   :value         :heraldry.field.type/quartered
+   :value        :heraldry.field.type/quartered
    :parts        ["I" "II" "III" "IV"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]}           (options/sanitize field (field-options/options field))
@@ -43,48 +43,48 @@
                                             (v/* full-arm-length)
                                             (v/+ origin-point))
         point-bottom                    (-> (v/v 0 1)
-                                               (v/* full-arm-length)
-                                               (v/+ origin-point))
+                                            (v/* full-arm-length)
+                                            (v/+ origin-point))
         point-left                      (-> (v/v -1 0)
-                                             (v/* full-arm-length)
-                                             (v/+ origin-point))
+                                            (v/* full-arm-length)
+                                            (v/+ origin-point))
         point-right                     (-> (v/v 1 0)
-                                              (v/* full-arm-length)
-                                              (v/+ origin-point))
+                                            (v/* full-arm-length)
+                                            (v/+ origin-point))
         line                            (-> line
                                             (dissoc :fimbriation))
         {line-top       :line
          line-top-start :line-start}    (line/create line
-                                                      origin-point point-top
-                                                      :reversed? true
-                                                      :real-start 0
-                                                      :real-end arm-length
-                                                      :render-options render-options
-                                                      :environment environment)
+                                                     origin-point point-top
+                                                     :reversed? true
+                                                     :real-start 0
+                                                     :real-end arm-length
+                                                     :render-options render-options
+                                                     :environment environment)
         {line-right       :line
          line-right-start :line-start}  (line/create opposite-line
-                                                      origin-point point-right
-                                                      :flipped? true
-                                                      :real-start 0
-                                                      :real-end arm-length
-                                                      :render-options render-options
-                                                      :environment environment)
+                                                     origin-point point-right
+                                                     :flipped? true
+                                                     :real-start 0
+                                                     :real-end arm-length
+                                                     :render-options render-options
+                                                     :environment environment)
         {line-bottom       :line
          line-bottom-start :line-start} (line/create line
-                                                      origin-point point-bottom
-                                                      :reversed? true
-                                                      :real-start 0
-                                                      :real-end arm-length
-                                                      :render-options render-options
-                                                      :environment environment)
+                                                     origin-point point-bottom
+                                                     :reversed? true
+                                                     :real-start 0
+                                                     :real-end arm-length
+                                                     :render-options render-options
+                                                     :environment environment)
         {line-left       :line
          line-left-start :line-start}   (line/create opposite-line
-                                                      origin-point point-left
-                                                      :flipped? true
-                                                      :real-start 0
-                                                      :real-end arm-length
-                                                      :render-options render-options
-                                                      :environment environment)
+                                                     origin-point point-left
+                                                     :flipped? true
+                                                     :real-start 0
+                                                     :real-end arm-length
+                                                     :render-options render-options
+                                                     :environment environment)
         parts                           [[["M" (v/+ point-top
                                                     line-top-start)
                                            (svg/stitch line-top)
