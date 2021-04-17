@@ -62,7 +62,9 @@
 
 (defn options [field]
   (when field
-    (let [line-style (line/options (:line field))]
+    (let [line-style (line/options (:line field))
+          opposite-line-style (line/options {:type (-> field :opposite-line :type (or (-> field :line :type)))})
+          extra-line-style (line/options {:type (-> field :extra-line :type (or (-> field :line :type)))})]
       (-> (case (-> field :type name keyword)
             :per-pale (options/pick default-options
                                     [[:line]
@@ -147,7 +149,7 @@
                                        {[:line] (-> line-style
                                                     (options/override-if-exists [:offset :min] 0)
                                                     (options/override-if-exists [:base-line] nil))
-                                        [:opposite-line] (-> line-style
+                                        [:opposite-line] (-> opposite-line-style
                                                              (options/override-if-exists [:offset :min] 0)
                                                              (options/override-if-exists [:base-line] nil))
                                         [:anchor :point :choices] (case (-> field :variant (or :base))
@@ -178,7 +180,7 @@
                                       {[:line] (-> line-style
                                                    (options/override-if-exists [:offset :min] 0)
                                                    (options/override-if-exists [:base-line] nil))
-                                       [:opposite-line] (-> line-style
+                                       [:opposite-line] (-> opposite-line-style
                                                             (options/override-if-exists [:offset :min] 0)
                                                             (options/override-if-exists [:base-line] nil))
                                        [:geometry] {:size {:type :range
@@ -226,7 +228,7 @@
                                                     (options/override-if-exists [:offset :min] 0)
                                                     (options/override-if-exists [:base-line] nil)
                                                     (dissoc :fimbriation))
-                                        [:opposite-line] (-> line-style
+                                        [:opposite-line] (-> opposite-line-style
                                                              (options/override-if-exists [:offset :min] 0)
                                                              (options/override-if-exists [:base-line] nil)
                                                              (dissoc :fimbriation))
@@ -244,7 +246,7 @@
                                                   (options/override-if-exists [:offset :min] 0)
                                                   (options/override-if-exists [:base-line] nil)
                                                   (dissoc :fimbriation))
-                                      [:opposite-line] (-> line-style
+                                      [:opposite-line] (-> opposite-line-style
                                                            (options/override-if-exists [:offset :min] 0)
                                                            (options/override-if-exists [:base-line] nil)
                                                            (dissoc :fimbriation))})
@@ -267,7 +269,7 @@
                                                 (options/override-if-exists [:offset :min] 0)
                                                 (options/override-if-exists [:base-line] nil)
                                                 (dissoc :fimbriation))
-                                    [:opposite-line] (-> line-style
+                                    [:opposite-line] (-> opposite-line-style
                                                          (options/override-if-exists [:offset :min] 0)
                                                          (options/override-if-exists [:base-line] nil)
                                                          (dissoc :fimbriation))
@@ -448,11 +450,11 @@
                                                            (options/override-if-exists [:offset :min] 0)
                                                            (options/override-if-exists [:base-line] nil)
                                                            (dissoc :fimbriation))
-                                               [:opposite-line] (-> line-style
+                                               [:opposite-line] (-> opposite-line-style
                                                                     (options/override-if-exists [:offset :min] 0)
                                                                     (options/override-if-exists [:base-line] nil)
                                                                     (dissoc :fimbriation))
-                                               [:extra-line] (-> line-style
+                                               [:extra-line] (-> extra-line-style
                                                                  (options/override-if-exists [:offset :min] 0)
                                                                  (options/override-if-exists [:base-line] nil)
                                                                  (dissoc :fimbriation))
@@ -469,11 +471,11 @@
                                                                     (options/override-if-exists [:offset :min] 0)
                                                                     (options/override-if-exists [:base-line] nil)
                                                                     (dissoc :fimbriation))
-                                                        [:opposite-line] (-> line-style
+                                                        [:opposite-line] (-> opposite-line-style
                                                                              (options/override-if-exists [:offset :min] 0)
                                                                              (options/override-if-exists [:base-line] nil)
                                                                              (dissoc :fimbriation))
-                                                        [:extra-line] (-> line-style
+                                                        [:extra-line] (-> extra-line-style
                                                                           (options/override-if-exists [:offset :min] 0)
                                                                           (options/override-if-exists [:base-line] nil)
                                                                           (dissoc :fimbriation))

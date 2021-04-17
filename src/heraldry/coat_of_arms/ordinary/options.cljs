@@ -30,7 +30,8 @@
 
 (defn options [ordinary]
   (when ordinary
-    (let [line-style (line/options (:line ordinary))]
+    (let [line-style (line/options (:line ordinary))
+          opposite-line-style (line/options {:type (-> ordinary :opposite-line :type (or (-> ordinary :line :type)))})]
       (->
        (case (-> ordinary :type name keyword)
          :pale (options/pick default-options
@@ -39,14 +40,16 @@
                               [:opposite-line]
                               [:geometry]]
                              {[:offset-y] nil
-                              [:line] line-style})
+                              [:line] line-style
+                              [:opposite-line] opposite-line-style})
          :fess (options/pick default-options
                              [[:origin]
                               [:line]
                               [:opposite-line]
                               [:geometry]]
                              {[:offset-x] nil
-                              [:line] line-style})
+                              [:line] line-style
+                              [:opposite-line] opposite-line-style})
          :chief (options/pick default-options
                               [[:line]
                                [:geometry]]
@@ -70,6 +73,7 @@
                                                          position/anchor-point-choices
                                                          (conj useful-points :angle))]
                                {[:line] line-style
+                                [:opposite-line] opposite-line-style
                                 [:origin :point :choices] point-choices
                                 [:origin :point :default] :top-left
                                 [:anchor :point :choices] (case (-> ordinary :origin :point (or :top-left))
@@ -103,6 +107,7 @@
                                                                   position/anchor-point-choices
                                                                   (conj useful-points :angle))]
                                         {[:line] line-style
+                                         [:opposite-line] opposite-line-style
                                          [:origin :point :choices] point-choices
                                          [:origin :point :default] :top-left
                                          [:anchor :point :choices] (case (-> ordinary :origin :point (or :top-right))
@@ -131,7 +136,7 @@
                                 {[:line] (-> line-style
                                              (options/override-if-exists [:offset :min] 0)
                                              (options/override-if-exists [:base-line] nil))
-                                 [:opposite-line] (-> line-style
+                                 [:opposite-line] (-> opposite-line-style
                                                       (options/override-if-exists [:offset :min] 0)
                                                       (options/override-if-exists [:base-line] nil))
                                  [:anchor :point :choices] (case (-> ordinary :variant (or :base))
@@ -162,7 +167,7 @@
                                {[:line] (-> line-style
                                             (options/override-if-exists [:offset :min] 0)
                                             (options/override-if-exists [:base-line] nil))
-                                [:opposite-line] (-> line-style
+                                [:opposite-line] (-> opposite-line-style
                                                      (options/override-if-exists [:offset :min] 0)
                                                      (options/override-if-exists [:base-line] nil))
                                 [:geometry :size-mode] {:type :choice
@@ -239,7 +244,7 @@
                                           (options/override-if-exists [:base-line] nil)
                                           (options/override-if-exists [:type :default] :enarched)
                                           (options/override-if-exists [:flipped? :default] true))
-                              [:opposite-line] (-> line-style
+                              [:opposite-line] (-> opposite-line-style
                                                    (options/override-if-exists [:offset :min] 0)
                                                    (options/override-if-exists [:base-line] nil)
                                                    (options/override-if-exists [:type :default] :enarched)
