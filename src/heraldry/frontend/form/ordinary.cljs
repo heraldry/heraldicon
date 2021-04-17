@@ -74,6 +74,11 @@
            [element/select (conj path :variant)
             "Variant"
             (-> ordinary-options :variant :choices)])
+         (when (-> ordinary-options :num-points)
+           [element/range-input-with-checkbox (conj path :num-points) "Points"
+            (-> ordinary-options :num-points :min)
+            (-> ordinary-options :num-points :max)
+            :default (options/get-value (:num-points ordinary) (:num-points ordinary-options))])
          (when (:origin ordinary-options)
            [position/form (conj path :origin)
             :title "Origin"
@@ -85,6 +90,8 @@
          (when (:geometry ordinary-options)
            [geometry/form (conj path :geometry)
             (:geometry ordinary-options)
-            :current (:geometry ordinary)])])
+            :current (:geometry ordinary)])
+         (when (:fimbriation ordinary-options)
+           [line/form-for-fimbriation (conj path :fimbriation) (:fimbriation ordinary-options)])])
       [element/checkbox (conj path :hints :outline?) "Outline"]]
      [form-for-field (conj path :field) :parent-field parent-field]]))
