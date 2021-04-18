@@ -376,8 +376,8 @@
         effective-flipped? (or (and flipped? (not line-flipped?))
                                (and (not flipped?) line-flipped?))
         [line-start line-end] (if effective-flipped?
-                                [(v/dot line-end (v/v 1 -1))
-                                 (v/dot line-start (v/v 1 -1))]
+                                [(v/dot line-start (v/v 1 -1))
+                                 (v/dot line-end (v/v 1 -1))]
                                 [line-start line-end])]
     (-> line-data
         (assoc :line
