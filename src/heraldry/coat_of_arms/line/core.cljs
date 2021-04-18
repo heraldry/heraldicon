@@ -17,6 +17,7 @@
             [heraldry.coat-of-arms.line.type.nebuly :as nebuly]
             [heraldry.coat-of-arms.line.type.potenty :as potenty]
             [heraldry.coat-of-arms.line.type.raguly :as raguly]
+            [heraldry.coat-of-arms.line.type.rayonny-flaming :as rayonny-flaming]
             [heraldry.coat-of-arms.line.type.straight :as straight]
             [heraldry.coat-of-arms.line.type.thorny :as thorny]
             [heraldry.coat-of-arms.line.type.urdy :as urdy]
@@ -89,6 +90,7 @@
    #'fir-tree-topped/pattern
    #'fir-twigged/pattern
    #'wolf-toothed/pattern
+   #'rayonny-flaming/pattern
    #'angled/full
    #'bevilled/full
    #'enarched/full])
