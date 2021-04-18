@@ -6,8 +6,8 @@
   (let [length (-> direction
                    v/abs
                    (/ 2))
-        middle-height (* length (util/map-to-interval eccentricity 0.3 0.1))
-        anchor1-height (- (* length (util/map-to-interval eccentricity 0.3 0.7)))
+        middle-height (* length (util/map-to-interval eccentricity -0.1 0.2))
+        anchor1-height (- (* length (util/map-to-interval eccentricity 0.1 0.9)))
         angle (v/angle-to-point (v/v 0 0) direction)
         anchor1 (v/v (* length 0.5) anchor1-height)
         anchor2 (v/v (* length 0.75) (- middle-height))
