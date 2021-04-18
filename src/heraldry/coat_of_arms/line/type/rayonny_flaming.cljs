@@ -35,10 +35,10 @@
            height
            width]}
    _line-options]
-  (let [half-width (/ width 4)
-        height     (* 1.2 width height)
-        line-up    (curvy-line (v/v half-width (- height)) eccentricity true)
-        line-down  (curvy-line (v/v half-width height) eccentricity false)]
+  (let [quarter-width (/ width 4)
+        height        (* 1.2 width height)
+        line-up       (curvy-line (v/v quarter-width (- height)) eccentricity true)
+        line-down     (curvy-line (v/v quarter-width height) eccentricity false)]
     {:pattern (concat line-up line-down line-up line-down)
      :min     (- height)
      :max     0}))
