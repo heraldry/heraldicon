@@ -56,6 +56,7 @@
          line-top-right-start :line-start} (line/create opposite-line
                                                         origin-point diagonal-top-right
                                                         :flipped? true
+                                                        :mirrored? true
                                                         :real-start 0
                                                         :real-end arm-length
                                                         :render-options render-options
@@ -72,6 +73,7 @@
          line-bottom-left-start :line-start} (line/create opposite-line
                                                           origin-point diagonal-bottom-left
                                                           :flipped? true
+                                                          :mirrored? true
                                                           :real-start 0
                                                           :real-end arm-length
                                                           :render-options render-options

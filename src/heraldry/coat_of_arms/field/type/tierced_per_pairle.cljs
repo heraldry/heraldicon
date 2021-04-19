@@ -61,6 +61,7 @@
          line-top-right-start :line-start} (line/create opposite-line
                                                         origin-point diagonal-top-right
                                                         :flipped? true
+                                                        :mirrored? true
                                                         :real-start 0
                                                         :real-end end
                                                         :render-options render-options
@@ -69,6 +70,7 @@
          line-bottom-start :line-start} (line/create extra-line
                                                      origin-point bottom
                                                      :flipped? true
+                                                     :mirrored? true
                                                      :render-options render-options
                                                      :environment environment)
         {line-bottom-reversed :line

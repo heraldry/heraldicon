@@ -63,6 +63,7 @@
          line-bottom-left-start :line-start} (line/create opposite-line
                                                           origin-point diagonal-bottom-left
                                                           :flipped? true
+                                                          :mirrored? true
                                                           :real-start 0
                                                           :real-end end
                                                           :render-options render-options
@@ -71,12 +72,14 @@
          line-top-start :line-start} (line/create extra-line
                                                   origin-point top
                                                   :flipped? true
+                                                  :mirrored? true
                                                   :render-options render-options
                                                   :environment environment)
         {line-top-reversed :line
          line-top-reversed-start :line-start} (line/create extra-line
                                                            origin-point top
                                                            :reversed? true
+                                                           :mirrored? true
                                                            :render-options render-options
                                                            :environment environment)
         parts [[["M" (v/+ top
