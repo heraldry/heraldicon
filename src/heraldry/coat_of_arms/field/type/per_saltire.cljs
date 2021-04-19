@@ -12,7 +12,7 @@
 
 (defn render
   {:display-name "Per saltire"
-   :value         :heraldry.field.type/per-saltire
+   :value        :heraldry.field.type/per-saltire
    :parts        ["chief" "dexter" "sinister" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor]}                 (options/sanitize field (field-options/options field))
@@ -46,36 +46,38 @@
                                                          (dissoc :fimbriation))
         {line-top-left       :line
          line-top-left-start :line-start}            (line/create line
-                                                                   origin-point diagonal-top-left
-                                                                   :reversed? true
-                                                                   :real-start 0
-                                                                   :real-end arm-length
-                                                                   :render-options render-options
-                                                                   :environment environment)
+                                                                  origin-point diagonal-top-left
+                                                                  :reversed? true
+                                                                  :real-start 0
+                                                                  :real-end arm-length
+                                                                  :render-options render-options
+                                                                  :environment environment)
         {line-top-right       :line
          line-top-right-start :line-start}           (line/create opposite-line
-                                                                   origin-point diagonal-top-right
-                                                                   :flipped? true
-                                                                   :real-start 0
-                                                                   :real-end arm-length
-                                                                   :render-options render-options
-                                                                   :environment environment)
+                                                                  origin-point diagonal-top-right
+                                                                  :flipped? true
+                                                                  :mirrored? true
+                                                                  :real-start 0
+                                                                  :real-end arm-length
+                                                                  :render-options render-options
+                                                                  :environment environment)
         {line-bottom-right       :line
          line-bottom-right-start :line-start}        (line/create line
-                                                                   origin-point diagonal-bottom-right
-                                                                   :reversed? true
-                                                                   :real-start 0
-                                                                   :real-end arm-length
-                                                                   :render-options render-options
-                                                                   :environment environment)
+                                                                  origin-point diagonal-bottom-right
+                                                                  :reversed? true
+                                                                  :real-start 0
+                                                                  :real-end arm-length
+                                                                  :render-options render-options
+                                                                  :environment environment)
         {line-bottom-left       :line
          line-bottom-left-start :line-start}         (line/create opposite-line
-                                                                   origin-point diagonal-bottom-left
-                                                                   :flipped? true
-                                                                   :real-start 0
-                                                                   :real-end arm-length
-                                                                   :render-options render-options
-                                                                   :environment environment)
+                                                                  origin-point diagonal-bottom-left
+                                                                  :flipped? true
+                                                                  :mirrored? true
+                                                                  :real-start 0
+                                                                  :real-end arm-length
+                                                                  :render-options render-options
+                                                                  :environment environment)
         ;; TODO: sub fields need better environment determination, especially with an adjusted origin,
         ;; the resulting environments won't be very well centered
         parts                                        [[["M" (v/+ diagonal-top-left

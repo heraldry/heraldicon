@@ -314,5 +314,8 @@
        (-> ordinary options :opposite-line))
       (assoc :flipped? (if (-> ordinary :opposite-line :flipped?)
                          (not (:flipped? line))
-                         (:flipped? line)))))
+                         (:flipped? line)))
+      (assoc :mirrored? (if (-> ordinary :opposite-line :mirrored?)
+                          (not (:mirrored? line))
+                          (:mirrored? line)))))
 

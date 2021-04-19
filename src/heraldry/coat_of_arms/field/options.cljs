@@ -499,7 +499,10 @@
        (-> field options :opposite-line))
       (assoc :flipped? (if (-> field :opposite-line :flipped?)
                          (not (:flipped? line))
-                         (:flipped? line)))))
+                         (:flipped? line)))
+      (assoc :mirrored? (if (-> field :opposite-line :mirrored?)
+                          (not (:mirrored? line))
+                          (:mirrored? line)))))
 
 (defn sanitize-extra-line [field line]
   (-> (options/sanitize
@@ -512,5 +515,8 @@
        (-> field options :extra-line))
       (assoc :flipped? (if (-> field :extra-line :flipped?)
                          (not (:flipped? line))
-                         (:flipped? line)))))
+                         (:flipped? line)))
+      (assoc :mirrored? (if (-> field :extra-line :mirrored?)
+                          (not (:mirrored? line))
+                          (:mirrored? line)))))
 

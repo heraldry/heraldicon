@@ -11,7 +11,7 @@
 
 (defn render
   {:display-name "Tierced per fess"
-   :value         :heraldry.field.type/tierced-per-fess
+   :value        :heraldry.field.type/tierced-per-fess
    :parts        ["chief" "fess" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line layout origin]}      (options/sanitize field (field-options/options field))
@@ -50,20 +50,21 @@
         second-right                      (v/v shared-end-x (:y second-right))
         {line-one       :line
          line-one-start :line-start}      (line/create line
-                                                        first-left first-right
-                                                        :real-start real-start
-                                                        :real-end real-end
-                                                        :render-options render-options
-                                                        :environment environment)
+                                                       first-left first-right
+                                                       :real-start real-start
+                                                       :real-end real-end
+                                                       :render-options render-options
+                                                       :environment environment)
         {line-reversed       :line
          line-reversed-start :line-start} (line/create line
-                                                        second-left second-right
-                                                        :reversed? true
-                                                        :flipped? true
-                                                        :real-start real-start
-                                                        :real-end real-end
-                                                        :render-options render-options
-                                                        :environment environment)
+                                                       second-left second-right
+                                                       :reversed? true
+                                                       :flipped? true
+                                                       :mirrored? true
+                                                       :real-start real-start
+                                                       :real-end real-end
+                                                       :render-options render-options
+                                                       :environment environment)
         parts                             [[["M" (v/+ first-left
                                                       line-one-start)
                                              (svg/stitch line-one)

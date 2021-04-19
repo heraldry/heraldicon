@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.line.core
   (:require ["svgpath" :as svgpath]
+            [clojure.string :as s]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.line.type.angled :as angled]
             [heraldry.coat-of-arms.line.type.bevilled :as bevilled]
@@ -42,12 +43,27 @@
                       0)]
     line-base))
 
-(defn pattern-line-with-offset [{pattern-width :width
-                                 line-offset   :offset
-                                 :as           line}
-                                length line-function line-options]
+(defn pattern-line-with-offset [{pattern-width  :width
+                                 line-offset    :offset
+                                 line-mirrored? :mirrored?
+                                 :as            line}
+                                length line-function {:keys [reversed? mirrored?] :as line-options}]
   (let [{line-pattern :pattern
          :as          pattern-data} (line-function line line-options)
+        effective-mirrored?         (-> line-mirrored?
+                                        (util/xor mirrored?)
+                                        (util/xor reversed?))
+        line-pattern                (if effective-mirrored?
+                                      [(-> line-pattern
+                                           (->> (into ["M" 0 0]))
+                                           svg/make-path
+                                           svg/reverse-path
+                                           :path
+                                           svgpath
+                                           (.scale -1 1)
+                                           .toString
+                                           (s/replace "M0 0" ""))]
+                                      line-pattern)
         line-base                   (line-base line pattern-data)
         offset-length               (* line-offset pattern-width)
         repetitions                 (-> length
@@ -158,6 +174,8 @@
    :base-line    {:type    :choice
                   :choices base-line-choices
                   :default :middle}
+   :mirrored?    {:type    :boolean
+                  :default false}
    :flipped?     {:type    :boolean
                   :default false}
    :fimbriation  {:mode        {:type    :choice
@@ -254,6 +272,15 @@
                                            [:flipped?]
                                            [:base-line]
                                            [:fimbriation]])
+      :dovetailed           (options/pick default-options
+                                          [[:type]
+                                           [:eccentricity]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]])
       :dancetty             (options/pick default-options
                                           [[:type]
                                            [:height]
@@ -269,12 +296,31 @@
                                            [:height]
                                            [:width]
                                            [:offset]
+                                           [:mirrored?]
                                            [:flipped?]
                                            [:base-line]
                                            [:fimbriation]]
                                           {[:width :default] 20})
+      :urdy                 (options/pick default-options
+                                          [[:type]
+                                           [:eccentricity]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]])
       :fir-twigged          (options/pick default-options
                                           [[:type]
+                                           [:height]
+                                           [:width]
+                                           [:offset]
+                                           [:flipped?]
+                                           [:base-line]
+                                           [:fimbriation]])
+      :fir-tree-topped      (options/pick default-options
+                                          [[:type]
+                                           [:eccentricity]
                                            [:height]
                                            [:width]
                                            [:offset]
@@ -287,6 +333,7 @@
                                            [:height]
                                            [:width]
                                            [:offset]
+                                           [:mirrored?]
                                            [:flipped?]
                                            [:base-line]
                                            [:fimbriation]]
@@ -327,6 +374,7 @@
                      [:height]
                      [:width]
                      [:offset]
+                     [:mirrored?]
                      [:flipped?]
                      [:base-line]
                      [:fimbriation]]))))
@@ -373,8 +421,7 @@
                                        (v/dot line-start (v/v -1 1))]
                                       [line-start line-end])
         line-flipped?               (:flipped? line-options-values)
-        effective-flipped?          (or (and flipped? (not line-flipped?))
-                                        (and (not flipped?) line-flipped?))
+        effective-flipped?          (heraldry.util/xor flipped? line-flipped?)
         [line-start line-end]       (if effective-flipped?
                                       [(v/dot line-start (v/v 1 -1))
                                        (v/dot line-end (v/v 1 -1))]

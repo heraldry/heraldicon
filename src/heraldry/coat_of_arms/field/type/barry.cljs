@@ -33,23 +33,24 @@
         {line-right       :line
          line-right-start :line-start
          line-right-end   :line-end} (line/create line
-                                                   top-left
-                                                   (v/+ top-left (v/v width 0))
-                                                   :real-start 0
-                                                   :real-end width
-                                                   :render-options render-options
-                                                   :environment environment)
+                                                  top-left
+                                                  (v/+ top-left (v/v width 0))
+                                                  :real-start 0
+                                                  :real-end width
+                                                  :render-options render-options
+                                                  :environment environment)
         {line-left       :line
          line-left-start :line-start
          line-left-end   :line-end}  (line/create line
-                                                   top-left
-                                                   (v/+ top-left (v/v width 0))
-                                                   :flipped? true
-                                                   :reversed? true
-                                                   :real-start 0
-                                                   :real-end width
-                                                   :render-options render-options
-                                                   :environment environment)
+                                                  top-left
+                                                  (v/+ top-left (v/v width 0))
+                                                  :flipped? true
+                                                  :mirrored? true
+                                                  :reversed? true
+                                                  :real-start 0
+                                                  :real-end width
+                                                  :render-options render-options
+                                                  :environment environment)
         parts                        (->> (range num-fields-y)
                                           (map (fn [i]
                                                  (let [y1             (+ y0 (* i bar-height))
@@ -157,7 +158,7 @@
 
 (defn render
   {:display-name "Barry"
-   :value         :heraldry.field.type/barry
+   :value        :heraldry.field.type/barry
    :parts        []}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line layout]}    (options/sanitize field (field-options/options field))

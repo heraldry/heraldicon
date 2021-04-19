@@ -13,7 +13,7 @@
 
 (defn render
   {:display-name "Tierced per pairle"
-   :value         :heraldry.field.type/tierced-per-pairle
+   :value        :heraldry.field.type/tierced-per-pairle
    :parts        ["chief" "dexter" "sinister"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor]}             (options/sanitize field (field-options/options field))
@@ -51,32 +51,34 @@
         end                                      (max end-left end-right)
         {line-top-left       :line
          line-top-left-start :line-start}        (line/create line
-                                                               origin-point diagonal-top-left
-                                                               :reversed? true
-                                                               :real-start 0
-                                                               :real-end end
-                                                               :render-options render-options
-                                                               :environment environment)
+                                                              origin-point diagonal-top-left
+                                                              :reversed? true
+                                                              :real-start 0
+                                                              :real-end end
+                                                              :render-options render-options
+                                                              :environment environment)
         {line-top-right       :line
          line-top-right-start :line-start}       (line/create opposite-line
-                                                               origin-point diagonal-top-right
-                                                               :flipped? true
-                                                               :real-start 0
-                                                               :real-end end
-                                                               :render-options render-options
-                                                               :environment environment)
+                                                              origin-point diagonal-top-right
+                                                              :flipped? true
+                                                              :mirrored? true
+                                                              :real-start 0
+                                                              :real-end end
+                                                              :render-options render-options
+                                                              :environment environment)
         {line-bottom       :line
          line-bottom-start :line-start}          (line/create extra-line
-                                                               origin-point bottom
-                                                               :flipped? true
-                                                               :render-options render-options
-                                                               :environment environment)
+                                                              origin-point bottom
+                                                              :flipped? true
+                                                              :mirrored? true
+                                                              :render-options render-options
+                                                              :environment environment)
         {line-bottom-reversed       :line
          line-bottom-reversed-start :line-start} (line/create extra-line
-                                                               origin-point bottom
-                                                               :reversed? true
-                                                               :render-options render-options
-                                                               :environment environment)
+                                                              origin-point bottom
+                                                              :reversed? true
+                                                              :render-options render-options
+                                                              :environment environment)
         parts                                    [[["M" (v/+ diagonal-top-left
                                                              line-top-left-start)
                                                     (svg/stitch line-top-left)
