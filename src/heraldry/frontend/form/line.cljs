@@ -188,6 +188,8 @@
         [element/radio-select (conj path :base-line) (-> options :base-line :choices)
          :default (or (:base-line defaults) (-> options :base-line :default))
          :label "Base line"])
+      (when (:mirrored? options)
+        [element/checkbox (conj path :mirrored?) "Mirrored"])
       (when (:flipped? options)
         [element/checkbox (conj path :flipped?) "Flipped"])
       (when (:fimbriation options)

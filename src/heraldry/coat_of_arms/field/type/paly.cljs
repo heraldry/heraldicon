@@ -45,6 +45,7 @@
                                              top-left
                                              (v/+ top-left (v/v 0 height))
                                              :flipped? true
+                                             :mirrored? true
                                              :reversed? true
                                              :real-start 0
                                              :real-end height

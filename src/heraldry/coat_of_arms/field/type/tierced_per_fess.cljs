@@ -60,6 +60,7 @@
                                                        second-left second-right
                                                        :reversed? true
                                                        :flipped? true
+                                                       :mirrored? true
                                                        :real-start real-start
                                                        :real-end real-end
                                                        :render-options render-options
