@@ -45,6 +45,7 @@
                                                top-left
                                                (v/+ top-left (v/v width 0))
                                                :flipped? true
+                                               :mirrored? true
                                                :reversed? true
                                                :real-start 0
                                                :real-end width

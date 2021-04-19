@@ -113,6 +113,7 @@
         {line-top-left :line} (line/create line
                                            origin-point point-top-left
                                            :flipped? true
+                                           :mirrored? true
                                            :real-start 0
                                            :real-end arm-length
                                            :render-options render-options
@@ -120,6 +121,7 @@
         {line-top-right :line} (line/create line
                                             origin-point point-top-right
                                             :flipped? true
+                                            :mirrored? true
                                             :real-start 0
                                             :real-end arm-length
                                             :render-options render-options
@@ -127,6 +129,7 @@
         {line-bottom-right :line} (line/create line
                                                origin-point point-bottom-right
                                                :flipped? true
+                                               :mirrored? true
                                                :real-start 0
                                                :real-end arm-length
                                                :render-options render-options
@@ -134,6 +137,7 @@
         {line-bottom-left :line} (line/create line
                                               origin-point point-bottom-left
                                               :flipped? true
+                                              :mirrored? true
                                               :real-start 0
                                               :real-end arm-length
                                               :render-options render-options
