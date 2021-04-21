@@ -138,7 +138,7 @@
       [:span {:style {:margin-left "1em"}} (cond-> value
                                              display-function display-function)]]]))
 
-(defn text-field [path label & {:keys [on-change default]}]
+(defn text-field [path label & {:keys [on-change default style]}]
   (let [current-value (or @(rf/subscribe [:get path])
                           default)
         input-id      (id "input")]
@@ -147,6 +147,7 @@
      [:input {:id        input-id
               :type      "text"
               :value     current-value
+              :style     style
               :on-change #(let [value (-> % .-target .-value)]
                             (if on-change
                               (on-change value)
