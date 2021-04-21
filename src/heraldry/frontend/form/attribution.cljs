@@ -11,7 +11,8 @@
         "Presets"
         [["-- auto fill for --" :none]
          ["WappenWiki" :wappenwiki]
-         ["Wikimedia" :wikimedia]]
+         ["Wikimedia" :wikimedia]
+         ["Encyclopedia Heraldica" :encyclopedia-heraldica]]
         :on-change (fn [value]
                      (case value
                        :wappenwiki (rf/dispatch [:set
@@ -32,6 +33,18 @@
                                                     (assoc :license-version :v4)
                                                     (assoc :source-license :cc-attribution-share-alike)
                                                     (assoc :source-license-version :v3))])
+                       :encyclopedia-heraldica (rf/dispatch [:set
+                                                             db-path
+                                                             (-> current-data
+                                                                 (assoc :nature :derivative)
+                                                                 (assoc :license :cc-attribution-share-alike)
+                                                                 (assoc :license-version :v4)
+                                                                 (assoc :source-license :cc-attribution-share-alike)
+                                                                 (assoc :source-license-version :v4)
+                                                                 (assoc :source-link "https://1drv.ms/u/s!Anj4BrtS8clIaQi3EIOCPpnfKQE?e=AkQ8lW")
+                                                                 (assoc :source-creator-name "Encyclopedia Heraldica")
+                                                                 (assoc :source-creator-link "https://1drv.ms/u/s!Anj4BrtS8clIaQi3EIOCPpnfKQE?e=AkQ8lW"))])
+
                        nil))])
 
      [element/select (conj db-path :license) "License"
