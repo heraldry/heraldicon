@@ -57,8 +57,8 @@
           [element/select (conj db-path :source-license-version) "License version"
            license/cc-license-version-choices
            :default :v4])
-        [element/text-field (conj db-path :source-name) "Source name"]
-        [element/text-field (conj db-path :source-link) "Source link"]
-        [element/text-field (conj db-path :source-creator-name) "Creator name"]
-        [element/text-field (conj db-path :source-creator-link) "Creator link"]])
+        [element/text-field (conj db-path :source-name) "Source name" :style {:width "19em"}]
+        [element/text-field (conj db-path :source-link) "Source link" :style {:width "19em"}]
+        [element/text-field (conj db-path :source-creator-name) "Creator name" :style {:width "19em"}]
+        [element/text-field (conj db-path :source-creator-link) "Creator link" :style {:width "19em"}]])
      [:div {:style {:margin-bottom "1em"}} " "]]))
