@@ -12,8 +12,10 @@
                                                   :dove
                                                   :eagle
                                                   :falcon
+                                                  :hen
                                                   :owl
-                                                  :raven}}
+                                                  :raven
+                                                  :rooster}}
 
                                :hybrids {:node-type :group
                                          :name "hybrids"
@@ -100,6 +102,12 @@
                       :charges #{:castle
                                  :ship
                                  :well}}
+            :parts {:node-type :group
+                    :name "parts"
+                    :charges #{:hand
+                               :foot
+                               :leg
+                               :wing}}
             :plants {:node-type :group
                      :name "plants"
                      :charges #{:flower
