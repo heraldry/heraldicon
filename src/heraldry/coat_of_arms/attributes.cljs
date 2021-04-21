@@ -78,14 +78,15 @@
     ["Armed" :armed]
     ["Attired" :attired]
     ["Beaked" :beaked]
+    ["Combed" :combed]
     ["Eyed (peacock)" :eyed]
     ["Finned" :finned]
-    ["Jelloped" :jelloped]
     ["Langued" :langued]
     ["Legged" :legged]
     ["Maned" :maned]
     ["Tailed" :tailed]
     ["Unguled" :unguled]
+    ["Wattled" :wattled]
     ["Winged" :winged]]
    ["Flora"
     ["Barbed" :barbed]
@@ -123,3 +124,4 @@
 
 (def tincture-modifier-for-charge-map
   (util/choices->map tincture-modifier-for-charge-choices))
+
