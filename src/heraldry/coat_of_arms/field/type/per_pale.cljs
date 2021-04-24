@@ -10,7 +10,7 @@
 
 (defn render
   {:display-name "Per pale"
-   :value         :heraldry.field.type/per-pale
+   :value        :heraldry.field.type/per-pale
    :parts        ["dexter" "sinister"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]}          (options/sanitize field (field-options/options field))
@@ -21,6 +21,8 @@
         real-bottom                    (assoc (:bottom points) :x (:x origin-point))
         bottom-right                   (:bottom-right points)
         effective-width                (or (:width line) 1)
+        effective-width                (cond-> effective-width
+                                         (:spacing line) (+ (* (:spacing line) effective-width)))
         required-extra-length          (-> 30
                                            (/ effective-width)
                                            Math/ceil
@@ -32,36 +34,36 @@
          line-one-start :line-start
          line-one-end   :line-end
          :as            line-one-data} (line/create line
-                                                     top
-                                                     bottom
-                                                     :render-options render-options
-                                                     :environment environment)
+                                                    top
+                                                    bottom
+                                                    :render-options render-options
+                                                    :environment environment)
 
-        parts                          [[["M" (v/+ top
-                                                   line-one-start)
-                                          (svg/stitch line-one)
-                                          (infinity/path :clockwise
-                                                         [:bottom :top]
-                                                         [(v/+ bottom
-                                                               line-one-end)
-                                                          (v/+ top
-                                                               line-one-start)])
-                                          "z"]
-                                         [top-left
-                                          real-bottom]]
+        parts [[["M" (v/+ top
+                          line-one-start)
+                 (svg/stitch line-one)
+                 (infinity/path :clockwise
+                                [:bottom :top]
+                                [(v/+ bottom
+                                      line-one-end)
+                                 (v/+ top
+                                      line-one-start)])
+                 "z"]
+                [top-left
+                 real-bottom]]
 
-                                        [["M" (v/+ top
-                                                   line-one-start)
-                                          (svg/stitch line-one)
-                                          (infinity/path :counter-clockwise
-                                                         [:bottom :top]
-                                                         [(v/+ bottom
-                                                               line-one-end)
-                                                          (v/+ top
-                                                               line-one-start)])
-                                          "z"]
-                                         [real-top
-                                          bottom-right]]]
+               [["M" (v/+ top
+                          line-one-start)
+                 (svg/stitch line-one)
+                 (infinity/path :counter-clockwise
+                                [:bottom :top]
+                                [(v/+ bottom
+                                      line-one-end)
+                                 (v/+ top
+                                      line-one-start)])
+                 "z"]
+                [real-top
+                 bottom-right]]]
         outline? (or (:outline? render-options)
                      (:outline? hints))]
     [:<>
@@ -70,5 +72,4 @@
       [:all nil]
       environment field context]
      (line/render line [line-one-data] top outline? render-options)]))
-
 

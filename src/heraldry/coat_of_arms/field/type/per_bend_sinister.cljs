@@ -10,7 +10,7 @@
 
 (defn render
   {:display-name "Per bend sinister"
-   :value         :heraldry.field.type/per-bend-sinister
+   :value        :heraldry.field.type/per-bend-sinister
    :parts        ["chief" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor]}   (options/sanitize field (field-options/options field))
@@ -39,6 +39,8 @@
                                         initial-diagonal-end
                                         environment)
         effective-width                (or (:width line) 1)
+        effective-width                (cond-> effective-width
+                                         (:spacing line) (+ (* (:spacing line) effective-width)))
         required-extra-length          (-> 30
                                            (/ effective-width)
                                            Math/ceil
@@ -52,9 +54,9 @@
          line-one-start :line-start
          line-one-end   :line-end
          :as            line-one-data} (line/create line
-                                                     diagonal-start diagonal-end
-                                                     :render-options render-options
-                                                     :environment environment)
+                                                    diagonal-start diagonal-end
+                                                    :render-options render-options
+                                                    :environment environment)
         parts                          [[["M" (v/+ diagonal-start
                                                    line-one-start)
                                           (svg/stitch line-one)

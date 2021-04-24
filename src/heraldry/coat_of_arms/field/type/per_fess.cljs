@@ -10,7 +10,7 @@
 
 (defn render
   {:display-name "Per fess"
-   :value         :heraldry.field.type/per-fess
+   :value        :heraldry.field.type/per-fess
    :parts        ["chief" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin]}          (options/sanitize field (field-options/options field))
@@ -20,6 +20,8 @@
         real-left                      (assoc (:left points) :y (:y origin-point))
         real-right                     (assoc (:right points) :y (:y origin-point))
         effective-width                (or (:width line) 1)
+        effective-width                (cond-> effective-width
+                                         (:spacing line) (+ (* (:spacing line) effective-width)))
         required-extra-length          (-> 30
                                            (/ effective-width)
                                            Math/ceil
@@ -32,9 +34,9 @@
          line-one-start :line-start
          line-one-end   :line-end
          :as            line-one-data} (line/create line
-                                                     left right
-                                                     :render-options render-options
-                                                     :environment environment)
+                                                    left right
+                                                    :render-options render-options
+                                                    :environment environment)
         parts                          [[["M" (v/+ left
                                                    line-one-start)
                                           (svg/stitch line-one)
@@ -68,6 +70,4 @@
       [:all nil]
       environment field context]
      (line/render line [line-one-data] left outline? render-options)]))
-
-
 

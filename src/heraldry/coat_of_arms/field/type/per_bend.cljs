@@ -10,7 +10,7 @@
 
 (defn render
   {:display-name "Per bend"
-   :value         :heraldry.field.type/per-bend
+   :value        :heraldry.field.type/per-bend
    :parts        ["chief" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor]}   (options/sanitize field (field-options/options field))
@@ -39,6 +39,8 @@
                                         initial-diagonal-end
                                         environment)
         effective-width                (or (:width line) 1)
+        effective-width                (cond-> effective-width
+                                         (:spacing line) (+ (* (:spacing line) effective-width)))
         required-extra-length          (-> 30
                                            (/ effective-width)
                                            Math/ceil
@@ -82,8 +84,8 @@
                                          [real-diagonal-start
                                           real-diagonal-end
                                           bottom-left]]]
-        outline?                       (or (:outline? render-options)
-                                           (:outline? hints))]
+        outline? (or (:outline? render-options)
+                     (:outline? hints))]
     [:<>
      [shared/make-subfields
       (shared/field-context-key type) fields parts
