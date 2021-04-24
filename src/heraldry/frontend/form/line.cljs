@@ -134,6 +134,8 @@
                         (:height defaults))
         line-width (or (:width line)
                        (:width defaults))
+        line-spacing (or (:spacing line)
+                         (:spacing defaults))
         line-offset (or (:offset line)
                         (:offset defaults))
         fimbriation-tincture-1 (or (-> line :fimbriation :tincture-1)
@@ -177,6 +179,13 @@
          :default (or (:width defaults)
                       (options/get-value line-width (:width options)))
          :display-function #(str % "%")])
+      (when (:spacing options)
+        [element/range-input-with-checkbox (conj path :spacing) "Spacing"
+         (-> options :spacing :min)
+         (-> options :spacing :max)
+         :step 0.01
+         :default (or (:spacing defaults)
+                      (options/get-value line-spacing (:spacing options)))])
       (when (:offset options)
         [element/range-input-with-checkbox (conj path :offset) "Offset"
          (-> options :offset :min)

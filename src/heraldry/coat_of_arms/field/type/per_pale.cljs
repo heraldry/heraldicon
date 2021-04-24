@@ -21,6 +21,8 @@
         real-bottom (assoc (:bottom points) :x (:x origin-point))
         bottom-right (:bottom-right points)
         effective-width (or (:width line) 1)
+        effective-width (cond-> effective-width
+                          (:spacing line) (+ (* (:spacing line) effective-width)))
         required-extra-length (-> 30
                                   (/ effective-width)
                                   Math/ceil
