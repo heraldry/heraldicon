@@ -18,6 +18,8 @@
 (s/def :heraldry.line/type (s/nilable line/line-map))
 (s/def :heraldry.line/eccentricity (s/nilable number?))
 (s/def :heraldry.line/height (s/nilable number?))
+(s/def :heraldry.line/spacing (s/nilable number?))
+(s/def :heraldry.line/offset (s/nilable number?))
 (s/def :heraldry.line/width (s/nilable number?))
 (s/def :heraldry.line/flipped? (s/nilable boolean?))
 (s/def :heraldry.line/mirrored? (s/nilable boolean?))
@@ -25,6 +27,7 @@
                                        :heraldry.line/eccentricity
                                        :heraldry.line/height
                                        :heraldry.line/width
+                                       :heraldry.line/spacing
                                        :heraldry.line/offset
                                        :heraldry.line/mirrored?
                                        :heraldry.line/flipped?]))

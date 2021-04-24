@@ -46,6 +46,7 @@
 (defn pattern-line-with-offset [{pattern-width :width
                                  line-offset :offset
                                  line-mirrored? :mirrored?
+                                 spacing :spacing
                                  :as line}
                                 length line-function {:keys [reversed? mirrored?] :as line-options}]
   (let [{line-pattern :pattern
@@ -53,6 +54,12 @@
         effective-mirrored? (-> line-mirrored?
                                 (util/xor mirrored?)
                                 (util/xor reversed?))
+        real-spacing (* spacing pattern-width)
+        line-pattern (cond-> line-pattern
+                       (pos? real-spacing) (cond->
+                                            (not effective-mirrored?) (conj "h" real-spacing)
+                                            effective-mirrored? (->>
+                                                                 (concat ["h" real-spacing]))))
         line-pattern (if effective-mirrored?
                        [(-> line-pattern
                             (->> (into ["M" 0 0]))
@@ -66,6 +73,8 @@
                        line-pattern)
         line-base (line-base line pattern-data)
         offset-length (* line-offset pattern-width)
+        pattern-width (+ pattern-width
+                         real-spacing)
         repetitions (-> length
                         (- offset-length)
                         (/ pattern-width)
@@ -171,6 +180,10 @@
             :min -1
             :max 3
             :default 0}
+   :spacing {:type :range
+             :min 0
+             :max 5
+             :default 0}
    :base-line {:type :choice
                :choices base-line-choices
                :default :middle}
@@ -242,6 +255,7 @@
                                [[:type]
                                 [:height]
                                 [:width]
+                                [:spacing]
                                 [:offset]
                                 [:flipped?]
                                 [:base-line]
@@ -250,6 +264,7 @@
                                      [[:type]
                                       [:height]
                                       [:width]
+                                      [:spacing]
                                       [:offset]
                                       [:flipped?]
                                       [:base-line]
@@ -259,6 +274,7 @@
                                            [:eccentricity]
                                            [:height]
                                            [:width]
+                                           [:spacing]
                                            [:offset]
                                            [:flipped?]
                                            [:base-line]
@@ -268,6 +284,7 @@
                               [:eccentricity]
                               [:height]
                               [:width]
+                              [:spacing]
                               [:offset]
                               [:flipped?]
                               [:base-line]
@@ -277,10 +294,33 @@
                                  [:eccentricity]
                                  [:height]
                                  [:width]
+                                 [:spacing]
                                  [:offset]
                                  [:flipped?]
                                  [:base-line]
                                  [:fimbriation]])
+      :raguly (options/pick default-options
+                            [[:type]
+                             [:eccentricity]
+                             [:height]
+                             [:width]
+                             [:spacing]
+                             [:offset]
+                             [:mirrored?]
+                             [:flipped?]
+                             [:base-line]
+                             [:fimbriation]])
+      :thorny (options/pick default-options
+                            [[:type]
+                             [:eccentricity]
+                             [:height]
+                             [:width]
+                             [:spacing]
+                             [:offset]
+                             [:mirrored?]
+                             [:flipped?]
+                             [:base-line]
+                             [:fimbriation]])
       :dancetty (options/pick default-options
                               [[:type]
                                [:height]
@@ -332,6 +372,7 @@
                                    [:eccentricity]
                                    [:height]
                                    [:width]
+                                   [:spacing]
                                    [:offset]
                                    [:mirrored?]
                                    [:flipped?]
