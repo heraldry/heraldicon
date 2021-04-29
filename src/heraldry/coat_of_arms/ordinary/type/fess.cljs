@@ -14,7 +14,8 @@
   {:display-name "Fess"
    :value :heraldry.ordinary.type/fess}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
+  (let [{:keys [line origin geometry
+                cottise opposite-cottise]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
         opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
@@ -93,6 +94,7 @@
                 field)
         outline? (or (:outline? render-options)
                      (:outline? hints))]
+    (js/console.log "cot" cottise)
     [:<>
      [field-shared/make-subfields
       :ordinary-fess [field] parts
