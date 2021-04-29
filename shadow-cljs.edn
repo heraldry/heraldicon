@@ -13,16 +13,14 @@
                       :http-root "./frontend/assets"
                       :http-port 8081
                       :preloads [devtools.preload
-                                 day8.re-frame-10x.preload]
-                      :repl-pprint true}
+                                 day8.re-frame-10x.preload]}
            :compiler-options {:output-feature-set :es6
                               :warnings {:redef false}}
            :build-hooks [(shadow-env.core/hook)]
 
            :dev {:modules {:main {:init-fn heraldry.frontend.main/dev-init}}
                  :output-dir "./frontend/build/dev/generated"
-                 :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
-                                                      re_frame.trace.trace_enabled_QMARK_ true}}}
+                 :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true}}}
 
            :release {:modules {:main {:entries [heraldry.frontend.main]}}
                      :output-dir "./frontend/build/prod/js/generated"}}
@@ -35,9 +33,8 @@
                      :rollback_handler heraldry.backend.migration.core/rollback-handler
                      :collect_statistics_handler heraldry.backend.monitoring.core/collect-statistics-handler}
            :js-options {:js-package-dirs ["./backend/node_modules"]}
-           :devtools {:repl-pprint true}
-           :compiler-options {:warnings {:redef false}
-                              :output-feature-set :es6}
+           :compiler-options {:output-feature-set :es6
+                              :warnings {:redef false}}
            :build-hooks [(shadow-env.core/hook)]
 
            :dev {:output-to "./backend/build/dev/backend.js"}
