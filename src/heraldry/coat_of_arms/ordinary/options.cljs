@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.ordinary.options
-  (:require [heraldry.coat-of-arms.geometry :as geometry]
+  (:require [heraldry.coat-of-arms.cottise :as cottise]
+            [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
@@ -26,8 +27,8 @@
                          (assoc :mirrored? nil)
                          (assoc :reversed? nil)
                          (assoc :stretch nil))
-   :cottise          {:line          (set-line-defaults line/default-options)
-                      :opposite-line (set-line-defaults line/default-options)}})
+   :cottise          cottise/options
+   :cottise-opposite cottise/options})
 
 (defn options [ordinary]
   (when ordinary
@@ -47,7 +48,9 @@
                                       [[:origin]
                                        [:line]
                                        [:opposite-line]
-                                       [:geometry]]
+                                       [:geometry]
+                                       [:cottise]
+                                       [:cottise-opposite]]
                                       {[:offset-x]      nil
                                        [:line]          line-style
                                        [:opposite-line] opposite-line-style})

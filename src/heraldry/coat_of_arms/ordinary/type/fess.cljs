@@ -12,9 +12,10 @@
 
 (defn render
   {:display-name "Fess"
-   :value         :heraldry.ordinary.type/fess}
+   :value        :heraldry.ordinary.type/fess}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin geometry]}           (options/sanitize ordinary (ordinary-options/options ordinary))
+  (let [{:keys [line origin geometry
+                cottise opposite-cottise]}       (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]}                           geometry
         opposite-line                            (ordinary-options/sanitize-opposite-line ordinary line)
         points                                   (:points environment)
@@ -42,8 +43,8 @@
         real-end                                 (max (-> first-right :x (- shared-start-x))
                                                       (-> second-right :x (- shared-start-x)))
         shared-end-x                             (+ real-end 30)
-        first-left                                (v/v shared-start-x (:y first-left))
-        second-left                               (v/v shared-start-x (:y second-left))
+        first-left                               (v/v shared-start-x (:y first-left))
+        second-left                              (v/v shared-start-x (:y second-left))
         first-right                              (v/v shared-end-x (:y first-right))
         second-right                             (v/v shared-end-x (:y second-right))
         line                                     (-> line
@@ -55,20 +56,20 @@
         {line-one       :line
          line-one-start :line-start
          :as            line-one-data}           (line/create line
-                                                               first-left first-right
-                                                               :real-start real-start
-                                                               :real-end real-end
-                                                               :render-options render-options
-                                                               :environment environment)
+                                                              first-left first-right
+                                                              :real-start real-start
+                                                              :real-end real-end
+                                                              :render-options render-options
+                                                              :environment environment)
         {line-reversed       :line
          line-reversed-start :line-start
          :as                 line-reversed-data} (line/create opposite-line
-                                                               second-left second-right
-                                                               :reversed? true
-                                                               :real-start real-start
-                                                               :real-end real-end
-                                                               :render-options render-options
-                                                               :environment environment)
+                                                              second-left second-right
+                                                              :reversed? true
+                                                              :real-start real-start
+                                                              :real-end real-end
+                                                              :render-options render-options
+                                                              :environment environment)
         parts                                    [[["M" (v/+ first-left
                                                              line-one-start)
                                                     (svg/stitch line-one)
@@ -93,6 +94,7 @@
                                                    field)
         outline?                                 (or (:outline? render-options)
                                                      (:outline? hints))]
+    (js/console.log "cot" cottise)
     [:<>
      [field-shared/make-subfields
       :ordinary-fess [field] parts

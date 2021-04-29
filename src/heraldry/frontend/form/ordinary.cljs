@@ -3,6 +3,7 @@
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.render :as render]
+            [heraldry.frontend.form.cottise :as cottise]
             [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.escutcheon :as escutcheon]
             [heraldry.frontend.form.geometry :as geometry]
@@ -105,7 +106,12 @@
             (:geometry ordinary-options)
             :current (:geometry ordinary)])
          (when (:fimbriation ordinary-options)
-           [line/form-for-fimbriation (conj path :fimbriation) (:fimbriation ordinary-options)])])
+           [line/form-for-fimbriation (conj path :fimbriation) (:fimbriation ordinary-options)])
+         (when (:cottise ordinary-options)
+           [cottise/form (conj path :cottise) (:cottise ordinary-options)])
+         (when (:cottise-opposite ordinary-options)
+           [cottise/form (conj path :cottise-opposite) (:cottise-opposite ordinary-options)
+            :title "Cottise 2"])])
       [element/checkbox (conj path :hints :outline?) "Outline"]]
      [form-for-field (conj path :field) :parent-field parent-field]]))
 

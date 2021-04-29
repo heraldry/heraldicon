@@ -45,7 +45,8 @@
 (defn form-for-line-type [path & {:keys [options can-disable? default value]}]
   (let [line  @(rf/subscribe [:get path])
         value (or value
-                  (options/get-value (:type line) (:type options)))]
+                  (options/get-value (:type line) (:type options))
+                  (-> options :type :default))]
     [:div.setting
      [:label "Type"]
      [:div.other {:style {:display "inline-block"}}
@@ -127,7 +128,8 @@
 (defn form [path & {:keys [title options defaults] :or {title "Line"}}]
   (let [line                   @(rf/subscribe [:get path])
         line-type              (or (:type line)
-                                   (:type defaults))
+                                   (:type defaults)
+                                   (-> options :type :default))
         line-eccentricity      (or (:eccentricity line)
                                    (:eccentricity defaults))
         line-height            (or (:height line)
