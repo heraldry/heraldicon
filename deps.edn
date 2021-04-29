@@ -4,7 +4,6 @@
  :deps {aero/aero {:mvn/version "1.1.6"}
         binaryage/devtools {:mvn/version "1.0.3"}
         borkdude/sci {:mvn/version "0.2.4"}
-        cider/cider-nrepl {:mvn/version "0.25.10"}
         cljs-http/cljs-http {:mvn/version "0.1.46"}
         com.andrewmcveigh/cljs-time {:mvn/version "0.5.2"}
         com.taoensso/timbre {:mvn/version "5.1.2"}
@@ -17,6 +16,5 @@
         mhuebert/shadow-env {:mvn/version "0.1.6"}
         re-frame/re-frame {:mvn/version "1.2.0"}
         reagent/reagent {:mvn/version "1.0.0"}
-        refactor-nrepl/refactor-nrepl {:local/root "/Users/oliver/dev/refactor-nrepl/target/refactor-nrepl-2.5.1.jar"}
         thheller/shadow-cljs {:mvn/version "2.11.23"}
         zprint/zprint {:mvn/version "1.1.1"}}}
