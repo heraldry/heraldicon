@@ -108,6 +108,7 @@
          (when (:fimbriation ordinary-options)
            [line/form-for-fimbriation (conj path :fimbriation) (:fimbriation ordinary-options)])
          (when (:cottising ordinary-options)
-           [cottising/form (conj path :cottising) (:cottising ordinary-options)])])
+           [cottising/form (conj path :cottising) (:cottising ordinary-options)
+            :form-for-field form-for-field])])
       [element/checkbox (conj path :hints :outline?) "Outline"]]
      [form-for-field (conj path :field) :parent-field parent-field]]))
