@@ -56,7 +56,11 @@
          :chief         (options/pick default-options
                                       [[:line]
                                        [:geometry]]
-                                      {[:line] line-style})
+                                      {[:line]      line-style
+                                       [:cottising] (-> default-options
+                                                        :cottising
+                                                        (dissoc :cottise-opposite-1)
+                                                        (dissoc :cottise-opposite-2))})
          :base          (options/pick default-options
                                       [[:line]
                                        [:geometry]]
