@@ -9,13 +9,13 @@
    :line line/default-options
    :opposite-line line/default-options
    :distance {:type :range
-              :min 1
-              :max 10
-              :default 4}
+              :min -10
+              :max 20
+              :default 2}
    :thickness {:type :range
-               :min 1
-               :max 10
-               :default 4}
+               :min 0.1
+               :max 20
+               :default 2}
    :field field-options/default-options})
 
 (def options

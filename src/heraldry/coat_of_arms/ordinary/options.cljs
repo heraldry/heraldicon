@@ -21,7 +21,7 @@
    :line (set-line-defaults line/default-options)
    :opposite-line (set-line-defaults line/default-options)
    :geometry (-> geometry/default-options
-                 (assoc-in [:size :min] 10)
+                 (assoc-in [:size :min] 0.1)
                  (assoc-in [:size :max] 50)
                  (assoc-in [:size :default] 25)
                  (assoc :mirrored? nil)

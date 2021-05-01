@@ -20,6 +20,7 @@
                :checked enabled?
                :on-change #(let [new-checked? (-> % .-target .-checked)]
                              (when new-checked?
+                               (rf/dispatch-sync [:set (conj path :line :type) :straight])
                                (rf/dispatch-sync [:set (conj path :field) default/field]))
                              (rf/dispatch [:set (conj path :enabled?) new-checked?]))}]
       (if enabled?
