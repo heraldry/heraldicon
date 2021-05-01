@@ -1,5 +1,6 @@
 (ns heraldry.frontend.arms-library
   (:require [cljs.core.async :refer [go]]
+            [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.blazon :as blazon]
             [heraldry.coat-of-arms.default :as default]
@@ -344,7 +345,7 @@
         [:div "None"]
         [:ul.arms-list
          (doall
-          (for [arms arms-list]
+          (for [arms (sort-by (comp s/lower-case :name) arms-list)]
             ^{:key (:id arms)}
             [:li.arms
              (let [arms-id (-> arms
