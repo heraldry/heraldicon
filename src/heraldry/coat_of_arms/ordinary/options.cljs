@@ -39,7 +39,8 @@
                                       [[:origin]
                                        [:line]
                                        [:opposite-line]
-                                       [:geometry]]
+                                       [:geometry]
+                                       [:cottising]]
                                       {[:offset-y]      nil
                                        [:line]          line-style
                                        [:opposite-line] opposite-line-style})
