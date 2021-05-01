@@ -41,7 +41,9 @@
                                  (/ line-height 2))
                       :top    (- line-min)
                       0)]
-    line-base))
+    {:line-base line-base
+     :line-min  (+ line-base line-min)
+     :line-max  (+ line-base line-max)}))
 
 (defn pattern-line-with-offset [{pattern-width  :width
                                  line-offset    :offset
@@ -71,7 +73,9 @@
                                            .toString
                                            (s/replace "M0 0" ""))]
                                       line-pattern)
-        line-base                   (line-base line pattern-data)
+        {:keys [line-base
+                line-min
+                line-max]}          (line-base line pattern-data)
         offset-length               (* line-offset pattern-width)
         pattern-width               (+ pattern-width
                                        real-spacing)
@@ -88,13 +92,19 @@
                      (into (repeat repetitions line-pattern))
                      (->> (apply merge))
                      vec)
+     :line-min   line-min
+     :line-max   line-max
      :line-start line-start}))
 
 (defn full-line [line length line-function line-options]
   (let [{line-pattern :pattern
          :as          pattern-data} (line-function line length line-options)
-        line-base                   (line-base line pattern-data)]
+        {:keys [line-base
+                line-min
+                line-max]}          (line-base line pattern-data)]
     {:line       line-pattern
+     :line-min   line-min
+     :line-max   line-max
      :line-start (v/v 0 line-base)}))
 
 (def lines
