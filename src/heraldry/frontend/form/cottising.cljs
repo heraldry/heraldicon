@@ -1,14 +1,13 @@
 (ns heraldry.frontend.form.cottising
-  (:require [heraldry.coat-of-arms.options :as options]
+  (:require [heraldry.coat-of-arms.default :as default]
+            [heraldry.coat-of-arms.options :as options]
             [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.line :as line]
-            [heraldry.frontend.form.state]
-            [heraldry.frontend.form.tincture :as tincture]
-            [heraldry.frontend.util :as util]
+            heraldry.frontend.form.state
             [heraldry.util :refer [id]]
             [re-frame.core :as rf]))
 
-(defn form-for-single-cottise [path options & {:keys [title] :or {title "Cottise"}}]
+(defn form-for-single-cottise [path options & {:keys [title form-for-field] :or {title "Cottise"}}]
   (let [cottise @(rf/subscribe [:get path])
         checkbox-id (id "checkbox")
         enabled? (:enabled? cottise)]
@@ -20,6 +19,8 @@
                :id checkbox-id
                :checked enabled?
                :on-change #(let [new-checked? (-> % .-target .-checked)]
+                             (when new-checked?
+                               (rf/dispatch-sync [:set (conj path :field) default/field]))
                              (rf/dispatch [:set (conj path :enabled?) new-checked?]))}]
       (if enabled?
         [element/submenu path title "Cottise" {}
@@ -46,12 +47,12 @@
             :default (-> options :thickness :default)
             :step 0.1
             :display-function #(str % "%")])
-         (when (-> options :tincture)
-           [tincture/form (conj path :tincture)
-            :label "Tincture"])]
+         (when (-> options :field)
+           [form-for-field (conj path :field)
+            :title-prefix "Field"])]
         [:span.disabled "Disabled"])]]))
 
-(defn form [path options & {:keys [title] :or {title "Cottising"}}]
+(defn form [path options & {:keys [title form-for-field] :or {title "Cottising"}}]
   (let [current-data @(rf/subscribe [:get path])
         link-name "TBD"]
     [:div.setting
@@ -60,15 +61,19 @@
      [element/submenu path "Cottising" link-name {}
       (when (:cottise-1 options)
         [form-for-single-cottise (conj path :cottise-1) (:cottise-1 options)
-         :title "Cottise 1"])
+         :title "Cottise 1"
+         :form-for-field form-for-field])
       (when (and (:cottise-2 options)
                  (-> current-data :cottise-1 :enabled?))
         [form-for-single-cottise (conj path :cottise-2) (:cottise-2 options)
-         :title "Cottise 2"])
+         :title "Cottise 2"
+         :form-for-field form-for-field])
       (when (:cottise-opposite-1 options)
         [form-for-single-cottise (conj path :cottise-opposite-1) (:cottise-opposite-1 options)
-         :title "Cottise 1 Opp"])
+         :title "Cottise 1 Opp"
+         :form-for-field form-for-field])
       (when (and (:cottise-opposite-2 options)
                  (-> current-data :cottise-opposite-1 :enabled?))
         [form-for-single-cottise (conj path :cottise-opposite-2) (:cottise-opposite-2 options)
-         :title "Cottise 2 Opp"])]]))
+         :title "Cottise 2 Opp"
+         :form-for-field form-for-field])]]))
