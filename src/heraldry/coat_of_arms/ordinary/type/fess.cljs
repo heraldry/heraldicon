@@ -14,8 +14,13 @@
 (defn render
   {:display-name "Fess"
    :value        :heraldry.ordinary.type/fess}
-  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin geometry]}           (options/sanitize ordinary (ordinary-options/options ordinary))
+  [{:keys [field hints] :as ordinary} parent environment
+   {:keys [render-options override-real-start override-real-end override-shared-start-x] :as context}]
+  (let [;; ignore offset-y constraints, because cottises might exceed them
+        ordinary-options                         (-> (ordinary-options/options ordinary)
+                                                     (assoc-in [:origin :offset-y :min] -100)
+                                                     (assoc-in [:origin :offset-y :max] 100))
+        {:keys [line origin geometry]}           (options/sanitize ordinary ordinary-options)
         {:keys [size]}                           geometry
         opposite-line                            (ordinary-options/sanitize-opposite-line ordinary line)
         points                                   (:points environment)
@@ -31,21 +36,28 @@
                                                    :right (- (:y origin-point) band-height)
                                                    (- (:y origin-point) (/ band-height 2)))
         row2                                     (+ row1 band-height)
-        [first-left first-right]                 (v/environment-intersections
-                                                  (v/v (:x left) row1)
-                                                  (v/v (:x right) row1)
+        first-left                               (v/v (:x left) row1)
+        first-right                              (v/v (:x right) row1)
+        second-left                              (v/v (:x left) row2)
+        second-right                             (v/v (:x right) row2)
+        [first-real-left _first-real-right]      (v/environment-intersections
+                                                  first-left
+                                                  first-right
                                                   environment)
-        [second-left second-right]               (v/environment-intersections
-                                                  (v/v (:x left) row2)
-                                                  (v/v (:x right) row2)
+        [second-real-left _second-real-right]    (v/environment-intersections
+                                                  second-left
+                                                  second-right
                                                   environment)
-        shared-start-x                           (- (min (:x first-left)
-                                                         (:x second-left))
-                                                    30)
-        real-start                               (min (-> first-left :x (- shared-start-x))
-                                                      (-> second-left :x (- shared-start-x)))
-        real-end                                 (max (-> first-right :x (- shared-start-x))
-                                                      (-> second-right :x (- shared-start-x)))
+        shared-start-x                           (or override-shared-start-x
+                                                     (- (min (:x first-real-left)
+                                                             (:x second-real-left))
+                                                        30))
+        real-start                               (or override-real-start
+                                                     (min (-> first-left :x (- shared-start-x))
+                                                          (-> second-left :x (- shared-start-x))))
+        real-end                                 (or override-real-end
+                                                     (max (-> first-right :x (- shared-start-x))
+                                                          (-> second-right :x (- shared-start-x))))
         shared-end-x                             (+ real-end 30)
         first-left                               (v/v shared-start-x (:y first-left))
         second-left                              (v/v shared-start-x (:y second-left))
@@ -126,7 +138,11 @@
                                                        (/ height)
                                                        (* 100)
                                                        (+ (:distance cottise-1-data))))
-                     (assoc-in [:origin :alignment] :right)) parent environment context]))
+                     (assoc-in [:origin :alignment] :right)) parent environment
+          (-> context
+              (assoc :override-shared-start-x shared-start-x)
+              (assoc :override-real-start real-start)
+              (assoc :override-real-end real-end))]))
      (when (:enabled? cottise-opposite-1)
        (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-options)]
          [render (-> ordinary
@@ -142,5 +158,9 @@
                                                        (/ height)
                                                        (* 100)
                                                        (- (:distance cottise-opposite-1-data))))
-                     (assoc-in [:origin :alignment] :left)) parent environment context]))]))
+                     (assoc-in [:origin :alignment] :left)) parent environment
+          (-> context
+              (assoc :override-shared-start-x shared-start-x)
+              (assoc :override-real-start real-start)
+              (assoc :override-real-end real-end))]))]))
 
