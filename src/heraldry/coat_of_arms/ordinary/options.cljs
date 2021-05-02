@@ -74,7 +74,8 @@
                               [:anchor]
                               [:line]
                               [:opposite-line]
-                              [:geometry]]
+                              [:geometry]
+                              [:cottising]]
                              (let [useful-points #{:top-left :bottom-right
                                                    :chief :honour :fess :nombril :base}
                                    point-choices (util/filter-choices
