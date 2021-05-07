@@ -1,44 +1,41 @@
 (ns heraldry.coat-of-arms.shared.chevron
   (:require [heraldry.coat-of-arms.vector :as v]))
 
-(defn arm-diagonals [variant origin-point anchor-point]
+(defn arm-diagonals [chevron-angle origin-point anchor-point]
   (let [direction    (-> (v/- anchor-point origin-point)
                          v/normal
                          (v/* 200))
-        [left right] (case variant
-                       :base     (if (-> direction :x (> 0))
-                                   [(v/v -1 1) (v/v 1 1)]
-                                   [(v/v 1 1) (v/v -1 1)])
-                       :chief    (if (-> direction :x (< 0))
-                                   [(v/v -1 1) (v/v 1 1)]
-                                   [(v/v 1 1) (v/v -1 1)])
-                       :dexter   (if (-> direction :y (< 0))
-                                   [(v/v 1 1) (v/v 1 -1)]
-                                   [(v/v 1 -1) (v/v 1 1)])
-                       :sinister (if (-> direction :y (> 0))
-                                   [(v/v 1 1) (v/v 1 -1)]
-                                   [(v/v 1 -1) (v/v 1 1)]))]
+        [left right] (cond
+                       (<= 45 chevron-angle 135)  (if (-> direction :x (> 0))
+                                                    [(v/v -1 1) (v/v 1 1)]
+                                                    [(v/v 1 1) (v/v -1 1)])
+                       (<= 225 chevron-angle 315) (if (-> direction :x (< 0))
+                                                    [(v/v -1 1) (v/v 1 1)]
+                                                    [(v/v 1 1) (v/v -1 1)])
+                       (<= 135 chevron-angle 225) (if (-> direction :y (< 0))
+                                                    [(v/v 1 1) (v/v 1 -1)]
+                                                    [(v/v 1 -1) (v/v 1 1)])
+                       :else                      (if (-> direction :y (> 0))
+                                                    [(v/v 1 1) (v/v 1 -1)]
+                                                    [(v/v 1 -1) (v/v 1 1)]))]
     [(v/dot direction left)
      (v/dot direction right)]))
 
-(defn sanitize-anchor [variant anchor]
-  (let [[allowed default] (case variant
-                            :base     [#{:angle :bottom-right} :bottom-left]
-                            :chief    [#{:angle :top-right} :top-left]
-                            :dexter   [#{:angle :bottom-left} :top-left]
-                            :sinister [#{:angle :bottom-right} :top-right])]
+(defn sanitize-anchor [chevron-angle anchor]
+  (let [[allowed default] (cond
+                            (<= 45 chevron-angle 135)  [#{:angle :bottom-right} :bottom-left]
+                            (<= 225 chevron-angle 315) [#{:angle :top-right} :top-left]
+                            (<= 135 chevron-angle 225) [#{:angle :bottom-left} :top-left]
+                            :else                      [#{:angle :bottom-right} :top-right])]
     (update anchor :point #(or (allowed %) default))))
 
-(defn mirror-point [variant center point]
+(defn mirror-point [chevron-angle center point]
   (-> point
       (v/- center)
-      (v/dot (if (#{:base :chief} variant)
-               (v/v -1 1)
-               (v/v 1 -1)))
+      (v/dot (cond
+               (<= 45 chevron-angle 135)  (v/v -1 1)
+               (<= 225 chevron-angle 315) (v/v -1 1)
+               (<= 135 chevron-angle 225) (v/v 1 -1)
+               :else                      (v/v 1 -1)))
       (v/+ center)))
 
-(def variant-choices
-  [["Base" :base]
-   ["Chief" :chief]
-   ["Dexter" :dexter]
-   ["Sinister" :sinister]])
