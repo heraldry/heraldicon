@@ -165,8 +165,7 @@
                                                                                     ;; otherwise, assume :base
                                                                     (util/filter-choices
                                                                      position/anchor-point-choices
-                                                                     [:bottom-left :bottom-right :angle]))
-                                        [:variant :choices] chevron/variant-choices})
+                                                                     [:bottom-left :bottom-right :angle]))})
             :per-pile (options/pick default-options
                                     [[:origin]
                                      [:anchor]

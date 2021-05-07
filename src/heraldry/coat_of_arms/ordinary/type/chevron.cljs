@@ -15,9 +15,10 @@
   {:display-name "Chevron"
    :value :heraldry.ordinary.type/chevron}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor
-                variant geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
+  (let [{:keys [line angle origin anchor
+                geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
+        chevron-angle (v/normalize-angle (+ angle 90))
         opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment)
@@ -28,23 +29,18 @@
         height (:height environment)
         band-width (-> size
                        ((util/percent-of height)))
-        anchor (chevron/sanitize-anchor variant anchor)
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment
                                      origin
                                      anchor
                                      band-width
-                                     (case variant
-                                       :base 90
-                                       :chief -90
-                                       :dexter 180
-                                       0))
-        [mirrored-origin mirrored-anchor] [(chevron/mirror-point variant unadjusted-origin-point origin-point)
-                                           (chevron/mirror-point variant unadjusted-origin-point anchor-point)]
+                                     chevron-angle)
+        [mirrored-origin mirrored-anchor] [(chevron/mirror-point chevron-angle unadjusted-origin-point origin-point)
+                                           (chevron/mirror-point chevron-angle unadjusted-origin-point anchor-point)]
         origin-point (v/line-intersection origin-point anchor-point
                                           mirrored-origin mirrored-anchor)
-        [relative-left relative-right] (chevron/arm-diagonals variant origin-point anchor-point)
+        [relative-left relative-right] (chevron/arm-diagonals chevron-angle origin-point anchor-point)
         diagonal-left (v/+ origin-point relative-left)
         diagonal-right (v/+ origin-point relative-right)
         angle-left (v/angle-to-point origin-point diagonal-left)
@@ -143,13 +139,8 @@
                           line-left-upper-start)
                  (svg/stitch line-left-upper)
                  "z"]
-                (-> [corner-upper corner-lower]
-                    (concat (case variant
-                              :chief [top-left top-right]
-                              :dexter [top-left bottom-left]
-                              :sinister [top-right bottom-right]
-                              [bottom-left bottom-right]))
-                    vec)]]
+                [top-left top-right
+                 bottom-left bottom-right]]]
         field (if (:counterchanged? field)
                 (counterchange/counterchange-field ordinary parent)
                 field)

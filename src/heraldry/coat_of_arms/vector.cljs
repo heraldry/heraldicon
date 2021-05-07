@@ -291,6 +291,13 @@
         (cljs.core// Math/PI)
         (cljs.core/* 180))))
 
+(defn normalize-angle [angle]
+  (loop [angle angle]
+    (cond
+      (neg? angle) (recur (cljs.core/+ angle 360))
+      (>= angle 360) (recur (cljs.core/- angle 360))
+      :else angle)))
+
 (defn bounding-box-intersections [from to environment]
   (let [{:keys [top-left top-right
                 bottom-left bottom-right]} (:points environment)

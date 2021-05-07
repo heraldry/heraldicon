@@ -3,7 +3,6 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
-            [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.util :as util]))
 
 (defn set-line-defaults [options]
@@ -12,10 +11,11 @@
 
 (def default-options
   {:origin position/default-options
+   :angle {:type :range
+           :min -179
+           :max 180
+           :default 0}
    :anchor position/anchor-default-options
-   :variant {:type :choice
-             :choices chevron/variant-choices
-             :default :base}
    :line (set-line-defaults line/default-options)
    :opposite-line (set-line-defaults line/default-options)
    :geometry (-> geometry/default-options
@@ -127,7 +127,7 @@
                                                                      :bottom-left :fess
                                                                      :top-right)}))
          :chevron (options/pick default-options
-                                [[:variant]
+                                [[:angle]
                                  [:origin]
                                  [:anchor]
                                  [:line]
@@ -139,20 +139,10 @@
                                  [:opposite-line] (-> opposite-line-style
                                                       (options/override-if-exists [:offset :min] 0)
                                                       (options/override-if-exists [:base-line] nil))
-                                 [:anchor :point :choices] (case (-> ordinary :variant (or :base))
-                                                             :chief (util/filter-choices
-                                                                     position/anchor-point-choices
-                                                                     [:top-left :top-right :angle])
-                                                             :dexter (util/filter-choices
-                                                                      position/anchor-point-choices
-                                                                      [:top-left :bottom-left :angle])
-                                                             :sinister (util/filter-choices
-                                                                        position/anchor-point-choices
-                                                                        [:top-right :bottom-right :angle])
-                                                                   ;; otherwise, assume :base
-                                                             (util/filter-choices
-                                                              position/anchor-point-choices
-                                                              [:bottom-left :bottom-right :angle]))})
+                                 [:anchor :point :choices] (util/filter-choices
+                                                            position/anchor-point-choices
+                                                            [:top-left :top :top-right :left :right :bottom-left :bottom :bottom-right :angle])
+                                 [:anchor :point :default] :bottom-left})
          :pile (options/pick default-options
                              [[:origin]
                               [:anchor]
