@@ -77,15 +77,17 @@
             :title "Opposite Line"])
          (when (:escutcheon ordinary-options)
            [escutcheon/form (conj path :escutcheon)])
-         (when (:variant ordinary-options)
-           [element/select (conj path :variant)
-            "Variant"
-            (-> ordinary-options :variant :choices)])
          (when (-> ordinary-options :num-points)
            [element/range-input-with-checkbox (conj path :num-points) "Points"
             (-> ordinary-options :num-points :min)
             (-> ordinary-options :num-points :max)
             :default (options/get-value (:num-points ordinary) (:num-points ordinary-options))])
+         (when (-> ordinary-options :angle)
+           [element/range-input-with-checkbox (conj path :angle) "Angle"
+            (-> ordinary-options :angle :min)
+            (-> ordinary-options :angle :max)
+            :step 1
+            :default (-> ordinary-options :angle :default)])
          (when (:origin ordinary-options)
            [position/form (conj path :origin)
             :title "Origin"
@@ -94,6 +96,10 @@
            [position/form (conj path :anchor)
             :title "Anchor"
             :options (:anchor ordinary-options)])
+         (when (:secondary-anchor ordinary-options)
+           [position/form (conj path :secondary-anchor)
+            :title "Arm anchor"
+            :options (:secondary-anchor ordinary-options)])
          (when (:geometry ordinary-options)
            [geometry/form (conj path :geometry)
             (:geometry ordinary-options)
