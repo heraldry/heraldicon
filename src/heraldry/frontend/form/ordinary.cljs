@@ -96,10 +96,6 @@
            [position/form (conj path :anchor)
             :title "Anchor"
             :options (:anchor ordinary-options)])
-         (when (:secondary-anchor ordinary-options)
-           [position/form (conj path :secondary-anchor)
-            :title "Arm anchor"
-            :options (:secondary-anchor ordinary-options)])
          (when (:geometry ordinary-options)
            [geometry/form (conj path :geometry)
             (:geometry ordinary-options)

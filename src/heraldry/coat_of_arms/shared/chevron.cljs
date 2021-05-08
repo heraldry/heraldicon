@@ -16,14 +16,6 @@
         right     (v/rotate (v/dot direction (v/v 1 -1)) chevron-angle)]
     [left right]))
 
-(defn sanitize-anchor [chevron-angle anchor]
-  (let [[allowed default] (cond
-                            (<= 45 chevron-angle 135)  [#{:angle :bottom-right} :bottom-left]
-                            (<= 225 chevron-angle 315) [#{:angle :top-right} :top-left]
-                            (<= 135 chevron-angle 225) [#{:angle :bottom-left} :top-left]
-                            :else                      [#{:angle :bottom-right} :top-right])]
-    (update anchor :point #(or (allowed %) default))))
-
 (defn mirror-point [chevron-angle center point]
   (-> point
       (v/- center)

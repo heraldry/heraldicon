@@ -21,23 +21,24 @@
         extra-line                            (field-options/sanitize-extra-line field line)
         points                                (:points environment)
         unadjusted-origin-point               (position/calculate origin environment)
+        chevron-angle                         90
         {origin-point :real-origin
          anchor-point :real-anchor}           (angle/calculate-origin-and-anchor
                                                environment
                                                origin
                                                anchor
                                                0
-                                               0)
+                                               chevron-angle)
         top                                   (assoc (:top points) :x (:x origin-point))
         top-left                              (:top-left points)
         top-right                             (:top-right points)
         bottom-left                           (:bottom-left points)
         bottom-right                          (:bottom-right points)
-        [mirrored-origin mirrored-anchor]     [(chevron/mirror-point :base unadjusted-origin-point origin-point)
-                                               (chevron/mirror-point :base unadjusted-origin-point anchor-point)]
+        [mirrored-origin mirrored-anchor]     [(chevron/mirror-point chevron-angle unadjusted-origin-point origin-point)
+                                               (chevron/mirror-point chevron-angle unadjusted-origin-point anchor-point)]
         origin-point                          (v/line-intersection origin-point anchor-point
                                                                    mirrored-origin mirrored-anchor)
-        [relative-left relative-right]        (chevron/arm-diagonals :base origin-point anchor-point)
+        [relative-left relative-right]        (chevron/arm-diagonals chevron-angle origin-point anchor-point)
         diagonal-bottom-left                  (v/+ origin-point relative-left)
         diagonal-bottom-right                 (v/+ origin-point relative-right)
         intersection-left                     (v/find-first-intersection-of-ray origin-point diagonal-bottom-left environment)

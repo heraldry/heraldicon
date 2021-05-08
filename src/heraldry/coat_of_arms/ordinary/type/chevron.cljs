@@ -139,8 +139,7 @@
                                                                    line-left-upper-start)
                                                           (svg/stitch line-left-upper)
                                                           "z"]
-                                                         [top-left top-right
-                                                          bottom-left bottom-right]]]
+                                                         [top-left bottom-right]]]
         field                                          (if (:counterchanged? field)
                                                          (counterchange/counterchange-field ordinary parent)
                                                          field)
