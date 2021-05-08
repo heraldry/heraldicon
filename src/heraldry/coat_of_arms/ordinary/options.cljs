@@ -185,7 +185,8 @@
                                        [:anchor]
                                        [:line]
                                        [:opposite-line]
-                                       [:geometry]]
+                                       [:geometry]
+                                       [:cottising]]
                                       (let [anchor-points #{:top-left :top :top-right
                                                             :left :right
                                                             :bottom-left :bottom :bottom-right
@@ -238,7 +239,11 @@
                                                                       {:type    :choice
                                                                        :choices [["Edge" :edge]
                                                                                  ["Point" :point]]
-                                                                       :default :edge})}))
+                                                                       :default :edge})
+                                         [:cottising]               (-> default-options
+                                                                        :cottising
+                                                                        (dissoc :cottise-opposite-1)
+                                                                        (dissoc :cottise-opposite-2))}))
          ;; TODO: perhaps there should be origin options for the corners?
          ;; so one can align fro top-left to bottom-right
          :saltire       (options/pick default-options
