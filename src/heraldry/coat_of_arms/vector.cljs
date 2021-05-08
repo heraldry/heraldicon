@@ -298,6 +298,15 @@
       (>= angle 360) (recur (cljs.core/- angle 360))
       :else angle)))
 
+(defn angle-between-vectors [v1 v2]
+  (let [a1 (angle-to-point (v 0 0) v1)
+        a2 (angle-to-point (v 0 0) v2)
+        angle (-> (cljs.core/- a1 a2)
+                  normalize-angle)]
+    (if (> angle 180)
+      (cljs.core/- angle 180)
+      angle)))
+
 (defn bounding-box-intersections [from to environment]
   (let [{:keys [top-left top-right
                 bottom-left bottom-right]} (:points environment)
