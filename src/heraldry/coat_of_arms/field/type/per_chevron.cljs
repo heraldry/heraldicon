@@ -17,8 +17,7 @@
    :parts ["chief" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
-                angle]} (options/sanitize field (field-options/options field))
-        chevron-angle (v/normalize-angle (+ angle 90))
+                direction-anchor]} (options/sanitize field (field-options/options field))
         opposite-line (field-options/sanitize-opposite-line field line)
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment)
@@ -26,6 +25,16 @@
         top-right (:top-right points)
         bottom-left (:bottom-left points)
         bottom-right (:bottom-right points)
+        {direction-origin-point :real-origin
+         direction-anchor-point :real-anchor} (angle/calculate-origin-and-anchor
+                                               environment
+                                               origin
+                                               direction-anchor
+                                               0
+                                               90)
+        chevron-angle (v/normalize-angle
+                       (v/angle-to-point direction-origin-point
+                                         direction-anchor-point))
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment
