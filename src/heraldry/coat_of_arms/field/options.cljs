@@ -9,6 +9,10 @@
   {:line line/default-options
    :opposite-line line/default-options
    :extra-line line/default-options
+   :angle {:type :range
+           :min -179
+           :max 180
+           :default 0}
    :origin (-> position/default-options
                (dissoc :alignment))
    :anchor (-> position/anchor-default-options
@@ -143,29 +147,19 @@
             :per-chevron (options/pick default-options
                                        [[:line]
                                         [:opposite-line]
+                                        [:angle]
                                         [:origin]
-                                        [:anchor]
-                                        [:variant]]
+                                        [:anchor]]
                                        {[:line] (-> line-style
                                                     (options/override-if-exists [:offset :min] 0)
                                                     (options/override-if-exists [:base-line] nil))
                                         [:opposite-line] (-> opposite-line-style
                                                              (options/override-if-exists [:offset :min] 0)
                                                              (options/override-if-exists [:base-line] nil))
-                                        [:anchor :point :choices] (case (-> field :variant (or :base))
-                                                                    :chief (util/filter-choices
-                                                                            position/anchor-point-choices
-                                                                            [:top-left :top-right :angle])
-                                                                    :dexter (util/filter-choices
-                                                                             position/anchor-point-choices
-                                                                             [:top-left :bottom-left :angle])
-                                                                    :sinister (util/filter-choices
-                                                                               position/anchor-point-choices
-                                                                               [:top-right :bottom-right :angle])
-                                                                                    ;; otherwise, assume :base
-                                                                    (util/filter-choices
-                                                                     position/anchor-point-choices
-                                                                     [:bottom-left :bottom-right :angle]))})
+                                        [:anchor :point :choices] (util/filter-choices
+                                                                   position/anchor-point-choices
+                                                                   [:top-left :top :top-right :left :right :bottom-left :bottom :bottom-right :angle])
+                                        [:anchor :point :default] :bottom-left})
             :per-pile (options/pick default-options
                                     [[:origin]
                                      [:anchor]

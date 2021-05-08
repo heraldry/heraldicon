@@ -13,11 +13,12 @@
 (defn render
   {:display-name "Per chevron"
    :value :heraldry.field.type/per-chevron
-   ;; TODO: this naming now depends on the variant
+   ;; TODO: this naming now depends on the angle of the chevron
    :parts ["chief" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
-                variant]} (options/sanitize field (field-options/options field))
+                angle]} (options/sanitize field (field-options/options field))
+        chevron-angle (v/normalize-angle (+ angle 90))
         opposite-line (field-options/sanitize-opposite-line field line)
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment)
@@ -25,23 +26,18 @@
         top-right (:top-right points)
         bottom-left (:bottom-left points)
         bottom-right (:bottom-right points)
-        anchor (chevron/sanitize-anchor variant anchor)
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment
                                      origin
                                      anchor
                                      0
-                                     (case variant
-                                       :base 90
-                                       :chief -90
-                                       :dexter 180
-                                       0))
-        [mirrored-origin mirrored-anchor] [(chevron/mirror-point variant unadjusted-origin-point origin-point)
-                                           (chevron/mirror-point variant unadjusted-origin-point anchor-point)]
+                                     chevron-angle)
+        [mirrored-origin mirrored-anchor] [(chevron/mirror-point chevron-angle unadjusted-origin-point origin-point)
+                                           (chevron/mirror-point chevron-angle unadjusted-origin-point anchor-point)]
         origin-point (v/line-intersection origin-point anchor-point
                                           mirrored-origin mirrored-anchor)
-        [relative-left relative-right] (chevron/arm-diagonals variant origin-point anchor-point)
+        [relative-left relative-right] (chevron/arm-diagonals chevron-angle origin-point anchor-point)
         diagonal-left (v/+ origin-point relative-left)
         diagonal-right (v/+ origin-point relative-right)
         intersection-left (v/find-first-intersection-of-ray origin-point diagonal-left environment)
@@ -70,11 +66,11 @@
                                            :real-end end
                                            :render-options render-options
                                            :environment environment)
-        infinity-points (case variant
-                          :chief [:left :right]
-                          :dexter [:bottom :top]
-                          :sinister [:top :bottom]
-                          [:right :left])
+        infinity-points (cond
+                          (<= 45 chevron-angle 135) [:right :left]
+                          (<= 225 chevron-angle 315) [:left :right]
+                          (<= 135 chevron-angle 225) [:bottom :top]
+                          :else [:top :bottom])
         parts [[["M" (v/+ diagonal-left
                           line-left-start)
                  (svg/stitch line-left)
@@ -100,13 +96,7 @@
                                  (v/+ diagonal-left
                                       line-left-start)])
                  "z"]
-                (-> [origin-point]
-                    (concat (case variant
-                              :chief [top-left top-right]
-                              :dexter [top-left bottom-left]
-                              :sinister [top-right bottom-right]
-                              [bottom-left bottom-right]))
-                    vec)]]
+                [top-left bottom-right]]]
         outline? (or (:outline? render-options)
                      (:outline? hints))]
     [:<>
