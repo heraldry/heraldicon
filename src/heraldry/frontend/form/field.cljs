@@ -229,6 +229,12 @@
                (-> options :thickness :max)
                :step 0.01
                :default (-> options :thickness :default)])
+            (when (-> options :angle)
+              [element/range-input-with-checkbox (conj path :angle) "Angle"
+               (-> options :angle :min)
+               (-> options :angle :max)
+               :step 1
+               :default (-> options :angle :default)])
             (when (-> options :origin)
               [position/form (conj path :origin)
                :title "Origin"
