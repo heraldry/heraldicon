@@ -92,6 +92,10 @@
            [position/form (conj path :origin)
             :title "Origin"
             :options (:origin ordinary-options)])
+         (when (:direction-anchor ordinary-options)
+           [position/form (conj path :direction-anchor)
+            :title "Issuant"
+            :options (:direction-anchor ordinary-options)])
          (when (:anchor ordinary-options)
            [position/form (conj path :anchor)
             :title "Anchor"

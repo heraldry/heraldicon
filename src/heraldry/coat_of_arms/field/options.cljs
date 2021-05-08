@@ -2,19 +2,19 @@
   (:require [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
-            [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.util :as util]))
 
 (def default-options
   {:line line/default-options
    :opposite-line line/default-options
    :extra-line line/default-options
-   :angle {:type :range
-           :min -179
-           :max 180
-           :default 0}
    :origin (-> position/default-options
                (dissoc :alignment))
+   :direction-anchor (-> position/anchor-default-options
+                         (dissoc :alignment)
+                         (assoc-in [:angle :min] -180)
+                         (assoc-in [:angle :max] 180)
+                         (assoc-in [:angle :default] 0))
    :anchor (-> position/anchor-default-options
                (dissoc :alignment))
    :variant {:type :choice
@@ -147,8 +147,8 @@
             :per-chevron (options/pick default-options
                                        [[:line]
                                         [:opposite-line]
-                                        [:angle]
                                         [:origin]
+                                        [:direction-anchor]
                                         [:anchor]]
                                        {[:line] (-> line-style
                                                     (options/override-if-exists [:offset :min] 0)
@@ -156,10 +156,33 @@
                                         [:opposite-line] (-> opposite-line-style
                                                              (options/override-if-exists [:offset :min] 0)
                                                              (options/override-if-exists [:base-line] nil))
+                                        [:direction-anchor :point :choices] (util/filter-choices
+                                                                             position/anchor-point-choices
+                                                                             [:top-left :top :top-right :left :right :bottom-left :bottom :bottom-right :angle])
+                                        [:direction-anchor :point :default] :bottom
                                         [:anchor :point :choices] (util/filter-choices
                                                                    position/anchor-point-choices
-                                                                   [:top-left :top :top-right :left :right :bottom-left :bottom :bottom-right :angle])
-                                        [:anchor :point :default] :bottom-left})
+                                                                   (case (-> field :direction-anchor :point (or :bottom))
+                                                                     :bottom [:bottom-left :bottom :bottom-right :left :right :angle]
+                                                                     :top [:top-left :top :top-right :left :right :angle]
+                                                                     :left [:top-left :left :bottom-left :top :bottom :angle]
+                                                                     :right [:top-right :right :bottom-right :top :bottom :angle]
+                                                                     :bottom-left [:bottom-left :bottom :bottom-right :top-left :left :angle]
+                                                                     :bottom-right [:bottom-left :bottom :bottom-right :right :top-right :angle]
+                                                                     :top-left [:top-left :top :top-right :left :bottom-left :angle]
+                                                                     :top-right [:top-left :top :top-right :left :bottom-right :angle]
+                                                                     [:top-left :top :top-right :left :right :bottom-left :bottom :bottom-right :angle]))
+                                        [:anchor :point :default] (case (-> field :direction-anchor :point (or :bottom))
+                                                                    :bottom :bottom-left
+                                                                    :top :top-right
+                                                                    :left :top-left
+                                                                    :right :bottom-right
+                                                                    :bottom-left :left
+                                                                    :bottom-right :bottom
+                                                                    :top-left :top
+                                                                    :top-right :right
+                                                                    :angle :angle
+                                                                    :bottom-left)})
             :per-pile (options/pick default-options
                                     [[:origin]
                                      [:anchor]
@@ -479,7 +502,10 @@
             {})
           (update-in [:anchor] (fn [anchor]
                                  (when anchor
-                                   (position/adjust-options anchor (-> field :anchor)))))))))
+                                   (position/adjust-options anchor (-> field :anchor)))))
+          (update-in [:direction-anchor] (fn [direction-anchor]
+                                           (when direction-anchor
+                                             (position/adjust-options direction-anchor (-> field :direction-anchor)))))))))
 
 (defn sanitize-opposite-line [field line]
   (-> (options/sanitize
