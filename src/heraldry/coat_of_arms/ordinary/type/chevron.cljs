@@ -15,20 +15,28 @@
   {:display-name "Chevron"
    :value        :heraldry.ordinary.type/chevron}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line angle origin anchor
+  (let [{:keys [line origin anchor
+                direction-anchor
                 geometry]}                             (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]}                                 geometry
-        chevron-angle                                  (v/normalize-angle (+ angle 90))
         opposite-line                                  (ordinary-options/sanitize-opposite-line ordinary line)
         points                                         (:points environment)
         unadjusted-origin-point                        (position/calculate origin environment)
         top-left                                       (:top-left points)
-        top-right                                      (:top-right points)
-        bottom-left                                    (:bottom-left points)
         bottom-right                                   (:bottom-right points)
         height                                         (:height environment)
         band-width                                     (-> size
                                                            ((util/percent-of height)))
+        {direction-origin-point :real-origin
+         direction-anchor-point :real-anchor}          (angle/calculate-origin-and-anchor
+                                                        environment
+                                                        origin
+                                                        direction-anchor
+                                                        0
+                                                        90)
+        chevron-angle                                  (v/normalize-angle
+                                                        (v/angle-to-point direction-origin-point
+                                                                          direction-anchor-point))
         {origin-point :real-origin
          anchor-point :real-anchor}                    (angle/calculate-origin-and-anchor
                                                         environment
