@@ -145,7 +145,8 @@
                                  [:anchor]
                                  [:line]
                                  [:opposite-line]
-                                 [:geometry]]
+                                 [:geometry]
+                                 [:cottising]]
                                 {[:line] (-> line-style
                                              (options/override-if-exists [:offset :min] 0)
                                              (options/override-if-exists [:base-line] nil))
