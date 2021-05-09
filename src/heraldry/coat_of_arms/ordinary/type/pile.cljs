@@ -127,10 +127,11 @@
                       (/ (if (zero? half-joint-angle)
                            0.00001
                            (Math/sin half-joint-angle-rad))))
-             line-offset (-> half-joint-angle-rad
-                             Math/cos
-                             (* dist)
-                             (/ (:width opposite-line)))
+             line-offset (or (-> cottise-1 :opposite-line :offset)
+                             (-> half-joint-angle-rad
+                                 Math/cos
+                                 (* dist)
+                                 (/ (:width opposite-line))))
              point-offset (-> (v/v (- dist) 0)
                               (v/rotate pile-angle)
                               (v/+ point))
