@@ -1,10 +1,12 @@
 (ns heraldry.coat-of-arms.ordinary.type.saltire
   (:require [heraldry.coat-of-arms.angle :as angle]
+            [heraldry.coat-of-arms.cottising :as cottising]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+            [heraldry.coat-of-arms.ordinary.type.chevron :as chevron]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.shared.saltire :as saltire]
             [heraldry.coat-of-arms.svg :as svg]
@@ -13,7 +15,7 @@
 
 (defn render
   {:display-name "Saltire"
-   :value         :heraldry.ordinary.type/saltire}
+   :value        :heraldry.ordinary.type/saltire}
   [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
                 geometry]}                                           (options/sanitize ordinary (ordinary-options/options ordinary))
@@ -106,6 +108,7 @@
                                                                          (update-in [:fimbriation :thickness-2] (util/percent-of height)))
         {line-top-left-lower       :line
          line-top-left-lower-start :line-start
+         line-top-left-lower-min   :line-min
          :as                       line-top-left-lower-data}         (line/create line
                                                                                   corner-left top-left-lower
                                                                                   :real-start 0
@@ -202,7 +205,9 @@
                                                                        (counterchange/counterchange-field ordinary parent)
                                                                        field)
         outline?                                                     (or (:outline? render-options)
-                                                                         (:outline? hints))]
+                                                                         (:outline? hints))
+        {:keys [cottise-1
+                cottise-2]}                                          (-> ordinary :cottising)]
     [:<>
      [field-shared/make-subfields
       :ordinary-pale [field] parts
@@ -215,5 +220,54 @@
      (line/render line [line-bottom-right-lower-data
                         line-bottom-left-lower-data] bottom-right-lower outline? render-options)
      (line/render line [line-bottom-left-upper-data
-                        line-top-left-lower-data] bottom-left-upper outline? render-options)]))
+                        line-top-left-lower-data] bottom-left-upper outline? render-options)
+     (when (:enabled? cottise-1)
+       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)]
+         [:<>
+          (for [[chevron-angle
+                 point
+                 half-joint-angle] [[270 corner-top (- 90 angle-bottom-right)]
+                                    [180 corner-left angle-bottom-right]
+                                    [0 corner-right angle-bottom-right]
+                                    [90 corner-bottom (- 90 angle-bottom-right)]]]
+            (let [half-joint-angle-rad (-> half-joint-angle
+                                           (/ 180)
+                                           (* Math/PI)
+                                           Math/sin)
+                  dist                 (-> (+ (:distance cottise-1-data))
+                                           (/ 100)
+                                           (* width)
+                                           (- line-top-left-lower-min)
+                                           (/ (if (zero? half-joint-angle)
+                                                0.00001
+                                                (Math/sin half-joint-angle-rad))))
+                  new-anchor           {:point :angle
+                                        :angle half-joint-angle}
+                  point-offset         (-> (v/v dist 0)
+                                           (v/rotate chevron-angle)
+                                           (v/+ point))
+                  fess-offset          (v/- point-offset (get points :fess))
+                  new-origin           {:point     :fess
+                                        :offset-x  (-> fess-offset
+                                                       :x
+                                                       (/ width)
+                                                       (* 100))
+                                        :offset-y  (-> fess-offset
+                                                       :y
+                                                       (/ height)
+                                                       (* 100)
+                                                       -)
+                                        :alignment :right}
+                  new-direction-anchor {:point :angle
+                                        :angle (- chevron-angle 90)}]
+              ^{:key chevron-angle} [chevron/render (-> {:type :heraldry.ordinary.type/chevron}
+                                                        (assoc :cottising {:cottise-opposite-1 cottise-2})
+                                                        (assoc :line (:opposite-line cottise-1))
+                                                        (assoc :opposite-line (:line cottise-1))
+                                                        (assoc :field (:field cottise-1))
+                                                        (assoc-in [:geometry :size] (:thickness cottise-1-data))
+                                                        (assoc :origin new-origin)
+                                                        (assoc :direction-anchor new-direction-anchor)
+                                                        (assoc :anchor new-anchor)) parent environment
+                                     context]))]))]))
 
