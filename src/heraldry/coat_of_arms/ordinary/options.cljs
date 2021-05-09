@@ -261,11 +261,16 @@
          :cross         (options/pick default-options
                                       [[:origin]
                                        [:line]
-                                       [:geometry]]
+                                       [:geometry]
+                                       [:cottising]]
                                       {[:line]              (-> line-style
                                                                 (options/override-if-exists [:offset :min] 0)
                                                                 (options/override-if-exists [:base-line] nil))
-                                       [:origin :alignment] nil})
+                                       [:origin :alignment] nil
+                                       [:cottising]         (-> default-options
+                                                                :cottising
+                                                                (dissoc :cottise-opposite-1)
+                                                                (dissoc :cottise-opposite-2))})
          :gore          (options/pick default-options
                                       [[:origin]
                                        [:anchor]
