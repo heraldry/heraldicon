@@ -24,7 +24,9 @@
   (let [;; ignore offset constraints, because cottises might exceed them
         ordinary-options                         (-> (ordinary-options/options ordinary)
                                                      (assoc-in [:origin :offset-x :min] -100)
-                                                     (assoc-in [:origin :offset-x :max] 100))
+                                                     (assoc-in [:origin :offset-x :max] 100)
+                                                     (assoc-in [:origin :offset-y :min] -100)
+                                                     (assoc-in [:origin :offset-y :max] 100))
         {:keys [line origin anchor geometry]}    (options/sanitize ordinary ordinary-options)
         {:keys [size]}                           geometry
         opposite-line                            (ordinary-options/sanitize-opposite-line ordinary line)

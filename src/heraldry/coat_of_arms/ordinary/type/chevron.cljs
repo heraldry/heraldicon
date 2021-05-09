@@ -20,6 +20,8 @@
         ordinary-options                               (-> (ordinary-options/options ordinary)
                                                            (assoc-in [:origin :offset-x :min] -1000)
                                                            (assoc-in [:origin :offset-x :max] 1000)
+                                                           (assoc-in [:origin :offset-y :min] -1000)
+                                                           (assoc-in [:origin :offset-y :max] 1000)
                                                            (assoc-in [:direction-anchor :angle :min] -360)
                                                            (assoc-in [:direction-anchor :angle :max] 360)
                                                            (assoc-in [:anchor :angle :min] -360)
