@@ -81,23 +81,30 @@
       environment ordinary context]
      (line/render line [line-reversed-data] row-right outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)]
-         [fess/render {:type          :heraldry.ordinary.type/fess
-                       :hints         {:outline? (-> ordinary :hints :outline?)}
-                       :cottising     {:cottise-opposite-1 cottise-2}
-                       :line          (:opposite-line cottise-1)
-                       :opposite-line (:line cottise-1)
-                       :field         (:field cottise-1)
-                       :geometry      {:size (:thickness cottise-1-data)}
-                       :origin        {:point     :top
-                                       :offset-y  (-> top
-                                                      :y
-                                                      (- row)
-                                                      (+ line-reversed-min)
-                                                      (/ height)
-                                                      (* 100)
-                                                      (- (:distance cottise-1-data)))
-                                       :alignment :left}} parent environment
+       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)
+             fess-base      {:type          :heraldry.ordinary.type/fess
+                             :line          (:line cottise-1)
+                             :opposite-line (:opposite-line cottise-1)}
+             fess-options   (ordinary-options/options fess-base)
+             {:keys [line]} (options/sanitize fess-base fess-options)
+             opposite-line  (ordinary-options/sanitize-opposite-line fess-base line)]
+         [fess/render (-> fess-base
+                          (merge {:hints         {:outline? (-> ordinary :hints :outline?)}
+                                  :field         (:field cottise-1)
+                                  ;; swap line/opposite-line because the cottise fess is upside down
+                                  :line          opposite-line
+                                  :opposite-line line
+                                  :cottising     {:cottise-opposite-1 cottise-2}
+                                  :geometry      {:size (:thickness cottise-1-data)}
+                                  :origin        {:point     :top
+                                                  :offset-y  (-> top
+                                                                 :y
+                                                                 (- row)
+                                                                 (+ line-reversed-min)
+                                                                 (/ height)
+                                                                 (* 100)
+                                                                 (- (:distance cottise-1-data)))
+                                                  :alignment :left}})) parent environment
           (-> context
               (assoc :override-shared-start-x shared-start-x)
               (assoc :override-real-start real-start)
