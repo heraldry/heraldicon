@@ -109,6 +109,12 @@
                         line-right-data] left-point outline? render-options)
      (when (:enabled? cottise-1)
        (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)
+             chevron-base {:type :heraldry.ordinary.type/chevron
+                           :line (:line cottise-1)
+                           :opposite-line (:opposite-line cottise-1)}
+             chevron-options (ordinary-options/options chevron-base)
+             {:keys [line]} (options/sanitize chevron-base chevron-options)
+             opposite-line (ordinary-options/sanitize-opposite-line chevron-base line)
              half-joint-angle (/ joint-angle 2)
              half-joint-angle-rad (-> half-joint-angle
                                       (/ 180)
@@ -124,7 +130,7 @@
              line-offset (-> half-joint-angle-rad
                              Math/cos
                              (* dist)
-                             (/ (-> cottise-1 :opposite-line :width)))
+                             (/ (:width opposite-line)))
              point-offset (-> (v/v (- dist) 0)
                               (v/rotate pile-angle)
                               (v/+ point))
@@ -147,8 +153,8 @@
          [chevron/render (-> {:type :heraldry.ordinary.type/chevron
                               :hints {:outline? (-> ordinary :hints :outline?)}}
                              (assoc :cottising {:cottise-1 cottise-2})
-                             (assoc :line (:line cottise-1))
-                             (assoc :opposite-line (-> (:opposite-line cottise-1)
+                             (assoc :line line)
+                             (assoc :opposite-line (-> opposite-line
                                                        (assoc :offset line-offset)))
                              (assoc :field (:field cottise-1))
                              (assoc-in [:geometry :size] (:thickness cottise-1-data))
