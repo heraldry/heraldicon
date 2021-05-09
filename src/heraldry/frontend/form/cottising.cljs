@@ -55,7 +55,20 @@
 
 (defn form [path options & {:keys [title form-for-field] :or {title "Cottising"}}]
   (let [current-data @(rf/subscribe [:get path])
-        link-name "TBD"]
+        link-name (cond
+                    (or (and (-> current-data :cottise-1 :enabled?)
+                             (:cottise-1 options)
+                             (-> current-data :cottise-2 :enabled?)
+                             (:cottise-2 options))
+                        (and (-> current-data :cottise-opposite-1 :enabled?)
+                             (:cottise-opposite-1 options)
+                             (-> current-data :cottise-opposite-2 :enabled?)
+                             (:cottise-opposite-2 options))) "Double"
+                    (or (and (-> current-data :cottise-1 :enabled?)
+                             (:cottise-1 options))
+                        (and (-> current-data :cottise-opposite-1 :enabled?)
+                             (:cottise-opposite-1 options))) "Single"
+                    :else "None")]
     [:div.setting
      [:label title]
      " "
