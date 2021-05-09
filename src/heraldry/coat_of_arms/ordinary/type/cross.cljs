@@ -256,7 +256,8 @@
                               :alignment :right}
                   new-direction-anchor {:point :angle
                                         :angle (- chevron-angle 90)}]
-              ^{:key chevron-angle} [chevron/render (-> {:type :heraldry.ordinary.type/chevron}
+              ^{:key chevron-angle} [chevron/render (-> {:type :heraldry.ordinary.type/chevron
+                                                         :hints {:outline? (-> ordinary :hints :outline?)}}
                                                         (assoc :cottising {:cottise-opposite-1 cottise-2})
                                                         (assoc :line (:opposite-line cottise-1))
                                                         (assoc :opposite-line (:line cottise-1))

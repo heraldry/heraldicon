@@ -144,7 +144,8 @@
                          :angle half-joint-angle}
              new-direction-anchor {:point :angle
                                    :angle (- pile-angle 90)}]
-         [chevron/render (-> {:type :heraldry.ordinary.type/chevron}
+         [chevron/render (-> {:type :heraldry.ordinary.type/chevron
+                              :hints {:outline? (-> ordinary :hints :outline?)}}
                              (assoc :cottising {:cottise-1 cottise-2})
                              (assoc :line (:line cottise-1))
                              (assoc :opposite-line (-> (:opposite-line cottise-1)
