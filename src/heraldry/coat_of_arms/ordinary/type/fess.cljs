@@ -144,11 +144,18 @@
               (assoc :override-real-start real-start)
               (assoc :override-real-end real-end))]))
      (when (:enabled? cottise-opposite-1)
-       (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-options)]
+       (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-options)
+             fess-base {:type :heraldry.ordinary.type/fess
+                        :line (:line cottise-opposite-1)
+                        :opposite-line (:opposite-line cottise-opposite-1)}
+             fess-options (ordinary-options/options fess-base)
+             {:keys [line]} (options/sanitize fess-base fess-options)
+             opposite-line (ordinary-options/sanitize-opposite-line fess-base line)]
          [render (-> ordinary
                      (assoc :cottising {:cottise-opposite-1 cottise-opposite-2})
-                     (assoc :line (:opposite-line cottise-opposite-1))
-                     (assoc :opposite-line (:line cottise-opposite-1))
+                     ;; swap line/opposite-line because the cottise fess is upside down
+                     (assoc :line opposite-line)
+                     (assoc :opposite-line line)
                      (assoc :field (:field cottise-opposite-1))
                      (assoc-in [:geometry :size] (:thickness cottise-opposite-1-data))
                      (assoc-in [:origin :offset-y] (-> plain-origin

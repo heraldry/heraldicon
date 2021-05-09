@@ -230,7 +230,13 @@
                                     [180 corner-left angle-bottom-right]
                                     [0 corner-right angle-bottom-right]
                                     [90 corner-bottom (- 90 angle-bottom-right)]]]
-            (let [half-joint-angle-rad (-> half-joint-angle
+            (let [chevron-base {:type :heraldry.ordinary.type/chevron
+                                :line (:line cottise-1)
+                                :opposite-line (:opposite-line cottise-1)}
+                  chevron-options (ordinary-options/options chevron-base)
+                  {:keys [line]} (options/sanitize chevron-base chevron-options)
+                  opposite-line (ordinary-options/sanitize-opposite-line chevron-base line)
+                  half-joint-angle-rad (-> half-joint-angle
                                            (/ 180)
                                            (* Math/PI)
                                            Math/sin)
@@ -263,8 +269,9 @@
               ^{:key chevron-angle} [chevron/render (-> {:type :heraldry.ordinary.type/chevron
                                                          :hints {:outline? (-> ordinary :hints :outline?)}}
                                                         (assoc :cottising {:cottise-opposite-1 cottise-2})
-                                                        (assoc :line (:opposite-line cottise-1))
-                                                        (assoc :opposite-line (:line cottise-1))
+                                                        ;; swap line/opposite-line because the cottise fess is upside down
+                                                        (assoc :line opposite-line)
+                                                        (assoc :opposite-line line)
                                                         (assoc :field (:field cottise-1))
                                                         (assoc-in [:geometry :size] (:thickness cottise-1-data))
                                                         (assoc :origin new-origin)

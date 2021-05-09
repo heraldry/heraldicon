@@ -180,6 +180,12 @@
                                  line-left-lower-data] right-lower outline? render-options)
      (when (:enabled? cottise-1)
        (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)
+             chevron-base {:type :heraldry.ordinary.type/chevron
+                           :line (:line cottise-1)
+                           :opposite-line (:opposite-line cottise-1)}
+             chevron-options (ordinary-options/options chevron-base)
+             {:keys [line]} (options/sanitize chevron-base chevron-options)
+             opposite-line (ordinary-options/sanitize-opposite-line chevron-base line)
              half-joint-angle (/ joint-angle 2)
              half-joint-angle-rad (-> half-joint-angle
                                       (/ 180)
@@ -195,7 +201,7 @@
              line-offset (-> half-joint-angle-rad
                              Math/cos
                              (* dist)
-                             (/ (-> cottise-1 :opposite-line :width)))
+                             (/ (:width opposite-line)))
              point-offset (-> (v/v (- dist) 0)
                               (v/rotate chevron-angle)
                               (v/+ corner-upper))
@@ -228,6 +234,12 @@
           context]))
      (when (:enabled? cottise-opposite-1)
        (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-options)
+             chevron-base {:type :heraldry.ordinary.type/chevron
+                           :line (:line cottise-opposite-1)
+                           :opposite-line (:opposite-line cottise-opposite-1)}
+             chevron-options (ordinary-options/options chevron-base)
+             {:keys [line]} (options/sanitize chevron-base chevron-options)
+             opposite-line (ordinary-options/sanitize-opposite-line chevron-base line)
              half-joint-angle (/ joint-angle 2)
              half-joint-angle-rad (-> half-joint-angle
                                       (/ 180)
@@ -261,8 +273,9 @@
                                    :angle (- chevron-angle 90)}]
          [render (-> ordinary
                      (assoc :cottising {:cottise-opposite-1 cottise-opposite-2})
-                     (assoc :line (:opposite-line cottise-opposite-1))
-                     (assoc :opposite-line (:line cottise-opposite-1))
+                     ;; swap line/opposite-line because the cottise fess is upside down
+                     (assoc :line opposite-line)
+                     (assoc :opposite-line line)
                      (assoc :field (:field cottise-opposite-1))
                      (assoc-in [:geometry :size] (:thickness cottise-opposite-1-data))
                      (assoc :origin new-origin)
