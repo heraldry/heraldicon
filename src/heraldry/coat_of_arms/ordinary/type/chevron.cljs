@@ -85,9 +85,9 @@
         right-upper                                    (v/+ diagonal-right offset-upper)
         right-lower                                    (v/+ diagonal-right offset-lower)
         intersection-left-upper                        (v/find-first-intersection-of-ray corner-upper left-upper environment)
-        intersection-right-upper                       (v/find-first-intersection-of-ray corner-upper left-upper environment)
+        intersection-right-upper                       (v/find-first-intersection-of-ray corner-upper right-upper environment)
         intersection-left-lower                        (v/find-first-intersection-of-ray corner-lower left-lower environment)
-        intersection-right-lower                       (v/find-first-intersection-of-ray corner-lower left-lower environment)
+        intersection-right-lower                       (v/find-first-intersection-of-ray corner-lower right-lower environment)
         end-left-upper                                 (-> intersection-left-upper
                                                            (v/- corner-upper)
                                                            v/abs)
