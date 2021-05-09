@@ -1,10 +1,12 @@
 (ns heraldry.coat-of-arms.ordinary.type.cross
-  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
+  (:require [heraldry.coat-of-arms.cottising :as cottising]
+            [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+            [heraldry.coat-of-arms.ordinary.type.chevron :as chevron]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
@@ -87,6 +89,7 @@
                  (update-in [:fimbriation :thickness-2] (util/percent-of height)))
         {line-pale-top-left :line
          line-pale-top-left-start :line-start
+         line-pale-top-left-min :line-min
          :as line-pale-top-left-data} (line/create line
                                                    corner-top-left pale-top-left
                                                    :real-start 0
@@ -199,7 +202,9 @@
                 (counterchange/counterchange-field ordinary parent)
                 field)
         outline? (or (:outline? render-options)
-                     (:outline? hints))]
+                     (:outline? hints))
+        {:keys [cottise-1
+                cottise-2]} (-> ordinary :cottising)]
     [:<>
      [field-shared/make-subfields
       :ordinary-pale [field] parts
@@ -212,4 +217,52 @@
      (line/render line [line-fess-bottom-right-data
                         line-pale-bottom-right-data] fess-bottom-right outline? render-options)
      (line/render line [line-pale-bottom-left-data
-                        line-fess-bottom-left-data] pale-bottom-left outline? render-options)]))
+                        line-fess-bottom-left-data] pale-bottom-left outline? render-options)
+     (when (:enabled? cottise-1)
+       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)
+             half-joint-angle 45
+             half-joint-angle-rad (-> half-joint-angle
+                                      (/ 180)
+                                      (* Math/PI)
+                                      Math/sin)
+             dist (-> (+ (:distance cottise-1-data))
+                      (/ 100)
+                      (* width)
+                      (- line-pale-top-left-min)
+                      (/ (if (zero? half-joint-angle)
+                           0.00001
+                           (Math/sin half-joint-angle-rad))))
+             new-anchor {:point :angle
+                         :angle half-joint-angle}]
+         [:<>
+          (for [[chevron-angle point] [[225 corner-top-left]
+                                       [315 corner-top-right]
+                                       [135 corner-bottom-left]
+                                       [45 corner-bottom-right]]]
+            (let [point-offset (-> (v/v dist 0)
+                                   (v/rotate chevron-angle)
+                                   (v/+ point))
+                  fess-offset (v/- point-offset (get points :fess))
+                  new-origin {:point :fess
+                              :offset-x (-> fess-offset
+                                            :x
+                                            (/ width)
+                                            (* 100))
+                              :offset-y (-> fess-offset
+                                            :y
+                                            (/ height)
+                                            (* 100)
+                                            -)
+                              :alignment :right}
+                  new-direction-anchor {:point :angle
+                                        :angle (- chevron-angle 90)}]
+              ^{:key chevron-angle} [chevron/render (-> {:type :heraldry.ordinary.type/chevron}
+                                                        (assoc :cottising {:cottise-opposite-1 cottise-2})
+                                                        (assoc :line (:opposite-line cottise-1))
+                                                        (assoc :opposite-line (:line cottise-1))
+                                                        (assoc :field (:field cottise-1))
+                                                        (assoc-in [:geometry :size] (:thickness cottise-1-data))
+                                                        (assoc :origin new-origin)
+                                                        (assoc :direction-anchor new-direction-anchor)
+                                                        (assoc :anchor new-anchor)) parent environment
+                                     context]))]))]))
