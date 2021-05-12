@@ -11,6 +11,6 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-highlight.js": "^1.0.7",
-    "shadow-cljs": "^2.12.3"
+    "shadow-cljs": "^2.12.7"
   }
 }
