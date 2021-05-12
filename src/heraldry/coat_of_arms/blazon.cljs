@@ -7,17 +7,17 @@
 (declare encode-field)
 
 (defn encode-ordinary [{:keys [type field line]}]
-  (let [rest    (util/combine " " [(util/translate type)
-                                   (util/translate-line line)
-                                   (encode-field field)])
+  (let [rest (util/combine " " [(util/translate type)
+                                (util/translate-line line)
+                                (encode-field field)])
         article (if (re-matches #"(?i)^[aeiouh].*" rest)
                   "an"
                   "a")]
     (util/combine " " [article rest])))
 
 (defn encode-charge [{:keys [type attitude field tincture variant]}]
-  (let [charge-data    (when variant
-                         (charge/fetch-charge-data variant))
+  (let [charge-data (when variant
+                      (charge/fetch-charge-data variant))
         fixed-tincture (-> charge-data
                            :fixed-tincture
                            (or :none)
@@ -42,43 +42,42 @@
 (defn encode-component [component]
   (case (-> component :type namespace)
     "heraldry.ordinary.type" (encode-ordinary component)
-    "heraldry.charge.type"   (encode-charge component)
-    "heraldry.component"     (encode-semy component)))
+    "heraldry.charge.type" (encode-charge component)
+    "heraldry.component" (encode-semy component)))
 
 (defn encode-field [{:keys [components counterchanged?] :as field} & {:keys [root?]}]
   (if counterchanged?
     "counterchanged"
-    (let [field-description      (case (:type field)
-                                   :heraldry.field.type/plain (util/translate-tincture (:tincture field))
-                                   (let [{:keys [type line fields]} field
-                                         mandatory-part-count       (field/mandatory-part-count field)]
-                                     (util/combine
-                                      " "
-                                      [(util/translate type)
-                                       (util/translate-line line)
-                                       (util/combine " and "
-                                                     (map
-                                                      (fn [[index part]]
-                                                        (cond
-                                                          (< index
-                                                             mandatory-part-count)             (encode-field part)
-                                                          (-> part
-                                                              :type
-                                                              (not= :heraldry.field.type/ref)) (util/combine
-                                                                                                " "
-                                                                                                [(when (-> fields
-                                                                                                           count
-                                                                                                           (> 3))
-                                                                                                   (field/part-name type index))
-                                                                                                 (encode-field part)])))
-                                                      (map-indexed vector fields)))])))
+    (let [field-description (case (:type field)
+                              :heraldry.field.type/plain (util/translate-tincture (:tincture field))
+                              (let [{:keys [type line fields]} field
+                                    mandatory-part-count (field/mandatory-part-count field)]
+                                (util/combine
+                                 " "
+                                 [(util/translate type)
+                                  (util/translate-line line)
+                                  (util/combine " and "
+                                                (map
+                                                 (fn [[index part]]
+                                                   (cond
+                                                     (< index
+                                                        mandatory-part-count) (encode-field part)
+                                                     (-> part
+                                                         :type
+                                                         (not= :heraldry.field.type/ref)) (util/combine
+                                                                                           " "
+                                                                                           [(when (-> fields
+                                                                                                      count
+                                                                                                      (> 3))
+                                                                                              (field/part-name type index))
+                                                                                            (encode-field part)])))
+                                                 (map-indexed vector fields)))])))
           components-description (util/combine ", " (map encode-component components))
-          blazon                 (util/upper-case-first
-                                  (util/combine ", " [field-description
-                                                      components-description]))]
+          blazon (util/upper-case-first
+                  (util/combine ", " [field-description
+                                      components-description]))]
       (if (or root?
               (and (-> field :type (= :heraldry.field.type/plain))
                    (-> components-description count zero?)))
         blazon
         (str "[" blazon "]")))))
-

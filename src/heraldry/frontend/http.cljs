@@ -9,12 +9,12 @@
    (-> (http/get url)
        <?
        (as-> response
-           (let [status (:status response)
-                 body   (:body response)
-                 data   (if (and (s/ends-with? url ".edn")
+             (let [status (:status response)
+                   body (:body response)
+                   data (if (and (s/ends-with? url ".edn")
                                  (string? body))
                           (reader/read-string body)
                           body)]
-             (if (= status 200)
-               data
-               (throw (ex-info "HTTP request failed" {:error body} :fetch-url-failed))))))))
+               (if (= status 200)
+                 data
+                 (throw (ex-info "HTTP request failed" {:error body} :fetch-url-failed))))))))

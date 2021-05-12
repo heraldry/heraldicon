@@ -8,41 +8,41 @@
             [re-frame.core :as rf]))
 
 (defn theme-choice [path key display-name]
-  (let [value            @(rf/subscribe [:get path])
+  (let [value @(rf/subscribe [:get path])
         {:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
-                           :field      {:type   :heraldry.field.type/bendy-sinister
-                                        :line   {:type :straight}
-                                        :layout {:num-base-fields 7
-                                                 :num-fields-y    7}
-                                        :fields [{:type     :heraldry.field.type/plain
-                                                  :tincture :argent}
-                                                 {:type     :heraldry.field.type/plain
-                                                  :tincture :gules}
-                                                 {:type     :heraldry.field.type/plain
-                                                  :tincture :or}
-                                                 {:type     :heraldry.field.type/plain
-                                                  :tincture :vert}
-                                                 {:type     :heraldry.field.type/plain
-                                                  :tincture :azure}
-                                                 {:type     :heraldry.field.type/plain
-                                                  :tincture :purpure}
-                                                 {:type     :heraldry.field.type/plain
-                                                  :tincture :sable}
-                                                 {:type  :heraldry.field.type/ref
-                                                  :index 0}]}}
+                           :field {:type :heraldry.field.type/bendy-sinister
+                                   :line {:type :straight}
+                                   :layout {:num-base-fields 7
+                                            :num-fields-y 7}
+                                   :fields [{:type :heraldry.field.type/plain
+                                             :tincture :argent}
+                                            {:type :heraldry.field.type/plain
+                                             :tincture :gules}
+                                            {:type :heraldry.field.type/plain
+                                             :tincture :or}
+                                            {:type :heraldry.field.type/plain
+                                             :tincture :vert}
+                                            {:type :heraldry.field.type/plain
+                                             :tincture :azure}
+                                            {:type :heraldry.field.type/plain
+                                             :tincture :purpure}
+                                            {:type :heraldry.field.type/plain
+                                             :tincture :sable}
+                                            {:type :heraldry.field.type/ref
+                                             :index 0}]}}
                           80
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
                               (assoc-in [:render-options :theme] key)))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
-                          :style    {:border        (if (= value key)
-                                                      "1px solid #000"
-                                                      "1px solid transparent")
-                                     :border-radius "5px"}}
-     [:svg {:style               {:width  "4em"
-                                  :height "4.5em"}
-            :viewBox             "0 0 100 200"
+                          :style {:border (if (= value key)
+                                            "1px solid #000"
+                                            "1px solid transparent")
+                                  :border-radius "5px"}}
+     [:svg {:style {:width "4em"
+                    :height "4.5em"}
+            :viewBox "0 0 100 200"
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(10,10)"}
@@ -65,4 +65,3 @@
          (for [[display-name key] group]
            ^{:key display-name}
            [theme-choice path key display-name])])]]))
-

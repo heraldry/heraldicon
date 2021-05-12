@@ -18,31 +18,31 @@
 (defn ordinary-type-choice [path key display-name & {:keys [current]}]
   (let [{:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
-                           :field      {:type       :heraldry.field.type/plain
-                                        :tincture   :argent
-                                        :components [{:type     key
-                                                      :line     (when (= key :heraldry.ordinary.type/gore)
-                                                                  {:type     :enarched
-                                                                   :flipped? true})
-                                                      :origin   (case key
-                                                                  :heraldry.ordinary.type/label {:alignment :left}
-                                                                  nil)
-                                                      :geometry (case key
-                                                                  :heraldry.ordinary.type/label {:width     75
-                                                                                                 :size      12
-                                                                                                 :thickness 20}
-                                                                  :heraldry.ordinary.type/pile  {:stretch 0.85}
-                                                                  nil)
-                                                      :field    {:type     :heraldry.field.type/plain
-                                                                 :tincture (if (= current key) :or :azure)}}]}}
+                           :field {:type :heraldry.field.type/plain
+                                   :tincture :argent
+                                   :components [{:type key
+                                                 :line (when (= key :heraldry.ordinary.type/gore)
+                                                         {:type :enarched
+                                                          :flipped? true})
+                                                 :origin (case key
+                                                           :heraldry.ordinary.type/label {:alignment :left}
+                                                           nil)
+                                                 :geometry (case key
+                                                             :heraldry.ordinary.type/label {:width 75
+                                                                                            :size 12
+                                                                                            :thickness 20}
+                                                             :heraldry.ordinary.type/pile {:stretch 0.85}
+                                                             nil)
+                                                 :field {:type :heraldry.field.type/plain
+                                                         :tincture (if (= current key) :or :azure)}}]}}
                           100
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
                               (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type path key])}
-     [:svg {:style               {:width  "4em"
-                                  :height "4.5em"}
-            :viewBox             "0 0 120 200"
+     [:svg {:style {:width "4em"
+                    :height "4.5em"}
+            :viewBox "0 0 120 200"
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(10,10)"}
@@ -112,4 +112,3 @@
             :form-for-field form-for-field])])
       [element/checkbox (conj path :hints :outline?) "Outline"]]
      [form-for-field (conj path :field) :parent-field parent-field]]))
-

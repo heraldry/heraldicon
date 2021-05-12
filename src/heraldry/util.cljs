@@ -73,9 +73,9 @@
                        (and (vector? v)
                             (-> v count (= 2))
                             (-> v second vector?)
-                            (-> v second count zero?))   nil
-                       (vector? v)                       (filterv identity v)
-                       :else                             v)) choices)))
+                            (-> v second count zero?)) nil
+                       (vector? v) (filterv identity v)
+                       :else v)) choices)))
 
 (defn spy [value msg]
   (log/debug "spy:" msg)
@@ -135,4 +135,3 @@
 (defn xor [a b]
   (or (and a (not b))
       (and (not a) b)))
-

@@ -6,16 +6,16 @@
             [re-frame.core :as rf]))
 
 (defn form [path & {:keys [title options] :or {title "Position"}}]
-  (let [position          @(rf/subscribe [:get path])
-        point-path        (conj path :point)
-        alignment-path    (conj path :alignment)
-        angle-path        (conj path :angle)
-        offset-x-path     (conj path :offset-x)
-        offset-y-path     (conj path :offset-y)
-        current-point     (options/get-value (:point position) (:point options))
+  (let [position @(rf/subscribe [:get path])
+        point-path (conj path :point)
+        alignment-path (conj path :alignment)
+        angle-path (conj path :angle)
+        offset-x-path (conj path :offset-x)
+        offset-y-path (conj path :offset-y)
+        current-point (options/get-value (:point position) (:point options))
         current-alignment (options/get-value (:alignment position) (:alignment options))
-        current-offset-x  (options/get-value (:offset-x position) (:offset-x options))
-        current-offset-y  (options/get-value (:offset-y position) (:offset-y options))]
+        current-offset-x (options/get-value (:offset-x position) (:offset-x options))
+        current-offset-y (options/get-value (:offset-y position) (:offset-y options))]
     [:div.setting
      [:label title]
      " "

@@ -39,4 +39,3 @@
              (not variant))
       [function charge parent environment context]
       [charge-other/render charge parent environment context])))
-

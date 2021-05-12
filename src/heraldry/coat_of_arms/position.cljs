@@ -63,52 +63,52 @@
   (util/choices->map alignment-choices))
 
 (def default-options
-  {:point     {:type    :choice
-               :choices point-choices
-               :default :fess}
-   :alignment {:type    :choice
+  {:point {:type :choice
+           :choices point-choices
+           :default :fess}
+   :alignment {:type :choice
                :choices alignment-choices
                :default :middle}
-   :offset-x  {:type    :range
-               :min     -45
-               :max     45
-               :default 0}
-   :offset-y  {:type    :range
-               :min     -45
-               :max     45
-               :default 0}})
+   :offset-x {:type :range
+              :min -45
+              :max 45
+              :default 0}
+   :offset-y {:type :range
+              :min -45
+              :max 45
+              :default 0}})
 
 (def anchor-default-options
   (-> default-options
       (assoc-in [:point :choices] anchor-point-choices)
-      (assoc :angle {:type    :range
-                     :min     10
-                     :max     80
+      (assoc :angle {:type :range
+                     :min 10
+                     :max 80
                      :default 45})))
 
 (defn adjust-options [options values]
   (let [point (-> values :point (or (-> options :point :default)))]
     (cond-> options
       (not= point :angle) (dissoc :angle)
-      (= point :angle)    (->
-                           (dissoc :offset-x)
-                           (dissoc :offset-y)
-                           (dissoc :alignment)))))
+      (= point :angle) (->
+                        (dissoc :offset-x)
+                        (dissoc :offset-y)
+                        (dissoc :alignment)))))
 
 (defn calculate [{:keys [point offset-x offset-y] :or {offset-x 0
                                                        offset-y 0}} environment & [default]]
-  (let [ref    (-> point
-                   (or default))
-        p      (-> environment :points (get ref))
-        width  (:width environment)
+  (let [ref (-> point
+                (or default))
+        p (-> environment :points (get ref))
+        width (:width environment)
         height (:height environment)
-        dx     (-> offset-x
-                   (* width)
-                   (/ 100))
-        dy     (-> offset-y
-                   (* height)
-                   (/ 100)
-                   -)]
+        dx (-> offset-x
+               (* width)
+               (/ 100))
+        dy (-> offset-y
+               (* height)
+               (/ 100)
+               -)]
     (v/v (-> p
              :x
              (+ dx))
@@ -125,4 +125,3 @@
                             (Math/sin angle-rad))
                        200)))
     (calculate anchor environment)))
-

@@ -8,16 +8,16 @@
             [re-frame.core :as rf]))
 
 (defn form-for-single-cottise [path options & {:keys [title form-for-field] :or {title "Cottise"}}]
-  (let [cottise     @(rf/subscribe [:get path])
+  (let [cottise @(rf/subscribe [:get path])
         checkbox-id (id "checkbox")
-        enabled?    (:enabled? cottise)]
+        enabled? (:enabled? cottise)]
     [:div.setting
      [:label title]
      " "
      [:div.other
-      [:input {:type      "checkbox"
-               :id        checkbox-id
-               :checked   enabled?
+      [:input {:type "checkbox"
+               :id checkbox-id
+               :checked enabled?
                :on-change #(let [new-checked? (-> % .-target .-checked)]
                              (when new-checked?
                                (rf/dispatch-sync [:set (conj path :line :type) :straight])
@@ -55,20 +55,20 @@
 
 (defn form [path options & {:keys [title form-for-field] :or {title "Cottising"}}]
   (let [current-data @(rf/subscribe [:get path])
-        link-name    (cond
-                       (or (and (-> current-data :cottise-1 :enabled?)
-                                (:cottise-1 options)
-                                (-> current-data :cottise-2 :enabled?)
-                                (:cottise-2 options))
-                           (and (-> current-data :cottise-opposite-1 :enabled?)
-                                (:cottise-opposite-1 options)
-                                (-> current-data :cottise-opposite-2 :enabled?)
-                                (:cottise-opposite-2 options))) "Double"
-                       (or (and (-> current-data :cottise-1 :enabled?)
-                                (:cottise-1 options))
-                           (and (-> current-data :cottise-opposite-1 :enabled?)
-                                (:cottise-opposite-1 options))) "Single"
-                       :else                                    "None")]
+        link-name (cond
+                    (or (and (-> current-data :cottise-1 :enabled?)
+                             (:cottise-1 options)
+                             (-> current-data :cottise-2 :enabled?)
+                             (:cottise-2 options))
+                        (and (-> current-data :cottise-opposite-1 :enabled?)
+                             (:cottise-opposite-1 options)
+                             (-> current-data :cottise-opposite-2 :enabled?)
+                             (:cottise-opposite-2 options))) "Double"
+                    (or (and (-> current-data :cottise-1 :enabled?)
+                             (:cottise-1 options))
+                        (and (-> current-data :cottise-opposite-1 :enabled?)
+                             (:cottise-opposite-1 options))) "Single"
+                    :else "None")]
     [:div.setting
      [:label title]
      " "
@@ -91,4 +91,3 @@
         [form-for-single-cottise (conj path :cottise-opposite-2) (:cottise-opposite-2 options)
          :title "Cottise 2 Opp"
          :form-for-field form-for-field])]]))
-

@@ -40,7 +40,7 @@
 
 (defn user-display []
   (let [user-info-data @(rf/subscribe [:get user-info-db-path])
-        user-id        (:id user-info-data)]
+        user-id (:id user-info-data)]
     [:<>
      [:div {:style {:padding-left "15px"}}
       [:h3 (str "User: " (:username user-info-data))]]

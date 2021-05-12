@@ -11,29 +11,29 @@
             [re-frame.core :as rf]))
 
 (defn line-type-choice [path key display-name & {:keys [current]}]
-  (let [options          (line/options {:type key})
+  (let [options (line/options {:type key})
         {:keys [result]} (render/coat-of-arms
                           {:escutcheon :flag
-                           :field      {:type   :heraldry.field.type/per-fess
-                                        :line   {:type   key
-                                                 :width  (case key
-                                                           :enarched nil
-                                                           (* 2 (options/get-value nil (:width options))))
-                                                 :height (case key
-                                                           :enarched 0.25
-                                                           nil)}
-                                        :fields [{:type     :heraldry.field.type/plain
-                                                  :tincture :argent}
-                                                 {:type     :heraldry.field.type/plain
-                                                  :tincture (if (= key current) :or :azure)}]}}
+                           :field {:type :heraldry.field.type/per-fess
+                                   :line {:type key
+                                          :width (case key
+                                                   :enarched nil
+                                                   (* 2 (options/get-value nil (:width options))))
+                                          :height (case key
+                                                    :enarched 0.25
+                                                    nil)}
+                                   :fields [{:type :heraldry.field.type/plain
+                                             :tincture :argent}
+                                            {:type :heraldry.field.type/plain
+                                             :tincture (if (= key current) :or :azure)}]}}
                           100
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
                               (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
-     [:svg {:style               {:width  "6.5em"
-                                  :height "4.5em"}
-            :viewBox             "0 0 120 80"
+     [:svg {:style {:width "6.5em"
+                    :height "4.5em"}
+            :viewBox "0 0 120 80"
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(10,10)"}
@@ -43,7 +43,7 @@
       [:i]]]))
 
 (defn form-for-line-type [path & {:keys [options can-disable? default value]}]
-  (let [line  @(rf/subscribe [:get path])
+  (let [line @(rf/subscribe [:get path])
         value (or value
                   (options/get-value (:type line) (:type options))
                   (-> options :type :default))]
@@ -51,8 +51,8 @@
      [:label "Type"]
      [:div.other {:style {:display "inline-block"}}
       (when can-disable?
-        [:input {:type      "checkbox"
-                 :checked   (some? (:type line))
+        [:input {:type "checkbox"
+                 :checked (some? (:type line))
                  :on-change #(let [new-checked? (-> % .-target .-checked)]
                                (if new-checked?
                                  (rf/dispatch [:set (conj path :type) default])
@@ -67,21 +67,21 @@
            " (inherited)"]))]]))
 
 (defn form-for-fimbriation [path options values & {:keys [defaults]}]
-  (let [fimbriation          @(rf/subscribe [:get path])
+  (let [fimbriation @(rf/subscribe [:get path])
         {:keys [mode
                 tincture-1
                 tincture-2]} (merge fimbriation values)
-        link-name            (case mode
-                               :single (util/combine
-                                        ", "
-                                        ["single"
-                                         (util/translate-cap-first tincture-1)])
-                               :double (util/combine
-                                        ", "
-                                        ["double"
-                                         (util/translate-cap-first tincture-2)
-                                         (util/translate-cap-first tincture-1)])
-                               "None")]
+        link-name (case mode
+                    :single (util/combine
+                             ", "
+                             ["single"
+                              (util/translate-cap-first tincture-1)])
+                    :double (util/combine
+                             ", "
+                             ["double"
+                              (util/translate-cap-first tincture-2)
+                              (util/translate-cap-first tincture-1)])
+                    "None")]
     [:div.setting
      [:label "Fimbriation"]
      " "
@@ -126,32 +126,32 @@
             :label "Tincture 2"])])]]))
 
 (defn form [path & {:keys [title options defaults] :or {title "Line"}}]
-  (let [line                   @(rf/subscribe [:get path])
-        line-type              (or (:type line)
-                                   (:type defaults)
-                                   (-> options :type :default))
-        line-eccentricity      (or (:eccentricity line)
-                                   (:eccentricity defaults))
-        line-height            (or (:height line)
-                                   (:height defaults))
-        line-width             (or (:width line)
-                                   (:width defaults))
-        line-spacing           (or (:spacing line)
-                                   (:spacing defaults))
-        line-offset            (or (:offset line)
-                                   (:offset defaults))
+  (let [line @(rf/subscribe [:get path])
+        line-type (or (:type line)
+                      (:type defaults)
+                      (-> options :type :default))
+        line-eccentricity (or (:eccentricity line)
+                              (:eccentricity defaults))
+        line-height (or (:height line)
+                        (:height defaults))
+        line-width (or (:width line)
+                       (:width defaults))
+        line-spacing (or (:spacing line)
+                         (:spacing defaults))
+        line-offset (or (:offset line)
+                        (:offset defaults))
         fimbriation-tincture-1 (or (-> line :fimbriation :tincture-1)
                                    (-> defaults :fimbriation :tincture-1))
         fimbriation-tincture-2 (or (-> line :fimbriation :tincture-2)
                                    (-> defaults :fimbriation :tincture-2))
-        fimbriation-alignment  (or (-> line :fimbriation :alignment)
-                                   (-> defaults :fimbriation :alignment))
-        fimbriation-corner     (or (-> line :fimbriation :corner)
-                                   (-> defaults :fimbriation :corner))
-        fimbriation-mode       (options/get-value
-                                (or (-> line :fimbriation :mode)
-                                    (-> defaults :fimbriation :mode))
-                                (-> options :fimbriation :mode))]
+        fimbriation-alignment (or (-> line :fimbriation :alignment)
+                                  (-> defaults :fimbriation :alignment))
+        fimbriation-corner (or (-> line :fimbriation :corner)
+                               (-> defaults :fimbriation :corner))
+        fimbriation-mode (options/get-value
+                          (or (-> line :fimbriation :mode)
+                              (-> defaults :fimbriation :mode))
+                          (-> options :fimbriation :mode))]
     [:div.setting
      [:label title]
      " "
@@ -205,24 +205,23 @@
         [element/checkbox (conj path :flipped?) "Flipped"])
       (when (:fimbriation options)
         [form-for-fimbriation (conj path :fimbriation) (:fimbriation options)
-         {:mode       fimbriation-mode
-          :alignment  fimbriation-alignment
+         {:mode fimbriation-mode
+          :alignment fimbriation-alignment
           :tincture-1 fimbriation-tincture-1
           :tincture-2 fimbriation-tincture-2
-          :corner     fimbriation-corner}
-         :defaults {:mode        (or (-> defaults :fimbriation :mode)
-                                     (options/get-value (-> line :fimbriation :mode)
-                                                        (-> options :fimbriation :mode)))
-                    :alignment   (or (-> defaults :fimbriation :alignment)
-                                     (options/get-value (-> line :fimbriation :alignment)
-                                                        (-> options :fimbriation :alignment)))
+          :corner fimbriation-corner}
+         :defaults {:mode (or (-> defaults :fimbriation :mode)
+                              (options/get-value (-> line :fimbriation :mode)
+                                                 (-> options :fimbriation :mode)))
+                    :alignment (or (-> defaults :fimbriation :alignment)
+                                   (options/get-value (-> line :fimbriation :alignment)
+                                                      (-> options :fimbriation :alignment)))
                     :thickness-1 (or (-> defaults :fimbriation :thickness-1)
                                      (options/get-value (-> line :fimbriation :thickness-1)
                                                         (-> options :fimbriation :thickness-1)))
                     :thickness-2 (or (-> defaults :fimbriation :thickness-2)
                                      (options/get-value (-> line :fimbriation :thickness-2)
                                                         (-> options :fimbriation :thickness-2)))
-                    :corner      (or (-> defaults :fimbriation :corner)
-                                     (options/get-value (-> line :fimbriation :corner)
-                                                        (-> options :fimbriation :corner)))}])]]))
-
+                    :corner (or (-> defaults :fimbriation :corner)
+                                (options/get-value (-> line :fimbriation :corner)
+                                                   (-> options :fimbriation :corner)))}])]]))

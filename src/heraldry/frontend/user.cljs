@@ -31,20 +31,20 @@
 
 (defn read-session-data []
   (let [session-id (get-item local-storage local-storage-session-id-name)
-        user-id    (get-item local-storage local-storage-user-id-name)
-        username   (get-item local-storage local-storage-username-name)]
+        user-id (get-item local-storage local-storage-user-id-name)
+        username (get-item local-storage local-storage-username-name)]
     (rf/dispatch-sync [:set user-db-path
                        (if (and session-id username user-id)
-                         {:username   username
+                         {:username username
                           :session-id session-id
-                          :user-id    user-id
+                          :user-id user-id
                           :logged-in? true}
                          nil)])))
 
 (defn complete-login [db-path jwt-token]
   (go
     (try
-      (let [response          (<? (api-request/call :login {:jwt-token jwt-token} nil))
+      (let [response (<? (api-request/call :login {:jwt-token jwt-token} nil))
             {:keys [session-id
                     username
                     user-id]} response]
@@ -109,37 +109,37 @@
 
 (defn login-form [db-path]
   (let [error-message @(rf/subscribe [:get-form-error db-path])
-        on-submit     (fn [event]
-                        (.preventDefault event)
-                        (.stopPropagation event)
-                        (login-clicked db-path))]
+        on-submit (fn [event]
+                    (.preventDefault event)
+                    (.stopPropagation event)
+                    (login-clicked db-path))]
     [:form.pure-form.pure-form-stacked
      {:on-key-press (fn [event]
                       (when (-> event .-code (= "Enter"))
                         (on-submit event)))
-      :on-submit    on-submit}
+      :on-submit on-submit}
      (when error-message
        [:div.error-message error-message])
      [:fieldset
       [form/field (conj db-path :username)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
-          [:input {:id          "username"
-                   :value       value
-                   :on-change   on-change
+          [:input {:id "username"
+                   :value value
+                   :on-change on-change
                    :placeholder "Username"
-                   :type        "text"}]])]
+                   :type "text"}]])]
       [form/field (conj db-path :password)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
-          [:input {:id          "password"
-                   :value       value
-                   :on-change   on-change
+          [:input {:id "password"
+                   :value value
+                   :on-change on-change
                    :placeholder "Password"
-                   :type        "password"}]])]
+                   :type "password"}]])]
       [:a
-       {:style    {:margin-right "5px"}
-        :href     "#"
+       {:style {:margin-right "5px"}
+        :href "#"
         :on-click (fn [event]
                     (.preventDefault event)
                     (.stopPropagation event)
@@ -148,8 +148,8 @@
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
        [:button.pure-button
-        {:style    {:margin-right "5px"}
-         :type     "reset"
+        {:style {:margin-right "5px"}
+         :type "reset"
          :on-click #(do
                       (rf/dispatch [:clear-form db-path])
                       (modal/clear))}
@@ -181,15 +181,15 @@
 
 (defn sign-up-form [db-path]
   (let [error-message @(rf/subscribe [:get-form-error db-path])
-        on-submit     (fn [event]
-                        (.preventDefault event)
-                        (.stopPropagation event)
-                        (sign-up-clicked db-path))]
+        on-submit (fn [event]
+                    (.preventDefault event)
+                    (.stopPropagation event)
+                    (sign-up-clicked db-path))]
     [:form.pure-form.pure-form-aligned
      {:on-key-press (fn [event]
                       (when (-> event .-code (= "Enter"))
                         (on-submit event)))
-      :on-submit    on-submit}
+      :on-submit on-submit}
      (when error-message
        [:div.error-message error-message])
      [:fieldset
@@ -197,43 +197,43 @@
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "username"} "Username"]
-          [:input {:id          "username"
-                   :value       value
-                   :on-change   on-change
+          [:input {:id "username"
+                   :value value
+                   :on-change on-change
                    :placeholder "Username"
-                   :type        "text"}]])]
+                   :type "text"}]])]
       [form/field (conj db-path :email)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "email"} "Email"]
-          [:input {:id          "email"
-                   :value       value
-                   :on-change   on-change
+          [:input {:id "email"
+                   :value value
+                   :on-change on-change
                    :placeholder "Email"
-                   :type        "text"}]])]
+                   :type "text"}]])]
       [form/field (conj db-path :password)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "password"} "Password:"]
-          [:input {:id          "password"
-                   :value       value
-                   :on-change   on-change
+          [:input {:id "password"
+                   :value value
+                   :on-change on-change
                    :placeholder "Password"
-                   :type        "password"}]])]
+                   :type "password"}]])]
       [form/field (conj db-path :password-again)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "password-again"} "Password again:"]
-          [:input {:id          "password-again"
-                   :value       value
-                   :on-change   on-change
+          [:input {:id "password-again"
+                   :value value
+                   :on-change on-change
                    :placeholder "Password again"
-                   :type        "password"}]])]
+                   :type "password"}]])]
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
        [:button.pure-button
-        {:style    {:margin-right "5px"}
-         :type     "reset"
+        {:style {:margin-right "5px"}
+         :type "reset"
          :on-click #(do
                       (rf/dispatch [:clear-form db-path])
                       (modal/clear))}
@@ -243,8 +243,8 @@
 
 (defn confirm-clicked [db-path]
   (let [{:keys [code]} @(rf/subscribe [:get db-path])
-        user-data      (data)
-        user           (:user user-data)]
+        user-data (data)
+        user (:user user-data)]
     (rf/dispatch-sync [:clear-form-errors db-path])
     (modal/start-loading)
     (cognito/confirm user code
@@ -259,7 +259,7 @@
 
 (defn resend-code-clicked [db-path]
   (let [user-data (data)
-        user      (:user user-data)]
+        user (:user user-data)]
     (modal/start-loading)
     (cognito/resend-code user
                          :on-success (fn []
@@ -272,15 +272,15 @@
 
 (defn confirmation-form [db-path]
   (let [error-message @(rf/subscribe [:get-form-error db-path])
-        on-submit     (fn [event]
-                        (.preventDefault event)
-                        (.stopPropagation event)
-                        (confirm-clicked db-path))]
+        on-submit (fn [event]
+                    (.preventDefault event)
+                    (.stopPropagation event)
+                    (confirm-clicked db-path))]
     [:form.pure-form.pure-form-stacked
      {:on-key-press (fn [event]
                       (when (-> event .-code (= "Enter"))
                         (on-submit event)))
-      :on-submit    on-submit}
+      :on-submit on-submit}
      "A confirmation code was sent to your email address."
      (when error-message
        [:div.error-message error-message])
@@ -288,24 +288,24 @@
       [form/field (conj db-path :code)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
-          [:input {:id          "code"
-                   :value       value
-                   :on-change   on-change
+          [:input {:id "code"
+                   :value value
+                   :on-change on-change
                    :placeholder "Confirmation code"
-                   :type        "text"}]])]
+                   :type "text"}]])]
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
        [:button.pure-button
-        {:style    {:margin-right "5px"}
-         :type     "button"
+        {:style {:margin-right "5px"}
+         :type "button"
          :on-click #(resend-code-clicked db-path)}
         "Resend code"]
        [:button.pure-button.pure-button-primary {:type "submit"} "Confirm"]]]]))
 
 (defn change-temporary-password-clicked [db-path]
-  (let [user-data                    (data)
-        user                         (:user user-data)
-        user-attributes              (:user-attributes user-data)
+  (let [user-data (data)
+        user (:user user-data)
+        user-attributes (:user-attributes user-data)
         {:keys [new-password
                 new-password-again]} @(rf/subscribe [:get db-path])]
     (rf/dispatch-sync [:clear-form-errors])
@@ -329,15 +329,15 @@
 
 (defn change-temporary-password-form [db-path]
   (let [error-message @(rf/subscribe [:get-form-error db-path])
-        on-submit     (fn [event]
-                        (.preventDefault event)
-                        (.stopPropagation event)
-                        (change-temporary-password-clicked db-path))]
+        on-submit (fn [event]
+                    (.preventDefault event)
+                    (.stopPropagation event)
+                    (change-temporary-password-clicked db-path))]
     [:form.pure-form.pure-form-aligned
      {:on-key-press (fn [event]
                       (when (-> event .-code (= "Enter"))
                         (on-submit event)))
-      :on-submit    on-submit}
+      :on-submit on-submit}
      (when error-message
        [:div.error-message error-message])
      [:fieldset
@@ -345,25 +345,25 @@
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "new-password"} "New password:"]
-          [:input {:id          "new-password"
-                   :value       value
-                   :on-change   on-change
+          [:input {:id "new-password"
+                   :value value
+                   :on-change on-change
                    :placeholder "New password"
-                   :type        "password"}]])]
+                   :type "password"}]])]
       [form/field (conj db-path :new-password-again)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "new-password-again"} "New password again:"]
-          [:input {:id          "new-password-again"
-                   :value       value
-                   :on-change   on-change
+          [:input {:id "new-password-again"
+                   :value value
+                   :on-change on-change
                    :placeholder "New password again"
-                   :type        "password"}]])]
+                   :type "password"}]])]
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
        [:button.pure-button
-        {:style    {:margin-right "5px"}
-         :type     "reset"
+        {:style {:margin-right "5px"}
+         :type "reset"
          :on-click #(do
                       (rf/dispatch [:clear-form db-path])
                       (modal/clear))}
@@ -375,8 +375,8 @@
   (let [{:keys [code
                 new-password
                 new-password-again]} @(rf/subscribe [:get db-path])
-        user-data                    (data)
-        user                         (:user user-data)]
+        user-data (data)
+        user (:user user-data)]
     (rf/dispatch-sync [:clear-form-errors db-path])
     (if (not= new-password new-password-again)
       (rf/dispatch [:set-form-error (conj db-path :new-password-again) "Passwords don't match."])
@@ -397,15 +397,15 @@
 
 (defn password-reset-confirmation-form [db-path]
   (let [error-message @(rf/subscribe [:get-form-error db-path])
-        on-submit     (fn [event]
-                        (.preventDefault event)
-                        (.stopPropagation event)
-                        (reset-password-clicked db-path))]
+        on-submit (fn [event]
+                    (.preventDefault event)
+                    (.stopPropagation event)
+                    (reset-password-clicked db-path))]
     [:form.pure-form.pure-form-stacked
      {:on-key-press (fn [event]
                       (when (-> event .-code (= "Enter"))
                         (on-submit event)))
-      :on-submit    on-submit}
+      :on-submit on-submit}
      "A password reset confirmation code was sent to your email address."
      (when error-message
        [:div.error-message error-message])
@@ -413,29 +413,29 @@
       [form/field (conj db-path :code)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
-          [:input {:id          "code"
-                   :value       value
-                   :on-change   on-change
+          [:input {:id "code"
+                   :value value
+                   :on-change on-change
                    :placeholder "Confirmation code"
-                   :type        "text"}]])]
+                   :type "text"}]])]
       [form/field (conj db-path :new-password)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "new-password"} "New password:"]
-          [:input {:id          "new-password"
-                   :value       value
-                   :on-change   on-change
+          [:input {:id "new-password"
+                   :value value
+                   :on-change on-change
                    :placeholder "New password"
-                   :type        "password"}]])]
+                   :type "password"}]])]
       [form/field (conj db-path :new-password-again)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "new-password-again"} "New password again:"]
-          [:input {:id          "new-password-again"
-                   :value       value
-                   :on-change   on-change
+          [:input {:id "new-password-again"
+                   :value value
+                   :on-change on-change
                    :placeholder "New password again"
-                   :type        "password"}]])]
+                   :type "password"}]])]
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
        [:button.pure-button.pure-button-primary {:type "submit"} "Reset password"]]]]))

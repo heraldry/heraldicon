@@ -4,19 +4,19 @@
 
 (defn render
   {:display-name "Lozenge"
-   :value         :heraldry.charge.type/lozenge}
+   :value :heraldry.charge.type/lozenge}
   [charge parent environment context]
   (charge-shared/make-charge
    charge parent environment context
    :height
    (fn [height]
-     (let [width       (/ height 1.3)
-           width-half  (/ width 2)
+     (let [width (/ height 1.3)
+           width-half (/ width 2)
            height-half (/ height 2)]
-       {:shape         ["m" (v/v 0 (- height-half))
-                        "l" (v/v width-half height-half)
-                        "l " (v/v (- width-half) height-half)
-                        "l" (v/v (- width-half) (- height-half))
-                        "z"]
-        :charge-width  width
+       {:shape ["m" (v/v 0 (- height-half))
+                "l" (v/v width-half height-half)
+                "l " (v/v (- width-half) height-half)
+                "l" (v/v (- width-half) (- height-half))
+                "z"]
+        :charge-width width
         :charge-height height}))))

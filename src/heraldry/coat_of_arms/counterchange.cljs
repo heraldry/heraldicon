@@ -30,10 +30,10 @@
       (->> (take 2))))
 
 (defn counterchange-field [component parent]
-  (let [parent-up-to-component  (field-up-to-component component parent)
+  (let [parent-up-to-component (field-up-to-component component parent)
         [tincture-1 tincture-2] (get-counterchange-tinctures parent-up-to-component)
-        tincture-map            {tincture-1 tincture-2
-                                 tincture-2 tincture-1}]
+        tincture-map {tincture-1 tincture-2
+                      tincture-2 tincture-1}]
     (if (and tincture-1 tincture-2)
       (-> parent-up-to-component
           (assoc :counterchanged? true)
@@ -43,4 +43,3 @@
                                                                      [k (tincture-map v)])))))
           (update :components concat (-> component :field :components)))
       (:field component))))
-

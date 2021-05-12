@@ -6,12 +6,12 @@
 
 (defn read-env [_build-state]
   (let [aero-config {:profile (or (keyword (System/getenv "STAGE")) :local)}
-        [config]    (->> ["config.edn"]
-                         (map #(some-> (io/resource %)
-                                       (aero/read-config aero-config))))]
+        [config] (->> ["config.edn"]
+                      (map #(some-> (io/resource %)
+                                    (aero/read-config aero-config))))]
     {:common config
-     :clj    {}
-     :cljs   {}}))
+     :clj {}
+     :cljs {}}))
 
 (env/link get `read-env)
 

@@ -1,13 +1,13 @@
 (ns heraldry.frontend.about)
 
 (defn view []
-  [:div.pure-u-1-2 {:style {:padding    "10px"
+  [:div.pure-u-1-2 {:style {:padding "10px"
                             :text-align "justify"
-                            :min-width  "30em"}}
+                            :min-width "30em"}}
    [:h2 "Welcome to this thing"]
    [:h3 "Why is this thing?"]
    [:p
-    [:a {:href   "https://en.wikipedia.org/wiki/Heraldry"
+    [:a {:href "https://en.wikipedia.org/wiki/Heraldry"
          :target "_blank"} "Heraldry"] " is interesting and fun, but it has a myriad of conventions and "
     "rules, as it's been around for almost a millennium."]
    [:p
@@ -60,4 +60,3 @@
     [:li [:a {:href "https://github.com/or" :target "_blank"} "github:or"]]
     [:li [:a {:href "https://www.reddit.com/r/heraldry/" :target "_blank"} "reddit/heraldry"] ", where my username is " [:b "tierced"]]
     [:li [:a {:href "https://discord.gg/fJuWx8S" :target "_blank"} "discord:heraldry"] ", which is operated by the heraldry subreddit, there my username is " [:b "or#5915"]]]])
-

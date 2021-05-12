@@ -2,7 +2,7 @@
 
 (defn pattern
   {:display-name "Embattled grady"
-   :value        :embattled-grady}
+   :value :embattled-grady}
   [{:keys [height
            width]}
    _line-options]
@@ -18,7 +18,6 @@
                [dx 0]
                [0 dy]
                [(/ dx 2) 0]]
-     :min     (+ (- dy)
-                 (- dy))
-     :max     0}))
-
+     :min (+ (- dy)
+             (- dy))
+     :max 0}))

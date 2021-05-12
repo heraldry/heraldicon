@@ -2,50 +2,49 @@
 {:deps true
 
  :nrepl {:middleware [refactor-nrepl.middleware/wrap-refactor]
-         :port       9700}
+         :port 9700}
 
  :builds {:frontend
-          {:target           :browser
-           :asset-path       "/js/generated"
-           :js-options       {:js-package-dirs ["./frontend/node_modules"]}
-           :devtools         {:before-load heraldry.frontend.main/stop
-                              :after-load  heraldry.frontend.main/start
-                              :http-root   "./frontend/assets"
-                              :http-port   8081
-                              :preloads    [devtools.preload
-                                            day8.re-frame-10x.preload]}
+          {:target :browser
+           :asset-path "/js/generated"
+           :js-options {:js-package-dirs ["./frontend/node_modules"]}
+           :devtools {:before-load heraldry.frontend.main/stop
+                      :after-load heraldry.frontend.main/start
+                      :http-root "./frontend/assets"
+                      :http-port 8081
+                      :preloads [devtools.preload
+                                 day8.re-frame-10x.preload]}
            :compiler-options {:output-feature-set :es6
-                              :warnings           {:redef false}}
-           :build-hooks      [(shadow-env.core/hook)]
+                              :warnings {:redef false}}
+           :build-hooks [(shadow-env.core/hook)]
 
-           :dev {:modules          {:main {:init-fn heraldry.frontend.main/dev-init}}
-                 :output-dir       "./frontend/build/dev/generated"
+           :dev {:modules {:main {:init-fn heraldry.frontend.main/dev-init}}
+                 :output-dir "./frontend/build/dev/generated"
                  :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true}}}
 
-           :release {:modules    {:main {:entries [heraldry.frontend.main]}}
+           :release {:modules {:main {:entries [heraldry.frontend.main]}}
                      :output-dir "./frontend/build/prod/js/generated"}}
 
           :backend
-          {:target           :node-library
-           :exports          {:handler                         heraldry.backend.api.core/handler
-                              :options_handler                 heraldry.backend.api.core/options-handler
-                              :migration_handler               heraldry.backend.migration.core/migrate-handler
-                              :rollback_handler                heraldry.backend.migration.core/rollback-handler
-                              :collect_statistics_handler      heraldry.backend.monitoring.core/collect-statistics-handler
-                              :collect_user_statistics_handler heraldry.backend.monitoring.core/collect-user-statistics-handler}
-           :js-options       {:js-package-dirs ["./backend/node_modules"]}
+          {:target :node-library
+           :exports {:handler heraldry.backend.api.core/handler
+                     :options_handler heraldry.backend.api.core/options-handler
+                     :migration_handler heraldry.backend.migration.core/migrate-handler
+                     :rollback_handler heraldry.backend.migration.core/rollback-handler
+                     :collect_statistics_handler heraldry.backend.monitoring.core/collect-statistics-handler
+                     :collect_user_statistics_handler heraldry.backend.monitoring.core/collect-user-statistics-handler}
+           :js-options {:js-package-dirs ["./backend/node_modules"]}
            :compiler-options {:output-feature-set :es6
-                              :warnings           {:redef false}}
-           :build-hooks      [(shadow-env.core/hook)]
+                              :warnings {:redef false}}
+           :build-hooks [(shadow-env.core/hook)]
 
            :dev {:output-to "./backend/build/dev/backend.js"}
 
            :release {:output-to "./backend/build/prod/backend.js"}}
 
           :test
-          {:target           :node-test
-           :output-to        "./backend/build/test/node-tests.js"
+          {:target :node-test
+           :output-to "./backend/build/test/node-tests.js"
            :compiler-options {:warnings {:redef false}}
-           :ns-regexp        "test"
-           :autorun          true}}}
-
+           :ns-regexp "test"
+           :autorun true}}}

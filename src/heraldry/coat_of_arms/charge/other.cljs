@@ -49,36 +49,36 @@
       replacement)))
 
 (defn make-mask [data placeholder-colours provided-placeholder-colours outline-mode]
-  (let [mask-id          (util/id "mask")
+  (let [mask-id (util/id "mask")
         mask-inverted-id (util/id "mask")
-        mask             (replace-colours
-                          data
-                          (fn [colour]
-                            (if (s/starts-with? colour "url")
-                              "none"
-                              (let [colour-lower (svg/normalize-colour colour)
-                                    kind         (get placeholder-colours colour-lower)
-                                    replacement  (get-replacement kind provided-placeholder-colours)]
-                                (if (or (= kind :keep)
-                                        (and (not (#{:transparent :primary} outline-mode))
-                                             (= kind :outline))
-                                        replacement)
-                                  "#fff"
-                                  "#000")))))
-        mask-inverted    (replace-colours
-                          data
-                          (fn [colour]
-                            (if (s/starts-with? colour "url")
-                              "none"
-                              (let [colour-lower (svg/normalize-colour colour)
-                                    kind         (get placeholder-colours colour-lower)
-                                    replacement  (get-replacement kind provided-placeholder-colours)]
-                                (if (or (= kind :keep)
-                                        (and (not (#{:primary} outline-mode))
-                                             (= kind :outline))
-                                        replacement)
-                                  "#000"
-                                  "#fff")))))]
+        mask (replace-colours
+              data
+              (fn [colour]
+                (if (s/starts-with? colour "url")
+                  "none"
+                  (let [colour-lower (svg/normalize-colour colour)
+                        kind (get placeholder-colours colour-lower)
+                        replacement (get-replacement kind provided-placeholder-colours)]
+                    (if (or (= kind :keep)
+                            (and (not (#{:transparent :primary} outline-mode))
+                                 (= kind :outline))
+                            replacement)
+                      "#fff"
+                      "#000")))))
+        mask-inverted (replace-colours
+                       data
+                       (fn [colour]
+                         (if (s/starts-with? colour "url")
+                           "none"
+                           (let [colour-lower (svg/normalize-colour colour)
+                                 kind (get placeholder-colours colour-lower)
+                                 replacement (get-replacement kind provided-placeholder-colours)]
+                             (if (or (= kind :keep)
+                                     (and (not (#{:primary} outline-mode))
+                                          (= kind :outline))
+                                     replacement)
+                               "#000"
+                               "#fff")))))]
     [mask-id mask mask-inverted-id mask-inverted]))
 
 (defn render [{:keys [field
@@ -86,94 +86,94 @@
                       hints
                       variant
                       data]
-               :as   charge}
+               :as charge}
               parent
               environment
               {:keys [render-field
                       render-options
                       load-charge-data
                       fn-select-component]
-               :as   context}]
+               :as context}]
   (let [full-charge-data (or data (when variant (load-charge-data variant)))]
     (if (:data full-charge-data)
       (let [{:keys [origin
                     anchor
                     geometry
-                    fimbriation]}            (options/sanitize charge (charge-options/options charge))
+                    fimbriation]} (options/sanitize charge (charge-options/options charge))
             {:keys [size stretch
-                    mirrored? reversed?]}    geometry
-            charge-data                      (:data full-charge-data)
-            render-field?                    (-> charge-data
-                                                 :fixed-tincture
-                                                 (or :none)
-                                                 (= :none))
+                    mirrored? reversed?]} geometry
+            charge-data (:data full-charge-data)
+            render-field? (-> charge-data
+                              :fixed-tincture
+                              (or :none)
+                              (= :none))
             ;; since size now is filled with a default, check whether it was set at all,
             ;; if not, then use nil
             ;; TODO: this probably needs a better mechanism and form representation
-            size                             (if (-> charge :geometry :size) size nil)
-            points                           (:points environment)
-            top                              (:top points)
-            bottom                           (:bottom points)
-            left                             (:left points)
-            right                            (:right points)
-            positional-charge-width          (js/parseFloat (-> charge-data :width (or "1")))
-            positional-charge-height         (js/parseFloat (-> charge-data :height (or "1")))
-            width                            (:width environment)
-            height                           (:height environment)
+            size (if (-> charge :geometry :size) size nil)
+            points (:points environment)
+            top (:top points)
+            bottom (:bottom points)
+            left (:left points)
+            right (:right points)
+            positional-charge-width (js/parseFloat (-> charge-data :width (or "1")))
+            positional-charge-height (js/parseFloat (-> charge-data :height (or "1")))
+            width (:width environment)
+            height (:height environment)
             {origin-point :real-origin
-             anchor-point :real-anchor}      (angle/calculate-origin-and-anchor
-                                              environment
-                                              origin
-                                              anchor
-                                              0
-                                              -90)
-            angle                            (+ (v/angle-to-point origin-point anchor-point)
-                                                90)
-            min-x-distance                   (min (- (:x origin-point) (:x left))
-                                                  (- (:x right) (:x origin-point)))
-            min-y-distance                   (min (- (:y origin-point) (:y top))
-                                                  (- (:y bottom) (:y origin-point)))
-            target-width                     (if size
-                                               (-> size
-                                                   ((util/percent-of width)))
-                                               (* (* min-x-distance 2) 0.8))
-            target-height                    (/ (if size
-                                                  (-> size
-                                                      ((util/percent-of height)))
-                                                  (* (* min-y-distance 2) 0.7))
-                                                stretch)
-            scale-x                          (* (if mirrored? -1 1)
-                                                (min (/ target-width positional-charge-width)
-                                                     (/ target-height positional-charge-height)))
-            scale-y                          (* (if reversed? -1 1)
-                                                (* (Math/abs scale-x) stretch))
-            placeholder-colours              (:colours
-                                              full-charge-data)
-            render-shadow?                   (and (-> placeholder-colours
-                                                      vals
-                                                      set
-                                                      (get :shadow))
-                                                  (:shadow tincture))
-            shadow-mask-id                   (when render-shadow?
-                                               (util/id "mask"))
-            shadow-helper-mask-id            (when render-shadow?
-                                               (util/id "mask"))
-            render-highlight?                (and (-> placeholder-colours
-                                                      vals
-                                                      set
-                                                      (get :highlight))
-                                                  (:highlight tincture))
-            highlight-mask-id                (when render-highlight?
-                                               (util/id "mask"))
-            highlight-helper-mask-id         (when render-highlight?
-                                               (util/id "mask"))
-            unadjusted-charge                (:data charge-data)
-            adjusted-charge                  (-> unadjusted-charge
-                                                 (cond->
-                                                     (not (or (-> hints :outline-mode (not= :remove))
-                                                              (:outline? render-options))) (remove-outlines placeholder-colours)))
-            adjusted-charge-without-shading  (-> adjusted-charge
-                                                 (remove-shading placeholder-colours))
+             anchor-point :real-anchor} (angle/calculate-origin-and-anchor
+                                         environment
+                                         origin
+                                         anchor
+                                         0
+                                         -90)
+            angle (+ (v/angle-to-point origin-point anchor-point)
+                     90)
+            min-x-distance (min (- (:x origin-point) (:x left))
+                                (- (:x right) (:x origin-point)))
+            min-y-distance (min (- (:y origin-point) (:y top))
+                                (- (:y bottom) (:y origin-point)))
+            target-width (if size
+                           (-> size
+                               ((util/percent-of width)))
+                           (* (* min-x-distance 2) 0.8))
+            target-height (/ (if size
+                               (-> size
+                                   ((util/percent-of height)))
+                               (* (* min-y-distance 2) 0.7))
+                             stretch)
+            scale-x (* (if mirrored? -1 1)
+                       (min (/ target-width positional-charge-width)
+                            (/ target-height positional-charge-height)))
+            scale-y (* (if reversed? -1 1)
+                       (* (Math/abs scale-x) stretch))
+            placeholder-colours (:colours
+                                 full-charge-data)
+            render-shadow? (and (-> placeholder-colours
+                                    vals
+                                    set
+                                    (get :shadow))
+                                (:shadow tincture))
+            shadow-mask-id (when render-shadow?
+                             (util/id "mask"))
+            shadow-helper-mask-id (when render-shadow?
+                                    (util/id "mask"))
+            render-highlight? (and (-> placeholder-colours
+                                       vals
+                                       set
+                                       (get :highlight))
+                                   (:highlight tincture))
+            highlight-mask-id (when render-highlight?
+                                (util/id "mask"))
+            highlight-helper-mask-id (when render-highlight?
+                                       (util/id "mask"))
+            unadjusted-charge (:data charge-data)
+            adjusted-charge (-> unadjusted-charge
+                                (cond->
+                                 (not (or (-> hints :outline-mode (not= :remove))
+                                          (:outline? render-options))) (remove-outlines placeholder-colours)))
+            adjusted-charge-without-shading (-> adjusted-charge
+                                                (remove-shading placeholder-colours))
             [mask-id mask
              mask-inverted-id mask-inverted] (make-mask adjusted-charge-without-shading
                                                         placeholder-colours
@@ -188,54 +188,54 @@
             ;; other things become black for the time being
             ;; TODO: perhaps they can be removed entirely? there still is a faint dark edge in some cases,
             ;; much less than before, however, and the dark edge is less obvious than the bright one
-            coloured-charge                  (replace-colours
-                                              adjusted-charge-without-shading
-                                              (fn [colour]
-                                                (let [colour-lower (svg/normalize-colour colour)
-                                                      kind         (get placeholder-colours colour-lower)
-                                                      replacement  (get-replacement kind tincture)]
-                                                  (cond
-                                                    replacement    (tincture/pick replacement render-options)
-                                                    (= kind :keep) colour
-                                                    :else          "#000000"))))
-            shift                            (-> (v/v positional-charge-width positional-charge-height)
-                                                 (v// 2)
-                                                 (v/-))
-            [min-x max-x min-y max-y]        (svg/rotated-bounding-box
-                                              shift
-                                              (v/dot shift (v/v -1 -1))
-                                              angle
-                                              :scale (v/v scale-x scale-y))
-            clip-size                        (v/v (- max-x min-x) (- max-y min-y))
-            position                         (-> clip-size
-                                                 (v/-)
-                                                 (v// 2)
-                                                 (v/+ origin-point))
-            charge-environment               (environment/create
-                                              (svg/make-path ["M" position
-                                                              "l" (v/v (:x clip-size) 0)
-                                                              "l" (v/v 0 (:y clip-size))
-                                                              "l" (v/v (- (:x clip-size)) 0)
-                                                              "l" (v/v 0 (- (:y clip-size)))
-                                                              "z"])
-                                              {:parent               field
-                                               :parent-environment   environment
-                                               :context              [:charge]
-                                               :bounding-box         (svg/bounding-box
-                                                                      [position (v/+ position
-                                                                                     clip-size)])
-                                               :override-environment (when (or (:inherit-environment? field)
-                                                                               (:counterchanged? field))
-                                                                       environment)})
-            field                            (if (:counterchanged? field)
-                                               (counterchange/counterchange-field charge parent)
-                                               field)
-            charge-name                      (or (:name full-charge-data) "")
-            username                         (:username full-charge-data)
-            charge-url                       (or (util/full-url-for-charge full-charge-data) "")
-            attribution                      (:attribution full-charge-data)
-            outline?                         (or (:outline? render-options)
-                                                 (-> hints :outline-mode (= :keep)))]
+            coloured-charge (replace-colours
+                             adjusted-charge-without-shading
+                             (fn [colour]
+                               (let [colour-lower (svg/normalize-colour colour)
+                                     kind (get placeholder-colours colour-lower)
+                                     replacement (get-replacement kind tincture)]
+                                 (cond
+                                   replacement (tincture/pick replacement render-options)
+                                   (= kind :keep) colour
+                                   :else "#000000"))))
+            shift (-> (v/v positional-charge-width positional-charge-height)
+                      (v// 2)
+                      (v/-))
+            [min-x max-x min-y max-y] (svg/rotated-bounding-box
+                                       shift
+                                       (v/dot shift (v/v -1 -1))
+                                       angle
+                                       :scale (v/v scale-x scale-y))
+            clip-size (v/v (- max-x min-x) (- max-y min-y))
+            position (-> clip-size
+                         (v/-)
+                         (v// 2)
+                         (v/+ origin-point))
+            charge-environment (environment/create
+                                (svg/make-path ["M" position
+                                                "l" (v/v (:x clip-size) 0)
+                                                "l" (v/v 0 (:y clip-size))
+                                                "l" (v/v (- (:x clip-size)) 0)
+                                                "l" (v/v 0 (- (:y clip-size)))
+                                                "z"])
+                                {:parent field
+                                 :parent-environment environment
+                                 :context [:charge]
+                                 :bounding-box (svg/bounding-box
+                                                [position (v/+ position
+                                                               clip-size)])
+                                 :override-environment (when (or (:inherit-environment? field)
+                                                                 (:counterchanged? field))
+                                                         environment)})
+            field (if (:counterchanged? field)
+                    (counterchange/counterchange-field charge parent)
+                    field)
+            charge-name (or (:name full-charge-data) "")
+            username (:username full-charge-data)
+            charge-url (or (util/full-url-for-charge full-charge-data) "")
+            attribution (:attribution full-charge-data)
+            outline? (or (:outline? render-options)
+                         (-> hints :outline-mode (= :keep)))]
         [:<>
          [:defs
           (when render-shadow?
@@ -249,10 +249,10 @@
                    (if (s/starts-with? colour "url")
                      "none"
                      (let [colour-lower (svg/normalize-colour colour)
-                           kind         (get placeholder-colours colour-lower)]
+                           kind (get placeholder-colours colour-lower)]
                        (case kind
-                         :outline   "#000000"
-                         :shadow    "none"
+                         :outline "#000000"
+                         :shadow "none"
                          :highlight "none"
                          "#ffffff")))))
                 svg/make-unique-ids)]]
@@ -264,9 +264,9 @@
                   (if (s/starts-with? colour "url")
                     colour
                     (let [colour-lower (svg/normalize-colour colour)
-                          kind         (get placeholder-colours colour-lower)]
+                          kind (get placeholder-colours colour-lower)]
                       (case kind
-                        :shadow    "#ffffff"
+                        :shadow "#ffffff"
                         :highlight "none"
                         "#000000")))))
                svg/make-unique-ids)]])
@@ -281,10 +281,10 @@
                    (if (s/starts-with? colour "url")
                      "none"
                      (let [colour-lower (svg/normalize-colour colour)
-                           kind         (get placeholder-colours colour-lower)]
+                           kind (get placeholder-colours colour-lower)]
                        (case kind
-                         :outline   "#000000"
-                         :shadow    "none"
+                         :outline "#000000"
+                         :shadow "none"
                          :highlight "none"
                          "#ffffff")))))
                 svg/make-unique-ids)]]
@@ -296,9 +296,9 @@
                   (if (s/starts-with? colour "url")
                     colour
                     (let [colour-lower (svg/normalize-colour colour)
-                          kind         (get placeholder-colours colour-lower)]
+                          kind (get placeholder-colours colour-lower)]
                       (case kind
-                        :shadow    "none"
+                        :shadow "none"
                         :highlight "#ffffff"
                         "#000000")))))
                svg/make-unique-ids)]])
@@ -306,10 +306,10 @@
            (svg/make-unique-ids mask)]
           [:mask {:id mask-inverted-id}
            (svg/make-unique-ids mask-inverted)]]
-         (let [transform         (str "translate(" (:x origin-point) "," (:y origin-point) ")"
-                                      "rotate(" angle ")"
-                                      "scale(" scale-x "," scale-y ")"
-                                      "translate(" (-> shift :x) "," (-> shift :y) ")")
+         (let [transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
+                              "rotate(" angle ")"
+                              "scale(" scale-x "," scale-y ")"
+                              "translate(" (-> shift :x) "," (-> shift :y) ")")
                reverse-transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ")"
                                       "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
                                       "rotate(" (- angle) ")"
@@ -371,7 +371,7 @@
                    [render-field field charge-environment (-> context
                                                               (update :db-path conj :field)
                                                               (dissoc :fn-select-component))]]])
-               [:g {:mask     (str "url(#" mask-id ")")
+               [:g {:mask (str "url(#" mask-id ")")
                     :on-click (when fn-select-component
                                 (fn [event]
                                   (fn-select-component (-> context
@@ -382,21 +382,20 @@
                (when render-shadow?
                  [:g {:mask (str "url(#" shadow-mask-id ")")}
                   [:rect {:transform reverse-transform
-                          :x         -500
-                          :y         -500
-                          :width     1100
-                          :height    1100
-                          :fill      "#000000"
-                          :style     {:opacity (:shadow tincture)}}]])
+                          :x -500
+                          :y -500
+                          :width 1100
+                          :height 1100
+                          :fill "#000000"
+                          :style {:opacity (:shadow tincture)}}]])
 
                (when render-highlight?
                  [:g {:mask (str "url(#" highlight-mask-id ")")}
                   [:rect {:transform reverse-transform
-                          :x         -500
-                          :y         -500
-                          :width     1100
-                          :height    1100
-                          :fill      "#ffffff"
-                          :style     {:opacity (:highlight tincture)}}]])])])])
+                          :x -500
+                          :y -500
+                          :width 1100
+                          :height 1100
+                          :fill "#ffffff"
+                          :style {:opacity (:highlight tincture)}}]])])])])
       [:<>])))
-

@@ -71,7 +71,7 @@
                                                   (s/valid? :heraldry/semy %)) :into []))
 
 (s/def :heraldry.field.ref/index #(and (number? %)
-                                       (>=  % 0)))
+                                       (>= % 0)))
 
 (defmulti field-type (fn [field]
                        (let [type ((some-fn :heraldry.field/type :type) field)
@@ -81,7 +81,7 @@
                                type)]
                          (case type
                            :plain :plain
-                           :ref   :ref
+                           :ref :ref
                            :division))))
 
 (defmethod field-type :plain [_]
@@ -115,13 +115,13 @@
 (s/def :heraldry.charge/type keyword?)
 (s/def :heraldry.charge/tincture #(every? (fn [[key value]]
                                             (case key
-                                              :shadow    (number? value)
+                                              :shadow (number? value)
                                               :highlight (number? value)
                                               (s/valid? :heraldry/tincture value))) %))
 (s/def :heraldry.charge.hint/outline? boolean?)
 (s/def :heraldry.charge/hints (s/keys :opt-un [:heraldry.charge.hint/outline?]))
-(s/def :heraldry.charge/attitude  (s/nilable attributes/attitude-map))
-(s/def :heraldry.charge/facing  (s/nilable attributes/facing-map))
+(s/def :heraldry.charge/attitude (s/nilable attributes/attitude-map))
+(s/def :heraldry.charge/facing (s/nilable attributes/facing-map))
 (s/def :heraldry.charge.variant/id string?)
 (s/def :heraldry.charge.variant/version number?)
 (s/def :heraldry.charge/variant (s/nilable (s/keys :req-un [:heraldry.charge.variant/id
@@ -168,4 +168,3 @@
                                                  :heraldry.render-options/texture
                                                  :heraldry.render-options/texture-displacement?
                                                  :heraldry.render-options/escutcheon-override]))
-

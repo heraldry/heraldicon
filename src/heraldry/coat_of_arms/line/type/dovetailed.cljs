@@ -2,19 +2,19 @@
 
 (defn pattern
   {:display-name "Dovetailed"
-   :value        :dovetailed}
+   :value :dovetailed}
   [{:keys [eccentricity
            height
            width]}
    _line-options]
-  (let [half-width    (/ width 2)
+  (let [half-width (/ width 2)
         quarter-width (/ width 4)
-        height        (* half-width height)
-        dx            (-> width
-                          (/ 4)
-                          (* (-> eccentricity
-                                 (* 0.5)
-                                 (+ 0.2))))]
+        height (* half-width height)
+        dx (-> width
+               (/ 4)
+               (* (-> eccentricity
+                      (* 0.5)
+                      (+ 0.2))))]
 
     {:pattern ["l"
                [(+ quarter-width
@@ -26,6 +26,5 @@
                [(* dx -2) height]
                [(+ quarter-width
                    dx) 0]]
-     :min     (- height)
-     :max     0}))
-
+     :min (- height)
+     :max 0}))

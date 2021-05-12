@@ -23,48 +23,48 @@
    [tincture/form (conj path :tincture)]])
 
 (defn field-type-choice [path key display-name]
-  (let [field            @(rf/subscribe [:get path])
-        value            (:type field)
+  (let [field @(rf/subscribe [:get path])
+        value (:type field)
         {:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
-                           :field      (if (= key :heraldry.field.type/plain)
-                                         {:type     :heraldry.field.type/plain
-                                          :tincture (if (= value key) :or :azure)}
-                                         {:type   key
-                                          :fields (-> (field/default-fields {:type key})
-                                                      (util/replace-recursively :none :argent)
-                                                      (cond->
-                                                          (= value key) (util/replace-recursively :azure :or)))
-                                          :layout {:num-fields-x (case key
-                                                                   :heraldry.field.type/chequy    4
-                                                                   :heraldry.field.type/lozengy   3
-                                                                   :heraldry.field.type/vairy     2
-                                                                   :heraldry.field.type/potenty   2
-                                                                   :heraldry.field.type/papellony 2
-                                                                   :heraldry.field.type/masonry   2
-                                                                   nil)
-                                                   :num-fields-y (case key
-                                                                   :heraldry.field.type/chequy    5
-                                                                   :heraldry.field.type/lozengy   4
-                                                                   :heraldry.field.type/vairy     3
-                                                                   :heraldry.field.type/potenty   3
-                                                                   :heraldry.field.type/papellony 4
-                                                                   :heraldry.field.type/masonry   4
-                                                                   nil)}})}
+                           :field (if (= key :heraldry.field.type/plain)
+                                    {:type :heraldry.field.type/plain
+                                     :tincture (if (= value key) :or :azure)}
+                                    {:type key
+                                     :fields (-> (field/default-fields {:type key})
+                                                 (util/replace-recursively :none :argent)
+                                                 (cond->
+                                                  (= value key) (util/replace-recursively :azure :or)))
+                                     :layout {:num-fields-x (case key
+                                                              :heraldry.field.type/chequy 4
+                                                              :heraldry.field.type/lozengy 3
+                                                              :heraldry.field.type/vairy 2
+                                                              :heraldry.field.type/potenty 2
+                                                              :heraldry.field.type/papellony 2
+                                                              :heraldry.field.type/masonry 2
+                                                              nil)
+                                              :num-fields-y (case key
+                                                              :heraldry.field.type/chequy 5
+                                                              :heraldry.field.type/lozengy 4
+                                                              :heraldry.field.type/vairy 3
+                                                              :heraldry.field.type/potenty 3
+                                                              :heraldry.field.type/papellony 4
+                                                              :heraldry.field.type/masonry 4
+                                                              nil)}})}
                           100
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
                               (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
-    [:div.choice.tooltip {:on-click #(let [new-field                 (assoc field :type key)
+    [:div.choice.tooltip {:on-click #(let [new-field (assoc field :type key)
                                            {:keys [num-fields-x
                                                    num-fields-y
                                                    num-base-fields]} (:layout (options/sanitize-or-nil
                                                                                new-field
                                                                                (field-options/options new-field)))]
                                        (state/dispatch-on-event % [:set-field-type path key num-fields-x num-fields-y num-base-fields]))}
-     [:svg {:style               {:width  "4em"
-                                  :height "4.5em"}
-            :viewBox             "0 0 120 200"
+     [:svg {:style {:width "4em"
+                    :height "4.5em"}
+            :viewBox "0 0 120 200"
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(10,10)"}
@@ -76,9 +76,9 @@
 (defn field-type-form [path]
   (let [field-type (-> @(rf/subscribe [:get path])
                        :type)
-        names      (->> field/choices
-                        (map (comp vec reverse))
-                        (into {}))]
+        names (->> field/choices
+                   (map (comp vec reverse))
+                   (into {}))]
     [:div.setting
      [:label "Division"]
      " "
@@ -88,34 +88,34 @@
         [field-type-choice path key display-name])]]))
 
 (defn form-for-layout [field-path & {:keys [title options] :or {title "Layout"}}]
-  (let [layout-path         (conj field-path :layout)
-        field               @(rf/subscribe [:get field-path])
-        layout              (:layout field)
-        field-type          (:type field)
+  (let [layout-path (conj field-path :layout)
+        field @(rf/subscribe [:get field-path])
+        layout (:layout field)
+        field-type (:type field)
         stripped-field-type (-> field-type name keyword)
-        current-data        (options/sanitize-or-nil field (field-options/options field))
-        effective-data      (:layout (options/sanitize field (field-options/options field)))
-        link-name           (util/combine
-                             ", "
-                             [(cond
-                                (= stripped-field-type :paly)            (str (:num-fields-x effective-data) " fields")
-                                (#{:barry
-                                   :bendy
-                                   :bendy-sinister} stripped-field-type) (str (:num-fields-y effective-data) " fields"))
-                              (when (and (:num-base-fields current-data)
-                                         (not= (:num-base-fields current-data) 2))
-                                (str (:num-base-fields effective-data) " base fields"))
-                              (when (or (:offset-x current-data)
-                                        (:offset-y current-data))
-                                (str "shifted"))
-                              (when (or (:stretch-x current-data)
-                                        (:stretch-y current-data))
-                                (str "stretched"))
-                              (when (:rotation current-data)
-                                (str "rotated"))])
-        link-name           (if (-> link-name count (= 0))
-                              "Default"
-                              link-name)]
+        current-data (options/sanitize-or-nil field (field-options/options field))
+        effective-data (:layout (options/sanitize field (field-options/options field)))
+        link-name (util/combine
+                   ", "
+                   [(cond
+                      (= stripped-field-type :paly) (str (:num-fields-x effective-data) " fields")
+                      (#{:barry
+                         :bendy
+                         :bendy-sinister} stripped-field-type) (str (:num-fields-y effective-data) " fields"))
+                    (when (and (:num-base-fields current-data)
+                               (not= (:num-base-fields current-data) 2))
+                      (str (:num-base-fields effective-data) " base fields"))
+                    (when (or (:offset-x current-data)
+                              (:offset-y current-data))
+                      (str "shifted"))
+                    (when (or (:stretch-x current-data)
+                              (:stretch-y current-data))
+                      (str "stretched"))
+                    (when (:rotation current-data)
+                      (str "rotated"))])
+        link-name (if (-> link-name count (= 0))
+                    "Default"
+                    link-name)]
     [:div.setting
      [:label title]
      " "
@@ -188,14 +188,14 @@
          :default (options/get-value (:rotation layout) (:rotation options))])]]))
 
 (defn form [path & {:keys [parent-field title-prefix]}]
-  (let [field           @(rf/subscribe [:get path])
-        field-type      (:type field)
+  (let [field @(rf/subscribe [:get path])
+        field-type (:type field)
         counterchanged? @(rf/subscribe [:get (conj path :counterchanged?)])
-        root-field?     (= path [:coat-of-arms :field])]
+        root-field? (= path [:coat-of-arms :field])]
     [element/component path :field (cond
-                                     (:counterchanged? field)                  "Counterchanged"
+                                     (:counterchanged? field) "Counterchanged"
                                      (= field-type :heraldry.field.type/plain) (-> field :tincture util/translate-tincture util/upper-case-first)
-                                     :else                                     (-> field-type util/translate-cap-first)) title-prefix
+                                     :else (-> field-type util/translate-cap-first)) title-prefix
      [:div.settings
       (when (not root-field?)
         [element/checkbox (conj path :inherit-environment?) "Inherit environment (dimidiation)"])
@@ -256,26 +256,26 @@
           :heraldry.field.type/vairy
           :heraldry.field.type/potenty
           :heraldry.field.type/papellony
-          :heraldry.field.type/masonry} field-type)       [:div.parts.components {:style {:margin-bottom "0.5em"}}
-                                                           [:ul
-                                                            (let [tinctures @(rf/subscribe [:get (conj path :fields)])]
-                                                              (for [idx (range (count tinctures))]
-                                                                ^{:key idx}
-                                                                [:li
-                                                                 [tincture/form (conj path :fields idx :tincture)
-                                                                  :label (str "Tincture " (inc idx))]]))]]
+          :heraldry.field.type/masonry} field-type) [:div.parts.components {:style {:margin-bottom "0.5em"}}
+                                                     [:ul
+                                                      (let [tinctures @(rf/subscribe [:get (conj path :fields)])]
+                                                        (for [idx (range (count tinctures))]
+                                                          ^{:key idx}
+                                                          [:li
+                                                           [tincture/form (conj path :fields idx :tincture)
+                                                            :label (str "Tincture " (inc idx))]]))]]
        (and (not counterchanged?)
             (not= field-type :heraldry.field.type/plain)) [:div.parts.components
                                                            [:ul
-                                                            (let [content              @(rf/subscribe [:get (conj path :fields)])
+                                                            (let [content @(rf/subscribe [:get (conj path :fields)])
                                                                   mandatory-part-count (field/mandatory-part-count field)]
                                                               (for [[idx part] (map-indexed vector content)]
                                                                 (let [part-path (conj path :fields idx)
                                                                       part-name (field/part-name field-type idx)
-                                                                      ref       (when (-> part
-                                                                                          :type
-                                                                                          (= :heraldry.field.type/ref))
-                                                                                  (:index part))]
+                                                                      ref (when (-> part
+                                                                                    :type
+                                                                                    (= :heraldry.field.type/ref))
+                                                                            (:index part))]
                                                                   ^{:key idx}
                                                                   [:li
                                                                    [:div
@@ -309,7 +309,7 @@
              ^{:key idx}
              [:li
               [:div {:style {:padding-right "10px"
-                             :white-space   "nowrap"}}
+                             :white-space "nowrap"}}
                [:a (if (zero? idx)
                      {:class "disabled"}
                      {:on-click #(state/dispatch-on-event % [:move-component-down component-path])})
@@ -324,16 +324,15 @@
                  "heraldry.ordinary.type" [ordinary/form component-path
                                            :parent-field field
                                            :form-for-field form]
-                 "heraldry.charge.type"   [charge/form component-path
-                                           :parent-field field
-                                           :form-for-field form]
-                 "heraldry.component"     [semy/form component-path
-                                           :parent-field field
-                                           :form-for-layout form-for-layout
-                                           :form-for-field form])]
+                 "heraldry.charge.type" [charge/form component-path
+                                         :parent-field field
+                                         :form-for-field form]
+                 "heraldry.component" [semy/form component-path
+                                       :parent-field field
+                                       :form-for-layout form-for-layout
+                                       :form-for-field form])]
               [:div {:style {:padding-left "10px"}}
                (when (not (and (some-> component :type namespace (= "heraldry.charge.type"))
                                (-> component :data)))
                  [:a {:on-click #(state/dispatch-on-event % [:remove-component component-path])}
                   [:i.far.fa-trash-alt]])]])))]]]))
-

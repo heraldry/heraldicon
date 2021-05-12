@@ -8,7 +8,7 @@
 
 (defn form [db-path]
   [element/component db-path :render-options "Options" nil
-   (let [mode-path    (conj db-path :mode)
+   (let [mode-path (conj db-path :mode)
          outline-path (conj db-path :outline?)]
      [:<>
       [escutcheon/form (conj db-path :escutcheon-override) "Escutcheon Override"
@@ -21,7 +21,7 @@
                      (rf/dispatch [:set mode-path new-mode])
                      (case new-mode
                        :hatching (rf/dispatch [:set outline-path true])
-                       :colours  (rf/dispatch [:set outline-path false])))]
+                       :colours (rf/dispatch [:set outline-path false])))]
       (when (= @(rf/subscribe [:get mode-path]) :colours)
         [theme/form (conj db-path :theme)])])
    [element/select (conj db-path :texture) "Texture" (concat [["None" :none]]

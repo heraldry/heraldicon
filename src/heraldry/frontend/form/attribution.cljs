@@ -15,24 +15,24 @@
          ["Encyclopedia Heraldica" :encyclopedia-heraldica]]
         :on-change (fn [value]
                      (case value
-                       :wappenwiki             (rf/dispatch [:set
-                                                             db-path
-                                                             (-> current-data
-                                                                 (assoc :nature :derivative)
-                                                                 (assoc :license :cc-attribution-non-commercial-share-alike)
-                                                                 (assoc :license-version :v4)
-                                                                 (assoc :source-license :cc-attribution-non-commercial-share-alike)
-                                                                 (assoc :source-license-version :v3)
-                                                                 (assoc :source-creator-name "WappenWiki")
-                                                                 (assoc :source-creator-link "http://wappenwiki.org"))])
-                       :wikimedia              (rf/dispatch [:set
-                                                             db-path
-                                                             (-> current-data
-                                                                 (assoc :nature :derivative)
-                                                                 (assoc :license :cc-attribution-share-alike)
-                                                                 (assoc :license-version :v4)
-                                                                 (assoc :source-license :cc-attribution-share-alike)
-                                                                 (assoc :source-license-version :v3))])
+                       :wappenwiki (rf/dispatch [:set
+                                                 db-path
+                                                 (-> current-data
+                                                     (assoc :nature :derivative)
+                                                     (assoc :license :cc-attribution-non-commercial-share-alike)
+                                                     (assoc :license-version :v4)
+                                                     (assoc :source-license :cc-attribution-non-commercial-share-alike)
+                                                     (assoc :source-license-version :v3)
+                                                     (assoc :source-creator-name "WappenWiki")
+                                                     (assoc :source-creator-link "http://wappenwiki.org"))])
+                       :wikimedia (rf/dispatch [:set
+                                                db-path
+                                                (-> current-data
+                                                    (assoc :nature :derivative)
+                                                    (assoc :license :cc-attribution-share-alike)
+                                                    (assoc :license-version :v4)
+                                                    (assoc :source-license :cc-attribution-share-alike)
+                                                    (assoc :source-license-version :v3))])
                        :encyclopedia-heraldica (rf/dispatch [:set
                                                              db-path
                                                              (-> current-data
@@ -75,4 +75,3 @@
         [element/text-field (conj db-path :source-creator-name) "Creator name" :style {:width "19em"}]
         [element/text-field (conj db-path :source-creator-link) "Creator link" :style {:width "19em"}]])
      [:div {:style {:margin-bottom "1em"}} " "]]))
-

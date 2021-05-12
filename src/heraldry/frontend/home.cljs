@@ -1,12 +1,12 @@
 (ns heraldry.frontend.home)
 
 (defn release-image [img-src]
-  [:a {:href   img-src
+  [:a {:href img-src
        :target "_blank"}
-   [:img {:style {:width       "calc(90% - 1em)"
+   [:img {:style {:width "calc(90% - 1em)"
                   :margin-left "1em"}
-          :src   img-src
-          :alt   "release update overview"}]])
+          :src img-src
+          :alt "release update overview"}]])
 
 (defn view []
   [:div {:style {:padding "10px"}}
@@ -17,7 +17,7 @@
    [:h3 "2021-03-31 - Embowed/enarched, nonrepeating line styles"]
    [:div.pure-g
     [:div.pure-u-2-3 {:style {:text-align "justify"
-                              :min-width  "30em"}}
+                              :min-width "30em"}}
      [:p "A big refactoring line styles, allowing line styles that are not pattern-based but extend across the full length of the line."]
      [:ul
       [:li "support of full-length line styles, such as bevilled, angled, and enarched"]
@@ -30,7 +30,7 @@
    [:h3 "2021-03-16 - Chevron and pile"]
    [:div.pure-g
     [:div.pure-u-2-3 {:style {:text-align "justify"
-                              :min-width  "30em"}}
+                              :min-width "30em"}}
      [:p "A total refactoring of angular alignment necessary for chevron and pile variants."]
      [:ul
       [:li "chevron ordinary and division variants issuant from chief, dexter, and sinister"]
@@ -49,7 +49,7 @@
    [:h3 "2021-03-07 - Paly and fimbriation"]
    [:div.pure-g
     [:div.pure-u-2-3 {:style {:text-align "justify"
-                              :min-width  "30em"}}
+                              :min-width "30em"}}
      [:p "The main new features are:"]
      [:ul
       [:li "paly/barry/bendy/chequy/lozengy field divisions with configurable layout"]
@@ -69,7 +69,7 @@
    [:h3 "2021-02-08 - First release"]
    [:div.pure-g
     [:div.pure-u-2-3 {:style {:text-align "justify"
-                              :min-width  "30em"}}
+                              :min-width "30em"}}
      [:p "Following a browser-only prototype, this site now has a backend, where users can build a public "
       "and private library of charges and arms."]
      [:p
@@ -90,4 +90,3 @@
       [:li "SVG/PNG export of saved arms; the saving is necessary for proper attribution"]]]
     [:div.pure-u-1-3
      (release-image "/img/2021-02-08-release-update.png")]]])
-

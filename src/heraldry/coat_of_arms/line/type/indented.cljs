@@ -2,15 +2,14 @@
 
 (defn pattern
   {:display-name "Indented"
-   :value        :indented}
+   :value :indented}
   [{:keys [height
            width]}
    _line-options]
   (let [half-width (/ width 2)
-        height     (* half-width height)]
+        height (* half-width height)]
     {:pattern ["l"
                [half-width (- height)]
                [half-width height]]
-     :min     (- height)
-     :max     0}))
-
+     :min (- height)
+     :max 0}))

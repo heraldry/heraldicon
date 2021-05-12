@@ -20,32 +20,32 @@
 
 (defn checkbox [path label & {:keys [style]}]
   (let [component-id (util/id "checkbox")
-        checked?     (-> (and path
-                              @(rf/subscribe [:get path]))
-                         boolean)]
-    [:label {:for   component-id
+        checked? (-> (and path
+                          @(rf/subscribe [:get path]))
+                     boolean)]
+    [:label {:for component-id
              :style (merge {:text-align "left"
-                            :width      "6em"}
+                            :width "6em"}
                            style)}
-     [:input {:type      "checkbox"
-              :id        component-id
-              :checked   checked?
+     [:input {:type "checkbox"
+              :id component-id
+              :checked checked?
               :on-change #(let [new-checked? (-> % .-target .-checked)]
                             (rf/dispatch-sync [:set path new-checked?]))
-              :style     {:vertical-align "-1px"}}]
+              :style {:vertical-align "-1px"}}]
      (str " " label)]))
 
 (defn select [path label choices & {:keys [value on-change default label-extra style label-style]}]
-  (let [component-id  (util/id "select")
+  (let [component-id (util/id "select")
         current-value @(rf/subscribe [:get path])]
     [:div.pure-control-group {:style style}
-     [:label {:for   component-id
+     [:label {:for component-id
               :style label-style} label label-extra]
-     [:select {:id        component-id
-               :value     (name (or value
-                                    current-value
-                                    default
-                                    :none))
+     [:select {:id component-id
+               :value (name (or value
+                                current-value
+                                default
+                                :none))
                :on-change #(let [checked (keyword (-> % .-target .-value))]
                              (if on-change
                                (on-change checked)

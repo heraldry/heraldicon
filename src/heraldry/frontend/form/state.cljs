@@ -43,7 +43,7 @@
 (rf/reg-event-db
  :ui-component-open
  (fn [db [_ path]]
-   (-> (loop [db   db
+   (-> (loop [db db
               rest path]
          (if (empty? rest)
            db
@@ -108,8 +108,8 @@
      {:db (-> db
               (update-in [:ui] dissoc :component-selected?)
               (cond->
-                  path (as-> db
-                           (assoc-in db [:ui :component-selected? real-path] true))))
+               path (as-> db
+                          (assoc-in db [:ui :component-selected? real-path] true))))
       :fx [[:dispatch [:ui-component-open real-path]]]})))
 
 (rf/reg-event-db
@@ -139,17 +139,17 @@
          (assoc-in (conj path :layout :num-base-fields) num-base-fields)
          (update-in path
                     (fn [prepared-field]
-                      (let [current          (or (:fields prepared-field) [])
-                            default          (field/default-fields prepared-field)
+                      (let [current (or (:fields prepared-field) [])
+                            default (field/default-fields prepared-field)
                             previous-default (field/default-fields (get-in db path))
                             previous-default (cond
                                                (< (count previous-default) (count default)) (into previous-default (subvec default (count previous-default)))
                                                (> (count previous-default) (count default)) (subvec previous-default 0 (count default))
-                                               :else                                        previous-default)
-                            merged           (cond
-                                               (< (count current) (count default)) (into current (subvec default (count current)))
-                                               (> (count current) (count default)) (subvec current 0 (count default))
-                                               :else                               current)]
+                                               :else previous-default)
+                            merged (cond
+                                     (< (count current) (count default)) (into current (subvec default (count current)))
+                                     (> (count current) (count default)) (subvec current 0 (count default))
+                                     :else current)]
                         (-> prepared-field
                             (assoc :fields (->> (map vector merged previous-default default)
                                                 (map (fn [[cur old-def def]]
@@ -172,21 +172,21 @@
 (rf/reg-event-db
  :set-ordinary-type
  (fn [db [_ path new-type]]
-   (let [current                 (get-in db path)
+   (let [current (get-in db path)
          has-default-line-style? (-> current
                                      :line
                                      :type
                                      (= (-default-line-style-of-ordinary-type (:type current))))
-         new-default-line-style  (-default-line-style-of-ordinary-type new-type)
-         new-flipped             (case new-type
-                                   :heraldry.ordinary.type/gore true
-                                   false)]
+         new-default-line-style (-default-line-style-of-ordinary-type new-type)
+         new-flipped (case new-type
+                       :heraldry.ordinary.type/gore true
+                       false)]
      (-> db
          (assoc-in (conj path :type) new-type)
          (cond->
-             has-default-line-style? (->
-                                      (assoc-in (conj path :line :type) new-default-line-style)
-                                      (assoc-in (conj path :line :flipped?) new-flipped)))
+          has-default-line-style? (->
+                                   (assoc-in (conj path :line :type) new-default-line-style)
+                                   (assoc-in (conj path :line :flipped?) new-flipped)))
          (update-in path #(deep-merge-with (fn [_current-value new-value]
                                              new-value)
                                            %
@@ -196,14 +196,14 @@
  :add-component
  (fn [{:keys [db]} [_ path value]]
    (let [components-path (conj path :components)
-         index           (count (get-in db components-path))]
+         index (count (get-in db components-path))]
      {:db (update-in db components-path #(-> %
                                              (conj value)
                                              vec))
       :fx [[:dispatch [:ui-submenu-open (conj components-path index (case (-> value :type namespace)
                                                                       "heraldry.ordinary.type" "Select Ordinary"
-                                                                      "heraldry.charge.type"   "Select Charge"
-                                                                      "heraldry.component"     "Select Semy"))]]
+                                                                      "heraldry.charge.type" "Select Charge"
+                                                                      "heraldry.component" "Select Semy"))]]
            [:dispatch [:ui-component-open (conj components-path index)]]
            [:dispatch [:ui-component-open (conj components-path index :field)]]]})))
 
@@ -211,7 +211,7 @@
  :remove-component
  (fn [db [_ path]]
    (let [components-path (drop-last path)
-         index           (last path)]
+         index (last path)]
      (update-in db components-path (fn [components]
                                      (vec (concat (subvec components 0 index)
                                                   (subvec components (inc index)))))))))
@@ -220,7 +220,7 @@
  :move-component-up
  (fn [db [_ path]]
    (let [components-path (drop-last path)
-         index           (last path)]
+         index (last path)]
      (update-in db components-path (fn [components]
                                      (let [num-components (count components)]
                                        (if (>= index num-components)
@@ -236,7 +236,7 @@
  :move-component-down
  (fn [db [_ path]]
    (let [components-path (drop-last path)
-         index           (last path)]
+         index (last path)]
      (update-in db components-path (fn [components]
                                      (if (zero? index)
                                        components
@@ -251,4 +251,3 @@
  :update-charge
  (fn [db [_ path changes]]
    (update-in db path merge changes)))
-

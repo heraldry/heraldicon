@@ -6,11 +6,11 @@
 (defn call [name payload user-data]
   (go-catch
    (let [response (<? (http/post (config/get :heraldry-api-endpoint)
-                                 {:headers    {"Session-Id" (:session-id user-data)}
+                                 {:headers {"Session-Id" (:session-id user-data)}
                                   :edn-params {:call name
                                                :data payload}}))
-         status   (:status response)
-         body     (:body response)]
+         status (:status response)
+         body (:body response)]
      (if (= status 200)
        (:success body)
        (if (:error body)

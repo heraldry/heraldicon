@@ -2,11 +2,10 @@
 
 (defn full
   {:display-name "Straight"
-   :value        :straight
-   :full?        true}
+   :value :straight
+   :full? true}
   [{:keys [width]}
    _line-options]
   {:pattern ["h" width]
-   :min     0
-   :max     0})
-
+   :min 0
+   :max 0})

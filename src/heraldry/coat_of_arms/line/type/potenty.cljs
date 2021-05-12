@@ -3,7 +3,7 @@
 
 (defn pattern
   {:display-name "Potenty"
-   :value        :potenty}
+   :value :potenty}
   [{:keys [height
            eccentricity
            width]}
@@ -20,7 +20,6 @@
                [(- l) 0]
                [0 (* t height)]
                [(+ l (/ t 2)) 0]]
-     :min     (+ (- (* t height))
-                 (- (* t height)))
-     :max     0}))
-
+     :min (+ (- (* t height))
+             (- (* t height)))
+     :max 0}))

@@ -5,8 +5,8 @@
 (def color "#000001")
 
 (def style
-  {:stroke          color
-   :stroke-width    stroke-width
-   :fill            "none"
-   :stroke-linecap  "round"
+  {:stroke color
+   :stroke-width stroke-width
+   :fill "none"
+   :stroke-linecap "round"
    :stroke-linejoin "round"})

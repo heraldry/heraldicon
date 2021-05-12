@@ -10,7 +10,7 @@
   (let [user-data (user/data)]
     [:div.header
      [:div.home-menu.pure-menu.pure-menu-horizontal.pure-menu-fixed
-      [:span [route/link {:to    :home
+      [:span [route/link {:to :home
                           :class "pure-menu-heading pure-float-right"
                           :style {:padding-right "5px"}} "Heraldry"]
        [:sup {:style {:color "#d82"}} "beta"]]
@@ -29,14 +29,14 @@
            [:ul.pure-menu-children
             [route/nav-link {:to :account} "Account"]
             [:li.pure-menu-item
-             [:a.pure-menu-link {:href     "#"
+             [:a.pure-menu-link {:href "#"
                                  :on-click #(user/logout)} "Logout"]]]]]
          [:<>
           [:li.pure-menu-item
-           [:a.pure-menu-link {:href     "#"
+           [:a.pure-menu-link {:href "#"
                                :on-click #(user/login-modal)} "Login"]]
           [:li.pure-menu-item
-           [:a.pure-menu-link {:href     "#"
+           [:a.pure-menu-link {:href "#"
                                :on-click #(user/sign-up-modal)} "Register"]]])]]]))
 
 (defn app []
@@ -69,4 +69,3 @@
 (defn dev-init []
   (setup-devtools)
   (init))
-

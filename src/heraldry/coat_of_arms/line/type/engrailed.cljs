@@ -2,7 +2,7 @@
 
 (defn pattern
   {:display-name "Engrailed"
-   :value        :engrailed}
+   :value :engrailed}
   [{:keys [eccentricity
            height
            width]}
@@ -14,15 +14,14 @@
                             (* -0.5)
                             (+ 1.5))))
         radius-y (* radius-x height)
-        tx       (-> width
-                     (/ 2))
-        ty       (-> (- 1 (/ (* tx tx)
-                             (* radius-x radius-x)))
-                     Math/sqrt
-                     (* radius-y)
-                     (->> (- radius-y)))]
+        tx (-> width
+               (/ 2))
+        ty (-> (- 1 (/ (* tx tx)
+                       (* radius-x radius-x)))
+               Math/sqrt
+               (* radius-y)
+               (->> (- radius-y)))]
     {:pattern ["a" radius-x radius-y 0 0 0 [tx (- ty)]
                "a" radius-x radius-y 0 0 0 [tx ty]]
-     :min     (- ty)
-     :max     0}))
-
+     :min (- ty)
+     :max 0}))

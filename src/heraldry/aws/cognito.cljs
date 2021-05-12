@@ -9,32 +9,32 @@
                                              [:UserPoolId :ClientId]))))
 
 (defn login [username password & {:keys [on-success on-failure on-new-password-required on-confirmation-needed]}]
-  (let [username     (or username "")
-        password     (or password "")
-        user         (new CognitoUser (clj->js {:Username username
-                                                :Pool     user-pool}))
+  (let [username (or username "")
+        password (or password "")
+        user (new CognitoUser (clj->js {:Username username
+                                        :Pool user-pool}))
         auth-details (new AuthenticationDetails (clj->js {:Username username
                                                           :Password password}))]
     (.authenticateUser
      user
      auth-details
-     (clj->js {:onSuccess           (fn [user]
-                                      (on-success user))
-               :onFailure           (fn [error]
-                                      (let [error (js->clj error :keywordize-keys true)]
-                                        (if (-> error :message (= "User is not confirmed."))
-                                          (on-confirmation-needed user)
-                                          (on-failure error))))
+     (clj->js {:onSuccess (fn [user]
+                            (on-success user))
+               :onFailure (fn [error]
+                            (let [error (js->clj error :keywordize-keys true)]
+                              (if (-> error :message (= "User is not confirmed."))
+                                (on-confirmation-needed user)
+                                (on-failure error))))
                :newPasswordRequired (fn [user-attributes _required-attributes]
                                       (let [user-attributes (-> user-attributes
                                                                 (js->clj :keywordize-keys true)
-                                                                (dissoc  :email_verified))]
+                                                                (dissoc :email_verified))]
                                         (on-new-password-required user user-attributes)))}))))
 
 (defn sign-up [username password email & {:keys [on-success on-failure on-confirmation-needed]}]
-  (let [username   (or username "")
-        password   (or password "")
-        attributes [{:Name  "email"
+  (let [username (or username "")
+        password (or password "")
+        attributes [{:Name "email"
                      :Value email}]]
     (.signUp
      user-pool
@@ -45,17 +45,17 @@
      (fn [err result]
        ;; data on success
        ;; {:user #object[CognitoUser [object Object]]
-       ;;  :userConfirmed false
-       ;;  :userSub <uuid>
-       ;;  :codeDeliveryDetails {:AttributeName email,
-       ;;                        :DeliveryMedium EMAIL,
-       ;;                        :Destination <masked-email>}}
-       (let [err    (js->clj err :keywordize-keys true)
+       ;; :userConfirmed false
+       ;; :userSub <uuid>
+       ;; :codeDeliveryDetails {:AttributeName email,
+       ;; :DeliveryMedium EMAIL,
+       ;; :Destination <masked-email>}}
+       (let [err (js->clj err :keywordize-keys true)
              result (js->clj result :keywordize-keys true)]
          (cond
-           err                            (on-failure err)
+           err (on-failure err)
            (-> result :userConfirmed not) (on-confirmation-needed (:user result))
-           :else                          (on-success (:user result))))))))
+           :else (on-success (:user result))))))))
 
 (defn confirm [user code & {:keys [on-success on-failure]}]
   (.confirmRegistration
@@ -87,7 +87,7 @@
 
 (defn forgot-password [username & {:keys [on-success on-failure]}]
   (let [user (new CognitoUser (clj->js {:Username username
-                                        :Pool     user-pool}))]
+                                        :Pool user-pool}))]
     (.forgotPassword
      user
      (clj->js {:onSuccess (fn [_data]

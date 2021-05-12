@@ -44,4 +44,3 @@
 (defn render [{:keys [type] :as ordinary} parent environment context]
   (let [function (get kinds-function-map type)]
     [function ordinary parent environment context]))
-

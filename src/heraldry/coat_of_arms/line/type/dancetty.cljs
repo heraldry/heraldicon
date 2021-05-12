@@ -2,18 +2,17 @@
 
 (defn pattern
   {:display-name "Dancetty"
-   :value        :dancetty}
+   :value :dancetty}
   [{:keys [height
            width]}
    _line-options]
-  (let [half-width    (/ width 2)
+  (let [half-width (/ width 2)
         quarter-width (/ width 4)
-        half-height   (* quarter-width height)
-        height        (* half-height 2)]
+        half-height (* quarter-width height)
+        height (* half-height 2)]
     {:pattern ["l"
                [quarter-width (- half-height)]
                [half-width height]
                [quarter-width (- half-height)]]
-     :min     (- half-height)
-     :max     half-height}))
-
+     :min (- half-height)
+     :max half-height}))

@@ -107,22 +107,22 @@
   ["pean" :sable :or])
 
 (def furs
-  {:ermine   ermine
-   :ermines  ermines
+  {:ermine ermine
+   :ermines ermines
    :erminois erminois
-   :pean     pean})
+   :pean pean})
 
 (defn pick [tincture {:keys [mode theme]}]
   (cond
-    (= tincture :none)  "url(#void)"
+    (= tincture :none) "url(#void)"
     (get furs tincture) (let [[id _ _] (get furs tincture)]
                           (str "url(#" id ")"))
-    (= mode :hatching)  (or
-                         (hatching/get-for tincture)
-                         "#888")
-    :else               (or (lookup-colour tincture theme)
-                            (get furs tincture)
-                            "url(#void)")))
+    (= mode :hatching) (or
+                        (hatching/get-for tincture)
+                        "#888")
+    :else (or (lookup-colour tincture theme)
+              (get furs tincture)
+              "url(#void)")))
 
 (defn patterns [{:keys [theme]}]
   (into

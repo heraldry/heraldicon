@@ -40,7 +40,7 @@
   (go
     (try
       (let [user-data (user/data)
-            full-data (<? (api-request/call :fetch-collection {:id      collection-id
+            full-data (<? (api-request/call :fetch-collection {:id collection-id
                                                                :version version} user-data))]
         (rf/dispatch [:set saved-data-db-path full-data])
         full-data)
@@ -54,9 +54,9 @@
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (rf/dispatch-sync [:clear-form-message form-db-path])
     (try
-      (let [payload       @(rf/subscribe [:get form-db-path])
-            user-data     (user/data)
-            response      (<? (api-request/call :save-collection payload user-data))
+      (let [payload @(rf/subscribe [:get form-db-path])
+            user-data (user/data)
+            response (<? (api-request/call :save-collection payload user-data))
             collection-id (-> response :collection-id)]
         (rf/dispatch-sync [:set (conj form-db-path :id) collection-id])
         (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
@@ -72,36 +72,36 @@
 
 (defn collection-form []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
-        form-message  @(rf/subscribe [:get-form-message form-db-path])
-        on-submit     (fn [event]
-                        (.preventDefault event)
-                        (.stopPropagation event)
-                        (save-collection-clicked))
-        logged-in?    (-> (user/data)
-                          :logged-in?)]
+        form-message @(rf/subscribe [:get-form-message form-db-path])
+        on-submit (fn [event]
+                    (.preventDefault event)
+                    (.stopPropagation event)
+                    (save-collection-clicked))
+        logged-in? (-> (user/data)
+                       :logged-in?)]
     [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
      [:div.pure-u-1-2 {:style {:position "fixed"}}]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
-                               :width       "45%"}}
+                               :width "45%"}}
       [:form.pure-form.pure-form-aligned
-       {:style        {:display "inline-block"}
+       {:style {:display "inline-block"}
         :on-key-press (fn [event]
                         (when (-> event .-code (= "Enter"))
                           (on-submit event)))
-        :on-submit    on-submit}
+        :on-submit on-submit}
        [:fieldset
         [form/field (conj form-db-path :name)
          (fn [& {:keys [value on-change]}]
            [:div.pure-control-group
-            [:label {:for   "name"
+            [:label {:for "name"
                      :style {:width "6em"}} "Name"]
-            [:input {:id        "name"
-                     :value     value
+            [:input {:id "name"
+                     :value value
                      :on-change on-change
-                     :type      "text"
-                     :style     {:margin-right "0.5em"}}]
+                     :type "text"
+                     :style {:margin-right "0.5em"}}]
             [form/checkbox (conj form-db-path :is-public) "Make public"
              :style {:width "7em"}]])]]
        (when form-message
@@ -111,18 +111,18 @@
        [:div.pure-control-group {:style {:text-align "right"
                                          :margin-top "10px"}}
         [:button.pure-button.pure-button
-         {:type     "button"
-          :on-click (let [match  @(rf/subscribe [:get [:route-match]])
-                          route  (-> match :data :name)
+         {:type "button"
+          :on-click (let [match @(rf/subscribe [:get [:route-match]])
+                          route (-> match :data :name)
                           params (-> match :parameters :path)]
                       (cond
                         (= route :edit-collection-by-id) #(reife/push-state :view-collection-by-id params)
-                        (= route :create-collection)     #(reife/push-state :collection params)
-                        :else                            nil))
-          :style    {:margin-right "5px"}}
+                        (= route :create-collection) #(reife/push-state :collection params)
+                        :else nil))
+          :style {:margin-right "5px"}}
          "View"]
         (let [disabled? (not logged-in?)]
-          [:button.pure-button.pure-button-primary {:type  "submit"
+          [:button.pure-button.pure-button-primary {:type "submit"
                                                     :class (when disabled? "disabled")}
            "Save"])
         [:div.spacer]]]
@@ -130,30 +130,30 @@
       [collection/form form-db-path]]]))
 
 (defn collection-display [collection-id version]
-  (let [user-data                (user/data)
+  (let [user-data (user/data)
         [status collection-data] (state/async-fetch-data
                                   form-db-path
                                   [collection-id version]
                                   #(fetch-collection collection-id version))
-        collection-id            (-> collection-data
-                                     :id
-                                     id-for-url)]
+        collection-id (-> collection-data
+                          :id
+                          id-for-url)]
     (when (= status :done)
       [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                    (rf/dispatch [:ui-submenu-close-all])
                                    (.stopPropagation %))}
        [:div.pure-u-1-2 {:style {:margin-left "50%"
-                                 :width       "45%"}}
+                                 :width "45%"}}
         [:div.credits
          [credits/for-collection collection-data]]
-        [:div.pure-control-group {:style {:text-align    "right"
-                                          :margin-top    "10px"
+        [:div.pure-control-group {:style {:text-align "right"
+                                          :margin-top "10px"
                                           :margin-bottom "10px"}}
 
          (when (or (= (:username collection-data)
                       (:username user-data))
                    ((config/get :admins) (:username user-data)))
-           [:button.pure-button.pure-button-primary {:type     "button"
+           [:button.pure-button.pure-button-primary {:type "button"
                                                      :on-click #(do
                                                                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                                                                   (rf/dispatch-sync [:clear-form-message form-db-path])
@@ -178,7 +178,7 @@
              (let [collection-id (-> collection
                                      :id
                                      id-for-url)]
-               [:a {:href     (reife/href :view-collection-by-id {:id collection-id})
+               [:a {:href (reife/href :view-collection-by-id {:id collection-id})
                     :on-click #(do
                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
                                  (rf/dispatch-sync [:clear-form-message form-db-path]))}
@@ -191,9 +191,9 @@
 (defn list-my-collection []
   (let [user-data (user/data)]
     [:div {:style {:padding "15px"}}
-     [:div.pure-u-1-2 {:style {:display    "block"
+     [:div.pure-u-1-2 {:style {:display "block"
                                :text-align "justify"
-                               :min-width  "30em"}}
+                               :min-width "30em"}}
       [:p
        "Here you can create collections of coats of arms. Right now you can only browse your own collections. "
        "You explicitly have to save your collection as "
@@ -217,12 +217,12 @@
                                         form-db-path
                                         :new
                                         #(go
-                                           {:num-columns    6
-                                            :elements       []
-                                            :render-options {:mode      :colours
-                                                             :outline?  false
+                                           {:num-columns 6
+                                            :elements []
+                                            :render-options {:mode :colours
+                                                             :outline? false
                                                              :squiggly? false
-                                                             :ui        {:selectable-fields? true}}}))]
+                                                             :ui {:selectable-fields? true}}}))]
     (when (= status :done)
       [collection-form])))
 
@@ -239,14 +239,13 @@
 
 (defn edit-collection-by-id [{:keys [parameters] :as match}]
   (rf/dispatch [:set [:route-match] match])
-  (let [id            (-> parameters :path :id)
-        version       (-> parameters :path :version)
+  (let [id (-> parameters :path :id)
+        version (-> parameters :path :version)
         collection-id (str "collection:" id)]
     [edit-collection collection-id version]))
 
 (defn view-collection-by-id [{:keys [parameters]}]
-  (let [id            (-> parameters :path :id)
-        version       (-> parameters :path :version)
+  (let [id (-> parameters :path :id)
+        version (-> parameters :path :version)
         collection-id (str "collection:" id)]
     [collection-display collection-id version]))
-

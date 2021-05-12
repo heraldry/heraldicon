@@ -17,52 +17,52 @@
 
 (defn make-subfields [type fields parts mask-overlaps parent-environment parent
                       {:keys [render-field db-path svg-export?] :as context}]
-  (let [mask-ids     (->> (range (count fields))
-                          (map (fn [idx] [(util/id (str (name type) "-" idx))
-                                          (util/id (str (name type) "-" idx))])))
+  (let [mask-ids (->> (range (count fields))
+                      (map (fn [idx] [(util/id (str (name type) "-" idx))
+                                      (util/id (str (name type) "-" idx))])))
         environments (->> parts
                           (map-indexed (fn [idx [shape-path bounding-box & extra]]
                                          (let [field (get-field fields idx)]
                                            (environment/create
                                             (svg/make-path shape-path)
-                                            {:parent               parent
-                                             :parent-environment   parent-environment
-                                             :context              [type idx]
-                                             :bounding-box         (svg/bounding-box bounding-box)
+                                            {:parent parent
+                                             :parent-environment parent-environment
+                                             :context [type idx]
+                                             :bounding-box (svg/bounding-box bounding-box)
                                              :override-environment (when (or (:inherit-environment? field)
                                                                              (:counterchanged? field))
                                                                      parent-environment)
-                                             :mask                 (first extra)}))))
+                                             :mask (first extra)}))))
                           vec)]
     [:<>
      [:defs
       (for [[idx [clip-path-id mask-id]] (map-indexed vector mask-ids)]
-        (let [env               (get environments idx)
+        (let [env (get environments idx)
               environment-shape (:shape env)
-              overlap-paths     (get mask-overlaps idx)]
+              overlap-paths (get mask-overlaps idx)]
           ^{:key idx}
           [:<>
            [(if svg-export?
               :mask
               :clipPath) {:id clip-path-id}
-            [:path {:d    environment-shape
+            [:path {:d environment-shape
                     :fill "#fff"}]
             (cond
-              (= overlap-paths :all) [:path {:d            environment-shape
-                                             :fill         "none"
+              (= overlap-paths :all) [:path {:d environment-shape
+                                             :fill "none"
                                              :stroke-width overlap-stroke-width
-                                             :stroke       "#fff"}]
-              overlap-paths          (for [[idx shape] (map-indexed vector overlap-paths)]
-                                       ^{:key idx}
-                                       [:path {:d            shape
-                                               :fill         "none"
-                                               :stroke-width overlap-stroke-width
-                                               :stroke       "#fff"}]))]
+                                             :stroke "#fff"}]
+              overlap-paths (for [[idx shape] (map-indexed vector overlap-paths)]
+                              ^{:key idx}
+                              [:path {:d shape
+                                      :fill "none"
+                                      :stroke-width overlap-stroke-width
+                                      :stroke "#fff"}]))]
            (when-let [mask-shape (-> env :meta :mask)]
              [:mask {:id mask-id}
-              [:path {:d    environment-shape
+              [:path {:d environment-shape
                       :fill "#fff"}]
-              [:path {:d    mask-shape
+              [:path {:d mask-shape
                       :fill "#000"}]])]))]
 
      (for [[idx [clip-path-id mask-id]] (map-indexed vector mask-ids)]
@@ -84,4 +84,3 @@
                                         (->> (get #{"charge" "ordinary"}))) ;; FIXME: bit of a hack
                                   (conj db-path :field)
                                   (conj db-path :fields idx))))]]]))]))
-

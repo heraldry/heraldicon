@@ -37,13 +37,13 @@
    :y 1000})
 
 (defn function [type]
-  (get {:top          top
-        :bottom       bottom
-        :left         left
-        :right        right
-        :top-left     top-left
-        :top-right    top-right
-        :bottom-left  bottom-left
+  (get {:top top
+        :bottom bottom
+        :left left
+        :right right
+        :top-left top-left
+        :top-right top-right
+        :bottom-left bottom-left
         :bottom-right bottom-right} type))
 
 (def clockwise-points
@@ -54,26 +54,26 @@
 
 (defn relevant-points [points from to]
   (let [points-before-from (vec (take-while #(not= % from) points))
-        rest               (subvec points (count points-before-from))
-        shifted-points     (vec (concat rest points-before-from))
-        relevant-points    (conj (vec (take-while #(not= % to) shifted-points)) to)]
+        rest (subvec points (count points-before-from))
+        shifted-points (vec (concat rest points-before-from))
+        relevant-points (conj (vec (take-while #(not= % to) shifted-points)) to)]
     relevant-points))
 
 (defn path [direction [from to] [start end]]
-  (let [points        (relevant-points (case direction
-                                         :clockwise         clockwise-points
-                                         :counter-clockwise counter-clockwise-points)
-                                       from to)
-        first-point   (first points)
-        last-point    (last points)
+  (let [points (relevant-points (case direction
+                                  :clockwise clockwise-points
+                                  :counter-clockwise counter-clockwise-points)
+                                from to)
+        first-point (first points)
+        last-point (last points)
         middle-points (->> points
                            (drop 1)
                            (drop-last)
                            vec)
-        path          (->
-                       ["L" ((function first-point) start)]
-                       (into (map (fn [point]
-                                    ((function point))) middle-points))
-                       (into ["L" ((function last-point) end)
-                              "L" end]))]
+        path (->
+              ["L" ((function first-point) start)]
+              (into (map (fn [point]
+                           ((function point))) middle-points))
+              (into ["L" ((function last-point) end)
+                     "L" end]))]
     path))

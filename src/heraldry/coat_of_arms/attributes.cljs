@@ -124,4 +124,3 @@
 
 (def tincture-modifier-for-charge-map
   (util/choices->map tincture-modifier-for-charge-choices))
-

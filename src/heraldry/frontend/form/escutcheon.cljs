@@ -8,23 +8,23 @@
             [re-frame.core :as rf]))
 
 (defn escutcheon-choice [path key display-name]
-  (let [value            @(rf/subscribe [:get path])
+  (let [value @(rf/subscribe [:get path])
         {:keys [result]} (render/coat-of-arms
                           (if (= key :none)
                             {:escutcheon :rectangle
-                             :field      {:type     :heraldry.field.type/plain
-                                          :tincture :void}}
+                             :field {:type :heraldry.field.type/plain
+                                     :tincture :void}}
                             {:escutcheon key
-                             :field      {:type     :heraldry.field.type/plain
-                                          :tincture (if (= value key) :or :azure)}})
+                             :field {:type :heraldry.field.type/plain
+                                     :tincture (if (= value key) :or :azure)}})
                           100
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
                               (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
-     [:svg {:style               {:width  "4em"
-                                  :height "5em"}
-            :viewBox             "0 0 120 200"
+     [:svg {:style {:width "4em"
+                    :height "5em"}
+            :viewBox "0 0 120 200"
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(10,10)"}
@@ -40,25 +40,24 @@
                        (when choices
                          (-> choices first second))
                        :heater)
-        choices    (or choices
-                       (if allow-none?
-                         (concat [["None" :none]]
-                                 escutcheon/choices)
-                         escutcheon/choices))
-        names      (->> choices
-                        (map (comp vec reverse))
-                        (into {}))]
+        choices (or choices
+                    (if allow-none?
+                      (concat [["None" :none]]
+                              escutcheon/choices)
+                      escutcheon/choices))
+        names (->> choices
+                   (map (comp vec reverse))
+                   (into {}))]
     [:div.setting
      [:label label]
      " "
      (conj (if label-width
-             [:div {:style {:display  "inline-block"
+             [:div {:style {:display "inline-block"
                             :position "absolute"
-                            :left     label-width}}]
+                            :left label-width}}]
              [:<>])
            [element/submenu path "Select Escutcheon" (get names escutcheon) {:min-width "17.5em"}
             (for [[display-name key] choices]
               ^{:key key}
               [escutcheon-choice path key display-name])])
      [:div.spacer]]))
-

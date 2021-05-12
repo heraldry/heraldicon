@@ -9,7 +9,7 @@
 (defn form [path & {:keys [parent-field
                            form-for-field
                            form-for-layout]}]
-  (let [data    @(rf/subscribe [:get path])
+  (let [data @(rf/subscribe [:get path])
         options semy-options/default-options]
     [element/component path :field (-> data :charge :type
                                        util/translate-cap-first) "Semy"
@@ -20,4 +20,3 @@
       :parent-field parent-field
       :form-for-field form-for-field
       :part-of-semy? true]]))
-

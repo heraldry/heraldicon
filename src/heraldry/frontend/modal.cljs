@@ -8,8 +8,8 @@
   [:modal :loader])
 
 (defn create [title content & {:keys [on-cancel]}]
-  (rf/dispatch [:set dialog-db-path {:title     title
-                                     :content   content
+  (rf/dispatch [:set dialog-db-path {:title title
+                                     :content content
                                      :on-cancel on-cancel}]))
 (defn clear []
   (when-let [on-cancel @(rf/subscribe [:get (conj dialog-db-path :on-cancel)])]
@@ -24,7 +24,7 @@
 
 (defn render []
   (let [{:keys [title content]} @(rf/subscribe [:get dialog-db-path])
-        loader                  @(rf/subscribe [:get loader-db-path])]
+        loader @(rf/subscribe [:get loader-db-path])]
     [:<>
      (when content
        [:<>

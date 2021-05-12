@@ -64,18 +64,17 @@
         arms-id (-> arms-data
                     :id
                     id-for-url)]
-    (str (config/get :heraldry-url) (reife/href :view-arms-by-id-and-version {:id      arms-id
+    (str (config/get :heraldry-url) (reife/href :view-arms-by-id-and-version {:id arms-id
                                                                               :version version}))))
 
 (defn full-url-for-charge [charge-data]
-  (let [version   (:version charge-data)
-        version   (if (zero? version)
-                    (:latest-version charge-data)
-                    version)
+  (let [version (:version charge-data)
+        version (if (zero? version)
+                  (:latest-version charge-data)
+                  version)
         charge-id (-> charge-data
                       :id
                       id-for-url)]
 
-    (str (config/get :heraldry-url) (reife/href :view-charge-by-id-and-version {:id      charge-id
+    (str (config/get :heraldry-url) (reife/href :view-charge-by-id-and-version {:id charge-id
                                                                                 :version version}))))
-

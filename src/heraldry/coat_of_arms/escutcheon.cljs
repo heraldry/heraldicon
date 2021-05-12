@@ -13,7 +13,7 @@
         "a 6 6 0 0 1 -3,-5.196152422706632"
         "v -2"
         "z")
-   {:context      :root
+   {:context :root
     :bounding-box [-3 3 0 (+ 2 5.196152422706632)]}))
 
 (def
@@ -26,7 +26,7 @@
         "c 6,-1 12,-7 12,-13"
         "V 0"
         "z")
-   {:context      :root
+   {:context :root
     :bounding-box [0 (* 2 12) 0 (+ 15.7 13)]}))
 
 (def
@@ -39,7 +39,7 @@
         "a 5 5 0 0 1 -10,0"
         "v -7"
         "z")
-   {:context      :root
+   {:context :root
     :bounding-box [-5 5 0 (+ 7 5)]}))
 
 (def
@@ -53,7 +53,7 @@
         "l -4,35"
         "a 24.156226 24.156226 0 0 1 -48,0"
         "z")
-   {:context      :root
+   {:context :root
     :bounding-box [0 56 0 56.5]}))
 
 (def
@@ -72,7 +72,7 @@
         "v -15"
         "h 7"
         "z")
-   {:context      :root
+   {:context :root
     :bounding-box [-7 7 0 (* 2 8)]}))
 
 (def
@@ -84,9 +84,9 @@
         "L 0,13"
         "L -5,6.5"
         "z")
-   {:context      :root
+   {:context :root
     :bounding-box [-5 5 0 13]
-    :points       {:fess {:x 0 :y 6.5}}}))
+    :points {:fess {:x 0 :y 6.5}}}))
 
 (def
   ^{:display-name "Oval"}
@@ -98,9 +98,9 @@
         "A 5 6.8 0 0 1 -5,6.5"
         "A 5 6.8 0 0 1 0,0"
         "z")
-   {:context      :root
+   {:context :root
     :bounding-box [-5 5 0 13]
-    :points       {:fess {:x 0 :y 6.5}}}))
+    :points {:fess {:x 0 :y 6.5}}}))
 
 (def
   ^{:display-name "Roundel"}
@@ -110,9 +110,9 @@
         "a 5 5 0 0 1 0,10"
         "a 5 5 0 0 1 0,-10"
         "z")
-   {:context      :root
+   {:context :root
     :bounding-box [-5 5 0 10]
-    :points       {:fess {:x 0 :y 5}}}))
+    :points {:fess {:x 0 :y 5}}}))
 
 (def
   ^{:display-name "Swiss"}
@@ -127,7 +127,7 @@
         "v -2"
         "a 6 6 0 0 0 3,0"
         "z")
-   {:context      :root
+   {:context :root
     :bounding-box [-3 3 0 (+ 2 5.196152422706632)]}))
 
 (def
@@ -148,7 +148,7 @@
         "a 1 1 0 0 0 -1,-1"
         "h 8"
         "z")
-   {:context      :root
+   {:context :root
     :bounding-box [-8 8 0 (+ (* 2 8) 1)]}))
 
 (def
@@ -160,9 +160,9 @@
         "C 87.453242,25.123567 84.122242,17.317856 84.132428,9.3807275 70.661111,7.3213975 65.259687,5.0000001e-7 56.597858,5.0000001e-7 51.658715,5.0000001e-7 50.021384,2.5016165 50.021384,2.5016165 "
         "c 0,0 -1.680096,-2.50161599999999 -6.619239,-2.501616 "
         "z")
-   {:context      :root
+   {:context :root
     :bounding-box [0 100 0 130]
-    :points       {:fess {:x 50 :y 60}}}))
+    :points {:fess {:x 50 :y 60}}}))
 
 (def
   ^{:display-name "Polish 19th century"}
@@ -174,9 +174,9 @@
     "L 90.680234,7.6420451e-7 "
     "C 81.317854,12.169833 65.149597,3.8094085 50.136084,3.8094085 35.122571,3.8094085 18.954318,12.169833 9.5919374,7.6420451e-7 "
     "Z")
-   {:context      :root
+   {:context :root
     :bounding-box [0 100 0 120]
-    :points       {:fess {:x 50 :y 60}}}))
+    :points {:fess {:x 50 :y 60}}}))
 
 (def
   ^{:display-name "Renaissance"}
@@ -192,9 +192,9 @@
     "C 86.66397,28.673358 90.02428,57.299078 100,62.761658 98.77327,96.616647 79.92307,107.21428 56.32792,112.35743 51.60688,113.38653 51.68278,114.71878 50,117 "
     "c -1.68279,-2.28122 -1.60689,-3.61347 -6.327939,-4.64257 "
     "Z")
-   {:context      :root
+   {:context :root
     :bounding-box [0 100 0 117]
-    :points       {:fess {:x 50 :y 55}}}))
+    :points {:fess {:x 50 :y 55}}}))
 
 (def
   ^{:display-name "Rectangle"}
@@ -206,9 +206,9 @@
     "v 12"
     "h -10"
     "z")
-   {:context      :root
+   {:context :root
     :bounding-box [0 10 0 12]
-    :points       {:fess {:x 5 :y 6}}}))
+    :points {:fess {:x 5 :y 6}}}))
 
 (def
   ^{:display-name "Flag"}
@@ -220,9 +220,9 @@
     "v 10"
     "h -15"
     "z")
-   {:context      :root
+   {:context :root
     :bounding-box [0 15 0 10]
-    :points       {:fess {:x 7.5 :y 5}}}))
+    :points {:fess {:x 7.5 :y 5}}}))
 
 (def escutcheons
   [#'heater
@@ -254,4 +254,3 @@
 
 (defn field [type]
   (get kinds-map type))
-

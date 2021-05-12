@@ -7,61 +7,61 @@
   (let [id "hatching-argent"]
     [id
      (let [width 10]
-       [:pattern {:id            id
-                  :width         width
-                  :height        width
+       [:pattern {:id id
+                  :width width
+                  :height width
                   :pattern-units "userSpaceOnUse"}
-        [:rect {:x      0
-                :y      0
-                :width  width
+        [:rect {:x 0
+                :y 0
+                :width width
                 :height width
-                :fill   "#f5f5f5"}]])]))
+                :fill "#f5f5f5"}]])]))
 
 #_{:clj-kondo/ignore [:redefined-var]}
 (def or
   (let [id "hatching-or"]
     [id
      (let [width (* spacing 2)
-           size  0.5]
-       [:pattern {:id            id
-                  :width         width
-                  :height        width
+           size 0.5]
+       [:pattern {:id id
+                  :width width
+                  :height width
                   :pattern-units "userSpaceOnUse"}
-        [:rect {:x      0
-                :y      0
-                :width  width
+        [:rect {:x 0
+                :y 0
+                :width width
                 :height width
-                :fill   "#f5f5f5"}]
+                :fill "#f5f5f5"}]
         [:g {:fill "#000"}
          [:circle {:cx 0
                    :cy 0
-                   :r  size}]
+                   :r size}]
          [:circle {:cx width
                    :cy 0
-                   :r  size}]
+                   :r size}]
          [:circle {:cx 0
                    :cy width
-                   :r  size}]
+                   :r size}]
          [:circle {:cx width
                    :cy width
-                   :r  size}]
+                   :r size}]
          [:circle {:cx spacing
                    :cy spacing
-                   :r  size}]]])]))
+                   :r size}]]])]))
 
 (def azure
   (let [id "hatching-azure"]
     [id
-     [:pattern {:id            id
-                :width         spacing
-                :height        spacing
+     [:pattern {:id id
+                :width spacing
+                :height spacing
                 :pattern-units "userSpaceOnUse"}
-      [:rect {:x      0
-              :y      0
-              :width  spacing
+      [:rect {:x 0
+              :y 0
+              :width spacing
               :height spacing
-              :fill   "#f5f5f5"}]
-      [:g {:stroke       "#000"
+              :fill "#f5f5f5"}]
+      [:g {:stroke "#000"
            :stroke-width line-thickness}
        [:path {:d (str "M" 0 "," 0 " L" spacing "," 0)}]
        [:path {:d (str "M" 0 "," spacing " L" spacing "," spacing)}]]]]))
@@ -70,16 +70,16 @@
   (let [id "hatching-vert"]
     [id
      (let [width (* (Math/sqrt 2) spacing)]
-       [:pattern {:id            id
-                  :width         width
-                  :height        width
+       [:pattern {:id id
+                  :width width
+                  :height width
                   :pattern-units "userSpaceOnUse"}
-        [:rect {:x      0
-                :y      0
-                :width  width
+        [:rect {:x 0
+                :y 0
+                :width width
                 :height width
-                :fill   "#f5f5f5"}]
-        [:g {:stroke       "#000"
+                :fill "#f5f5f5"}]
+        [:g {:stroke "#000"
              :stroke-width line-thickness}
          [:path {:d (str "M" (- width) "," (- width) " l" (* width 3) "," (* width 3))}]
          [:path {:d (str "M" 0 "," (- width) " l" (* width 3) "," (* width 3))}]
@@ -88,16 +88,16 @@
 (def gules
   (let [id "hatching-gules"]
     [id
-     [:pattern {:id            id
-                :width         spacing
-                :height        spacing
+     [:pattern {:id id
+                :width spacing
+                :height spacing
                 :pattern-units "userSpaceOnUse"}
-      [:rect {:x      0
-              :y      0
-              :width  spacing
+      [:rect {:x 0
+              :y 0
+              :width spacing
               :height spacing
-              :fill   "#f5f5f5"}]
-      [:g {:stroke       "#000"
+              :fill "#f5f5f5"}]
+      [:g {:stroke "#000"
            :stroke-width line-thickness}
        [:path {:d (str "M" 0 "," 0 " L" 0 "," spacing)}]
        [:path {:d (str "M" spacing "," 0 " L" spacing "," spacing)}]]]]))
@@ -106,16 +106,16 @@
   (let [id "hatching-purpure"]
     [id
      (let [width (* (Math/sqrt 2) spacing)]
-       [:pattern {:id            id
-                  :width         width
-                  :height        width
+       [:pattern {:id id
+                  :width width
+                  :height width
                   :pattern-units "userSpaceOnUse"}
-        [:rect {:x      0
-                :y      0
-                :width  width
+        [:rect {:x 0
+                :y 0
+                :width width
                 :height width
-                :fill   "#f5f5f5"}]
-        [:g {:stroke       "#000"
+                :fill "#f5f5f5"}]
+        [:g {:stroke "#000"
              :stroke-width line-thickness}
          [:path {:d (str "M" (* width 2) "," (- width) " l" (* width -3) "," (* width 3))}]
          [:path {:d (str "M" width "," (- width) " l" (* width -3) "," (* width 3))}]
@@ -124,16 +124,16 @@
 (def sable
   (let [id "hatching-sable"]
     [id
-     [:pattern {:id            id
-                :width         spacing
-                :height        spacing
+     [:pattern {:id id
+                :width spacing
+                :height spacing
                 :pattern-units "userSpaceOnUse"}
-      [:rect {:x      0
-              :y      0
-              :width  spacing
+      [:rect {:x 0
+              :y 0
+              :width spacing
               :height spacing
-              :fill   "#f5f5f5"}]
-      [:g {:stroke       "#000"
+              :fill "#f5f5f5"}]
+      [:g {:stroke "#000"
            :stroke-width line-thickness}
        [:path {:d (str "M" 0 "," 0 " L" spacing "," 0)}]
        [:path {:d (str "M" 0 "," spacing " L" spacing "," spacing)}]
@@ -144,16 +144,16 @@
   (let [id "hatching-murrey"]
     [id
      (let [width (* (Math/sqrt 2) spacing)]
-       [:pattern {:id            id
-                  :width         width
-                  :height        width
+       [:pattern {:id id
+                  :width width
+                  :height width
                   :pattern-units "userSpaceOnUse"}
-        [:rect {:x      0
-                :y      0
-                :width  width
+        [:rect {:x 0
+                :y 0
+                :width width
                 :height width
-                :fill   "#f5f5f5"}]
-        [:g {:stroke       "#000"
+                :fill "#f5f5f5"}]
+        [:g {:stroke "#000"
              :stroke-width line-thickness}
          [:path {:d (str "M" (- width) "," (- width) " l" (* width 3) "," (* width 3))}]
          [:path {:d (str "M" 0 "," (- width) " l" (* width 3) "," (* width 3))}]
@@ -166,87 +166,87 @@
   (let [id "hatching-sanguine"]
     [id
      [:<>
-      [:pattern {:id            "hatching-sanguine-secondary"
-                 :width         spacing
-                 :height        spacing
+      [:pattern {:id "hatching-sanguine-secondary"
+                 :width spacing
+                 :height spacing
                  :pattern-units "userSpaceOnUse"}
-       [:g {:stroke       "#000"
+       [:g {:stroke "#000"
             :stroke-width line-thickness}
         [:path {:d (str "M" 0 "," 0 " L" spacing "," 0)}]
         [:path {:d (str "M" 0 "," spacing " L" spacing "," spacing)}]]]
-      (let [width  150
+      (let [width 150
             height 200]
-        [:pattern {:id            id
-                   :width         width
-                   :height        height
+        [:pattern {:id id
+                   :width width
+                   :height height
                    :pattern-units "userSpaceOnUse"}
-         [:rect {:x      0
-                 :y      0
-                 :width  width
+         [:rect {:x 0
+                 :y 0
+                 :width width
                  :height height
-                 :fill   "#f5f5f5"}]
-         [:rect {:x      0
-                 :y      0
-                 :width  1000
+                 :fill "#f5f5f5"}]
+         [:rect {:x 0
+                 :y 0
+                 :width 1000
                  :height 1000
-                 :fill   "url(#hatching-vert)"}]
-         [:rect {:x      0
-                 :y      0
-                 :width  1000
+                 :fill "url(#hatching-vert)"}]
+         [:rect {:x 0
+                 :y 0
+                 :width 1000
                  :height 1000
-                 :fill   "url(#hatching-sanguine-secondary)"}]])]]))
+                 :fill "url(#hatching-sanguine-secondary)"}]])]]))
 
 (def tenne
   (let [id "hatching-tenne"]
     [id
      [:<>
-      [:pattern {:id            "hatching-tenne-secondary"
-                 :width         spacing
-                 :height        spacing
+      [:pattern {:id "hatching-tenne-secondary"
+                 :width spacing
+                 :height spacing
                  :pattern-units "userSpaceOnUse"}
-       [:g {:stroke       "#000"
+       [:g {:stroke "#000"
             :stroke-width line-thickness}
         [:path {:d (str "M" 0 "," 0 " L" 0 "," spacing)}]
         [:path {:d (str "M" spacing "," 0 " L" spacing "," spacing)}]]]
-      (let [width  150
+      (let [width 150
             height 200]
-        [:pattern {:id            id
-                   :width         width
-                   :height        height
+        [:pattern {:id id
+                   :width width
+                   :height height
                    :pattern-units "userSpaceOnUse"}
-         [:rect {:x      0
-                 :y      0
-                 :width  width
+         [:rect {:x 0
+                 :y 0
+                 :width width
                  :height height
-                 :fill   "#f5f5f5"}]
-         [:rect {:x      0
-                 :y      0
-                 :width  1000
+                 :fill "#f5f5f5"}]
+         [:rect {:x 0
+                 :y 0
+                 :width 1000
                  :height 1000
-                 :fill   "url(#hatching-vert)"}]
-         [:rect {:x      0
-                 :y      0
-                 :width  1000
+                 :fill "url(#hatching-vert)"}]
+         [:rect {:x 0
+                 :y 0
+                 :width 1000
                  :height 1000
-                 :fill   "url(#hatching-tenne-secondary)"}]])]]))
+                 :fill "url(#hatching-tenne-secondary)"}]])]]))
 
 (def metals
   {:argent argent
-   :or     or})
+   :or or})
 
 (def colours
   {;; tincture
-   :azure    azure
-   :vert     vert
-   :gules    gules
-   :sable    sable
-   :purpure  purpure
+   :azure azure
+   :vert vert
+   :gules gules
+   :sable sable
+   :purpure purpure
    ;; stain
-   :murrey   murrey
+   :murrey murrey
    :sanguine sanguine
-   :tenne    tenne
+   :tenne tenne
    ;; untraditional
-   :white    argent})
+   :white argent})
 
 (def patterns
   (into

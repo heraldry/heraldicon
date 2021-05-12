@@ -8,23 +8,23 @@
             [re-frame.core :as rf]))
 
 (defn tincture-choice [path key display-name]
-  (let [value            @(rf/subscribe [:get path])
+  (let [value @(rf/subscribe [:get path])
         {:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
-                           :field      {:type     :heraldry.field.type/plain
-                                        :tincture key}}
+                           :field {:type :heraldry.field.type/plain
+                                   :tincture key}}
                           40
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
                               (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
-                          :style    {:border        (if (= value key)
-                                                      "1px solid #000"
-                                                      "1px solid transparent")
-                                     :border-radius "5px"}}
-     [:svg {:style               {:width  "4em"
-                                  :height "4.5em"}
-            :viewBox             "0 0 50 100"
+                          :style {:border (if (= value key)
+                                            "1px solid #000"
+                                            "1px solid transparent")
+                                  :border-radius "5px"}}
+     [:svg {:style {:width "4em"
+                    :height "4.5em"}
+            :viewBox "0 0 50 100"
             :preserveAspectRatio "xMidYMin slice"}
       [:g {:filter "url(#shadow)"}
        [:g {:transform "translate(5,5)"}
@@ -49,8 +49,7 @@
            [:<>
             [:h4 {:style {:margin-left "4.5em"}} group-name]
             [tincture-choice path :none "None"]]
-           [:h4  group-name])
+           [:h4 group-name])
          (for [[display-name key] group]
            ^{:key display-name}
            [tincture-choice path key display-name])])]]))
-

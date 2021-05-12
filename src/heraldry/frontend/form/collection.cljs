@@ -13,8 +13,7 @@
        :default 6]]
 
      [:div {:style {:margin-bottom "0.5em"}}
-      [:button {:on-click nil #_ (state/dispatch-on-event % [:add-component path default/ordinary])}
+      [:button {:on-click nil #_(state/dispatch-on-event % [:add-component path default/ordinary])}
        [:i.fas.fa-plus] " Add coat of arms"]]
      [:div.components
       [:ul]]]))
-

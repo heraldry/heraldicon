@@ -35,49 +35,49 @@
 
 (defn cc-version-string [version]
   (case version
-    :v4   "4.0"
-    :v3   "3.0"
+    :v4 "4.0"
+    :v3 "3.0"
     :v2.5 "2.5"
-    :v2   "2.0"
-    :v1   "1.0"
+    :v2 "2.0"
+    :v1 "1.0"
     "4.0"))
 
 (defn url [license license-version]
   (when license
     (let [version (cc-version-string license-version)]
       (case license
-        :cc-attribution                            (str "https://creativecommons.org/licenses/by/" version)
-        :cc-attribution-share-alike                (str "https://creativecommons.org/licenses/by-sa/" version)
+        :cc-attribution (str "https://creativecommons.org/licenses/by/" version)
+        :cc-attribution-share-alike (str "https://creativecommons.org/licenses/by-sa/" version)
         :cc-attribution-non-commercial-share-alike (str "https://creativecommons.org/licenses/by-nc-sa/" version)
-        :public-domain                             "https://creativecommons.org/publicdomain/mark/1.0/"
+        :public-domain "https://creativecommons.org/publicdomain/mark/1.0/"
         "private"))))
 
 (defn display-name [license license-version]
   (when license
     (let [version (cc-version-string license-version)]
       (case license
-        :cc-attribution                            (str "CC BY " version)
-        :cc-attribution-share-alike                (str "CC BY-SA " version)
+        :cc-attribution (str "CC BY " version)
+        :cc-attribution-share-alike (str "CC BY-SA " version)
         :cc-attribution-non-commercial-share-alike (str "CC BY-NC-SA " version)
-        :public-domain                             "public domain"
+        :public-domain "public domain"
         "none"))))
 
 (defn compatible? [license source-license]
   (let [compatible-licenses
         (case (or source-license :none)
-          :none                                      #{:none}
-          :public-domain                             #{:none
-                                                       :public-domain
-                                                       :cc-attribution
-                                                       :cc-attribution-share-alike
-                                                       :cc-attribution-non-commercial-share-alike}
-          :cc-attribution                            #{:none
-                                                       :cc-attribution
-                                                       :cc-attribution-share-alike
-                                                       :cc-attribution-non-commercial-share-alike:none}
-          :cc-attribution-share-alike                #{:none
-                                                       :cc-attribution-share-alike
-                                                       :cc-attribution-non-commercial-share-alike}
+          :none #{:none}
+          :public-domain #{:none
+                           :public-domain
+                           :cc-attribution
+                           :cc-attribution-share-alike
+                           :cc-attribution-non-commercial-share-alike}
+          :cc-attribution #{:none
+                            :cc-attribution
+                            :cc-attribution-share-alike
+                            :cc-attribution-non-commercial-share-alike:none}
+          :cc-attribution-share-alike #{:none
+                                        :cc-attribution-share-alike
+                                        :cc-attribution-non-commercial-share-alike}
           :cc-attribution-non-commercial-share-alike #{:none
                                                        :cc-attribution-non-commercial-share-alike})]
 

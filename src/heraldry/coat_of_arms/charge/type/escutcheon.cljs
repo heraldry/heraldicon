@@ -9,23 +9,22 @@
 
 (defn render
   {:display-name "Escutcheon"
-   :value        :heraldry.charge.type/escutcheon}
+   :value :heraldry.charge.type/escutcheon}
   [charge parent environment {:keys [root-escutcheon] :as context}]
   (let [{:keys [escutcheon]} (options/sanitize charge (charge-options/options charge))]
     (charge-shared/make-charge
      charge parent environment context
      :width
      (fn [width]
-       (let [env      (environment/transform-to-width
-                       (escutcheon/field (if (= escutcheon :none)
-                                           root-escutcheon
-                                           escutcheon)) width)
+       (let [env (environment/transform-to-width
+                  (escutcheon/field (if (= escutcheon :none)
+                                      root-escutcheon
+                                      escutcheon)) width)
              env-fess (-> env :points :fess)
-             offset   (v/* env-fess -1)]
-         {:shape           (svg/translate (:shape env)
-                                          (:x offset)
-                                          (:y offset))
+             offset (v/* env-fess -1)]
+         {:shape (svg/translate (:shape env)
+                                (:x offset)
+                                (:y offset))
           :charge-top-left offset
-          :charge-width    (:width env)
-          :charge-height   (:height env)})))))
-
+          :charge-width (:width env)
+          :charge-height (:height env)})))))

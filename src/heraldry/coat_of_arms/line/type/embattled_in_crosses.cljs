@@ -3,7 +3,7 @@
 
 (defn pattern
   {:display-name "Embattled in crosses"
-   :value        :embattled-in-crosses}
+   :value :embattled-in-crosses}
   [{:keys [height
            eccentricity
            width]}
@@ -28,10 +28,9 @@
                [l 0]
                [0 (* l height)]
                [(/ t 2) 0]]
-     :min     (- 0
-                 (* l height)
-                 (* t height)
-                 (* t height)
-                 (* l height))
-     :max     0}))
-
+     :min (- 0
+             (* l height)
+             (* t height)
+             (* t height)
+             (* l height))
+     :max 0}))

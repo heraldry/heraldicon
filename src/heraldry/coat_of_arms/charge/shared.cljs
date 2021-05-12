@@ -17,77 +17,77 @@
   (let [{:keys [origin
                 anchor
                 geometry
-                fimbriation]}         (options/sanitize charge (charge-options/options charge))
+                fimbriation]} (options/sanitize charge (charge-options/options charge))
         {:keys [size stretch
                 mirrored? reversed?]} geometry
         {origin-point :real-origin
-         anchor-point :real-anchor}   (angle/calculate-origin-and-anchor
-                                       environment
-                                       origin
-                                       anchor
-                                       0
-                                       -90)
-        angle                         (+ (v/angle-to-point origin-point anchor-point)
-                                         90)
-        arg-value                     (get environment arg)
-        target-arg-value              (-> size
-                                          ((util/percent-of arg-value)))
-        scale-x                       (if mirrored? -1 1)
-        scale-y                       (* (if reversed? -1 1) stretch)
+         anchor-point :real-anchor} (angle/calculate-origin-and-anchor
+                                     environment
+                                     origin
+                                     anchor
+                                     0
+                                     -90)
+        angle (+ (v/angle-to-point origin-point anchor-point)
+                 90)
+        arg-value (get environment arg)
+        target-arg-value (-> size
+                             ((util/percent-of arg-value)))
+        scale-x (if mirrored? -1 1)
+        scale-y (* (if reversed? -1 1) stretch)
         {:keys [shape
                 mask
                 charge-width
                 charge-height
-                charge-top-left]}     (function target-arg-value)
-        charge-top-left               (or charge-top-left
-                                          (-> (v/v charge-width charge-height)
-                                              (v// -2)))
-        charge-shape                  (-> shape
-                                          svg/make-path
-                                          (->
-                                           (svgpath)
-                                           (.scale scale-x scale-y)
-                                           (.toString))
-                                          (cond->
-                                              (:squiggly? render-options) svg/squiggly-path
-                                              (not= angle 0) (->
-                                                              (svgpath)
-                                                              (.rotate angle)
-                                                              (.toString)))
-                                          (svg/translate (:x origin-point) (:y origin-point)))
-        mask-shape                    (when mask
-                                        (-> mask
-                                            svg/make-path
-                                            (->
-                                             (svgpath)
-                                             (.scale scale-x scale-y)
-                                             (.toString))
-                                            (cond->
-                                                (:squiggly? render-options) svg/squiggly-path
-                                                (not= angle 0) (->
-                                                                (svgpath)
-                                                                (.rotate angle)
-                                                                (.toString)))
-                                            (svg/translate (:x origin-point) (:y origin-point))))
-        [min-x max-x min-y max-y]     (svg/rotated-bounding-box charge-top-left
-                                                                (v/+ charge-top-left
-                                                                     (v/v charge-width
-                                                                          charge-height))
-                                                                angle
-                                                                :middle (v/v 0 0)
-                                                                :scale (v/v scale-x scale-y))
-        parts                         [[charge-shape
-                                        [(v/+ origin-point
-                                              (v/v min-x min-y))
-                                         (v/+ origin-point
-                                              (v/v max-x max-y))]
-                                        mask-shape]]
-        field                         (if (:counterchanged? field)
-                                        (counterchange/counterchange-field charge parent)
-                                        field)
-        charge-id                     (util/id "charge")
-        outline?                      (or (:outline? render-options)
-                                          (-> hints :outline-mode (= :keep)))]
+                charge-top-left]} (function target-arg-value)
+        charge-top-left (or charge-top-left
+                            (-> (v/v charge-width charge-height)
+                                (v// -2)))
+        charge-shape (-> shape
+                         svg/make-path
+                         (->
+                          (svgpath)
+                          (.scale scale-x scale-y)
+                          (.toString))
+                         (cond->
+                          (:squiggly? render-options) svg/squiggly-path
+                          (not= angle 0) (->
+                                          (svgpath)
+                                          (.rotate angle)
+                                          (.toString)))
+                         (svg/translate (:x origin-point) (:y origin-point)))
+        mask-shape (when mask
+                     (-> mask
+                         svg/make-path
+                         (->
+                          (svgpath)
+                          (.scale scale-x scale-y)
+                          (.toString))
+                         (cond->
+                          (:squiggly? render-options) svg/squiggly-path
+                          (not= angle 0) (->
+                                          (svgpath)
+                                          (.rotate angle)
+                                          (.toString)))
+                         (svg/translate (:x origin-point) (:y origin-point))))
+        [min-x max-x min-y max-y] (svg/rotated-bounding-box charge-top-left
+                                                            (v/+ charge-top-left
+                                                                 (v/v charge-width
+                                                                      charge-height))
+                                                            angle
+                                                            :middle (v/v 0 0)
+                                                            :scale (v/v scale-x scale-y))
+        parts [[charge-shape
+                [(v/+ origin-point
+                      (v/v min-x min-y))
+                 (v/+ origin-point
+                      (v/v max-x max-y))]
+                mask-shape]]
+        field (if (:counterchanged? field)
+                (counterchange/counterchange-field charge parent)
+                field)
+        charge-id (util/id "charge")
+        outline? (or (:outline? render-options)
+                     (-> hints :outline-mode (= :keep)))]
     [:<>
      (when (-> fimbriation :mode #{:double})
        (let [thickness (+ (-> fimbriation
@@ -144,4 +144,3 @@
          [:path {:d charge-shape}]
          (when mask-shape
            [:path {:d mask-shape}])])]]))
-

@@ -28,43 +28,43 @@
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:example-coa  {:render-options {:mode      :colours
-                                           :outline?  false
-                                           :squiggly? false
-                                           :ui        {:selectable-fields? true}}
-                          :coat-of-arms   {:escutcheon :rectangle
-                                           :field      {:type       :heraldry.field.type/plain
-                                                        :tincture   :argent
-                                                        :components [{:type     :heraldry.charge.type/preview
-                                                                      :field    {:type     :heraldry.field.type/plain
-                                                                                 :tincture :azure}
-                                                                      :tincture (merge (->> attributes/tincture-modifier-map
-                                                                                            (map (fn [[k _]]
-                                                                                                   [k :or]))
-                                                                                            (into {}))
-                                                                                       {:eyes-and-teeth :argent
-                                                                                        :secondary      :gules
-                                                                                        :tertiary       :vert
-                                                                                        :armed          :or
-                                                                                        :langued        :gules
-                                                                                        :attired        :argent
-                                                                                        :unguled        :vert
-                                                                                        :beaked         :or
-                                                                                        :winged         :purpure
-                                                                                        :pommeled       :gules
-                                                                                        :shadow         1.0
-                                                                                        :highlight      1.0})}]}}}
+   (merge {:example-coa {:render-options {:mode :colours
+                                          :outline? false
+                                          :squiggly? false
+                                          :ui {:selectable-fields? true}}
+                         :coat-of-arms {:escutcheon :rectangle
+                                        :field {:type :heraldry.field.type/plain
+                                                :tincture :argent
+                                                :components [{:type :heraldry.charge.type/preview
+                                                              :field {:type :heraldry.field.type/plain
+                                                                      :tincture :azure}
+                                                              :tincture (merge (->> attributes/tincture-modifier-map
+                                                                                    (map (fn [[k _]]
+                                                                                           [k :or]))
+                                                                                    (into {}))
+                                                                               {:eyes-and-teeth :argent
+                                                                                :secondary :gules
+                                                                                :tertiary :vert
+                                                                                :armed :or
+                                                                                :langued :gules
+                                                                                :attired :argent
+                                                                                :unguled :vert
+                                                                                :beaked :or
+                                                                                :winged :purpure
+                                                                                :pommeled :gules
+                                                                                :shadow 1.0
+                                                                                :highlight 1.0})}]}}}
            :coat-of-arms {:escutcheon :rectangle}
-           :ui           {:component-open? {[:arms-form :render-options]        true
-                                            [:arms-form :coat-of-arms]          true
-                                            [:arms-form :coat-of-arms :field]   true
-                                            [:arms-form :attribution]           true
-                                            [:charge-form :attribution]         true
-                                            [:example-coa :render-options]      true
-                                            [:example-coa :coat-of-arms]        true
-                                            [:example-coa :coat-of-arms :field] true}
-                          :charge-tree     {:show-public? true
-                                            :show-own?    true}}} db)))
+           :ui {:component-open? {[:arms-form :render-options] true
+                                  [:arms-form :coat-of-arms] true
+                                  [:arms-form :coat-of-arms :field] true
+                                  [:arms-form :attribution] true
+                                  [:charge-form :attribution] true
+                                  [:example-coa :render-options] true
+                                  [:example-coa :coat-of-arms] true
+                                  [:example-coa :coat-of-arms :field] true}
+                :charge-tree {:show-public? true
+                              :show-own? true}}} db)))
 
 (rf/reg-event-db
  :set
@@ -121,38 +121,38 @@
 (defn set-async-fetch-data [db-path query-id data]
   (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
   (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id] {:state :done
-                                                                         :data  data}])
+                                                                         :data data}])
   (rf/dispatch-sync [:set db-path data]))
 
 (defn async-fetch-data [db-path query-id async-function]
   (let [current-query @(rf/subscribe [:get [:async-fetch-data db-path :current]])
-        query         @(rf/subscribe [:get [:async-fetch-data db-path :queries query-id]])
-        current-data  @(rf/subscribe [:get db-path])]
+        query @(rf/subscribe [:get [:async-fetch-data db-path :queries query-id]])
+        current-data @(rf/subscribe [:get db-path])]
     (cond
       (not= current-query query-id) (do
                                       (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
                                       (rf/dispatch-sync [:set db-path nil])
                                       [:loading nil])
-      current-data                  [:done current-data]
-      (-> query :state (= :done))   (do
-                                      (rf/dispatch-sync [:set db-path (:data query)])
-                                      [:done (:data query)])
-      (-> query :state)             [:loading nil]
-      :else                         (do
-                                      (rf/dispatch-sync [:set db-path nil])
-                                      (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
-                                      (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id]
-                                                         {:state :loading}])
-                                      (go
-                                        (try
-                                          (let [data (<? (async-function))]
-                                            (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id]
-                                                               {:state :done
-                                                                :data  data}]))
-                                          (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
-                                          (catch :default e
-                                            (log/error "async fetch data error:" db-path query-id e))))
-                                      [:loading nil]))))
+      current-data [:done current-data]
+      (-> query :state (= :done)) (do
+                                    (rf/dispatch-sync [:set db-path (:data query)])
+                                    [:done (:data query)])
+      (-> query :state) [:loading nil]
+      :else (do
+              (rf/dispatch-sync [:set db-path nil])
+              (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
+              (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id]
+                                 {:state :loading}])
+              (go
+                (try
+                  (let [data (<? (async-function))]
+                    (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id]
+                                       {:state :done
+                                        :data data}]))
+                  (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
+                  (catch :default e
+                    (log/error "async fetch data error:" db-path query-id e))))
+              [:loading nil]))))
 
 (defn invalidate-cache-without-current [db-path query-id]
   (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id] nil]))
@@ -166,4 +166,3 @@
 
 (defn invalidate-cache-all []
   (rf/dispatch-sync [:set [:async-fetch-data] nil]))
-

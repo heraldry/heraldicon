@@ -10,34 +10,34 @@
 
 (defn render
   {:display-name "Per pale"
-   :value        :heraldry.field.type/per-pale
-   :parts        ["dexter" "sinister"]}
+   :value :heraldry.field.type/per-pale
+   :parts ["dexter" "sinister"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin]}          (options/sanitize field (field-options/options field))
-        points                         (:points environment)
-        origin-point                   (position/calculate origin environment :fess)
-        top-left                       (:top-left points)
-        real-top                       (assoc (:top points) :x (:x origin-point))
-        real-bottom                    (assoc (:bottom points) :x (:x origin-point))
-        bottom-right                   (:bottom-right points)
-        effective-width                (or (:width line) 1)
-        effective-width                (cond-> effective-width
-                                         (:spacing line) (+ (* (:spacing line) effective-width)))
-        required-extra-length          (-> 30
-                                           (/ effective-width)
-                                           Math/ceil
-                                           inc
-                                           (* effective-width))
-        top                            (v/- real-top (v/v 0 required-extra-length))
-        bottom                         (v/+ real-bottom (v/v 0 required-extra-length))
-        {line-one       :line
+  (let [{:keys [line origin]} (options/sanitize field (field-options/options field))
+        points (:points environment)
+        origin-point (position/calculate origin environment :fess)
+        top-left (:top-left points)
+        real-top (assoc (:top points) :x (:x origin-point))
+        real-bottom (assoc (:bottom points) :x (:x origin-point))
+        bottom-right (:bottom-right points)
+        effective-width (or (:width line) 1)
+        effective-width (cond-> effective-width
+                          (:spacing line) (+ (* (:spacing line) effective-width)))
+        required-extra-length (-> 30
+                                  (/ effective-width)
+                                  Math/ceil
+                                  inc
+                                  (* effective-width))
+        top (v/- real-top (v/v 0 required-extra-length))
+        bottom (v/+ real-bottom (v/v 0 required-extra-length))
+        {line-one :line
          line-one-start :line-start
-         line-one-end   :line-end
-         :as            line-one-data} (line/create line
-                                                    top
-                                                    bottom
-                                                    :render-options render-options
-                                                    :environment environment)
+         line-one-end :line-end
+         :as line-one-data} (line/create line
+                                         top
+                                         bottom
+                                         :render-options render-options
+                                         :environment environment)
 
         parts [[["M" (v/+ top
                           line-one-start)
@@ -72,4 +72,3 @@
       [:all nil]
       environment field context]
      (line/render line [line-one-data] top outline? render-options)]))
-
