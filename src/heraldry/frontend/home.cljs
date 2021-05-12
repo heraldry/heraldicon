@@ -14,6 +14,21 @@
    [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll "
     "group some features and new development and post an update here, so it is easy to stay informed."]
 
+   [:h3 "2021-05-09 - Cottising, labels, semy"]
+   [:div.pure-g
+    [:div.pure-u-2-3 {:style {:text-align "justify"
+                              :min-width "30em"}}
+     [:p "New features:"]
+     [:ul
+      [:li "support for cottising, cottises can have their own line styles, fimbriation, and follow the parent ordinary's alignment"]
+      [:li "labels ordinaries can now be added, they can be full length, truncated/couped, and support various emblazonment options"]
+      [:li "the chevron interface has changed a bit again, now using the anchor system as well, so they can be issuant from anywhere"]
+      [:li "semys with arbitrary charges are now possible, charges can be resized, rotated, the whole semy pattern layout also can be configured"]
+      [:li "new line styles: rayonny (flaming), rayonny (spiked), wolf toothed"]
+      [:li "lines can be aligned to their top, bottom, or middle"]]]
+    [:div.pure-u-1-3
+     (release-image "/img/2021-05-09-release-update.png")]]
+
    [:h3 "2021-03-31 - Embowed/enarched, nonrepeating line styles"]
    [:div.pure-g
     [:div.pure-u-2-3 {:style {:text-align "justify"
