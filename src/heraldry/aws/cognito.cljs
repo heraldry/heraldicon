@@ -5,7 +5,7 @@
             [heraldry.config :as config]))
 
 (def user-pool
-  (new CognitoUserPool (clj->js (select-keys (config/get :cognito-pool-config)
+  (new CognitoUserPool (clj->js (select-keys config/cognito-pool-config
                                              [:UserPoolId :ClientId]))))
 
 (defn login [username password & {:keys [on-success on-failure on-new-password-required on-confirmation-needed]}]
