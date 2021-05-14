@@ -434,7 +434,7 @@
          [charge-map-component/charge-properties charge-data]]
         (when (or (= (:username charge-data)
                      (:username user-data))
-                  ((config/get :admins) (:username user-data)))
+                  (config/admins (:username user-data)))
           [:div.pure-control-group {:style {:text-align "right"
                                             :margin-top "10px"
                                             :margin-bottom "10px"}}

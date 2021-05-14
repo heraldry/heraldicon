@@ -325,7 +325,7 @@
          [export-buttons :display]
          (when (or (= (:username arms-data)
                       (:username user-data))
-                   ((config/get :admins) (:username user-data)))
+                   (config/admins (:username user-data)))
            [:button.pure-button.pure-button-primary {:type "button"
                                                      :on-click #(do
                                                                   (rf/dispatch-sync [:clear-form-errors form-db-path])

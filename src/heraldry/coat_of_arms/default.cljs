@@ -22,7 +22,7 @@
   {:type :heraldry.component/semy
    :layout {:num-fields-x 6}
    :charge {:type :heraldry.charge.type/fleur-de-lis
-            :variant {:id (config/get :fleur-de-lis-charge-id)
+            :variant {:id config/fleur-de-lis-charge-id
                       :version 0}
             :field {:type :heraldry.field.type/plain
                     :tincture :or}

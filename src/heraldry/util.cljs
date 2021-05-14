@@ -28,7 +28,7 @@
           version (if (zero? version)
                     (:latest-version arms-data)
                     version)]
-      (str (config/get :heraldry-url) "/arms/" (id-for-url arms-id) "/" version))))
+      (str config/heraldry-url "/arms/" (id-for-url arms-id) "/" version))))
 
 (defn full-url-for-collection [collection-data]
   (when-let [collection-id (:id collection-data)]
@@ -36,7 +36,7 @@
           version (if (zero? version)
                     (:latest-version collection-data)
                     version)]
-      (str (config/get :heraldry-url) "/collection/" (id-for-url collection-id) "/" version))))
+      (str config/heraldry-url "/collection/" (id-for-url collection-id) "/" version))))
 
 (defn full-url-for-charge [charge-data]
   (when-let [charge-id (:id charge-data)]
@@ -44,10 +44,10 @@
           version (if (zero? version)
                     (:latest-version charge-data)
                     version)]
-      (str (config/get :heraldry-url) "/charges/" (id-for-url charge-id) "/" version))))
+      (str config/heraldry-url "/charges/" (id-for-url charge-id) "/" version))))
 
 (defn full-url-for-username [username]
-  (str (config/get :heraldry-url) "/users/" username))
+  (str config/heraldry-url "/users/" username))
 
 (defn choices->map [choices]
   (->> choices
