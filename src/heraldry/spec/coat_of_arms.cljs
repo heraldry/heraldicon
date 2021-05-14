@@ -23,27 +23,27 @@
 (s/def :heraldry.line/width (s/nilable number?))
 (s/def :heraldry.line/flipped? (s/nilable boolean?))
 (s/def :heraldry.line/mirrored? (s/nilable boolean?))
-(s/def :heraldry/line (s/keys :opt-un [:heraldry.line/type
-                                       :heraldry.line/eccentricity
-                                       :heraldry.line/height
-                                       :heraldry.line/width
-                                       :heraldry.line/spacing
-                                       :heraldry.line/offset
-                                       :heraldry.line/mirrored?
-                                       :heraldry.line/flipped?]))
+(s/def :heraldry/line (s/nilable (s/keys :opt-un [:heraldry.line/type
+                                                  :heraldry.line/eccentricity
+                                                  :heraldry.line/height
+                                                  :heraldry.line/width
+                                                  :heraldry.line/spacing
+                                                  :heraldry.line/offset
+                                                  :heraldry.line/mirrored?
+                                                  :heraldry.line/flipped?])))
 
 (s/def :heraldry.position/point (s/nilable position/anchor-point-map))
 (s/def :heraldry.position/offset-x (s/nilable number?))
 (s/def :heraldry.position/offset-y (s/nilable number?))
-(s/def :heraldry/position (s/keys :opt-un [:heraldry.position/point
-                                           :heraldry.position/offset-x
-                                           :heraldry.position/offset-y]))
+(s/def :heraldry/position (s/nilable (s/keys :opt-un [:heraldry.position/point
+                                                      :heraldry.position/offset-x
+                                                      :heraldry.position/offset-y])))
 
 (s/def :heraldry/origin #(s/valid? :heraldry/position %))
 (s/def :heraldry/anchor #(s/valid? :heraldry/position %))
 
 (s/def :heraldry.geometry/size number?)
-(s/def :heraldry/geometry (s/keys :opt-un [:heraldry.geometry/size]))
+(s/def :heraldry/geometry (s/nilable (s/keys :opt-un [:heraldry.geometry/size])))
 
 (s/def :heraldry.field.layout/num-base-fields (s/nilable number?))
 (s/def :heraldry.field.layout/num-fields-x (s/nilable number?))
@@ -53,17 +53,17 @@
 (s/def :heraldry.field.layout/stretch-x (s/nilable number?))
 (s/def :heraldry.field.layout/stretch-y (s/nilable number?))
 (s/def :heraldry.field.layout/rotation (s/nilable number?))
-(s/def :heraldry.field/layout (s/keys :opt-un [:heraldry.field.layout/num-base-fields
-                                               :heraldry.field.layout/num-fields-x
-                                               :heraldry.field.layout/num-fields-y
-                                               :heraldry.field.layout/offset-x
-                                               :heraldry.field.layout/offset-y
-                                               :heraldry.field.layout/stretch-x
-                                               :heraldry.field.layout/stretch-y
-                                               :heraldry.field.layout/rotation]))
+(s/def :heraldry.field/layout (s/nilable (s/keys :opt-un [:heraldry.field.layout/num-base-fields
+                                                          :heraldry.field.layout/num-fields-x
+                                                          :heraldry.field.layout/num-fields-y
+                                                          :heraldry.field.layout/offset-x
+                                                          :heraldry.field.layout/offset-y
+                                                          :heraldry.field.layout/stretch-x
+                                                          :heraldry.field.layout/stretch-y
+                                                          :heraldry.field.layout/rotation])))
 (s/def :heraldry.field/fields (s/coll-of :heraldry/field :into []))
 (s/def :heraldry.field.hint/outline? boolean?)
-(s/def :heraldry.field/hints (s/keys :opt-un [:heraldry.hint/outline?]))
+(s/def :heraldry.field/hints (s/nilable (s/keys :opt-un [:heraldry.hint/outline?])))
 (s/def :heraldry.field/inherit-environment? boolean?)
 (s/def :heraldry.field/counterchanged? boolean?)
 (s/def :heraldry.field/components (s/coll-of #(or (s/valid? :heraldry/ordinary %)
