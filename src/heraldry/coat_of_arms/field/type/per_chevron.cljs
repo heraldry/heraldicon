@@ -16,8 +16,20 @@
    ;; TODO: this naming now depends on the angle of the chevron
    :parts ["chief" "base"]}
   [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor
-                direction-anchor]} (options/sanitize field (field-options/options field))
+  (let [field-options (field-options/options field)
+        {:keys [line origin anchor
+                direction-anchor]} (options/sanitize field field-options)
+        raw-direction-anchor (:direction-anchor field)
+        direction-anchor (options/sanitize (cond-> raw-direction-anchor
+                                             (-> direction-anchor
+                                                 :point
+                                                 #{:left
+                                                   :right
+                                                   :top
+                                                   :bottom}) (->
+                                                              (update :offset-x #(or % (:offset-x origin)))
+                                                              (update :offset-y #(or % (:offset-y origin)))))
+                                           (:direction-anchor field-options))
         opposite-line (field-options/sanitize-opposite-line field line)
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment)

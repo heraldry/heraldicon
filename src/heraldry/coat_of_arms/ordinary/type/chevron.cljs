@@ -29,6 +29,17 @@
         {:keys [line origin anchor
                 direction-anchor
                 geometry]} (options/sanitize ordinary ordinary-options)
+        raw-direction-anchor (:direction-anchor ordinary)
+        direction-anchor (options/sanitize (cond-> raw-direction-anchor
+                                             (-> direction-anchor
+                                                 :point
+                                                 #{:left
+                                                   :right
+                                                   :top
+                                                   :bottom}) (->
+                                                              (update :offset-x #(or % (:offset-x origin)))
+                                                              (update :offset-y #(or % (:offset-y origin)))))
+                                           (:direction-anchor ordinary-options))
         {:keys [size]} geometry
         opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
