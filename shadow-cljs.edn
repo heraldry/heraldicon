@@ -22,8 +22,9 @@
                  :output-dir "./frontend/build/dev/generated"
                  :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true}}}
 
-           :release {:modules {:main {:entries [heraldry.frontend.main]}}
-                     :output-dir "./frontend/build/prod/js/generated"}}
+           :release {:modules {:main {:init-fn heraldry.frontend.main/init}}
+                     :output-dir "./frontend/build/prod/js/generated"
+                     :build-options {:cache-level :off}}}
 
           :backend
           {:target :node-library
@@ -40,7 +41,8 @@
 
            :dev {:output-to "./backend/build/dev/backend.js"}
 
-           :release {:output-to "./backend/build/prod/backend.js"}}
+           :release {:output-to "./backend/build/prod/backend.js"
+                     :build-options {:cache-level :off}}}
 
           :test
           {:target :node-test
