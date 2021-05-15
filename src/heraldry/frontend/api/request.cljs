@@ -1,7 +1,7 @@
 (ns heraldry.frontend.api.request
   (:require [cljs-http.client :as http]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
-            [heraldry.frontend.config :as config]))
+            [heraldry.config :as config]))
 
 (defn call [name payload user-data]
   (go-catch
