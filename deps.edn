@@ -1,8 +1,7 @@
 {:paths ["src"
          "backend/src"]
 
- :deps {aero/aero {:mvn/version "1.1.6"}
-        binaryage/devtools {:mvn/version "1.0.3"}
+ :deps {binaryage/devtools {:mvn/version "1.0.3"}
         borkdude/sci {:mvn/version "0.2.4"}
         cljs-http/cljs-http {:mvn/version "0.1.46"}
         com.andrewmcveigh/cljs-time {:mvn/version "0.5.2"}
@@ -13,7 +12,6 @@
         hiccups/hiccups {:mvn/version "0.3.0"}
         hickory/hickory {:mvn/version "0.7.1"}
         metosin/reitit {:mvn/version "0.5.12"}
-        mhuebert/shadow-env {:mvn/version "0.1.6"}
         re-frame/re-frame {:mvn/version "1.2.0"}
         reagent/reagent {:mvn/version "1.0.0"}
         thheller/shadow-cljs {:mvn/version "2.12.7"}

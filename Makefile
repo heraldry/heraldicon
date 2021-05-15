@@ -2,6 +2,7 @@
 
 FRONTEND_RELEASE_DIR = frontend/build/prod
 BACKEND_RELEASE_DIR = backend/build/prod
+PROD_CONFIG = {:closure-defines {heraldry.config/stage "prod"}}}
 
 release-frontend-prod:
 	rm -rf $(FRONTEND_RELEASE_DIR) 2> /dev/null || true
@@ -9,7 +10,7 @@ release-frontend-prod:
 	cp -r frontend/assets/* $(FRONTEND_RELEASE_DIR)
 	rm -rf $(FRONTEND_RELEASE_DIR)/js/generated 2> /dev/null || true
 	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(shell git rev-parse --short HEAD)/" $(FRONTEND_RELEASE_DIR)/index.html
-	STAGE=prod npx shadow-cljs release frontend
+	npx shadow-cljs release frontend --config-merge '$(PROD_CONFIG)'
 
 setup-sharp-linux:
 	rm -rf backend/node_modules/sharp 2> /dev/null || true
@@ -26,7 +27,7 @@ deploy-frontend-prod: check-before-deploy-frontend release-frontend-prod
 
 release-backend-prod:
 	rm -rf $(BACKEND_RELEASE_DIR) 2> /dev/null || true
-	STAGE=prod npx shadow-cljs release backend
+	npx shadow-cljs release backend --config-merge '$(PROD_CONFIG)'
 
 deploy-backend-prod: check-before-deploy-backend release-backend-prod
 	make setup-sharp-linux
@@ -37,7 +38,7 @@ deploy-backend-prod: check-before-deploy-backend release-backend-prod
 
 release-backend-local:
 	rm -rf $(BACKEND_RELEASE_DIR) 2> /dev/null || true
-	STAGE=local npx shadow-cljs release backend --config-merge '{:output-to "./backend/build/dev/backend.js"}'
+	npx shadow-cljs release backend --config-merge '{:output-to "./backend/build/dev/backend.js"}'
 
 deploy-backend-local: release-backend-local
 	make setup-sharp-linux
