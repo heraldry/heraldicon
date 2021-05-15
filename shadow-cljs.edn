@@ -16,7 +16,6 @@
                                  day8.re-frame-10x.preload]}
            :compiler-options {:output-feature-set :es6
                               :warnings {:redef false}}
-           :build-hooks [(shadow-env.core/hook)]
 
            :dev {:modules {:main {:init-fn heraldry.frontend.main/dev-init}}
                  :output-dir "./frontend/build/dev/generated"
@@ -36,7 +35,6 @@
            :js-options {:js-package-dirs ["./backend/node_modules"]}
            :compiler-options {:output-feature-set :es6
                               :warnings {:redef false}}
-           :build-hooks [(shadow-env.core/hook)]
 
            :dev {:output-to "./backend/build/dev/backend.js"}
 

@@ -1,7 +1,7 @@
 (ns heraldry.frontend.util
   (:require [clojure.string :as s]
             [clojure.walk :as walk]
-            [heraldry.frontend.config :as config]
+            [heraldry.config :as config]
             [reitit.frontend.easy :as reife]))
 
 (defn lower-case-first [s]
