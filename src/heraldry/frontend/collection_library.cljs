@@ -4,6 +4,7 @@
             [heraldry.config :as config]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.credits :as credits]
+            [heraldry.frontend.form.arms-reference :as arms-reference]
             [heraldry.frontend.form.collection :as collection]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
@@ -28,7 +29,7 @@
     (try
       (let [user-data (user/data)]
         (-> (api-request/call
-             :fetch-collections-for-use
+             :fetch-collections-for-user
              {:user-id user-id}
              user-data)
             <?
@@ -70,6 +71,56 @@
         (log/error "save-form error:" e)
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
 
+(defn add-arms [x y size path]
+  [:g {:transform (str "translate(" x "," y ")")}
+   [:circle {:r            size
+             :fill         "#bbbb"
+             :stroke-width 1
+             :stroke       "#777"}]])
+
+(defn render-collection []
+  (let [render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
+        collection-data @(rf/subscribe [:get form-db-path])
+        collection (:collection collection-data)
+        {:keys [num-columns
+                num-rows
+                elements]} collection
+        roll-width 1000
+        margin 10
+        arms-width (-> 1000
+                       (- (* (inc num-columns)
+                             margin))
+                       (/ num-columns))
+        arms-height (* 1.5 arms-width)
+        username (-> (user/data)
+                     :username)]
+    (if collection-data
+      [:div {:style {:margin-left  "10px"
+                     :margin-right "10px"}}
+       [:svg {:id "svg"
+              :style {:width "100%"
+                      :height "100vh"}
+              :viewBox "0 0 1000 1000"
+              :preserveAspectRatio "xMidYMin meet"}
+        [:g
+         (doall
+          (for [x (range num-columns)
+                y (range num-rows)]
+            (if-let [arms (get elements [x y])]
+              ^{:key [x y]} [:text "hello"]
+              ^{:key [x y]} [add-arms
+                             (+ margin
+                                (* x (+ arms-width
+                                        margin))
+                                (+ (/ arms-width 2)))
+                             (+ margin
+                                (* y (+ arms-height
+                                        margin))
+                                (+ (/ arms-height 2)))
+                             (/ arms-width 2)
+                             (conj form-db-path :collection :elements [x y])])))]]]
+      [:<>])))
+
 (defn collection-form []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
@@ -82,7 +133,8 @@
     [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
-     [:div.pure-u-1-2 {:style {:position "fixed"}}]
+     [:div.pure-u-1-2 {:style {:position "fixed"}}
+      [render-collection]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
                                :width "45%"}}
       [:form.pure-form.pure-form-aligned
@@ -142,6 +194,8 @@
       [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                    (rf/dispatch [:ui-submenu-close-all])
                                    (.stopPropagation %))}
+       [:div.pure-u-1-2 {:style {:position "fixed"}}
+        [render-collection]]
        [:div.pure-u-1-2 {:style {:margin-left "50%"
                                  :width "45%"}}
         [:div.credits
