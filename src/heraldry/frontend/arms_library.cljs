@@ -15,6 +15,7 @@
             [heraldry.frontend.form.coat-of-arms :as coat-of-arms-component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
+            [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
@@ -250,6 +251,8 @@
                      :style {:margin-right "0.5em"}}]
             [form/checkbox (conj form-db-path :is-public) "Make public"
              :style {:width "7em"}]])]]
+       [:fieldset
+        [tag/form (conj form-db-path :tags)]]
        (when form-message
          [:div.form-message form-message])
        (when error-message

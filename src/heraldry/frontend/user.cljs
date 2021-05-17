@@ -1,8 +1,8 @@
 (ns heraldry.frontend.user
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
-            [heraldry.frontend.api.request :as api-request]
             [heraldry.aws.cognito :as cognito]
+            [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
