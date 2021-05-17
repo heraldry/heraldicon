@@ -178,7 +178,12 @@ label div {
   margin-left: 1em;
 }
 
+.tags {
+  padding-top: 10px;
+}
+
 .tag {
+  position: relative;
   display: inline-block;
   font-size: 0.8em;
   height: 1.2em;
@@ -186,6 +191,7 @@ label div {
   padding: 4px 8px;
   white-space: nowrap;
   line-height: 1.2em;
+  margin-bottom: 2px;
 }
 
 .tag i.fas {
@@ -225,6 +231,26 @@ label div {
 .tag.fixed-tincture {
   background-color: #888;
   color: #fff;
+}
+
+.tag .delete {
+  display: none;
+}
+
+.tag:hover .delete {
+  z-index: 1000;
+  display: inline;
+  cursor: pointer;
+  position: absolute;
+  right: -7px;
+  top: -7px;
+  background: #bb2f2e;
+  color: #ff;
+  border-radius: 10px;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
 }
 
 .count-badge {
