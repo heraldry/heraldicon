@@ -136,6 +136,14 @@
                                       remaining)
                                current-tags))))))
 
+(rf/reg-event-db
+ :toggle-tag
+ (fn [db [_ db-path tag]]
+   (update-in db db-path (fn [current-tags]
+                           (if (get current-tags tag)
+                             (dissoc current-tags tag)
+                             (assoc current-tags tag true))))))
+
 (rf/reg-event-fx
  :clear-form-errors
  (fn [_ [_ db-path]]

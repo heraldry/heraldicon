@@ -200,3 +200,29 @@
          " " title]
         (into [:div.content]
               content)])]))
+
+(defn search-field [db-path & {:keys [on-change]}]
+  (let [current-value @(rf/subscribe [:get db-path])
+        input-id (id "input")]
+    [:div {:style {:display "inline-block"
+                   :border-radius "999px"
+                   :border "1px solid #ccc"
+                   :padding "3px 6px"
+                   :min-width "10em"
+                   :max-width "20em"
+                   :width "50%"
+                   :margin-bottom "0.5em"}}
+     [:i.fas.fa-search]
+     [:input {:id input-id
+              :name "search"
+              :type "text"
+              :value current-value
+              :autoComplete "off"
+              :on-change #(let [value (-> % .-target .-value)]
+                            (if on-change
+                              (on-change value)
+                              (rf/dispatch-sync [:set db-path value])))
+              :style {:outline "none"
+                      :border "0"
+                      :margin-left "0.5em"
+                      :width "calc(100% - 12px - 1.5em)"}}]]))

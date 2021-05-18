@@ -5,7 +5,7 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
-            [heraldry.util :refer [id full-url-for-username]]
+            [heraldry.util :refer [full-url-for-username]]
             [re-frame.core :as rf]))
 
 (def node-icons
@@ -19,18 +19,6 @@
             :open "fa-minus-square"}
    :variant {:normal "fa-image"}})
 
-(defn matches-word [data word]
-  (cond
-    (keyword? data) (-> data name s/lower-case (s/includes? word))
-    (string? data) (-> data s/lower-case (s/includes? word))
-    (map? data) (some (fn [[k v]]
-                        (or (and (keyword? k)
-                                 (matches-word k word)
-                                     ;; this would be an attribute entry, the value
-                                     ;; must be truthy as well
-                                 v)
-                            (matches-word v word))) data)))
-
 (defn filter-charges [charges filter-string]
   (if (or (not filter-string)
           (-> filter-string s/trim count zero?))
@@ -43,7 +31,7 @@
                            (some (fn [attribute]
                                    (-> charge
                                        (get attribute)
-                                       (matches-word word)))
+                                       (util/matches-word word)))
                                  [:name :type :attitude :facing :attributes :colours :username]))
                          words))
                charges))))
@@ -176,32 +164,6 @@
                                   (-> opts
                                       (assoc :still-on-path? following-path?))]]))]))))
 
-(defn search-field [db-path & {:keys [on-change]}]
-  (let [current-value @(rf/subscribe [:get db-path])
-        input-id (id "input")]
-    [:div {:style {:display "inline-block"
-                   :border-radius "999px"
-                   :border "1px solid #ccc"
-                   :padding "3px 6px"
-                   :min-width "10em"
-                   :max-width "20em"
-                   :width "50%"
-                   :margin-bottom "0.5em"}}
-     [:i.fas.fa-search]
-     [:input {:id input-id
-              :name "search"
-              :type "text"
-              :value current-value
-              :autoComplete "off"
-              :on-change #(let [value (-> % .-target .-value)]
-                            (if on-change
-                              (on-change value)
-                              (rf/dispatch-sync [:set db-path value])))
-              :style {:outline "none"
-                      :border "0"
-                      :margin-left "0.5em"
-                      :width "calc(100% - 12px - 1.5em)"}}]]))
-
 (defn charge-properties [charge]
   [:div.properties {:style {:display "inline-block"
                             :line-height "1.5em"
@@ -280,7 +242,7 @@
                      filtered-charges
                      :remove-empty-groups? remove-empty-groups?)]
      [:<>
-      [search-field filter-db-path
+      [element/search-field filter-db-path
        :on-change (fn [value]
                     (rf/dispatch-sync [:set filter-db-path value])
                     (rf/dispatch-sync [:prune-false-flags node-flag-db-path]))]

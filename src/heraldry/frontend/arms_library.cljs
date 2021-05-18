@@ -1,5 +1,6 @@
 (ns heraldry.frontend.arms-library
   (:require [cljs.core.async :refer [go]]
+            [clojure.set :as set]
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.blazon :as blazon]
@@ -14,11 +15,13 @@
             [heraldry.frontend.form.attribution :as attribution]
             [heraldry.frontend.form.coat-of-arms :as coat-of-arms-component]
             [heraldry.frontend.form.core :as form]
+            [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.render-options :as render-options]
             [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
+            [heraldry.frontend.util :as util]
             [heraldry.util
              :refer
              [full-url-for-arms full-url-for-username id-for-url]]
@@ -338,27 +341,71 @@
          [:div.spacer]]
         [render-options/form (conj form-db-path :render-options)]]])))
 
+(defn filter-arms [arms-list filter-string filter-tags]
+  (if (and (or (not filter-string)
+               (-> filter-string s/trim count zero?))
+           (-> filter-tags count zero?))
+    arms-list
+    (let [words (-> filter-string
+                    (s/split #" +")
+                    (->> (map s/lower-case)))
+          filter-tags-set (-> filter-tags
+                              keys
+                              set)]
+      (filterv (fn [arms]
+                 (and (every? (fn [word]
+                                (some (fn [attribute]
+                                        (-> arms
+                                            (get attribute)
+                                            (util/matches-word word)))
+                                      [:name :username :tags]))
+                              words)
+                      (set/subset? filter-tags-set
+                                   (-> arms
+                                       :tags
+                                       keys
+                                       set))))
+               arms-list))))
+
 (defn list-arms-for-user [user-id]
   (let [[status arms-list] (state/async-fetch-data
                             list-db-path
                             user-id
-                            #(fetch-arms-list-by-user user-id))]
+                            #(fetch-arms-list-by-user user-id))
+        filter-db-path [:ui :arms-list :filter-string]
+        filter-string @(rf/subscribe [:get filter-db-path])
+        filter-tags-db-path [:ui :arms-list :filter-tags]
+        filter-tags @(rf/subscribe [:get filter-tags-db-path])
+        filtered-arms-list (filter-arms arms-list filter-string filter-tags)
+        tags-to-filter (->> filtered-arms-list
+                            (map (comp keys :tags))
+                            (apply concat)
+                            set)]
     (if (= status :done)
       (if (empty? arms-list)
         [:div "None"]
-        [:ul.arms-list
-         (doall
-          (for [arms (sort-by (comp s/lower-case :name) arms-list)]
-            ^{:key (:id arms)}
-            [:li.arms
-             (let [arms-id (-> arms
-                               :id
-                               id-for-url)]
-               [:a {:href (reife/href :view-arms-by-id {:id arms-id})
-                    :on-click #(do
-                                 (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                 (rf/dispatch-sync [:clear-form-message form-db-path]))}
-                (:name arms)])]))])
+        [:<>
+         [element/search-field filter-db-path
+          :on-change (fn [value]
+                       (rf/dispatch-sync [:set filter-db-path value]))]
+         [:div
+          [tag/tags-view tags-to-filter
+           :on-click #(rf/dispatch [:toggle-tag filter-tags-db-path %])
+           :selected filter-tags]]
+         [:ul.arms-list
+          (doall
+           (for [arms (sort-by (comp s/lower-case :name) filtered-arms-list)]
+             ^{:key (:id arms)}
+             [:li.arms
+              (let [arms-id (-> arms
+                                :id
+                                id-for-url)]
+                [:a {:href     (reife/href :view-arms-by-id {:id arms-id})
+                     :on-click #(do
+                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
+                                  (rf/dispatch-sync [:clear-form-message form-db-path]))}
+                 (:name arms)])
+              " " [tag/tags-view (-> arms :tags keys)]]))]])
       [:div "loading..."])))
 
 (defn list-my-arms []
