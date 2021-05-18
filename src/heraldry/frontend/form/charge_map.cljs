@@ -206,32 +206,38 @@
   [:div.properties {:style {:display "inline-block"
                             :line-height "1.5em"
                             :vertical-align "middle"
-                            :white-space "normal"}}
+                            :white-space "normal"
+                            :margin-left "0.5em"}}
    (when (-> charge :is-public not)
      [:div.tag.private [:i.fas.fa-lock] "private"])
+   " "
    (when-let [attitude (-> charge
                            :attitude
                            (#(when (not= % :none) %)))]
      [:div.tag.attitude (util/translate attitude)])
+   " "
    (when-let [facing (-> charge
                          :facing
                          (#(when (-> % #{:none :to-dexter} not) %)))]
      [:div.tag.facing (util/translate facing)])
+   " "
    (for [attribute (->> charge
                         :attributes
                         (filter second)
                         (map first)
                         sort)]
      ^{:key attribute}
-     [:div.tag.attribute (util/translate attribute)])
+     [:<> [:div.tag.attribute (util/translate attribute)] " "])
    (when (or (-> charge :colours vals set :shadow)
              (-> charge :colours vals set :highlight))
      [:div.tag.shading "shading"])
+   " "
    (when-let [fixed-tincture (-> charge
                                  :fixed-tincture
                                  (or :none)
                                  (#(when (not= % :none) %)))]
      [:div.tag.fixed-tincture (util/translate fixed-tincture)])
+   " "
    (for [modifier (->> charge
                        :colours
                        (map second)
@@ -245,7 +251,7 @@
                                     not))
                        sort)]
      ^{:key modifier}
-     [:div.tag.modifier (util/translate modifier)])])
+     [:<> [:div.tag.modifier (util/translate modifier)] " "])])
 
 (defn charge-tree [charges & {:keys [remove-empty-groups? hide-access-filters?
                                      link-to-charge render-variant refresh-action]}]
