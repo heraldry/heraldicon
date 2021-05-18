@@ -21,13 +21,37 @@
 (defn delete-tag-clicked [path tag]
   (rf/dispatch [:remove-tags path [tag]]))
 
-(defn tag-view [tag & {:keys [on-delete]}]
-  [:span.tag {:style {:background "#0c6793"
-                      :color "#eee"}}
-   tag
+(defn tag-view [tag & {:keys [on-delete
+                              on-click
+                              selected?]}]
+  [:span.tag {:style {:background (if selected?
+                                    "#f2bc51"
+                                    "#0c6793")
+                      :color (if selected?
+                               "#000"
+                               "#eee")
+                      :cursor (when on-click
+                                "pointer")}
+              :on-click on-click}
+   (name tag)
    (when on-delete
-     [:span.delete {:on-click #(on-delete)}
+     [:span.delete {:on-click on-delete}
       "x"])])
+
+(defn tags-view [tags & {:keys [on-delete
+                                on-click
+                                selected]}]
+  [:div.tags
+   (for [tag (sort tags)]
+     ^{:key tag}
+     [:<>
+      [tag-view tag
+       :on-delete (when on-delete
+                    #(on-delete tag))
+       :on-click (when on-click
+                   #(on-click tag))
+       :selected? (get selected tag)]
+      " "])])
 
 (defn form [path]
   (let [value @(rf/subscribe [:get value-path])
@@ -53,10 +77,6 @@
         :on-click on-click
         :type "button"}
        "Add"]
-      [:div.tags
-       (for [tag (sort (keys tags))]
-         ^{:key tag}
-         [:<>
-          [tag-view tag
-           :on-delete #(delete-tag-clicked path tag)]
-          " "])]]]))
+      [:div {:style {:padding-top "10px"}}
+       [tags-view (keys tags)
+        :on-delete #(delete-tag-clicked path %)]]]]))

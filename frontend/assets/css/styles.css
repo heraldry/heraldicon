@@ -179,7 +179,7 @@ label div {
 }
 
 .tags {
-  padding-top: 10px;
+  display: inline;
 }
 
 .tag {
