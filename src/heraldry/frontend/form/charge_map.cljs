@@ -1,7 +1,8 @@
 (ns heraldry.frontend.form.charge-map
-  (:require [clojure.string :as s]
-            [heraldry.frontend.charge-map :as charge-map]
+  (:require [heraldry.frontend.charge-map :as charge-map]
+            [heraldry.frontend.filter :as filter]
             [heraldry.frontend.form.element :as element]
+            [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
@@ -18,23 +19,6 @@
    :charge {:closed "fa-plus-square"
             :open "fa-minus-square"}
    :variant {:normal "fa-image"}})
-
-(defn filter-charges [charges filter-string]
-  (if (or (not filter-string)
-          (-> filter-string s/trim count zero?))
-    charges
-    (let [words (-> filter-string
-                    (s/split #" +")
-                    (->> (map s/lower-case)))]
-      (filterv (fn [charge]
-                 (every? (fn [word]
-                           (some (fn [attribute]
-                                   (-> charge
-                                       (get attribute)
-                                       (util/matches-word word)))
-                                 [:name :type :attitude :facing :attributes :colours :username]))
-                         words))
-               charges))))
 
 (def node-flag-db-path [:ui :charge-tree :nodes])
 
@@ -213,7 +197,8 @@
                                     not))
                        sort)]
      ^{:key modifier}
-     [:<> [:div.tag.modifier (util/translate modifier)] " "])])
+     [:<> [:div.tag.modifier (util/translate modifier)] " "])
+   [tag/tags-view (-> charge :tags keys)]])
 
 (defn charge-tree [charges & {:keys [remove-empty-groups? hide-access-filters?
                                      link-to-charge render-variant refresh-action]}]
@@ -225,8 +210,12 @@
          show-public? @(rf/subscribe [:get show-public-db-path])
          show-own? @(rf/subscribe [:get show-own-db-path])
          filter-string @(rf/subscribe [:get filter-db-path])
+         filter-tags-db-path [:ui :charge-tree :filter-tags]
+         filter-tags @(rf/subscribe [:get filter-tags-db-path])
          filtered-charges (-> charges
-                              (filter-charges filter-string)
+                              (filter/items filter-string
+                                            [:name :type :attitude :facing :attributes :colours :username]
+                                            filter-tags)
                               (cond->>
                                (not hide-access-filters?) (filter (fn [charge]
                                                                     (or (and show-public?
@@ -234,7 +223,12 @@
                                                                         (and show-own?
                                                                              (= (:username charge)
                                                                                 (:username user-data))))))))
-         filtered? (-> filter-string count pos?)
+         tags-to-filter (->> filtered-charges
+                             (map (comp keys :tags))
+                             (apply concat)
+                             set)
+         filtered? (or (-> filter-string count pos?)
+                       (-> filter-tags count pos?))
          remove-empty-groups? (or remove-empty-groups?
                                   filtered?)
          open-all? filtered?
@@ -256,6 +250,10 @@
          [element/checkbox show-public-db-path "Public charges" :style {:display "inline-block"}]
          [element/checkbox show-own-db-path "Own charges" :style {:display "inline-block"
                                                                   :margin-left "1em"}]])
+      [:div
+       [tag/tags-view tags-to-filter
+        :on-click #(rf/dispatch [:toggle-tag filter-tags-db-path %])
+        :selected filter-tags]]
       (if (empty? filtered-charges)
         [:div "None"]
         [tree-for-charge-map charge-map [] nil nil

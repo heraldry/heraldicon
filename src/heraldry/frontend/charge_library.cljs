@@ -19,6 +19,7 @@
             [heraldry.frontend.form.coat-of-arms :as coat-of-arms-component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
+            [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
@@ -347,6 +348,8 @@
                                                              :width "20em"}]]
         [form/select (conj form-db-path :fixed-tincture) "Fixed tincture" tincture/fixed-tincture-choices
          :label-style {:width "6em"}]]
+       [:fieldset
+        [tag/form (conj form-db-path :tags)]]
        (when form-message
          [:div.form-message form-message])
        (when error-message
