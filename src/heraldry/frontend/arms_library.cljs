@@ -1,6 +1,5 @@
 (ns heraldry.frontend.arms-library
   (:require [cljs.core.async :refer [go]]
-            [clojure.set :as set]
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.blazon :as blazon]
@@ -12,6 +11,7 @@
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
+            [heraldry.frontend.filter :as filter]
             [heraldry.frontend.form.attribution :as attribution]
             [heraldry.frontend.form.coat-of-arms :as coat-of-arms-component]
             [heraldry.frontend.form.core :as form]
@@ -21,7 +21,6 @@
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
-            [heraldry.frontend.util :as util]
             [heraldry.util
              :refer
              [full-url-for-arms full-url-for-username id-for-url]]
@@ -341,32 +340,6 @@
          [:div.spacer]]
         [render-options/form (conj form-db-path :render-options)]]])))
 
-(defn filter-arms [arms-list filter-string filter-tags]
-  (if (and (or (not filter-string)
-               (-> filter-string s/trim count zero?))
-           (-> filter-tags count zero?))
-    arms-list
-    (let [words (-> filter-string
-                    (s/split #" +")
-                    (->> (map s/lower-case)))
-          filter-tags-set (-> filter-tags
-                              keys
-                              set)]
-      (filterv (fn [arms]
-                 (and (every? (fn [word]
-                                (some (fn [attribute]
-                                        (-> arms
-                                            (get attribute)
-                                            (util/matches-word word)))
-                                      [:name :username :tags]))
-                              words)
-                      (set/subset? filter-tags-set
-                                   (-> arms
-                                       :tags
-                                       keys
-                                       set))))
-               arms-list))))
-
 (defn list-arms-for-user [user-id]
   (let [[status arms-list] (state/async-fetch-data
                             list-db-path
@@ -376,7 +349,7 @@
         filter-string @(rf/subscribe [:get filter-db-path])
         filter-tags-db-path [:ui :arms-list :filter-tags]
         filter-tags @(rf/subscribe [:get filter-tags-db-path])
-        filtered-arms-list (filter-arms arms-list filter-string filter-tags)
+        filtered-arms-list (filter/items arms-list filter-string [:name :username :tags] filter-tags)
         tags-to-filter (->> filtered-arms-list
                             (map (comp keys :tags))
                             (apply concat)
