@@ -200,64 +200,22 @@
      [:<> [:div.tag.modifier (util/translate modifier)] " "])
    [tag/tags-view (-> charge :tags keys)]])
 
-(defn charge-tree [charges & {:keys [remove-empty-groups? hide-access-filters?
-                                     link-to-charge render-variant refresh-action]}]
-  [:div.tree
-   (let [user-data (user/data)
-         filter-db-path [:ui :charge-tree :filter-string]
-         show-public-db-path [:ui :charge-tree :show-public?]
-         show-own-db-path [:ui :charge-tree :show-own?]
-         show-public? @(rf/subscribe [:get show-public-db-path])
-         show-own? @(rf/subscribe [:get show-own-db-path])
-         filter-string @(rf/subscribe [:get filter-db-path])
-         filter-tags-db-path [:ui :charge-tree :filter-tags]
-         filter-tags @(rf/subscribe [:get filter-tags-db-path])
-         filtered-charges (-> charges
-                              (filter/items filter-string
-                                            [:name :type :attitude :facing :attributes :colours :username]
-                                            filter-tags)
-                              (cond->>
-                               (not hide-access-filters?) (filter (fn [charge]
-                                                                    (or (and show-public?
-                                                                             (:is-public charge))
-                                                                        (and show-own?
-                                                                             (= (:username charge)
-                                                                                (:username user-data))))))))
-         tags-to-filter (->> filtered-charges
-                             (map (comp keys :tags))
-                             (apply concat)
-                             set)
-         filtered? (or (-> filter-string count pos?)
-                       (-> filter-tags count pos?))
-         remove-empty-groups? (or remove-empty-groups?
-                                  filtered?)
-         open-all? filtered?
-         charge-map (charge-map/build-charge-map
-                     filtered-charges
-                     :remove-empty-groups? remove-empty-groups?)]
-     [:<>
-      [element/search-field filter-db-path
-       :on-change (fn [value]
-                    (rf/dispatch-sync [:set filter-db-path value])
-                    (rf/dispatch-sync [:prune-false-flags node-flag-db-path]))]
-      (when refresh-action
-        [:a {:style {:margin-left "0.5em"}
-             :on-click #(do
-                          (refresh-action)
-                          (.stopPropagation %))} [:i.fas.fa-sync-alt]])
-      (when (not hide-access-filters?)
-        [:div
-         [element/checkbox show-public-db-path "Public charges" :style {:display "inline-block"}]
-         [element/checkbox show-own-db-path "Own charges" :style {:display "inline-block"
-                                                                  :margin-left "1em"}]])
-      [:div
-       [tag/tags-view tags-to-filter
-        :on-click #(rf/dispatch [:toggle-tag filter-tags-db-path %])
-        :selected filter-tags]]
-      (if (empty? filtered-charges)
-        [:div "None"]
-        [tree-for-charge-map charge-map [] nil nil
-         {:open-all? open-all?
+(defn component [charge-list link-fn refresh-fn & {:keys [remove-empty-groups?
+                                                          render-variant]}]
+  (let [user-data (user/data)]
+    [filter/component
+     :charge-list
+     user-data
+     charge-list
+     [:name :type :attitude :facing :attributes :colours :username]
+     (fn [& {:keys [items filtered?]}]
+       [:div.tree
+        [tree-for-charge-map
+         (charge-map/build-charge-map
+          items
+          :remove-empty-groups? (or remove-empty-groups?
+                                    filtered?)) [] nil nil
+         {:open-all? filtered?
           :render-variant (or render-variant
                               (fn [node]
                                 (let [charge (-> node :data)
@@ -268,8 +226,9 @@
                                                  :line-height "1.5em"}}
                                    [:div {:style {:display "inline-block"
                                                   :vertical-align "top"}}
-                                    [link-to-charge (-> node :data)]
+                                    [link-fn (-> node :data)]
                                     " by "
                                     [:a {:href (full-url-for-username username)
                                          :target "_blank"} username]]
-                                   [charge-properties charge]])))}])])])
+                                   [charge-properties charge]])))}]])
+     refresh-fn]))

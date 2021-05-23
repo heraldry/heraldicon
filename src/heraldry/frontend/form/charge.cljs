@@ -99,8 +99,10 @@
                               frontend-charge/fetch-charges)]
         [:div {:style {:padding "15px"}}
          (if (= status :done)
-           [charge-select/charge-tree charges
-            :refresh-action #(state/invalidate-cache [:all-charges] :all-charges)
+           [charge-select/component
+            charges
+            nil
+            #(state/invalidate-cache [:all-charges] :all-charges)
             :render-variant (fn [node]
                               (let [charge-data (:data node)
                                     username (:username charge-data)]
