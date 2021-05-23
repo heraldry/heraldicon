@@ -6,7 +6,7 @@
             [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.charge :as frontend-charge]
-            [heraldry.frontend.form.charge-map :as charge-map]
+            [heraldry.frontend.form.charge-select :as charge-select]
             [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.escutcheon :as escutcheon]
             [heraldry.frontend.form.geometry :as geometry]
@@ -99,7 +99,7 @@
                               frontend-charge/fetch-charges)]
         [:div {:style {:padding "15px"}}
          (if (= status :done)
-           [charge-map/charge-tree charges
+           [charge-select/charge-tree charges
             :refresh-action #(state/invalidate-cache [:all-charges] :all-charges)
             :render-variant (fn [node]
                               (let [charge-data (:data node)
@@ -127,7 +127,7 @@
                                   " by "
                                   [:a {:href (full-url-for-username username)
                                        :target "_blank"} username]]
-                                 [charge-map/charge-properties charge-data]]))]
+                                 [charge-select/charge-properties charge-data]]))]
            [:div "loading..."])])]]))
 
 (defn form [path & {:keys [parent-field form-for-field part-of-semy?]}]
