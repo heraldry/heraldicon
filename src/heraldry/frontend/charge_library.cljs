@@ -499,13 +499,10 @@
                     (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-charge))}
       "Create"]
-
-     [:h4 "Available Charges " [:a {:on-click #(do
-                                                 (invalidate-charges-cache)
-                                                 (.stopPropagation %))} [:i.fas.fa-sync-alt]]]
-     (if (= status :done)
-       [charge-select/charge-tree charges :link-to-charge link-to-charge]
-       [:div "loading..."])]))
+     [:div {:style {:padding-top "0.5em"}}
+      (if (= status :done)
+        [charge-select/component charges link-to-charge invalidate-charges-cache]
+        [:div "loading..."])]]))
 
 (defn edit-charge-by-id [{:keys [parameters] :as match}]
   (rf/dispatch [:set [:route-match] match])
