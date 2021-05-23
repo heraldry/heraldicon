@@ -201,6 +201,7 @@
    [tag/tags-view (-> charge :tags keys)]])
 
 (defn component [charge-list link-fn refresh-fn & {:keys [remove-empty-groups?
+                                                          hide-ownership-filter?
                                                           render-variant]}]
   (let [user-data (user/data)]
     [filter/component
@@ -231,4 +232,6 @@
                                     [:a {:href (full-url-for-username username)
                                          :target "_blank"} username]]
                                    [charge-properties charge]])))}]])
-     refresh-fn]))
+     refresh-fn
+     :hide-ownership-filter? hide-ownership-filter?
+     :on-filter-string-change #(rf/dispatch-sync [:prune-false-flags node-flag-db-path])]))
