@@ -198,6 +198,11 @@ label div {
   width: 1.25em;
 }
 
+.tag.public {
+  background-color: #beb;
+  color: #282;
+}
+
 .tag.private {
   background-color: #e55;
   color: #fff;
@@ -214,8 +219,8 @@ label div {
 }
 
 .tag.attribute {
-  background-color: #beb;
-  color: #171;
+  background-color: #bee;
+  color: #177;
 }
 
 .tag.modifier {

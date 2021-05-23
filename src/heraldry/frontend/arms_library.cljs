@@ -15,7 +15,6 @@
             [heraldry.frontend.form.attribution :as attribution]
             [heraldry.frontend.form.coat-of-arms :as coat-of-arms-component]
             [heraldry.frontend.form.core :as form]
-            [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.render-options :as render-options]
             [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.modal :as modal]
@@ -341,35 +340,27 @@
         [render-options/form (conj form-db-path :render-options)]]])))
 
 (defn list-arms-for-user [user-id]
-  (let [[status arms-list] (state/async-fetch-data
+  (let [user-data (user/data)
+        [status arms-list] (state/async-fetch-data
                             list-db-path
                             user-id
-                            #(fetch-arms-list-by-user user-id))
-        filter-db-path [:ui :arms-list :filter-string]
-        filter-string @(rf/subscribe [:get filter-db-path])
-        filter-tags-db-path [:ui :arms-list :filter-tags]
-        filter-tags @(rf/subscribe [:get filter-tags-db-path])
-        filtered-arms-list (filter/items arms-list filter-string [:name :username :tags] filter-tags)
-        tags-to-filter (->> filtered-arms-list
-                            (map (comp keys :tags))
-                            (apply concat)
-                            set)]
+                            #(fetch-arms-list-by-user user-id))]
     (if (= status :done)
-      (if (empty? arms-list)
-        [:div "None"]
-        [:<>
-         [element/search-field filter-db-path
-          :on-change (fn [value]
-                       (rf/dispatch-sync [:set filter-db-path value]))]
-         [:div
-          [tag/tags-view tags-to-filter
-           :on-click #(rf/dispatch [:toggle-tag filter-tags-db-path %])
-           :selected filter-tags]]
+      [filter/component
+       :arms-list
+       user-data
+       arms-list
+       [:name :username :tags]
+       (fn [& {:keys [items]}]
          [:ul.arms-list
           (doall
-           (for [arms (sort-by (comp s/lower-case :name) filtered-arms-list)]
+           (for [arms (sort-by (comp s/lower-case :name) items)]
              ^{:key (:id arms)}
              [:li.arms
+              (if (-> arms :is-public)
+                [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
+                [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
+              " "
               (let [arms-id (-> arms
                                 :id
                                 id-for-url)]
@@ -378,7 +369,9 @@
                                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                                   (rf/dispatch-sync [:clear-form-message form-db-path]))}
                  (:name arms)])
-              " " [tag/tags-view (-> arms :tags keys)]]))]])
+              " "
+              [tag/tags-view (-> arms :tags keys)]]))])
+       #(invalidate-arms-cache user-id)]
       [:div "loading..."])))
 
 (defn list-my-arms []
@@ -388,8 +381,7 @@
                                :text-align "justify"
                                :min-width "30em"}}
       [:p
-       "Here you can create coats of arms. Right now you can only browse your own coats of arms, "
-       "but armories/collections are planned. You explicitly have to save your coat of arms as "
+       "Here you can create coats of arms. You explicitly have to save your coat of arms as "
        [:b "public"] ", if you want to share the link and allow others to view it."]
       [:p
        "However, SVG/PNG links can be viewed by anyone."]]
@@ -399,12 +391,9 @@
                     (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-arms))}
       "Create"]
-     (when-let [user-id (:user-id user-data)]
-       [:<>
-        [:h4 "My arms " [:a {:on-click #(do
-                                          (invalidate-arms-cache user-id)
-                                          (.stopPropagation %))} [:i.fas.fa-sync-alt]]]
-        [list-arms-for-user user-id]])]))
+     [:div {:style {:padding-top "0.5em"}}
+      (when-let [user-id (:user-id user-data)]
+        [list-arms-for-user user-id])]]))
 
 (defn create-arms [match]
   (rf/dispatch [:set [:route-match] match])
