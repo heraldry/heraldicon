@@ -4,7 +4,7 @@
             [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.user :as user]))
 
-(defn component [arms-list link-fn refresh-fn]
+(defn component [arms-list link-fn refresh-fn & {:keys [hide-ownership-filter?]}]
   (let [user-data (user/data)]
     [filter/component
      :arms-list
@@ -24,4 +24,5 @@
             [link-fn arms]
             " "
             [tag/tags-view (-> arms :tags keys)]]))])
-     refresh-fn]))
+     refresh-fn
+     :hide-ownership-filter? hide-ownership-filter?]))
