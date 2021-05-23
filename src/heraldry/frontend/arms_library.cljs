@@ -1,6 +1,5 @@
 (ns heraldry.frontend.arms-library
   (:require [cljs.core.async :refer [go]]
-            [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.blazon :as blazon]
             [heraldry.coat-of-arms.default :as default]
@@ -11,7 +10,7 @@
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
-            [heraldry.frontend.filter :as filter]
+            [heraldry.frontend.form.arms-select :as arms-select]
             [heraldry.frontend.form.attribution :as attribution]
             [heraldry.frontend.form.coat-of-arms :as coat-of-arms-component]
             [heraldry.frontend.form.core :as form]
@@ -339,38 +338,25 @@
          [:div.spacer]]
         [render-options/form (conj form-db-path :render-options)]]])))
 
+(defn link-to-arms [arms]
+  (let [arms-id (-> arms
+                    :id
+                    id-for-url)]
+    [:a {:href     (reife/href :view-arms-by-id {:id arms-id})
+         :on-click #(do
+                      (rf/dispatch-sync [:clear-form-errors form-db-path])
+                      (rf/dispatch-sync [:clear-form-message form-db-path]))}
+     (:name arms)]))
+
 (defn list-arms-for-user [user-id]
-  (let [user-data (user/data)
-        [status arms-list] (state/async-fetch-data
+  (let [[status arms-list] (state/async-fetch-data
                             list-db-path
                             user-id
                             #(fetch-arms-list-by-user user-id))]
     (if (= status :done)
-      [filter/component
-       :arms-list
-       user-data
+      [arms-select/component
        arms-list
-       [:name :username :tags]
-       (fn [& {:keys [items]}]
-         [:ul.arms-list
-          (doall
-           (for [arms (sort-by (comp s/lower-case :name) items)]
-             ^{:key (:id arms)}
-             [:li.arms
-              (if (-> arms :is-public)
-                [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
-                [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
-              " "
-              (let [arms-id (-> arms
-                                :id
-                                id-for-url)]
-                [:a {:href     (reife/href :view-arms-by-id {:id arms-id})
-                     :on-click #(do
-                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                  (rf/dispatch-sync [:clear-form-message form-db-path]))}
-                 (:name arms)])
-              " "
-              [tag/tags-view (-> arms :tags keys)]]))])
+       link-to-arms
        #(invalidate-arms-cache user-id)]
       [:div "loading..."])))
 
