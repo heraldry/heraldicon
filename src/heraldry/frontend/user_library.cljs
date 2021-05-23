@@ -5,7 +5,7 @@
             [heraldry.frontend.arms-library :as arms-library]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.charge-library :as charge-library]
-            [heraldry.frontend.form.charge-map :as charge-map-component]
+            [heraldry.frontend.form.charge-select :as charge-select]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [re-frame.core :as rf]
@@ -28,7 +28,7 @@
                           user-id
                           #(charge/fetch-charges-for-user user-id))]
     (if (= status :done)
-      [charge-map-component/charge-tree
+      [charge-select/charge-tree
        charges
        :link-to-charge charge-library/link-to-charge
        :remove-empty-groups? true

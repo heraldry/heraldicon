@@ -15,7 +15,7 @@
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.attribution :as attribution]
-            [heraldry.frontend.form.charge-map :as charge-map-component]
+            [heraldry.frontend.form.charge-select :as charge-select]
             [heraldry.frontend.form.coat-of-arms :as coat-of-arms-component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
@@ -434,7 +434,7 @@
         [:div.credits
          [credits/for-charge charge-data]]
         [:div {:style {:margin-bottom "0.5em"}}
-         [charge-map-component/charge-properties charge-data]]
+         [charge-select/charge-properties charge-data]]
         (when (or (= (:username charge-data)
                      (:username user-data))
                   ((config/get :admins) (:username user-data)))
@@ -504,7 +504,7 @@
                                                  (invalidate-charges-cache)
                                                  (.stopPropagation %))} [:i.fas.fa-sync-alt]]]
      (if (= status :done)
-       [charge-map-component/charge-tree charges :link-to-charge link-to-charge]
+       [charge-select/charge-tree charges :link-to-charge link-to-charge]
        [:div "loading..."])]))
 
 (defn edit-charge-by-id [{:keys [parameters] :as match}]
