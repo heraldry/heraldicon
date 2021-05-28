@@ -123,12 +123,17 @@
                                  :key
                                  :heart
                                  :horseshoe
+                                 :menorah
+                                 :mullet
                                  :sun
+                                 :sun-in-splendor
+                                 :star-of-david
                                  :torch}}
             :tools {:node-type :group
                     :name "tools"
                     :charges #{:anvil
                                :bucket
+                               :compass
                                :drinking-horn
                                :ferule
                                :firesteel
