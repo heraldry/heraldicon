@@ -154,9 +154,6 @@
                             :vertical-align "middle"
                             :white-space "normal"
                             :margin-left "0.5em"}}
-   (when (-> charge :is-public not)
-     [:div.tag.private [:i.fas.fa-lock] "private"])
-   " "
    (when-let [attitude (-> charge
                            :attitude
                            (#(when (not= % :none) %)))]
@@ -227,6 +224,10 @@
                                                  :line-height "1.5em"}}
                                    [:div {:style {:display "inline-block"
                                                   :vertical-align "top"}}
+                                    (if (-> charge :is-public)
+                                      [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
+                                      [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
+                                    " "
                                     [link-fn (-> node :data)]
                                     " by "
                                     [:a {:href (full-url-for-username username)
