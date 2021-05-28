@@ -112,6 +112,10 @@
                                                :line-height "1.5em"}}
                                  [:div {:style {:display "inline-block"
                                                 :vertical-align "top"}}
+                                  (if (-> charge-data :is-public)
+                                    [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
+                                    [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
+                                  " "
                                   [:a.clickable
                                    {:on-click #(state/dispatch-on-event
                                                 %
