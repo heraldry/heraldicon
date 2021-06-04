@@ -1,8 +1,45 @@
 (ns heraldry.frontend.form.arms-select
-  (:require [clojure.string :as s]
+  (:require [cljs.core.async :refer [go]]
+            [clojure.string :as s]
+            [com.wsscode.common.async-cljs :refer [<?]]
+            [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.filter :as filter]
             [heraldry.frontend.form.tag :as tag]
-            [heraldry.frontend.user :as user]))
+            [heraldry.frontend.state :as state]
+            [heraldry.frontend.user :as user]
+            [re-frame.core :as rf]
+            [taoensso.timbre :as log]))
+
+(def list-db-path
+  [:arms-list])
+
+(defn fetch-arms [arms-id version target-path]
+  (go
+    (try
+      (let [user-data (user/data)
+            arms-data (<? (api-request/call :fetch-arms {:id arms-id
+                                                         :version version} user-data))]
+        (when target-path
+          (rf/dispatch [:set target-path arms-data]))
+        arms-data)
+      (catch :default e
+        (log/error "fetch arms error:" e)))))
+
+(defn fetch-arms-list-by-user [user-id]
+  (go
+    (try
+      (let [user-data (user/data)]
+        (-> (api-request/call
+             :fetch-arms-for-user
+             {:user-id user-id}
+             user-data)
+            <?
+            :arms))
+      (catch :default e
+        (log/error "fetch arms list by user error:" e)))))
+
+(defn invalidate-arms-cache [user-id]
+  (state/invalidate-cache list-db-path user-id))
 
 (defn component [arms-list link-fn refresh-fn & {:keys [hide-ownership-filter?]}]
   (let [user-data (user/data)]
@@ -26,3 +63,15 @@
             [tag/tags-view (-> arms :tags keys)]]))])
      refresh-fn
      :hide-ownership-filter? hide-ownership-filter?]))
+
+(defn list-arms-for-user [user-id link-to-arms]
+  (let [[status arms-list] (state/async-fetch-data
+                            list-db-path
+                            user-id
+                            #(fetch-arms-list-by-user user-id))]
+    (if (= status :done)
+      [component
+       arms-list
+       link-to-arms
+       #(invalidate-arms-cache user-id)]
+      [:div "loading..."])))

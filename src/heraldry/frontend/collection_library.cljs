@@ -1,11 +1,13 @@
 (ns heraldry.frontend.collection-library
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
+            [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.config :as config]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
+            [heraldry.frontend.form.arms-select :as arms-select]
             [heraldry.frontend.form.collection :as collection]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
@@ -14,8 +16,7 @@
             [heraldry.util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
-            [taoensso.timbre :as log]
-            [heraldry.coat-of-arms.default :as default]))
+            [taoensso.timbre :as log]))
 
 (def form-db-path
   [:collection-form])
@@ -85,14 +86,24 @@
 
 (defn render-arms [x y size path render-options]
   (let [data @(rf/subscribe [:get path])
+        {arms-id :id
+         version :version} (:reference data)
+        [_status arms-data] (when arms-id
+                              (state/async-fetch-data
+                               [:arms-references arms-id version]
+                               [arms-id version]
+                               #(arms-select/fetch-arms arms-id version nil)))
         {:keys [result
                 environment]} (render/coat-of-arms
-                               default/coat-of-arms
+                               (if-let [coat-of-arms (:coat-of-arms arms-data)]
+                                 coat-of-arms
+                                 default/coat-of-arms)
                                size
                                (merge
                                 context/default
                                 {:render-options render-options
                                  :db-path []
+                                 :fn-select-component nil
                                  #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
         {:keys [width height]} environment]
     [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
@@ -178,7 +189,9 @@
      [:div.pure-u-1-2 {:style {:position "fixed"}}
       [render-collection
        :allow-adding? true
-       :on-arms-click #(rf/dispatch [:set selected-arms-path %])]]
+       :on-arms-click #(do (rf/dispatch [:set selected-arms-path %])
+                           (rf/dispatch [:ui-submenu-open (conj form-db-path :collection :elements %)])
+                           (rf/dispatch [:ui-component-open (conj form-db-path :collection :elements %)]))]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
                                :width "45%"}}
       [:form.pure-form.pure-form-aligned

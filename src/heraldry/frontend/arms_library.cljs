@@ -32,33 +32,6 @@
 (def saved-data-db-path
   [:saved-arms-data])
 
-(def list-db-path
-  [:arms-list])
-
-(defn fetch-arms-list-by-user [user-id]
-  (go
-    (try
-      (let [user-data (user/data)]
-        (-> (api-request/call
-             :fetch-arms-for-user
-             {:user-id user-id}
-             user-data)
-            <?
-            :arms))
-      (catch :default e
-        (log/error "fetch arms list by user error:" e)))))
-
-(defn fetch-arms [arms-id version]
-  (go
-    (try
-      (let [user-data (user/data)
-            arms-data (<? (api-request/call :fetch-arms {:id arms-id
-                                                         :version version} user-data))]
-        (rf/dispatch [:set saved-data-db-path arms-data])
-        arms-data)
-      (catch :default e
-        (log/error "fetch arms error:" e)))))
-
 ;; views
 
 (defn charge-credits []
@@ -152,7 +125,7 @@
         (modal/stop-loading)))))
 
 (defn invalidate-arms-cache [user-id]
-  (state/invalidate-cache list-db-path user-id))
+  (state/invalidate-cache arms-select/list-db-path user-id))
 
 (defn save-arms-clicked []
   (go
@@ -169,7 +142,7 @@
         (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
         (state/invalidate-cache-without-current form-db-path [arms-id nil])
         (state/invalidate-cache-without-current form-db-path [arms-id 0])
-        (rf/dispatch-sync [:set list-db-path nil])
+        (rf/dispatch-sync [:set arms-select/list-db-path nil])
         (invalidate-arms-cache user-id)
         (rf/dispatch-sync [:set-form-message form-db-path (str "Arms saved, new version: " (:version response))])
         (reife/push-state :edit-arms-by-id {:id (id-for-url arms-id)}))
@@ -306,7 +279,7 @@
         [status arms-data] (state/async-fetch-data
                             form-db-path
                             [arms-id version]
-                            #(fetch-arms arms-id version))
+                            #(arms-select/fetch-arms arms-id version saved-data-db-path))
         arms-id (-> arms-data
                     :id
                     id-for-url)]
@@ -348,16 +321,7 @@
      (:name arms)]))
 
 (defn list-arms-for-user [user-id]
-  (let [[status arms-list] (state/async-fetch-data
-                            list-db-path
-                            user-id
-                            #(fetch-arms-list-by-user user-id))]
-    (if (= status :done)
-      [arms-select/component
-       arms-list
-       link-to-arms
-       #(invalidate-arms-cache user-id)]
-      [:div "loading..."])))
+  [arms-select/list-arms-for-user user-id link-to-arms])
 
 (defn list-my-arms []
   (let [user-data (user/data)]
@@ -398,7 +362,7 @@
   (let [[status _arms-form-data] (state/async-fetch-data
                                   form-db-path
                                   [arms-id version]
-                                  #(fetch-arms arms-id version))]
+                                  #(arms-select/fetch-arms arms-id version saved-data-db-path))]
     (when (= status :done)
       [arms-form])))
 
