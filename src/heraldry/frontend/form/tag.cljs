@@ -1,5 +1,6 @@
 (ns heraldry.frontend.form.tag
   (:require [clojure.string :as s]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (def value-path [:ui :tag-input-value])
@@ -59,12 +60,13 @@
         on-click (fn [event]
                    (.preventDefault event)
                    (.stopPropagation event)
-                   (add-tag-clicked path value))]
+                   (add-tag-clicked path value))
+        id (util/id "tag-name")]
     [:<>
      [:div.pure-control-group
-      [:label {:for   "name"
+      [:label {:for   id
                :style {:width "6em"}} "Tag"]
-      [:input {:id        "name"
+      [:input {:id        id
                :value     value
                :on-change on-change
                :on-key-press (fn [event]
