@@ -11,12 +11,8 @@
       [element/range-input (conj path :collection :num-columns) "Columns"
        1
        10
-       :default 6]
-      [element/range-input (conj path :collection :num-rows) "Rows"
-       1
-       30
-       :default 10]]
+       :default 6]]
 
      (when selected-arms
        [:div.selected-arms
-        [arms-reference/form (conj path :arms selected-arms)]])]))
+        [arms-reference/form (conj path :collection :elements selected-arms)]])]))

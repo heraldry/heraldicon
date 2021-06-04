@@ -73,20 +73,29 @@
         (log/error "save-form error:" e)
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
 
-(defn add-arms [x y size path]
+(defn render-add-arms [x y size path]
   [:g {:transform (str "translate(" x "," y ")")}
-   [:circle {:r            size
-             :fill         "#bbbb"
+   [:circle {:r            (/ size 2)
+             :fill         "#bbb"
              :stroke-width 1
              :stroke       "#777"}]])
 
-(defn render-collection [& {:keys [on-arms-click]}]
+(defn render-arms [x y size path]
+  (let [data @(rf/subscribe [:get path])]
+    [:g {:transform (str "translate(" x "," y ")")}
+     [:circle {:r            size
+               :fill         "#aaa"
+               :stroke-width 1
+               :stroke       "#777"}]]))
+
+(defn render-collection [& {:keys [on-arms-click
+                                   allow-adding?]}]
   (let [render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
         collection-data @(rf/subscribe [:get form-db-path])
         collection (:collection collection-data)
         {:keys [num-columns
-                num-rows
                 elements]} collection
+        num-elements (count elements)
         roll-width 1000
         margin 10
         arms-width (-> 1000
@@ -106,15 +115,14 @@
               :preserveAspectRatio "xMidYMin meet"}
         [:g
          (doall
-          (for [x (range num-columns)
-                y (range num-rows)]
-            ^{:key [x y]}
-            [:g {:on-click (when on-arms-click
-                             #(on-arms-click [x y]))
-                 :style {:cursor (when on-arms-click "pointer")}}
-             (if-let [arms (get elements [x y])]
-               [:text "hello"]
-               [add-arms
+          (for [[idx _arms] (map-indexed vector elements)]
+            (let [x (mod idx num-columns)
+                  y (quot idx num-columns)]
+              ^{:key idx}
+              [:g {:on-click (when on-arms-click
+                               #(on-arms-click idx))
+                   :style {:cursor (when on-arms-click "pointer")}}
+               [render-arms
                 (+ margin
                    (* x (+ arms-width
                            margin))
@@ -123,8 +131,28 @@
                    (* y (+ arms-height
                            margin))
                    (+ (/ arms-height 2)))
-                (/ arms-width 2)
-                (conj form-db-path :collection :elements [x y])])]))]]]
+                arms-width
+                (conj form-db-path :collection :elements idx)]])))
+
+         (when allow-adding?
+           (let [x (mod num-elements num-columns)
+                 y (quot num-elements num-columns)]
+             ^{:key num-elements}
+             [:g {:on-click #(do
+                               (rf/dispatch [:add-arms-to-collection form-db-path {}])
+                               (rf/dispatch [:set selected-arms-path num-elements]))
+                  :style {:cursor (when on-arms-click "pointer")}}
+              [render-add-arms
+               (+ margin
+                  (* x (+ arms-width
+                          margin))
+                  (+ (/ arms-width 2)))
+               (+ margin
+                  (* y (+ arms-height
+                          margin))
+                  (+ (/ arms-height 2)))
+               arms-width
+               (conj form-db-path :collection :elements num-elements)]]))]]]
       [:<>])))
 
 (defn collection-form []
@@ -141,6 +169,7 @@
                                  (.stopPropagation %))}
      [:div.pure-u-1-2 {:style {:position "fixed"}}
       [render-collection
+       :allow-adding? true
        :on-arms-click #(rf/dispatch [:set selected-arms-path %])]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
                                :width "45%"}}
