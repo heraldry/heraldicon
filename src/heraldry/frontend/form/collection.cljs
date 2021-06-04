@@ -3,8 +3,9 @@
             [heraldry.frontend.form.element :as element]
             [re-frame.core :as rf]))
 
-(defn form [path]
-  (let [data @(rf/subscribe [:get path])]
+(defn form [path selected-arms-path]
+  (let [data @(rf/subscribe [:get path])
+        selected-arms @(rf/subscribe [:get selected-arms-path])]
     [element/component path :collection (:name data) "Collection"
      [:div.settings
       [element/range-input (conj path :collection :num-columns) "Columns"
@@ -16,7 +17,6 @@
        30
        :default 10]]
 
-     [:div.arms
-      [:ul
-       (for [[coords arms] (:arms data)]
-         ^{:key coords} [arms-reference/form (conj path :arms coords)])]]]))
+     (when selected-arms
+       [:div.selected-arms
+        [arms-reference/form (conj path :arms selected-arms)]])]))

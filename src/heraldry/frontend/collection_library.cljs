@@ -4,7 +4,6 @@
             [heraldry.config :as config]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.credits :as credits]
-            [heraldry.frontend.form.arms-reference :as arms-reference]
             [heraldry.frontend.form.collection :as collection]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
@@ -23,6 +22,9 @@
 
 (def list-db-path
   [:collection-list])
+
+(def selected-arms-path
+  [:ui :collection :selected-arms])
 
 (defn fetch-collection-list-by-user [user-id]
   (go
@@ -78,7 +80,7 @@
              :stroke-width 1
              :stroke       "#777"}]])
 
-(defn render-collection []
+(defn render-collection [& {:keys [on-arms-click]}]
   (let [render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
         collection-data @(rf/subscribe [:get form-db-path])
         collection (:collection collection-data)
@@ -106,19 +108,23 @@
          (doall
           (for [x (range num-columns)
                 y (range num-rows)]
-            (if-let [arms (get elements [x y])]
-              ^{:key [x y]} [:text "hello"]
-              ^{:key [x y]} [add-arms
-                             (+ margin
-                                (* x (+ arms-width
-                                        margin))
-                                (+ (/ arms-width 2)))
-                             (+ margin
-                                (* y (+ arms-height
-                                        margin))
-                                (+ (/ arms-height 2)))
-                             (/ arms-width 2)
-                             (conj form-db-path :collection :elements [x y])])))]]]
+            ^{:key [x y]}
+            [:g {:on-click (when on-arms-click
+                             #(on-arms-click [x y]))
+                 :style {:cursor (when on-arms-click "pointer")}}
+             (if-let [arms (get elements [x y])]
+               [:text "hello"]
+               [add-arms
+                (+ margin
+                   (* x (+ arms-width
+                           margin))
+                   (+ (/ arms-width 2)))
+                (+ margin
+                   (* y (+ arms-height
+                           margin))
+                   (+ (/ arms-height 2)))
+                (/ arms-width 2)
+                (conj form-db-path :collection :elements [x y])])]))]]]
       [:<>])))
 
 (defn collection-form []
@@ -134,7 +140,8 @@
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
      [:div.pure-u-1-2 {:style {:position "fixed"}}
-      [render-collection]]
+      [render-collection
+       :on-arms-click #(rf/dispatch [:set selected-arms-path %])]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
                                :width "45%"}}
       [:form.pure-form.pure-form-aligned
@@ -179,7 +186,7 @@
            "Save"])
         [:div.spacer]]]
       [render-options/form (conj form-db-path :render-options)]
-      [collection/form form-db-path]]]))
+      [collection/form form-db-path selected-arms-path]]]))
 
 (defn collection-display [collection-id version]
   (let [user-data (user/data)
