@@ -47,7 +47,7 @@
   (let [[status arms-list] (state/async-fetch-data
                             [:user-arms]
                             user-id
-                            #(arms-library/fetch-arms-list-by-user user-id))]
+                            #(arms-select/fetch-arms-list-by-user user-id))]
     (if (= status :done)
       [arms-select/component
        arms-list
