@@ -93,8 +93,7 @@
         attribution (:attribution arms-data)
         name (:name arms-data)
         arms-url (full-url-for-arms arms-data)
-        username (-> (user/data)
-                     :username)]
+        username (:username arms-data)]
     (if coat-of-arms
       (let [{:keys [result
                     environment]} (render/coat-of-arms
