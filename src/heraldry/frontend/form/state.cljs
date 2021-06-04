@@ -251,3 +251,15 @@
  :update-charge
  (fn [db [_ path changes]]
    (update-in db path merge changes)))
+
+(rf/reg-event-fx
+ :add-arms-to-collection
+ (fn [{:keys [db]} [_ path value index]]
+   (let [elements-path (conj path :collection :elements)
+         index (or index
+                   (count (get-in db elements-path)))]
+     {:db (update-in db elements-path #(let [before (take index %)
+                                             after (drop index %)]
+                                         (vec (concat before [value] after))))
+      :fx [[:dispatch [:ui-submenu-open (conj elements-path index)]]
+           [:dispatch [:ui-component-open (conj elements-path index)]]]})))
