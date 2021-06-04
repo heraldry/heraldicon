@@ -1,8 +1,10 @@
 (ns heraldry.frontend.collection-library
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
+            [heraldry.coat-of-arms.render :as render]
             [heraldry.config :as config]
             [heraldry.frontend.api.request :as api-request]
+            [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.collection :as collection]
             [heraldry.frontend.form.core :as form]
@@ -12,7 +14,8 @@
             [heraldry.util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [heraldry.coat-of-arms.default :as default]))
 
 (def form-db-path
   [:collection-form])
@@ -73,20 +76,27 @@
         (log/error "save-form error:" e)
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
 
-(defn render-add-arms [x y size path]
+(defn render-add-arms [x y size]
   [:g {:transform (str "translate(" x "," y ")")}
    [:circle {:r            (/ size 2)
              :fill         "#bbb"
              :stroke-width 1
              :stroke       "#777"}]])
 
-(defn render-arms [x y size path]
-  (let [data @(rf/subscribe [:get path])]
-    [:g {:transform (str "translate(" x "," y ")")}
-     [:circle {:r            size
-               :fill         "#aaa"
-               :stroke-width 1
-               :stroke       "#777"}]]))
+(defn render-arms [x y size path render-options]
+  (let [data @(rf/subscribe [:get path])
+        {:keys [result
+                environment]} (render/coat-of-arms
+                               default/coat-of-arms
+                               size
+                               (merge
+                                context/default
+                                {:render-options render-options
+                                 :db-path []
+                                 #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
+        {:keys [width height]} environment]
+    [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
+     result]))
 
 (defn render-collection [& {:keys [on-arms-click
                                    allow-adding?]}]
@@ -98,13 +108,11 @@
         num-elements (count elements)
         roll-width 1000
         margin 10
-        arms-width (-> 1000
+        arms-width (-> roll-width
                        (- (* (inc num-columns)
                              margin))
                        (/ num-columns))
-        arms-height (* 1.5 arms-width)
-        username (-> (user/data)
-                     :username)]
+        arms-height (* 1.5 arms-width)]
     (if collection-data
       [:div {:style {:margin-left  "10px"
                      :margin-right "10px"}}
@@ -132,7 +140,8 @@
                            margin))
                    (+ (/ arms-height 2)))
                 arms-width
-                (conj form-db-path :collection :elements idx)]])))
+                (conj form-db-path :collection :elements idx)
+                render-options]])))
 
          (when allow-adding?
            (let [x (mod num-elements num-columns)
@@ -151,8 +160,7 @@
                   (* y (+ arms-height
                           margin))
                   (+ (/ arms-height 2)))
-               arms-width
-               (conj form-db-path :collection :elements num-elements)]]))]]]
+               arms-width]]))]]]
       [:<>])))
 
 (defn collection-form []
