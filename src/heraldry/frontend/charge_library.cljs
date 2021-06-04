@@ -177,7 +177,7 @@
         {:keys [edn-data]} data
         prepared-charge-data (-> form-data
                                  (assoc :data edn-data)
-                                 (assoc :username (:username (user/data))))
+                                 (update :username #(or % (:username (user/data)))))
         db-path [:example-coa :coat-of-arms]
         render-options @(rf/subscribe [:get [:example-coa :render-options]])
         coat-of-arms @(rf/subscribe [:get db-path])
