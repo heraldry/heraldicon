@@ -158,7 +158,7 @@
                          arms-width)
                       (* (inc num-columns)
                          margin))
-        arms-height (* 1.5 arms-width)]
+        arms-height (* 1.6 arms-width)]
     (if collection-data
       [:div {:style {:margin-left  "10px"
                      :margin-right "10px"}}
