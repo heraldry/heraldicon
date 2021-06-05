@@ -398,12 +398,9 @@
                     (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-collection))}
       "Create"]
-     (when-let [user-id (:user-id user-data)]
-       [:<>
-        [:h4 "My collections " [:a {:on-click #(do
-                                                 (invalidate-collection-cache user-id)
-                                                 (.stopPropagation %))} [:i.fas.fa-sync-alt]]]
-        [list-collection-for-user user-id]])]))
+     [:div {:style {:padding-top "0.5em"}}
+      (when-let [user-id (:user-id user-data)]
+        [list-collection-for-user user-id])]]))
 
 (defn create-collection [match]
   (rf/dispatch [:set [:route-match] match])
