@@ -79,11 +79,27 @@
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
 
 (defn render-add-arms [x y size]
-  [:g {:transform (str "translate(" x "," y ")")}
-   [:circle {:r            (/ size 2)
-             :fill         "#bbb"
-             :stroke-width 1
-             :stroke       "#777"}]])
+  (let [r (* size 0.4)
+        bar-width (* size 0.5)
+        bar-height (* size 0.1)]
+    [:g {:transform (str "translate(" x "," y ")")}
+     [:circle
+      {:r r
+       :style {:fill "#ccc"
+               :stroke-width 0.1
+               :stroke "#000"}}]
+     [:rect
+      {:x (/ bar-width -2)
+       :y (/ bar-height -2)
+       :width bar-width
+       :height bar-height
+       :style {:fill "#fff"}}]
+     [:rect
+      {:x (/ bar-height -2)
+       :y (/ bar-width -2)
+       :width bar-height
+       :height bar-width
+       :style {:fill "#fff"}}]]))
 
 (defn render-arms [x y size path render-options & {:keys [selected? font font-size]
                                                    :or {font-size 20}}]
@@ -110,10 +126,11 @@
         {:keys [width height]} environment]
     [:g
      (when selected?
-       [:rect {:x (- x (/ width 2) 5)
-               :y (- y (/ height 2) 5)
-               :width (+ width 10)
-               :height (+ height 10)
+       [:rect {:x (- x (/ width 2) 7)
+               :y (- y (/ height 2) 7)
+               :rx 10
+               :width (+ width 14)
+               :height (+ height 14)
                :fill "#33f8"}])
      [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
       result
