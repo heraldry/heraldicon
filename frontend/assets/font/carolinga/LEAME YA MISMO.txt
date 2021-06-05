@@ -1,0 +1,165 @@
+======================================================================================
+==================RikY PreSeNTs ======================================================
+======================================================================================
+
+    **********          *****      *****            *****
+    ************        *****      *****            *****
+    **************      *****      *****            *****
+    *****    *****                 *****    *****   *****   *****
+    *****    *****     ******      *****    *****   *****   *****
+    *****    *****     ******      *****    *****   *****   *****
+    **************     ******      **************   *************
+    ************        *****      ************       *********
+    **********          *****      **********           *****
+    *****  *****        *****      *****  *****         *****
+    *****    *****      *****      *****    *****       *****
+    *****    *****     *******     *****    *****       *****
+    *****    *****     *******     *****    *****       *****
+    *****    *****     *******     *****    *****       *****
+
+===============================
+==CAROLINGIA BIGFOOT (fuente)==
+===============================
+Carolingia (BigfooT) v1.0 - 28/06/2002
+RikyFonts Copyright (C) 2001-2002 created by Riky Predator. All Rights Reserved...
+
+e-mail:	riky@alcoy.com
+web: http://riky.webcindario.com/
+
+CONTENIDO
+---------
+ 1. Contenido del Zip
+ 2. Información de la Fuente
+ 3. Información del Diseñador
+ 4. Descripción de la fuente
+ 5. Historia de las Versiones
+ 6. Requisitos del sistema
+ 7. Instalación
+ 8. Desinstalación
+
+
+
+ 1. Contenido del Zip
+---------------------
+ LEAME YA MISMO.txt - Este archivo que estas leyendo ahora mismo.
+ Carobtn_.ttf - El archivo de la fuente.
+ sample01.jpg - ejemplo 1 de demostración.
+ sample02.jpg - ejemplo 2 de demostración.
+ sample03.jpg - ejemplo 3 de demostración.
+
+
+ 2. Información de la Fuente
+----------------------------
+ Nombre del Archivo de la Fuente:  Carobtn_.ttf
+ Nombre del tipo de letra:  Carolingia (BigfooT)
+ Estilo del tipo de letra:  Normal
+ Versión:  1.0 - 28/06/2002
+ Fecha de actualización:  28 de junio del 2002
+ Sistema:  Windows 9x/ME/NT/2000/XP
+ Tipo de Distribución:  Freeware, gratuito (excepto para su uso comercial) 
+
+
+ 3. Información del Diseñador
+-----------------------------
+ Nombre del Diseñador:  Riky Depredador
+ E-mail del Diseñador:  riky@alcoy.com
+ Web del diseñador: http://riky.webcindario.com/
+
+
+ 4. Descripción de la fuente
+----------------------------
+ La Fuente CAROLINGIA BIGFOOT es una tipografia ya existente pero esta modificada
+ y adaptada. 
+ Su nombre original es CAROLINGIA y la versión desde la que se ha creado esta es
+ Altsys Metamorphosis:4/5/91 y esta creada por A William Boyd Release. Free of
+ Charge.
+ Los simbolos de BIGFOOT requieren tamaños superiores a los 80 puntos.
+
+
+ 5. Historia de las Versiones
+-----------------------------
+
+	Leyenda: 
+	+ Lo nuevo 
+	* Lo cambiado, modificado o mejorado
+
+
+
+ Versión: 1.0 - 28/06/2002
+ Fecha: 28 de junio del 2002
+            + Añadidos (BigfooT) al nombre de la fuente
+            + Añadidos los simbolos:
+   		- PIES NEGROS (Mays+3)
+   		- PIES BLANCOS (AltGr+3)
+   		- TITULO (Mays+6)
+   		- LOGOTIPO (AltGr+6)
+            * Modificado el formato identificador del nombre de la fuente
+
+
+ Versión: Altsys Metamorphosis:4/5/91
+ Fecha: 4 de mayo del 1991
+            + fUENTE ORIGINAL creada por A William Boyd Release. Free of Charge.
+
+
+
+ 6. Requisitos del sistema
+--------------------------
+ Un ordenador y un teclado;
+ Microsoft Windows 9x/ME/NT/2000/XP; 
+ Un dispositivo compatible con Windows llamado el ratón (o cualquier cosa similar); 
+
+
+ 7. Instalación
+---------------
+ MODO 1:
+ Copiar el archivo de la fuente "Carobtn_.ttf" en el directorio C:\WINDOWS\FONTS
+
+ MODO 2:
+ Hacer click en en el "Menu de Inicio" y seleccionar "Configuración/Panel de control"...
+ Hacer doble click en FUENTES...
+ Abrir el menú archivo y seleccionar la opción "Instalar nueva fuente".....
+ Buscar la carpeta donde tienes la fuente (Ej. C:\Mis documentos) y la fuente aparecerá
+ en la lista de encima.... seleccionarla y hacer click en Aceptar.... 
+
+ NOTA:
+ Para actualizar una fuente ya instalada solo sirve el modo 2 o elimnar la fuente anterior
+
+
+ 8. Desinstalación
+------------------
+ MODO 1:
+ Eliminar el archivo "Carolingia (BigfooT) Normal" del directorio C:\WINDOWS\FONTS
+
+ MODO 2:
+ Hacer click en en el "Menu de Inicio" y seleccionar "Configuración/Panel de control"...
+ Hacer doble click en FUENTES...
+ Seleccionar la fuente "Carolingia (BigfooT) Normal" y abrir el menú archivo para escoger
+ la opción "Eliminar"..... Confirmar la eliminación....
+
+
+
+     *******************************
+     ***************/\**************
+     **********|\**/..\**/|*********
+     **********|.\/....\/.|*********
+     **********\........../*********
+     ******____/..........\____*****
+     *****/.________..________.\****
+     ****|.|________||________|.|***
+     *****\.___............___./****
+     *********/../\..../\..\********
+     ********/../*|....|*\..\*******
+     *******/../***\../***\..\******
+     *******|./****|..|****\.|******
+     *******|/******\/******\|******
+     *******************************
+
+============================================================================================
+
+           Dudas, reclamaciones, recomendaciones y fotos de chicas guapas a
+
+                                       riky@alcoy.com
+
+============================================================================================
+
+ 
