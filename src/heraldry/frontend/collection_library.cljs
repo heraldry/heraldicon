@@ -141,9 +141,12 @@
                       :font-size font-size}}
        (:name data)]]]))
 
-(defn render-collection [& {:keys [on-arms-click
-                                   allow-adding?
-                                   allow-selecting?]}]
+(defn on-arms-click [event index]
+  (rf/dispatch [:set selected-arms-path index])
+  (rf/dispatch [:ui-submenu-open (conj form-db-path :collection :elements index)])
+  (state/dispatch-on-event event [:ui-component-open (conj form-db-path :collection :elements index)]))
+
+(defn render-collection [& {:keys [allow-adding?]}]
   (let [render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
         selected-arms @(rf/subscribe [:get selected-arms-path])
         collection-data @(rf/subscribe [:get form-db-path])
@@ -166,7 +169,8 @@
               :style {:width "100%"
                       :height "100vh"}
               :viewBox (str "0 0 " roll-width " " roll-width)
-              :preserveAspectRatio "xMidYMin meet"}
+              :preserveAspectRatio "xMidYMin meet"
+              :on-click #(rf/dispatch [:set selected-arms-path nil])}
         [:g
          [:text {:x (/ roll-width 2)
                  :y 50
@@ -180,9 +184,8 @@
             (let [x (mod idx num-columns)
                   y (quot idx num-columns)]
               ^{:key idx}
-              [:g {:on-click (when on-arms-click
-                               #(on-arms-click idx))
-                   :style {:cursor (when on-arms-click "pointer")}}
+              [:g {:on-click #(on-arms-click % idx)
+                   :style {:cursor "pointer"}}
                [render-arms
                 (+ margin
                    (* x (+ arms-width
@@ -195,8 +198,7 @@
                 arms-width
                 (conj form-db-path :collection :elements idx)
                 render-options
-                :selected? (and allow-selecting?
-                                (= idx selected-arms))
+                :selected? (= idx selected-arms)
                 :font font]])))
 
          (when allow-adding?
@@ -205,8 +207,8 @@
              ^{:key num-elements}
              [:g {:on-click #(do
                                (rf/dispatch [:add-arms-to-collection form-db-path {}])
-                               (rf/dispatch [:set selected-arms-path num-elements]))
-                  :style {:cursor (when on-arms-click "pointer")}}
+                               (state/dispatch-on-event % [:set selected-arms-path num-elements]))
+                  :style {:cursor "pointer"}}
               [render-add-arms
                (+ margin
                   (* x (+ arms-width
@@ -233,11 +235,7 @@
                                  (.stopPropagation %))}
      [:div.pure-u-1-2 {:style {:position "fixed"}}
       [render-collection
-       :allow-selecting? true
-       :allow-adding? true
-       :on-arms-click #(do (rf/dispatch [:set selected-arms-path %])
-                           (rf/dispatch [:ui-submenu-open (conj form-db-path :collection :elements %)])
-                           (rf/dispatch [:ui-component-open (conj form-db-path :collection :elements %)]))]]
+       :allow-adding? true]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
                                :width "45%"}}
       [:form.pure-form.pure-form-aligned
@@ -286,6 +284,7 @@
 
 (defn collection-display [collection-id version]
   (let [user-data (user/data)
+        selected-arms @(rf/subscribe [:get selected-arms-path])
         [status collection-data] (state/async-fetch-data
                                   form-db-path
                                   [collection-id version]
@@ -317,7 +316,38 @@
                                                                   (reife/push-state :edit-collection-by-id {:id collection-id}))}
             "Edit"])
          [:div.spacer]]
-        [render-options/form (conj form-db-path :render-options)]]])))
+        [render-options/form (conj form-db-path :render-options)]
+
+        (when selected-arms
+          (let [data (get-in collection-data [:collection :elements selected-arms])
+                render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
+                {arms-id :id
+                 version :version} (:reference data)
+                [_status arms-data] (when arms-id
+                                      (state/async-fetch-data
+                                       [:arms-references arms-id version]
+                                       [arms-id version]
+                                       #(arms-select/fetch-arms arms-id version nil)))
+                {:keys [result
+                        environment]} (render/coat-of-arms
+                                       (if-let [coat-of-arms (:coat-of-arms arms-data)]
+                                         coat-of-arms
+                                         default/coat-of-arms)
+                                       100
+                                       (merge
+                                        context/default
+                                        {:render-options render-options
+                                         :db-path []
+                                         :fn-select-component nil
+                                         #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
+                {:keys [width height]} environment]
+            [:svg {:id "svg"
+                   :style {:width "100%"}
+                   :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
+                   :preserveAspectRatio "xMidYMin slice"}
+             [:g {:filter "url(#shadow)"}
+              [:g {:transform "translate(10,10) scale(5,5)"}
+               result]]]))]])))
 
 (defn list-collection-for-user [user-id]
   (let [[status collection-list] (state/async-fetch-data
