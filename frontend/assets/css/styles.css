@@ -5,6 +5,48 @@
   src: url("../font/gotham/Gotham-Light.otf") format("opentype");
 }
 
+@font-face {
+  font-family: "Black Chancery";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/black-chancery/BLKCHCRY.TTF") format("truetype");
+}
+
+@font-face {
+  font-family: "Cardinal";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/cardinal/Cardinal.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Carolinga";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/carolinga/CAROBTN_.TTF") format("truetype");
+}
+
+@font-face {
+  font-family: "Lohengrin";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/lohengrin/Lohengrin.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Magic School";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/magic-school/MagicSchoolOne.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Prince Valiant";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/prince-valiant/PrinceValiant.ttf") format("truetype");
+}
+
 body {
   font-family: "SiteDefault", sans-serif;
 }
