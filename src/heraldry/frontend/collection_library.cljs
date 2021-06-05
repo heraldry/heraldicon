@@ -223,7 +223,7 @@
                           margin))
                   (+ (/ arms-height 2)))
                arms-width]]))]]]
-      [:<>])))
+      [:div "loading..."])))
 
 (defn render-arms-preview [arms-reference]
   (let [render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
@@ -255,12 +255,9 @@
       [:g {:transform "translate(10,10) scale(5,5)"}
        result]]]))
 
-(defn collection-form [collection-id version]
+(defn collection-form []
   (let [selected-arms @(rf/subscribe [:get selected-arms-path])
-        [status collection-data] (state/async-fetch-data
-                                  form-db-path
-                                  [collection-id version]
-                                  #(fetch-collection collection-id version))
+        collection-data @(rf/subscribe [:get form-db-path])
         error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
         on-submit (fn [event]
@@ -269,64 +266,63 @@
                     (save-collection-clicked))
         logged-in? (-> (user/data)
                        :logged-in?)]
-    (when (= status :done)
-      [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
-                                   (rf/dispatch [:ui-submenu-close-all])
-                                   (.stopPropagation %))}
-       [:div.pure-u-1-2 {:style {:position "fixed"}}
-        [render-collection
-         :allow-adding? true]]
-       [:div.pure-u-1-2 {:style {:margin-left "50%"
-                                 :width "45%"}}
-        [:form.pure-form.pure-form-aligned
-         {:style {:display "inline-block"}
-          :on-key-press (fn [event]
-                          (when (-> event .-code (= "Enter"))
-                            (on-submit event)))
-          :on-submit on-submit}
-         [:fieldset
-          [form/field (conj form-db-path :name)
-           (fn [& {:keys [value on-change]}]
-             [:div.pure-control-group
-              [:label {:for "name"
-                       :style {:width "6em"}} "Name"]
-              [:input {:id "name"
-                       :value value
-                       :on-change on-change
-                       :type "text"
-                       :style {:margin-right "0.5em"}}]
-              [form/checkbox (conj form-db-path :is-public) "Make public"
-               :style {:width "7em"}]])]]
-         [:fieldset
-          [tag/form (conj form-db-path :tags)]]
-         (when form-message
-           [:div.form-message form-message])
-         (when error-message
-           [:div.error-message error-message])
-         [:div.pure-control-group {:style {:text-align "right"
-                                           :margin-top "10px"}}
-          [:button.pure-button.pure-button
-           {:type "button"
-            :on-click (let [match @(rf/subscribe [:get [:route-match]])
-                            route (-> match :data :name)
-                            params (-> match :parameters :path)]
-                        (cond
-                          (= route :edit-collection-by-id) #(reife/push-state :view-collection-by-id params)
-                          (= route :create-collection) #(reife/push-state :collection params)
-                          :else nil))
-            :style {:margin-right "5px"}}
-           "View"]
-          (let [disabled? (not logged-in?)]
-            [:button.pure-button.pure-button-primary {:type "submit"
-                                                      :class (when disabled? "disabled")}
-             "Save"])
-          [:div.spacer]]]
-        [render-options/form (conj form-db-path :render-options)]
-        [collection/form form-db-path selected-arms-path]
+    [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
+                                 (rf/dispatch [:ui-submenu-close-all])
+                                 (.stopPropagation %))}
+     [:div.pure-u-1-2 {:style {:position "fixed"}}
+      [render-collection
+       :allow-adding? true]]
+     [:div.pure-u-1-2 {:style {:margin-left "50%"
+                               :width "45%"}}
+      [:form.pure-form.pure-form-aligned
+       {:style {:display "inline-block"}
+        :on-key-press (fn [event]
+                        (when (-> event .-code (= "Enter"))
+                          (on-submit event)))
+        :on-submit on-submit}
+       [:fieldset
+        [form/field (conj form-db-path :name)
+         (fn [& {:keys [value on-change]}]
+           [:div.pure-control-group
+            [:label {:for "name"
+                     :style {:width "6em"}} "Name"]
+            [:input {:id "name"
+                     :value value
+                     :on-change on-change
+                     :type "text"
+                     :style {:margin-right "0.5em"}}]
+            [form/checkbox (conj form-db-path :is-public) "Make public"
+             :style {:width "7em"}]])]]
+       [:fieldset
+        [tag/form (conj form-db-path :tags)]]
+       (when form-message
+         [:div.form-message form-message])
+       (when error-message
+         [:div.error-message error-message])
+       [:div.pure-control-group {:style {:text-align "right"
+                                         :margin-top "10px"}}
+        [:button.pure-button.pure-button
+         {:type "button"
+          :on-click (let [match @(rf/subscribe [:get [:route-match]])
+                          route (-> match :data :name)
+                          params (-> match :parameters :path)]
+                      (cond
+                        (= route :edit-collection-by-id) #(reife/push-state :view-collection-by-id params)
+                        (= route :create-collection) #(reife/push-state :collection params)
+                        :else nil))
+          :style {:margin-right "5px"}}
+         "View"]
+        (let [disabled? (not logged-in?)]
+          [:button.pure-button.pure-button-primary {:type "submit"
+                                                    :class (when disabled? "disabled")}
+           "Save"])
+        [:div.spacer]]]
+      [render-options/form (conj form-db-path :render-options)]
+      [collection/form form-db-path selected-arms-path]
 
-        (when selected-arms
-          (let [element (get-in collection-data [:collection :elements selected-arms])]
-            [render-arms-preview (:reference element)]))]])))
+      (when selected-arms
+        (let [element (get-in collection-data [:collection :elements selected-arms])]
+          [render-arms-preview (:reference element)]))]]))
 
 (defn collection-display [collection-id version]
   (let [user-data (user/data)
@@ -425,7 +421,7 @@
                                         [collection-id version]
                                         #(fetch-collection collection-id version))]
     (when (= status :done)
-      [collection-form collection-id version])))
+      [collection-form])))
 
 (defn view-list-collection []
   [list-my-collection])
