@@ -104,7 +104,7 @@
        :style {:fill "#fff"}}]]))
 
 (defn render-arms [x y size path render-options & {:keys [selected? font font-size]
-                                                   :or {font-size 20}}]
+                                                   :or {font-size 12}}]
   (let [data @(rf/subscribe [:get path])
         {arms-id :id
          version :version} (:reference data)
