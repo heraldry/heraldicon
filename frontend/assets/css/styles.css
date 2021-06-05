@@ -2,7 +2,7 @@
   font-family: "SiteDefault";
   font-style: normal;
   font-weight: 400;
-  src: url("../font/Gotham-Light.otf") format("opentype");
+  src: url("../font/gotham/Gotham-Light.otf") format("opentype");
 }
 
 body {
