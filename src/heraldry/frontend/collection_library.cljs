@@ -142,7 +142,8 @@
        (:name data)]]]))
 
 (defn render-collection [& {:keys [on-arms-click
-                                   allow-adding?]}]
+                                   allow-adding?
+                                   allow-selecting?]}]
   (let [render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
         selected-arms @(rf/subscribe [:get selected-arms-path])
         collection-data @(rf/subscribe [:get form-db-path])
@@ -194,7 +195,8 @@
                 arms-width
                 (conj form-db-path :collection :elements idx)
                 render-options
-                :selected? (= idx selected-arms)
+                :selected? (and allow-selecting?
+                                (= idx selected-arms))
                 :font font]])))
 
          (when allow-adding?
@@ -231,6 +233,7 @@
                                  (.stopPropagation %))}
      [:div.pure-u-1-2 {:style {:position "fixed"}}
       [render-collection
+       :allow-selecting? true
        :allow-adding? true
        :on-arms-click #(do (rf/dispatch [:set selected-arms-path %])
                            (rf/dispatch [:ui-submenu-open (conj form-db-path :collection :elements %)])
