@@ -22,8 +22,6 @@
         selected-arms @(rf/subscribe [:get selected-arms-path])]
     [element/component path :collection (:name data) "Collection"
      [:div.setting {:style {:margin-bottom "1em"}}
-      [element/text-field (conj path :name) "Name" :style {:width "19em"}]]
-     [:div.setting {:style {:margin-bottom "1em"}}
       [font/form (conj path :font)]]
 
      [:div.settings
