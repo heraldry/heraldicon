@@ -308,16 +308,16 @@
            (let [component-path (conj path :components idx)]
              ^{:key idx}
              [:li
-              [:div {:style {:padding-right "10px"
-                             :white-space "nowrap"}}
+              [:div.no-select {:style {:padding-right "10px"
+                                       :white-space "nowrap"}}
                [:a (if (zero? idx)
                      {:class "disabled"}
-                     {:on-click #(state/dispatch-on-event % [:move-component-down component-path])})
+                     {:on-click #(state/dispatch-on-event % [:move-element-down component-path])})
                 [:i.fas.fa-chevron-down]]
                " "
                [:a (if (= idx (dec (count components)))
                      {:class "disabled"}
-                     {:on-click #(state/dispatch-on-event % [:move-component-up component-path])})
+                     {:on-click #(state/dispatch-on-event % [:move-element-up component-path])})
                 [:i.fas.fa-chevron-up]]]
               [:div
                (case (-> component :type namespace)
@@ -334,5 +334,5 @@
               [:div {:style {:padding-left "10px"}}
                (when (not (and (some-> component :type namespace (= "heraldry.charge.type"))
                                (-> component :data)))
-                 [:a {:on-click #(state/dispatch-on-event % [:remove-component component-path])}
+                 [:a {:on-click #(state/dispatch-on-event % [:remove-element component-path])}
                   [:i.far.fa-trash-alt]])]])))]]]))
