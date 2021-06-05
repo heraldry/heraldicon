@@ -156,6 +156,8 @@
         collection (:collection collection-data)
         {:keys [num-columns
                 elements]} collection
+        ;; TODO: ugly dependency, should go through the options system to sanitize and provide a default
+        num-columns (or num-columns 6)
         num-elements (count elements)
         margin 10
         arms-width 100
