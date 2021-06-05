@@ -84,7 +84,7 @@
              :stroke-width 1
              :stroke       "#777"}]])
 
-(defn render-arms [x y size path render-options]
+(defn render-arms [x y size path render-options & {:keys [selected?]}]
   (let [data @(rf/subscribe [:get path])
         {arms-id :id
          version :version} (:reference data)
@@ -106,23 +106,31 @@
                                  :fn-select-component nil
                                  #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
         {:keys [width height]} environment]
-    [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
-     result]))
+    [:g
+     (when selected?
+       [:rect {:x (- x (/ width 2) 5)
+               :y (- y (/ height 2) 5)
+               :width (+ width 10)
+               :height (+ height 10)
+               :fill "#33f8"}])
+     [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
+      result]]))
 
 (defn render-collection [& {:keys [on-arms-click
                                    allow-adding?]}]
   (let [render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
+        selected-arms @(rf/subscribe [:get selected-arms-path])
         collection-data @(rf/subscribe [:get form-db-path])
         collection (:collection collection-data)
         {:keys [num-columns
                 elements]} collection
         num-elements (count elements)
-        roll-width 1000
         margin 10
-        arms-width (-> roll-width
-                       (- (* (inc num-columns)
-                             margin))
-                       (/ num-columns))
+        arms-width 100
+        roll-width (+ (* num-columns
+                         arms-width)
+                      (* (inc num-columns)
+                         margin))
         arms-height (* 1.5 arms-width)]
     (if collection-data
       [:div {:style {:margin-left  "10px"
@@ -130,7 +138,7 @@
        [:svg {:id "svg"
               :style {:width "100%"
                       :height "100vh"}
-              :viewBox "0 0 1000 1000"
+              :viewBox (str "0 0 " roll-width " " roll-width)
               :preserveAspectRatio "xMidYMin meet"}
         [:g
          (doall
@@ -152,7 +160,8 @@
                    (+ (/ arms-height 2)))
                 arms-width
                 (conj form-db-path :collection :elements idx)
-                render-options]])))
+                render-options
+                :selected? (= idx selected-arms)]])))
 
          (when allow-adding?
            (let [x (mod num-elements num-columns)
