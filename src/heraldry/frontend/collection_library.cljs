@@ -10,6 +10,7 @@
             [heraldry.frontend.form.arms-select :as arms-select]
             [heraldry.frontend.form.collection :as collection]
             [heraldry.frontend.form.core :as form]
+            [heraldry.frontend.form.font :as font]
             [heraldry.frontend.form.render-options :as render-options]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
@@ -84,7 +85,8 @@
              :stroke-width 1
              :stroke       "#777"}]])
 
-(defn render-arms [x y size path render-options & {:keys [selected?]}]
+(defn render-arms [x y size path render-options & {:keys [selected? font font-size]
+                                                   :or {font-size 20}}]
   (let [data @(rf/subscribe [:get path])
         {arms-id :id
          version :version} (:reference data)
@@ -114,13 +116,20 @@
                :height (+ height 10)
                :fill "#33f8"}])
      [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
-      result]]))
+      result
+      [:text {:x (/ width 2)
+              :y (+ height 10 font-size)
+              :text-anchor "middle"
+              :style {:font-family font
+                      :font-size font-size}}
+       (:name data)]]]))
 
 (defn render-collection [& {:keys [on-arms-click
                                    allow-adding?]}]
   (let [render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
         selected-arms @(rf/subscribe [:get selected-arms-path])
         collection-data @(rf/subscribe [:get form-db-path])
+        font (-> collection-data :font font/css-string)
         collection (:collection collection-data)
         {:keys [num-columns
                 elements]} collection
@@ -141,6 +150,13 @@
               :viewBox (str "0 0 " roll-width " " roll-width)
               :preserveAspectRatio "xMidYMin meet"}
         [:g
+         [:text {:x (/ roll-width 2)
+                 :y 50
+                 :text-anchor "middle"
+                 :style {:font-family font
+                         :font-size 50}}
+          (:name collection-data)]]
+        [:g {:transform "translate(0,60)"}
          (doall
           (for [[idx _arms] (map-indexed vector elements)]
             (let [x (mod idx num-columns)
@@ -161,7 +177,8 @@
                 arms-width
                 (conj form-db-path :collection :elements idx)
                 render-options
-                :selected? (= idx selected-arms)]])))
+                :selected? (= idx selected-arms)
+                :font font]])))
 
          (when allow-adding?
            (let [x (mod num-elements num-columns)
