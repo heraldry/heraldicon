@@ -9,9 +9,11 @@
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.arms-select :as arms-select]
             [heraldry.frontend.form.collection :as collection]
+            [heraldry.frontend.form.collection-select :as collection-select]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.font :as font]
             [heraldry.frontend.form.render-options :as render-options]
+            [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [id-for-url]]
@@ -293,6 +295,8 @@
                        :style {:margin-right "0.5em"}}]
               [form/checkbox (conj form-db-path :is-public) "Make public"
                :style {:width "7em"}]])]]
+         [:fieldset
+          [tag/form (conj form-db-path :tags)]]
          (when form-message
            [:div.form-message form-message])
          (when error-message
@@ -362,28 +366,18 @@
           (let [element (get-in collection-data [:collection :elements selected-arms])]
             [render-arms-preview (:reference element)]))]])))
 
+(defn link-to-collection [collection]
+  (let [collection-id (-> collection
+                          :id
+                          id-for-url)]
+    [:a {:href     (reife/href :view-collection-by-id {:id collection-id})
+         :on-click #(do
+                      (rf/dispatch-sync [:clear-form-errors form-db-path])
+                      (rf/dispatch-sync [:clear-form-message form-db-path]))}
+     (:name collection)]))
+
 (defn list-collection-for-user [user-id]
-  (let [[status collection-list] (state/async-fetch-data
-                                  list-db-path
-                                  user-id
-                                  #(fetch-collection-list-by-user user-id))]
-    (if (= status :done)
-      (if (empty? collection-list)
-        [:div "None"]
-        [:ul.collection-list
-         (doall
-          (for [collection collection-list]
-            ^{:key (:id collection)}
-            [:li.collection
-             (let [collection-id (-> collection
-                                     :id
-                                     id-for-url)]
-               [:a {:href (reife/href :view-collection-by-id {:id collection-id})
-                    :on-click #(do
-                                 (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                 (rf/dispatch-sync [:clear-form-message form-db-path]))}
-                (:name collection)])]))])
-      [:div "loading..."])))
+  [collection-select/list-collection-for-user user-id link-to-collection])
 
 (defn invalidate-collection-cache [user-id]
   (state/invalidate-cache list-db-path user-id))
