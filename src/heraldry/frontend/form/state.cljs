@@ -208,16 +208,16 @@
            [:dispatch [:ui-component-open (conj components-path index :field)]]]})))
 
 (rf/reg-event-db
- :remove-component
+ :remove-element
  (fn [db [_ path]]
-   (let [components-path (drop-last path)
+   (let [elements-path (drop-last path)
          index (last path)]
-     (update-in db components-path (fn [components]
-                                     (vec (concat (subvec components 0 index)
-                                                  (subvec components (inc index)))))))))
+     (update-in db elements-path (fn [elements]
+                                   (vec (concat (subvec elements 0 index)
+                                                (subvec elements (inc index)))))))))
 
 (rf/reg-event-db
- :move-component-up
+ :move-element-up
  (fn [db [_ path]]
    (let [components-path (drop-last path)
          index (last path)]
@@ -233,19 +233,19 @@
                                              vec))))))))
 
 (rf/reg-event-db
- :move-component-down
+ :move-element-down
  (fn [db [_ path]]
-   (let [components-path (drop-last path)
+   (let [elements-path (drop-last path)
          index (last path)]
-     (update-in db components-path (fn [components]
-                                     (if (zero? index)
-                                       components
-                                       (-> components
-                                           (subvec 0 (dec index))
-                                           (conj (get components index))
-                                           (conj (get components (dec index)))
-                                           (concat (subvec components (inc index)))
-                                           vec)))))))
+     (update-in db elements-path (fn [elements]
+                                   (if (zero? index)
+                                     elements
+                                     (-> elements
+                                         (subvec 0 (dec index))
+                                         (conj (get elements index))
+                                         (conj (get elements (dec index)))
+                                         (concat (subvec elements (inc index)))
+                                         vec)))))))
 
 (rf/reg-event-db
  :update-charge
