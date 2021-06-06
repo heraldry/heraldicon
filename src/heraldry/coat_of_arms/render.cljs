@@ -107,6 +107,7 @@
                                                      (dissoc :metadata)
                                                      (update :db-path conj :field)
                                                      (assoc :root-escutcheon escutcheon))]]]]
-              (when (:outline? render-options)
+              (when (or (:escutcheon-outline? render-options)
+                        (:outline? render-options))
                 [:g outline/style
                  [:path {:d (:shape environment)}]])]}))

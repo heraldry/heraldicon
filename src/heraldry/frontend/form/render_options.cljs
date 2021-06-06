@@ -31,5 +31,7 @@
              (#(when (not= % :none) %)))
      [element/checkbox (conj db-path :texture-displacement?) "Apply texture"])
    [element/checkbox (conj db-path :shiny?) "Shiny"]
+   [element/checkbox (conj db-path :escutcheon-shadow?) "Escutcheon shadow (ignored for export)"]
+   [element/checkbox (conj db-path :escutcheon-outline?) "Escutcheon outline"]
    [element/checkbox (conj db-path :outline?) "Draw outline"]
    [element/checkbox (conj db-path :squiggly?) "Squiggly lines (can be slow)"]])
