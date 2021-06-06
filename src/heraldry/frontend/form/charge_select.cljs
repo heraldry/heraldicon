@@ -1,7 +1,6 @@
 (ns heraldry.frontend.form.charge-select
   (:require [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.filter :as filter]
-            [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
