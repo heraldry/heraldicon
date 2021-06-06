@@ -26,6 +26,19 @@
       (catch :default e
         (log/error "fetch arms error:" e)))))
 
+(defn fetch-arms-list []
+  (go
+    (try
+      (let [user-data (user/data)]
+        (-> (api-request/call
+             :fetch-arms-all
+             {}
+             user-data)
+            <?
+            :arms))
+      (catch :default e
+        (log/error "fetch arms list error:" e)))))
+
 (defn fetch-arms-list-by-user [user-id]
   (go
     (try
@@ -39,8 +52,8 @@
       (catch :default e
         (log/error "fetch arms list by user error:" e)))))
 
-(defn invalidate-arms-cache [user-id]
-  (state/invalidate-cache list-db-path user-id))
+(defn invalidate-arms-cache [key]
+  (state/invalidate-cache list-db-path key))
 
 (defn component [arms-list link-fn refresh-fn & {:keys [hide-ownership-filter?]}]
   (let [user-data (user/data)]
@@ -69,14 +82,14 @@
      refresh-fn
      :hide-ownership-filter? hide-ownership-filter?]))
 
-(defn list-arms-for-user [user-id link-to-arms]
+(defn list-arms [link-to-arms]
   (let [[status arms-list] (state/async-fetch-data
                             list-db-path
-                            user-id
-                            #(fetch-arms-list-by-user user-id))]
+                            :all
+                            fetch-arms-list)]
     (if (= status :done)
       [component
        arms-list
        link-to-arms
-       #(invalidate-arms-cache user-id)]
+       #(invalidate-arms-cache :all)]
       [:div "loading..."])))

@@ -25,4 +25,4 @@
      [:label "Arms"]
      " "
      [element/submenu path "Select Arms" arms-title {}
-      [arms-select/list-arms-for-user (:user-id (user/data)) (link-to-arms path)]]]))
+      [arms-select/list-arms (link-to-arms path)]]]))
