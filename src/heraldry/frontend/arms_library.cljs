@@ -336,7 +336,7 @@
                              :min-width "30em"}}
     [:p
      "Here you can create and view coats of arms. You explicitly have to save your coat of arms as "
-     [:b "public"] ", if you want to share the link and allow others to view it."]
+     [:b "public"] " and add a license, if you want to share the link and allow others to view it."]
     [:p
      "However, SVG/PNG links can be viewed by anyone."]]
    [:button.pure-button.pure-button-primary
