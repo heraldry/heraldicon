@@ -7,6 +7,7 @@
             [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
+            [heraldry.util :refer [full-url-for-username]]
             [re-frame.core :as rf]
             [taoensso.timbre :as log]))
 
@@ -65,15 +66,20 @@
        [:ul.collection-list
         (doall
          (for [collection (sort-by (comp s/lower-case :name) items)]
-           ^{:key (:id collection)}
-           [:li.collection
-            (if (-> collection :is-public)
-              [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
-              [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
-            " "
-            [link-fn collection]
-            " "
-            [tag/tags-view (-> collection :tags keys)]]))])
+           (let [username (-> collection :username)]
+             ^{:key (:id collection)}
+             [:li.collection
+              (if (-> collection :is-public)
+                [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
+                [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
+              " "
+              [link-fn collection]
+              " by "
+              [:a {:href (full-url-for-username username)
+                   :target "_blank"} username]
+
+              " "
+              [tag/tags-view (-> collection :tags keys)]])))])
      refresh-fn
      :hide-ownership-filter? hide-ownership-filter?]))
 
