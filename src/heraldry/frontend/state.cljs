@@ -1,9 +1,9 @@
 (ns heraldry.frontend.state
   (:require [cljs.core.async :refer [go]]
-            [clojure.set :as set]
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.attributes :as attributes]
+            [heraldry.coat-of-arms.default :as default]
             [re-frame.core :as rf]
             [taoensso.timbre :as log]))
 
@@ -30,10 +30,7 @@
 (rf/reg-event-db
  :initialize-db
  (fn [db [_]]
-   (merge {:example-coa {:render-options {:mode :colours
-                                          :outline? false
-                                          :squiggly? false
-                                          :ui {:selectable-fields? true}}
+   (merge {:example-coa {:render-options default/render-options
                          :coat-of-arms {:escutcheon :rectangle
                                         :field {:type :heraldry.field.type/plain
                                                 :tincture :argent

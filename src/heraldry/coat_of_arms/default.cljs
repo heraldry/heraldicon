@@ -34,3 +34,10 @@
   {:spec-version 1
    :escutcheon :heater
    :field field})
+
+(def render-options
+  {:mode :colours
+   :outline? false
+   :squiggly? false
+   :escutcheon-shadow? true
+   :ui {:selectable-fields? true}})

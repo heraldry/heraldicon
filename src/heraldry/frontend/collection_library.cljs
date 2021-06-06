@@ -136,7 +136,9 @@
                :height (+ height 14)
                :fill "#33f8"}])
      [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
-      result
+      [:g {:filter (when (:escutcheon-shadow? render-options)
+                     "url(#shadow)")}
+       result]
       [:text {:x (/ width 2)
               :y (+ height 10 font-size)
               :text-anchor "middle"
@@ -252,7 +254,8 @@
            :style {:width "100%"}
            :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
            :preserveAspectRatio "xMidYMin slice"}
-     [:g {:filter "url(#shadow)"}
+     [:g {:filter (when (:escutcheon-shadow? render-options)
+                    "url(#shadow)")}
       [:g {:transform "translate(10,10) scale(5,5)"}
        result]]]))
 
@@ -410,10 +413,9 @@
                                         #(go
                                            {:num-columns 6
                                             :elements []
-                                            :render-options {:mode :colours
-                                                             :outline? false
-                                                             :squiggly? false
-                                                             :ui {:selectable-fields? true}}}))]
+                                            :render-options (-> default/render-options
+                                                                (dissoc :escutcheon-shadow?)
+                                                                (assoc :escutcheon-outline? true))}))]
     (when (= status :done)
       [collection-form])))
 

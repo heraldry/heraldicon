@@ -84,7 +84,8 @@
                 :style {:width "25em"}
                 :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
                 :preserveAspectRatio "xMidYMin slice"}
-          [:g {:filter "url(#shadow)"}
+          [:g {:filter (when (:escutcheon-shadow? render-options)
+                         "url(#shadow)")}
            [:g {:transform "translate(10,10) scale(5,5)"}
             result]]]
          [:div.blazonry
@@ -351,10 +352,7 @@
                                   :new
                                   #(go
                                      {:coat-of-arms default/coat-of-arms
-                                      :render-options {:mode :colours
-                                                       :outline? false
-                                                       :squiggly? false
-                                                       :ui {:selectable-fields? true}}}))]
+                                      :render-options default/render-options}))]
     (when (= status :done)
       [arms-form])))
 
