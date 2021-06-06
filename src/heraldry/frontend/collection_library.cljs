@@ -34,19 +34,6 @@
 (def selected-arms-path
   [:ui :collection :selected-arms])
 
-(defn fetch-collection-list-by-user [user-id]
-  (go
-    (try
-      (let [user-data (user/data)]
-        (-> (api-request/call
-             :fetch-collections-for-user
-             {:user-id user-id}
-             user-data)
-            <?
-            :collection))
-      (catch :default e
-        (log/error "fetch collection list error:" e)))))
-
 (defn fetch-collection [collection-id version]
   (go
     (try
@@ -394,31 +381,29 @@
                       (rf/dispatch-sync [:clear-form-message form-db-path]))}
      (:name collection)]))
 
-(defn list-collection-for-user [user-id]
-  [collection-select/list-collection-for-user user-id link-to-collection])
+(defn list-collections []
+  [collection-select/list-collections link-to-collection])
 
 (defn invalidate-collection-cache [user-id]
   (state/invalidate-cache list-db-path user-id))
 
-(defn list-my-collection []
-  (let [user-data (user/data)]
-    [:div {:style {:padding "15px"}}
-     [:div.pure-u-1-2 {:style {:display "block"
-                               :text-align "justify"
-                               :min-width "30em"}}
-      [:p
-       "Here you can create collections of coats of arms. Right now you can only browse your own collections. "
-       "You explicitly have to save your collection as "
-       [:b "public"] ", if you want to share the link and allow others to view it."]]
-     [:button.pure-button.pure-button-primary
-      {:on-click #(do
-                    (rf/dispatch-sync [:clear-form-errors form-db-path])
-                    (rf/dispatch-sync [:clear-form-message form-db-path])
-                    (reife/push-state :create-collection))}
-      "Create"]
-     [:div {:style {:padding-top "0.5em"}}
-      (when-let [user-id (:user-id user-data)]
-        [list-collection-for-user user-id])]]))
+(defn view-list-collection []
+  [:div {:style {:padding "15px"}}
+   [:div.pure-u-1-2 {:style {:display "block"
+                             :text-align "justify"
+                             :min-width "30em"}}
+    [:p
+     "Here you can create collections of coats of arms. Right now you can only browse your own collections. "
+     "You explicitly have to save your collection as "
+     [:b "public"] ", if you want to share the link and allow others to view it."]]
+   [:button.pure-button.pure-button-primary
+    {:on-click #(do
+                  (rf/dispatch-sync [:clear-form-errors form-db-path])
+                  (rf/dispatch-sync [:clear-form-message form-db-path])
+                  (reife/push-state :create-collection))}
+    "Create"]
+   [:div {:style {:padding-top "0.5em"}}
+    [list-collections]]])
 
 (defn create-collection [match]
   (rf/dispatch [:set [:route-match] match])
@@ -441,9 +426,6 @@
                                         #(fetch-collection collection-id version))]
     (when (= status :done)
       [collection-form])))
-
-(defn view-list-collection []
-  [list-my-collection])
 
 (defn edit-collection-by-id [{:keys [parameters] :as match}]
   (rf/dispatch [:set [:route-match] match])

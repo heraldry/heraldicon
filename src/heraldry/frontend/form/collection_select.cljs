@@ -25,6 +25,19 @@
       (catch :default e
         (log/error "fetch collection error:" e)))))
 
+(defn fetch-collection-list []
+  (go
+    (try
+      (let [user-data (user/data)]
+        (-> (api-request/call
+             :fetch-collections-all
+             {}
+             user-data)
+            <?
+            :collections))
+      (catch :default e
+        (log/error "fetch collection list error:" e)))))
+
 (defn fetch-collection-list-by-user [user-id]
   (go
     (try
@@ -34,7 +47,7 @@
              {:user-id user-id}
              user-data)
             <?
-            :collection))
+            :collections))
       (catch :default e
         (log/error "fetch collection list by user error:" e)))))
 
@@ -64,14 +77,14 @@
      refresh-fn
      :hide-ownership-filter? hide-ownership-filter?]))
 
-(defn list-collection-for-user [user-id link-to-collection]
+(defn list-collections [link-to-collection]
   (let [[status collection-list] (state/async-fetch-data
                                   list-db-path
-                                  user-id
-                                  #(fetch-collection-list-by-user user-id))]
+                                  :all
+                                  fetch-collection-list)]
     (if (= status :done)
       [component
        collection-list
        link-to-collection
-       #(invalidate-collection-cache user-id)]
+       #(invalidate-collection-cache :all)]
       [:div "loading..."])))
