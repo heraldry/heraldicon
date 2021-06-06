@@ -24,6 +24,7 @@ deploy-frontend-prod: check-before-deploy-frontend release-frontend-prod
 	aws --profile heraldry-serverless s3 sync --acl public-read $(FRONTEND_RELEASE_DIR) s3://heraldry.digital
 	aws --profile heraldry-serverless s3 cp --acl public-read $(FRONTEND_RELEASE_DIR)/index.html s3://heraldry.digital/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
 	git tag $(shell date +"deploy-frontend-%Y-%m-%d_%H-%M-%S")
+	./invalidate-distribution.sh
 
 release-backend-prod:
 	rm -rf $(BACKEND_RELEASE_DIR) 2> /dev/null || true
