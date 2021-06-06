@@ -5,8 +5,10 @@
             [heraldry.frontend.arms-library :as arms-library]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.charge-library :as charge-library]
+            [heraldry.frontend.collection-library :as collection-library]
             [heraldry.frontend.form.arms-select :as arms-select]
             [heraldry.frontend.form.charge-select :as charge-select]
+            [heraldry.frontend.form.collection-select :as collection-select]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [re-frame.core :as rf]
@@ -56,6 +58,22 @@
        :hide-ownership-filter? true]
       [:div "loading..."])))
 
+(defn invalidate-collection-cache-for-user [user-id]
+  (state/invalidate-cache [:user-collections] user-id))
+
+(defn view-collections-for-user [user-id]
+  (let [[status collection-list] (state/async-fetch-data
+                                  [:user-collections]
+                                  user-id
+                                  #(collection-select/fetch-collection-list-by-user user-id))]
+    (if (= status :done)
+      [collection-select/component
+       collection-list
+       collection-library/link-to-collection
+       #(invalidate-collection-cache-for-user user-id)
+       :hide-ownership-filter? true]
+      [:div "loading..."])))
+
 (defn user-display []
   (let [user-info-data @(rf/subscribe [:get user-info-db-path])
         user-id (:id user-info-data)]
@@ -63,11 +81,15 @@
      [:div {:style {:padding-left "15px"}}
       [:h3 (str "User: " (:username user-info-data))]]
      [:div.pure-g
-      [:div.pure-u-1-2
+      [:div.pure-u-1-3
+       [:div {:style {:padding-left "15px"}}
+        [:h4 "Collections"]
+        [view-collections-for-user user-id]]]
+      [:div.pure-u-1-3
        [:div {:style {:padding-left "15px"}}
         [:h4 "Arms"]
         [view-arms-for-user user-id]]]
-      [:div.pure-u-1-2
+      [:div.pure-u-1-3
        [:div {:style {:padding-left "15px"}}
         [:h4 "Charges"]
         [view-charges-for-user user-id]]]]]))
