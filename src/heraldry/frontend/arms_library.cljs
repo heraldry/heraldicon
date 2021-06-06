@@ -145,6 +145,7 @@
         (state/invalidate-cache-without-current form-db-path [arms-id 0])
         (rf/dispatch-sync [:set arms-select/list-db-path nil])
         (invalidate-arms-cache user-id)
+        (invalidate-arms-cache :all)
         (rf/dispatch-sync [:set-form-message form-db-path (str "Arms saved, new version: " (:version response))])
         (reife/push-state :edit-arms-by-id {:id (id-for-url arms-id)}))
       (modal/stop-loading)
@@ -325,29 +326,27 @@
                       (rf/dispatch-sync [:clear-form-message form-db-path]))}
      (:name arms)]))
 
-(defn list-arms-for-user [user-id]
-  [arms-select/list-arms-for-user user-id link-to-arms])
+(defn list-all-arms []
+  [arms-select/list-arms link-to-arms])
 
-(defn list-my-arms []
-  (let [user-data (user/data)]
-    [:div {:style {:padding "15px"}}
-     [:div.pure-u-1-2 {:style {:display "block"
-                               :text-align "justify"
-                               :min-width "30em"}}
-      [:p
-       "Here you can create coats of arms. You explicitly have to save your coat of arms as "
-       [:b "public"] ", if you want to share the link and allow others to view it."]
-      [:p
-       "However, SVG/PNG links can be viewed by anyone."]]
-     [:button.pure-button.pure-button-primary
-      {:on-click #(do
-                    (rf/dispatch-sync [:clear-form-errors form-db-path])
-                    (rf/dispatch-sync [:clear-form-message form-db-path])
-                    (reife/push-state :create-arms))}
-      "Create"]
-     [:div {:style {:padding-top "0.5em"}}
-      (when-let [user-id (:user-id user-data)]
-        [list-arms-for-user user-id])]]))
+(defn view-list-arms []
+  [:div {:style {:padding "15px"}}
+   [:div.pure-u-1-2 {:style {:display "block"
+                             :text-align "justify"
+                             :min-width "30em"}}
+    [:p
+     "Here you can create and view coats of arms. You explicitly have to save your coat of arms as "
+     [:b "public"] ", if you want to share the link and allow others to view it."]
+    [:p
+     "However, SVG/PNG links can be viewed by anyone."]]
+   [:button.pure-button.pure-button-primary
+    {:on-click #(do
+                  (rf/dispatch-sync [:clear-form-errors form-db-path])
+                  (rf/dispatch-sync [:clear-form-message form-db-path])
+                  (reife/push-state :create-arms))}
+    "Create"]
+   [:div {:style {:padding-top "0.5em"}}
+    [list-all-arms]]])
 
 (defn create-arms [match]
   (rf/dispatch [:set [:route-match] match])
@@ -367,9 +366,6 @@
                                   #(arms-select/fetch-arms arms-id version saved-data-db-path))]
     (when (= status :done)
       [arms-form])))
-
-(defn view-list-arms []
-  [list-my-arms])
 
 (defn edit-arms-by-id [{:keys [parameters] :as match}]
   (rf/dispatch [:set [:route-match] match])
