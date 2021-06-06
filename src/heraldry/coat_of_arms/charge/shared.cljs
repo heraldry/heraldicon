@@ -27,6 +27,9 @@
                                      anchor
                                      0
                                      -90)
+        hints (if (-> render-options :mode (= :hatching))
+                (assoc hints :outline-mode :keep)
+                hints)
         angle (+ (v/angle-to-point origin-point anchor-point)
                  90)
         arg-value (get environment arg)

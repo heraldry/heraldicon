@@ -107,6 +107,9 @@
                               :fixed-tincture
                               (or :none)
                               (= :none))
+            hints (if (-> render-options :mode (= :hatching))
+                    (assoc hints :outline-mode :keep)
+                    hints)
             ;; since size now is filled with a default, check whether it was set at all,
             ;; if not, then use nil
             ;; TODO: this probably needs a better mechanism and form representation
