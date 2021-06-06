@@ -79,6 +79,7 @@
                                            :name "ungulates"
                                            :charges #{:antelope
                                                       :boar
+                                                      :boar-head
                                                       :bull
                                                       :deer
                                                       :goat
