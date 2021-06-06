@@ -232,11 +232,11 @@
   (let [render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
         {arms-id :id
          version :version} arms-reference
-        [_status arms-data] (when arms-id
-                              (state/async-fetch-data
-                               [:arms-references arms-id version]
-                               [arms-id version]
-                               #(arms-select/fetch-arms arms-id version nil)))
+        [status arms-data] (when arms-id
+                             (state/async-fetch-data
+                              [:arms-references arms-id version]
+                              [arms-id version]
+                              #(arms-select/fetch-arms arms-id version nil)))
         {:keys [result
                 environment]} (render/coat-of-arms
                                (if-let [coat-of-arms (:coat-of-arms arms-data)]
@@ -250,14 +250,19 @@
                                  :fn-select-component nil
                                  #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
         {:keys [width height]} environment]
-    [:svg {:id "svg"
-           :style {:width "100%"}
-           :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
-           :preserveAspectRatio "xMidYMin slice"}
-     [:g {:filter (when (:escutcheon-shadow? render-options)
-                    "url(#shadow)")}
-      [:g {:transform "translate(10,10) scale(5,5)"}
-       result]]]))
+    (when (= status :done)
+      [:div
+       [:div.credits {:style {:margin-bottom 0}}
+        [credits/for-arms arms-data]]
+
+       [:svg {:id "svg"
+              :style {:width "100%"}
+              :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
+              :preserveAspectRatio "xMidYMin slice"}
+        [:g {:filter (when (:escutcheon-shadow? render-options)
+                       "url(#shadow)")}
+         [:g {:transform "translate(10,10) scale(5,5)"}
+          result]]]])))
 
 (defn collection-form []
   (let [selected-arms @(rf/subscribe [:get selected-arms-path])
