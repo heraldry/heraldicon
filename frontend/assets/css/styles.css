@@ -413,3 +413,7 @@ label div {
 .selected-arms > div {
   display: table-cell;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

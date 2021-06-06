@@ -162,21 +162,27 @@
         ;; TODO: ugly dependency, should go through the options system to sanitize and provide a default
         num-columns (or num-columns 6)
         num-elements (count elements)
+        num-rows (inc (quot num-elements
+                            num-columns))
         margin 10
         arms-width 100
         roll-width (+ (* num-columns
                          arms-width)
                       (* (inc num-columns)
                          margin))
-        arms-height (* 1.6 arms-width)]
+        arms-height (* 1.6 arms-width)
+        roll-height (+ 60
+                       (* num-rows
+                          arms-height)
+                       (* (inc num-rows)
+                          margin))]
     (if collection-data
       [:div {:style {:margin-left  "10px"
                      :margin-right "10px"}}
        [:svg {:id "svg"
-              :style {:width "100%"
-                      :height "100vh"}
-              :viewBox (str "0 0 " roll-width " " roll-width)
-              :preserveAspectRatio "xMidYMin meet"
+              :style {:width "100%"}
+              :viewBox (str "0 0 " roll-width " " roll-height)
+              :preserveAspectRatio "xMidYMin slice"
               :on-click #(rf/dispatch [:set selected-arms-path nil])}
         [:g
          [:text {:x (/ roll-width 2)
@@ -278,7 +284,9 @@
     [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
-     [:div.pure-u-1-2 {:style {:position "fixed"}}
+     [:div.pure-u-1-2.no-scrollbar {:style {:position "fixed"
+                                            :height "100vh"
+                                            :overflow-y "scroll"}}
       [render-collection
        :allow-adding? true]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
@@ -348,7 +356,9 @@
       [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                    (rf/dispatch [:ui-submenu-close-all])
                                    (.stopPropagation %))}
-       [:div.pure-u-1-2 {:style {:position "fixed"}}
+       [:div.pure-u-1-2.no-scrollbar {:style {:position "fixed"
+                                              :height "100vh"
+                                              :overflow-y "scroll"}}
         [render-collection]]
        [:div.pure-u-1-2 {:style {:margin-left "50%"
                                  :width "45%"}}

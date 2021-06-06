@@ -253,7 +253,9 @@
     [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                  (rf/dispatch [:ui-submenu-close-all])
                                  (.stopPropagation %))}
-     [:div.pure-u-1-2 {:style {:position "fixed"}}
+     [:div.pure-u-1-2.no-scrollbar {:style {:position "fixed"
+                                            :height "100vh"
+                                            :overflow-y "scroll"}}
       [preview]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
                                :width "45%"}}
@@ -427,7 +429,9 @@
       [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                    (rf/dispatch [:ui-submenu-close-all])
                                    (.stopPropagation %))}
-       [:div.pure-u-1-2 {:style {:position "fixed"}}
+       [:div.pure-u-1-2.no-scrollbar {:style {:position "fixed"
+                                              :height "100vh"
+                                              :overflow-y "scroll"}}
         [preview]]
        [:div.pure-u-1-2 {:style {:margin-left "50%"
                                  :width "45%"}}
