@@ -127,6 +127,8 @@
                                                                     (keyword "heraldry.charge.type"))
                                                          :variant {:id (:id charge-data)
                                                                    :version (:latest-version charge-data)}}
+                                                        {:attitude nil
+                                                         :facing nil}
                                                         (select-keys charge-data
                                                                      [:attitude :facing]))])}
                                    (:name charge-data)]
