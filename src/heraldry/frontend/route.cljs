@@ -131,6 +131,11 @@
      :view user-library/view-user-by-username
      :conflicting true}]
 
+   ["/users/"
+    {:name :users
+     :view user-library/view-list-users
+     :conflicting true}]
+
    ["/users/:username/"
     {:name :view-user-with-slash
      :parameters {:path {:username string?}}

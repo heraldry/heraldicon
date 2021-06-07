@@ -62,6 +62,7 @@
              item-list)))
 
 (defn component [id user-data all-items filter-keys display-fn refresh-fn & {:keys [hide-ownership-filter?
+                                                                                    hide-access-filter?
                                                                                     on-filter-string-change]}]
   (let [filter-path [:ui :filter id]
         filter-string-path (conj filter-path :filter-string)
@@ -97,12 +98,13 @@
             :on-click #(do
                          (refresh-fn)
                          (.stopPropagation %))} [:i.fas.fa-sync-alt]])
-     (when (not hide-ownership-filter?)
+     (when-not hide-ownership-filter?
        [element/checkbox filter-own-path "Mine only"])
-     [element/radio-select filter-access-path [["All" :all]
-                                               ["Public" :public]
-                                               ["Private" :private]]
-      :default :all]
+     (when-not hide-access-filter?
+       [element/radio-select filter-access-path [["All" :all]
+                                                 ["Public" :public]
+                                                 ["Private" :private]]
+        :default :all])
      [:div
       [tag/tags-view tags-to-display
        :on-click #(rf/dispatch [:toggle-tag filter-tags-path %])
