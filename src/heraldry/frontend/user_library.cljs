@@ -9,9 +9,11 @@
             [heraldry.frontend.form.arms-select :as arms-select]
             [heraldry.frontend.form.charge-select :as charge-select]
             [heraldry.frontend.form.collection-select :as collection-select]
+            [heraldry.frontend.form.user-select :as user-select]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [re-frame.core :as rf]
+            [reitit.frontend.easy :as reife]
             [taoensso.timbre :as log]))
 
 (def user-info-db-path
@@ -109,3 +111,19 @@
 (defn view-user-by-username [{:keys [parameters]}]
   (let [username (-> parameters :path :username)]
     [view-user username]))
+
+(defn link-to-user [{:keys [username]}]
+  [:a {:href (reife/href :view-user {:username username})}
+   username])
+
+(defn list-all-users []
+  [user-select/list-users link-to-user])
+
+(defn view-list-users []
+  [:div {:style {:padding "15px"}}
+   [:div.pure-u-1-2 {:style {:display "block"
+                             :text-align "justify"
+                             :min-width "30em"}}
+
+    [:div {:style {:padding-top "0.5em"}}
+     [list-all-users]]]])
