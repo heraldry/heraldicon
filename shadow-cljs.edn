@@ -40,6 +40,11 @@
 
            :release {:output-to "./backend/build/prod/backend.js"}}
 
+          :manage
+          {:target :node-script
+           :main heraldry.manage/main
+           :output-to "./backend/build/manage/manage.js"}
+
           :test
           {:target :node-test
            :output-to "./backend/build/test/node-tests.js"

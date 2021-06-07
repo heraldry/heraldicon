@@ -60,7 +60,7 @@ check-dirty-frontend:
 	git diff --quiet || (echo ". is dirty" && false)
 
 check-debug-print-backend:
-	! rg println backend/src --glob=!src/**/*test*.cljs
+	! rg println src backend/src --glob=!src/**/*test*.cljs --glob=!backend/src/heraldry/manage.cljs
 	! rg js/console backend/src
 
 check-dirty-backend:
