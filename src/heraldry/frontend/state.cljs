@@ -72,6 +72,11 @@
    (assoc-in db path value)))
 
 (rf/reg-event-db
+ :update
+ (fn [db [_ path update-fn]]
+   (update-in db path update-fn)))
+
+(rf/reg-event-db
  :remove
  (fn [db [_ path]]
    (cond-> db
@@ -215,3 +220,13 @@
 
 (defn invalidate-cache-all []
   (rf/dispatch-sync [:set [:async-fetch-data] nil]))
+
+(defn invalidate-cache-all-but-new []
+  (rf/dispatch-sync [:update [:async-fetch-data]
+                     (fn [async-data]
+                       (->> async-data
+                            (map (fn [[k v]]
+                                   [k (-> v
+                                          (update :queries select-keys [:new])
+                                          (update :current #(when (= % :new) :new)))]))
+                            (into {})))]))
