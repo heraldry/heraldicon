@@ -53,7 +53,7 @@
         (set-item local-storage local-storage-user-id-name user-id)
         (read-session-data)
         (rf/dispatch-sync [:clear-form db-path])
-        (state/invalidate-cache-all)
+        (state/invalidate-cache-all-but-new)
         (modal/clear)
         (modal/stop-loading))
       (catch :default e
@@ -445,7 +445,7 @@
   (remove-item local-storage local-storage-session-id-name)
   (remove-item local-storage local-storage-user-id-name)
   (remove-item local-storage local-storage-username-name)
-  (state/invalidate-cache-all)
+  (state/invalidate-cache-all-but-new)
   (rf/dispatch [:remove user-db-path]))
 
 (defn load-session-user-data []
