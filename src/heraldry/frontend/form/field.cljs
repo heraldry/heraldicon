@@ -294,13 +294,13 @@
                                                                          [:i.far.fa-times-circle]]))]])))]])
      [:div {:style {:margin-bottom "0.5em"}}
       [:button {:on-click #(state/dispatch-on-event % [:add-component path default/ordinary])}
-       [:i.fas.fa-plus] " Add ordinary"]
+       [:i.fas.fa-plus] " Ordinary"]
       " "
       [:button {:on-click #(state/dispatch-on-event % [:add-component path default/charge])}
-       [:i.fas.fa-plus] " Add charge"]
+       [:i.fas.fa-plus] " Charge"]
       " "
       [:button {:on-click #(state/dispatch-on-event % [:add-component path default/semy])}
-       [:i.fas.fa-plus] " Add semy"]]
+       [:i.fas.fa-plus] " Semy"]]
      [:div.components
       [:ul
        (let [components @(rf/subscribe [:get (conj path :components)])]
