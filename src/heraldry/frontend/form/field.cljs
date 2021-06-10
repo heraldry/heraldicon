@@ -5,6 +5,7 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.form.charge :as charge]
+            [heraldry.frontend.form.charge-group :as charge-group]
             [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.geometry :as geometry]
             [heraldry.frontend.form.line :as line]
@@ -299,6 +300,9 @@
       [:button {:on-click #(state/dispatch-on-event % [:add-component path default/charge])}
        [:i.fas.fa-plus] " Charge"]
       " "
+      [:button {:on-click #(state/dispatch-on-event % [:add-component path default/charge-group])}
+       [:i.fas.fa-plus] " Charge group"]
+      " "
       [:button {:on-click #(state/dispatch-on-event % [:add-component path default/semy])}
        [:i.fas.fa-plus] " Semy"]]
      [:div.components
@@ -327,6 +331,9 @@
                  "heraldry.charge.type" [charge/form component-path
                                          :parent-field field
                                          :form-for-field form]
+                 "heraldry.charge-group.type" [charge-group/form component-path
+                                               :parent-field field
+                                               :form-for-field form]
                  "heraldry.component" [semy/form component-path
                                        :parent-field field
                                        :form-for-layout form-for-layout
