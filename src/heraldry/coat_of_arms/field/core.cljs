@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.field.core
   (:require [heraldry.coat-of-arms.charge.core :as charge]
+            [heraldry.coat-of-arms.charge-group.core :as charge-group]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.type.barry :as barry]
@@ -216,6 +217,8 @@
                                                                                               (update :db-path conj :components idx))]
           "heraldry.charge.type" ^{:key idx} [charge/render element field environment (-> context
                                                                                           (update :db-path conj :components idx))]
+          "heraldry.charge-group.type" ^{:key idx} [charge-group/render element field environment (-> context
+                                                                                                      (update :db-path conj :components idx))]
           "heraldry.component" ^{:key idx} [semy/render element environment (-> context
                                                                                 (update :db-path conj :components idx))]))]
      (when selected?

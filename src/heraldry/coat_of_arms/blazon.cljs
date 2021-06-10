@@ -43,6 +43,7 @@
   (case (-> component :type namespace)
     "heraldry.ordinary.type" (encode-ordinary component)
     "heraldry.charge.type" (encode-charge component)
+    "heraldry.charge-group.type" (str "charge group of " (encode-charge (-> component :charges first)))
     "heraldry.component" (encode-semy component)))
 
 (defn encode-field [{:keys [components counterchanged?] :as field} & {:keys [root?]}]

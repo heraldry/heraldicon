@@ -203,6 +203,7 @@
       :fx [[:dispatch [:ui-submenu-open (conj components-path index (case (-> value :type namespace)
                                                                       "heraldry.ordinary.type" "Select Ordinary"
                                                                       "heraldry.charge.type" "Select Charge"
+                                                                      "heraldry.charge-group.type" nil
                                                                       "heraldry.component" "Select Semy"))]]
            [:dispatch [:ui-component-open (conj components-path index)]]
            [:dispatch [:ui-component-open (conj components-path index :field)]]]})))

@@ -1,3 +1,4 @@
+
 (ns heraldry.coat-of-arms.default
   (:require [heraldry.config :as config]))
 
@@ -17,6 +18,19 @@
    :tincture {:shadow 1
               :highlight 1}
    :hints {:outline-mode :keep}})
+
+(def charge-group
+  {:type :heraldry.charge-group.type/strips
+   :strip-type :rows
+   :spacing 10
+   :strip-angle 0
+   :charges [charge]
+   :strips [{:spacing 10
+             :alignment :center
+             :slots [0 0]}
+            {:spacing 10
+             :alignment :center
+             :slots [0]}]})
 
 (def semy
   {:type :heraldry.component/semy
