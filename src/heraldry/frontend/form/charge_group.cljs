@@ -181,5 +181,5 @@
               :form-for-field form-for-field]]
             [:div {:style {:padding-left "10px"}}
              (when (-> charges count (> 1))
-               [:a {:on-click #(state/dispatch-on-event % [:remove-element charge-path])}
+               [:a {:on-click #(state/dispatch-on-event % [:remove-charge-group-charge charge-path])}
                 [:i.far.fa-trash-alt]])]]))]]]))
