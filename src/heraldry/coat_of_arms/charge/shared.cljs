@@ -13,11 +13,16 @@
             [heraldry.util :as util]))
 
 (defn make-charge
-  [{:keys [field hints] :as charge} parent environment {:keys [render-options] :as context} arg function]
+  [{:keys [field hints] :as charge} parent environment
+   {:keys [render-options
+           charge-group-slot-spacing] :as context} arg function]
   (let [{:keys [origin
                 anchor
                 geometry
-                fimbriation]} (options/sanitize charge (charge-options/options charge))
+                fimbriation]} (options/sanitize charge (update-in
+                                                        (charge-options/options charge)
+                                                        [:origin :point :choices]
+                                                        conj ["Special" :special]))
         {:keys [size stretch
                 mirrored? reversed?]} geometry
         {origin-point :real-origin
@@ -27,21 +32,52 @@
                                      anchor
                                      0
                                      -90)
+        points (:points environment)
+        top (:top points)
+        bottom (:bottom points)
+        left (:left points)
+        right (:right points)
+        width (:width environment)
+        height (:height environment)
         hints (if (-> render-options :mode (= :hatching))
                 (assoc hints :outline-mode :keep)
                 hints)
         angle (+ (v/angle-to-point origin-point anchor-point)
                  90)
         arg-value (get environment arg)
-        target-arg-value (-> size
+
+            ;; since size now is filled with a default, check whether it was set at all,
+            ;; if not, then use nil
+            ;; TODO: this probably needs a better mechanism and form representation
+        size (if (-> charge :geometry :size) size nil)
+        target-arg-value (-> (or size
+                                 80)
                              ((util/percent-of arg-value)))
-        scale-x (if mirrored? -1 1)
-        scale-y (* (if reversed? -1 1) stretch)
         {:keys [shape
                 mask
                 charge-width
                 charge-height
                 charge-top-left]} (function target-arg-value)
+        min-x-distance (or (some-> charge-group-slot-spacing :width (/ 2) (/ 0.8))
+                           (min (- (:x origin-point) (:x left))
+                                (- (:x right) (:x origin-point))))
+        min-y-distance (or (some-> charge-group-slot-spacing :height (/ 2) (/ 0.7))
+                           (min (- (:y origin-point) (:y top))
+                                (- (:y bottom) (:y origin-point))))
+        target-width (if size
+                       (-> size
+                           ((util/percent-of width)))
+                       (* (* min-x-distance 2) 0.8))
+        target-height (/ (if size
+                           (-> size
+                               ((util/percent-of height)))
+                           (* (* min-y-distance 2) 0.7))
+                         stretch)
+        scale-x (* (if mirrored? -1 1)
+                   (min (/ target-width charge-width)
+                        (/ target-height charge-height)))
+        scale-y (* (if reversed? -1 1)
+                   (* (Math/abs scale-x) stretch))
         charge-top-left (or charge-top-left
                             (-> (v/v charge-width charge-height)
                                 (v// -2)))
