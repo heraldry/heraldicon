@@ -46,7 +46,7 @@
              :max 5
              :default 1}
    :offset {:type :range
-            :min 0
+            :min -3
             :max 3
             :default 0}})
 
