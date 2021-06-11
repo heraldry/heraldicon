@@ -7,12 +7,6 @@
 (defn render [& opts]
   [:<>])
 
-(defmulti calculate-points
-  (fn [{:keys [type]} _]
-    (case type
-      :heraldry.charge-group.type/rows :strips
-      :heraldry.charge-group.type/columns :strips)))
-
 (defn calculate-slot-positions [{:keys [slots] :as strip} spacing]
   (let [{:keys [size
                 stretch
@@ -30,9 +24,17 @@
                                   (* spacing)
                                   (- (/ length 2))
                                   (+ offset))
+                    :slot-index idx
                     :charge-index charge-index}) slots)))
 
-(defmethod calculate-points :strips [{:keys [type strips charges] :as charge-group} environment]
+(defmulti calculate-points
+  (fn [{:keys [type]} _ _]
+    (case type
+      :heraldry.charge-group.type/rows :strips
+      :heraldry.charge-group.type/columns :strips)))
+
+(defmethod calculate-points :strips [{:keys [type strips charges] :as charge-group} environment
+                                     {:keys [db-path]}]
   (let [reference-length (case type
                            :heraldry.charge-group.type/rows (:width environment)
                            :heraldry.charge-group.type/columns (:height environment))
@@ -54,9 +56,10 @@
                               strip-position (-> idx
                                                  (* strip-spacing)
                                                  (- (/ length 2)))]
-                          (map (fn [{:keys [position charge-index]}]
+                          (map (fn [{:keys [position charge-index slot-index]}]
                                  {:point (make-point-fn position
                                                         strip-position)
+                                  :slot-path (conj db-path :strips idx :slots slot-index)
                                   :charge-index (if (and (int? charge-index)
                                                          (< -1 charge-index num-charges))
                                                   charge-index

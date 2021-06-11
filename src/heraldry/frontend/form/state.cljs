@@ -1,5 +1,6 @@
 (ns heraldry.frontend.form.state
   (:require [clojure.walk :as walk]
+            [day8.re-frame.tracing :refer-macros [fn-traced defn-traced]]
             [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.options :as options]
@@ -271,3 +272,21 @@
                                          (vec (concat before [value] after))))
       :fx [[:dispatch [:ui-submenu-open (conj elements-path index)]]
            [:dispatch [:ui-component-open (conj elements-path index)]]]})))
+
+(rf/reg-event-db
+ :cycle-charge-index
+ (fn-traced [db [_ path num-charges]]
+            (let [slots-path (drop-last path)
+                  slot-index (last path)
+                  slots (get-in db slots-path)
+                  slots (if (-> slots count (<= slot-index))
+                          (-> slots
+                              (concat (repeat (-> slot-index inc (- (count slots))) nil))
+                              vec)
+                          slots)
+                  current-value (get-in db path)
+                  new-value (cond
+                              (nil? current-value) 0
+                              (= current-value (dec num-charges)) nil
+                              :else (inc current-value))]
+              (assoc-in db slots-path (assoc slots slot-index new-value)))))

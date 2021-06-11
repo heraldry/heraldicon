@@ -14,10 +14,12 @@
 (def preview-tinctures
   [:azure :or :vert :gules :purpure :sable])
 
-(defn preview-form [charge-group render-options]
-  (let [environment {:width 200
+(defn preview-form [path render-options]
+  (let [charge-group @(rf/subscribe [:get path])
+        environment {:width 200
                      :height 200}
-        slot-positions (charge-group/calculate-points charge-group environment)]
+        slot-positions (charge-group/calculate-points charge-group environment {:db-path path})
+        num-charges (-> charge-group :charges count)]
     [:div
      [:svg {:style {:width "10em"
                     :height "10em"}
@@ -31,15 +33,17 @@
                :style {:stroke "#000"
                        :fill "none"}}]
        [:g {:transform "translate(100,100)"}
-        (for [[idx {:keys [point charge-index]}] (map-indexed vector slot-positions)]
+        (for [[idx {:keys [point charge-index slot-path]}] (map-indexed vector slot-positions)]
           (let [color (if (nil? charge-index)
-                        "none"
+                        "#fff"
                         (-> charge-index
                             (mod (count preview-tinctures))
                             (->> (get preview-tinctures))
                             (tincture/pick render-options)))]
             ^{:key idx}
-            [:g {:transform (str "translate(" (:x point) "," (:y point) ")")}
+            [:g {:transform (str "translate(" (:x point) "," (:y point) ")")
+                 :on-click #(state/dispatch-on-event % [:cycle-charge-index slot-path num-charges])
+                 :style {:cursor "pointer"}}
              [:circle {:r 10
                        :style {:stroke "#000"
                                :stroke-width 0.5
@@ -98,6 +102,11 @@
        [position/form (conj path :origin)
         :title "Origin"
         :options (:origin options)])
+
+     [preview-form
+      path
+      render-options]
+
      (when (-> options :spacing)
        [element/range-input (conj path :spacing) "Spacing"
         (-> options :spacing :min)
@@ -116,10 +125,6 @@
         (-> options :strip-angle :max)
         :step 0.01
         :default (options/get-value (:strip-angle charge-group) (:strip-angle options))])
-
-     [preview-form
-      charge-group
-      render-options]
 
      [:div {:style {:margin-bottom "0.5em"}}
       [:button {:on-click #(state/dispatch-on-event % [:add-element strips-path default/charge-group-strip])}
