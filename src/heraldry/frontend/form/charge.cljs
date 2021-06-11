@@ -138,7 +138,7 @@
                                  [charge-select/charge-properties charge-data]]))]
            [:div "loading..."])])]]))
 
-(defn form [path & {:keys [parent-field form-for-field part-of-semy?]}]
+(defn form [path & {:keys [parent-field form-for-field part-of-semy? part-of-charge-group?]}]
   (let [charge @(rf/subscribe [:get path])
         charge-data (when-let [variant (:variant charge)]
                       (frontend-charge/fetch-charge-data variant))
@@ -223,7 +223,8 @@
                 (conj path :tincture t)
                 :label (util/translate-cap-first t)])])]])
       (let [charge-options (charge-options/options charge
-                                                   :part-of-semy? part-of-semy?)]
+                                                   :part-of-semy? part-of-semy?
+                                                   :part-of-charge-group? part-of-charge-group?)]
         [:<>
          (when (:origin charge-options)
            [position/form (conj path :origin)

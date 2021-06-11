@@ -178,7 +178,8 @@
             [:div
              [charge/form charge-path
               :parent-field parent-field
-              :form-for-field form-for-field]]
+              :form-for-field form-for-field
+              :part-of-charge-group? true]]
             [:div {:style {:padding-left "10px"}}
              (when (-> charges count (> 1))
                [:a {:on-click #(state/dispatch-on-event % [:remove-charge-group-charge charge-path])}

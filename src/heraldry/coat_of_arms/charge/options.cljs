@@ -34,7 +34,7 @@
                     (assoc-in [:thickness-2 :max] 50)
                     (assoc-in [:thickness-2 :default] 10))})
 
-(defn options [charge & {:keys [part-of-semy?]}]
+(defn options [charge & {:keys [part-of-semy? part-of-charge-group?]}]
   (let [type (-> charge :type name keyword)]
     (-> (cond
           (= type :escutcheon) (options/pick default-options
@@ -69,7 +69,8 @@
                                [:geometry]
                                [:fimbriation]]))
         (cond->
-         part-of-semy? (dissoc :origin))
+         (or part-of-semy?
+             part-of-charge-group?) (dissoc :origin))
         (update-in [:anchor] (fn [anchor]
                                (when anchor
                                  (position/adjust-options anchor (-> charge :anchor))))))))
