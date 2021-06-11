@@ -21,15 +21,18 @@
 
 (def charge-group
   {:type :heraldry.charge-group.type/rows
-   :spacing 10
    :strip-angle 0
+   :spacing 10
+   :stretch 1
    :charges [charge]
-   :strips [{:spacing 10
-             :alignment :center
+   :strips [{:size 2
              :slots [0 0]}
-            {:spacing 10
-             :alignment :center
+            {:size 1
              :slots [0]}]})
+
+(def charge-group-strip
+  {:size 3
+   :slots [0 0 0]})
 
 (def semy
   {:type :heraldry.component/semy
