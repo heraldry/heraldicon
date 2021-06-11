@@ -212,15 +212,15 @@
           :transform transform}
       [render-function field environment context]
       (for [[idx element] (map-indexed vector components)]
-        (case (-> element :type namespace)
-          "heraldry.ordinary.type" ^{:key idx} [ordinary/render element field environment (-> context
-                                                                                              (update :db-path conj :components idx))]
-          "heraldry.charge.type" ^{:key idx} [charge/render element field environment (-> context
-                                                                                          (update :db-path conj :components idx))]
-          "heraldry.charge-group.type" ^{:key idx} [charge-group/render element field environment (-> context
-                                                                                                      (update :db-path conj :components idx))]
-          "heraldry.component" ^{:key idx} [semy/render element environment (-> context
-                                                                                (update :db-path conj :components idx))]))]
+        (let [adjusted-context (-> context
+                                   (update :db-path conj :components idx))]
+          ^{:key idx}
+          [:<>
+           (case (-> element :type namespace)
+             "heraldry.ordinary.type" [ordinary/render element field environment adjusted-context]
+             "heraldry.charge.type" [charge/render element field environment adjusted-context]
+             "heraldry.charge-group.type" [charge-group/render element field environment adjusted-context]
+             "heraldry.component" [semy/render element environment adjusted-context])]))]
      (when selected?
        [:path {:d (:shape environment)
                :style {:opacity 0.25}
