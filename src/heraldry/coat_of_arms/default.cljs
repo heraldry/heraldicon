@@ -22,8 +22,8 @@
 (def charge-group
   {:type :heraldry.charge-group.type/rows
    :strip-angle 0
-   :spacing 10
-   :stretch 1
+   :spacing 20
+   :stretch 0.866
    :charges [charge]
    :strips [{:size 2
              :slots [0 0]}

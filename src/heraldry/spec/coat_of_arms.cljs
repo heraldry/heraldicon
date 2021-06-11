@@ -1,14 +1,13 @@
 (ns heraldry.spec.coat-of-arms
   (:require [cljs.spec.alpha :as s]
             [heraldry.coat-of-arms.attributes :as attributes]
+            [heraldry.coat-of-arms.charge-group.options :as charge-group]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
-            [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.texture :as texture]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.spec.core :as core]))
+            [heraldry.coat-of-arms.tincture.core :as tincture]))
 
 (s/def :heraldry/spec-version number?)
 (s/def :heraldry/escutcheon #(get escutcheon/kinds-map %))
@@ -68,6 +67,7 @@
 (s/def :heraldry.field/counterchanged? boolean?)
 (s/def :heraldry.field/components (s/coll-of #(or (s/valid? :heraldry/ordinary %)
                                                   (s/valid? :heraldry/charge %)
+                                                  (s/valid? :heraldry/charge-group %)
                                                   (s/valid? :heraldry/semy %)) :into []))
 
 (s/def :heraldry.field.ref/index #(and (number? %)
@@ -138,6 +138,13 @@
                                          :heraldry.charge/tincture
                                          :heraldry.charge/hints
                                          :heraldry.charge/variant]))
+
+;; TODO: add proper spec
+(s/def :heraldry.charge-group/type charge-group/type-map)
+(s/def :heraldry.charge-group/charges (s/coll-of :heraldry/charge :into []))
+(s/def :heraldry/charge-group (s/keys :req-un [:heraldry.charge-group/type
+                                               :heraldry.charge-group/charges]
+                                      :opt-un []))
 
 (s/def :heraldry.semy/type #(= % :heraldry.component/semy))
 (s/def :heraldry.semy/layout #(s/valid? :heraldry.field/layout %))
