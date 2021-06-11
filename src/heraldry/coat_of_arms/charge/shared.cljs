@@ -19,10 +19,13 @@
   (let [{:keys [origin
                 anchor
                 geometry
-                fimbriation]} (options/sanitize charge (update-in
-                                                        (charge-options/options charge)
-                                                        [:origin :point :choices]
-                                                        conj ["Special" :special]))
+                fimbriation]} (options/sanitize charge
+                                                ;; TODO: this is a bit hacky, but allows
+                                                ;; overriding the origin point
+                                                (update-in
+                                                 (charge-options/options charge)
+                                                 [:origin :point :choices]
+                                                 conj ["Special" :special]))
         {:keys [size stretch
                 mirrored? reversed?]} geometry
         {origin-point :real-origin
