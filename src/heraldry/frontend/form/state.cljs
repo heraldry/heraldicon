@@ -219,18 +219,18 @@
 (rf/reg-event-db
  :move-element-up
  (fn [db [_ path]]
-   (let [components-path (drop-last path)
+   (let [elements-path (drop-last path)
          index (last path)]
-     (update-in db components-path (fn [components]
-                                     (let [num-components (count components)]
-                                       (if (>= index num-components)
-                                         components
-                                         (-> components
-                                             (subvec 0 index)
-                                             (conj (get components (inc index)))
-                                             (conj (get components index))
-                                             (concat (subvec components (+ index 2)))
-                                             vec))))))))
+     (update-in db elements-path (fn [elements]
+                                   (let [num-elements (count elements)]
+                                     (if (>= index num-elements)
+                                       elements
+                                       (-> elements
+                                           (subvec 0 index)
+                                           (conj (get elements (inc index)))
+                                           (conj (get elements index))
+                                           (concat (subvec elements (+ index 2)))
+                                           vec))))))))
 
 (rf/reg-event-db
  :move-element-down
