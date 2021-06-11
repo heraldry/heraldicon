@@ -25,8 +25,8 @@
              :max 5
              :default 1}
    :strip-angle {:type :range
-                 :min -45
-                 :max 45
+                 :min -90
+                 :max 90
                  :default 0}})
 
 (def type-choices
