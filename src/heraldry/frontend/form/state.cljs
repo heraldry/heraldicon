@@ -1,6 +1,5 @@
 (ns heraldry.frontend.form.state
   (:require [clojure.walk :as walk]
-            [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.options :as options]
@@ -207,6 +206,14 @@
                                                                       "heraldry.component" "Select Semy"))]]
            [:dispatch [:ui-component-open (conj components-path index)]]
            [:dispatch [:ui-component-open (conj components-path index :field)]]]})))
+
+(rf/reg-event-db
+ :add-element
+ (fn [db [_ path value]]
+   (update-in db path (fn [elements]
+                        (-> elements
+                            (conj value)
+                            vec)))))
 
 (rf/reg-event-db
  :remove-element

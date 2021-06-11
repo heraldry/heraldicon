@@ -36,21 +36,15 @@
 (def type-map
   (util/choices->map type-choices))
 
-(def alignment-choices
-  [["Left" :left]
-   ["Center" :center]
-   ["Right" :right]])
-
-(def alignment-map
-  (util/choices->map alignment-choices))
-
 (def strip-options
-  {:spacing {:type :range
-             :min 1
-             :max 100
-             :default 100}
-   :alignment {:type :choice
-               :choices alignment-choices}
+  {:size {:type :range
+          :min 0
+          :max 10
+          :default 3}
+   :stretch {:type :range
+             :min 0
+             :max 5
+             :default 1}
    :offset {:type :range
             :min 0
             :max 3
