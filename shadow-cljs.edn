@@ -19,7 +19,8 @@
 
            :dev {:modules {:main {:init-fn heraldry.frontend.main/dev-init}}
                  :output-dir "./frontend/build/dev/generated"
-                 :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true}}}
+                 :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
+                                                      day8.re-frame.tracing.trace-enabled? true}}}
 
            :release {:modules {:main {:init-fn heraldry.frontend.main/init}}
                      :output-dir "./frontend/build/prod/js/generated"}}
