@@ -288,5 +288,30 @@
                   new-value (cond
                               (nil? current-value) 0
                               (= current-value (dec num-charges)) nil
+                              (> current-value (dec num-charges)) 0
                               :else (inc current-value))]
               (assoc-in db slots-path (assoc slots slot-index new-value)))))
+
+(rf/reg-event-db
+ :remove-charge-group-charge
+ (fn-traced [db [_ path]]
+            (let [elements-path (drop-last path)
+                  strips-path (-> path
+                                  (->> (drop-last 2))
+                                  vec
+                                  (conj :strips))
+                  index (last path)]
+              (-> db
+                  (update-in elements-path (fn [elements]
+                                             (vec (concat (subvec elements 0 index)
+                                                          (subvec elements (inc index))))))
+                  (update-in strips-path (fn [strips]
+                                           (mapv (fn [strip]
+                                                   (update strip :slots (fn [slots]
+                                                                          (mapv (fn [charge-index]
+                                                                                  (cond
+                                                                                    (= charge-index index) 0
+                                                                                    (> charge-index index) (dec charge-index)
+                                                                                    :else charge-index))
+                                                                                slots))))
+                                                 strips)))))))
