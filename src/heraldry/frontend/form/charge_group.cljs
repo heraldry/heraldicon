@@ -168,12 +168,12 @@
                                      :white-space "nowrap"}}
              [:a (if (zero? idx)
                    {:class "disabled"}
-                   {:on-click #(state/dispatch-on-event % [:move-element-down charge-path])})
+                   {:on-click #(state/dispatch-on-event % [:move-charge-group-charge-down charge-path])})
               [:i.fas.fa-chevron-up]]
              " "
              [:a (if (= idx (dec (count charges)))
                    {:class "disabled"}
-                   {:on-click #(state/dispatch-on-event % [:move-element-up charge-path])})
+                   {:on-click #(state/dispatch-on-event % [:move-charge-group-charge-up charge-path])})
               [:i.fas.fa-chevron-down]]]
             [:div
              [charge/form charge-path
