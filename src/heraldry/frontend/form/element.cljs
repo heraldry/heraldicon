@@ -22,31 +22,36 @@
                               (rf/dispatch [:set path new-checked?])))}]
      [:label {:for component-id} label]]))
 
+(defn keyword->str [k]
+  (-> k
+      str
+      (subs 1)))
+
 (defn select [path label choices & {:keys [value on-change default]}]
   (let [component-id (id "select")
         current-value @(rf/subscribe [:get path])]
     [:div.setting
      [:label {:for component-id} label]
      [:select {:id component-id
-               :value (name (or value
-                                current-value
-                                default
-                                :none))
-               :on-change #(let [checked (keyword (-> % .-target .-value))]
+               :value (keyword->str (or value
+                                        current-value
+                                        default
+                                        :none))
+               :on-change #(let [selected (keyword (-> % .-target .-value))]
                              (if on-change
-                               (on-change checked)
-                               (rf/dispatch [:set path checked])))}
+                               (on-change selected)
+                               (rf/dispatch [:set path selected])))}
       (for [[group-name & group-choices] choices]
         (if (and (-> group-choices count (= 1))
                  (-> group-choices first keyword?))
           (let [key (-> group-choices first)]
             ^{:key key}
-            [:option {:value (name key)} group-name])
+            [:option {:value (keyword->str key)} group-name])
           ^{:key group-name}
           [:optgroup {:label group-name}
            (for [[display-name key] group-choices]
              ^{:key key}
-             [:option {:value (name key)} display-name])]))]]))
+             [:option {:value (keyword->str key)} display-name])]))]]))
 
 (defn radio-select [path choices & {:keys [on-change default label]}]
   [:div.setting
