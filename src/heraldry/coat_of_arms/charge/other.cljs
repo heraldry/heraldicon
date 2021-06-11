@@ -92,14 +92,18 @@
               {:keys [render-field
                       render-options
                       load-charge-data
-                      fn-select-component]
+                      fn-select-component
+                      charge-group-slot-spacing]
                :as context}]
   (let [full-charge-data (or data (when variant (load-charge-data variant)))]
     (if (:data full-charge-data)
       (let [{:keys [origin
                     anchor
                     geometry
-                    fimbriation]} (options/sanitize charge (charge-options/options charge))
+                    fimbriation]} (options/sanitize charge (update-in
+                                                            (charge-options/options charge)
+                                                            [:origin :point :choices]
+                                                            conj ["Special" :special]))
             {:keys [size stretch
                     mirrored? reversed?]} geometry
             charge-data (:data full-charge-data)
@@ -132,10 +136,12 @@
                                          -90)
             angle (+ (v/angle-to-point origin-point anchor-point)
                      90)
-            min-x-distance (min (- (:x origin-point) (:x left))
-                                (- (:x right) (:x origin-point)))
-            min-y-distance (min (- (:y origin-point) (:y top))
-                                (- (:y bottom) (:y origin-point)))
+            min-x-distance (or (some-> charge-group-slot-spacing :width (/ 2) (/ 0.8))
+                               (min (- (:x origin-point) (:x left))
+                                    (- (:x right) (:x origin-point))))
+            min-y-distance (or (some-> charge-group-slot-spacing :height (/ 2) (/ 0.7))
+                               (min (- (:y origin-point) (:y top))
+                                    (- (:y bottom) (:y origin-point))))
             target-width (if size
                            (-> size
                                ((util/percent-of width)))

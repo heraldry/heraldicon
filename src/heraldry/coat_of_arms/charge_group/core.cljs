@@ -1,17 +1,18 @@
 (ns heraldry.coat-of-arms.charge-group.core
   (:require [heraldry.coat-of-arms.charge-group.options :as charge-group-options]
+            [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.util :as util]
-            [heraldry.coat-of-arms.vector :as v]))
-
-(defn render [& opts]
-  [:<>])
+            [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.util :as util]))
 
 (defn calculate-slot-positions [{:keys [slots] :as strip} spacing]
   (let [{:keys [size
                 stretch
                 offset]} (options/sanitize strip charge-group-options/strip-options)
-        slots (concat slots (repeat (-> size (- (count slots))) nil))
+        slots (-> slots
+                  (concat (repeat (-> size (- (count slots))) nil))
+                  (->> (take size)))
         spacing (* spacing
                    stretch)
         offset (* spacing
@@ -67,3 +68,34 @@
                                slot-positions))))
          (apply concat)
          vec)))
+
+(defn render [{:keys [type charges] :as charge-group} parent environment context]
+  [:g
+   (let [reference-length (case type
+                            :heraldry.charge-group.type/rows (:width environment)
+                            :heraldry.charge-group.type/columns (:height environment))
+         {:keys [origin
+                 stretch
+                 spacing]} (options/sanitize charge-group charge-group-options/default-options)
+         spacing ((util/percent-of reference-length) spacing)
+         strip-spacing (* spacing
+                          stretch)
+         slot-spacing (case type
+                        :heraldry.charge-group.type/rows {:width spacing
+                                                          :height strip-spacing}
+                        :heraldry.charge-group.type/columns {:width strip-spacing
+                                                             :height spacing})
+         real-origin (position/calculate origin environment)
+         slot-positions (calculate-points charge-group environment context)]
+     (for [[idx {:keys [point charge-index]}] (map-indexed vector slot-positions)
+           :when (and charge-index
+                      (< charge-index (count charges)))]
+       (let [charge (-> charges
+                        (get charge-index)
+                        (assoc :origin {:point :special}))]
+         ^{:key idx}
+         [charge/render charge parent
+          (assoc-in environment [:points :special] (v/+ real-origin point))
+          (-> context
+              (update :db-path conj :charges charge-index)
+              (assoc :charge-group-slot-spacing slot-spacing))])))])
