@@ -14,8 +14,8 @@
    ["Metal (smooth)" :metal-smooth "/textures/metal-smooth.jpg" 1]
    ["Mosaic" :mosaic "/textures/mosaic.jpg" 2]
    ["Satin" :satin "/textures/satin.jpg" 10]
-   ["Stone" :fur "/textures/stone.jpg" 1]
-   ["Stone (rough)" :test "/textures/stone-rough.jpg" 1]
+   ["Stone" :stone "/textures/stone.jpg" 1]
+   ["Stone (rough)" :stone-rough "/textures/stone-rough.jpg" 1]
    ["Wood" :wood "/textures/wood.jpg" 1]])
 
 (def choices
