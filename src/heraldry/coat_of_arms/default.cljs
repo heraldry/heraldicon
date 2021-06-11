@@ -20,8 +20,7 @@
    :hints {:outline-mode :keep}})
 
 (def charge-group
-  {:type :heraldry.charge-group.type/strips
-   :strip-type :rows
+  {:type :heraldry.charge-group.type/rows
    :spacing 10
    :strip-angle 0
    :charges [charge]
