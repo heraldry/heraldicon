@@ -42,7 +42,7 @@ Here's a list of things already supported and things I'm working on.
 - [X] add other field *treatments*, some of which might have configurable colours
 - [X] configure charge position and size
 - [X] configure charge mirroring, reversing, and rotation
-- [ ] configure charge number and arrangements
+- [X] configure charge number and arrangements
 - [X] add *semy*
 - [X] add configurable *paly divisions*
 - [X] add configurable *chequered divisions*
