@@ -58,6 +58,14 @@
                                  :stroke-width 0.5
                                  :fill "#fff"}}])]))]]]]))
 
+(defn slot-number-form [path options current-value]
+  [element/range-input nil "Number"
+   (-> options :min)
+   (-> options :max)
+   :default 0
+   :value current-value
+   :on-change #(rf/dispatch [:set-charge-group-slot-number path %])])
+
 (defn strip-form [path type-str]
   (let [strip-data @(rf/subscribe [:get path])
         options charge-group-options/strip-options
@@ -70,12 +78,7 @@
                      ", offset"))]
     [element/component path :charge-group title type-str
      (when (-> options :num-slots)
-       [element/range-input nil "Number"
-        (-> options :num-slots :min)
-        (-> options :num-slots :max)
-        :default (options/get-value (:num-slots strip-data) (:num-slots options))
-        :value num-slots
-        :on-change #(rf/dispatch [:set-charge-group-slot-number (conj path :slots) %])])
+       [slot-number-form (conj path :slots) (:num-slots options) num-slots])
 
      (when (-> options :stretch)
        [element/range-input (conj path :stretch) "Stretch"
@@ -97,14 +100,22 @@
         title (-> charge-group :type charge-group-options/type-map)
         strips-path (conj path :strips)
         charges-path (conj path :charges)
+        strip-type? (-> charge-group
+                        :type
+                        #{:heraldry.charge-group.type/rows
+                          :heraldry.charge-group.type/columns})
         type-str (case (:type charge-group)
                    :heraldry.charge-group.type/rows "Row"
-                   :heraldry.charge-group.type/columns "Column")
+                   :heraldry.charge-group.type/columns "Column"
+                   nil)
         strips (:strips charge-group)
         charges (:charges charge-group)
+        slots (:slots charge-group)
         render-options  {:theme @(rf/subscribe [:get shared/ui-render-options-theme-path])}]
     [element/component path :charge-group title "Charge group"
-     [element/select (conj path :type) "Type" charge-group-options/type-choices]
+     [element/select (conj path :type) "Type" charge-group-options/type-choices
+      :on-change #(rf/dispatch [:change-charge-group-type path %])]
+
      (when (-> options :origin)
        [position/form (conj path :origin)
         :title "Origin"
@@ -133,33 +144,66 @@
         :step 1
         :default (options/get-value (:strip-angle charge-group) (:strip-angle options))])
 
-     [:div {:style {:margin-bottom "0.5em"}}
-      [:button {:on-click #(state/dispatch-on-event % [:add-element strips-path default/charge-group-strip])}
-       [:i.fas.fa-plus] " " type-str]]
+     (when (-> options :num-slots)
+       [slot-number-form (conj path :slots) (:num-slots options) (count slots)])
 
-     [:div.components
-      [:ul
-       (for [[idx _] (map-indexed vector strips)]
-         (let [strip-path (conj strips-path idx)]
-           ^{:key idx}
-           [:li
-            [:div.no-select {:style {:padding-right "10px"
-                                     :white-space "nowrap"}}
-             [:a (if (zero? idx)
-                   {:class "disabled"}
-                   {:on-click #(state/dispatch-on-event % [:move-element-down strip-path])})
-              [:i.fas.fa-chevron-up]]
-             " "
-             [:a (if (= idx (dec (count strips)))
-                   {:class "disabled"}
-                   {:on-click #(state/dispatch-on-event % [:move-element-up strip-path])})
-              [:i.fas.fa-chevron-down]]]
-            [:div
-             [strip-form strip-path type-str]]
-            [:div {:style {:padding-left "10px"}}
-             (when (-> strips count (> 1))
-               [:a {:on-click #(state/dispatch-on-event % [:remove-element strip-path])}
-                [:i.far.fa-trash-alt]])]]))]]
+     (when (-> options :radius)
+       [element/range-input (conj path :radius) "Radius"
+        (-> options :radius :min)
+        (-> options :radius :max)
+        :step 1
+        :default (options/get-value (:radius charge-group) (:radius options))])
+
+     (when (-> options :arc-angle)
+       [element/range-input (conj path :arc-angle) "Arc angle"
+        (-> options :arc-angle :min)
+        (-> options :arc-angle :max)
+        :step 1
+        :default (options/get-value (:arc-angle charge-group) (:arc-angle options))])
+
+     (when (-> options :start-angle)
+       [element/range-input (conj path :start-angle) "Start angle"
+        (-> options :start-angle :min)
+        (-> options :start-angle :max)
+        :step 1
+        :default (options/get-value (:start-angle charge-group) (:start-angle options))])
+
+     (when (-> options :arc-stretch)
+       [element/range-input (conj path :arc-stretch) "Stretch"
+        (-> options :arc-stretch :min)
+        (-> options :arc-stretch :max)
+        :step 0.01
+        :default (options/get-value (:arc-stretch charge-group) (:arc-stretch options))])
+
+     (when strip-type?
+       [:<>
+        [:div {:style {:margin-bottom "0.5em"}}
+         [:button {:on-click #(state/dispatch-on-event % [:add-element strips-path default/charge-group-strip])}
+          [:i.fas.fa-plus] " " type-str]]
+
+        [:div.components
+         [:ul
+          (for [[idx _] (map-indexed vector strips)]
+            (let [strip-path (conj strips-path idx)]
+              ^{:key idx}
+              [:li
+               [:div.no-select {:style {:padding-right "10px"
+                                        :white-space "nowrap"}}
+                [:a (if (zero? idx)
+                      {:class "disabled"}
+                      {:on-click #(state/dispatch-on-event % [:move-element-down strip-path])})
+                 [:i.fas.fa-chevron-up]]
+                " "
+                [:a (if (= idx (dec (count strips)))
+                      {:class "disabled"}
+                      {:on-click #(state/dispatch-on-event % [:move-element-up strip-path])})
+                 [:i.fas.fa-chevron-down]]]
+               [:div
+                [strip-form strip-path type-str]]
+               [:div {:style {:padding-left "10px"}}
+                (when (-> strips count (> 1))
+                  [:a {:on-click #(state/dispatch-on-event % [:remove-element strip-path])}
+                   [:i.far.fa-trash-alt]])]]))]]])
 
      [:div {:style {:margin-bottom "0.5em"}}
       [:button {:on-click #(state/dispatch-on-event % [:add-element charges-path default/charge])}

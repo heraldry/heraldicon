@@ -6,7 +6,7 @@
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))
 
-(defn calculate-slot-positions [{:keys [slots] :as strip} spacing]
+(defn calculate-strip-slot-positions [{:keys [slots] :as strip} spacing]
   (let [{:keys [stretch
                 offset]} (options/sanitize strip charge-group-options/strip-options)
         spacing (* spacing
@@ -31,7 +31,8 @@
   (fn [{:keys [type]} _ _]
     (case type
       :heraldry.charge-group.type/rows :strips
-      :heraldry.charge-group.type/columns :strips)))
+      :heraldry.charge-group.type/columns :strips
+      :heraldry.charge-group.type/arc :arc)))
 
 (defmethod calculate-points :strips [{:keys [type strips charges] :as charge-group} environment
                                      {:keys [db-path]}]
@@ -53,7 +54,7 @@
                         :heraldry.charge-group.type/columns (fn [y x] (v/v x y)))]
     {:slot-positions (->> strips
                           (map-indexed (fn [idx strip]
-                                         (let [slot-positions (calculate-slot-positions strip spacing)
+                                         (let [slot-positions (calculate-strip-slot-positions strip spacing)
                                                strip-position (-> idx
                                                                   (* strip-spacing)
                                                                   (- (/ length 2)))]
@@ -74,6 +75,40 @@
                                                        :height strip-spacing}
                      :heraldry.charge-group.type/columns {:width strip-spacing
                                                           :height spacing})}))
+
+(defmethod calculate-points :arc [{:keys [slots charges] :as charge-group} environment
+                                  {:keys [db-path]}]
+  (let [options (charge-group-options/options charge-group)
+        {:keys [radius
+                arc-angle
+                start-angle
+                arc-stretch]} (options/sanitize charge-group options)
+        radius ((util/percent-of (:width environment)) radius)
+        num-charges (count charges)
+        num-slots (count slots)
+        angle-step (/ arc-angle (max (dec num-slots) 1))
+        distance (if (<= num-slots 1)
+                   50
+                   (-> (v/v radius 0)
+                       (v/- (v/rotate (v/v radius 0) angle-step))
+                       v/abs))]
+    {:slot-positions (->> slots
+                          (map-indexed (fn [slot-index charge-index]
+                                         (let [slot-angle (-> slot-index
+                                                              (* angle-step)
+                                                              (+ start-angle)
+                                                              (- 90))]
+                                           {:point (-> (v/v radius 0)
+                                                       (v/rotate slot-angle)
+                                                       (v/dot (v/v 1 arc-stretch)))
+                                            :slot-path (conj db-path :slots slot-index)
+                                            :charge-index (if (and (int? charge-index)
+                                                                   (< -1 charge-index num-charges))
+                                                            charge-index
+                                                            nil)})))
+                          vec)
+     :slot-spacing {:width (/ distance 1.2)
+                    :height (/ distance 1.2)}}))
 
 (defn render [{:keys [charges] :as charge-group} parent environment context]
   [:g
