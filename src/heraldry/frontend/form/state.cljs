@@ -433,3 +433,11 @@
                                        (and (-> new-type
                                                 (= :heraldry.charge-group.type/arc))
                                             (-> charge-group :slots not)) (assoc :slots [0 0 0 0 0]))))))))
+
+(rf/reg-event-db
+ :select-charge-group-preset
+ (fn-traced [db [_ path charge-group-preset]]
+            (-> db
+                (update-in path (fn [charge-group]
+                                  (-> charge-group-preset
+                                      (assoc :charges (:charges charge-group))))))))
