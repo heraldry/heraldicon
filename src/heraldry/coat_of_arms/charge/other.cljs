@@ -93,6 +93,7 @@
                       render-options
                       load-charge-data
                       fn-select-component
+                      charge-group
                       charge-group-slot-spacing]
                :as context}]
   (let [full-charge-data (or data (when variant (load-charge-data variant)))]
@@ -106,6 +107,9 @@
                                                             conj ["Special" :special]))
             {:keys [size stretch
                     mirrored? reversed?]} geometry
+            context (dissoc context
+                            :charge-group
+                            :charge-group-slot-spacing)
             charge-data (:data full-charge-data)
             render-field? (-> charge-data
                               :fixed-tincture
@@ -220,6 +224,7 @@
                          (v/-)
                          (v// 2)
                          (v/+ origin-point))
+            environment (update environment :points dissoc :special)
             charge-environment (environment/create
                                 (svg/make-path ["M" position
                                                 "l" (v/v (:x clip-size) 0)
@@ -237,7 +242,7 @@
                                                                  (:counterchanged? field))
                                                          environment)})
             field (if (:counterchanged? field)
-                    (counterchange/counterchange-field charge parent)
+                    (counterchange/counterchange-field charge parent :charge-group charge-group)
                     field)
             charge-name (or (:name full-charge-data) "")
             username (:username full-charge-data)

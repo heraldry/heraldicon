@@ -15,6 +15,7 @@
 (defn make-charge
   [{:keys [field hints] :as charge} parent environment
    {:keys [render-options
+           charge-group
            charge-group-slot-spacing] :as context} arg function]
   (let [{:keys [origin
                 anchor
@@ -28,6 +29,9 @@
                                                  conj ["Special" :special]))
         {:keys [size stretch
                 mirrored? reversed?]} geometry
+        context (dissoc context
+                        :charge-group
+                        :charge-group-slot-spacing)
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment
@@ -125,11 +129,12 @@
                       (v/v max-x max-y))]
                 mask-shape]]
         field (if (:counterchanged? field)
-                (counterchange/counterchange-field charge parent)
+                (counterchange/counterchange-field charge parent :charge-group charge-group)
                 field)
         charge-id (util/id "charge")
         outline? (or (:outline? render-options)
-                     (-> hints :outline-mode (= :keep)))]
+                     (-> hints :outline-mode (= :keep)))
+        environment (update environment :points dissoc :special)]
     [:<>
      (when (-> fimbriation :mode #{:double})
        (let [thickness (+ (-> fimbriation
