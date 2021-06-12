@@ -84,6 +84,9 @@
                 start-angle
                 arc-stretch]} (options/sanitize charge-group options)
         radius ((util/percent-of (:width environment)) radius)
+        stretch-vector (if (> arc-stretch 1)
+                         (v/v (/ 1 arc-stretch) 1)
+                         (v/v 1 arc-stretch))
         num-charges (count charges)
         num-slots (count slots)
         angle-step (/ arc-angle (max (if (= arc-angle 360)
@@ -102,7 +105,7 @@
                                                               (- 90))]
                                            {:point (-> (v/v radius 0)
                                                        (v/rotate slot-angle)
-                                                       (v/dot (v/v 1 arc-stretch)))
+                                                       (v/dot stretch-vector))
                                             :slot-path (conj db-path :slots slot-index)
                                             :charge-index (if (and (int? charge-index)
                                                                    (< -1 charge-index num-charges))
