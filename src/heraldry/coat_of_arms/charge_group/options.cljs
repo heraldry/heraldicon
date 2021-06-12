@@ -60,10 +60,3 @@
             :min -3
             :max 3
             :default 0}})
-
-(def strip-type-choices
-  [["Rows" :rows]
-   ["Columns" :columns]])
-
-(def strip-type-map
-  (util/choices->map strip-type-choices))
