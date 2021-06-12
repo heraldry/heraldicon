@@ -41,7 +41,7 @@
 (s/def :heraldry/origin #(s/valid? :heraldry/position %))
 (s/def :heraldry/anchor #(s/valid? :heraldry/position %))
 
-(s/def :heraldry.geometry/size number?)
+(s/def :heraldry.geometry/size (s/nilable number?))
 (s/def :heraldry/geometry (s/nilable (s/keys :opt-un [:heraldry.geometry/size])))
 
 (s/def :heraldry.field.layout/num-base-fields (s/nilable number?))
