@@ -144,10 +144,10 @@
                            slot-angle)
                     (+ angle slot-angle)
                     angle)
-            min-x-distance (or (some-> slot-spacing :width (/ 2) (/ 0.8))
+            min-x-distance (or (some-> slot-spacing :width (/ 2) (/ 0.9))
                                (min (- (:x origin-point) (:x left))
                                     (- (:x right) (:x origin-point))))
-            min-y-distance (or (some-> slot-spacing :height (/ 2) (/ 0.7))
+            min-y-distance (or (some-> slot-spacing :height (/ 2) (/ 0.8))
                                (min (- (:y origin-point) (:y top))
                                     (- (:y bottom) (:y origin-point))))
             target-width (if size
