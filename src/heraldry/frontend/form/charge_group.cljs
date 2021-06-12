@@ -123,7 +123,7 @@
        [element/range-input (conj path :strip-angle) (str type-str " angle")
         (-> options :strip-angle :min)
         (-> options :strip-angle :max)
-        :step 0.01
+        :step 1
         :default (options/get-value (:strip-angle charge-group) (:strip-angle options))])
 
      [:div {:style {:margin-bottom "0.5em"}}
