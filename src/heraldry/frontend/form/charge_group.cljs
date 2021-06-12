@@ -56,7 +56,14 @@
                [:circle {:r (* 2 (quot charge-index (count preview-tinctures)))
                          :style {:stroke "#000"
                                  :stroke-width 0.5
-                                 :fill "#fff"}}])]))]]]]))
+                                 :fill "#fff"}}])]))]]]
+     [:div.tooltip.info {:style {:display "inline-block"
+                                 :margin-left "0.2em"
+                                 :vertical-align "top"}}
+      [:i.fas.fa-question-circle]
+      [:div.bottom
+       [:h3 {:style {:text-align "center"}} "Click the slots to disable them or cycle through the available charges (added below)."]
+       [:i]]]]))
 
 (defn slot-number-form [path options current-value]
   [element/range-input nil "Number"
