@@ -200,6 +200,21 @@
                             {:slots [0 0 0 0 0]}
                             {:slots [nil nil 0 nil nil]}
                             {:slots [nil nil 0 nil nil]}]}]
+    ["In pall" {:type :heraldry.charge-group.type/columns
+                :strip-angle 0
+                :spacing 14
+                :stretch 0.866
+                :charges [{:type :heraldry.charge.type/roundel
+                           :field {:type :heraldry.field.type/plain
+                                   :tincture :azure}
+                           :geometry {:size 18}
+                           :hints {:outline-mode :keep}}]
+                :strips [{:slots [0 nil nil nil nil]}
+                         {:slots [nil 0 nil nil nil]}
+                         {:slots [nil nil 0 0 0]
+                          :stretch 1.25}
+                         {:slots [nil 0 nil nil nil]}
+                         {:slots [0 nil nil nil nil]}]}]
     ["Three in above bend" {:type :heraldry.charge-group.type/rows
                             :strip-angle 0
                             :spacing 30
