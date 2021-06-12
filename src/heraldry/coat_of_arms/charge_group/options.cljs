@@ -28,7 +28,27 @@
    :strip-angle {:type :range
                  :min -90
                  :max 90
-                 :default 0}})
+                 :default 0}
+   :start-angle {:type :range
+                 :min -180
+                 :max 180
+                 :default 0}
+   :arc-angle {:type :range
+               :min 0
+               :max 360
+               :default 360}
+   :num-slots {:type :range
+               :min 1
+               :max 20
+               :default 5}
+   :radius {:type :range
+            :min 1
+            :max 100
+            :default 30}
+   :arc-stretch {:type :range
+                 :min 0
+                 :max 5
+                 :default 1}})
 
 (defn options [charge-group]
   (when charge-group
@@ -38,11 +58,19 @@
                                                                                    [[:origin]
                                                                                     [:spacing]
                                                                                     [:stretch]
-                                                                                    [:strip-angle]]))))
+                                                                                    [:strip-angle]])
+      (-> charge-group :type (= :heraldry.charge-group.type/arc)) (options/pick default-options
+                                                                                [[:origin]
+                                                                                 [:arc-stretch]
+                                                                                 [:start-angle]
+                                                                                 [:arc-angle]
+                                                                                 [:num-slots]
+                                                                                 [:radius]]))))
 
 (def type-choices
   [["Rows" :heraldry.charge-group.type/rows]
-   ["Columns" :heraldry.charge-group.type/columns]])
+   ["Columns" :heraldry.charge-group.type/columns]
+   ["Arc" :heraldry.charge-group.type/arc]])
 
 (def type-map
   (util/choices->map type-choices))
