@@ -25,10 +25,8 @@
    :spacing 20
    :stretch 0.866
    :charges [charge]
-   :strips [{:size 2
-             :slots [0 0]}
-            {:size 1
-             :slots [0]}]})
+   :strips [{:slots [0 0]}
+            {:slots [0]}]})
 
 (def charge-group-strip
   {:size 3

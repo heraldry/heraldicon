@@ -7,17 +7,16 @@
             [heraldry.util :as util]))
 
 (defn calculate-slot-positions [{:keys [slots] :as strip} spacing]
-  (let [{:keys [size
-                stretch
+  (let [{:keys [stretch
                 offset]} (options/sanitize strip charge-group-options/strip-options)
-        slots (-> slots
-                  (concat (repeat (-> size (- (count slots))) nil))
-                  (->> (take size)))
         spacing (* spacing
                    stretch)
         offset (* spacing
                   offset)
-        length (+ (* (max 0 (dec size))
+        length (+ (* (-> slots
+                         count
+                         dec
+                         (max 0))
                      spacing)
                   offset)]
     (map-indexed (fn [idx charge-index]

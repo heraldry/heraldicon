@@ -37,10 +37,10 @@
   (util/choices->map type-choices))
 
 (def strip-options
-  {:size {:type :range
-          :min 0
-          :max 10
-          :default 3}
+  {:num-slots {:type :range
+               :min 0
+               :max 10
+               :default 3}
    :stretch {:type :range
              :min 0
              :max 5
