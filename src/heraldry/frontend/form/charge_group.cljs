@@ -89,7 +89,7 @@
 
 (defn form [path & {:keys [parent-field form-for-field]}]
   (let [charge-group @(rf/subscribe [:get path])
-        options charge-group-options/default-options
+        options (charge-group-options/options charge-group)
         title (-> charge-group :type charge-group-options/type-map)
         strips-path (conj path :strips)
         charges-path (conj path :charges)
