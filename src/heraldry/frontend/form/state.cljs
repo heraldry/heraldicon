@@ -295,6 +295,10 @@
                                   (->> (drop-last 2))
                                   vec
                                   (conj :strips))
+                  slots-path (-> path
+                                 (->> (drop-last 2))
+                                 vec
+                                 (conj :slots))
                   index (last path)]
               (-> db
                   (update-in elements-path (fn [elements]
@@ -309,7 +313,14 @@
                                                                                     (> charge-index index) (dec charge-index)
                                                                                     :else charge-index))
                                                                                 slots))))
-                                                 strips)))))))
+                                                 strips)))
+                  (update-in slots-path (fn [slots]
+                                          (mapv (fn [charge-index]
+                                                  (cond
+                                                    (= charge-index index) 0
+                                                    (> charge-index index) (dec charge-index)
+                                                    :else charge-index))
+                                                slots)))))))
 
 (rf/reg-event-db
  :move-charge-group-charge-up
@@ -319,6 +330,10 @@
                                   (->> (drop-last 2))
                                   vec
                                   (conj :strips))
+                  slots-path (-> path
+                                 (->> (drop-last 2))
+                                 vec
+                                 (conj :slots))
                   index (last path)]
               (-> db
                   (update-in elements-path (fn [elements]
@@ -340,7 +355,14 @@
                                                                                     (= charge-index (inc index)) (dec charge-index)
                                                                                     :else charge-index))
                                                                                 slots))))
-                                                 strips)))))))
+                                                 strips)))
+                  (update-in slots-path (fn [slots]
+                                          (mapv (fn [charge-index]
+                                                  (cond
+                                                    (= charge-index index) (inc charge-index)
+                                                    (= charge-index (inc index)) (dec charge-index)
+                                                    :else charge-index))
+                                                slots)))))))
 
 (rf/reg-event-db
  :move-charge-group-charge-down
@@ -350,6 +372,10 @@
                                   (->> (drop-last 2))
                                   vec
                                   (conj :strips))
+                  slots-path (-> path
+                                 (->> (drop-last 2))
+                                 vec
+                                 (conj :slots))
                   index (last path)]
               (-> db
                   (update-in elements-path (fn [elements]
@@ -370,7 +396,14 @@
                                                                                     (= charge-index index) (dec charge-index)
                                                                                     :else charge-index))
                                                                                 slots))))
-                                                 strips)))))))
+                                                 strips)))
+                  (update-in slots-path (fn [slots]
+                                          (mapv (fn [charge-index]
+                                                  (cond
+                                                    (= charge-index (dec index)) (inc charge-index)
+                                                    (= charge-index index) (dec charge-index)
+                                                    :else charge-index))
+                                                slots)))))))
 
 (rf/reg-event-db
  :set-charge-group-slot-number
