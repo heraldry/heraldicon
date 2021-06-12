@@ -51,10 +51,6 @@
                 hints)
         angle (+ (v/angle-to-point origin-point anchor-point)
                  90)
-        angle (if (and (-> anchor :point (= :angle))
-                       slot-angle)
-                (+ angle slot-angle)
-                angle)
         arg-value (get environment arg)
 
             ;; since size now is filled with a default, check whether it was set at all,
@@ -84,6 +80,12 @@
                                ((util/percent-of height)))
                            (* (* min-y-distance 2) 0.7))
                          stretch)
+        angle (if (and (-> anchor :point (= :angle))
+                       slot-angle)
+                (if (< charge-height charge-width)
+                  (+ angle slot-angle 90)
+                  (+ angle slot-angle))
+                angle)
         scale-x (* (if mirrored? -1 1)
                    (min (/ target-width charge-width)
                         (/ target-height charge-height)))

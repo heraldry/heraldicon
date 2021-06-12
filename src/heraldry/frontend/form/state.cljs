@@ -436,8 +436,18 @@
 
 (rf/reg-event-db
  :select-charge-group-preset
- (fn-traced [db [_ path charge-group-preset]]
-            (-> db
-                (update-in path (fn [charge-group]
-                                  (-> charge-group-preset
-                                      (assoc :charges (:charges charge-group))))))))
+ (fn [db [_ path charge-group-preset charge-adjustments]]
+   (let [new-db (-> db
+                    (update-in path (fn [charge-group]
+                                      (-> charge-group-preset
+                                          (assoc :charges (:charges charge-group)))))
+                    (assoc-in (conj path :charges 0 :anchor :point) :angle)
+                    (assoc-in (conj path :charges 0 :anchor :angle) 0)
+                    (assoc-in (conj path :charges 0 :geometry :size) nil))]
+     (loop [new-db new-db
+            [[rel-path value] & rest] charge-adjustments]
+       (if (not rel-path)
+         new-db
+         (recur
+          (assoc-in new-db (concat path rel-path) value)
+          rest))))))
