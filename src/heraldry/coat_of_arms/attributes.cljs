@@ -81,6 +81,7 @@
     ["Combed" :combed]
     ["Eyed (peacock)" :eyed]
     ["Finned" :finned]
+    ["Incensed" :incensed]
     ["Langued" :langued]
     ["Legged" :legged]
     ["Maned" :maned]
