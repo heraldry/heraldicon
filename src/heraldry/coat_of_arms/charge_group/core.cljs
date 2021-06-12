@@ -98,4 +98,5 @@
           (assoc-in environment [:points :special] (v/+ real-origin point))
           (-> context
               (update :db-path conj :charges charge-index)
+              (assoc :charge-group charge-group)
               (assoc :charge-group-slot-spacing slot-spacing))])))])

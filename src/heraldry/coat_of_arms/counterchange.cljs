@@ -10,7 +10,8 @@
                                     ;; look in this order to really find the most important two tinctures
                                     (concat (-> data :fields)
                                             [(-> data :field)]
-                                            (-> data :components))
+                                            (-> data :components)
+                                            (-> data :charges))
                                     (seq data))))
 
        (filter #(and (map? %)
@@ -29,8 +30,8 @@
       collect-tinctures
       (->> (take 2))))
 
-(defn counterchange-field [component parent]
-  (let [parent-up-to-component (field-up-to-component component parent)
+(defn counterchange-field [component parent & {:keys [charge-group]}]
+  (let [parent-up-to-component (field-up-to-component (or charge-group component) parent)
         [tincture-1 tincture-2] (get-counterchange-tinctures parent-up-to-component)
         tincture-map {tincture-1 tincture-2
                       tincture-2 tincture-1}]
