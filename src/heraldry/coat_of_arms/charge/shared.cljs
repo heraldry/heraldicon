@@ -15,8 +15,7 @@
 (defn make-charge
   [{:keys [field hints] :as charge} parent environment
    {:keys [render-options
-           charge-group
-           charge-group-slot-spacing] :as context} arg function]
+           charge-group] :as context} arg function]
   (let [{:keys [origin
                 anchor
                 geometry
@@ -29,9 +28,10 @@
                                                  conj ["Special" :special]))
         {:keys [size stretch
                 mirrored? reversed?]} geometry
-        context (dissoc context
-                        :charge-group
-                        :charge-group-slot-spacing)
+        {:keys [charge-group
+                slot-spacing
+                slot-angle]} charge-group
+        context (dissoc context :charge-group)
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment
@@ -51,6 +51,10 @@
                 hints)
         angle (+ (v/angle-to-point origin-point anchor-point)
                  90)
+        angle (if (and (-> anchor :point (= :angle))
+                       slot-angle)
+                (+ angle slot-angle)
+                angle)
         arg-value (get environment arg)
 
             ;; since size now is filled with a default, check whether it was set at all,
@@ -65,10 +69,10 @@
                 charge-width
                 charge-height
                 charge-top-left]} (function target-arg-value)
-        min-x-distance (or (some-> charge-group-slot-spacing :width (/ 2) (/ 0.8))
+        min-x-distance (or (some-> slot-spacing :width (/ 2) (/ 0.8))
                            (min (- (:x origin-point) (:x left))
                                 (- (:x right) (:x origin-point))))
-        min-y-distance (or (some-> charge-group-slot-spacing :height (/ 2) (/ 0.7))
+        min-y-distance (or (some-> slot-spacing :height (/ 2) (/ 0.7))
                            (min (- (:y origin-point) (:y top))
                                 (- (:y bottom) (:y origin-point))))
         target-width (if size

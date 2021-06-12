@@ -110,19 +110,20 @@
                                             :charge-index (if (and (int? charge-index)
                                                                    (< -1 charge-index num-charges))
                                                             charge-index
-                                                            nil)})))
+                                                            nil)
+                                            :angle (+ slot-angle 90)})))
                           vec)
      :slot-spacing {:width (/ distance 1.2)
                     :height (/ distance 1.2)}}))
 
-(defn render [{:keys [charges] :as charge-group} parent environment context]
+(defn render [{:keys [charges rotate-charges?] :as charge-group} parent environment context]
   [:g
    (let [options (charge-group-options/options charge-group)
          {:keys [origin]} (options/sanitize charge-group options)
          real-origin (position/calculate origin environment)
          {:keys [slot-positions
                  slot-spacing]} (calculate-points charge-group environment context)]
-     (for [[idx {:keys [point charge-index]}] (map-indexed vector slot-positions)
+     (for [[idx {:keys [point charge-index angle]}] (map-indexed vector slot-positions)
            :when (and charge-index
                       (< charge-index (count charges)))]
        (let [charge (-> charges
@@ -133,5 +134,7 @@
           (assoc-in environment [:points :special] (v/+ real-origin point))
           (-> context
               (update :db-path conj :charges charge-index)
-              (assoc :charge-group charge-group)
-              (assoc :charge-group-slot-spacing slot-spacing))])))])
+              (assoc :charge-group {:charge-group charge-group
+                                    :slot-spacing slot-spacing
+                                    :slot-angle (when rotate-charges?
+                                                  angle)}))])))])
