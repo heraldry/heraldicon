@@ -42,7 +42,7 @@
                :max 20
                :default 5}
    :radius {:type :range
-            :min 1
+            :min 0
             :max 100
             :default 30}
    :arc-stretch {:type :range
