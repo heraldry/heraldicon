@@ -51,43 +51,37 @@
         make-point-fn (case type
                         :heraldry.charge-group.type/rows v/v
                         :heraldry.charge-group.type/columns (fn [y x] (v/v x y)))]
-    (->> strips
-         (map-indexed (fn [idx strip]
-                        (let [slot-positions (calculate-slot-positions strip spacing)
-                              strip-position (-> idx
-                                                 (* strip-spacing)
-                                                 (- (/ length 2)))]
-                          (map (fn [{:keys [position charge-index slot-index]}]
-                                 {:point (v/rotate (make-point-fn position
-                                                                  strip-position)
-                                                   strip-angle)
-                                  :slot-path (conj db-path :strips idx :slots slot-index)
-                                  :charge-index (if (and (int? charge-index)
-                                                         (< -1 charge-index num-charges))
-                                                  charge-index
-                                                  nil)})
-                               slot-positions))))
-         (apply concat)
-         vec)))
+    {:slot-positions (->> strips
+                          (map-indexed (fn [idx strip]
+                                         (let [slot-positions (calculate-slot-positions strip spacing)
+                                               strip-position (-> idx
+                                                                  (* strip-spacing)
+                                                                  (- (/ length 2)))]
+                                           (map (fn [{:keys [position charge-index slot-index]}]
+                                                  {:point (v/rotate (make-point-fn position
+                                                                                   strip-position)
+                                                                    strip-angle)
+                                                   :slot-path (conj db-path :strips idx :slots slot-index)
+                                                   :charge-index (if (and (int? charge-index)
+                                                                          (< -1 charge-index num-charges))
+                                                                   charge-index
+                                                                   nil)})
+                                                slot-positions))))
+                          (apply concat)
+                          vec)
+     :slot-spacing (case type
+                     :heraldry.charge-group.type/rows {:width spacing
+                                                       :height strip-spacing}
+                     :heraldry.charge-group.type/columns {:width strip-spacing
+                                                          :height spacing})}))
 
-(defn render [{:keys [type charges] :as charge-group} parent environment context]
+(defn render [{:keys [charges] :as charge-group} parent environment context]
   [:g
-   (let [reference-length (case type
-                            :heraldry.charge-group.type/rows (:width environment)
-                            :heraldry.charge-group.type/columns (:height environment))
-         {:keys [origin
-                 stretch
-                 spacing]} (options/sanitize charge-group charge-group-options/default-options)
-         spacing ((util/percent-of reference-length) spacing)
-         strip-spacing (* spacing
-                          stretch)
-         slot-spacing (case type
-                        :heraldry.charge-group.type/rows {:width spacing
-                                                          :height strip-spacing}
-                        :heraldry.charge-group.type/columns {:width strip-spacing
-                                                             :height spacing})
+   (let [options (charge-group-options/options charge-group)
+         {:keys [origin]} (options/sanitize charge-group options)
          real-origin (position/calculate origin environment)
-         slot-positions (calculate-points charge-group environment context)]
+         {:keys [slot-positions
+                 slot-spacing]} (calculate-points charge-group environment context)]
      (for [[idx {:keys [point charge-index]}] (map-indexed vector slot-positions)
            :when (and charge-index
                       (< charge-index (count charges)))]

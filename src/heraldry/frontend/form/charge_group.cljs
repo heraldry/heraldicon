@@ -18,7 +18,11 @@
   (let [charge-group @(rf/subscribe [:get path])
         environment {:width 200
                      :height 200}
-        slot-positions (charge-group/calculate-points charge-group environment {:db-path path})
+        {:keys [slot-positions
+                slot-spacing]} (charge-group/calculate-points charge-group environment {:db-path path})
+        dot-size (/ (min (:width slot-spacing)
+                         (:height slot-spacing))
+                    2)
         num-charges (-> charge-group :charges count)]
     [:div
      [:svg {:style {:width "10em"
@@ -44,7 +48,7 @@
             [:g {:transform (str "translate(" (:x point) "," (:y point) ")")
                  :on-click #(state/dispatch-on-event % [:cycle-charge-index slot-path num-charges])
                  :style {:cursor "pointer"}}
-             [:circle {:r 10
+             [:circle {:r dot-size
                        :style {:stroke "#000"
                                :stroke-width 0.5
                                :fill color}}]
