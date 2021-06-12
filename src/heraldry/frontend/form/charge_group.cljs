@@ -222,6 +222,7 @@
                             :charges [{:type :heraldry.charge.type/roundel
                                        :field {:type :heraldry.field.type/plain
                                                :tincture :azure}
+                                       :geometry {:size 20}
                                        :hints {:outline-mode :keep}}]
                             :strips [{:slots [0 0]}
                                      {:slots [nil 0]}]}]
@@ -232,6 +233,7 @@
                          :charges [{:type :heraldry.charge.type/roundel
                                     :field {:type :heraldry.field.type/plain
                                             :tincture :azure}
+                                    :geometry {:size 20}
                                     :hints {:outline-mode :keep}}]
                          :strips [{:slots [0 0]}
                                   {:slots [0]}]}]]
