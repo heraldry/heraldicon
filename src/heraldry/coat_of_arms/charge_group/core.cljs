@@ -58,8 +58,9 @@
                                                  (* strip-spacing)
                                                  (- (/ length 2)))]
                           (map (fn [{:keys [position charge-index slot-index]}]
-                                 {:point (make-point-fn position
-                                                        strip-position)
+                                 {:point (v/rotate (make-point-fn position
+                                                                  strip-position)
+                                                   strip-angle)
                                   :slot-path (conj db-path :strips idx :slots slot-index)
                                   :charge-index (if (and (int? charge-index)
                                                          (< -1 charge-index num-charges))
