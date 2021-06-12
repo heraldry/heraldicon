@@ -279,11 +279,6 @@
             (let [slots-path (drop-last path)
                   slot-index (last path)
                   slots (get-in db slots-path)
-                  slots (if (-> slots count (<= slot-index))
-                          (-> slots
-                              (concat (repeat (-> slot-index inc (- (count slots))) nil))
-                              vec)
-                          slots)
                   current-value (get-in db path)
                   new-value (cond
                               (nil? current-value) 0
@@ -376,3 +371,16 @@
                                                                                     :else charge-index))
                                                                                 slots))))
                                                  strips)))))))
+
+(rf/reg-event-db
+ :set-charge-group-slot-number
+ (fn-traced [db [_ path num-slots]]
+            (-> db
+                (update-in path (fn [slots]
+                                  (if (-> slots count (< num-slots))
+                                    (-> slots
+                                        (concat (repeat (- num-slots (count slots)) 0))
+                                        vec)
+                                    (->> slots
+                                         (take num-slots)
+                                         vec)))))))

@@ -58,17 +58,20 @@
   (let [strip-data @(rf/subscribe [:get path])
         options charge-group-options/strip-options
         sanitized-strip-data (options/sanitize strip-data options)
-        title (str (:size sanitized-strip-data)
+        num-slots (-> strip-data :slots count)
+        title (str num-slots
                    (when-not (-> sanitized-strip-data :stretch (= 1))
                      ", stretched")
                    (when-not (-> sanitized-strip-data :offset zero?)
                      ", offset"))]
     [element/component path :charge-group title type-str
-     (when (-> options :size)
-       [element/range-input (conj path :size) "Size"
-        (-> options :size :min)
-        (-> options :size :max)
-        :default (options/get-value (:size strip-data) (:size options))])
+     (when (-> options :num-slots)
+       [element/range-input nil "Number"
+        (-> options :num-slots :min)
+        (-> options :num-slots :max)
+        :default (options/get-value (:num-slots strip-data) (:num-slots options))
+        :value num-slots
+        :on-change #(rf/dispatch [:set-charge-group-slot-number (conj path :slots) %])])
 
      (when (-> options :stretch)
        [element/range-input (conj path :stretch) "Stretch"
