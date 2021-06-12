@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.charge-group.options
-  (:require [heraldry.coat-of-arms.position :as position]
+  (:require [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.position :as position]
             [heraldry.util :as util]))
 
 (def default-options
@@ -19,7 +20,7 @@
    :spacing {:type :range
              :min 1
              :max 100
-             :default 10}
+             :default 30}
    :stretch {:type :range
              :min 0
              :max 5
@@ -28,6 +29,16 @@
                  :min -90
                  :max 90
                  :default 0}})
+
+(defn options [charge-group]
+  (when charge-group
+    (cond
+      (-> charge-group :type #{:heraldry.charge-group.type/rows
+                               :heraldry.charge-group.type/columns}) (options/pick default-options
+                                                                                   [[:origin]
+                                                                                    [:spacing]
+                                                                                    [:stretch]
+                                                                                    [:strip-angle]]))))
 
 (def type-choices
   [["Rows" :heraldry.charge-group.type/rows]

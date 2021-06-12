@@ -38,9 +38,10 @@
   (let [reference-length (case type
                            :heraldry.charge-group.type/rows (:width environment)
                            :heraldry.charge-group.type/columns (:height environment))
+        options (charge-group-options/options charge-group)
         {:keys [spacing
                 stretch
-                strip-angle]} (options/sanitize charge-group charge-group-options/default-options)
+                strip-angle]} (options/sanitize charge-group options)
         spacing ((util/percent-of reference-length) spacing)
         strip-spacing (* spacing
                          stretch)
