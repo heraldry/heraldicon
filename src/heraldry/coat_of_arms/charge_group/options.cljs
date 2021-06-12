@@ -20,7 +20,7 @@
    :spacing {:type :range
              :min 1
              :max 100
-             :default 30}
+             :default 40}
    :stretch {:type :range
              :min 0
              :max 5
