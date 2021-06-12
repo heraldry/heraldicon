@@ -159,7 +159,8 @@
         (-> options :arc-angle :min)
         (-> options :arc-angle :max)
         :step 1
-        :default (options/get-value (:arc-angle charge-group) (:arc-angle options))])
+        :default (options/get-value (:arc-angle charge-group) (:arc-angle options))
+        :tooltip "The change from 360° to a lower angle might be surprising. 360° is special, because it ends with the first slot. For other angles the last slot marks the end of the arc."])
 
      (when (-> options :start-angle)
        [element/range-input (conj path :start-angle) "Start angle"

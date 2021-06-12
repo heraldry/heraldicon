@@ -78,7 +78,7 @@
                     :style {:margin-right "10px"}} display-name]])))]])
 
 (defn range-input [path label min-value max-value & {:keys [value on-change default display-function step
-                                                            disabled?]}]
+                                                            disabled? tooltip]}]
   (let [component-id (id "range")
         current-value @(rf/subscribe [:get path])
         value (or value
@@ -87,6 +87,13 @@
                   min-value)]
     [:div.setting
      [:label {:for component-id} label]
+     (when tooltip
+       [:div.tooltip.info {:style {:display "inline-block"
+                                   :margin-left "0.2em"}}
+        [:i.fas.fa-question-circle]
+        [:div.bottom
+         [:h3 {:style {:text-align "center"}} tooltip]
+         [:i]]])
      [:div.slider
       [:input {:type "range"
                :id component-id

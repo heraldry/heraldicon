@@ -86,7 +86,9 @@
         radius ((util/percent-of (:width environment)) radius)
         num-charges (count charges)
         num-slots (count slots)
-        angle-step (/ arc-angle (max (dec num-slots) 1))
+        angle-step (/ arc-angle (max (if (= arc-angle 360)
+                                       num-slots
+                                       (dec num-slots)) 1))
         distance (if (<= num-slots 1)
                    50
                    (-> (v/v radius 0)
