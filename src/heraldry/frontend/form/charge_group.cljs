@@ -22,7 +22,8 @@
                 slot-spacing]} (charge-group/calculate-points charge-group environment {:db-path path})
         dot-size (/ (min (:width slot-spacing)
                          (:height slot-spacing))
-                    2)
+                    2
+                    1.05)
         num-charges (-> charge-group :charges count)]
     [:div
      [:svg {:style {:width "10em"
