@@ -103,7 +103,7 @@
         :step 0.01
         :default (options/get-value (:offset strip-data) (:offset options))])]))
 
-(defn charge-group-preset-choice [path group display-name]
+(defn charge-group-preset-choice [path group charge-adjustments display-name]
   (let [{:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
                            :field {:type :heraldry.field.type/plain
@@ -113,7 +113,7 @@
                           (-> shared/coa-select-option-context
                               (assoc-in [:render-options :outline?] true)
                               (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
-    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:select-charge-group-preset path group])}
+    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:select-charge-group-preset path group charge-adjustments])}
      [:svg {:style {:width "4em"
                     :height "4.5em"}
             :viewBox "0 0 120 200"
@@ -372,17 +372,23 @@
                                      :charges [{:type :heraldry.charge.type/billet
                                                 :field {:type :heraldry.field.type/plain
                                                         :tincture :azure}
+                                                :anchor {:point :angle
+                                                         :angle -180}
                                                 :hints {:outline-mode :keep}}]
-                                     :slots [0 0 0 0 0 0 0]}]
+                                     :slots [0 0 0 0 0 0 0]}
+     {[:charges 0 :anchor :point] :angle
+      [:charges 0 :anchor :angle] -180}]
     ["In annullo (follow)" {:type :heraldry.charge-group.type/arc
                             :rotate-charges? true
                             :charges [{:type :heraldry.charge.type/billet
-                                       :anchor {:point :angle
-                                                :angle 90}
                                        :field {:type :heraldry.field.type/plain
                                                :tincture :azure}
+                                       :anchor {:point :angle
+                                                :angle -90}
                                        :hints {:outline-mode :keep}}]
-                            :slots [0 0 0 0 0 0 0]}]
+                            :slots [0 0 0 0 0 0 0]}
+     {[:charges 0 :anchor :point] :angle
+      [:charges 0 :anchor :angle] -90}]
     ["Sheaf of" {:type :heraldry.charge-group.type/arc
                  :start-angle -45
                  :arc-angle 90
@@ -394,7 +400,10 @@
                             :geometry {:size 50
                                        :stretch 3}
                             :hints {:outline-mode :keep}}]
-                 :slots [0 0 0]}]]])
+                 :slots [0 0 0]}
+     {[:charges 0 :anchor :point] :angle
+      [:charges 0 :anchor :angle] 0
+      [:charges 0 :geometry :size] 50}]]])
 
 (defn form [path & {:keys [parent-field form-for-field]}]
   (let [charge-group @(rf/subscribe [:get path])
@@ -423,9 +432,9 @@
          ^{:key group-name}
          [:<>
           [:h4 group-name]
-          (for [[display-name charge-group] group]
+          (for [[display-name charge-group charge-adjustments] group]
             ^{:key display-name}
-            [charge-group-preset-choice path charge-group display-name])])]]
+            [charge-group-preset-choice path charge-group charge-adjustments display-name])])]]
 
      [element/select (conj path :type) "Type" charge-group-options/type-choices
       :on-change #(rf/dispatch [:change-charge-group-type path %])]
