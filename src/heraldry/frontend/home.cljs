@@ -14,6 +14,25 @@
    [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll "
     "group some features and new development and post an update here, so it is easy to stay informed."]
 
+   [:h3 "2021-06-12 - Charge groups, public arms, collections, users"]
+   [:div.pure-g
+    [:div.pure-u-2-3 {:style {:text-align "justify"
+                              :min-width "30em"}}
+     [:p "New features:"]
+     [:ul
+      [:li "support for charge groups, charges can be arranged in rows, columns, grids or arcs/circles"]
+      [:li "various charge group presets for the most common arrangements"]
+      [:li "users can now be browsed"]
+      [:li "public arms and collections can now be browsed"]
+      [:li "tincture modifiers 'orbed' and 'illuminated' added"]]
+     [:p "Known issues:"]
+     [:ul
+      [:li "many charges render slowly"]
+      [:li "charge groups should take the surrounding field better into account in some situations, more work needed"]
+      [:li "charge group presets inspired by ordinaries use the grid and might not align perfectly with ordinaries, more work needed"]]]
+    [:div.pure-u-1-3
+     (release-image "/img/2021-06-12-release-update.png")]]
+
    [:h3 "2021-06-06 - Collections, tags, filter"]
    [:div.pure-g
     [:div.pure-u-2-3 {:style {:text-align "justify"
@@ -23,8 +42,7 @@
       [:li "support for collections, which can be used to group existing arms, to create rolls of arms, group drafts, display arms for a specific topic, etc."]
       [:li "arms, charges, and collections now also can be tagged arbitrarily, and these tags can then be used to filter for them or annotate some notes"]
       [:li "there are now separate options for escutcheon shadow and outline"]
-      [:li "text in collections can be rendered with various fonts"]
-      [:li ""]]
+      [:li "text in collections can be rendered with various fonts"]]
      [:p "Known issues:"]
      [:ul
       [:li "large collections might render slowly, now that there are multiple arms being rendered on the fly, it shows that some parts of the rendering engines are not optimized yet"]]]
