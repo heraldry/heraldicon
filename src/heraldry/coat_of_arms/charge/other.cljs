@@ -93,8 +93,7 @@
                       render-options
                       load-charge-data
                       fn-select-component
-                      charge-group
-                      charge-group-slot-spacing]
+                      charge-group]
                :as context}]
   (let [full-charge-data (or data (when variant (load-charge-data variant)))]
     (if (:data full-charge-data)
@@ -107,9 +106,10 @@
                                                             conj ["Special" :special]))
             {:keys [size stretch
                     mirrored? reversed?]} geometry
-            context (dissoc context
-                            :charge-group
-                            :charge-group-slot-spacing)
+            {:keys [charge-group
+                    slot-spacing
+                    slot-angle]} charge-group
+            context (dissoc context :charge-group)
             charge-data (:data full-charge-data)
             render-field? (-> charge-data
                               :fixed-tincture
@@ -140,10 +140,14 @@
                                          -90)
             angle (+ (v/angle-to-point origin-point anchor-point)
                      90)
-            min-x-distance (or (some-> charge-group-slot-spacing :width (/ 2) (/ 0.8))
+            angle (if (and (-> anchor :point (= :angle))
+                           slot-angle)
+                    (+ angle slot-angle)
+                    angle)
+            min-x-distance (or (some-> slot-spacing :width (/ 2) (/ 0.8))
                                (min (- (:x origin-point) (:x left))
                                     (- (:x right) (:x origin-point))))
-            min-y-distance (or (some-> charge-group-slot-spacing :height (/ 2) (/ 0.7))
+            min-y-distance (or (some-> slot-spacing :height (/ 2) (/ 0.7))
                                (min (- (:y origin-point) (:y top))
                                     (- (:y bottom) (:y origin-point))))
             target-width (if size

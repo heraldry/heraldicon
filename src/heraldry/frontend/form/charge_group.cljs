@@ -176,6 +176,9 @@
         :step 0.01
         :default (options/get-value (:arc-stretch charge-group) (:arc-stretch options))])
 
+     (when (-> options :rotate-charges?)
+       [element/checkbox (conj path :rotate-charges?) "Rotate charges"])
+
      (when strip-type?
        [:<>
         [:div {:style {:margin-bottom "0.5em"}}

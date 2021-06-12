@@ -48,7 +48,9 @@
    :arc-stretch {:type :range
                  :min 0
                  :max 5
-                 :default 1}})
+                 :default 1}
+   :rotate-charges? {:type :boolean
+                     :default false}})
 
 (defn options [charge-group]
   (when charge-group
@@ -65,7 +67,8 @@
                                                                                  [:start-angle]
                                                                                  [:arc-angle]
                                                                                  [:num-slots]
-                                                                                 [:radius]]))))
+                                                                                 [:radius]
+                                                                                 [:rotate-charges?]]))))
 
 (def type-choices
   [["Rows" :heraldry.charge-group.type/rows]
