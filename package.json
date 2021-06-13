@@ -6,7 +6,7 @@
     "check": "clj-kondo --lang cljs --lint src"
   },
   "devDependencies": {
-    "clj-kondo": "^2020.11.7",
+    "clj-kondo": "^2021.6.1",
     "highlight.js": "^10.6.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
