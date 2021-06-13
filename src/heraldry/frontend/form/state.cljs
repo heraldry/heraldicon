@@ -1,5 +1,6 @@
 (ns heraldry.frontend.form.state
   (:require [clojure.walk :as walk]
+            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.options :as options]
@@ -33,8 +34,7 @@
 ;; events
 
 (rf/reg-event-db :ui-component-open
-  (fn
-    [db [_ path]]
+  (fn [db [_ path]]
     (-> (loop [db db
                rest path]
           (if (empty? rest)
@@ -44,8 +44,7 @@
              (-> rest drop-last vec)))))))
 
 (rf/reg-event-db :ui-component-close
-  (fn
-    [db [_ path]]
+  (fn-traced [db [_ path]]
 
     (update-in db [:ui :component-open?]
                #(into {}
@@ -56,36 +55,30 @@
                                                   path))))))))))
 
 (rf/reg-event-fx :ui-component-open-toggle
-  (fn
-    [{:keys [db]} [_ path]]
+  (fn-traced [{:keys [db]} [_ path]]
     (let [open? (get-in db [:ui :component-open? path])]
       (if open?
         {:fx [[:dispatch [:ui-component-close path]]]}
         {:fx [[:dispatch [:ui-component-open path]]]}))))
 
 (rf/reg-event-db :ui-component-deselect-all
-  (fn
-    [db _]
+  (fn-traced [db _]
     (update-in db [:ui] dissoc :component-selected?)))
 
 (rf/reg-event-db :ui-submenu-close-all
-  (fn
-    [db _]
+  (fn-traced [db _]
     (update-in db [:ui] dissoc :submenu-open?)))
 
 (rf/reg-event-db :ui-submenu-open
-  (fn
-    [db [_ path]]
+  (fn-traced [db [_ path]]
     (assoc-in db [:ui :submenu-open? path] true)))
 
 (rf/reg-event-db :ui-submenu-close
-  (fn
-    [db [_ path]]
+  (fn-traced [db [_ path]]
     (assoc-in db [:ui :submenu-open? path] false)))
 
 (rf/reg-event-fx :ui-component-select
-  (fn
-    [{:keys [db]} [_ path]]
+  (fn-traced [{:keys [db]} [_ path]]
     (let [real-path (if (get-in
                          db
                          (-> path
@@ -105,8 +98,7 @@
        :fx [[:dispatch [:ui-component-open real-path]]]})))
 
 (rf/reg-event-db :prune-false-flags
-  (fn
-    [db [_ path]]
+  (fn-traced [db [_ path]]
     (update-in db path (fn [flags]
                          (walk/postwalk (fn [value]
                                           (if (map? value)
@@ -117,8 +109,7 @@
                                         flags)))))
 
 (rf/reg-event-db :set-field-type
-  (fn
-    [db [_ path new-type num-fields-x num-fields-y num-base-fields]]
+  (fn-traced [db [_ path new-type num-fields-x num-fields-y num-base-fields]]
     (if (= new-type :heraldry.field.type/plain)
       (-> db
           (assoc-in (conj path :type) new-type)
@@ -162,8 +153,7 @@
     :straight))
 
 (rf/reg-event-db :set-ordinary-type
-  (fn
-    [db [_ path new-type]]
+  (fn-traced [db [_ path new-type]]
     (let [current (get-in db path)
           has-default-line-style? (-> current
                                       :line
@@ -185,8 +175,7 @@
                                             (options/sanitize-or-nil % (ordinary-options/options %))))))))
 
 (rf/reg-event-fx :add-component
-  (fn
-    [{:keys [db]} [_ path value]]
+  (fn-traced [{:keys [db]} [_ path value]]
     (let [components-path (conj path :components)
           index (count (get-in db components-path))]
       {:db (update-in db components-path #(-> %
@@ -201,16 +190,14 @@
             [:dispatch [:ui-component-open (conj components-path index :field)]]]})))
 
 (rf/reg-event-db :add-element
-  (fn
-    [db [_ path value]]
+  (fn-traced [db [_ path value]]
     (update-in db path (fn [elements]
                          (-> elements
                              (conj value)
                              vec)))))
 
 (rf/reg-event-db :remove-element
-  (fn
-    [db [_ path]]
+  (fn-traced [db [_ path]]
     (let [elements-path (drop-last path)
           index (last path)]
       (update-in db elements-path (fn [elements]
@@ -218,8 +205,7 @@
                                                  (subvec elements (inc index)))))))))
 
 (rf/reg-event-db :move-element-up
-  (fn
-    [db [_ path]]
+  (fn-traced [db [_ path]]
     (let [elements-path (drop-last path)
           index (last path)]
       (update-in db elements-path (fn [elements]
@@ -234,8 +220,7 @@
                                             vec))))))))
 
 (rf/reg-event-db :move-element-down
-  (fn
-    [db [_ path]]
+  (fn-traced [db [_ path]]
     (let [elements-path (drop-last path)
           index (last path)]
       (update-in db elements-path (fn [elements]
@@ -249,13 +234,11 @@
                                           vec)))))))
 
 (rf/reg-event-db :update-charge
-  (fn
-    [db [_ path changes]]
+  (fn-traced [db [_ path changes]]
     (update-in db path merge changes)))
 
 (rf/reg-event-fx :add-arms-to-collection
-  (fn
-    [{:keys [db]} [_ path value index]]
+  (fn-traced [{:keys [db]} [_ path value index]]
     (let [elements-path (conj path :collection :elements)
           index (or index
                     (count (get-in db elements-path)))]
@@ -266,8 +249,7 @@
             [:dispatch [:ui-component-open (conj elements-path index)]]]})))
 
 (rf/reg-event-db :cycle-charge-index
-  (fn
-    [db [_ path num-charges]]
+  (fn-traced [db [_ path num-charges]]
     (let [slots-path (drop-last path)
           slot-index (last path)
           slots (get-in db slots-path)
@@ -280,8 +262,7 @@
       (assoc-in db slots-path (assoc slots slot-index new-value)))))
 
 (rf/reg-event-db :remove-charge-group-charge
-  (fn
-    [db [_ path]]
+  (fn-traced [db [_ path]]
     (let [elements-path (drop-last path)
           strips-path (-> path
                           (->> (drop-last 2))
@@ -315,8 +296,7 @@
                                         slots)))))))
 
 (rf/reg-event-db :move-charge-group-charge-up
-  (fn
-    [db [_ path]]
+  (fn-traced [db [_ path]]
     (let [elements-path (drop-last path)
           strips-path (-> path
                           (->> (drop-last 2))
@@ -357,8 +337,7 @@
                                         slots)))))))
 
 (rf/reg-event-db :move-charge-group-charge-down
-  (fn
-    [db [_ path]]
+  (fn-traced [db [_ path]]
     (let [elements-path (drop-last path)
           strips-path (-> path
                           (->> (drop-last 2))
@@ -398,8 +377,7 @@
                                         slots)))))))
 
 (rf/reg-event-db :set-charge-group-slot-number
-  (fn
-    [db [_ path num-slots]]
+  (fn-traced [db [_ path num-slots]]
     (-> db
         (update-in path (fn [slots]
                           (if (-> slots count (< num-slots))
@@ -410,8 +388,7 @@
                                  (take num-slots)
                                  vec)))))))
 (rf/reg-event-db :change-charge-group-type
-  (fn
-    [db [_ path new-type]]
+  (fn-traced [db [_ path new-type]]
     (-> db
         (update-in path (fn [charge-group]
                           (-> charge-group
@@ -427,8 +404,7 @@
                                     (-> charge-group :slots not)) (assoc :slots [0 0 0 0 0]))))))))
 
 (rf/reg-event-db :select-charge-group-preset
-  (fn
-    [db [_ path charge-group-preset charge-adjustments]]
+  (fn [db [_ path charge-group-preset charge-adjustments]]
     (let [new-db (-> db
                      (update-in path (fn [charge-group]
                                        (-> charge-group-preset

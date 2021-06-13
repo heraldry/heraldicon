@@ -1,6 +1,7 @@
 (ns heraldry.frontend.state
   (:require [cljs.core.async :refer [go]]
             [clojure.string :as s]
+            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.default :as default]
@@ -24,7 +25,7 @@
 ;; events
 
 (rf/reg-event-db :initialize-db
-  (fn [db [_]]
+  (fn-traced [db [_]]
     (merge {:example-coa {:render-options default/render-options
                           :coat-of-arms {:escutcheon :rectangle
                                          :field {:type :heraldry.field.type/plain
@@ -62,29 +63,29 @@
                                :show-own? true}}} db)))
 
 (rf/reg-event-db :set
-  (fn [db [_ path value]]
+  (fn-traced [db [_ path value]]
     (assoc-in db path value)))
 
 (rf/reg-event-db :update
-  (fn [db [_ path update-fn]]
+  (fn-traced [db [_ path update-fn]]
     (update-in db path update-fn)))
 
 (rf/reg-event-db :remove
-  (fn [db [_ path]]
+  (fn-traced [db [_ path]]
     (cond-> db
       (-> path count (= 1)) (dissoc (first path))
       (-> path count (> 1)) (update-in (drop-last path) dissoc (last path)))))
 
 (rf/reg-event-db :toggle
-  (fn [db [_ path]]
+  (fn-traced [db [_ path]]
     (update-in db path not)))
 
 (rf/reg-event-db :set-form-error
-  (fn [db [_ db-path error]]
+  (fn-traced [db [_ db-path error]]
     (assoc-in db (concat [:form-errors] db-path [:message]) error)))
 
 (rf/reg-event-db :set-form-message
-  (fn [db [_ db-path message]]
+  (fn-traced [db [_ db-path message]]
     (assoc-in db (concat [:form-message] db-path [:message]) message)))
 
 (defn normalize-tag [tag]
@@ -100,7 +101,7 @@
       (keyword normalized-tag))))
 
 (rf/reg-event-db :add-tags
-  (fn [db [_ db-path tags]]
+  (fn-traced [db [_ db-path tags]]
     (update-in db db-path (fn [current-tags]
                             (-> current-tags
                                 keys
@@ -127,22 +128,22 @@
                                 current-tags))))))
 
 (rf/reg-event-db :toggle-tag
-  (fn [db [_ db-path tag]]
+  (fn-traced [db [_ db-path tag]]
     (update-in db db-path (fn [current-tags]
                             (if (get current-tags tag)
                               (dissoc current-tags tag)
                               (assoc current-tags tag true))))))
 
 (rf/reg-event-fx :clear-form-errors
-  (fn [_ [_ db-path]]
+  (fn-traced [_ [_ db-path]]
     {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]]}))
 
 (rf/reg-event-fx :clear-form-message
-  (fn [_ [_ db-path]]
+  (fn-traced [_ [_ db-path]]
     {:fx [[:dispatch [:remove (into [:form-message] db-path)]]]}))
 
 (rf/reg-event-fx :clear-form
-  (fn [_ [_ db-path]]
+  (fn-traced [_ [_ db-path]]
     {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]
           [:dispatch [:remove (into [:form-message] db-path)]]
           [:dispatch [:remove db-path]]]}))
