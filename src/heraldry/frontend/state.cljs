@@ -9,94 +9,83 @@
 
 ;; subs
 
+(rf/reg-sub :get
+  (fn [db [_ path]]
+    (get-in db path)))
 
-(rf/reg-sub
- :get
- (fn [db [_ path]]
-   (get-in db path)))
+(rf/reg-sub :get-form-error
+  (fn [db [_ path]]
+    (get-in db (concat [:form-errors] path [:message]))))
 
-(rf/reg-sub
- :get-form-error
- (fn [db [_ path]]
-   (get-in db (concat [:form-errors] path [:message]))))
-
-(rf/reg-sub
- :get-form-message
- (fn [db [_ path]]
-   (get-in db (concat [:form-message] path [:message]))))
+(rf/reg-sub :get-form-message
+  (fn [db [_ path]]
+    (get-in db (concat [:form-message] path [:message]))))
 
 ;; events
 
-(rf/reg-event-db
- :initialize-db
- (fn [db [_]]
-   (merge {:example-coa {:render-options default/render-options
-                         :coat-of-arms {:escutcheon :rectangle
-                                        :field {:type :heraldry.field.type/plain
-                                                :tincture :argent
-                                                :components [{:type :heraldry.charge.type/preview
-                                                              :field {:type :heraldry.field.type/plain
-                                                                      :tincture :azure}
-                                                              :tincture (merge (->> attributes/tincture-modifier-map
-                                                                                    (map (fn [[k _]]
-                                                                                           [k :or]))
-                                                                                    (into {}))
-                                                                               {:eyes-and-teeth :argent
-                                                                                :orbed :argent
-                                                                                :secondary :gules
-                                                                                :tertiary :vert
-                                                                                :armed :or
-                                                                                :langued :gules
-                                                                                :attired :argent
-                                                                                :unguled :vert
-                                                                                :beaked :or
-                                                                                :winged :purpure
-                                                                                :pommeled :gules
-                                                                                :shadow 1.0
-                                                                                :highlight 1.0})}]}}}
-           :coat-of-arms {:escutcheon :rectangle}
-           :ui {:component-open? {[:arms-form :render-options] true
-                                  [:arms-form :coat-of-arms] true
-                                  [:arms-form :coat-of-arms :field] true
-                                  [:arms-form :attribution] true
-                                  [:charge-form :attribution] true
-                                  [:example-coa :render-options] true
-                                  [:example-coa :coat-of-arms] true
-                                  [:example-coa :coat-of-arms :field] true}
-                :charge-tree {:show-public? true
-                              :show-own? true}}} db)))
+(rf/reg-event-db :initialize-db
+  (fn [db [_]]
+    (merge {:example-coa {:render-options default/render-options
+                          :coat-of-arms {:escutcheon :rectangle
+                                         :field {:type :heraldry.field.type/plain
+                                                 :tincture :argent
+                                                 :components [{:type :heraldry.charge.type/preview
+                                                               :field {:type :heraldry.field.type/plain
+                                                                       :tincture :azure}
+                                                               :tincture (merge (->> attributes/tincture-modifier-map
+                                                                                     (map (fn [[k _]]
+                                                                                            [k :or]))
+                                                                                     (into {}))
+                                                                                {:eyes-and-teeth :argent
+                                                                                 :orbed :argent
+                                                                                 :secondary :gules
+                                                                                 :tertiary :vert
+                                                                                 :armed :or
+                                                                                 :langued :gules
+                                                                                 :attired :argent
+                                                                                 :unguled :vert
+                                                                                 :beaked :or
+                                                                                 :winged :purpure
+                                                                                 :pommeled :gules
+                                                                                 :shadow 1.0
+                                                                                 :highlight 1.0})}]}}}
+            :coat-of-arms {:escutcheon :rectangle}
+            :ui {:component-open? {[:arms-form :render-options] true
+                                   [:arms-form :coat-of-arms] true
+                                   [:arms-form :coat-of-arms :field] true
+                                   [:arms-form :attribution] true
+                                   [:charge-form :attribution] true
+                                   [:example-coa :render-options] true
+                                   [:example-coa :coat-of-arms] true
+                                   [:example-coa :coat-of-arms :field] true}
+                 :charge-tree {:show-public? true
+                               :show-own? true}}} db)))
 
-(rf/reg-event-db
- :set
- (fn [db [_ path value]]
-   (assoc-in db path value)))
+(rf/reg-event-db :set
+  (fn [db [_ path value]]
+    (assoc-in db path value)))
 
-(rf/reg-event-db
- :update
- (fn [db [_ path update-fn]]
-   (update-in db path update-fn)))
+(rf/reg-event-db :update
+  (fn [db [_ path update-fn]]
+    (update-in db path update-fn)))
 
-(rf/reg-event-db
- :remove
- (fn [db [_ path]]
-   (cond-> db
-     (-> path count (= 1)) (dissoc (first path))
-     (-> path count (> 1)) (update-in (drop-last path) dissoc (last path)))))
+(rf/reg-event-db :remove
+  (fn [db [_ path]]
+    (cond-> db
+      (-> path count (= 1)) (dissoc (first path))
+      (-> path count (> 1)) (update-in (drop-last path) dissoc (last path)))))
 
-(rf/reg-event-db
- :toggle
- (fn [db [_ path]]
-   (update-in db path not)))
+(rf/reg-event-db :toggle
+  (fn [db [_ path]]
+    (update-in db path not)))
 
-(rf/reg-event-db
- :set-form-error
- (fn [db [_ db-path error]]
-   (assoc-in db (concat [:form-errors] db-path [:message]) error)))
+(rf/reg-event-db :set-form-error
+  (fn [db [_ db-path error]]
+    (assoc-in db (concat [:form-errors] db-path [:message]) error)))
 
-(rf/reg-event-db
- :set-form-message
- (fn [db [_ db-path message]]
-   (assoc-in db (concat [:form-message] db-path [:message]) message)))
+(rf/reg-event-db :set-form-message
+  (fn [db [_ db-path message]]
+    (assoc-in db (concat [:form-message] db-path [:message]) message)))
 
 (defn normalize-tag [tag]
   (let [normalized-tag (-> tag
@@ -110,59 +99,53 @@
               pos?)
       (keyword normalized-tag))))
 
-(rf/reg-event-db
- :add-tags
- (fn [db [_ db-path tags]]
-   (update-in db db-path (fn [current-tags]
-                           (-> current-tags
-                               keys
-                               set
-                               (concat tags)
-                               (->> (map normalize-tag)
-                                    (filter identity)
-                                    set
-                                    (map (fn [tag]
-                                           [tag true]))
-                                    (into {})))))))
+(rf/reg-event-db :add-tags
+  (fn [db [_ db-path tags]]
+    (update-in db db-path (fn [current-tags]
+                            (-> current-tags
+                                keys
+                                set
+                                (concat tags)
+                                (->> (map normalize-tag)
+                                     (filter identity)
+                                     set
+                                     (map (fn [tag]
+                                            [tag true]))
+                                     (into {})))))))
 
-(rf/reg-event-db
- :remove-tags
- (fn [db [_ db-path tags]]
-   (update-in db db-path (fn [current-tags]
-                           (loop [current-tags current-tags
-                                  [tag & remaining] (->> tags
-                                                         (map normalize-tag)
-                                                         (filter identity)
-                                                         set)]
-                             (if tag
-                               (recur (dissoc current-tags tag)
-                                      remaining)
-                               current-tags))))))
+(rf/reg-event-db :remove-tags
+  (fn [db [_ db-path tags]]
+    (update-in db db-path (fn [current-tags]
+                            (loop [current-tags current-tags
+                                   [tag & remaining] (->> tags
+                                                          (map normalize-tag)
+                                                          (filter identity)
+                                                          set)]
+                              (if tag
+                                (recur (dissoc current-tags tag)
+                                       remaining)
+                                current-tags))))))
 
-(rf/reg-event-db
- :toggle-tag
- (fn [db [_ db-path tag]]
-   (update-in db db-path (fn [current-tags]
-                           (if (get current-tags tag)
-                             (dissoc current-tags tag)
-                             (assoc current-tags tag true))))))
+(rf/reg-event-db :toggle-tag
+  (fn [db [_ db-path tag]]
+    (update-in db db-path (fn [current-tags]
+                            (if (get current-tags tag)
+                              (dissoc current-tags tag)
+                              (assoc current-tags tag true))))))
 
-(rf/reg-event-fx
- :clear-form-errors
- (fn [_ [_ db-path]]
-   {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]]}))
+(rf/reg-event-fx :clear-form-errors
+  (fn [_ [_ db-path]]
+    {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]]}))
 
-(rf/reg-event-fx
- :clear-form-message
- (fn [_ [_ db-path]]
-   {:fx [[:dispatch [:remove (into [:form-message] db-path)]]]}))
+(rf/reg-event-fx :clear-form-message
+  (fn [_ [_ db-path]]
+    {:fx [[:dispatch [:remove (into [:form-message] db-path)]]]}))
 
-(rf/reg-event-fx
- :clear-form
- (fn [_ [_ db-path]]
-   {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]
-         [:dispatch [:remove (into [:form-message] db-path)]]
-         [:dispatch [:remove db-path]]]}))
+(rf/reg-event-fx :clear-form
+  (fn [_ [_ db-path]]
+    {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]
+          [:dispatch [:remove (into [:form-message] db-path)]]
+          [:dispatch [:remove db-path]]]}))
 
 (defn dispatch-on-event [event effect]
   (rf/dispatch effect)
