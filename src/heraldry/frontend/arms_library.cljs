@@ -320,7 +320,7 @@
   (let [arms-id (-> arms
                     :id
                     id-for-url)]
-    [:a {:href     (reife/href :view-arms-by-id {:id arms-id})
+    [:a {:href (reife/href :view-arms-by-id {:id arms-id})
          :on-click #(do
                       (rf/dispatch-sync [:clear-form-errors form-db-path])
                       (rf/dispatch-sync [:clear-form-message form-db-path]))}
