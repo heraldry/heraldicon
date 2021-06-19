@@ -2,4 +2,5 @@
            :single-key-in {:level :warning}}
  :lint-as {heraldry.backend.migration.macros/defmigration clojure.core/defn
            day8.re-frame.tracing/defn-traced clojure.core/defn
-           day8.re-frame.tracing/fn-traced clojure.core/fn}}
+           day8.re-frame.tracing/fn-traced clojure.core/fn
+           taoensso.tufte/defnp clojure.core/defn}}

@@ -1,12 +1,13 @@
 (ns heraldry.frontend.state
   (:require [cljs.core.async :refer [go]]
             [clojure.string :as s]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [com.wsscode.common.async-cljs :refer [<?]]
+            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.default :as default]
             [re-frame.core :as rf]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [taoensso.tufte :as tufte]))
 
 ;; subs
 
@@ -24,8 +25,18 @@
 
 ;; events
 
+(defonce stats-accumulator (tufte/add-accumulating-handler! {:ns-pattern "*"}))
+
+(defn display-profiler-stats []
+  (when-let [m (not-empty @stats-accumulator)]
+    (js/console.log (tufte/format-grouped-pstats
+                     m
+                     {:format-pstats-opts {:columns [:n-calls :p95 :mean :clock :total]}}))))
+
 (rf/reg-event-db :initialize-db
   (fn-traced [db [_]]
+    (when-let [profile-timer (:profile-timer db)]
+      (js/clearInterval profile-timer))
     (merge {:example-coa {:render-options default/render-options
                           :coat-of-arms {:escutcheon :rectangle
                                          :field {:type :heraldry.field.type/plain
@@ -60,7 +71,9 @@
                                    [:example-coa :coat-of-arms] true
                                    [:example-coa :coat-of-arms :field] true}
                  :charge-tree {:show-public? true
-                               :show-own? true}}} db)))
+                               :show-own? true}}}
+           db
+           {:profile-timer (js/setInterval display-profiler-stats 5000)})))
 
 (rf/reg-event-db :set
   (fn-traced [db [_ path value]]
