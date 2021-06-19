@@ -18,6 +18,7 @@
             [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.user :as user]
             [heraldry.util
              :refer
@@ -206,77 +207,79 @@
       [render-coat-of-arms]]
      [:div.pure-u-1-2 {:style {:margin-left "50%"
                                :width "45%"}}
-      [attribution/form (conj form-db-path :attribution)]
-      [:form.pure-form.pure-form-aligned
-       {:style {:display "inline-block"
-                :width "100%"}
-        :on-key-press (fn [event]
-                        (when (-> event .-code (= "Enter"))
-                          (on-submit event)))
-        :on-submit on-submit}
-       [:fieldset
-        [form/field (conj form-db-path :name)
-         (fn [& {:keys [value on-change]}]
-           [:div.pure-control-group
-            [:label {:for "name"
-                     :style {:width "6em"}} "Name"]
-            [:input {:id "name"
-                     :value value
-                     :on-change on-change
-                     :type "text"
-                     :style {:margin-right "0.5em"}}]
-            [form/checkbox (conj form-db-path :is-public) "Make public"
-             :style {:width "7em"}]])]]
-       [:fieldset
-        [tag/form (conj form-db-path :tags)]]
-       (when form-message
-         [:div.form-message form-message])
-       (when error-message
-         [:div.error-message error-message])
-       [:div.pure-control-group {:style {:text-align "right"
-                                         :margin-top "10px"}}
-        [export-buttons :form]
-        [:button.pure-button.pure-button
-         {:type "button"
-          :on-click (let [match @(rf/subscribe [:get [:route-match]])
-                          route (-> match :data :name)
-                          params (-> match :parameters :path)]
-                      (cond
-                        (= route :edit-arms-by-id) #(reife/push-state :view-arms-by-id params)
-                        (= route :create-arms) #(reife/push-state :arms params)
-                        :else nil))
-          :style {:margin-right "5px"}}
-         "View"]
-        (when saved-and-owned-by-me?
+      #_[attribution/form (conj form-db-path :attribution)]
+      #_[:form.pure-form.pure-form-aligned
+         {:style {:display "inline-block"
+                  :width "100%"}
+          :on-key-press (fn [event]
+                          (when (-> event .-code (= "Enter"))
+                            (on-submit event)))
+          :on-submit on-submit}
+         [:fieldset
+          [form/field (conj form-db-path :name)
+           (fn [& {:keys [value on-change]}]
+             [:div.pure-control-group
+              [:label {:for "name"
+                       :style {:width "6em"}} "Name"]
+              [:input {:id "name"
+                       :value value
+                       :on-change on-change
+                       :type "text"
+                       :style {:margin-right "0.5em"}}]
+              [form/checkbox (conj form-db-path :is-public) "Make public"
+               :style {:width "7em"}]])]]
+         [:fieldset
+          [tag/form (conj form-db-path :tags)]]
+         (when form-message
+           [:div.form-message form-message])
+         (when error-message
+           [:div.error-message error-message])
+         [:div.pure-control-group {:style {:text-align "right"
+                                           :margin-top "10px"}}
+          [export-buttons :form]
           [:button.pure-button.pure-button
            {:type "button"
-            :style {:margin-right "5px"}
-            :on-click #(do
-                         (rf/dispatch-sync [:clear-form-errors form-db-path])
-                         (rf/dispatch-sync [:set saved-data-db-path nil])
-                         (state/set-async-fetch-data
-                          form-db-path
-                          :new
-                          (-> arms-data
-                              (dissoc :id)
-                              (dissoc :version)
-                              (dissoc :latest-version)
-                              (dissoc :username)
-                              (dissoc :user-id)
-                              (dissoc :created-at)
-                              (dissoc :first-version-created-at)
-                              (dissoc :is-current-version)
-                              (dissoc :name)))
-                         (rf/dispatch-sync [:set-form-message form-db-path "Created an unsaved copy."])
-                         (reife/push-state :create-arms))}
-           "Copy to new"])
-        (let [disabled? (not logged-in?)]
-          [:button.pure-button.pure-button-primary {:type "submit"
-                                                    :class (when disabled? "disabled")}
-           "Save"])
-        [:div.spacer]]]
-      [render-options/form (conj form-db-path :render-options)]
-      [coat-of-arms-component/form (conj form-db-path :coat-of-arms)]]]))
+            :on-click (let [match @(rf/subscribe [:get [:route-match]])
+                            route (-> match :data :name)
+                            params (-> match :parameters :path)]
+                        (cond
+                          (= route :edit-arms-by-id) #(reife/push-state :view-arms-by-id params)
+                          (= route :create-arms) #(reife/push-state :arms params)
+                          :else nil))
+            :style {:margin-right "5px"}}
+           "View"]
+          (when saved-and-owned-by-me?
+            [:button.pure-button.pure-button
+             {:type "button"
+              :style {:margin-right "5px"}
+              :on-click #(do
+                           (rf/dispatch-sync [:clear-form-errors form-db-path])
+                           (rf/dispatch-sync [:set saved-data-db-path nil])
+                           (state/set-async-fetch-data
+                            form-db-path
+                            :new
+                            (-> arms-data
+                                (dissoc :id)
+                                (dissoc :version)
+                                (dissoc :latest-version)
+                                (dissoc :username)
+                                (dissoc :user-id)
+                                (dissoc :created-at)
+                                (dissoc :first-version-created-at)
+                                (dissoc :is-current-version)
+                                (dissoc :name)))
+                           (rf/dispatch-sync [:set-form-message form-db-path "Created an unsaved copy."])
+                           (reife/push-state :create-arms))}
+             "Copy to new"])
+          (let [disabled? (not logged-in?)]
+            [:button.pure-button.pure-button-primary {:type "submit"
+                                                      :class (when disabled? "disabled")}
+             "Save"])
+          [:div.spacer]]]
+      #_[render-options/form (conj form-db-path :render-options)]
+      #_[coat-of-arms-component/form (conj form-db-path :coat-of-arms)]
+      [ui/component-tree [(conj form-db-path :render-options)
+                          (conj form-db-path :coat-of-arms)]]]]))
 
 (defn arms-display [arms-id version]
   (let [user-data (user/data)
