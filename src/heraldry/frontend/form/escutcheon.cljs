@@ -61,3 +61,22 @@
               ^{:key key}
               [escutcheon-choice path key display-name])])
      [:div.spacer]]))
+
+(defn ui-form [path label & {:keys [allow-none? choices default]}]
+  (let [escutcheon (or @(rf/subscribe [:get-value path])
+                       default)
+        choices (or choices
+                    (if allow-none?
+                      (concat [["None" :none]]
+                              escutcheon/choices)
+                      escutcheon/choices))
+        names (->> choices
+                   (map (comp vec reverse))
+                   (into {}))]
+    [:div.ui-setting
+     [:label label]
+     [:div.option
+      [element/ui-submenu path "Select Escutcheon" (get names escutcheon) {:width "17.5em"}
+       (for [[display-name key] choices]
+         ^{:key key}
+         [escutcheon-choice path key display-name])]]]))
