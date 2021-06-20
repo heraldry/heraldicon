@@ -40,19 +40,23 @@
             :selected? selected?}
            (case t
              :heraldry.type/coat-of-arms {:title "coat of arms"
-                                          :nodes [{:path (conj path :field)}]}
+                                          :nodes [{:path (conj path :field)}
+                                                  {:title "components"
+                                                   :path (conj path :field :components)}]}
 
              :heraldry.type/render-options {:title "render-options"}
 
              :heraldry.type/ordinary {:title "ordinary"
-                                      :nodes [{:path (conj path :field)}]}
+                                      :nodes [{:path (conj path :field)}
+                                              {:title "components"
+                                               :path (conj path :field :components)}]}
 
              :heraldry.type/charge {:title "charge"
-                                    :nodes [{:path (conj path :field)}]}
+                                    :nodes [{:path (conj path :field)}
+                                            {:title "components"
+                                             :path (conj path :field :components)}]}
 
-             :heraldry.type/field {:title "field"
-                                   :nodes [{:title "components"
-                                            :path (conj path :components)}]}
+             :heraldry.type/field {:title "field"}
 
              :heraldry.type/items {:title title
                                    :nodes (->> data
