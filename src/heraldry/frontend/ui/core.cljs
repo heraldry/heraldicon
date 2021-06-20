@@ -11,7 +11,13 @@
 
 (rf/reg-sub :component-data
   (fn [db [_ path]]
-    (let [data (get-in db path)]
+    (let [data (get-in db path)
+          ;; TODO: this should either not be necessary or be done betterly
+          data (if (and (not data)
+                        (= (last path) :components))
+                 []
+                 data)]
+
       [path (cond-> data
               (and (map? data)
                    (-> data :type not)) (assoc :type (keyword "heraldry.type" (last path))))])))
@@ -38,15 +44,23 @@
 
              :heraldry.type/render-options {:title "render-options"}
 
-             :heraldry.type/ordinary {:title "ordinary"}
+             :heraldry.type/ordinary {:title "ordinary"
+                                      :nodes [{:path (conj path :field)}]}
 
-             :heraldry.type/charge {:title "charge"}
+             :heraldry.type/charge {:title "charge"
+                                    :nodes [{:path (conj path :field)}]}
 
              :heraldry.type/field {:title "field"
                                    :nodes [{:title "components"
                                             :path (conj path :components)}]}
 
-             :heraldry.type/items {:title title}
+             :heraldry.type/items {:title title
+                                   :nodes (->> data
+                                               count
+                                               range
+                                               (map (fn [idx]
+                                                      {:path (conj path idx)}))
+                                               vec)}
 
              :heraldry.type/unknown {:title "unknown"}))))
 
