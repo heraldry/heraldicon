@@ -5,6 +5,7 @@
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.form.state]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element :as ui-element]
             [re-frame.core :as rf]))
 
 (defn theme-choice [path key display-name]
@@ -65,3 +66,19 @@
          (for [[display-name key] group]
            ^{:key display-name}
            [theme-choice path key display-name])])]]))
+
+(defn ui-form [path choices & {:keys [label default]}]
+  (let [value (or @(rf/subscribe [:get-value path])
+                  default)]
+    [:div.ui-setting
+     (when label
+       [:label label])
+     [:div.option
+      [ui-element/submenu path "Select Colour Theme" (get tincture/theme-map value) {:min-width "22em"}
+       (for [[group-name & group] choices]
+         ^{:key group-name}
+         [:<>
+          [:h4 group-name]
+          (for [[display-name key] group]
+            ^{:key display-name}
+            [theme-choice path key display-name])])]]]))

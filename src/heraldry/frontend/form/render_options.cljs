@@ -4,6 +4,7 @@
             [heraldry.frontend.form.escutcheon :as escutcheon]
             [heraldry.frontend.form.state]
             [heraldry.frontend.form.theme :as theme]
+            [heraldry.frontend.ui.option :as ui-option]
             [re-frame.core :as rf]))
 
 (defn form [db-path]
@@ -24,8 +25,7 @@
                        :colours (rf/dispatch [:set outline-path false])))]
       (when (= @(rf/subscribe [:get mode-path]) :colours)
         [theme/form (conj db-path :theme)])])
-   [element/select (conj db-path :texture) "Texture" (concat [["None" :none]]
-                                                             texture/choices)]
+   [element/select (conj db-path :texture) "Texture" texture/choices]
    (when (-> @(rf/subscribe [:get (conj db-path :texture)])
              (or :none)
              (#(when (not= % :none) %)))
@@ -35,3 +35,17 @@
    [element/checkbox (conj db-path :escutcheon-outline?) "Escutcheon outline"]
    [element/checkbox (conj db-path :outline?) "Draw outline"]
    [element/checkbox (conj db-path :squiggly?) "Squiggly lines (can be slow)"]])
+
+(defn ui-form [path options]
+  [:<>
+   (for [option [:escutcheon-override
+                 :mode
+                 :theme
+                 :texture
+                 :texture-displacement?
+                 :shiny?
+                 :escutcheon-shadow?
+                 :escutcheon-outline?
+                 :outline?
+                 :squiggly?]]
+     ^{:key option} [ui-option/form (conj path option) (get options option)])])

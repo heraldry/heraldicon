@@ -1,9 +1,9 @@
 (ns heraldry.frontend.ui.core
   (:require [clojure.string :as s]
+            [heraldry.frontend.form.render-options :as form-render-options]
             [heraldry.frontend.state :as state]
-            [re-frame.core :as rf]
-            [heraldry.frontend.form.element :as element]
-            [heraldry.frontend.form.escutcheon :as escutcheon]))
+            [heraldry.render-options :as render-options]
+            [re-frame.core :as rf]))
 
 (def node-flag-db-path [:ui :component-tree :nodes])
 (def ui-selected-component-path [:ui :selected-component])
@@ -144,18 +144,13 @@
 
   (fn [[{:keys [title]} component-data] [_ path]]
     (merge
-     {:title title}
+     {:title title
+      :path path}
      (case (effective-component-type component-data)
-       :heraldry.type/coat-of-arms {:options [{:form escutcheon/ui-form
-                                               :args [(conj path :escutcheon)
-                                                      "Default escutcheon"
-                                                      :default :heater]}]}
+       :heraldry.type/coat-of-arms {}
 
-       :heraldry.type/render-options {:options [{:form escutcheon/ui-form
-                                                 :args [(conj path :escutcheon-override)
-                                                        "Escutcheon override"
-                                                        :default :none
-                                                        :allow-none? true]}]}
+       :heraldry.type/render-options {:options (render-options/options component-data)
+                                      :form form-render-options/ui-form}
 
        :heraldry.type/ordinary {}
 
@@ -163,21 +158,19 @@
 
        :heraldry.type/field {}
 
-       :heraldry.type/items {}
-
        :heraldry.type/unknown {}))))
 
 (defn component-form [path]
   (let [{:keys [title
+                form
                 options]} (when path
                             @(rf/subscribe [:component-form path]))]
     [:div.ui-component
      [:div.header
       [:h1 title]]
      [:div.content {:style {:height "30vh"}}
-      (for [{:keys [form args]} options]
-        (into ^{:key path} [form]
-              args))]]))
+      (when form
+        [form path options])]]))
 
 (defn selected-component []
   (let [selected-component-path @(rf/subscribe [:get ui-selected-component-path])]
