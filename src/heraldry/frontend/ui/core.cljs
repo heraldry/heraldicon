@@ -89,7 +89,11 @@
      [:div.node-name.clickable.no-select
       {:class (when selected?
                 "selected")
-       :on-click #(state/dispatch-on-event % [:set ui-selected-component-path path])}
+       :on-click #(do
+                    (when (or (not open?)
+                              selected?)
+                      (rf/dispatch [:set (flag-path path) (not open?)]))
+                    (state/dispatch-on-event % [:set ui-selected-component-path path]))}
       (when openable?
         [:span.node-icon.clickable
          {:class "clickable"
