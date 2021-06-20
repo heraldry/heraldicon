@@ -37,7 +37,8 @@
             (vector? data) :heraldry.type/items
             :else :heraldry.type/unknown)]
     (merge {:open? open?
-            :selected? selected?}
+            :selected? selected?
+            :selectable? true}
            (case t
              :heraldry.type/coat-of-arms {:title "coat of arms"
                                           :nodes [{:path (conj path :field)}
@@ -64,7 +65,8 @@
                                                range
                                                (map (fn [idx]
                                                       {:path (conj path idx)}))
-                                               vec)}
+                                               vec)
+                                   :selectable? false}
 
              :heraldry.type/unknown {:title "unknown"}))))
 
@@ -86,6 +88,7 @@
         {node-title :title
          open? :open?
          selected? :selected?
+         selectable? :selectable?
          nodes :nodes} node-data
         openable? (-> nodes count pos?)
         title (or node-title title)]
@@ -95,9 +98,12 @@
                 "selected")
        :on-click #(do
                     (when (or (not open?)
+                              (not selectable?)
                               selected?)
                       (rf/dispatch [:set (flag-path path) (not open?)]))
-                    (state/dispatch-on-event % [:set ui-selected-component-path path]))}
+                    (when selectable?
+                      (rf/dispatch [:set ui-selected-component-path path]))
+                    (.stopPropagation %))}
       (when openable?
         [:span.node-icon.clickable
          {:class "clickable"
