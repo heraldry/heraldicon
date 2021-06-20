@@ -6,6 +6,13 @@
 }
 
 @font-face {
+  font-family: "SiteDefault";
+  font-style: normal;
+  font-weight: 600;
+  src: url("../font/gotham/Gotham-Bold.otf") format("opentype");
+}
+
+@font-face {
   font-family: "Black Chancery";
   font-style: "normal";
   font-weight: 400;

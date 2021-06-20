@@ -100,7 +100,7 @@
 
 .tree ul {
   list-style: none;
-  padding-left: 0.9em;
+  padding-left: 1.3em;
   margin: 0;
 }
 
@@ -116,6 +116,16 @@
   display: inline-block;
   white-space: nowrap;
   line-height: 1.5em;
+}
+
+.tree .selected {
+  font-weight: 600;
+  color: #1b6690;
+}
+
+.tree .node-icon {
+  display: inline-block;
+  width: 1.3em;
 }
 
 .tree .node-name i {
