@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.escutcheon
-  (:require [heraldry.coat-of-arms.field.environment :as environment]))
+  (:require [heraldry.coat-of-arms.field.environment :as environment]
+            [heraldry.util :as util]))
 
 (def
   ^{:display-name "Heater"}
@@ -251,6 +252,11 @@
   (->> escutcheons
        (map (fn [v]
               [(-> v meta :display-name) (-> v meta :name keyword)]))))
+
+(def choice-map
+  (-> choices
+      util/choices->map
+      (assoc :none "None")))
 
 (defn field [type]
   (get kinds-map type))

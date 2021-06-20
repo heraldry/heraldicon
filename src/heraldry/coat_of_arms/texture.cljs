@@ -2,7 +2,8 @@
   (:require [heraldry.util :as util]))
 
 (def textures
-  [["Cloth (rough)" :cloth-rough "/textures/cloth-rough.jpg" 1]
+  [["None" :none "" 0]
+   ["Cloth (rough)" :cloth-rough "/textures/cloth-rough.jpg" 1]
    ["Cloth (smooth)" :cloth-smooth "/textures/cloth-smooth.jpg" 1]
    ["Felt" :felt "/textures/felt.jpg" 1]
    ["Glass (frosted)" :glass-frosted "/textures/glass-frosted.jpg" 1.5]

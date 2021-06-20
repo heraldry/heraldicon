@@ -95,3 +95,9 @@
   min-height: 3em;
   z-index: 2;
 }
+
+.ui-setting input[type="checkbox"],
+.ui-setting input[type="radio"] {
+  margin-left: 0px;
+  margin-right: 5px;
+}
