@@ -1,7 +1,8 @@
 (ns heraldry.frontend.ui.core
   (:require [clojure.string :as s]
             [heraldry.frontend.state :as state]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [heraldry.frontend.form.element :as element]))
 
 (def node-flag-db-path [:ui :component-tree :nodes])
 (def ui-selected-component-path [:ui :selected-component])
@@ -125,3 +126,23 @@
    [:ul
     (for [[idx node-path] (map-indexed vector paths)]
       ^{:key idx} [:li [component-node node-path]])]])
+
+(rf/reg-sub :component-form
+  (fn [[_ path] _]
+    [(rf/subscribe [:component-node path])
+     (rf/subscribe [:component-data path])])
+
+  (fn [[{:keys [title]} component-data] [_ path]]
+    {:title title}))
+
+(defn component-form [path]
+  (let [form-data (when path
+                    @(rf/subscribe [:component-form path]))]
+    [:div.component
+     [:div.header
+      [:h1 (:title form-data)]]
+     [:div.content]]))
+
+(defn selected-component []
+  (let [selected-component-path @(rf/subscribe [:get ui-selected-component-path])]
+    [component-form selected-component-path]))
