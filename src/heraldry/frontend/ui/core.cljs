@@ -2,13 +2,21 @@
   (:require [clojure.string :as s]
             [heraldry.frontend.state :as state]
             [re-frame.core :as rf]
-            [heraldry.frontend.form.element :as element]))
+            [heraldry.frontend.form.element :as element]
+            [heraldry.frontend.form.escutcheon :as escutcheon]))
 
 (def node-flag-db-path [:ui :component-tree :nodes])
 (def ui-selected-component-path [:ui :selected-component])
 
 (defn flag-path [path]
   (conj node-flag-db-path path))
+
+(rf/reg-sub :get-value
+  (fn [[_ path] _]
+    (rf/subscribe [:get path]))
+
+  (fn [value [_ _path]]
+    value))
 
 (rf/reg-sub :component-data
   (fn [db [_ path]]
@@ -31,44 +39,46 @@
       (s/starts-with? ts ":heraldry.charge") :heraldry.type/charge
       :else :heraldry.type/unknown)))
 
+(defn effective-component-type [data]
+  (cond
+    (map? data) (-> data :type type->component-type)
+    (vector? data) :heraldry.type/items
+    :else :heraldry.type/unknown))
+
 (defn component->node [path data & {:keys [title open? selected?]}]
-  (let [t (cond
-            (map? data) (-> data :type type->component-type)
-            (vector? data) :heraldry.type/items
-            :else :heraldry.type/unknown)]
-    (merge {:open? open?
-            :selected? selected?
-            :selectable? true}
-           (case t
-             :heraldry.type/coat-of-arms {:title "coat of arms"
-                                          :nodes [{:path (conj path :field)}
-                                                  {:title "components"
-                                                   :path (conj path :field :components)}]}
+  (merge {:open? open?
+          :selected? selected?
+          :selectable? true}
+         (case (effective-component-type data)
+           :heraldry.type/coat-of-arms {:title "coat of arms"
+                                        :nodes [{:path (conj path :field)}
+                                                {:title "components"
+                                                 :path (conj path :field :components)}]}
 
-             :heraldry.type/render-options {:title "render-options"}
+           :heraldry.type/render-options {:title "render-options"}
 
-             :heraldry.type/ordinary {:title "ordinary"
-                                      :nodes [{:path (conj path :field)}
-                                              {:title "components"
-                                               :path (conj path :field :components)}]}
-
-             :heraldry.type/charge {:title "charge"
+           :heraldry.type/ordinary {:title "ordinary"
                                     :nodes [{:path (conj path :field)}
                                             {:title "components"
                                              :path (conj path :field :components)}]}
 
-             :heraldry.type/field {:title "field"}
+           :heraldry.type/charge {:title "charge"
+                                  :nodes [{:path (conj path :field)}
+                                          {:title "components"
+                                           :path (conj path :field :components)}]}
 
-             :heraldry.type/items {:title title
-                                   :nodes (->> data
-                                               count
-                                               range
-                                               (map (fn [idx]
-                                                      {:path (conj path idx)}))
-                                               vec)
-                                   :selectable? false}
+           :heraldry.type/field {:title "field"}
 
-             :heraldry.type/unknown {:title "unknown"}))))
+           :heraldry.type/items {:title title
+                                 :nodes (->> data
+                                             count
+                                             range
+                                             (map (fn [idx]
+                                                    {:path (conj path idx)}))
+                                             vec)
+                                 :selectable? false}
+
+           :heraldry.type/unknown {:title "unknown"})))
 
 (rf/reg-sub :component-node
   (fn [[_ path] _]
@@ -119,7 +129,7 @@
           ^{:key node-path} [:li [component-node node-path :title title]])])]))
 
 (defn component-tree [paths]
-  [:div.tree
+  [:div.ui-tree
    {:style {:border "1px solid #ddd"
             :border-radius "10px"
             :padding "10px"}}
@@ -133,15 +143,38 @@
      (rf/subscribe [:component-data path])])
 
   (fn [[{:keys [title]} component-data] [_ path]]
-    {:title title}))
+    (merge
+     {:title title}
+     (case (effective-component-type component-data)
+       :heraldry.type/coat-of-arms {:options [{:label "Default escutcheon"
+                                               :path (conj path :escutcheon)
+                                               :default :heater
+                                               :form escutcheon/ui-form}]}
+
+       :heraldry.type/render-options {}
+
+       :heraldry.type/ordinary {}
+
+       :heraldry.type/charge {}
+
+       :heraldry.type/field {}
+
+       :heraldry.type/items {}
+
+       :heraldry.type/unknown {}))))
 
 (defn component-form [path]
-  (let [form-data (when path
-                    @(rf/subscribe [:component-form path]))]
-    [:div.component
+  (let [{:keys [title
+                options]} (when path
+                            @(rf/subscribe [:component-form path]))]
+    [:div.ui-component
      [:div.header
-      [:h1 (:title form-data)]]
-     [:div.content]]))
+      [:h1 title]]
+     [:div.content {:style {:height "30vh"}}
+      (for [{:keys [label
+                    path
+                    form]} options]
+        ^{:key path} [form path label])]]))
 
 (defn selected-component []
   (let [selected-component-path @(rf/subscribe [:get ui-selected-component-path])]
