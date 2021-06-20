@@ -55,7 +55,7 @@
                                                 {:title "components"
                                                  :path (conj path :field :components)}]}
 
-           :heraldry.type/render-options {:title "render-options"}
+           :heraldry.type/render-options {:title "Render Options"}
 
            :heraldry.type/ordinary {:title "ordinary"
                                     :nodes [{:path (conj path :field)}
@@ -146,12 +146,16 @@
     (merge
      {:title title}
      (case (effective-component-type component-data)
-       :heraldry.type/coat-of-arms {:options [{:label "Default escutcheon"
-                                               :path (conj path :escutcheon)
-                                               :default :heater
-                                               :form escutcheon/ui-form}]}
+       :heraldry.type/coat-of-arms {:options [{:form escutcheon/ui-form
+                                               :args [(conj path :escutcheon)
+                                                      "Default escutcheon"
+                                                      :default :heater]}]}
 
-       :heraldry.type/render-options {}
+       :heraldry.type/render-options {:options [{:form escutcheon/ui-form
+                                                 :args [(conj path :escutcheon-override)
+                                                        "Escutcheon override"
+                                                        :default :none
+                                                        :allow-none? true]}]}
 
        :heraldry.type/ordinary {}
 
@@ -171,10 +175,9 @@
      [:div.header
       [:h1 title]]
      [:div.content {:style {:height "30vh"}}
-      (for [{:keys [label
-                    path
-                    form]} options]
-        ^{:key path} [form path label])]]))
+      (for [{:keys [form args]} options]
+        (into ^{:key path} [form]
+              args))]]))
 
 (defn selected-component []
   (let [selected-component-path @(rf/subscribe [:get ui-selected-component-path])]
