@@ -17,10 +17,9 @@
                         (= (last path) :components))
                  []
                  data)]
-
-      [path (cond-> data
-              (and (map? data)
-                   (-> data :type not)) (assoc :type (keyword "heraldry.type" (last path))))])))
+      (cond-> data
+        (and (map? data)
+             (-> data :type not)) (assoc :type (keyword "heraldry.type" (last path)))))))
 
 (defn type->component-type [t]
   (let [ts (str t)]
@@ -76,7 +75,7 @@
      (rf/subscribe [:get (flag-path path)])
      (rf/subscribe [:get ui-selected-component-path])])
 
-  (fn [[[path component-data] open? selected-component-path]]
+  (fn [[component-data open? selected-component-path] [_ path]]
     (component->node
      path
      component-data
