@@ -10,13 +10,6 @@
 (defn flag-path [path]
   (conj node-flag-db-path path))
 
-(rf/reg-sub :get-value
-  (fn [[_ path] _]
-    (rf/subscribe [:get path]))
-
-  (fn [value [_ _path]]
-    value))
-
 (rf/reg-sub :component-data
   (fn [db [_ path]]
     (let [data (get-in db path)
