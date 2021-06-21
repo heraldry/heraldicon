@@ -4,7 +4,6 @@
             [heraldry.frontend.form.escutcheon :as escutcheon]
             [heraldry.frontend.form.state]
             [heraldry.frontend.form.theme :as theme]
-            [heraldry.frontend.ui.option :as ui-option]
             [re-frame.core :as rf]))
 
 (defn form [db-path]

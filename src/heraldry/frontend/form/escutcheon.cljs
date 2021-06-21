@@ -5,7 +5,6 @@
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.form.state]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element :as ui-element]
             [re-frame.core :as rf]))
 
 (defn escutcheon-choice [path key display-name]
@@ -62,15 +61,3 @@
               ^{:key key}
               [escutcheon-choice path key display-name])])
      [:div.spacer]]))
-
-(defn ui-form [path choices & {:keys [default label]}]
-  (let [escutcheon (or @(rf/subscribe [:get-value path])
-                       default)]
-    [:div.ui-setting
-     (when label
-       [:label label])
-     [:div.option
-      [ui-element/submenu path "Select Escutcheon" (get escutcheon/choice-map escutcheon) {:width "17.5em"}
-       (for [[display-name key] choices]
-         ^{:key key}
-         [escutcheon-choice path key display-name])]]]))

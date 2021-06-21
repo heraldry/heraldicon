@@ -6,7 +6,7 @@
                 :choices escutcheon/choices
                 :default :heater
                 :ui {:label "Default escutcheon"
-                     :form-type :escutcheon}}})
+                     :form-type :escutcheon-select}}})
 
 (defn options [_coat-of-arms]
   default-options)
