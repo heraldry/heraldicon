@@ -1,0 +1,12 @@
+(ns heraldry.coat-of-arms.core
+  (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]))
+
+(def default-options
+  {:escutcheon {:type :choice
+                :choices escutcheon/choices
+                :default :heater
+                :ui {:label "Default escutcheon"
+                     :form-type :escutcheon}}})
+
+(defn options [_coat-of-arms]
+  default-options)

@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.core
   (:require [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.form.coat-of-arms] ;; needed for defmethods
             [heraldry.frontend.ui.form.render-options] ;; needed for defmethods
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
@@ -33,12 +34,6 @@
             :selected? (= path selected-component-path)
             :selectable? true}
            (interface/component-node-data path component-data))))
-
-(defmethod interface/component-node-data :heraldry.type/coat-of-arms [path _component-data]
-  {:title "coat of arms"
-   :nodes [{:path (conj path :field)}
-           {:title "components"
-            :path (conj path :field :components)}]})
 
 (defmethod interface/component-node-data :heraldry.type/ordinary [path _component-data]
   {:title "ordinary"
