@@ -1,12 +1,11 @@
 (ns heraldry.frontend.ui.form.coat-of-arms
   (:require [heraldry.coat-of-arms.core :as coat-of-arms]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.ui.option :as option]))
+            [heraldry.frontend.ui.interface :as interface]))
 
 (defn form [path {:keys [options]}]
   [:<>
    (for [option [:escutcheon]]
-     ^{:key option} [option/form (conj path option) (get options option)])])
+     ^{:key option} [interface/form-element (conj path option) (get options option)])])
 
 (defmethod interface/component-node-data :heraldry.type/coat-of-arms [path _component-data]
   {:title "coat of arms"

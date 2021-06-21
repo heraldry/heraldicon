@@ -42,3 +42,20 @@
   {:form (fn [_path _form-data]
            [:div])
    :form-args {}})
+
+;; form-element
+
+(defn default-element [type]
+  (case type
+    :choice :select
+    :boolean :checkbox
+    :range :range
+    nil))
+
+(defmulti form-element (fn [_path {:keys [type ui]}]
+                         (or (:form-type ui)
+                             (default-element type))))
+
+(defmethod form-element nil [_path option]
+  (when option
+    [:div (str "not implemented: " (:type option) (-> option :ui :form-type))]))

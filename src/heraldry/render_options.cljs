@@ -14,7 +14,7 @@
                                           escutcheon/choices)
                          :default :heater
                          :ui {:label "Escutcheon Override"
-                              :form-type :escutcheon}}
+                              :form-type :escutcheon-select}}
 
    :mode {:type :choice
           :choices mode-choices
@@ -26,7 +26,7 @@
            :choices tincture/theme-choices
            :default tincture/default-theme
            :ui {:label "Theme"
-                :form-type :theme}}
+                :form-type :theme-select}}
 
    :texture {:type :choice
              :choices texture/choices

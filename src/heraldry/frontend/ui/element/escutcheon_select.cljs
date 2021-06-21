@@ -1,10 +1,11 @@
-(ns heraldry.frontend.form.escutcheon
+(ns heraldry.frontend.ui.element.escutcheon-select
   (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.render :as render]
-            [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.form.state]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element.submenu :as submenu]
+            [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
 (defn escutcheon-choice [path key display-name]
@@ -33,31 +34,20 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn form [path label & {:keys [label-width allow-none? choices]}]
-  (let [escutcheon (or @(rf/subscribe [:get path])
-                       (when allow-none?
-                         :none)
-                       (when choices
-                         (-> choices first second))
-                       :heater)
-        choices (or choices
-                    (if allow-none?
-                      (concat [["None" :none]]
-                              escutcheon/choices)
-                      escutcheon/choices))
-        names (->> choices
-                   (map (comp vec reverse))
-                   (into {}))]
-    [:div.setting
-     [:label label]
-     " "
-     (conj (if label-width
-             [:div {:style {:display "inline-block"
-                            :position "absolute"
-                            :left label-width}}]
-             [:<>])
-           [element/submenu path "Select Escutcheon" (get names escutcheon) {:min-width "17.5em"}
-            (for [[display-name key] choices]
-              ^{:key key}
-              [escutcheon-choice path key display-name])])
-     [:div.spacer]]))
+(defn escutcheon-select [path choices & {:keys [default label]}]
+  (let [escutcheon (or @(rf/subscribe [:get-value path])
+                       default)]
+    [:div.ui-setting
+     (when label
+       [:label label])
+     [:div.option
+      [submenu/submenu path "Select Escutcheon" (get escutcheon/choice-map escutcheon) {:width "17.5em"}
+       (for [[display-name key] choices]
+         ^{:key key}
+         [escutcheon-choice path key display-name])]]]))
+
+(defmethod interface/form-element :escutcheon-select [path {:keys [ui default choices] :as option}]
+  (when option
+    [escutcheon-select path choices
+     :default default
+     :label (:label ui)]))

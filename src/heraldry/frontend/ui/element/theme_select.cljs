@@ -1,10 +1,10 @@
-(ns heraldry.frontend.form.theme
+(ns heraldry.frontend.ui.element.theme-select
   (:require [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.form.element :as element]
             [heraldry.frontend.form.shared :as shared]
-            [heraldry.frontend.form.state]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element.submenu :as submenu]
+            [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
 (defn theme-choice [path key display-name]
@@ -51,17 +51,24 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn form [path & {:keys [label] :or {label "Colour Theme"}}]
-  (let [value (or @(rf/subscribe [:get path])
-                  tincture/default-theme)]
-    [:div.setting
-     [:label label]
-     " "
-     [element/submenu path "Select Colour Theme" (get tincture/theme-map value) {:min-width "22em"}
-      (for [[group-name & group] tincture/theme-choices]
-        ^{:key group-name}
-        [:<>
-         [:h4 group-name]
-         (for [[display-name key] group]
-           ^{:key display-name}
-           [theme-choice path key display-name])])]]))
+(defn theme-select [path choices & {:keys [label default]}]
+  (let [value (or @(rf/subscribe [:get-value path])
+                  default)]
+    [:div.ui-setting
+     (when label
+       [:label label])
+     [:div.option
+      [submenu/submenu path "Select Colour Theme" (get tincture/theme-map value) {:min-width "22em"}
+       (for [[group-name & group] choices]
+         ^{:key group-name}
+         [:<>
+          [:h4 group-name]
+          (for [[display-name key] group]
+            ^{:key display-name}
+            [theme-choice path key display-name])])]]]))
+
+(defmethod interface/form-element :theme-select [path {:keys [ui default choices] :as option}]
+  (when option
+    [theme-select path choices
+     :default default
+     :label (:label ui)]))
