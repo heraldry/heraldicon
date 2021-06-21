@@ -7,9 +7,8 @@
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
-(defn theme-choice [path key display-name]
-  (let [value @(rf/subscribe [:get path])
-        {:keys [result]} (render/coat-of-arms
+(defn theme-choice [path key display-name & {:keys [selected?]}]
+  (let [{:keys [result]} (render/coat-of-arms
                           {:escutcheon :rectangle
                            :field {:type :heraldry.field.type/bendy-sinister
                                    :line {:type :straight}
@@ -36,7 +35,7 @@
                               (assoc-in [:render-options :outline?] true)
                               (assoc-in [:render-options :theme] key)))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
-                          :style {:border (if (= value key)
+                          :style {:border (if selected?
                                             "1px solid #000"
                                             "1px solid transparent")
                                   :border-radius "5px"}}
@@ -65,7 +64,7 @@
           [:h4 group-name]
           (for [[display-name key] group]
             ^{:key display-name}
-            [theme-choice path key display-name])])]]]))
+            [theme-choice path key display-name :selected? (= key value)])])]]]))
 
 (defmethod interface/form-element :theme-select [path {:keys [ui default choices] :as option}]
   (when option
