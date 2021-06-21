@@ -16,8 +16,29 @@
     (vector? data) :heraldry.type/items
     :else :heraldry.type/unknown))
 
-(defmulti component-form-data (fn [component-data]
-                                (effective-component-type component-data)))
+;; component-node-data
 
 (defmulti component-node-data (fn [_path component-data]
                                 (effective-component-type component-data)))
+
+(defmethod component-node-data :heraldry.type/items [path component-data]
+  {:nodes (->> component-data
+               count
+               range
+               (map (fn [idx]
+                      {:path (conj path idx)}))
+               vec)
+   :selectable? false})
+
+(defmethod component-node-data :heraldry.type/unknown [_path _component-data]
+  {:title "unknown"})
+
+;; component-form-data
+
+(defmulti component-form-data (fn [component-data]
+                                (effective-component-type component-data)))
+
+(defmethod component-form-data :heraldry.type/unknown [_path _component-data]
+  {:form (fn [_path _form-data]
+           [:div])
+   :form-args {}})
