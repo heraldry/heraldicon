@@ -35,17 +35,3 @@
    [element/checkbox (conj db-path :escutcheon-outline?) "Escutcheon outline"]
    [element/checkbox (conj db-path :outline?) "Draw outline"]
    [element/checkbox (conj db-path :squiggly?) "Squiggly lines (can be slow)"]])
-
-(defn ui-form [path options]
-  [:<>
-   (for [option [:escutcheon-override
-                 :mode
-                 :theme
-                 :texture
-                 :texture-displacement?
-                 :shiny?
-                 :escutcheon-shadow?
-                 :escutcheon-outline?
-                 :outline?
-                 :squiggly?]]
-     ^{:key option} [ui-option/form (conj path option) (get options option)])])
