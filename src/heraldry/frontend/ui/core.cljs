@@ -35,6 +35,17 @@
             :selectable? true}
            (interface/component-node-data path component-data))))
 
+(rf/reg-sub :component-form
+  (fn [[_ path] _]
+    [(rf/subscribe [:component-node path])
+     (rf/subscribe [:component-data path])])
+
+  (fn [[{:keys [title]} component-data] [_ path]]
+    (merge
+     {:title title
+      :path path}
+     (interface/component-form-data component-data))))
+
 (defmethod interface/component-node-data :heraldry.type/ordinary [path _component-data]
   {:title "ordinary"
    :nodes [{:path (conj path :field)}
@@ -49,18 +60,6 @@
 
 (defmethod interface/component-node-data :heraldry.type/field [_path _component-data]
   {:title "field"})
-
-(defmethod interface/component-node-data :heraldry.type/items [path component-data]
-  {:nodes (->> component-data
-               count
-               range
-               (map (fn [idx]
-                      {:path (conj path idx)}))
-               vec)
-   :selectable? false})
-
-(defmethod interface/component-node-data :heraldry.type/unknown [path _component-data]
-  {:title "unknown"})
 
 (defn component-node [path & {:keys [title]}]
   (let [node-data @(rf/subscribe [:component-node path])
@@ -105,17 +104,6 @@
    [:ul
     (for [[idx node-path] (map-indexed vector paths)]
       ^{:key idx} [:li [component-node node-path]])]])
-
-(rf/reg-sub :component-form
-  (fn [[_ path] _]
-    [(rf/subscribe [:component-node path])
-     (rf/subscribe [:component-data path])])
-
-  (fn [[{:keys [title]} component-data] [_ path]]
-    (merge
-     {:title title
-      :path path}
-     (interface/component-form-data component-data))))
 
 (defn component-form [path]
   (let [{:keys [title path form form-args]} (when path
