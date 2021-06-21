@@ -23,6 +23,13 @@
   (fn [db [_ path]]
     (get-in db (concat [:form-message] path [:message]))))
 
+(rf/reg-sub :get-value
+  (fn [[_ path] _]
+    (rf/subscribe [:get path]))
+
+  (fn [value [_ _path]]
+    value))
+
 ;; events
 
 (defonce stats-accumulator (tufte/add-accumulating-handler! {:ns-pattern "*"}))
