@@ -20,7 +20,7 @@
 
 .ui-component > .header > h1 {
   display: inline-block;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 1em;
   margin: 0;
   margin-left: 0.5em;
@@ -28,7 +28,7 @@
 
 .ui-component > .content > h2 {
   display: inline-block;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 1em;
   margin: 0;
   margin-bottom: 0.5em;
