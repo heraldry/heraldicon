@@ -2,11 +2,15 @@
   (:require [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.checkbox] ;; needed for defmethods
             [heraldry.frontend.ui.element.escutcheon-select] ;; needed for defmethods
+            [heraldry.frontend.ui.element.field-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.radio-select] ;; needed for defmethods
+            [heraldry.frontend.ui.element.range] ;; needed for defmethods
             [heraldry.frontend.ui.element.select] ;; needed for defmethods
             [heraldry.frontend.ui.element.submenu] ;; needed for defmethods
             [heraldry.frontend.ui.element.theme-select] ;; needed for defmethods
+            [heraldry.frontend.ui.element.tincture-select] ;; needed for defmethods
             [heraldry.frontend.ui.form.coat-of-arms] ;; needed for defmethods
+            [heraldry.frontend.ui.form.field] ;; needed for defmethods
             [heraldry.frontend.ui.form.render-options] ;; needed for defmethods
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
@@ -63,9 +67,6 @@
    :nodes [{:path (conj path :field)}
            {:title "components"
             :path (conj path :field :components)}]})
-
-(defmethod interface/component-node-data :heraldry.type/field [_path _component-data]
-  {:title "field"})
 
 (defn component-node [path & {:keys [title]}]
   (let [node-data @(rf/subscribe [:component-node path])

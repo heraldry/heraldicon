@@ -2,10 +2,28 @@
   (:require [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.util :as util]))
 
 (def default-options
-  {:line line/default-options
+  {:type {:type :choice
+          ;; TODO: this should have the proper choices, but currently that's a circular dependency
+          :choices []
+          :default :heraldry.field.type/plain
+          :ui {:label "Division"
+               :form-type :field-type-select}}
+   :inherit-environment? {:type :boolean
+                          :default false
+                          :ui {:label "Inherit environment (dimidiation)"}}
+   :counterchanged? {:type :boolean
+                     :default false
+                     :ui {:label "Counterchanged"}}
+   :tincture {:type :choice
+              :choices tincture/choices
+              :default :none
+              :ui {:label "Tincture"
+                   :form-type :tincture-select}}
+   :line line/default-options
    :opposite-line line/default-options
    :extra-line line/default-options
    :origin (-> position/default-options
@@ -27,7 +45,9 @@
    :thickness {:type :range
                :min 0
                :max 0.5
-               :default 0.1}
+               :default 0.1
+               :ui {:label "Thickness"
+                    :step 0.01}}
    :layout {:num-fields-x {:type :range
                            :min 1
                            :max 20
@@ -70,20 +90,34 @@
           opposite-line-style (line/options {:type (-> field :opposite-line :type (or (-> field :line :type)))})
           extra-line-style (line/options {:type (-> field :extra-line :type (or (-> field :line :type)))})]
       (-> (case (-> field :type name keyword)
+            :plain (options/pick default-options
+                                 [[:type]
+                                  [:inherit-environment?]
+                                  [:counterchanged?]
+                                  [:tincture]])
             :per-pale (options/pick default-options
-                                    [[:line]
+                                    [[:type]
+                                     [:inherit-environment?]
+                                     [:counterchanged?]
+                                     [:line]
                                      [:origin :point]
                                      [:origin :offset-x]]
                                     {[:origin :point :choices] position/point-choices-x
                                      [:line] line-style})
             :per-fess (options/pick default-options
-                                    [[:line]
+                                    [[:type]
+                                     [:inherit-environment?]
+                                     [:counterchanged?]
+                                     [:line]
                                      [:origin :point]
                                      [:origin :offset-y]]
                                     {[:origin :point :choices] position/point-choices-y
                                      [:line] line-style})
             :per-bend (options/pick default-options
-                                    [[:line]
+                                    [[:type]
+                                     [:inherit-environment?]
+                                     [:counterchanged?]
+                                     [:line]
                                      [:origin]
                                      [:anchor]]
                                     (let [useful-points #{:top-left :bottom-right
@@ -114,7 +148,10 @@
                                                                    :bottom-right :fess
                                                                    :top-left)}))
             :per-bend-sinister (options/pick default-options
-                                             [[:line]
+                                             [[:type]
+                                              [:inherit-environment?]
+                                              [:counterchanged?]
+                                              [:line]
                                               [:origin]
                                               [:anchor]]
                                              (let [useful-points #{:top-right :bottom-left
@@ -145,7 +182,10 @@
                                                                             :bottom-left :fess
                                                                             :top-right)}))
             :per-chevron (options/pick default-options
-                                       [[:line]
+                                       [[:type]
+                                        [:inherit-environment?]
+                                        [:counterchanged?]
+                                        [:line]
                                         [:opposite-line]
                                         [:origin]
                                         [:direction-anchor]
@@ -184,7 +224,10 @@
                                                                     :angle :angle
                                                                     :bottom-left)})
             :per-pile (options/pick default-options
-                                    [[:origin]
+                                    [[:type]
+                                     [:inherit-environment?]
+                                     [:counterchanged?]
+                                     [:origin]
                                      [:anchor]
                                      [:line]
                                      [:opposite-line]]
@@ -236,7 +279,10 @@
                                        [:anchor :angle :max] 90
                                        [:anchor :type] nil}))
             :per-saltire (options/pick default-options
-                                       [[:line]
+                                       [[:type]
+                                        [:inherit-environment?]
+                                        [:counterchanged?]
+                                        [:line]
                                         [:opposite-line]
                                         [:origin]
                                         [:anchor]]
@@ -253,7 +299,10 @@
                                                                    position/anchor-point-choices
                                                                    [:top-left :top-right :bottom-left :bottom-right :angle])})
             :quartered (options/pick default-options
-                                     [[:line]
+                                     [[:type]
+                                      [:inherit-environment?]
+                                      [:counterchanged?]
+                                      [:line]
                                       [:opposite-line]
                                       [:origin :point]
                                       [:origin :offset-x]
@@ -267,7 +316,10 @@
                                                            (options/override-if-exists [:base-line] nil)
                                                            (dissoc :fimbriation))})
             :quarterly (options/pick default-options
-                                     [[:layout :num-base-fields]
+                                     [[:type]
+                                      [:inherit-environment?]
+                                      [:counterchanged?]
+                                      [:layout :num-base-fields]
                                       [:layout :num-fields-x]
                                       [:layout :offset-x]
                                       [:layout :stretch-x]
@@ -277,7 +329,10 @@
                                      {[:layout :num-fields-x :default] 3
                                       [:layout :num-fields-y :default] 4})
             :gyronny (options/pick default-options
-                                   [[:line]
+                                   [[:type]
+                                    [:inherit-environment?]
+                                    [:counterchanged?]
+                                    [:line]
                                     [:opposite-line]
                                     [:origin]
                                     [:anchor]]
@@ -294,7 +349,10 @@
                                                                position/anchor-point-choices
                                                                [:top-left :top-right :bottom-left :bottom-right :angle])})
             :paly (options/pick default-options
-                                [[:line]
+                                [[:type]
+                                 [:inherit-environment?]
+                                 [:counterchanged?]
+                                 [:line]
                                  [:layout :num-base-fields]
                                  [:layout :num-fields-x]
                                  [:layout :offset-x]
@@ -302,7 +360,10 @@
                                 {[:line] line-style
                                  [:line :fimbriation] nil})
             :barry (options/pick default-options
-                                 [[:line]
+                                 [[:type]
+                                  [:inherit-environment?]
+                                  [:counterchanged?]
+                                  [:line]
                                   [:layout :num-base-fields]
                                   [:layout :num-fields-y]
                                   [:layout :offset-y]
@@ -310,7 +371,10 @@
                                  {[:line] line-style
                                   [:line :fimbriation] nil})
             :chequy (options/pick default-options
-                                  [[:layout :num-base-fields]
+                                  [[:type]
+                                   [:inherit-environment?]
+                                   [:counterchanged?]
+                                   [:layout :num-base-fields]
                                    [:layout :num-fields-x]
                                    [:layout :offset-x]
                                    [:layout :stretch-x]
@@ -319,7 +383,10 @@
                                    [:layout :stretch-y]]
                                   {[:layout :num-fields-y :default] nil})
             :lozengy (options/pick default-options
-                                   [[:layout :num-fields-x]
+                                   [[:type]
+                                    [:inherit-environment?]
+                                    [:counterchanged?]
+                                    [:layout :num-fields-x]
                                     [:layout :offset-x]
                                     [:layout :stretch-x]
                                     [:layout :num-fields-y]
@@ -329,7 +396,10 @@
                                    {[:layout :num-fields-y :default] nil
                                     [:layout :stretch-y :max] 3})
             :vairy (options/pick default-options
-                                 [[:variant]
+                                 [[:type]
+                                  [:inherit-environment?]
+                                  [:counterchanged?]
+                                  [:variant]
                                   [:layout :num-fields-x]
                                   [:layout :offset-x]
                                   [:layout :stretch-x]
@@ -338,7 +408,10 @@
                                   [:layout :stretch-y]]
                                  {[:layout :num-fields-y :default] nil})
             :potenty (options/pick default-options
-                                   [[:variant]
+                                   [[:type]
+                                    [:inherit-environment?]
+                                    [:counterchanged?]
+                                    [:variant]
                                     [:layout :num-fields-x]
                                     [:layout :offset-x]
                                     [:layout :stretch-x]
@@ -351,7 +424,10 @@
                                                          ["In pale" :in-pale]
                                                          ["En point" :en-point]]})
             :papellony (options/pick default-options
-                                     [[:thickness]
+                                     [[:type]
+                                      [:inherit-environment?]
+                                      [:counterchanged?]
+                                      [:thickness]
                                       [:layout :num-fields-x]
                                       [:layout :offset-x]
                                       [:layout :stretch-x]
@@ -360,7 +436,10 @@
                                       [:layout :stretch-y]]
                                      {[:layout :num-fields-y :default] nil})
             :masonry (options/pick default-options
-                                   [[:thickness]
+                                   [[:type]
+                                    [:inherit-environment?]
+                                    [:counterchanged?]
+                                    [:thickness]
                                     [:layout :num-fields-x]
                                     [:layout :offset-x]
                                     [:layout :stretch-x]
@@ -369,7 +448,10 @@
                                     [:layout :stretch-y]]
                                    {[:layout :num-fields-y :default] nil})
             :bendy (options/pick default-options
-                                 [[:line]
+                                 [[:type]
+                                  [:inherit-environment?]
+                                  [:counterchanged?]
+                                  [:line]
                                   [:layout :num-base-fields]
                                   [:layout :num-fields-y]
                                   [:layout :offset-y]
@@ -405,7 +487,10 @@
                                                                 :bottom-right :fess
                                                                 :top-left)}))
             :bendy-sinister (options/pick default-options
-                                          [[:line]
+                                          [[:type]
+                                           [:inherit-environment?]
+                                           [:counterchanged?]
+                                           [:line]
                                            [:layout :num-base-fields]
                                            [:layout :num-fields-y]
                                            [:layout :offset-y]
@@ -441,7 +526,10 @@
                                                                          :bottom-left :fess
                                                                          :top-right)}))
             :tierced-per-pale (options/pick default-options
-                                            [[:line]
+                                            [[:type]
+                                             [:inherit-environment?]
+                                             [:counterchanged?]
+                                             [:line]
                                              [:layout :stretch-x]
                                              [:origin :point]
                                              [:origin :offset-x]]
@@ -449,7 +537,10 @@
                                              [:line] line-style
                                              [:line :fimbriation] nil})
             :tierced-per-fess (options/pick default-options
-                                            [[:line]
+                                            [[:type]
+                                             [:inherit-environment?]
+                                             [:counterchanged?]
+                                             [:line]
                                              [:layout :stretch-y]
                                              [:origin :point]
                                              [:origin :offset-y]]
@@ -457,7 +548,10 @@
                                              [:line] line-style
                                              [:line :fimbriation] nil})
             :tierced-per-pairle (options/pick default-options
-                                              [[:line]
+                                              [[:type]
+                                               [:inherit-environment?]
+                                               [:counterchanged?]
+                                               [:line]
                                                [:opposite-line]
                                                [:extra-line]
                                                [:origin]
@@ -478,7 +572,10 @@
                                                                           position/anchor-point-choices
                                                                           [:top-left :top-right :angle])})
             :tierced-per-pairle-reversed (options/pick default-options
-                                                       [[:line]
+                                                       [[:type]
+                                                        [:inherit-environment?]
+                                                        [:counterchanged?]
+                                                        [:line]
                                                         [:opposite-line]
                                                         [:extra-line]
                                                         [:origin]

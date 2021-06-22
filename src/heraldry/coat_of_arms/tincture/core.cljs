@@ -59,6 +59,7 @@
 
 (def choices
   [["Metal"
+    ["None" :none]
     ["Argent" :argent]
     ["Or" :or]]
    ["Colour"
