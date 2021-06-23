@@ -7,7 +7,7 @@
         com.andrewmcveigh/cljs-time {:mvn/version "0.5.2"}
         com.taoensso/timbre {:mvn/version "5.1.2"}
         com.wsscode/async {:mvn/version "2021.01.15"}
-        day8.re-frame/re-frame-10x {:mvn/version "1.1.3"}
+        day8.re-frame/re-frame-10x {:mvn/version "1.1.8"}
         day8.re-frame/tracing {:mvn/version "0.6.2"}
         funcool/hodgepodge {:mvn/version "0.1.4"}
         hiccups/hiccups {:mvn/version "0.3.0"}
