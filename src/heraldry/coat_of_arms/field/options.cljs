@@ -41,7 +41,8 @@
                        ["In pale" :in-pale]
                        ["En point" :en-point]
                        ["Ancien" :ancien]]
-             :default :default}
+             :default :default
+             :ui {:label "Variant"}}
    :thickness {:type :range
                :min 0
                :max 0.5
