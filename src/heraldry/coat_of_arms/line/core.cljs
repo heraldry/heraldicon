@@ -173,34 +173,50 @@
 (def default-options
   {:type {:type :choice
           :choices choices
-          :default :straight}
+          :default :straight
+          :ui {:label "Type"
+               :form-type :line-type-select}}
    :eccentricity {:type :range
                   :min 0
                   :max 1
-                  :default 0.5}
+                  :default 0.5
+                  :ui {:label "Eccentricity"
+                       :step 0.01}}
    :height {:type :range
             :min 0
             :max 3
-            :default 1}
+            :default 1
+            :ui {:label "Height"
+                 :step 0.01}}
    :width {:type :range
            :min 2
            :max 100
-           :default 10}
+           :default 10
+           :ui {:label "Width"
+                :step 0.01}}
    :offset {:type :range
             :min -1
             :max 3
-            :default 0}
+            :default 0
+            :ui {:label "Offset"
+                 :step 0.01}}
    :spacing {:type :range
              :min 0
              :max 5
-             :default 0}
+             :default 0
+             :ui {:label "Spacing"
+                  :step 0.01}}
    :base-line {:type :choice
                :choices base-line-choices
-               :default :middle}
+               :default :middle
+               :ui {:label "Base line"
+                    :form-type :radio-select}}
    :mirrored? {:type :boolean
-               :default false}
+               :default false
+               :ui {:label "Mirrored"}}
    :flipped? {:type :boolean
-              :default false}
+              :default false
+              :ui {:label "Flipped"}}
    :fimbriation {:mode {:type :choice
                         :choices fimbriation-choices
                         :default :none}

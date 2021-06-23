@@ -8,9 +8,9 @@
                  :counterchanged?
                  :type
                  :tincture
-                 ;; :line
-                 ;; :opposite-line
-                 ;; :extra-line
+                 :line
+                 :opposite-line
+                 :extra-line
                  :variant
                  :thickness]]
      ^{:key option} [interface/form-element (conj path option) (get options option)])])

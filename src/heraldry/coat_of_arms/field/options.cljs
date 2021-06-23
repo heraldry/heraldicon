@@ -87,9 +87,15 @@
 
 (defn options [field]
   (when field
-    (let [line-style (line/options (:line field))
-          opposite-line-style (line/options {:type (-> field :opposite-line :type (or (-> field :line :type)))})
-          extra-line-style (line/options {:type (-> field :extra-line :type (or (-> field :line :type)))})]
+    (let [line-style (-> (line/options (:line field))
+                         (assoc :ui {:label "Line"
+                                     :form-type :line}))
+          opposite-line-style (-> (line/options {:type (-> field :opposite-line :type (or (-> field :line :type)))})
+                                  (assoc :ui {:label "Opposite line"
+                                              :form-type :line}))
+          extra-line-style (-> (line/options {:type (-> field :extra-line :type (or (-> field :line :type)))})
+                               (assoc :ui {:label "Extra line"
+                                           :form-type :line}))]
       (-> (case (-> field :type name keyword)
             :plain (options/pick default-options
                                  [[:type]
