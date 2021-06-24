@@ -8,9 +8,9 @@
      ^{:key option} [interface/form-element (conj path option) (get options option)])])
 
 (defmethod interface/component-node-data :heraldry.type/coat-of-arms [path _component-data]
-  {:title "coat of arms"
+  {:title "Coat of Arms"
    :nodes [{:path (conj path :field)}
-           {:title "components"
+           {:title "Components"
             :path (conj path :field :components)}]})
 
 (defmethod interface/component-form-data :heraldry.type/coat-of-arms [component-data]

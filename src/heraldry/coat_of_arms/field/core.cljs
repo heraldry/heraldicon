@@ -192,6 +192,10 @@
   (let [function (get kinds-function-map type)]
     (-> function meta :parts (get index) (or (util/to-roman (inc index))))))
 
+(defn title [field]
+  (let [sanitized-field (options/sanitize field (field-options/options field))]
+    (str (get field-map (:type field)) " field")))
+
 (defn render [{:keys [type components] :as field} environment
               {:keys
                [db-path fn-component-selected?

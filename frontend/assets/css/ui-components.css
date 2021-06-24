@@ -59,6 +59,14 @@
   color: #1b6690;
 }
 
+.ui-icon {
+  color: #777;
+}
+
+.selected .ui-icon {
+  color: inherit;
+}
+
 .ui-tree .node-icon {
   display: inline-block;
   width: 1.3em;
