@@ -90,7 +90,7 @@
 
 .ui-submenu {
   position: absolute;
-  top: -0.5em;
+  left: -10em;
   width: 25em;
   min-height: 3em;
   z-index: 2;
