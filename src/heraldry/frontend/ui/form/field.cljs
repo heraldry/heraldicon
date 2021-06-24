@@ -13,7 +13,8 @@
                  :opposite-line
                  :extra-line
                  :variant
-                 :thickness]]
+                 :thickness
+                 :layout]]
      ^{:key option} [interface/form-element (conj path option) (get options option)])])
 
 (defmethod interface/component-node-data :heraldry.type/field [_path component-data]

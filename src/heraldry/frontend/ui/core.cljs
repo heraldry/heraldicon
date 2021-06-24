@@ -2,6 +2,7 @@
   (:require [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.checkbox] ;; needed for defmethods
             [heraldry.frontend.ui.element.escutcheon-select] ;; needed for defmethods
+            [heraldry.frontend.ui.element.field-layout] ;; needed for defmethods
             [heraldry.frontend.ui.element.field-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.fimbriation] ;; needed for defmethods
             [heraldry.frontend.ui.element.line] ;; needed for defmethods
@@ -92,13 +93,13 @@
                     (when selectable?
                       (rf/dispatch [:set ui-selected-component-path path]))
                     (.stopPropagation %))}
-      (when openable?
+      (if openable?
         [:span.node-icon.clickable
          {:class "clickable"
           :on-click #(state/dispatch-on-event % [:set (flag-path path) (not open?)])}
-         [:i.far {:class (if open?
-                           "fa-minus-square"
-                           "fa-plus-square")}]])
+         [:i.fa.ui-icon {:class (if open?
+                                  "fa-angle-down"
+                                  "fa-angle-right")}]])
       title
       (when selectable?
         [:i.fa.fa-pen.ui-icon {:style {:margin-left "0.5em"

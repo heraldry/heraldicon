@@ -53,37 +53,52 @@
                            :min 1
                            :max 20
                            :default 6
-                           :integer? true}
+                           :integer? true
+                           :ui {:label "x-Subfields"}}
             :num-fields-y {:type :range
                            :min 1
                            :max 20
                            :default 6
-                           :integer? true}
+                           :integer? true
+                           :ui {:label "y-Subfields"}}
             :num-base-fields {:type :range
                               :min 2
                               :max 8
                               :default 2
-                              :integer? true}
+                              :integer? true
+                              :ui {:label "Base fields"}}
             :offset-x {:type :range
                        :min -1
                        :max 1
-                       :default 0}
+                       :default 0
+                       :ui {:label "Offset x"
+                            :step 0.01}}
             :offset-y {:type :range
                        :min -1
                        :max 1
-                       :default 0}
+                       :default 0
+                       :ui {:label "Offset y"
+                            :step 0.01}}
             :stretch-x {:type :range
                         :min 0.5
                         :max 2
-                        :default 1}
+                        :default 1
+                        :ui {:label "Stretch x"
+                             :step 0.01}}
             :stretch-y {:type :range
                         :min 0.5
                         :max 2
-                        :default 1}
+                        :default 1
+                        :ui {:label "Stretch y"
+                             :step 0.01}}
             :rotation {:type :range
                        :min -90
                        :max 90
-                       :default 0}}})
+                       :default 0
+                       :ui {:label "Rotation"
+                            :step 0.01}}
+            :ui {:label "Layout"
+                 :form-type :field-layout}}})
 
 (defn options [field]
   (when field
@@ -604,12 +619,15 @@
                                                                                    [:bottom-left :bottom-right :angle])})
 
             {})
-          (update-in [:anchor] (fn [anchor]
-                                 (when anchor
-                                   (position/adjust-options anchor (-> field :anchor)))))
-          (update-in [:direction-anchor] (fn [direction-anchor]
-                                           (when direction-anchor
-                                             (position/adjust-options direction-anchor (-> field :direction-anchor)))))))))
+          (update :anchor (fn [anchor]
+                            (when anchor
+                              (position/adjust-options anchor (-> field :anchor)))))
+          (update :direction-anchor (fn [direction-anchor]
+                                      (when direction-anchor
+                                        (position/adjust-options direction-anchor (-> field :direction-anchor)))))
+          (update :layout (fn [layout]
+                            (when layout
+                              (assoc layout :ui (-> default-options :layout :ui)))))))))
 
 (defn sanitize-opposite-line [field line]
   (-> (options/sanitize
