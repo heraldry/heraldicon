@@ -99,7 +99,10 @@
          [:i.far {:class (if open?
                            "fa-minus-square"
                            "fa-plus-square")}]])
-      title]
+      title
+      (when selectable?
+        [:i.fa.fa-pen.ui-icon {:style {:margin-left "0.5em"
+                                       :font-size "0.8em"}}])]
      (when open?
        [:ul
         (for [{node-path :path
@@ -120,7 +123,9 @@
                                               @(rf/subscribe [:component-form path]))]
     [:div.ui-component
      [:div.header
-      [:h1 title]]
+      [:h1
+       [:i.fa.fa-sliders-h.ui-icon {:style {:margin-right "0.5em"}}]
+       title]]
      [:div.content {:style {:height "30vh"}}
       (when form
         [form path form-args])]]))
