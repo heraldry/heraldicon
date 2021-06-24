@@ -17,7 +17,8 @@
                      :offset
                      :base-line
                      :mirrored?
-                     :flipped?]]
+                     :flipped?
+                     :fimbriation]]
          ^{:key option} [interface/form-element (conj path option) (get options option)])]]]))
 
 (defmethod interface/form-element :line [path {:keys [ui] :as options}]

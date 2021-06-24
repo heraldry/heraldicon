@@ -1,7 +1,87 @@
 (ns heraldry.coat-of-arms.line.fimbriation
   (:require [clojure.walk :as walk]
+            [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.util :as util]))
+
+(def type-choices
+  [["None" :none]
+   ["Single" :single]
+   ["Double" :double]])
+
+(def type-map
+  (util/choices->map type-choices))
+
+(def alignment-choices
+  [["Even" :even]
+   ["Outside" :outside]
+   ["Inside" :inside]])
+
+(def alignment-map
+  (util/choices->map alignment-choices))
+
+(def default-options
+  {:mode {:type :choice
+          :choices type-choices
+          :default :none
+          :ui {:form-type :radio-select}}
+   :alignment {:type :choice
+               :choices alignment-choices
+               :default :even
+               :ui {:label "Alignment"}}
+   :corner {:type :choice
+            :choices [["Round" :round]
+                      ["Sharp" :sharp]
+                      ["Bevel" :bevel]]
+            :default :sharp
+            :ui {:label "Corner"}}
+   :thickness-1 {:type :range
+                 :min 1
+                 :max 10
+                 :default 6
+                 :ui {:label "Thickness"
+                      :step 0.01}}
+   :tincture-1 {:type :choice
+                :choices tincture/choices
+                :default :none
+                :ui {:label "Tincture"
+                     :step 0.01
+                     :form-type :tincture-select}}
+   :thickness-2 {:type :range
+                 :min 1
+                 :max 10
+                 :default 3
+                 :ui {:label "Thickness 2"
+                      :step 0.01}}
+   :tincture-2 {:type :choice
+                :choices tincture/choices
+                :default :none
+                :ui {:label "Tincture 2"
+                     :step 0.01
+                     :form-type :tincture-select}}
+   :ui {:label "Fimbriation"
+        :form-type :fimbriation}})
+
+(defn options [fimbriation]
+  (case (or (:mode fimbriation)
+            :none)
+    :none (options/pick default-options
+                        [[:mode]])
+    :single (options/pick default-options
+                          [[:mode]
+                           [:alignment]
+                           [:corner]
+                           [:thickness-1]
+                           [:tincture-1]])
+    :double (options/pick default-options
+                          [[:mode]
+                           [:alignment]
+                           [:corner]
+                           [:thickness-1]
+                           [:tincture-1]
+                           [:thickness-2]
+                           [:tincture-2]])))
 
 (defn linejoin [corner]
   (case corner
