@@ -9,9 +9,7 @@
 
 (defmethod interface/component-node-data :heraldry.type/coat-of-arms [path _component-data]
   {:title "Coat of Arms"
-   :nodes [{:path (conj path :field)}
-           {:title "Components"
-            :path (conj path :field :components)}]})
+   :nodes [{:path (conj path :field)}]})
 
 (defmethod interface/component-form-data :heraldry.type/coat-of-arms [component-data]
   {:form form

@@ -17,8 +17,10 @@
                  :layout]]
      ^{:key option} [interface/form-element (conj path option) (get options option)])])
 
-(defmethod interface/component-node-data :heraldry.type/field [_path component-data]
-  {:title (field/title component-data)})
+(defmethod interface/component-node-data :heraldry.type/field [path component-data]
+  {:title (field/title component-data)
+   :nodes [{:title "Components"
+            :path (conj path :components)}]})
 
 (defmethod interface/component-form-data :heraldry.type/field [component-data]
   {:form form
