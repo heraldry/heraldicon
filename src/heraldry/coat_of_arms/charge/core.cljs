@@ -8,7 +8,11 @@
             [heraldry.coat-of-arms.charge.type.lozenge :as lozenge]
             [heraldry.coat-of-arms.charge.type.mascle :as mascle]
             [heraldry.coat-of-arms.charge.type.roundel :as roundel]
-            [heraldry.coat-of-arms.charge.type.rustre :as rustre]))
+            [heraldry.coat-of-arms.charge.type.rustre :as rustre]
+            [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.charge.options :as charge-options]
+            [heraldry.frontend.util :as util]
+            [clojure.string :as s]))
 
 (def charges
   [#'roundel/render
@@ -39,3 +43,9 @@
              (not variant))
       [function charge parent environment context]
       [charge-other/render charge parent environment context])))
+
+(defn title [charge]
+  (str
+   (s/join " " [(-> charge :type util/translate-cap-first)
+                (-> charge :attitude util/translate)])
+   " charge"))
