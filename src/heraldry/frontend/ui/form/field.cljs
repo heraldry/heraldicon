@@ -34,10 +34,20 @@
                         [(name-prefix-for-part path)
                          (field/title component-data)])
    :nodes (concat (when (-> component-data :type name keyword (not= :plain))
-                    [{:title "Parts"
-                      :path (conj path :fields)}])
-                  [{:title "Components"
-                    :path (conj path :components)}])})
+                    (->> component-data
+                         :fields
+                         count
+                         range
+                         (map (fn [idx]
+                                {:path (conj path :fields idx)}))
+                         vec))
+                  (->> component-data
+                       :components
+                       count
+                       range
+                       (map (fn [idx]
+                              {:path (conj path :components idx)}))
+                       vec))})
 
 (defmethod interface/component-form-data :heraldry.type/field [component-data]
   {:form form
