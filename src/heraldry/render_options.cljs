@@ -10,8 +10,7 @@
 
 (def default-options
   {:escutcheon-override {:type :choice
-                         :choices (concat [["None" :none]]
-                                          escutcheon/choices)
+                         :choices escutcheon/choices
                          :default :heater
                          :ui {:label "Escutcheon Override"
                               :form-type :escutcheon-select}}
