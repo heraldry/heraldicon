@@ -10,7 +10,9 @@
   {:type {:type :choice
           ;; TODO: also a special case, probably can't include all choices here anyway
           :choices []
-          :default :heraldry.charge.type/roundel}
+          :default :heraldry.charge.type/roundel
+          :ui {:label "Type"
+               :form-type :charge-type-select}}
    :origin (-> position/default-options
                (assoc :alignment nil)
                (assoc-in [:ui :label] "Origin"))
@@ -46,7 +48,8 @@
   (let [type (-> charge :type name keyword)]
     (-> (cond
           (= type :escutcheon) (options/pick default-options
-                                             [[:origin]
+                                             [[:type]
+                                              [:origin]
                                               [:anchor]
                                               [:geometry]
                                               [:escutcheon]
@@ -59,20 +62,23 @@
              :fusil
              :mascle
              :rustre} type) (options/pick default-options
-                                          [[:origin]
+                                          [[:type]
+                                           [:origin]
                                            [:anchor]
                                            [:geometry]
                                            [:fimbriation]]
                                           {[:geometry :reversed?] nil
                                            [:geometry :mirrored?] nil})
           (= type :crescent) (options/pick default-options
-                                           [[:origin]
+                                           [[:type]
+                                            [:origin]
                                             [:anchor]
                                             [:geometry]
                                             [:fimbriation]]
                                            {[:geometry :mirrored?] nil})
           :else (options/pick default-options
-                              [[:origin]
+                              [[:type]
+                               [:origin]
                                [:anchor]
                                [:geometry]
                                [:fimbriation]]))

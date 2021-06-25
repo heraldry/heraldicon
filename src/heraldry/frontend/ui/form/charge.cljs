@@ -6,7 +6,8 @@
 (defn form [path {:keys [options]}]
   [:<>
    ;; TODO: tincture modifiers need to be added, but they depend on the charge data
-   (for [option [:escutcheon
+   (for [option [:type
+                 :escutcheon
                  :origin
                  :anchor
                  :geometry
