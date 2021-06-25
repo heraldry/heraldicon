@@ -35,13 +35,14 @@
 
 (rf/reg-event-db :ui-component-open
   (fn [db [_ path]]
-    (-> (loop [db db
-               rest path]
-          (if (empty? rest)
-            db
-            (recur
-             (assoc-in db [:ui :component-open? rest] true)
-             (-> rest drop-last vec)))))))
+    (let [db-after-closing (assoc-in db [:ui :component-open?] {})]
+      (loop [db db-after-closing
+             rest path]
+        (if (empty? rest)
+          db
+          (recur
+           (assoc-in db [:ui :component-open? rest] true)
+           (-> rest drop-last vec)))))))
 
 (rf/reg-event-db :ui-component-close
   (fn-traced [db [_ path]]
@@ -63,15 +64,24 @@
 
 (rf/reg-event-db :ui-component-deselect-all
   (fn-traced [db _]
-    (update-in db [:ui] dissoc :component-selected?)))
+    (update db :ui dissoc :component-selected?)))
 
 (rf/reg-event-db :ui-submenu-close-all
   (fn-traced [db _]
-    (update-in db [:ui] dissoc :submenu-open?)))
+    (update db :ui dissoc :submenu-open?)))
 
 (rf/reg-event-db :ui-submenu-open
   (fn-traced [db [_ path]]
-    (assoc-in db [:ui :submenu-open? path] true)))
+    (-> db
+        (update-in [:ui :submenu-open?]
+                   (fn [open-flags]
+                     (->> open-flags
+                          (keep (fn [[key value]]
+                                  (when (= key
+                                           (take (count key) path))
+                                    [key value])))
+                          (into {}))))
+        (assoc-in [:ui :submenu-open? path] true))))
 
 (rf/reg-event-db :ui-submenu-close
   (fn-traced [db [_ path]]
@@ -91,7 +101,7 @@
                           (conj :fields (last path)))
                       path)]
       {:db (-> db
-               (update-in [:ui] dissoc :component-selected?)
+               (update :ui dissoc :component-selected?)
                (cond->
                 path (as-> db
                            (assoc-in db [:ui :component-selected? real-path] true))))

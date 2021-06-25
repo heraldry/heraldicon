@@ -3,7 +3,7 @@
             [re-frame.core :as rf]))
 
 (defn submenu [path title link-name styles & content]
-  (let [submenu-id (conj path title)
+  (let [submenu-id path
         submenu-open? @(rf/subscribe [:ui-submenu-open? submenu-id])]
     [:div.ui-submenu-setting {:style {:display "inline-block"}
                               :on-click #(.stopPropagation %)}
