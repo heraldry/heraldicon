@@ -31,6 +31,7 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.coat-of-arms.semy.core :as semy]
+            [heraldry.frontend.util :as frontend-util]
             [heraldry.util :as util]))
 
 (defn mandatory-part-count [{:keys [type] :as field}]
@@ -194,7 +195,14 @@
 
 (defn title [field]
   (let [sanitized-field (options/sanitize field (field-options/options field))]
-    (str (get field-map (:type field)) " field")))
+    (str
+     (if (-> field :type (= :heraldry.field.type/plain))
+       (-> sanitized-field
+           :tincture
+           frontend-util/translate-tincture
+           frontend-util/upper-case-first)
+       (get field-map (:type field)))
+     " field")))
 
 (defn render [{:keys [type components] :as field} environment
               {:keys
