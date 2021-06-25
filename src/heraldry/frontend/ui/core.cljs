@@ -95,11 +95,12 @@
                     (.stopPropagation %))}
       (if openable?
         [:span.node-icon.clickable
-         {:class "clickable"
-          :on-click #(state/dispatch-on-event % [:set (flag-path path) (not open?)])}
+         {:on-click #(state/dispatch-on-event % [:set (flag-path path) (not open?)])}
          [:i.fa.ui-icon {:class (if open?
                                   "fa-angle-down"
-                                  "fa-angle-right")}]])
+                                  "fa-angle-right")}]]
+        [:span.node-icon
+         [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
       title
       (when selectable?
         [:i.fa.fa-pen.ui-icon {:style {:margin-left "0.5em"
