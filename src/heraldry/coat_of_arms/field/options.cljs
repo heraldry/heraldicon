@@ -28,14 +28,20 @@
    :opposite-line line/default-options
    :extra-line line/default-options
    :origin (-> position/default-options
-               (dissoc :alignment))
+               (dissoc :alignment)
+               (assoc :ui {:label "Origin"
+                           :form-type :position}))
    :direction-anchor (-> position/anchor-default-options
                          (dissoc :alignment)
                          (assoc-in [:angle :min] -180)
                          (assoc-in [:angle :max] 180)
-                         (assoc-in [:angle :default] 0))
+                         (assoc-in [:angle :default] 0)
+                         (assoc :ui {:label "Issuant"
+                                     :form-type :position}))
    :anchor (-> position/anchor-default-options
-               (dissoc :alignment))
+               (dissoc :alignment)
+               (assoc :ui {:label "Anchor"
+                           :form-type :position}))
    :variant {:type :choice
              :choices [["Default" :default]
                        ["Counter" :counter]
@@ -629,6 +635,22 @@
           (update :direction-anchor (fn [direction-anchor]
                                       (when direction-anchor
                                         (position/adjust-options direction-anchor (-> field :direction-anchor)))))
+          ;; TODO: all this position post processing can surely be done smarter
+          (update :origin (fn [position]
+                            (when position
+                              (-> position
+                                  (position/adjust-options (-> field :origin))
+                                  (assoc :ui (-> default-options :origin :ui))))))
+          (update :direction-anchor (fn [position]
+                                      (when position
+                                        (-> position
+                                            (position/adjust-options (-> field :direction-anchor))
+                                            (assoc :ui (-> default-options :direction-anchor :ui))))))
+          (update :anchor (fn [position]
+                            (when position
+                              (-> position
+                                  (position/adjust-options (-> field :anchor))
+                                  (assoc :ui (-> default-options :anchor :ui))))))
           (update :layout (fn [layout]
                             (when layout
                               (assoc layout :ui (-> default-options :layout :ui)))))))))

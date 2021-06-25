@@ -65,26 +65,44 @@
 (def default-options
   {:point {:type :choice
            :choices point-choices
-           :default :fess}
+           :default :fess
+           :ui {:label "Point"}}
    :alignment {:type :choice
                :choices alignment-choices
-               :default :middle}
+               :default :middle
+               :ui {:label "Alignment"
+                    :form-type :radio-select}}
+   :angle {:type :range
+           :min 0
+           :max 360
+           :default 0
+           :ui {:label "Angle"}}
    :offset-x {:type :range
               :min -45
               :max 45
-              :default 0}
+              :default 0
+              :ui {:label "Offset x"
+                   :step 0.1}}
    :offset-y {:type :range
               :min -45
               :max 45
-              :default 0}})
+              :default 0
+              :ui {:label "Offset y"
+                   :step 0.1}}
+   ;; :type {:type :choice
+   ;;        :choices type-choices
+   ;;        :default :middle
+   ;;        :ui {:label "Type"}}
+   :ui {:label "Position"
+        :form-type :position}})
 
 (def anchor-default-options
   (-> default-options
       (assoc-in [:point :choices] anchor-point-choices)
-      (assoc :angle {:type :range
-                     :min 10
-                     :max 80
-                     :default 45})))
+      (assoc :angle (merge (:angle default-options)
+                           {:min 10
+                            :max 80
+                            :default 45}))))
 
 (defn adjust-options [options values]
   (let [point (-> values :point (or (-> options :point :default)))]
