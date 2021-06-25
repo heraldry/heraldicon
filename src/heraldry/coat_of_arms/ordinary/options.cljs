@@ -2,6 +2,7 @@
   (:require [heraldry.coat-of-arms.cottising :as cottising]
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.line.core :as line]
+            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.util :as util]))
@@ -11,15 +12,19 @@
       (assoc-in [:fimbriation :alignment :default] :outside)))
 
 (def default-options
-  {:origin position/default-options
+  {:origin (-> position/default-options
+               (assoc-in [:ui :label] "Origin"))
    :direction-anchor (-> position/anchor-default-options
                          (dissoc :alignment)
                          (assoc-in [:angle :min] -180)
                          (assoc-in [:angle :max] 180)
-                         (assoc-in [:angle :default] 0))
-   :anchor position/anchor-default-options
+                         (assoc-in [:angle :default] 0)
+                         (assoc-in [:ui :label] "Issuant"))
+   :anchor (-> position/anchor-default-options
+               (assoc-in [:ui :label] "Anchor"))
    :line (set-line-defaults line/default-options)
-   :opposite-line (set-line-defaults line/default-options)
+   :opposite-line (-> (set-line-defaults line/default-options)
+                      (assoc-in [:ui :label] "Opposite line"))
    :geometry (-> geometry/default-options
                  (assoc-in [:size :min] 0.1)
                  (assoc-in [:size :max] 50)
@@ -27,12 +32,27 @@
                  (assoc :mirrored? nil)
                  (assoc :reversed? nil)
                  (assoc :stretch nil))
+   :variant {:type :choice
+             :choices [["Full" :full]
+                       ["Truncated" :truncated]]
+             :default :full
+             :ui {:label "Variant"
+                  :form-type :radio-select}}
+   :num-points {:type :range
+                :min 2
+                :max 16
+                :default 3
+                :integer? true
+                :ui {:label "Points"}}
+   :fimbriation fimbriation/default-options
    :cottising cottising/options})
 
 (defn options [ordinary]
   (when ordinary
-    (let [line-style (line/options (:line ordinary))
-          opposite-line-style (line/options {:type (-> ordinary :opposite-line :type (or (-> ordinary :line :type)))})]
+    (let [line-style (-> (line/options (:line ordinary))
+                         (assoc :ui (-> default-options :line :ui)))
+          opposite-line-style (-> (line/options {:type (-> ordinary :opposite-line :type (or (-> ordinary :line :type)))})
+                                  (assoc :ui (-> default-options :opposite-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
          :pale (options/pick default-options
@@ -305,48 +325,55 @@
                               [:anchor :alignment] nil})
          :label (options/pick default-options
                               [[:origin]
-                               [:geometry]]
+                               [:geometry]
+                               [:variant]
+                               [:num-points]
+                               [:fimbriation]]
                               {[:origin :point :default] :chief
-                               [:variant] {:type :choice
-                                           :choices [["Full" :full]
-                                                     ["Truncated" :truncated]]
-                                           :default :full}
-                               [:num-points] {:type :range
-                                              :min 2
-                                              :max 16
-                                              :default 3}
-                               [:fimbriation] (-> line/default-options
-                                                  :fimbriation)
                                [:geometry :size :min] 2
                                [:geometry :size :default] 10
+                               [:geometry :size :ui :label] "Point thickness"
                                [:geometry :width] {:type :range
                                                    :min 10
                                                    :max 150
-                                                   :default 66}
+                                                   :default 66
+                                                   :ui {:label "Width"
+                                                        :step 0.1}}
                                [:geometry :thickness] {:type :range
                                                        :min 0
                                                        :max 20
-                                                       :default 5}
+                                                       :default 5
+                                                       :ui {:label "Bar thickness"
+                                                            :step 0.1}}
                                [:geometry :eccentricity] {:type :range
                                                           :min 0
                                                           :max 1
-                                                          :default 0}
+                                                          :default 0
+                                                          :ui {:label "Eccentricity"
+                                                               :step 0.01}}
                                [:geometry :stretch] {:type :range
                                                      :min 0.33
                                                      :max 10
-                                                     :default 2}}))
-       (update-in [:line] (fn [line]
-                            (when line
-                              (set-line-defaults line))))
-       (update-in [:opposite-line] (fn [opposite-line]
-                                     (when opposite-line
-                                       (set-line-defaults opposite-line))))
-       (update-in [:anchor] (fn [anchor]
-                              (when anchor
-                                (position/adjust-options anchor (-> ordinary :anchor)))))
-       (update-in [:direction-anchor] (fn [direction-anchor]
-                                        (when direction-anchor
-                                          (position/adjust-options direction-anchor (-> ordinary :direction-anchor)))))))))
+                                                     :default 2
+                                                     :ui {:label "Stretch"
+                                                          :step 0.01}}}))
+       (update :line (fn [line]
+                       (when line
+                         (set-line-defaults line))))
+       (update :opposite-line (fn [opposite-line]
+                                (when opposite-line
+                                  (set-line-defaults opposite-line))))
+       (update :anchor (fn [anchor]
+                         (when anchor
+                           (position/adjust-options anchor (-> ordinary :anchor)))))
+       (update :direction-anchor (fn [direction-anchor]
+                                   (when direction-anchor
+                                     (position/adjust-options direction-anchor (-> ordinary :direction-anchor)))))
+       (update :fimbriation (fn [fimbriation]
+                              (when fimbriation
+                                (-> (fimbriation/options (:fimbriation ordinary))
+                                    (assoc :ui {:label "Fimbriation"
+                                                :form-type :fimbriation})))))))))
 
 (defn sanitize-opposite-line [ordinary line]
   (-> (options/sanitize

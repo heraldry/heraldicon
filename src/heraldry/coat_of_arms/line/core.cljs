@@ -201,7 +201,9 @@
    :flipped? {:type :boolean
               :default false
               :ui {:label "Flipped"}}
-   :fimbriation fimbriation/default-options})
+   :fimbriation fimbriation/default-options
+   :ui {:label "Line"
+        :form-type :line}})
 
 (defn options [line]
   (when-let [type (:type line)]
