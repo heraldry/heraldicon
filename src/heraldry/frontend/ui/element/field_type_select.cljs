@@ -69,7 +69,7 @@
      (when label
        [:label label])
      [:div.option
-      [submenu/submenu path "Select Division" (get field/field-map value) {:min-width "17.5em"}
+      [submenu/submenu path "Select Division" (get field/field-map value) {:width "21.5em"}
        (for [[display-name key] field/choices]
          ^{:key key}
          [field-type-choice path key display-name :selected? (= key value)])]]]))
