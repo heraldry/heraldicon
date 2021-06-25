@@ -28,7 +28,7 @@
                        (-> effective-data :rotation zero? not))
               (str "rotated"))
             (when (not= fimbriation-title "None")
-              fimbriation-title)])
+              (str "fimbriated " fimbriation-title))])
           s/lower-case
           util/upper-case-first))))
 
