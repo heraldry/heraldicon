@@ -251,12 +251,11 @@
 (def choices
   (->> escutcheons
        (map (fn [v]
-              [(-> v meta :display-name) (-> v meta :name keyword)]))))
+              [(-> v meta :display-name) (-> v meta :name keyword)]))
+       (into [["None" :none]])))
 
 (def choice-map
-  (-> choices
-      util/choices->map
-      (assoc :none "None")))
+  (util/choices->map choices))
 
 (defn field [type]
   (get kinds-map type))

@@ -3,7 +3,7 @@
 
 (def default-options
   {:escutcheon {:type :choice
-                :choices escutcheon/choices
+                :choices (vec (drop 1 escutcheon/choices))
                 :default :heater
                 :ui {:label "Default escutcheon"
                      :form-type :escutcheon-select}}})
