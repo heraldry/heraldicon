@@ -40,7 +40,7 @@
      (when label
        [:label label])
      [:div.option
-      [submenu/submenu path "Select Tincture" (get tincture/tincture-map value) {:min-width "22em"}
+      [submenu/submenu path "Select Tincture" (get tincture/tincture-map value) {:width "22em"}
        (for [[group-name & group] choices]
          ^{:key group-name}
          [:<>
