@@ -62,15 +62,11 @@
 
 (defmethod interface/component-node-data :heraldry.type/ordinary [path _component-data]
   {:title "ordinary"
-   :nodes [{:path (conj path :field)}
-           {:title "components"
-            :path (conj path :field :components)}]})
+   :nodes [{:path (conj path :field)}]})
 
 (defmethod interface/component-node-data :heraldry.type/charge [path _component-data]
   {:title "charge"
-   :nodes [{:path (conj path :field)}
-           {:title "components"
-            :path (conj path :field :components)}]})
+   :nodes [{:path (conj path :field)}]})
 
 (defn component-node [path & {:keys [title]}]
   (let [node-data @(rf/subscribe [:component-node path])
