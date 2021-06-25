@@ -2,9 +2,9 @@
   (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.line.core :as line]
+            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.position :as position]
-            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]))
+            [heraldry.coat-of-arms.position :as position]))
 
 (def default-options
   {:type {:type :choice
@@ -12,7 +12,8 @@
           :choices []
           :default :heraldry.charge.type/roundel}
    :origin (-> position/default-options
-               (assoc :alignment nil))
+               (assoc :alignment nil)
+               (assoc-in [:ui :label] "Origin"))
    :anchor (-> position/anchor-default-options
                (assoc-in [:point :default] :angle)
                (update-in [:point :choices] (fn [choices]
@@ -23,7 +24,8 @@
                (assoc :alignment nil)
                (assoc-in [:angle :min] -180)
                (assoc-in [:angle :max] 180)
-               (assoc-in [:angle :default] 0))
+               (assoc-in [:angle :default] 0)
+               (assoc-in [:ui :label] "Anchor"))
    :geometry geometry/default-options
    :escutcheon {:type :choice
                 :choices (assoc-in (vec escutcheon/choices) [0 0] "Root")
@@ -77,9 +79,12 @@
         (cond->
          (or part-of-semy?
              part-of-charge-group?) (dissoc :origin))
-        (update :anchor (fn [anchor]
-                          (when anchor
-                            (position/adjust-options anchor (-> charge :anchor)))))
+        (update :origin (fn [position]
+                          (when position
+                            (position/adjust-options position (-> charge :origin)))))
+        (update :anchor (fn [position]
+                          (when position
+                            (position/adjust-options position (-> charge :anchor)))))
         (update :fimbriation (fn [fimbriation]
                                (when fimbriation
                                  (-> (fimbriation/options (:fimbriation charge))

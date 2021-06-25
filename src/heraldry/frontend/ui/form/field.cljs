@@ -16,6 +16,9 @@
                  :extra-line
                  :variant
                  :thickness
+                 :origin
+                 :direction-anchor
+                 :anchor
                  :geometry
                  :layout]]
      ^{:key option} [interface/form-element (conj path option) (get options option)])])
