@@ -14,8 +14,8 @@
     (let [effective-data (options/sanitize fimbriation (fimbriation/options fimbriation))]
       (case (:mode effective-data)
         :none "None"
-        :single (str "Fimbriated " (-> effective-data :tincture-1 util/translate-tincture))
-        :double (str "Fimbriated " (-> effective-data :tincture-1 util/translate-tincture)
+        :single (str (-> effective-data :tincture-1 util/translate-tincture))
+        :double (str (-> effective-data :tincture-1 util/translate-tincture)
                      " and " (-> effective-data :tincture-2 util/translate-tincture))))))
 
 (defn fimbriation-submenu [path options & {:keys [label]}]
