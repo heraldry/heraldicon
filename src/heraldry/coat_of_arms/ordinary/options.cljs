@@ -12,7 +12,13 @@
       (assoc-in [:fimbriation :alignment :default] :outside)))
 
 (def default-options
-  {:origin (-> position/default-options
+  {:type {:type :choice
+          ;; TODO: not ideal, but currently would create a circular dependency
+          :choices []
+          :default :heraldry.ordinary.type/pale
+          :ui {:label "Type"
+               :form-type :ordinary-type-select}}
+   :origin (-> position/default-options
                (assoc-in [:ui :label] "Origin"))
    :direction-anchor (-> position/anchor-default-options
                          (dissoc :alignment)
@@ -59,7 +65,8 @@
       (->
        (case (-> ordinary :type name keyword)
          :pale (options/pick default-options
-                             [[:origin]
+                             [[:type]
+                              [:origin]
                               [:line]
                               [:opposite-line]
                               [:geometry]
@@ -69,7 +76,8 @@
                               [:line] line-style
                               [:opposite-line] opposite-line-style})
          :fess (options/pick default-options
-                             [[:origin]
+                             [[:type]
+                              [:origin]
                               [:line]
                               [:opposite-line]
                               [:geometry]
@@ -79,7 +87,8 @@
                               [:line] line-style
                               [:opposite-line] opposite-line-style})
          :chief (options/pick default-options
-                              [[:line]
+                              [[:type]
+                               [:line]
                                [:geometry]
                                [:outline?]]
                               {[:line] line-style
@@ -88,7 +97,8 @@
                                                 (dissoc :cottise-opposite-1)
                                                 (dissoc :cottise-opposite-2))})
          :base (options/pick default-options
-                             [[:line]
+                             [[:type]
+                              [:line]
                               [:geometry]
                               [:outline?]]
                              {[:line] line-style
@@ -97,7 +107,8 @@
                                                (dissoc :cottise-opposite-1)
                                                (dissoc :cottise-opposite-2))})
          :bend (options/pick default-options
-                             [[:origin]
+                             [[:type]
+                              [:origin]
                               [:anchor]
                               [:line]
                               [:opposite-line]
@@ -133,7 +144,8 @@
                                                             :bottom-right :fess
                                                             :top-left)}))
          :bend-sinister (options/pick default-options
-                                      [[:origin]
+                                      [[:type]
+                                       [:origin]
                                        [:anchor]
                                        [:line]
                                        [:opposite-line]
@@ -169,7 +181,8 @@
                                                                      :bottom-left :fess
                                                                      :top-right)}))
          :chevron (options/pick default-options
-                                [[:origin]
+                                [[:type]
+                                 [:origin]
                                  [:direction-anchor]
                                  [:anchor]
                                  [:line]
@@ -211,7 +224,8 @@
                                                              :angle :angle
                                                              :bottom-left)})
          :pile (options/pick default-options
-                             [[:origin]
+                             [[:type]
+                              [:origin]
                               [:anchor]
                               [:line]
                               [:opposite-line]
@@ -278,7 +292,8 @@
          ;; TODO: perhaps there should be origin options for the corners?
          ;; so one can align fro top-left to bottom-right
          :saltire (options/pick default-options
-                                [[:origin]
+                                [[:type]
+                                 [:origin]
                                  [:anchor]
                                  [:line]
                                  [:geometry]
@@ -296,7 +311,8 @@
                                                   (dissoc :cottise-opposite-1)
                                                   (dissoc :cottise-opposite-2))})
          :cross (options/pick default-options
-                              [[:origin]
+                              [[:type]
+                               [:origin]
                                [:line]
                                [:geometry]
                                [:outline?]
@@ -310,7 +326,8 @@
                                                 (dissoc :cottise-opposite-1)
                                                 (dissoc :cottise-opposite-2))})
          :gore (options/pick default-options
-                             [[:origin]
+                             [[:type]
+                              [:origin]
                               [:anchor]
                               [:line]
                               [:opposite-line]
@@ -338,7 +355,8 @@
                               [:anchor :angle :max] 80
                               [:anchor :alignment] nil})
          :label (options/pick default-options
-                              [[:origin]
+                              [[:type]
+                               [:origin]
                                [:geometry]
                                [:variant]
                                [:num-points]

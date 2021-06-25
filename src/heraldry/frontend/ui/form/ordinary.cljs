@@ -5,7 +5,8 @@
 
 (defn form [path {:keys [options]}]
   [:<>
-   (for [option [:variant
+   (for [option [:type
+                 :variant
                  :line
                  :opposite-line
                  :escutcheon
