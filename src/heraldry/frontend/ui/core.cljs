@@ -13,6 +13,7 @@
             [heraldry.frontend.ui.element.submenu] ;; needed for defmethods
             [heraldry.frontend.ui.element.theme-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.tincture-select] ;; needed for defmethods
+            [heraldry.frontend.ui.form.charge] ;; needed for defmethods
             [heraldry.frontend.ui.form.coat-of-arms] ;; needed for defmethods
             [heraldry.frontend.ui.form.field] ;; needed for defmethods
             [heraldry.frontend.ui.form.render-options] ;; needed for defmethods
@@ -62,10 +63,6 @@
 
 (defmethod interface/component-node-data :heraldry.type/ordinary [path _component-data]
   {:title "ordinary"
-   :nodes [{:path (conj path :field)}]})
-
-(defmethod interface/component-node-data :heraldry.type/charge [path _component-data]
-  {:title "charge"
    :nodes [{:path (conj path :field)}]})
 
 (defn component-node [path & {:keys [title]}]

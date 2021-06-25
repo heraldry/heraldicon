@@ -3,11 +3,16 @@
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.position :as position]))
+            [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]))
 
 (def default-options
-  {:origin (-> position/default-options
-               (assoc-in [:alignment] nil))
+  {:type {:type :choice
+          ;; TODO: also a special case, probably can't include all choices here anyway
+          :choices []
+          :default :heraldry.charge.type/roundel}
+   :origin (-> position/default-options
+               (assoc :alignment nil))
    :anchor (-> position/anchor-default-options
                (assoc-in [:point :default] :angle)
                (update-in [:point :choices] (fn [choices]
@@ -15,15 +20,16 @@
                                                   drop-last
                                                   (conj (last choices))
                                                   vec)))
-               (assoc-in [:alignment] nil)
+               (assoc :alignment nil)
                (assoc-in [:angle :min] -180)
                (assoc-in [:angle :max] 180)
                (assoc-in [:angle :default] 0))
    :geometry geometry/default-options
    :escutcheon {:type :choice
-                :choices (concat [["Root" :none]]
-                                 escutcheon/choices)
-                :default :none}
+                :choices (assoc-in (vec escutcheon/choices) [0 0] "Root")
+                :default :none
+                :ui {:label "Escutcheon"
+                     :form-type :escutcheon-select}}
    :fimbriation (-> line/default-options
                     :fimbriation
                     (dissoc :alignment)
@@ -71,6 +77,11 @@
         (cond->
          (or part-of-semy?
              part-of-charge-group?) (dissoc :origin))
-        (update-in [:anchor] (fn [anchor]
-                               (when anchor
-                                 (position/adjust-options anchor (-> charge :anchor))))))))
+        (update :anchor (fn [anchor]
+                          (when anchor
+                            (position/adjust-options anchor (-> charge :anchor)))))
+        (update :fimbriation (fn [fimbriation]
+                               (when fimbriation
+                                 (-> (fimbriation/options (:fimbriation charge))
+                                     (assoc :ui {:label "Fimbriation"
+                                                 :form-type :fimbriation}))))))))
