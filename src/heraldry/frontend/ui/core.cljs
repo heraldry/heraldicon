@@ -18,6 +18,7 @@
             [heraldry.frontend.ui.form.charge] ;; needed for defmethods
             [heraldry.frontend.ui.form.coat-of-arms] ;; needed for defmethods
             [heraldry.frontend.ui.form.field] ;; needed for defmethods
+            [heraldry.frontend.ui.form.ordinary] ;; needed for defmethods
             [heraldry.frontend.ui.form.render-options] ;; needed for defmethods
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
@@ -62,10 +63,6 @@
      {:title title
       :path path}
      (interface/component-form-data component-data))))
-
-(defmethod interface/component-node-data :heraldry.type/ordinary [path _component-data]
-  {:title "ordinary"
-   :nodes [{:path (conj path :field)}]})
 
 (defn component-node [path & {:keys [title]}]
   (let [node-data @(rf/subscribe [:component-node path])

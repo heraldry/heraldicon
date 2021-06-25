@@ -11,6 +11,7 @@
             [heraldry.coat-of-arms.ordinary.type.pale :as pale]
             [heraldry.coat-of-arms.ordinary.type.pile :as pile]
             [heraldry.coat-of-arms.ordinary.type.saltire :as saltire]
+            [heraldry.frontend.util :as frontend-util]
             [heraldry.util :as util]))
 
 (def ordinaries
@@ -44,3 +45,6 @@
 (defn render [{:keys [type] :as ordinary} parent environment context]
   (let [function (get kinds-function-map type)]
     [function ordinary parent environment context]))
+
+(defn title [ordinary]
+  (-> ordinary :type frontend-util/translate-cap-first))

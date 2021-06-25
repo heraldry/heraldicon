@@ -24,9 +24,12 @@
               :default :none
               :ui {:label "Tincture"
                    :form-type :tincture-select}}
-   :line line/default-options
-   :opposite-line line/default-options
-   :extra-line line/default-options
+   :line (-> line/default-options
+             (assoc-in [:ui :label] "Line"))
+   :opposite-line (-> line/default-options
+                      (assoc-in [:ui :label] "Opposite line"))
+   :extra-line (-> line/default-options
+                   (assoc-in [:ui :label] "Extra line"))
    :origin (-> position/default-options
                (dissoc :alignment)
                (assoc :ui {:label "Origin"
@@ -110,14 +113,11 @@
 (defn options [field]
   (when field
     (let [line-style (-> (line/options (:line field))
-                         (assoc :ui {:label "Line"
-                                     :form-type :line}))
+                         (assoc :ui (-> default-options :line :ui)))
           opposite-line-style (-> (line/options {:type (-> field :opposite-line :type (or (-> field :line :type)))})
-                                  (assoc :ui {:label "Opposite line"
-                                              :form-type :line}))
+                                  (assoc :ui (-> default-options :opposite-line :ui)))
           extra-line-style (-> (line/options {:type (-> field :extra-line :type (or (-> field :line :type)))})
-                               (assoc :ui {:label "Extra line"
-                                           :form-type :line}))]
+                               (-> default-options :extra-line :ui))]
       (-> (case (-> field :type name keyword)
             :plain (options/pick default-options
                                  [[:type]
