@@ -5,6 +5,7 @@
 
 (defn form [path {:keys [options]}]
   [:<>
+   ;; TODO: tincture modifiers need to be added, but they depend on the charge data
    (for [option [:escutcheon
                  :origin
                  :anchor
@@ -13,6 +14,8 @@
      ^{:key option} [interface/form-element (conj path option) (get options option)])])
 
 (defmethod interface/component-node-data :heraldry.type/charge [path component-data]
+  ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
+  ;; depends on charge data
   {:title (charge/title component-data)
    :nodes [{:path (conj path :field)}]})
 
