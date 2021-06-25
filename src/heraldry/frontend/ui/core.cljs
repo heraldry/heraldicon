@@ -8,6 +8,7 @@
             [heraldry.frontend.ui.element.geometry] ;; needed for defmethods
             [heraldry.frontend.ui.element.line] ;; needed for defmethods
             [heraldry.frontend.ui.element.line-type-select] ;; needed for defmethods
+            [heraldry.frontend.ui.element.ordinary-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.position] ;; needed for defmethods
             [heraldry.frontend.ui.element.radio-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.range] ;; needed for defmethods
