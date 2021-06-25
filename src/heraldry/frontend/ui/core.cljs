@@ -5,6 +5,7 @@
             [heraldry.frontend.ui.element.field-layout] ;; needed for defmethods
             [heraldry.frontend.ui.element.field-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.fimbriation] ;; needed for defmethods
+            [heraldry.frontend.ui.element.geometry] ;; needed for defmethods
             [heraldry.frontend.ui.element.line] ;; needed for defmethods
             [heraldry.frontend.ui.element.line-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.radio-select] ;; needed for defmethods

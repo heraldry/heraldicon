@@ -6,6 +6,7 @@
 (defn form [path {:keys [options]}]
   [:<>
    (for [option [:escutcheon
+                 :geometry
                  :fimbriation]]
      ^{:key option} [interface/form-element (conj path option) (get options option)])])
 

@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.field.options
-  (:require [heraldry.coat-of-arms.line.core :as line]
+  (:require [heraldry.coat-of-arms.geometry :as geometry]
+            [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.tincture.core :as tincture]
@@ -269,11 +270,14 @@
                                                            :max 100
                                                            :default (case (-> field :geometry :size-mode (or :thickness))
                                                                       :thickness 75
-                                                                      30)}
+                                                                      30)
+                                                           :ui (-> geometry/default-options :size :ui)}
                                                     :size-mode {:type :choice
                                                                 :choices [["Thickness" :thickness]
                                                                           ["Angle" :angle]]
-                                                                :default :thickness}}
+                                                                :default :thickness
+                                                                :ui {:form-type :radio-select}}
+                                                    :ui (-> geometry/default-options :ui)}
                                        [:origin :point :choices] (util/filter-choices
                                                                   position/anchor-point-choices
                                                                   [:top-left :top :top-right
