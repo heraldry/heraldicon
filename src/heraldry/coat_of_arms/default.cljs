@@ -10,7 +10,7 @@
   {:type :heraldry.ordinary.type/pale
    :line {:type :straight}
    :field field
-   :hints {:outline? true}})
+   :outline? true})
 
 (def charge
   {:type :heraldry.charge.type/roundel

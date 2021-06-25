@@ -9,8 +9,8 @@
   {:display-name "Chequy"
    :value :heraldry.field.type/chequy
    :parts []}
-  [{:keys [fields hints] :as field} environment {:keys [render-options]}]
-  (let [{:keys [layout]} (options/sanitize field (field-options/options field))
+  [{:keys [fields] :as field} environment {:keys [render-options]}]
+  (let [{:keys [layout outline?]} (options/sanitize field (field-options/options field))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
@@ -47,7 +47,7 @@
     [:g
      [:defs
       (when (or (:outline? render-options)
-                (:outline? hints))
+                outline?)
         [:pattern {:id (str pattern-id "-outline")
                    :width part-width
                    :height part-height
@@ -109,7 +109,7 @@
                   :mask (str "url(#" mask-id ")")
                   :fill (tincture/pick tincture render-options)}]]))
      (when (or (:outline? render-options)
-               (:outline? hints))
+               outline?)
        [:rect {:x -500
                :y -500
                :width 1100

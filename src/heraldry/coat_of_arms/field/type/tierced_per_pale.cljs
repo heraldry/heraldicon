@@ -13,8 +13,8 @@
   {:display-name "Tierced per pale"
    :value :heraldry.field.type/tierced-per-pale
    :parts ["dexter" "fess" "sinister"]}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line layout origin]} (options/sanitize field (field-options/options field))
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line layout origin outline?]} (options/sanitize field (field-options/options field))
         {:keys [stretch-x]} layout
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
@@ -122,7 +122,7 @@
        nil]
       environment field context]
      (when (or (:outline? render-options)
-               (:outline? hints))
+               outline?)
        [:g outline/style
         [:path {:d (svg/make-path
                     ["M" (v/+ first-top

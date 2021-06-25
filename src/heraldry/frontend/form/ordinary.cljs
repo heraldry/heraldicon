@@ -110,5 +110,5 @@
          (when (:cottising ordinary-options)
            [cottising/form (conj path :cottising) (:cottising ordinary-options)
             :form-for-field form-for-field])])
-      [element/checkbox (conj path :hints :outline?) "Outline"]]
+      [element/checkbox (conj path :outline?) "Outline"]]
      [form-for-field (conj path :field) :parent-field parent-field]]))

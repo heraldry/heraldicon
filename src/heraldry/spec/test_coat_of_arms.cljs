@@ -31,7 +31,7 @@
                                :tincture :or}
                               {:type :heraldry.field.type/ref
                                :index 0}]
-                     :hints {:outline? true}}
+                     :outline? true}
 
     :heraldry/field {:type :heraldry.field.type/plain
                      :tincture :azure
@@ -193,7 +193,7 @@
                                               :tincture :azure}
                                              {:type :heraldry.field.type/plain
                                               :tincture :or}]
-                                    :hints {:outline? true}}}))
+                                    :outline? true}}))
 
 (deftest invalid-coat-of-arms
   (are [spec form] (not (s/valid? spec form))

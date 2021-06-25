@@ -204,8 +204,8 @@
   {:display-name "Vairy"
    :value :heraldry.field.type/vairy
    :parts []}
-  [{:keys [fields hints] :as field} environment {:keys [render-options]}]
-  (let [{:keys [layout variant]} (options/sanitize field (field-options/options field))
+  [{:keys [fields] :as field} environment {:keys [render-options]}]
+  (let [{:keys [layout variant outline?]} (options/sanitize field (field-options/options field))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
@@ -253,7 +253,7 @@
     [:g
      [:defs
       (when (or (:outline? render-options)
-                (:outline? hints))
+                outline?)
         [:pattern {:id (str pattern-id "-outline")
                    :width pattern-width
                    :height pattern-height
@@ -305,7 +305,7 @@
                   :mask (str "url(#" mask-id ")")
                   :fill (tincture/pick tincture render-options)}]]))
      (when (or (:outline? render-options)
-               (:outline? hints))
+               outline?)
        [:rect {:x -500
                :y -500
                :width 1100

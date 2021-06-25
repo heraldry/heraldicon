@@ -15,7 +15,7 @@
 (defn render
   {:display-name "Chevron"
    :value :heraldry.ordinary.type/chevron}
-  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
+  [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [;; ignore offset constraints, because cottises might exceed them
         ordinary-options (-> (ordinary-options/options ordinary)
                              (assoc-in [:origin :offset-x :min] -1000)
@@ -28,7 +28,7 @@
                              (assoc-in [:anchor :angle :max] 360))
         {:keys [line origin anchor
                 direction-anchor
-                geometry]} (options/sanitize ordinary ordinary-options)
+                geometry outline?]} (options/sanitize ordinary ordinary-options)
         raw-direction-anchor (:direction-anchor ordinary)
         direction-anchor (options/sanitize (cond-> raw-direction-anchor
                                              (-> direction-anchor
@@ -177,7 +177,7 @@
                 (counterchange/counterchange-field ordinary parent)
                 field)
         outline? (or (:outline? render-options)
-                     (:outline? hints))
+                     outline?)
         {:keys [cottise-1
                 cottise-2
                 cottise-opposite-1

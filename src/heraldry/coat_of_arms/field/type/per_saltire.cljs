@@ -14,8 +14,8 @@
   {:display-name "Per saltire"
    :value :heraldry.field.type/per-saltire
    :parts ["chief" "dexter" "sinister" "base"]}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]} (options/sanitize field (field-options/options field))
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin anchor outline?]} (options/sanitize field (field-options/options field))
         opposite-line (field-options/sanitize-opposite-line field line)
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
@@ -159,7 +159,7 @@
        nil]
       environment field context]
      (when (or (:outline? render-options)
-               (:outline? hints))
+               outline?)
        [:g outline/style
         [:path {:d (svg/make-path
                     ["M" (v/+ diagonal-top-left

@@ -12,8 +12,8 @@
   {:display-name "Per bend"
    :value :heraldry.field.type/per-bend
    :parts ["chief" "base"]}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]} (options/sanitize field (field-options/options field))
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin anchor outline?]} (options/sanitize field (field-options/options field))
         points (:points environment)
         top-right (:top-right points)
         bottom-left (:bottom-left points)
@@ -85,7 +85,7 @@
                  real-diagonal-end
                  bottom-left]]]
         outline? (or (:outline? render-options)
-                     (:outline? hints))]
+                     outline?)]
     [:<>
      [shared/make-subfields
       (shared/field-context-key type) fields parts

@@ -16,9 +16,9 @@
 (defn render
   {:display-name "Saltire"
    :value :heraldry.ordinary.type/saltire}
-  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
+  [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
-                geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
+                geometry outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment :fess)
@@ -205,7 +205,7 @@
                 (counterchange/counterchange-field ordinary parent)
                 field)
         outline? (or (:outline? render-options)
-                     (:outline? hints))
+                     outline?)
         {:keys [cottise-1
                 cottise-2]} (-> ordinary :cottising)]
     [:<>
@@ -267,7 +267,7 @@
                   new-direction-anchor {:point :angle
                                         :angle (- chevron-angle 90)}]
               ^{:key chevron-angle} [chevron/render (-> {:type :heraldry.ordinary.type/chevron
-                                                         :hints {:outline? (-> ordinary :hints :outline?)}}
+                                                         :outline? (-> ordinary :outline?)}
                                                         (assoc :cottising {:cottise-opposite-1 cottise-2})
                                                         ;; swap line/opposite-line because the cottise fess is upside down
                                                         (assoc :line opposite-line)

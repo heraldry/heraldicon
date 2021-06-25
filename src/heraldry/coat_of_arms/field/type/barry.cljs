@@ -10,7 +10,7 @@
 
 (defn barry-parts [{:keys [num-fields-y
                            offset-y
-                           stretch-y]} top-left bottom-right line hints render-options environment]
+                           stretch-y]} top-left bottom-right line outline? render-options environment]
   (let [offset-y (or offset-y 0)
         stretch-y (or stretch-y 1)
         height (- (:y bottom-right)
@@ -149,7 +149,7 @@
                     vec
                     (conj nil))
         outlines (when (or (:outline? render-options)
-                           (:outline? hints))
+                           outline?)
                    [:g outline/style
                     (for [i (range (dec num-fields-y))]
                       ^{:key i}
@@ -160,12 +160,12 @@
   {:display-name "Barry"
    :value :heraldry.field.type/barry
    :parts []}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line layout]} (options/sanitize field (field-options/options field))
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line layout outline?]} (options/sanitize field (field-options/options field))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (barry-parts layout top-left bottom-right line hints render-options environment)]
+        [parts overlap outlines] (barry-parts layout top-left bottom-right line outline? render-options environment)]
     [:<>
      [shared/make-subfields
       (shared/field-context-key type) fields parts

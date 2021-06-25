@@ -15,8 +15,8 @@
   {:display-name "Tierced per pairle"
    :value :heraldry.field.type/tierced-per-pairle
    :parts ["chief" "dexter" "sinister"]}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]} (options/sanitize field (field-options/options field))
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin anchor outline?]} (options/sanitize field (field-options/options field))
         opposite-line (field-options/sanitize-opposite-line field line)
         extra-line (field-options/sanitize-extra-line field line)
         points (:points environment)
@@ -140,7 +140,7 @@
        nil]
       environment field context]
      (when (or (:outline? render-options)
-               (:outline? hints))
+               outline?)
        [:g outline/style
         [:path {:d (svg/make-path
                     ["M" (v/+ diagonal-top-left

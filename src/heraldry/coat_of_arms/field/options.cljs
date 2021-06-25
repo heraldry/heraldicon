@@ -108,7 +108,10 @@
                        :ui {:label "Rotation"
                             :step 0.01}}
             :ui {:label "Layout"
-                 :form-type :field-layout}}})
+                 :form-type :field-layout}}
+   :outline? {:type :boolean
+              :default false
+              :ui {:label "Outline"}}})
 
 (defn options [field]
   (when field
@@ -123,14 +126,16 @@
                                  [[:type]
                                   [:inherit-environment?]
                                   [:counterchanged?]
-                                  [:tincture]])
+                                  [:tincture]
+                                  [:outline?]])
             :per-pale (options/pick default-options
                                     [[:type]
                                      [:inherit-environment?]
                                      [:counterchanged?]
                                      [:line]
                                      [:origin :point]
-                                     [:origin :offset-x]]
+                                     [:origin :offset-x]
+                                     [:outline?]]
                                     {[:origin :point :choices] position/point-choices-x
                                      [:line] line-style})
             :per-fess (options/pick default-options
@@ -139,7 +144,8 @@
                                      [:counterchanged?]
                                      [:line]
                                      [:origin :point]
-                                     [:origin :offset-y]]
+                                     [:origin :offset-y]
+                                     [:outline?]]
                                     {[:origin :point :choices] position/point-choices-y
                                      [:line] line-style})
             :per-bend (options/pick default-options
@@ -148,7 +154,8 @@
                                      [:counterchanged?]
                                      [:line]
                                      [:origin]
-                                     [:anchor]]
+                                     [:anchor]
+                                     [:outline?]]
                                     (let [useful-points #{:top-left :bottom-right
                                                           :chief :honour :fess :nombril :base}
                                           point-choices (util/filter-choices
@@ -182,7 +189,8 @@
                                               [:counterchanged?]
                                               [:line]
                                               [:origin]
-                                              [:anchor]]
+                                              [:anchor]
+                                              [:outline?]]
                                              (let [useful-points #{:top-right :bottom-left
                                                                    :chief :honour :fess :nombril :base}
                                                    point-choices (util/filter-choices
@@ -218,7 +226,8 @@
                                         [:opposite-line]
                                         [:origin]
                                         [:direction-anchor]
-                                        [:anchor]]
+                                        [:anchor]
+                                        [:outline?]]
                                        {[:line] (-> line-style
                                                     (options/override-if-exists [:offset :min] 0)
                                                     (options/override-if-exists [:base-line] nil))
@@ -259,7 +268,8 @@
                                      [:origin]
                                      [:anchor]
                                      [:line]
-                                     [:opposite-line]]
+                                     [:opposite-line]
+                                     [:outline?]]
                                     (let [anchor-points #{:top-left :top :top-right
                                                           :left :right
                                                           :bottom-left :bottom :bottom-right
@@ -317,7 +327,8 @@
                                         [:line]
                                         [:opposite-line]
                                         [:origin]
-                                        [:anchor]]
+                                        [:anchor]
+                                        [:outline?]]
                                        {[:line] (-> line-style
                                                     (options/override-if-exists [:offset :min] 0)
                                                     (options/override-if-exists [:base-line] nil)
@@ -338,7 +349,8 @@
                                       [:opposite-line]
                                       [:origin :point]
                                       [:origin :offset-x]
-                                      [:origin :offset-y]]
+                                      [:origin :offset-y]
+                                      [:outline?]]
                                      {[:line] (-> line-style
                                                   (options/override-if-exists [:offset :min] 0)
                                                   (options/override-if-exists [:base-line] nil)
@@ -357,7 +369,8 @@
                                       [:layout :stretch-x]
                                       [:layout :num-fields-y]
                                       [:layout :offset-y]
-                                      [:layout :stretch-y]]
+                                      [:layout :stretch-y]
+                                      [:outline?]]
                                      {[:layout :num-fields-x :default] 3
                                       [:layout :num-fields-y :default] 4})
             :gyronny (options/pick default-options
@@ -367,7 +380,8 @@
                                     [:line]
                                     [:opposite-line]
                                     [:origin]
-                                    [:anchor]]
+                                    [:anchor]
+                                    [:outline?]]
                                    {[:line] (-> line-style
                                                 (options/override-if-exists [:offset :min] 0)
                                                 (options/override-if-exists [:base-line] nil)
@@ -388,7 +402,8 @@
                                  [:layout :num-base-fields]
                                  [:layout :num-fields-x]
                                  [:layout :offset-x]
-                                 [:layout :stretch-x]]
+                                 [:layout :stretch-x]
+                                 [:outline?]]
                                 {[:line] line-style
                                  [:line :fimbriation] nil})
             :barry (options/pick default-options
@@ -399,7 +414,8 @@
                                   [:layout :num-base-fields]
                                   [:layout :num-fields-y]
                                   [:layout :offset-y]
-                                  [:layout :stretch-y]]
+                                  [:layout :stretch-y]
+                                  [:outline?]]
                                  {[:line] line-style
                                   [:line :fimbriation] nil})
             :chequy (options/pick default-options
@@ -412,7 +428,8 @@
                                    [:layout :stretch-x]
                                    [:layout :num-fields-y]
                                    [:layout :offset-y]
-                                   [:layout :stretch-y]]
+                                   [:layout :stretch-y]
+                                   [:outline?]]
                                   {[:layout :num-fields-y :default] nil})
             :lozengy (options/pick default-options
                                    [[:type]
@@ -424,7 +441,8 @@
                                     [:layout :num-fields-y]
                                     [:layout :offset-y]
                                     [:layout :stretch-y]
-                                    [:layout :rotation]]
+                                    [:layout :rotation]
+                                    [:outline?]]
                                    {[:layout :num-fields-y :default] nil
                                     [:layout :stretch-y :max] 3})
             :vairy (options/pick default-options
@@ -449,7 +467,8 @@
                                     [:layout :stretch-x]
                                     [:layout :num-fields-y]
                                     [:layout :offset-y]
-                                    [:layout :stretch-y]]
+                                    [:layout :stretch-y]
+                                    [:outline?]]
                                    {[:layout :num-fields-y :default] nil
                                     [:variant :choices] [["Default" :default]
                                                          ["Counter" :counter]
@@ -465,7 +484,8 @@
                                       [:layout :stretch-x]
                                       [:layout :num-fields-y]
                                       [:layout :offset-y]
-                                      [:layout :stretch-y]]
+                                      [:layout :stretch-y]
+                                      [:outline?]]
                                      {[:layout :num-fields-y :default] nil})
             :masonry (options/pick default-options
                                    [[:type]
@@ -477,7 +497,8 @@
                                     [:layout :stretch-x]
                                     [:layout :num-fields-y]
                                     [:layout :offset-y]
-                                    [:layout :stretch-y]]
+                                    [:layout :stretch-y]
+                                    [:outline?]]
                                    {[:layout :num-fields-y :default] nil})
             :bendy (options/pick default-options
                                  [[:type]
@@ -489,7 +510,8 @@
                                   [:layout :offset-y]
                                   [:layout :stretch-y]
                                   [:origin]
-                                  [:anchor]]
+                                  [:anchor]
+                                  [:outline?]]
                                  (let [useful-points #{:top-left :bottom-right
                                                        :chief :honour :fess :nombril :base}
                                        point-choices (util/filter-choices
@@ -528,7 +550,8 @@
                                            [:layout :offset-y]
                                            [:layout :stretch-y]
                                            [:origin]
-                                           [:anchor]]
+                                           [:anchor]
+                                           [:outline?]]
                                           (let [useful-points #{:top-right :bottom-left
                                                                 :chief :honour :fess :nombril :base}
                                                 point-choices (util/filter-choices
@@ -564,7 +587,8 @@
                                              [:line]
                                              [:layout :stretch-x]
                                              [:origin :point]
-                                             [:origin :offset-x]]
+                                             [:origin :offset-x]
+                                             [:outline?]]
                                             {[:origin :point :choices] position/point-choices-x
                                              [:line] line-style
                                              [:line :fimbriation] nil})
@@ -575,7 +599,8 @@
                                              [:line]
                                              [:layout :stretch-y]
                                              [:origin :point]
-                                             [:origin :offset-y]]
+                                             [:origin :offset-y]
+                                             [:outline?]]
                                             {[:origin :point :choices] position/point-choices-y
                                              [:line] line-style
                                              [:line :fimbriation] nil})
@@ -587,7 +612,8 @@
                                                [:opposite-line]
                                                [:extra-line]
                                                [:origin]
-                                               [:anchor]]
+                                               [:anchor]
+                                               [:outline?]]
                                               {[:line] (-> line-style
                                                            (options/override-if-exists [:offset :min] 0)
                                                            (options/override-if-exists [:base-line] nil)
@@ -611,7 +637,8 @@
                                                         [:opposite-line]
                                                         [:extra-line]
                                                         [:origin]
-                                                        [:anchor]]
+                                                        [:anchor]
+                                                        [:outline?]]
                                                        {[:line] (-> line-style
                                                                     (options/override-if-exists [:offset :min] 0)
                                                                     (options/override-if-exists [:base-line] nil)

@@ -13,7 +13,7 @@
 (defn render
   {:display-name "Bend sinister"
    :value :heraldry.ordinary.type/bend-sinister}
-  [{:keys [field hints] :as ordinary} parent environment
+  [{:keys [field] :as ordinary} parent environment
    {:keys
     [render-options
      override-middle-real-start
@@ -27,7 +27,7 @@
                              (assoc-in [:origin :offset-x :max] 100)
                              (assoc-in [:origin :offset-y :min] -100)
                              (assoc-in [:origin :offset-y :max] 100))
-        {:keys [line origin anchor geometry]} (options/sanitize ordinary ordinary-options)
+        {:keys [line origin anchor geometry outline?]} (options/sanitize ordinary ordinary-options)
         {:keys [size]} geometry
         opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
@@ -149,7 +149,7 @@
                 (counterchange/counterchange-field ordinary parent)
                 field)
         outline? (or (:outline? render-options)
-                     (:outline? hints))
+                     outline?)
         {:keys [cottise-1
                 cottise-2
                 cottise-opposite-1
