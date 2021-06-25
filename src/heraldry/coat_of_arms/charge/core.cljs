@@ -45,7 +45,6 @@
       [charge-other/render charge parent environment context])))
 
 (defn title [charge]
-  (str
-   (s/join " " [(-> charge :type util/translate-cap-first)
-                (-> charge :attitude util/translate)])
-   " charge"))
+  (s/join " " [(-> charge :type util/translate-cap-first)
+               (-> charge :attitude util/translate)
+               (-> charge :facing util/translate)]))
