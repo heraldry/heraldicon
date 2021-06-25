@@ -61,8 +61,7 @@
                                                           :heraldry.field.layout/stretch-y
                                                           :heraldry.field.layout/rotation])))
 (s/def :heraldry.field/fields (s/coll-of :heraldry/field :into []))
-(s/def :heraldry.field.hint/outline? boolean?)
-(s/def :heraldry.field/hints (s/nilable (s/keys :opt-un [:heraldry.hint/outline?])))
+(s/def :heraldry.field/outline? boolean?)
 (s/def :heraldry.field/inherit-environment? boolean?)
 (s/def :heraldry.field/counterchanged? boolean?)
 (s/def :heraldry.field/components (s/coll-of #(or (s/valid? :heraldry/ordinary %)
@@ -101,7 +100,7 @@
                                                :heraldry.field/layout
                                                :heraldry.field/origin
                                                :heraldry.field/anchor
-                                               :heraldry.field/hints])))
+                                               :heraldry.field/outline?])))
 
 (s/def :heraldry.ordinary/type ordinary/ordinary-map)
 (s/def :heraldry/ordinary (s/keys :req-un [:heraldry.ordinary/type

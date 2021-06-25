@@ -13,9 +13,9 @@
 (defn render
   {:display-name "Per pile"
    :value :heraldry.field.type/per-pile}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
-                geometry]} (options/sanitize field (field-options/options field))
+                geometry outline?]} (options/sanitize field (field-options/options field))
         opposite-line (field-options/sanitize-opposite-line field line)
         anchor (-> anchor
                    (assoc :type :edge))
@@ -147,7 +147,7 @@
                  bottom-left bottom-right]]]
 
         outline? (or (:outline? render-options)
-                     (:outline? hints))]
+                     outline?)]
     [:<>
      [shared/make-subfields
       (shared/field-context-key type) fields parts

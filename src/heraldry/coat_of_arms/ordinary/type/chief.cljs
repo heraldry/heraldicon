@@ -14,9 +14,9 @@
 (defn render
   {:display-name "Chief"
    :value :heraldry.ordinary.type/chief}
-  [{:keys [field hints] :as ordinary} parent environment
+  [{:keys [field] :as ordinary} parent environment
    {:keys [render-options override-real-start override-real-end override-shared-start-x] :as context}]
-  (let [{:keys [line geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
+  (let [{:keys [line geometry outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
         points (:points environment)
         top (:top points)
@@ -71,7 +71,7 @@
                 (counterchange/counterchange-field ordinary parent)
                 field)
         outline? (or (:outline? render-options)
-                     (:outline? hints))
+                     outline?)
         {:keys [cottise-1
                 cottise-2]} (-> ordinary :cottising)]
     [:<>
@@ -89,7 +89,7 @@
              {:keys [line]} (options/sanitize fess-base fess-options)
              opposite-line (ordinary-options/sanitize-opposite-line fess-base line)]
          [fess/render (-> fess-base
-                          (merge {:hints {:outline? (-> ordinary :hints :outline?)}
+                          (merge {:outline? (-> ordinary :outline?)
                                   :field (:field cottise-1)
                                   ;; swap line/opposite-line because the cottise fess is upside down
                                   :line opposite-line

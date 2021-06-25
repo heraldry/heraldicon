@@ -14,9 +14,9 @@
 (defn render
   {:display-name "Pile"
    :value :heraldry.ordinary.type/pile}
-  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
+  [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
-                geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
+                geometry outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
         opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
         top-left (:top-left points)
@@ -97,7 +97,7 @@
                 (counterchange/counterchange-field ordinary parent)
                 field)
         outline? (or (:outline? render-options)
-                     (:outline? hints))
+                     outline?)
         {:keys [cottise-1
                 cottise-2]} (-> ordinary :cottising)]
     [:<>
@@ -152,7 +152,7 @@
              new-direction-anchor {:point :angle
                                    :angle (- pile-angle 90)}]
          [chevron/render (-> {:type :heraldry.ordinary.type/chevron
-                              :hints {:outline? (-> ordinary :hints :outline?)}}
+                              :outline? (-> ordinary :outline?)}
                              (assoc :cottising {:cottise-1 cottise-2})
                              (assoc :line line)
                              (assoc :opposite-line (-> opposite-line

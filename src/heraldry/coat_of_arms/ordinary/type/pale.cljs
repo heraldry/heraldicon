@@ -14,7 +14,7 @@
 (defn render
   {:display-name "Pale"
    :value :heraldry.ordinary.type/pale}
-  [{:keys [field hints] :as ordinary} parent environment
+  [{:keys [field] :as ordinary} parent environment
    {:keys [render-options override-real-start override-real-end override-shared-start-y] :as context}]
   (let [;; ignore offset-x constraints, because cottises might exceed them
         ordinary-options (-> (ordinary-options/options ordinary)
@@ -22,7 +22,7 @@
                              (assoc-in [:origin :offset-x :max] 100)
                              (assoc-in [:origin :offset-y :min] -100)
                              (assoc-in [:origin :offset-y :max] 100))
-        {:keys [line origin geometry]} (options/sanitize ordinary ordinary-options)
+        {:keys [line origin geometry outline?]} (options/sanitize ordinary ordinary-options)
         opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         {:keys [size]} geometry
         points (:points environment)
@@ -113,7 +113,7 @@
                 (counterchange/counterchange-field ordinary parent)
                 field)
         outline? (or (:outline? render-options)
-                     (:outline? hints))
+                     outline?)
         {:keys [cottise-1
                 cottise-2
                 cottise-opposite-1

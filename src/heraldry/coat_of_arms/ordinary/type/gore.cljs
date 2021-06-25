@@ -17,8 +17,8 @@
 (defn render
   {:display-name "Gore"
    :value :heraldry.ordinary.type/gore}
-  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]} (options/sanitize ordinary (ordinary-options/options ordinary))
+  [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin anchor outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
         opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
         left? (case (-> anchor :point)
@@ -79,7 +79,7 @@
                 (counterchange/counterchange-field ordinary parent)
                 field)
         outline? (or (:outline? render-options)
-                     (:outline? hints))]
+                     outline?)]
     [:<>
      [field-shared/make-subfields
       :ordinary-base [field] parts

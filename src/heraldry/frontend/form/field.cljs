@@ -250,7 +250,7 @@
               [form-for-layout path :options (:layout options)])])
          (if (= field-type :heraldry.field.type/plain)
            [form-for-plain-field path]
-           [element/checkbox (conj path :hints :outline?) "Outline"])])]
+           [element/checkbox (conj path :outline?) "Outline"])])]
      (cond
        (#{:heraldry.field.type/chequy
           :heraldry.field.type/lozengy

@@ -10,11 +10,12 @@
   {:display-name "Bendy"
    :value :heraldry.field.type/bendy
    :parts []}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
   (let [{:keys [line
                 layout
                 origin
-                anchor]} (options/sanitize field (field-options/options field))
+                anchor
+                outline?]} (options/sanitize field (field-options/options field))
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)
@@ -40,7 +41,7 @@
                                   layout
                                   (v/v (- required-half-width) (- required-half-height))
                                   (v/v required-half-width required-half-height)
-                                  line hints render-options environment)]
+                                  line outline? render-options environment)]
     [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
                          "rotate(" angle ")")}
      [shared/make-subfields

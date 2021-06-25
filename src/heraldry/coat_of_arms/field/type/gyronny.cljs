@@ -14,8 +14,8 @@
   {:display-name "Gyronny"
    :value :heraldry.field.type/gyronny
    :parts ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"]}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]} (options/sanitize field (field-options/options field))
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin anchor outline?]} (options/sanitize field (field-options/options field))
         opposite-line (field-options/sanitize-opposite-line field line)
         points (:points environment)
         top-left (:top-left points)
@@ -290,7 +290,7 @@
        nil]
       environment field context]
      (when (or (:outline? render-options)
-               (:outline? hints))
+               outline?)
        [:g outline/style
         [:path {:d (svg/make-path
                     ["M" origin-point

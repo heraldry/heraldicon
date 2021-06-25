@@ -44,6 +44,9 @@
                 :default 3
                 :integer? true
                 :ui {:label "Points"}}
+   :outline? {:type :boolean
+              :default false
+              :ui {:label "Outline"}}
    :fimbriation fimbriation/default-options
    :cottising cottising/options})
 
@@ -60,6 +63,7 @@
                               [:line]
                               [:opposite-line]
                               [:geometry]
+                              [:outline?]
                               [:cottising]]
                              {[:offset-y] nil
                               [:line] line-style
@@ -69,13 +73,15 @@
                               [:line]
                               [:opposite-line]
                               [:geometry]
+                              [:outline?]
                               [:cottising]]
                              {[:offset-x] nil
                               [:line] line-style
                               [:opposite-line] opposite-line-style})
          :chief (options/pick default-options
                               [[:line]
-                               [:geometry]]
+                               [:geometry]
+                               [:outline?]]
                               {[:line] line-style
                                [:cottising] (-> default-options
                                                 :cottising
@@ -83,7 +89,8 @@
                                                 (dissoc :cottise-opposite-2))})
          :base (options/pick default-options
                              [[:line]
-                              [:geometry]]
+                              [:geometry]
+                              [:outline?]]
                              {[:line] line-style
                               [:cottising] (-> default-options
                                                :cottising
@@ -95,6 +102,7 @@
                               [:line]
                               [:opposite-line]
                               [:geometry]
+                              [:outline?]
                               [:cottising]]
                              (let [useful-points #{:top-left :bottom-right
                                                    :chief :honour :fess :nombril :base}
@@ -130,6 +138,7 @@
                                        [:line]
                                        [:opposite-line]
                                        [:geometry]
+                                       [:outline?]
                                        [:cottising]]
                                       (let [useful-points #{:top-right :bottom-left
                                                             :chief :honour :fess :nombril :base}
@@ -166,6 +175,7 @@
                                  [:line]
                                  [:opposite-line]
                                  [:geometry]
+                                 [:outline?]
                                  [:cottising]]
                                 {[:line] (-> line-style
                                              (options/override-if-exists [:offset :min] 0)
@@ -206,6 +216,7 @@
                               [:line]
                               [:opposite-line]
                               [:geometry]
+                              [:outline?]
                               [:cottising]]
                              (let [anchor-points #{:top-left :top :top-right
                                                    :left :right
@@ -271,6 +282,7 @@
                                  [:anchor]
                                  [:line]
                                  [:geometry]
+                                 [:outline?]
                                  [:cottising]]
                                 {[:line] (-> line-style
                                              (options/override-if-exists [:offset :min] 0)
@@ -287,6 +299,7 @@
                               [[:origin]
                                [:line]
                                [:geometry]
+                               [:outline?]
                                [:cottising]]
                               {[:line] (-> line-style
                                            (options/override-if-exists [:offset :min] 0)
@@ -300,7 +313,8 @@
                              [[:origin]
                               [:anchor]
                               [:line]
-                              [:opposite-line]]
+                              [:opposite-line]
+                              [:outline?]]
                              {[:line] (-> line-style
                                           (options/override-if-exists [:offset :min] 0)
                                           (options/override-if-exists [:base-line] nil)
@@ -328,6 +342,7 @@
                                [:geometry]
                                [:variant]
                                [:num-points]
+                               [:outline?]
                                [:fimbriation]]
                               {[:origin :point :default] :chief
                                [:geometry :size :min] 2

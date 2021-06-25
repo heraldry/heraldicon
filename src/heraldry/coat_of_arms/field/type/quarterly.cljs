@@ -12,7 +12,7 @@
                                stretch-x
                                num-fields-y
                                offset-y
-                               stretch-y]} top-left bottom-right hints render-options]
+                               stretch-y]} top-left bottom-right outline? render-options]
   (let [offset-x (or offset-x 0)
         stretch-x (or stretch-x 1)
         width (- (:x bottom-right)
@@ -156,7 +156,7 @@
                      vec)
         outline-extra 50
         outlines (when (or (:outline? render-options)
-                           (:outline? hints))
+                           outline?)
                    [:g outline/style
                     (for [i (range 1 num-fields-x)]
                       (let [x1 (+ x0 (* i part-width))]
@@ -174,12 +174,12 @@
   {:display-name "Quarterly NxM"
    :value :heraldry.field.type/quarterly
    :parts []}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [layout]} (options/sanitize field (field-options/options field))
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [layout outline?]} (options/sanitize field (field-options/options field))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (quarterly-parts layout top-left bottom-right hints render-options)]
+        [parts overlap outlines] (quarterly-parts layout top-left bottom-right outline? render-options)]
     [:<>
      [shared/make-subfields
       (shared/field-context-key type) fields parts

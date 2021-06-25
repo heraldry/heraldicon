@@ -12,8 +12,8 @@
   {:display-name "Per bend sinister"
    :value :heraldry.field.type/per-bend-sinister
    :parts ["chief" "base"]}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor]} (options/sanitize field (field-options/options field))
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin anchor outline?]} (options/sanitize field (field-options/options field))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
@@ -85,7 +85,7 @@
                  bottom-right
                  real-diagonal-end]]]
         outline? (or (:outline? render-options)
-                     (:outline? hints))]
+                     outline?)]
     [:<>
      [shared/make-subfields
       (shared/field-context-key type) fields parts

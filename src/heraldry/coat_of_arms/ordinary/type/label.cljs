@@ -89,12 +89,13 @@
 (defn render
   {:display-name "Label"
    :value :heraldry.ordinary.type/label}
-  [{:keys [field hints] :as ordinary} parent environment {:keys [render-options] :as context}]
+  [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [origin
                 variant
                 num-points
                 geometry
-                fimbriation]} (options/sanitize ordinary (ordinary-options/options ordinary))
+                fimbriation
+                outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [width
                 size
                 thickness
@@ -128,7 +129,7 @@
                 (counterchange/counterchange-field ordinary parent)
                 field)
         outline? (or (:outline? render-options)
-                     (:outline? hints))]
+                     outline?)]
     [:<>
      [field-shared/make-subfields
       :ordinary-fess [field] parts

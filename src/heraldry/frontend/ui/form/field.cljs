@@ -20,7 +20,8 @@
                  :direction-anchor
                  :anchor
                  :geometry
-                 :layout]]
+                 :layout
+                 :outline?]]
      ^{:key option} [interface/form-element (conj path option) (get options option)])])
 
 (defn name-prefix-for-part [path]

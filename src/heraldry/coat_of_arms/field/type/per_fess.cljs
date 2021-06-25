@@ -12,8 +12,8 @@
   {:display-name "Per fess"
    :value :heraldry.field.type/per-fess
    :parts ["chief" "base"]}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin]} (options/sanitize field (field-options/options field))
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line origin outline?]} (options/sanitize field (field-options/options field))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -63,7 +63,7 @@
                 [real-left
                  bottom-right]]]
         outline? (or (:outline? render-options)
-                     (:outline? hints))]
+                     outline?)]
     [:<>
      [shared/make-subfields
       (shared/field-context-key type) fields parts

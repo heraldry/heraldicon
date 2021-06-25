@@ -10,7 +10,7 @@
 
 (defn paly-parts [{:keys [num-fields-x
                           offset-x
-                          stretch-x]} top-left bottom-right line hints render-options environment]
+                          stretch-x]} top-left bottom-right line outline? render-options environment]
   (let [offset-x (or offset-x 0)
         stretch-x (or stretch-x 1)
         width (- (:x bottom-right)
@@ -152,7 +152,7 @@
                     vec
                     (conj nil))
         outlines (when (or (:outline? render-options)
-                           (:outline? hints))
+                           outline?)
                    [:g outline/style
                     (for [i (range (dec num-fields-x))]
                       ^{:key i}
@@ -163,12 +163,12 @@
   {:display-name "Paly"
    :value :heraldry.field.type/paly
    :parts []}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line layout]} (options/sanitize field (field-options/options field))
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
+  (let [{:keys [line layout outline?]} (options/sanitize field (field-options/options field))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (paly-parts layout top-left bottom-right line hints render-options environment)]
+        [parts overlap outlines] (paly-parts layout top-left bottom-right line outline? render-options environment)]
     [:<>
      [shared/make-subfields
       (shared/field-context-key type) fields parts

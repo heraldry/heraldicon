@@ -15,10 +15,10 @@
    :value :heraldry.field.type/per-chevron
    ;; TODO: this naming now depends on the angle of the chevron
    :parts ["chief" "base"]}
-  [{:keys [type fields hints] :as field} environment {:keys [render-options] :as context}]
+  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
   (let [field-options (field-options/options field)
         {:keys [line origin anchor
-                direction-anchor]} (options/sanitize field field-options)
+                direction-anchor outline?]} (options/sanitize field field-options)
         raw-direction-anchor (:direction-anchor field)
         direction-anchor (options/sanitize (cond-> raw-direction-anchor
                                              (-> direction-anchor
@@ -119,7 +119,7 @@
                  "z"]
                 [top-left bottom-right]]]
         outline? (or (:outline? render-options)
-                     (:outline? hints))]
+                     outline?)]
     [:<>
      [shared/make-subfields
       (shared/field-context-key type) fields parts

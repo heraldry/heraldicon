@@ -14,9 +14,9 @@
 (defn render
   {:display-name "Base"
    :value :heraldry.ordinary.type/base}
-  [{:keys [field hints] :as ordinary} parent environment
+  [{:keys [field] :as ordinary} parent environment
    {:keys [render-options override-real-start override-real-end override-shared-start-x] :as context}]
-  (let [{:keys [line geometry]} (options/sanitize ordinary (ordinary-options/options ordinary))
+  (let [{:keys [line geometry outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
         points (:points environment)
         bottom (:bottom points)
@@ -68,7 +68,7 @@
                 (counterchange/counterchange-field ordinary parent)
                 field)
         outline? (or (:outline? render-options)
-                     (:outline? hints))
+                     outline?)
         {:keys [cottise-1
                 cottise-2]} (-> ordinary :cottising)]
     [:<>
@@ -80,7 +80,7 @@
      (when (:enabled? cottise-1)
        (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)]
          [fess/render {:type :heraldry.ordinary.type/fess
-                       :hints {:outline? (-> ordinary :hints :outline?)}
+                       :outline? (-> ordinary :outline?)
                        :cottising {:cottise-1 cottise-2}
                        :line (:line cottise-1)
                        :opposite-line (:opposite-line cottise-1)
