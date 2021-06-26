@@ -14,6 +14,7 @@
             [heraldry.frontend.ui.element.radio-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.range] ;; needed for defmethods
             [heraldry.frontend.ui.element.select] ;; needed for defmethods
+            [heraldry.frontend.ui.element.semy-layout] ;; needed for defmethods
             [heraldry.frontend.ui.element.submenu] ;; needed for defmethods
             [heraldry.frontend.ui.element.theme-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.tincture-select] ;; needed for defmethods
@@ -22,6 +23,7 @@
             [heraldry.frontend.ui.form.field] ;; needed for defmethods
             [heraldry.frontend.ui.form.ordinary] ;; needed for defmethods
             [heraldry.frontend.ui.form.render-options] ;; needed for defmethods
+            [heraldry.frontend.ui.form.semy] ;; needed for defmethods
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
