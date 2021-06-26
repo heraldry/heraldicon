@@ -61,12 +61,13 @@
                :default 360
                :ui {:label "Arc angle"
                     :step 0.1}}
-   :num-slots {:type :range
-               :min 1
-               :max 20
-               :default 5
-               :integer? true
-               :ui {:label "Number"}}
+   :slots {:type :range
+           :min 1
+           :max 20
+           :default 5
+           :integer? true
+           :ui {:label "Number"
+                :form-type :charge-group-slot-number}}
    :radius {:type :range
             :min 0
             :max 100
@@ -99,7 +100,7 @@
                                                                                      [:arc-stretch]
                                                                                      [:start-angle]
                                                                                      [:arc-angle]
-                                                                                     [:num-slots]
+                                                                                     [:slots]
                                                                                      [:radius]
                                                                                      [:rotate-charges?]]))
         (update :origin (fn [position]
@@ -112,15 +113,22 @@
                                 (position/adjust-options (-> charge-group :anchor)))))))))
 
 (def strip-options
-  {:num-slots {:type :range
-               :min 0
-               :max 10
-               :default 3}
+  {:slots {:type :range
+           :min 0
+           :max 10
+           :default 3
+           :integer? true
+           :ui {:label "Number"
+                :form-type :charge-group-slot-number}}
    :stretch {:type :range
              :min 0
              :max 5
-             :default 1}
+             :default 1
+             :ui {:label "Stretch"
+                  :step 0.01}}
    :offset {:type :range
             :min -3
             :max 3
-            :default 0}})
+            :default 0
+            :ui {:label "Offset"
+                 :step 0.01}}})
