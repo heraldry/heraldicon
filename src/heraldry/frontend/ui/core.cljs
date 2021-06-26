@@ -41,7 +41,7 @@
                  data)]
       (cond-> data
         (and (map? data)
-             (-> data :type not)) (assoc :type (keyword "heraldry.type" (last path)))))))
+             (-> data :type not)) (assoc :type (keyword "heraldry.component" (last path)))))))
 
 (rf/reg-sub :component-node
   (fn [[_ path] _]
