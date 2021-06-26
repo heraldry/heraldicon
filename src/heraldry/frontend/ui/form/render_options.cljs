@@ -16,9 +16,9 @@
                  :squiggly?]]
      ^{:key option} [interface/form-element (conj path option) (get options option)])])
 
-(defmethod interface/component-node-data :heraldry.type/render-options [_path _component-data]
+(defmethod interface/component-node-data :heraldry.component/render-options [_path _component-data]
   {:title "Render Options"})
 
-(defmethod interface/component-form-data :heraldry.type/render-options [component-data]
+(defmethod interface/component-form-data :heraldry.component/render-options [component-data]
   {:form form
    :form-args {:options (render-options/options component-data)}})

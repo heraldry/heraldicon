@@ -21,10 +21,10 @@
                  :outline?]]
      ^{:key option} [interface/form-element (conj path option) (get options option)])])
 
-(defmethod interface/component-node-data :heraldry.type/ordinary [path component-data]
+(defmethod interface/component-node-data :heraldry.component/ordinary [path component-data]
   {:title (ordinary/title component-data)
    :nodes [{:path (conj path :field)}]})
 
-(defmethod interface/component-form-data :heraldry.type/ordinary [component-data]
+(defmethod interface/component-form-data :heraldry.component/ordinary [component-data]
   {:form form
    :form-args {:options (ordinary-options/options component-data)}})

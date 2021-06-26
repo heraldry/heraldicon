@@ -7,10 +7,10 @@
    (for [option [:escutcheon]]
      ^{:key option} [interface/form-element (conj path option) (get options option)])])
 
-(defmethod interface/component-node-data :heraldry.type/coat-of-arms [path _component-data]
+(defmethod interface/component-node-data :heraldry.component/coat-of-arms [path _component-data]
   {:title "Coat of Arms"
    :nodes [{:path (conj path :field)}]})
 
-(defmethod interface/component-form-data :heraldry.type/coat-of-arms [component-data]
+(defmethod interface/component-form-data :heraldry.component/coat-of-arms [component-data]
   {:form form
    :form-args {:options (coat-of-arms/options component-data)}})

@@ -36,7 +36,7 @@
       (-> (field/part-name parent-field-type index)
           util/upper-case-first))))
 
-(defmethod interface/component-node-data :heraldry.type/field [path component-data]
+(defmethod interface/component-node-data :heraldry.component/field [path component-data]
   {:title (util/combine ": "
                         [(name-prefix-for-part path)
                          (field/title component-data)])
@@ -79,6 +79,6 @@
                                                        % [:remove-element component-path])}]})))
                        vec))})
 
-(defmethod interface/component-form-data :heraldry.type/field [component-data]
+(defmethod interface/component-form-data :heraldry.component/field [component-data]
   {:form form
    :form-args {:options (field-options/options component-data)}})
