@@ -1,12 +1,13 @@
 (ns heraldry.frontend.ui.form.charge-group
   (:require [heraldry.coat-of-arms.charge-group.options :as charge-group-options]
             [heraldry.coat-of-arms.charge.core :as charge]
+            [heraldry.coat-of-arms.default :as default]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.coat-of-arms.default :as default]))
+            [heraldry.frontend.ui.interface :as interface]))
 
 (defn form [path {:keys [options]}]
   [:<>
+   [interface/form-element path {:ui {:form-type :charge-group-preset-select}}]
    (for [option [:type
                  :origin
                  :spacing
