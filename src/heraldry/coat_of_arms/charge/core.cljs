@@ -46,5 +46,7 @@
 
 (defn title [charge]
   (s/join " " [(-> charge :type util/translate-cap-first)
-               (-> charge :attitude util/translate)
-               (-> charge :facing util/translate)]))
+               (when (-> charge :attitude (not= :none))
+                 (-> charge :attitude util/translate))
+               (when (-> charge :facing #{:none :to-dexter} not)
+                 (-> charge :facing util/translate))]))
