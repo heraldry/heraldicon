@@ -3,73 +3,6 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.util :as util]))
 
-(def default-options
-  {:origin (-> position/default-options
-               (assoc-in [:alignment] nil))
-   :anchor (-> position/anchor-default-options
-               (assoc-in [:point :default] :angle)
-               (update-in [:point :choices] (fn [choices]
-                                              (-> choices
-                                                  drop-last
-                                                  (conj (last choices))
-                                                  vec)))
-               (assoc-in [:alignment] nil)
-               (assoc-in [:angle :min] -180)
-               (assoc-in [:angle :max] 180)
-               (assoc-in [:angle :default] 0))
-   :spacing {:type :range
-             :min 1
-             :max 100
-             :default 40}
-   :stretch {:type :range
-             :min 0
-             :max 5
-             :default 1}
-   :strip-angle {:type :range
-                 :min -90
-                 :max 90
-                 :default 0}
-   :start-angle {:type :range
-                 :min -180
-                 :max 180
-                 :default 0}
-   :arc-angle {:type :range
-               :min 0
-               :max 360
-               :default 360}
-   :num-slots {:type :range
-               :min 1
-               :max 20
-               :default 5}
-   :radius {:type :range
-            :min 0
-            :max 100
-            :default 30}
-   :arc-stretch {:type :range
-                 :min 0
-                 :max 5
-                 :default 1}
-   :rotate-charges? {:type :boolean
-                     :default false}})
-
-(defn options [charge-group]
-  (when charge-group
-    (cond
-      (-> charge-group :type #{:heraldry.charge-group.type/rows
-                               :heraldry.charge-group.type/columns}) (options/pick default-options
-                                                                                   [[:origin]
-                                                                                    [:spacing]
-                                                                                    [:stretch]
-                                                                                    [:strip-angle]])
-      (-> charge-group :type (= :heraldry.charge-group.type/arc)) (options/pick default-options
-                                                                                [[:origin]
-                                                                                 [:arc-stretch]
-                                                                                 [:start-angle]
-                                                                                 [:arc-angle]
-                                                                                 [:num-slots]
-                                                                                 [:radius]
-                                                                                 [:rotate-charges?]]))))
-
 (def type-choices
   [["Rows" :heraldry.charge-group.type/rows]
    ["Columns" :heraldry.charge-group.type/columns]
@@ -77,6 +10,106 @@
 
 (def type-map
   (util/choices->map type-choices))
+
+(def default-options
+  {:type {:type :choice
+          :choices type-choices
+          :default :heraldry.charge-group.type/rows
+          :ui {:label "Type"
+               :form-type :charge-group-type-select}}
+   :origin (-> position/default-options
+               (dissoc :alignment))
+   :anchor (-> position/anchor-default-options
+               (assoc-in [:point :default] :angle)
+               (update-in [:point :choices] (fn [choices]
+                                              (-> choices
+                                                  drop-last
+                                                  (conj (last choices))
+                                                  vec)))
+               (assoc :alignment nil)
+               (assoc-in [:angle :min] -180)
+               (assoc-in [:angle :max] 180)
+               (assoc-in [:angle :default] 0)
+               (assoc-in [:ui :label] "Anchor"))
+   :spacing {:type :range
+             :min 1
+             :max 100
+             :default 40
+             :ui {:label "Spacing"
+                  :step 0.1}}
+   :stretch {:type :range
+             :min 0
+             :max 5
+             :default 1
+             :ui {:label "Stretch"
+                  :step 0.01}}
+   :strip-angle {:type :range
+                 :min -90
+                 :max 90
+                 :default 0
+                 :ui {:label "Strip angle"
+                      :step 0.1}}
+   :start-angle {:type :range
+                 :min -180
+                 :max 180
+                 :default 0
+                 :ui {:label "start angle"
+                      :step 0.1}}
+   :arc-angle {:type :range
+               :min 0
+               :max 360
+               :default 360
+               :ui {:label "Arc angle"
+                    :step 0.1}}
+   :num-slots {:type :range
+               :min 1
+               :max 20
+               :default 5
+               :integer? true
+               :ui {:label "Number"}}
+   :radius {:type :range
+            :min 0
+            :max 100
+            :default 30
+            :ui {:label "Radius"
+                 :step 0.1}}
+   :arc-stretch {:type :range
+                 :min 0
+                 :max 5
+                 :default 1
+                 :ui {:label "Stretch"
+                      :step 0.01}}
+   :rotate-charges? {:type :boolean
+                     :default false
+                     :ui {:label "Rotate charges"}}})
+
+(defn options [charge-group]
+  (when charge-group
+    (-> (cond
+          (-> charge-group :type #{:heraldry.charge-group.type/rows
+                                   :heraldry.charge-group.type/columns}) (options/pick default-options
+                                                                                       [[:type]
+                                                                                        [:origin]
+                                                                                        [:spacing]
+                                                                                        [:stretch]
+                                                                                        [:strip-angle]])
+          (-> charge-group :type (= :heraldry.charge-group.type/arc)) (options/pick default-options
+                                                                                    [[:type]
+                                                                                     [:origin]
+                                                                                     [:arc-stretch]
+                                                                                     [:start-angle]
+                                                                                     [:arc-angle]
+                                                                                     [:num-slots]
+                                                                                     [:radius]
+                                                                                     [:rotate-charges?]]))
+        (update :origin (fn [position]
+                          (when position
+                            (-> position
+                                (position/adjust-options (-> charge-group :origin))))))
+        (update :anchor (fn [position]
+                          (when position
+                            (-> position
+                                (position/adjust-options (-> charge-group :anchor)))))))))
 
 (def strip-options
   {:num-slots {:type :range

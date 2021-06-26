@@ -25,11 +25,14 @@
    :spacing 40
    :stretch 0.866
    :charges [charge]
-   :strips [{:slots [0 0]}
-            {:slots [0]}]})
+   :strips [{:type :heraldry.component/charge-group-strip
+             :slots [0 0]}
+            {:type :heraldry.component/charge-group-strip
+             :slots [0]}]})
 
 (def charge-group-strip
-  {:slots [0 0 0]})
+  {:type :heraldry.component/charge-group-strip
+   :slots [0 0 0]})
 
 (def semy
   {:type :heraldry.component/semy
