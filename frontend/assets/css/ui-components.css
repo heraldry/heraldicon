@@ -123,6 +123,7 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   cursor: pointer;
+  z-index: 10;
 }
 
 .ui-hover-menu:hover .ui-menu {
