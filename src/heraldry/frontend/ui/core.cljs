@@ -66,7 +66,7 @@
       :path path}
      (interface/component-form-data component-data))))
 
-(defn component-node [path & {:keys [title]}]
+(defn component-node [path & {:keys [title parent-buttons]}]
   (let [node-data @(rf/subscribe [:component-node path])
         {node-title :title
          open? :open?
@@ -75,7 +75,8 @@
          nodes :nodes
          buttons :buttons} node-data
         openable? (-> nodes count pos?)
-        title (or node-title title)]
+        title (or node-title title)
+        buttons (concat buttons parent-buttons)]
     [:<>
      [:div.node-name.clickable.no-select
       {:class (when selected?
@@ -98,28 +99,44 @@
          [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
       title
       (when (-> buttons count pos?)
-        (for [{:keys [icon menu]} buttons]
-          ^{:key icon} [:span.node-icon.ui-hover-menu
-                        [:i.ui-icon {:class icon
-                                     :style {:margin-left "0.5em"
-                                             :font-size "0.8em"}}]
-                        [:ul.ui-menu {:style {:padding 0
-                                              :font-weight 400}}
-                         (for [{:keys [title handler]} menu]
-                           ^{:key title}
-                           [:li.ui-menu-item
-                            {:style {:color "#000"}
-                             :on-click handler}
-                            [:i.ui-icon {:class icon
-                                         :style {:margin-left "0.5em"
-                                                 :font-size "0.8em"
-                                                 :color "#777"}}]
-                            title])]]))]
+        (for [{:keys [icon menu handler disabled? tooltip]} buttons]
+          (if menu
+            ^{:key icon} [:span.node-icon.ui-hover-menu
+                          {:class (when disabled? "disabled")
+                           :title tooltip}
+                          [:i.ui-icon {:class icon
+                                       :style {:margin-left "0.5em"
+                                               :font-size "0.8em"}}]
+                          [:ul.ui-menu {:style {:padding 0
+                                                :font-weight 400}}
+                           (for [{:keys [title handler]} menu]
+                             ^{:key title}
+                             [:li.ui-menu-item
+                              {:style {:color "#000"}
+                               :on-click handler}
+                              [:i.ui-icon {:class icon
+                                           :style {:margin-left "0.5em"
+                                                   :font-size "0.8em"
+                                                   :color (if disabled?
+                                                            "#ccc"
+                                                            "#777")}}]
+                              title])]]
+            ^{:key icon} [:span.node-icon
+                          {:class (when disabled? "disabled")
+                           :on-click handler
+                           :title tooltip}
+                          [:i.ui-icon {:class icon
+                                       :style {:margin-left "0.5em"
+                                               :font-size "0.8em"
+                                               :color (if disabled?
+                                                        "#ccc"
+                                                        "#777")}}]])))]
      (when open?
        [:ul
         (for [{node-path :path
-               title :title} nodes]
-          ^{:key node-path} [:li [component-node node-path :title title]])])]))
+               title :title
+               buttons :buttons} nodes]
+          ^{:key node-path} [:li [component-node node-path :title title :parent-buttons buttons]])])]))
 
 (defn component-tree [paths]
   [:div.ui-tree
