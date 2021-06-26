@@ -61,6 +61,7 @@
                        :components
                        count
                        range
+                       reverse
                        (map (fn [idx]
                               {:path (conj path :components idx)}))
                        vec))})
