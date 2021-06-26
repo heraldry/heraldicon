@@ -137,3 +137,9 @@
 .ui-menu-item:hover {
   background-color: #eee;
 }
+
+.disabled,
+.disabled:hover {
+  color: #ddd !important;
+  cursor: default;
+}

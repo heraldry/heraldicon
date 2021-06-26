@@ -63,7 +63,20 @@
                        range
                        reverse
                        (map (fn [idx]
-                              {:path (conj path :components idx)}))
+                              (let [component-path (conj path :components idx)]
+                                {:path component-path
+                                 :buttons [{:icon "fas fa-chevron-down"
+                                            :disabled? (zero? idx)
+                                            :tooltip "move down"
+                                            :handler #(state/dispatch-on-event % [:move-element-down component-path])}
+                                           {:icon "fas fa-chevron-up"
+                                            :disabled? (= idx (dec (count (:components component-data))))
+                                            :tooltip "move up"
+                                            :handler #(state/dispatch-on-event % [:move-element-up component-path])}
+                                           {:icon "far fa-trash-alt"
+                                            :tooltip "remove"
+                                            :handler #(state/dispatch-on-event
+                                                       % [:remove-element component-path])}]})))
                        vec))})
 
 (defmethod interface/component-form-data :heraldry.type/field [component-data]
