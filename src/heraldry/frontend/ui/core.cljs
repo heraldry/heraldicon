@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.core
   (:require [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.charge-group-preset-select] ;; needed for defmethods
+            [heraldry.frontend.ui.element.charge-group-slot-number] ;; needed for defmethods
             [heraldry.frontend.ui.element.charge-group-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.charge-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.checkbox] ;; needed for defmethods
