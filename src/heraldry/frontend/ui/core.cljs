@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.core
   (:require [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.charge-type-select] ;; needed for defmethods
+            [heraldry.frontend.ui.element.charge-group-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.checkbox] ;; needed for defmethods
             [heraldry.frontend.ui.element.escutcheon-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.field-layout] ;; needed for defmethods
@@ -19,6 +20,7 @@
             [heraldry.frontend.ui.element.theme-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.tincture-select] ;; needed for defmethods
             [heraldry.frontend.ui.form.charge] ;; needed for defmethods
+            [heraldry.frontend.ui.form.charge-group] ;; needed for defmethods
             [heraldry.frontend.ui.form.coat-of-arms] ;; needed for defmethods
             [heraldry.frontend.ui.form.field] ;; needed for defmethods
             [heraldry.frontend.ui.form.ordinary] ;; needed for defmethods

@@ -7,6 +7,7 @@
       (s/starts-with? ts ":heraldry.component") t
       (s/starts-with? ts ":heraldry.field") :heraldry.component/field
       (s/starts-with? ts ":heraldry.ordinary") :heraldry.component/ordinary
+      (s/starts-with? ts ":heraldry.charge-group") :heraldry.component/charge-group
       (s/starts-with? ts ":heraldry.charge") :heraldry.component/charge
       :else :heraldry.component/unknown)))
 
