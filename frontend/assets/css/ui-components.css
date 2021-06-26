@@ -52,6 +52,7 @@
   display: inline-block;
   white-space: nowrap;
   line-height: 1.5em;
+  color: #1b6690;
 }
 
 .ui-tree .selected {
