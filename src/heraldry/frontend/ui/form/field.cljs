@@ -1,6 +1,8 @@
 (ns heraldry.frontend.ui.form.field
-  (:require [heraldry.coat-of-arms.field.core :as field]
+  (:require [heraldry.coat-of-arms.default :as default]
+            [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.field.options :as field-options]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
             [re-frame.core :as rf]))
@@ -38,6 +40,15 @@
   {:title (util/combine ": "
                         [(name-prefix-for-part path)
                          (field/title component-data)])
+   :buttons [{:icon "fas fa-plus"
+              :menu [{:title "Ordinary"
+                      :handler #(state/dispatch-on-event % [:add-component path default/ordinary])}
+                     {:title "Charge"
+                      :handler #(state/dispatch-on-event % [:add-component path default/charge])}
+                     {:title "Charge group"
+                      :handler #(state/dispatch-on-event % [:add-component path default/charge-group])}
+                     {:title "Semy"
+                      :handler #(state/dispatch-on-event % [:add-component path default/semy])}]}]
    :nodes (concat (when (-> component-data :type name keyword (not= :plain))
                     (->> component-data
                          :fields

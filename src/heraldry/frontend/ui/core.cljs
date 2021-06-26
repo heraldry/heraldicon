@@ -72,7 +72,8 @@
          open? :open?
          selected? :selected?
          selectable? :selectable?
-         nodes :nodes} node-data
+         nodes :nodes
+         buttons :buttons} node-data
         openable? (-> nodes count pos?)
         title (or node-title title)]
     [:<>
@@ -98,7 +99,25 @@
       title
       (when selectable?
         [:i.fa.fa-pen.ui-icon {:style {:margin-left "0.5em"
-                                       :font-size "0.8em"}}])]
+                                       :font-size "0.8em"}}])
+      (when (-> buttons count pos?)
+        (for [{:keys [icon menu]} buttons]
+          ^{:key icon} [:span.node-icon.ui-hover-menu
+                        [:i.ui-icon {:class icon
+                                     :style {:margin-left "0.5em"
+                                             :font-size "0.8em"}}]
+                        [:ul.ui-menu {:style {:padding 0
+                                              :font-weight 400}}
+                         (for [{:keys [title handler]} menu]
+                           ^{:key title}
+                           [:li.ui-menu-item
+                            {:style {:color "#000"}
+                             :on-click handler}
+                            [:i.ui-icon {:class icon
+                                         :style {:margin-left "0.5em"
+                                                 :font-size "0.8em"
+                                                 :color "#777"}}]
+                            title])]]))]
      (when open?
        [:ul
         (for [{node-path :path
