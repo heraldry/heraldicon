@@ -115,7 +115,7 @@
                              ^{:key title}
                              [:li.ui-menu-item
                               {:style {:color "#000"}
-                               :on-click handler}
+                               :on-click (when-not disabled? handler)}
                               [:i.ui-icon {:class icon
                                            :style {:margin-left "0.5em"
                                                    :font-size "0.8em"
@@ -125,7 +125,7 @@
                               title])]]
             ^{:key icon} [:span.node-icon
                           {:class (when disabled? "disabled")
-                           :on-click handler
+                           :on-click (when-not disabled? handler)
                            :title tooltip}
                           [:i.ui-icon {:class icon
                                        :style {:margin-left "0.5em"
