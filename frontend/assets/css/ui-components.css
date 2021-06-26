@@ -109,3 +109,29 @@
   margin-left: 0px;
   margin-right: 5px;
 }
+
+.ui-hover-menu {
+  position: relative;
+}
+
+.ui-hover-menu .ui-menu {
+  position: absolute;
+  display: none;
+  top: 0em;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.ui-hover-menu:hover .ui-menu {
+  display: block;
+}
+
+.ui-menu-item {
+  padding-right: 5px;
+}
+
+.ui-menu-item:hover {
+  background-color: #eee;
+}
