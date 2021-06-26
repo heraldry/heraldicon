@@ -107,12 +107,12 @@
                      :spacing
                      :stretch
                      :strip-angle
-                     :slots
                      :radius
                      :arc-angle
                      :start-angle
                      :arc-stretch
-                     :rotate-charges?]]
+                     :rotate-charges?
+                     :slots]]
          ^{:key option} [interface/form-element (conj path option) (get options option)])
 
        (when strip-type?
