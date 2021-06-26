@@ -82,3 +82,68 @@
                                                        :cc-attribution-non-commercial-share-alike})]
 
     (compatible-licenses (or license :none))))
+
+(def default-options
+  {:license {:type :choice
+             :choices license-choices
+             :default :none
+             :ui {:label "License"}}
+
+   :license-version {:type :choice
+                     :choices cc-license-version-choices
+                     :default :v4
+                     :ui {:label "License version"}}
+
+   :nature {:type :choice
+            :choices nature-choices
+            :default :own-work
+            :ui {:form-type :radio-select}}
+
+   :source-license {:type :choice
+                    :choices license-choices
+                    :default :none
+                    :ui {:label "Source license"}}
+
+   :source-license-version {:type :choice
+                            :choices cc-license-version-choices
+                            :default :v4
+                            :ui {:label "Source license version"}}
+
+   :source-name {:type :text
+                 :default ""
+                 :ui {:label "Source name"}}
+
+   :source-link {:type :text
+                 :default ""
+                 :ui {:label "Source link"}}
+
+   :source-creator-name {:type :text
+                         :default ""
+                         :ui {:label "Creator name"}}
+
+   :source-creator-link {:type :text
+                         :default ""
+                         :ui {:label "Creator link"}}})
+
+(defn options [attribution]
+  (-> default-options
+      (cond->
+       (-> attribution
+           :license
+           cc-license?
+           not) (dissoc :license-version)
+
+       (-> attribution
+           :source-license
+           cc-license?
+           not) (dissoc :source-license-version)
+
+       (-> attribution
+           :nature
+           (not= :derivative)) (->
+                                (dissoc :source-license)
+                                (dissoc :source-license-version)
+                                (dissoc :source-name)
+                                (dissoc :source-link)
+                                (dissoc :source-creator-name)
+                                (dissoc :source-creator-link)))))
