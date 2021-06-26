@@ -51,6 +51,7 @@
     :choice :select
     :boolean :checkbox
     :range :range
+    :text :text-field
     nil))
 
 (defmulti form-element (fn [_path {:keys [type ui]}]
