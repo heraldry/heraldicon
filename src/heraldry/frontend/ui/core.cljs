@@ -97,9 +97,6 @@
         [:span.node-icon
          [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
       title
-      (when selectable?
-        [:i.fa.fa-pen.ui-icon {:style {:margin-left "0.5em"
-                                       :font-size "0.8em"}}])
       (when (-> buttons count pos?)
         (for [{:keys [icon menu]} buttons]
           ^{:key icon} [:span.node-icon.ui-hover-menu
