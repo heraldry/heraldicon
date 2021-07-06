@@ -4,6 +4,7 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.frontend.ui.interface :as interface]
             [heraldry.util :as util]))
 
 (def default-options
@@ -713,3 +714,6 @@
       (assoc :mirrored? (if (-> field :extra-line :mirrored?)
                           (not (:mirrored? line))
                           (:mirrored? line)))))
+
+(defmethod interface/component-options :field [data _path]
+  (options data))
