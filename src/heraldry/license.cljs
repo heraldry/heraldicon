@@ -1,5 +1,6 @@
 (ns heraldry.license
-  (:require [heraldry.util :as util]))
+  (:require [heraldry.frontend.ui.interface :as interface]
+            [heraldry.util :as util]))
 
 (def license-choices
   [["None" :none]
@@ -147,3 +148,6 @@
                                 (dissoc :source-link)
                                 (dissoc :source-creator-name)
                                 (dissoc :source-creator-link)))))
+
+(defmethod interface/component-options :attribution [data _path]
+  (options data))

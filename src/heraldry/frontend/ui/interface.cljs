@@ -61,6 +61,10 @@
     (cond
       (-> path last
           (= :render-options)) :render-options
+      (-> path last
+          (= :coat-of-arms)) :coat-of-arms
+      (-> path last
+          (= :attribution)) :attribution
       :else nil)))
 
 (defmethod component-options nil [_data _path]

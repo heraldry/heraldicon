@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.core
-  (:require [heraldry.frontend.state :as state]
+  (:require [heraldry.coat-of-arms.core] ;; needed for defmethods
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.charge-group-preset-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.charge-group-slot-number] ;; needed for defmethods
             [heraldry.frontend.ui.element.charge-group-type-select] ;; needed for defmethods
@@ -31,6 +32,8 @@
             [heraldry.frontend.ui.form.render-options] ;; needed for defmethods
             [heraldry.frontend.ui.form.semy] ;; needed for defmethods
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.license] ;; needed for defmethods
+            [heraldry.render-options] ;; needed for defmethods
             [re-frame.core :as rf]))
 
 (def node-flag-db-path [:ui :component-tree :nodes])
