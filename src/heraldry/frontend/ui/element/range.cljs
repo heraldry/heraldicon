@@ -36,11 +36,12 @@
       [:span {:style {:margin-left "1em"}} (cond-> value
                                              display-function display-function)]]]))
 
-(defmethod interface/form-element :range [path {:keys [ui default min max] :as option}]
-  (when option
-    [range-input path
-     :default default
-     :min-value min
-     :max-value max
-     :step (or (:step ui) 1)
-     :label (:label ui)]))
+(defmethod interface/form-element :range [path _]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui default min max]} option]
+      [range-input path
+       :default default
+       :min-value min
+       :max-value max
+       :step (or (:step ui) 1)
+       :label (:label ui)])))

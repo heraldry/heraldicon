@@ -74,8 +74,9 @@
          ^{:key key}
          [field-type-choice path key display-name :selected? (= key value)])]]]))
 
-(defmethod interface/form-element :field-type-select [path {:keys [ui default choices] :as option}]
-  (when option
-    [field-type-select path choices
-     :default default
-     :label (:label ui)]))
+(defmethod interface/form-element :field-type-select [path _]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui default choices]} option]
+      [field-type-select path choices
+       :default default
+       :label (:label ui)])))

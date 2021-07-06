@@ -52,10 +52,11 @@
          ^{:key display-name}
          [line-type-choice path key display-name :selected? (= key value)])]]]))
 
-(defmethod interface/form-element :line-type-select [path {:keys [ui default choices] :as option}]
-  (when option
-    [line-type-select
-     path
-     choices
-     :default default
-     :label (:label ui)]))
+(defmethod interface/form-element :line-type-select [path _]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui default choices]} option]
+      [line-type-select
+       path
+       choices
+       :default default
+       :label (:label ui)])))

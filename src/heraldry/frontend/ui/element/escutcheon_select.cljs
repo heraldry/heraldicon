@@ -45,8 +45,9 @@
          ^{:key key}
          [escutcheon-choice path key display-name :selected? (= key value)])]]]))
 
-(defmethod interface/form-element :escutcheon-select [path {:keys [ui default choices] :as option}]
-  (when option
-    [escutcheon-select path choices
-     :default default
-     :label (:label ui)]))
+(defmethod interface/form-element :escutcheon-select [path _]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui default choices]} option]
+      [escutcheon-select path choices
+       :default default
+       :label (:label ui)])))

@@ -34,9 +34,10 @@
                      :tincture-2]]
          ^{:key option} [interface/form-element (conj path option) (get options option)])]]]))
 
-(defmethod interface/form-element :fimbriation [path {:keys [ui] :as options}]
-  (when options
-    [fimbriation-submenu
-     path
-     options
-     :label (:label ui)]))
+(defmethod interface/form-element :fimbriation [path _]
+  (when-let [options @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui]} options]
+      [fimbriation-submenu
+       path
+       options
+       :label (:label ui)])))

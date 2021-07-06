@@ -41,9 +41,10 @@
                      :rotation]]
          ^{:key option} [interface/form-element (conj path option) (get options option)])]]]))
 
-(defmethod interface/form-element :semy-layout [path {:keys [ui] :as options}]
-  (when options
-    [layout-submenu
-     path
-     options
-     :label (:label ui)]))
+(defmethod interface/form-element :semy-layout [path _]
+  (when-let [options @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui]} options]
+      [layout-submenu
+       path
+       options
+       :label (:label ui)])))

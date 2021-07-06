@@ -56,24 +56,33 @@
     :text :text-field
     nil))
 
+(defmulti component-options
+  (fn [data path]
+    (cond
+      (-> path last
+          (= :render-options)) :render-options
+      :else nil)))
+
+(defmethod component-options nil [_data _path]
+  nil)
+
 (rf/reg-sub :get-options
   (fn [[_ path] _]
     (rf/subscribe [:get-value path]))
 
-  (fn [data [_ _path]]
-    nil))
+  (fn [data [_ path]]
+    (component-options data path)))
 
 (rf/reg-sub :get-relevant-options
   (fn [[_ path] _]
-    (loop [option-path path
-           relative-path '()]
-      (let [subscription (rf/subscribe [:get-options path])]
-        (if @subscription
-          [subscription (r/atom (vec relative-path))]
-          (if (-> option-path count pos?)
-            (recur (drop-last option-path)
-                   (conj relative-path (last option-path)))
-            [(r/atom nil) (r/atom nil)])))))
+    (or (->> (range 1 (count path))
+             (keep (fn [idx]
+                     (let [option-path (subvec path 0 idx)
+                           subscription (rf/subscribe [:get-options option-path])]
+                       (when @subscription
+                         [subscription (r/atom (subvec path idx))]))))
+             first)
+        [(r/atom nil) (r/atom nil)]))
 
   (fn [[options relative-path] [_ _path]]
     (get-in options relative-path)))

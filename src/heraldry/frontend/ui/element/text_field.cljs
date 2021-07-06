@@ -16,8 +16,9 @@
                                (on-change value)
                                (rf/dispatch-sync [:set path value])))}]]]))
 
-(defmethod interface/form-element :text-field [path {:keys [ui default] :as option}]
-  (when option
-    [text-field path
-     :default default
-     :label (:label ui)]))
+(defmethod interface/form-element :text-field [path _]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui default]} option]
+      [text-field path
+       :default default
+       :label (:label ui)])))

@@ -34,9 +34,10 @@
                      :type]]
          ^{:key option} [interface/form-element (conj path option) (get options option)])]]]))
 
-(defmethod interface/form-element :position [path {:keys [ui] :as options}]
-  (when options
-    [position-submenu
-     path
-     options
-     :label (:label ui)]))
+(defmethod interface/form-element :position [path _]
+  (when-let [options @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui]} options]
+      [position-submenu
+       path
+       options
+       :label (:label ui)])))

@@ -2,7 +2,8 @@
   (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.texture :as texture]
-            [heraldry.coat-of-arms.tincture.core :as tincture]))
+            [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.frontend.ui.interface :as interface]))
 
 (def mode-choices
   [["Colours" :colours]
@@ -62,3 +63,6 @@
       (cond-> default-options
         (= texture :none) (dissoc :texture-displacement?)
         (not= mode :colours) (dissoc :theme)))))
+
+(defmethod interface/component-options :render-options [data _path]
+  (options data))
