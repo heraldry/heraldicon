@@ -1,13 +1,12 @@
 (ns heraldry.frontend.ui.form.attribution
-  (:require [heraldry.frontend.ui.interface :as interface]
-            [heraldry.license :as attribution]))
+  (:require [heraldry.frontend.ui.interface :as interface]))
 
-(defn form [path {:keys [options]}]
+(defn form [path _]
   [:<>
    (for [option [:nature
                  :license
                  :license-version]]
-     ^{:key option} [interface/form-element (conj path option) (get options option)])
+     ^{:key option} [interface/form-element (conj path option)])
 
    [:div {:style {:height "1.5em"}}]
 
@@ -17,11 +16,10 @@
                  :source-link
                  :source-creator-name
                  :source-creator-link]]
-     ^{:key option} [interface/form-element (conj path option) (get options option)])])
+     ^{:key option} [interface/form-element (conj path option)])])
 
 (defmethod interface/component-node-data :heraldry.component/attribution [_path _component-data]
   {:title "Attribution"})
 
-(defmethod interface/component-form-data :heraldry.component/attribution [component-data]
-  {:form form
-   :form-args {:options (attribution/options component-data)}})
+(defmethod interface/component-form-data :heraldry.component/attribution [_component-data]
+  {:form form})
