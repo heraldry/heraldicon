@@ -1,5 +1,7 @@
 (ns heraldry.frontend.ui.interface
-  (:require [clojure.string :as s]))
+  (:require [clojure.string :as s]
+            [re-frame.core :as rf]
+            [reagent.core :as r]))
 
 (defn type->component-type [t]
   (let [ts (str t)]
@@ -54,8 +56,40 @@
     :text :text-field
     nil))
 
-(defmulti form-element (fn [_path {:keys [type ui]}]
-                         (or (:form-type ui)
+(rf/reg-sub :get-options
+  (fn [[_ path] _]
+    (rf/subscribe [:get-value path]))
+
+  (fn [data [_ _path]]
+    nil))
+
+(rf/reg-sub :get-relevant-options
+  (fn [[_ path] _]
+    (loop [option-path path
+           relative-path '()]
+      (let [subscription (rf/subscribe [:get-options path])]
+        (if @subscription
+          [subscription (r/atom (vec relative-path))]
+          (if (-> option-path count pos?)
+            (recur (drop-last option-path)
+                   (conj relative-path (last option-path)))
+            [(r/atom nil) (r/atom nil)])))))
+
+  (fn [[options relative-path] [_ _path]]
+    (get-in options relative-path)))
+
+(rf/reg-sub :get-form-element-type
+  (fn [[_ path] _]
+    (rf/subscribe [:get-relevant-options path]))
+
+  (fn [options [_ _path]]
+    (or
+     (-> options :ui :form-type)
+     (-> options :type default-element))))
+
+(defmulti form-element (fn [path {:keys [type ui]}]
+                         (or @(rf/subscribe [:get-form-element-type path])
+                             (:form-type ui)
                              (default-element type))))
 
 (defmethod form-element nil [_path option]
