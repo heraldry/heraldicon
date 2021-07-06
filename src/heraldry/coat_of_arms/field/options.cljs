@@ -714,5 +714,9 @@
                           (not (:mirrored? line))
                           (:mirrored? line)))))
 
-(defmethod interface/component-options :field [data _path]
-  (options data))
+(defmethod interface/component-options :field [data path]
+  (cond-> (options data)
+    (-> path drop-last last
+        (= :coat-of-arms)) (->
+                            (dissoc :inherit-environment?)
+                            (dissoc :counterchanged?))))
