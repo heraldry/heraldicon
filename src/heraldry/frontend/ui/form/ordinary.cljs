@@ -1,9 +1,8 @@
 (ns heraldry.frontend.ui.form.ordinary
   (:require [heraldry.coat-of-arms.ordinary.core :as ordinary]
-            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.frontend.ui.interface :as interface]))
 
-(defn form [path {:keys [options]}]
+(defn form [path _]
   [:<>
    (for [option [:type
                  :variant
@@ -19,12 +18,11 @@
                  :fimbriation
                  :cottising
                  :outline?]]
-     ^{:key option} [interface/form-element (conj path option) (get options option)])])
+     ^{:key option} [interface/form-element (conj path option)])])
 
 (defmethod interface/component-node-data :heraldry.component/ordinary [path component-data]
   {:title (ordinary/title component-data)
    :nodes [{:path (conj path :field)}]})
 
-(defmethod interface/component-form-data :heraldry.component/ordinary [component-data]
-  {:form form
-   :form-args {:options (ordinary-options/options component-data)}})
+(defmethod interface/component-form-data :heraldry.component/ordinary [_component-data]
+  {:form form})

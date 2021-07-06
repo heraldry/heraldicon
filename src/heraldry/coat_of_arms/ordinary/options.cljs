@@ -5,6 +5,7 @@
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
+            [heraldry.frontend.ui.interface :as interface]
             [heraldry.util :as util]))
 
 (defn set-line-defaults [options]
@@ -423,3 +424,6 @@
       (assoc :mirrored? (if (-> ordinary :opposite-line :mirrored?)
                           (not (:mirrored? line))
                           (:mirrored? line)))))
+
+(defmethod interface/component-options :ordinary [data _path]
+  (options data))
