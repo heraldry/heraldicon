@@ -1,6 +1,5 @@
 (ns heraldry.frontend.ui.form.charge-group
   (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
-            [heraldry.coat-of-arms.charge-group.options :as charge-group-options]
             [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.options :as options]
@@ -69,8 +68,8 @@
 
 (defn strip-form [path type-str]
   (let [strip-data @(rf/subscribe [:get-value path])
-        options charge-group-options/strip-options
-        sanitized-strip-data (options/sanitize strip-data options)
+        strip-options @(rf/subscribe [:get-relevant-options path])
+        sanitized-strip-data (options/sanitize strip-data strip-options)
         num-slots (-> strip-data :slots count)
         title (str num-slots
                    " slot" (when (not= num-slots 1) "s")
@@ -83,10 +82,11 @@
       (for [option [:slots
                     :stretch
                     :offset]]
-        ^{:key option} [interface/form-element (conj path option) (get options option)])]]))
+        ^{:key option} [interface/form-element (conj path option)])]]))
 
-(defn form [path {:keys [options component-data]}]
-  (let [strip-type? (-> component-data
+(defn form [path _]
+  (let [component-data @(rf/subscribe [:get-value path])
+        strip-type? (-> component-data
                         :type
                         #{:heraldry.charge-group.type/rows
                           :heraldry.charge-group.type/columns})
@@ -113,7 +113,7 @@
                      :arc-stretch
                      :rotate-charges?
                      :slots]]
-         ^{:key option} [interface/form-element (conj path option) (get options option)])
+         ^{:key option} [interface/form-element (conj path option)])
 
        (when strip-type?
          [:<>
@@ -179,7 +179,5 @@
                                                        % [:remove-charge-group-charge charge-path])}]})))
                        vec))})
 
-(defmethod interface/component-form-data :heraldry.component/charge-group [component-data]
-  {:form form
-   :form-args {:component-data component-data
-               :options (charge-group-options/options component-data)}})
+(defmethod interface/component-form-data :heraldry.component/charge-group [_component-data]
+  {:form form})
