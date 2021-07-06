@@ -72,6 +72,7 @@
                 (s/starts-with? ts ":heraldry.component/charge-group-strip") :charge-group-strip
                 (s/starts-with? ts ":heraldry.charge-group") :charge-group
                 (s/starts-with? ts ":heraldry.charge") :charge
+                (s/starts-with? ts ":heraldry.component/semy") :semy
                 :else nil)))))
 
 (defmethod component-options nil [_data _path]
