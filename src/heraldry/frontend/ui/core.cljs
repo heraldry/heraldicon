@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.core
-  (:require [heraldry.coat-of-arms.core] ;; needed for defmethods
+  (:require [heraldry.coat-of-arms.charge.options] ;; needed for defmethods
+            [heraldry.coat-of-arms.core] ;; needed for defmethods
             [heraldry.coat-of-arms.field.options] ;; needed for defmethods
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.charge-group-preset-select] ;; needed for defmethods
