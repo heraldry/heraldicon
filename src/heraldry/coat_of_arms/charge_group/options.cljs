@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.charge-group.options
   (:require [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
+            [heraldry.frontend.ui.interface :as interface]
             [heraldry.util :as util]))
 
 (def type-choices
@@ -132,3 +133,9 @@
             :default 0
             :ui {:label "Offset"
                  :step 0.01}}})
+
+(defmethod interface/component-options :charge-group [data _path]
+  (options data))
+
+(defmethod interface/component-options :charge-group-strip [_data _path]
+  strip-options)
