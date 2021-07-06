@@ -68,6 +68,7 @@
       :else (let [ts (-> data :type str)]
               (cond
                 (s/starts-with? ts ":heraldry.field") :field
+                (s/starts-with? ts ":heraldry.charge") :charge
                 :else nil)))))
 
 (defmethod component-options nil [_data _path]

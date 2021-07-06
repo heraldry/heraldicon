@@ -4,7 +4,8 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.position :as position]))
+            [heraldry.coat-of-arms.position :as position]
+            [heraldry.frontend.ui.interface :as interface]))
 
 (def default-options
   {:type {:type :choice
@@ -96,3 +97,6 @@
                                  (-> (fimbriation/options (:fimbriation charge))
                                      (assoc :ui {:label "Fimbriation"
                                                  :form-type :fimbriation}))))))))
+
+(defmethod interface/component-options :charge [data _path]
+  (options data))
