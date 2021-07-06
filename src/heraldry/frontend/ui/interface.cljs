@@ -84,19 +84,18 @@
     (component-options data path)))
 
 (rf/reg-sub :get-relevant-options
-  (fn [[_ path] _]
-    (or (->> (range 1 (count path))
-             (keep (fn [idx]
-                     (let [option-path (subvec path 0 idx)
-                           relative-path (subvec path idx)
-                           subscription (rf/subscribe [:get-options option-path])]
-                       (when (get-in @subscription relative-path)
-                         [subscription (r/atom relative-path)]))))
-             first)
-        [(r/atom nil) (r/atom nil)]))
-
-  (fn [[options relative-path] [_ _path]]
-    (get-in options relative-path)))
+  (fn [_ [_ path]]
+    ;; TODO: can this be done by feeding the subscriptions in again?
+    ;; probably is more efficient, but the previous attempt didn't refresh the
+    ;; subscription properly when the options changed (e.g. switching to "arc" in a charge-group)
+    (->> (range 1 (count path))
+         (keep (fn [idx]
+                 (let [option-path (subvec path 0 idx)
+                       relative-path (subvec path idx)
+                       options @(rf/subscribe [:get-options option-path])]
+                   (when-let [relevant-options (get-in options relative-path)]
+                     relevant-options))))
+         first)))
 
 (rf/reg-sub :get-form-element-type
   (fn [[_ path] _]
