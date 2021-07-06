@@ -127,8 +127,7 @@
                                  [[:type]
                                   [:inherit-environment?]
                                   [:counterchanged?]
-                                  [:tincture]
-                                  [:outline?]])
+                                  [:tincture]])
             :per-pale (options/pick default-options
                                     [[:type]
                                      [:inherit-environment?]
