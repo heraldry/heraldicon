@@ -1,13 +1,12 @@
 (ns heraldry.frontend.ui.form.field
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.core :as field]
-            [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
             [re-frame.core :as rf]))
 
-(defn form [path {:keys [options]}]
+(defn form [path _]
   [:<>
    (for [option [:inherit-environment?
                  :counterchanged?
@@ -24,7 +23,7 @@
                  :geometry
                  :layout
                  :outline?]]
-     ^{:key option} [interface/form-element (conj path option) (get options option)])])
+     ^{:key option} [interface/form-element (conj path option)])])
 
 (defn name-prefix-for-part [path]
   (let [index (last path)
@@ -79,6 +78,5 @@
                                                        % [:remove-element component-path])}]})))
                        vec))})
 
-(defmethod interface/component-form-data :heraldry.component/field [component-data]
-  {:form form
-   :form-args {:options (field-options/options component-data)}})
+(defmethod interface/component-form-data :heraldry.component/field [_component-data]
+  {:form form})

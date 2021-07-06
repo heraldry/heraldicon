@@ -65,7 +65,10 @@
           (= :coat-of-arms)) :coat-of-arms
       (-> path last
           (= :attribution)) :attribution
-      :else nil)))
+      :else (let [ts (-> data :type str)]
+              (cond
+                (s/starts-with? ts ":heraldry.field") :field
+                :else nil)))))
 
 (defmethod component-options nil [_data _path]
   nil)
