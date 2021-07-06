@@ -82,9 +82,10 @@
     (or (->> (range 1 (count path))
              (keep (fn [idx]
                      (let [option-path (subvec path 0 idx)
+                           relative-path (subvec path idx)
                            subscription (rf/subscribe [:get-options option-path])]
-                       (when @subscription
-                         [subscription (r/atom (subvec path idx))]))))
+                       (when (get-in @subscription relative-path)
+                         [subscription (r/atom relative-path)]))))
              first)
         [(r/atom nil) (r/atom nil)]))
 
