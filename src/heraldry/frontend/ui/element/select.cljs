@@ -30,8 +30,9 @@
               ^{:key key}
               [:option {:value (util/keyword->str key)} display-name])]))]]]))
 
-(defmethod interface/form-element :select [path {:keys [ui default choices] :as option}]
-  (when option
-    [select path choices
-     :default default
-     :label (:label ui)]))
+(defmethod interface/form-element :select [path _]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui default choices]} option]
+      [select path choices
+       :default default
+       :label (:label ui)])))

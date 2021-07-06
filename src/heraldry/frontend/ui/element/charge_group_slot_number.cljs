@@ -3,9 +3,10 @@
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
-(defmethod interface/form-element :charge-group-slot-number [path {:keys [ui default min max] :as option}]
-  (when option
-    (let [value (-> @(rf/subscribe [:get-value path])
+(defmethod interface/form-element :charge-group-slot-number [path _]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui default min max]} option
+          value (-> @(rf/subscribe [:get-value path])
                     count
                     (or 0))]
       [range/range-input nil

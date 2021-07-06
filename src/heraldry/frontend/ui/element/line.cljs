@@ -51,9 +51,10 @@
                      :fimbriation]]
          ^{:key option} [interface/form-element (conj path option) (get options option)])]]]))
 
-(defmethod interface/form-element :line [path {:keys [ui] :as options}]
-  (when options
-    [line-submenu
-     path
-     options
-     :label (:label ui)]))
+(defmethod interface/form-element :line [path _]
+  (when-let [options @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui]} options]
+      [line-submenu
+       path
+       options
+       :label (:label ui)])))

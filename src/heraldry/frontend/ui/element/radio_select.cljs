@@ -30,8 +30,9 @@
          :selected? (= key current-value)
          :on-change on-change]))]])
 
-(defmethod interface/form-element :radio-select [path {:keys [ui default choices] :as option}]
-  (when option
-    [radio-select path choices
-     :default default
-     :label (:label ui)]))
+(defmethod interface/form-element :radio-select [path _]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui default choices]} option]
+      [radio-select path choices
+       :default default
+       :label (:label ui)])))

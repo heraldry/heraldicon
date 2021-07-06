@@ -18,8 +18,9 @@
                               (rf/dispatch [:set path new-checked?])))}]
      [:label.for-checkbox {:for component-id} label]]))
 
-(defmethod interface/form-element :checkbox [path {:keys [ui default] :as option}]
-  (when option
-    [checkbox path
-     :default default
-     :label (:label ui)]))
+(defmethod interface/form-element :checkbox [path _]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui default]} option]
+      [checkbox path
+       :default default
+       :label (:label ui)])))

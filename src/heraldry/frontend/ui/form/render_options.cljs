@@ -20,5 +20,4 @@
   {:title "Render Options"})
 
 (defmethod interface/component-form-data :heraldry.component/render-options [component-data]
-  {:form form
-   :form-args {:options (render-options/options component-data)}})
+  {:form form})
