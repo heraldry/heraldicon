@@ -92,6 +92,10 @@
   width: 13em;
 }
 
+.ui-setting > label.for-checkbox {
+  width: inherit;
+}
+
 .ui-setting > .option {
   position: relative;
   display: inline-block;

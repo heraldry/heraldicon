@@ -7,7 +7,7 @@
   (let [component-id (util/id "checkbox")
         checked? (or @(rf/subscribe [:get-value path])
                      default)]
-    [:div.setting {:style style}
+    [:div.ui-setting {:style style}
      [:input {:type "checkbox"
               :id component-id
               :checked checked?
@@ -16,7 +16,7 @@
                             (if on-change
                               (on-change new-checked?)
                               (rf/dispatch [:set path new-checked?])))}]
-     [:label {:for component-id} label]]))
+     [:label.for-checkbox {:for component-id} label]]))
 
 (defmethod interface/form-element :checkbox [path {:keys [ui default] :as option}]
   (when option
