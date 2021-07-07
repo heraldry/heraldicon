@@ -124,7 +124,8 @@
                                        :style {:margin-left "0.5em"
                                                :font-size "0.8em"}}]
                           [:ul.ui-menu {:style {:padding 0
-                                                :font-weight 400}}
+                                                :font-weight 400
+                                                :padding-top "1.2em"}}
                            (for [{:keys [title handler]} menu]
                              ^{:key title}
                              [:li.ui-menu-item
