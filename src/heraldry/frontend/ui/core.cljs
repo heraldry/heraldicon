@@ -16,6 +16,7 @@
             [heraldry.frontend.ui.element.field-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.fimbriation] ;; needed for defmethods
             [heraldry.frontend.ui.element.geometry] ;; needed for defmethods
+            [heraldry.frontend.ui.element.hover-menu :as hover-menu]
             [heraldry.frontend.ui.element.line] ;; needed for defmethods
             [heraldry.frontend.ui.element.line-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.ordinary-type-select] ;; needed for defmethods
@@ -115,38 +116,28 @@
          [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
       title
       (when (-> buttons count pos?)
-        (for [{:keys [icon menu handler disabled? tooltip title]} buttons]
-          (if menu
-            ^{:key icon} [:span.node-icon.ui-hover-menu
-                          {:class (when disabled? "disabled")}
-                          [:i.ui-icon {:class icon
-                                       :style {:margin-left "0.5em"
-                                               :font-size "0.8em"}}]
-                          [:ul.ui-menu {:style {:padding 0
-                                                :font-weight 400}}
-                           [:li.ui-menu-header title]
-                           (for [{:keys [title handler]} menu]
-                             ^{:key title}
-                             [:li.ui-menu-item
-                              {:style {:color "#000"}
-                               :on-click (when-not disabled? handler)}
-                              [:i.ui-icon {:class icon
-                                           :style {:margin-left "0.5em"
-                                                   :font-size "0.8em"
-                                                   :color (if disabled?
-                                                            "#ccc"
-                                                            "#777")}}]
-                              title])]]
-            ^{:key icon} [:span.node-icon
-                          {:class (when disabled? "disabled")
-                           :on-click (when-not disabled? handler)
-                           :title tooltip}
-                          [:i.ui-icon {:class icon
-                                       :style {:margin-left "0.5em"
-                                               :font-size "0.8em"
-                                               :color (if disabled?
-                                                        "#ccc"
-                                                        "#777")}}]])))]
+        (doall
+         (for [[idx {:keys [icon menu handler disabled? tooltip title]}] (map-indexed vector buttons)]
+           (if menu
+             ^{:key icon}
+             [hover-menu/hover-menu
+              (conj path idx)
+              title
+              menu
+              [:i.ui-icon {:class icon
+                           :style {:margin-left "0.5em"
+                                   :font-size "0.8em"}}]
+              :disabled? disabled?]
+             ^{:key icon} [:span.node-icon
+                           {:class (when disabled? "disabled")
+                            :on-click (when-not disabled? handler)
+                            :title tooltip}
+                           [:i.ui-icon {:class icon
+                                        :style {:margin-left "0.5em"
+                                                :font-size "0.8em"
+                                                :color (if disabled?
+                                                         "#ccc"
+                                                         "#777")}}]]))))]
      (when open?
        [:ul
         (for [{node-path :path
