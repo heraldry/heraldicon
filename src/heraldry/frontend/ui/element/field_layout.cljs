@@ -40,27 +40,25 @@
         (when (-> effective-data :rotation zero? not)
           (str "rotated"))]))))
 
-(defn layout-submenu [path options & {:keys [label]}]
-  (let [title @(rf/subscribe [:field-layout-title path])]
-    [:div.ui-setting
-     (when label
-       [:label label])
-     [:div.option
-      [submenu/submenu path label title {:width "30em"}
-       (for [option [:num-base-fields
-                     :num-fields-x
-                     :num-fields-y
-                     :offset-x
-                     :offset-y
-                     :stretch-x
-                     :stretch-y
-                     :rotation]]
-         ^{:key option} [interface/form-element (conj path option) (get options option)])]]]))
+(defn layout-submenu [path]
+  (when-let [options @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui]} options
+          label (:label ui)
+          title @(rf/subscribe [:field-layout-title path])]
+      [:div.ui-setting
+       (when label
+         [:label label])
+       [:div.option
+        [submenu/submenu path label title {:width "30em"}
+         (for [option [:num-base-fields
+                       :num-fields-x
+                       :num-fields-y
+                       :offset-x
+                       :offset-y
+                       :stretch-x
+                       :stretch-y
+                       :rotation]]
+           ^{:key option} [interface/form-element (conj path option)])]]])))
 
 (defmethod interface/form-element :field-layout [path _]
-  (when-let [options @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui]} options]
-      [layout-submenu
-       path
-       options
-       :label (:label ui)])))
+  [layout-submenu path])
