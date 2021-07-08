@@ -41,32 +41,23 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn line-type-select [path choices & {:keys [label inherited default]}]
-  (let [current-value @(rf/subscribe [:get-value path])
-        value (or current-value
-                  inherited
-                  default)]
-    [:div.ui-setting
-     (when label
-       [:label label])
-     [:div.option
-      [submenu/submenu path "Select Line Type" (get line/line-map value) {:min-width "25em"}
-       (for [[display-name key] choices]
-         ^{:key display-name}
-         [line-type-choice path key display-name :selected? (= key value)])]
-      [value-mode-select/value-mode-select
-       path
-       :value current-value
-       :inherited inherited
-       :default default
-       :display-fn line/line-map]]]))
+(defn line-type-select [path]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [current-value @(rf/subscribe [:get-value path])
+          {:keys [ui inherited default choices]} option
+          label (:label ui)
+          value (or current-value
+                    inherited
+                    default)]
+      [:div.ui-setting
+       (when label
+         [:label label])
+       [:div.option
+        [submenu/submenu path "Select Line Type" (get line/line-map value) {:min-width "25em"}
+         (for [[display-name key] choices]
+           ^{:key display-name}
+           [line-type-choice path key display-name :selected? (= key value)])]
+        [value-mode-select/value-mode-select path]]])))
 
 (defmethod interface/form-element :line-type-select [path _]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui inherited default choices]} option]
-      [line-type-select
-       path
-       choices
-       :default default
-       :inherited inherited
-       :label (:label ui)])))
+  [line-type-select path])

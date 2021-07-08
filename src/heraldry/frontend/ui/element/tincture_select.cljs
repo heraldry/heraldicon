@@ -6,7 +6,6 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (defn tincture-choice [path key display-name & {:keys [selected?]}]
@@ -34,36 +33,27 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn tincture-select [path choices & {:keys [label inherited default] :or {label "Tincture"
-                                                                            default :none}}]
-  (let [current-value @(rf/subscribe [:get-value path])
-        value (or current-value
-                  inherited
-                  default)
-        choice-map (util/choices->map choices)]
-    [:div.ui-setting
-     (when label
-       [:label label])
-     [:div.option
-      [submenu/submenu path "Select Tincture" (get tincture/tincture-map value) {:width "22em"}
-       (for [[group-name & group] choices]
-         ^{:key group-name}
-         [:<>
-          [:h4 group-name]
-          (for [[display-name key] group]
-            ^{:key display-name}
-            [tincture-choice path key display-name :selected? (= key value)])])]
-      [value-mode-select/value-mode-select
-       path
-       :value current-value
-       :inherited inherited
-       :default default
-       :display-fn choice-map]]]))
+(defn tincture-select [path]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [current-value @(rf/subscribe [:get-value path])
+          {:keys [ui inherited default choices]} option
+          value (or current-value
+                    inherited
+                    default)
+          label (or (:label ui) "Tincture")]
+      [:div.ui-setting
+       (when label
+         [:label label])
+       [:div.option
+        [submenu/submenu path "Select Tincture" (get tincture/tincture-map value) {:width "22em"}
+         (for [[group-name & group] choices]
+           ^{:key group-name}
+           [:<>
+            [:h4 group-name]
+            (for [[display-name key] group]
+              ^{:key display-name}
+              [tincture-choice path key display-name :selected? (= key value)])])]
+        [value-mode-select/value-mode-select path]]])))
 
 (defmethod interface/form-element :tincture-select [path _]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui inherited default choices]} option]
-      [tincture-select path choices
-       :inherited inherited
-       :default default
-       :label (:label ui)])))
+  [tincture-select path])
