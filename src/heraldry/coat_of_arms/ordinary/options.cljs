@@ -16,7 +16,6 @@
   {:type {:type :choice
           ;; TODO: not ideal, but currently would create a circular dependency
           :choices []
-          :default :heraldry.ordinary.type/pale
           :ui {:label "Type"
                :form-type :ordinary-type-select}}
    :origin (-> position/default-options

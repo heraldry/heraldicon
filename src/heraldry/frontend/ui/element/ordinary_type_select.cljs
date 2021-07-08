@@ -4,6 +4,7 @@
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
+            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
@@ -43,21 +44,24 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn ordinary-type-select [path choices & {:keys [default label]}]
-  (let [value (or @(rf/subscribe [:get-value path])
-                  default)]
-    [:div.ui-setting
-     (when label
-       [:label label])
-     [:div.option
-      [submenu/submenu path "Select Ordinary" (get ordinary/ordinary-map value) {:width "21.5em"}
-       (for [[display-name key] ordinary/choices]
-         ^{:key key}
-         [ordinary-type-choice path key display-name :selected? (= key value)])]]]))
+(defn ordinary-type-select [path]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [current-value @(rf/subscribe [:get-value path])
+          {:keys [ui inherited default]} option
+          value (or current-value
+                    inherited
+                    default)
+          label (:label ui)]
+      [:div.ui-setting
+       (when label
+         [:label label])
+       [:div.option
+        [submenu/submenu path "Select Ordinary" (get ordinary/ordinary-map value) {:width "21.5em"}
+         (for [[display-name key] ordinary/choices]
+           ^{:key key}
+           [ordinary-type-choice path key display-name :selected? (= key value)])]
+        [value-mode-select/value-mode-select path
+         :display-fn ordinary/ordinary-map]]])))
 
 (defmethod interface/form-element :ordinary-type-select [path _]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui default choices]} option]
-      [ordinary-type-select path choices
-       :default default
-       :label (:label ui)])))
+  [ordinary-type-select path])
