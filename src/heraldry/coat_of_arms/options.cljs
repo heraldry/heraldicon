@@ -6,7 +6,9 @@
 (def types #{:range :choice :boolean})
 
 (defn get-value [value options]
-  (let [value (or value (:default options))]
+  (let [value (or value
+                  (:inherited options)
+                  (:default options))]
     (case (:type options)
       :boolean (boolean value)
       :choice (let [choices (util/choices->map (:choices options))]
@@ -86,38 +88,12 @@
     (assoc-in options path value)
     options))
 
-(defn leaf-option-paths [m]
-  (if (or (not (map? m))
-          ;; TODO: maybe use a namespace here as well
-          (-> m :type #{:choice :range :boolean :text}))
-    {[] m}
-    (into {}
-          (for [[k v] m
-                [ks v'] (leaf-option-paths v)]
-            (when (and (:ui v')
-                       (:type v'))
-              [(cons k ks) v'])))))
-
-(defn starts-with [prefix-path path]
-  (= (take (count prefix-path) path)
-     prefix-path))
-
-(defn populate-inheritance [options target-path source-path]
-  (let [all-options (leaf-option-paths options)
-        all-options (keys all-options)
-        source-options (filter (partial starts-with source-path) all-options)
-        target-options (set (filter (partial starts-with target-path) all-options))
-        inheritable-options (keep (fn [path]
-                                    (let [relative-path (drop (count source-path) path)]
-                                      (when (->> relative-path
-                                                 (concat target-path)
-                                                 (get target-options))
-                                        relative-path))) source-options)
-        offset (- (count target-path))]
-    (loop [options options
-           [relative-path & rest] inheritable-options]
-      (if (not relative-path)
-        options
-        (recur
-         (assoc-in options (concat target-path relative-path [:ui :inherit-from]) [offset relative-path])
-         rest)))))
+(defn populate-inheritance [options inherited-values]
+  (->> options
+       (map (fn [[k v]]
+              [k
+               (if (and (-> v :type #{:choice :range :boolean :text})
+                        (get inherited-values k))
+                 (assoc v :inherited (get inherited-values k))
+                 v)]))
+       (into {})))

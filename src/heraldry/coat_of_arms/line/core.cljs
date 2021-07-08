@@ -205,8 +205,8 @@
    :ui {:label "Line"
         :form-type :line}})
 
-(defn options [line]
-  (when-let [type (:type line)]
+(defn options [line & {:keys [inherited]}]
+  (when-let [type (or (:type line) (:type inherited))]
     (-> (case type
           :straight (options/pick default-options
                                   [[:type]
@@ -405,9 +405,10 @@
                          [:flipped?]
                          [:base-line]
                          [:fimbriation]]))
+        (options/populate-inheritance inherited)
         (update :fimbriation (fn [fimbriation]
                                (when fimbriation
-                                 (-> (fimbriation/options (:fimbriation line))
+                                 (-> (fimbriation/options (:fimbriation line) :inherited (:fimbriation inherited))
                                      (assoc :ui {:label "Fimbriation"
                                                  :form-type :fimbriation}))))))))
 

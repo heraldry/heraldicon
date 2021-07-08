@@ -61,7 +61,8 @@
   (when ordinary
     (let [line-style (-> (line/options (:line ordinary))
                          (assoc :ui (-> default-options :line :ui)))
-          opposite-line-style (-> (line/options {:type (-> ordinary :opposite-line :type (or (-> ordinary :line :type)))})
+          sanitized-line (options/sanitize (:line ordinary) line-style)
+          opposite-line-style (-> (line/options (:opposite-line ordinary) :inherited sanitized-line)
                                   (assoc :ui (-> default-options :opposite-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
@@ -407,8 +408,7 @@
                               (when fimbriation
                                 (-> (fimbriation/options (:fimbriation ordinary))
                                     (assoc :ui {:label "Fimbriation"
-                                                :form-type :fimbriation})))))
-       (options/populate-inheritance [:opposite-line] [:line])))))
+                                                :form-type :fimbriation})))))))))
 
 (defn sanitize-opposite-line [ordinary line]
   (-> (options/sanitize

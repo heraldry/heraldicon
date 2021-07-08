@@ -63,25 +63,27 @@
    :ui {:label "Fimbriation"
         :form-type :fimbriation}})
 
-(defn options [fimbriation]
-  (case (or (:mode fimbriation)
-            :none)
-    :none (options/pick default-options
-                        [[:mode]])
-    :single (options/pick default-options
-                          [[:mode]
-                           [:alignment]
-                           [:corner]
-                           [:thickness-1]
-                           [:tincture-1]])
-    :double (options/pick default-options
-                          [[:mode]
-                           [:alignment]
-                           [:corner]
-                           [:thickness-1]
-                           [:tincture-1]
-                           [:thickness-2]
-                           [:tincture-2]])))
+(defn options [fimbriation & {:keys [inherited]}]
+  (-> (case (or (:mode fimbriation)
+                (:mode inherited)
+                :none)
+        :none (options/pick default-options
+                            [[:mode]])
+        :single (options/pick default-options
+                              [[:mode]
+                               [:alignment]
+                               [:corner]
+                               [:thickness-1]
+                               [:tincture-1]])
+        :double (options/pick default-options
+                              [[:mode]
+                               [:alignment]
+                               [:corner]
+                               [:thickness-1]
+                               [:tincture-1]
+                               [:thickness-2]
+                               [:tincture-2]]))
+      (options/populate-inheritance inherited)))
 
 (defn linejoin [corner]
   (case corner
