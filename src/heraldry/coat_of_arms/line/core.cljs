@@ -206,7 +206,7 @@
         :form-type :line}})
 
 (defn options [line & {:keys [inherited]}]
-  (when-let [type (or (:type line) (:type inherited))]
+  (when-let [type (or (:type line) (:type inherited) (-> default-options :type :default))]
     (-> (case type
           :straight (options/pick default-options
                                   [[:type]
