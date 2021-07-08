@@ -15,8 +15,8 @@
    :value :heraldry.field.type/gyronny
    :parts ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"]}
   [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor outline?]} (options/sanitize field (field-options/options field))
-        opposite-line (field-options/sanitize-opposite-line field line)
+  (let [{:keys [line opposite-line
+                origin anchor outline?]} (options/sanitize field (field-options/options field))
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)

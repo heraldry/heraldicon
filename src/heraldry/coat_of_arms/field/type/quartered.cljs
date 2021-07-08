@@ -14,8 +14,8 @@
    :value :heraldry.field.type/quartered
    :parts ["I" "II" "III" "IV"]}
   [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin outline?]} (options/sanitize field (field-options/options field))
-        opposite-line (field-options/sanitize-opposite-line field line)
+  (let [{:keys [line opposite-line
+                origin outline?]} (options/sanitize field (field-options/options field))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))

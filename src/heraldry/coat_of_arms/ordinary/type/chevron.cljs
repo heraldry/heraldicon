@@ -26,7 +26,7 @@
                              (assoc-in [:direction-anchor :angle :max] 360)
                              (assoc-in [:anchor :angle :min] -360)
                              (assoc-in [:anchor :angle :max] 360))
-        {:keys [line origin anchor
+        {:keys [line opposite-line origin anchor
                 direction-anchor
                 geometry outline?]} (options/sanitize ordinary ordinary-options)
         raw-direction-anchor (:direction-anchor ordinary)
@@ -41,7 +41,6 @@
                                                               (update :offset-y #(or % (:offset-y origin)))))
                                            (:direction-anchor ordinary-options))
         {:keys [size]} geometry
-        opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment)
         top-left (:top-left points)
@@ -197,8 +196,8 @@
                            :line (:line cottise-1)
                            :opposite-line (:opposite-line cottise-1)}
              chevron-options (ordinary-options/options chevron-base)
-             {:keys [line]} (options/sanitize chevron-base chevron-options)
-             opposite-line (ordinary-options/sanitize-opposite-line chevron-base line)
+             {:keys [line
+                     opposite-line]} (options/sanitize chevron-base chevron-options)
              half-joint-angle (/ joint-angle 2)
              half-joint-angle-rad (-> half-joint-angle
                                       (/ 180)
@@ -252,8 +251,8 @@
                            :line (:line cottise-opposite-1)
                            :opposite-line (:opposite-line cottise-opposite-1)}
              chevron-options (ordinary-options/options chevron-base)
-             {:keys [line]} (options/sanitize chevron-base chevron-options)
-             opposite-line (ordinary-options/sanitize-opposite-line chevron-base line)
+             {:keys [line
+                     opposite-line]} (options/sanitize chevron-base chevron-options)
              half-joint-angle (/ joint-angle 2)
              half-joint-angle-rad (-> half-joint-angle
                                       (/ 180)

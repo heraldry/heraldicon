@@ -16,9 +16,8 @@
    :value :heraldry.field.type/tierced-per-pairle-reversed
    :parts ["dexter" "sinister" "base"]}
   [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor outline?]} (options/sanitize field (field-options/options field))
-        opposite-line (field-options/sanitize-opposite-line field line)
-        extra-line (field-options/sanitize-extra-line field line)
+  (let [{:keys [line opposite-line extra-line
+                origin anchor outline?]} (options/sanitize field (field-options/options field))
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment)
         chevron-angle 90

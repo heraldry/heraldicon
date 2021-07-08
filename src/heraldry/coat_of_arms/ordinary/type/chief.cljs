@@ -86,8 +86,8 @@
                         :line (:line cottise-1)
                         :opposite-line (:opposite-line cottise-1)}
              fess-options (ordinary-options/options fess-base)
-             {:keys [line]} (options/sanitize fess-base fess-options)
-             opposite-line (ordinary-options/sanitize-opposite-line fess-base line)]
+             {:keys [line
+                     opposite-line]} (options/sanitize fess-base fess-options)]
          [fess/render (-> fess-base
                           (merge {:outline? (-> ordinary :outline?)
                                   :field (:field cottise-1)

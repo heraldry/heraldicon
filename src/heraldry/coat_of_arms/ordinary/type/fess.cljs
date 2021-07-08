@@ -20,9 +20,9 @@
         ordinary-options (-> (ordinary-options/options ordinary)
                              (assoc-in [:origin :offset-y :min] -100)
                              (assoc-in [:origin :offset-y :max] 100))
-        {:keys [line origin geometry outline?]} (options/sanitize ordinary ordinary-options)
+        {:keys [line opposite-line
+                origin geometry outline?]} (options/sanitize ordinary ordinary-options)
         {:keys [size]} geometry
-        opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
         plain-origin (get points (:point origin))
         origin-point (position/calculate origin environment :fess)
@@ -149,8 +149,8 @@
                         :line (:line cottise-opposite-1)
                         :opposite-line (:opposite-line cottise-opposite-1)}
              fess-options (ordinary-options/options fess-base)
-             {:keys [line]} (options/sanitize fess-base fess-options)
-             opposite-line (ordinary-options/sanitize-opposite-line fess-base line)]
+             {:keys [line
+                     opposite-line]} (options/sanitize fess-base fess-options)]
          [render (-> ordinary
                      (assoc :cottising {:cottise-opposite-1 cottise-opposite-2})
                      ;; swap line/opposite-line because the cottise fess is upside down

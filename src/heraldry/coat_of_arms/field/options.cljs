@@ -684,38 +684,6 @@
                             (when layout
                               (assoc layout :ui (-> default-options :layout :ui)))))))))
 
-(defn sanitize-opposite-line [field line]
-  (-> (options/sanitize
-       (util/deep-merge-with (fn [_current-value new-value]
-                               new-value) line
-                             (into {}
-                                   (filter (fn [[_ v]]
-                                             (some? v))
-                                           (:opposite-line field))))
-       (-> field options :opposite-line))
-      (assoc :flipped? (if (-> field :opposite-line :flipped?)
-                         (not (:flipped? line))
-                         (:flipped? line)))
-      (assoc :mirrored? (if (-> field :opposite-line :mirrored?)
-                          (not (:mirrored? line))
-                          (:mirrored? line)))))
-
-(defn sanitize-extra-line [field line]
-  (-> (options/sanitize
-       (util/deep-merge-with (fn [_current-value new-value]
-                               new-value) line
-                             (into {}
-                                   (filter (fn [[_ v]]
-                                             (some? v))
-                                           (:extra-line field))))
-       (-> field options :extra-line))
-      (assoc :flipped? (if (-> field :extra-line :flipped?)
-                         (not (:flipped? line))
-                         (:flipped? line)))
-      (assoc :mirrored? (if (-> field :extra-line :mirrored?)
-                          (not (:mirrored? line))
-                          (:mirrored? line)))))
-
 (defmethod interface/component-options :field [data path]
   (cond-> (options data)
     (-> path drop-last last

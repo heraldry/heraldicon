@@ -14,9 +14,8 @@
   {:display-name "Per pile"
    :value :heraldry.field.type/per-pile}
   [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor
+  (let [{:keys [line opposite-line origin anchor
                 geometry outline?]} (options/sanitize field (field-options/options field))
-        opposite-line (field-options/sanitize-opposite-line field line)
         anchor (-> anchor
                    (assoc :type :edge))
         geometry (-> geometry

@@ -411,21 +411,5 @@
                                     (assoc :ui {:label "Fimbriation"
                                                 :form-type :fimbriation})))))))))
 
-(defn sanitize-opposite-line [ordinary line]
-  (-> (options/sanitize
-       (util/deep-merge-with (fn [_current-value new-value]
-                               new-value) line
-                             (into {}
-                                   (filter (fn [[_ v]]
-                                             (some? v))
-                                           (:opposite-line ordinary))))
-       (-> ordinary options :opposite-line))
-      (assoc :flipped? (if (-> ordinary :opposite-line :flipped?)
-                         (not (:flipped? line))
-                         (:flipped? line)))
-      (assoc :mirrored? (if (-> ordinary :opposite-line :mirrored?)
-                          (not (:mirrored? line))
-                          (:mirrored? line)))))
-
 (defmethod interface/component-options :ordinary [data _path]
   (options data))

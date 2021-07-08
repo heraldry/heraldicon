@@ -18,8 +18,8 @@
   {:display-name "Gore"
    :value :heraldry.ordinary.type/gore}
   [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
-        opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
+  (let [{:keys [line opposite-line
+                origin anchor outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
         points (:points environment)
         left? (case (-> anchor :point)
                 :top-left true

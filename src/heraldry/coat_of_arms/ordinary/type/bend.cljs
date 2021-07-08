@@ -27,10 +27,9 @@
                              (assoc-in [:origin :offset-x :max] 100)
                              (assoc-in [:origin :offset-y :min] -100)
                              (assoc-in [:origin :offset-y :max] 100))
-        {:keys [line origin anchor
+        {:keys [line opposite-line origin anchor
                 geometry outline?]} (options/sanitize ordinary ordinary-options)
         {:keys [size]} geometry
-        opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
         top (:top points)
         bottom (:bottom points)
@@ -209,8 +208,8 @@
                         :line (:line cottise-opposite-1)
                         :opposite-line (:opposite-line cottise-opposite-1)}
              bend-options (ordinary-options/options bend-base)
-             {:keys [line]} (options/sanitize bend-base bend-options)
-             opposite-line (ordinary-options/sanitize-opposite-line bend-base line)
+             {:keys [line
+                     opposite-line]} (options/sanitize bend-base bend-options)
              dist (-> (+ (:distance cottise-opposite-1-data))
                       (+ (/ (:thickness cottise-opposite-1-data) 2))
                       (/ 100)
