@@ -18,33 +18,24 @@
      [:label {:for component-id
               :style {:margin-right "10px"}} display-name]]))
 
-(defn radio-select [path choices & {:keys [inherited default label on-change]}]
-  [:div.ui-setting
-   (when label
-     [:label label])
-   [:div.option
+(defn radio-select [path & {:keys [on-change]}]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
     (let [current-value @(rf/subscribe [:get-value path])
+          {:keys [ui inherited default choices]} option
+          label (:label ui)
           value (or current-value
                     inherited
-                    default)
-          choice-map (util/choices->map choices)]
-      [:<>
-       (for [[display-name key] choices]
-         ^{:key key}
-         [radio-choice path key display-name
-          :selected? (= key value)
-          :on-change on-change])
-       [value-mode-select/value-mode-select
-        path
-        :value current-value
-        :inherited inherited
-        :default default
-        :display-fn choice-map]])]])
+                    default)]
+      [:div.ui-setting
+       (when label
+         [:label label])
+       [:div.option
+        (for [[display-name key] choices]
+          ^{:key key}
+          [radio-choice path key display-name
+           :selected? (= key value)
+           :on-change on-change])
+        [value-mode-select/value-mode-select path]]])))
 
 (defmethod interface/form-element :radio-select [path _]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui inherited default choices]} option]
-      [radio-select path choices
-       :inherited inherited
-       :default default
-       :label (:label ui)])))
+  [radio-select path])

@@ -1,24 +1,29 @@
 (ns heraldry.frontend.ui.element.value-mode-select
   (:require [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.hover-menu :as hover-menu]))
+            [heraldry.frontend.ui.element.hover-menu :as hover-menu]
+            [heraldry.util :as util]
+            [re-frame.core :as rf]))
 
-(defn value-mode-select [path & {:keys [value inherited default
-                                        display-fn disabled?]}]
-  (let [menu (cond-> []
+(defn value-mode-select [path & {:keys [display-fn disabled?]}]
+  (let [value @(rf/subscribe [:get-value path])
+        {:keys [inherited
+                default
+                type
+                choices]} @(rf/subscribe [:get-relevant-options path])
+        display-fn (or display-fn
+                       (when (= type :choice)
+                         (util/choices->map choices))
+                       identity)
+        menu (cond-> []
                (and inherited
-                    default) (conj {:title (str "Default (" (if display-fn
-                                                              (display-fn default)
-                                                              default) ")")
+                    default) (conj {:title (str "Default (" (display-fn default) ")")
                                     :icon "fas fa-redo"
                                     :handler #(state/dispatch-on-event % [:set path default])})
                (or inherited
                    default) (conj {:title (str (if inherited
                                                  "Inherited"
                                                  "Auto")
-                                               " (" (let [derived-value (or inherited default)]
-                                                      (if display-fn
-                                                        (display-fn derived-value)
-                                                        derived-value)) ")")
+                                               " (" (display-fn (or inherited default)) ")")
                                    :icon (if value
                                            "far fa-square"
                                            "far fa-check-square")
@@ -28,7 +33,9 @@
                                  :icon (if value
                                          "far fa-check-square"
                                          "far fa-square")
-                                 :handler #(state/dispatch-on-event % [:set path value])}))]
+                                 :handler #(state/dispatch-on-event % [:set path (or value
+                                                                                     inherited
+                                                                                     default)])}))]
 
     [:<>
      (when (seq menu)
