@@ -4,7 +4,9 @@
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
+            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (defn tincture-choice [path key display-name & {:keys [selected?]}]
@@ -32,10 +34,13 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn tincture-select [path choices & {:keys [label default] :or {label "Tincture"
-                                                                  default :none}}]
-  (let [value (or @(rf/subscribe [:get-value path])
-                  default)]
+(defn tincture-select [path choices & {:keys [label inherited default] :or {label "Tincture"
+                                                                            default :none}}]
+  (let [current-value @(rf/subscribe [:get-value path])
+        value (or current-value
+                  inherited
+                  default)
+        choice-map (util/choices->map choices)]
     [:div.ui-setting
      (when label
        [:label label])
@@ -47,11 +52,18 @@
           [:h4 group-name]
           (for [[display-name key] group]
             ^{:key display-name}
-            [tincture-choice path key display-name :selected? (= key value)])])]]]))
+            [tincture-choice path key display-name :selected? (= key value)])])]
+      [value-mode-select/value-mode-select
+       path
+       :value current-value
+       :inherited inherited
+       :default default
+       :display-fn choice-map]]]))
 
 (defmethod interface/form-element :tincture-select [path _]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui default choices]} option]
+    (let [{:keys [ui inherited default choices]} option]
       [tincture-select path choices
+       :inherited inherited
        :default default
        :label (:label ui)])))
