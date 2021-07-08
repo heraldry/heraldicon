@@ -5,21 +5,29 @@
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
-(defn range-input [path & {:keys [value on-change default step
+(defn range-input [path & {:keys [on-change inherited default step
                                   disabled? tooltip label
                                   min-value max-value]}]
   (let [component-id (util/id "range")
         current-value @(rf/subscribe [:get-value path])
-        value (or value
-                  current-value
+        value (or current-value
+                  inherited
                   default
                   min-value)
         menu (cond-> []
-               default (conj {:title "Auto"
-                              :icon (if current-value
-                                      "far fa-square"
-                                      "far fa-check-square")
-                              :handler #(state/dispatch-on-event % [:set path nil])}))
+               (and inherited
+                    default) (conj {:title (str "Default (" default ")")
+                                    :icon "fas fa-redo"
+                                    :handler #(state/dispatch-on-event % [:set path default])})
+               (or inherited
+                   default) (conj {:title (str (if inherited
+                                                 "Inherited"
+                                                 "Auto")
+                                               " (" (or inherited default) ")")
+                                   :icon (if current-value
+                                           "far fa-square"
+                                           "far fa-check-square")
+                                   :handler #(state/dispatch-on-event % [:set path nil])}))
         menu (cond-> menu
                (seq menu) (conj {:title "Manual"
                                  :icon (if current-value
@@ -70,9 +78,10 @@
 
 (defmethod interface/form-element :range [path _]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui default min max]} option]
+    (let [{:keys [ui inherited default min max]} option]
       [range-input path
        :default default
+       :inherited inherited
        :min-value min
        :max-value max
        :step (or (:step ui) 1)

@@ -40,8 +40,9 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn line-type-select [path choices & {:keys [label default]}]
+(defn line-type-select [path choices & {:keys [label inherited default]}]
   (let [value (or @(rf/subscribe [:get-value path])
+                  inherited
                   default)]
     [:div.ui-setting
      (when label
@@ -54,9 +55,10 @@
 
 (defmethod interface/form-element :line-type-select [path _]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui default choices]} option]
+    (let [{:keys [ui inherited default choices]} option]
       [line-type-select
        path
        choices
        :default default
+       :inherited inherited
        :label (:label ui)])))
