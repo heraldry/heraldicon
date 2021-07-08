@@ -15,9 +15,8 @@
   {:display-name "Pile"
    :value :heraldry.ordinary.type/pile}
   [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor
+  (let [{:keys [line opposite-line origin anchor
                 geometry outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
-        opposite-line (ordinary-options/sanitize-opposite-line ordinary line)
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)
@@ -113,8 +112,8 @@
                            :line (:line cottise-1)
                            :opposite-line (:opposite-line cottise-1)}
              chevron-options (ordinary-options/options chevron-base)
-             {:keys [line]} (options/sanitize chevron-base chevron-options)
-             opposite-line (ordinary-options/sanitize-opposite-line chevron-base line)
+             {:keys [line
+                     opposite-line]} (options/sanitize chevron-base chevron-options)
              half-joint-angle (/ joint-angle 2)
              half-joint-angle-rad (-> half-joint-angle
                                       (/ 180)

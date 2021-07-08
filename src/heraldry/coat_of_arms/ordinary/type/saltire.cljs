@@ -234,8 +234,8 @@
                                 :line (:line cottise-1)
                                 :opposite-line (:opposite-line cottise-1)}
                   chevron-options (ordinary-options/options chevron-base)
-                  {:keys [line]} (options/sanitize chevron-base chevron-options)
-                  opposite-line (ordinary-options/sanitize-opposite-line chevron-base line)
+                  {:keys [line
+                          opposite-line]} (options/sanitize chevron-base chevron-options)
                   half-joint-angle-rad (-> half-joint-angle
                                            (/ 180)
                                            (* Math/PI)

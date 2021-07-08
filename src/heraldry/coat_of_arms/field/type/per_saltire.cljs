@@ -15,8 +15,8 @@
    :value :heraldry.field.type/per-saltire
    :parts ["chief" "dexter" "sinister" "base"]}
   [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor outline?]} (options/sanitize field (field-options/options field))
-        opposite-line (field-options/sanitize-opposite-line field line)
+  (let [{:keys [line opposite-line
+                origin anchor outline?]} (options/sanitize field (field-options/options field))
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment

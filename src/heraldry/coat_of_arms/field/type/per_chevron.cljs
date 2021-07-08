@@ -17,7 +17,7 @@
    :parts ["chief" "base"]}
   [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
   (let [field-options (field-options/options field)
-        {:keys [line origin anchor
+        {:keys [line opposite-line origin anchor
                 direction-anchor outline?]} (options/sanitize field field-options)
         raw-direction-anchor (:direction-anchor field)
         direction-anchor (options/sanitize (cond-> raw-direction-anchor
@@ -30,7 +30,6 @@
                                                               (update :offset-x #(or % (:offset-x origin)))
                                                               (update :offset-y #(or % (:offset-y origin)))))
                                            (:direction-anchor field-options))
-        opposite-line (field-options/sanitize-opposite-line field line)
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment)
         top-left (:top-left points)
