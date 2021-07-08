@@ -119,7 +119,7 @@
         (doall
          (for [[idx {:keys [icon menu handler disabled? tooltip title]}] (map-indexed vector buttons)]
            (if menu
-             ^{:key icon}
+             ^{:key idx}
              [hover-menu/hover-menu
               (conj path idx)
               title
