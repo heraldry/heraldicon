@@ -25,7 +25,7 @@
      (when label
        [:label label])
      [:div.option
-      [submenu/submenu path label title {:width "30em"}
+      [submenu/submenu path label title {:width "35em"}
        (for [option [:point
                      :alignment
                      :angle
