@@ -130,11 +130,8 @@
   z-index: 10;
 }
 
-.ui-hover-menu:hover .ui-menu {
-  display: block;
-}
-
 .ui-menu-item {
+  padding-left: 5px;
   padding-right: 5px;
 }
 
