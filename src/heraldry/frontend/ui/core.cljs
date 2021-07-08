@@ -115,7 +115,7 @@
          [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
       title
       (when (-> buttons count pos?)
-        (for [{:keys [icon menu handler disabled? tooltip]} buttons]
+        (for [{:keys [icon menu handler disabled? tooltip title]} buttons]
           (if menu
             ^{:key icon} [:span.node-icon.ui-hover-menu
                           {:class (when disabled? "disabled")}
@@ -123,8 +123,8 @@
                                        :style {:margin-left "0.5em"
                                                :font-size "0.8em"}}]
                           [:ul.ui-menu {:style {:padding 0
-                                                :font-weight 400
-                                                :padding-top "1.2em"}}
+                                                :font-weight 400}}
+                           [:li.ui-menu-header title]
                            (for [{:keys [title handler]} menu]
                              ^{:key title}
                              [:li.ui-menu-item
