@@ -1,6 +1,5 @@
 (ns heraldry.frontend.ui.element.range
-  (:require [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.hover-menu :as hover-menu]
+  (:require [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
@@ -13,27 +12,7 @@
         value (or current-value
                   inherited
                   default
-                  min-value)
-        menu (cond-> []
-               (and inherited
-                    default) (conj {:title (str "Default (" default ")")
-                                    :icon "fas fa-redo"
-                                    :handler #(state/dispatch-on-event % [:set path default])})
-               (or inherited
-                   default) (conj {:title (str (if inherited
-                                                 "Inherited"
-                                                 "Auto")
-                                               " (" (or inherited default) ")")
-                                   :icon (if current-value
-                                           "far fa-square"
-                                           "far fa-check-square")
-                                   :handler #(state/dispatch-on-event % [:set path nil])}))
-        menu (cond-> menu
-               (seq menu) (conj {:title "Manual"
-                                 :icon (if current-value
-                                         "far fa-check-square"
-                                         "far fa-square")
-                                 :handler #(state/dispatch-on-event % [:set path value])}))]
+                  min-value)]
 
     [:div.ui-setting
      [:label {:for component-id} label]
@@ -65,16 +44,12 @@
                :style {:display "inline-block"
                        :width "2em"
                        :margin-left "0.5em"}}]
-      (when (seq menu)
-        [:div {:style {:display "inline-block"
-                       :margin-left "0.5em"
-                       :position "absolute"}}
-         [hover-menu/hover-menu
-          path
-          "Mode"
-          menu
-          [:i.ui-icon {:class "fas fa-cog"}]
-          :disabled? disabled?]])]]))
+      [value-mode-select/value-mode-select
+       path
+       :value current-value
+       :inherited inherited
+       :default default
+       :disabled? disabled?]]]))
 
 (defmethod interface/form-element :range [path _]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
