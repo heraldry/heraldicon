@@ -11,12 +11,13 @@
     (rf/subscribe [:get path]))
 
   (fn [fimbriation [_ _path]]
+    ;; TODO: needs to get real options or directly sanitized data
     (let [effective-data (options/sanitize fimbriation (fimbriation/options fimbriation))]
       (case (:mode effective-data)
         :none "None"
-        :single (str (-> effective-data :tincture-1 util/translate-tincture))
-        :double (str (-> effective-data :tincture-1 util/translate-tincture)
-                     " and " (-> effective-data :tincture-2 util/translate-tincture))))))
+        :single (str (-> effective-data :tincture-1 util/translate-tincture util/upper-case-first))
+        :double (str (-> effective-data :tincture-1 util/translate-tincture util/upper-case-first)
+                     " and " (-> effective-data :tincture-2 util/translate-tincture util/upper-case-first))))))
 
 (defn fimbriation-submenu [path options & {:keys [label]}]
   (let [title @(rf/subscribe [:fimbriation-title path])]
