@@ -5,6 +5,7 @@
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
+            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
@@ -41,7 +42,8 @@
       [:i]]]))
 
 (defn line-type-select [path choices & {:keys [label inherited default]}]
-  (let [value (or @(rf/subscribe [:get-value path])
+  (let [current-value @(rf/subscribe [:get-value path])
+        value (or current-value
                   inherited
                   default)]
     [:div.ui-setting
@@ -51,7 +53,13 @@
       [submenu/submenu path "Select Line Type" (get line/line-map value) {:min-width "25em"}
        (for [[display-name key] choices]
          ^{:key display-name}
-         [line-type-choice path key display-name :selected? (= key value)])]]]))
+         [line-type-choice path key display-name :selected? (= key value)])]
+      [value-mode-select/value-mode-select
+       path
+       :value current-value
+       :inherited inherited
+       :default default
+       :display-fn line/line-map]]]))
 
 (defmethod interface/form-element :line-type-select [path _]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
