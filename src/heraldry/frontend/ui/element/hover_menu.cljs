@@ -7,8 +7,11 @@
      {:class (when disabled? "disabled")
       :on-mouse-enter (when-not disabled?
                         (fn [event]
-                          (when-not menu-open?
-                            (rf/dispatch [:ui-hover-menu-open path]))
+                          (rf/dispatch [:ui-hover-menu-open path])
+                          (.stopPropagation event)))
+      :on-mouse-leave (when-not disabled?
+                        (fn [event]
+                          (rf/dispatch [:ui-hover-menu-close path])
                           (.stopPropagation event)))}
      trigger-element
      [:ul.ui-menu {:style {:padding 0
@@ -16,11 +19,7 @@
                            :display (if menu-open?
                                       "block"
                                       "none")
-                           :min-width "7em"}
-                   :on-mouse-leave (fn [event]
-                                     (when menu-open?
-                                       (rf/dispatch [:ui-hover-menu-close path]))
-                                     (.stopPropagation event))}
+                           :min-width "7em"}}
       [:li.ui-menu-header title]
       (for [{:keys [icon title handler]} menu]
         (let [handler (when handler
