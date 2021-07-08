@@ -11,27 +11,25 @@
     ;; TODO: smarter way is necessary, also getting the options, which relies on the parent
     "Change"))
 
-(defn geometry-submenu [path options & {:keys [label]}]
-  (let [title @(rf/subscribe [:geometry-title path])]
-    [:div.ui-setting
-     (when label
-       [:label label])
-     [:div.option
-      [submenu/submenu path label title {:width "30em"}
-       (for [option [:width
-                     :thickness
-                     :size
-                     :size-mode
-                     :eccentricity
-                     :stretch
-                     :mirrored?
-                     :reversed?]]
-         ^{:key option} [interface/form-element (conj path option) (get options option)])]]]))
+(defn geometry-submenu [path]
+  (when-let [options @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui]} options
+          label (:label ui)
+          title @(rf/subscribe [:geometry-title path])]
+      [:div.ui-setting
+       (when label
+         [:label label])
+       [:div.option
+        [submenu/submenu path label title {:width "30em"}
+         (for [option [:width
+                       :thickness
+                       :size
+                       :size-mode
+                       :eccentricity
+                       :stretch
+                       :mirrored?
+                       :reversed?]]
+           ^{:key option} [interface/form-element (conj path option) (get options option)])]]])))
 
 (defmethod interface/form-element :geometry [path _]
-  (when-let [options @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui]} options]
-      [geometry-submenu
-       path
-       options
-       :label (:label ui)])))
+  [geometry-submenu path])
