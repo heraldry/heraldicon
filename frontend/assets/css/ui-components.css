@@ -142,6 +142,25 @@
   background-color: #eee;
 }
 
+ul.ui-menu {
+  list-style: none;
+  padding-left: 1.3em;
+  margin: 0;
+  padding-left: 0;
+}
+
+ul.ui-menu li {
+  vertical-align: top;
+  white-space: pre;
+}
+
+li.ui-menu-header {
+  color: #000;
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
 .disabled,
 .disabled:hover {
   color: #ddd !important;

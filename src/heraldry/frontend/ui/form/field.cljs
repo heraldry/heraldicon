@@ -40,6 +40,7 @@
                         [(name-prefix-for-part path)
                          (field/title component-data)])
    :buttons [{:icon "fas fa-plus"
+              :title "Add"
               :menu [{:title "Ordinary"
                       :handler #(state/dispatch-on-event % [:add-component path default/ordinary])}
                      {:title "Charge"
