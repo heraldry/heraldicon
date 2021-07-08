@@ -4,6 +4,7 @@
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
+            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
@@ -50,25 +51,27 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn theme-select [path choices & {:keys [label default]}]
-  (let [value (or @(rf/subscribe [:get-value path])
-                  default)]
-    [:div.ui-setting
-     (when label
-       [:label label])
-     [:div.option
-      [submenu/submenu path "Select Colour Theme" (get tincture/theme-map value) {:width "22em"}
-       (for [[group-name & group] choices]
-         ^{:key group-name}
-         [:<>
-          [:h4 group-name]
-          (for [[display-name key] group]
-            ^{:key display-name}
-            [theme-choice path key display-name :selected? (= key value)])])]]]))
+(defn theme-select [path]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui inherited default choices]} option
+          current-value @(rf/subscribe [:get-value path])
+          value (or current-value
+                    inherited
+                    default)
+          label (:label ui)]
+      [:div.ui-setting
+       (when label
+         [:label label])
+       [:div.option
+        [submenu/submenu path "Select Colour Theme" (get tincture/theme-map value) {:width "22em"}
+         (for [[group-name & group] choices]
+           ^{:key group-name}
+           [:<>
+            [:h4 group-name]
+            (for [[display-name key] group]
+              ^{:key display-name}
+              [theme-choice path key display-name :selected? (= key value)])])]
+        [value-mode-select/value-mode-select path]]])))
 
 (defmethod interface/form-element :theme-select [path _]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui default choices]} option]
-      [theme-select path choices
-       :default default
-       :label (:label ui)])))
+  [theme-select path])
