@@ -19,25 +19,23 @@
                              (-> position :offset-y (or 0) zero? not))
                      "adjusted")])))
 
-(defn position-submenu [path options & {:keys [label]}]
-  (let [title @(rf/subscribe [:position-title path])]
-    [:div.ui-setting
-     (when label
-       [:label label])
-     [:div.option
-      [submenu/submenu path label title {:width "35em"}
-       (for [option [:point
-                     :alignment
-                     :angle
-                     :offset-x
-                     :offset-y
-                     :type]]
-         ^{:key option} [interface/form-element (conj path option) (get options option)])]]]))
+(defn position-submenu [path]
+  (when-let [options @(rf/subscribe [:get-relevant-options path])]
+    (let [{:keys [ui]} options
+          label (:label ui)
+          title @(rf/subscribe [:position-title path])]
+      [:div.ui-setting
+       (when label
+         [:label label])
+       [:div.option
+        [submenu/submenu path label title {:width "35em"}
+         (for [option [:point
+                       :alignment
+                       :angle
+                       :offset-x
+                       :offset-y
+                       :type]]
+           ^{:key option} [interface/form-element (conj path option) (get options option)])]]])))
 
 (defmethod interface/form-element :position [path _]
-  (when-let [options @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui]} options]
-      [position-submenu
-       path
-       options
-       :label (:label ui)])))
+  [position-submenu path])
