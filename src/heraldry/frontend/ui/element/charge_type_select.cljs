@@ -40,66 +40,67 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn charge-type-select [path choices & {:keys [default label]}]
-  (let [value (or @(rf/subscribe [:get-value path])
-                  default)
-        charge @(rf/subscribe [:get-value (vec (drop-last path))])]
-    [:div.ui-setting
-     (when label
-       [:label label])
-     [:div.option
-      [submenu/submenu path "Select Charge" (charge/title charge) {:width "21.5em"}
-       (for [[display-name key] charge/choices]
-         ^{:key key}
-         [charge-type-choice path key display-name :selected? (= key value)])
-       (let [[status charges] (state/async-fetch-data
-                               [:all-charges]
-                               :all-charges
-                               frontend-charge/fetch-charges)]
-         [:div {:style {:padding "15px"}}
-          (if (= status :done)
-            [charge-select/component
-             charges
-             nil
-             #(state/invalidate-cache [:all-charges] :all-charges)
-             :render-variant (fn [node]
-                               (let [charge-data (:data node)
-                                     username (:username charge-data)]
-                                 [:div {:style {:display "inline-block"
-                                                :white-space "normal"
-                                                :vertical-align "top"
-                                                :line-height "1.5em"}}
-                                  [:div {:style {:display "inline-block"
-                                                 :vertical-align "top"}}
-                                   (if (-> charge-data :is-public)
-                                     [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
-                                     [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
-                                   " "
-                                   [:a.clickable
-                                    {:on-click #(state/dispatch-on-event
-                                                 %
-                                                 [:update-charge
-                                                  (vec (drop-last path))
-                                                  (merge {:type (->> charge-data
-                                                                     :type
-                                                                     name
-                                                                     (keyword "heraldry.charge.type"))
-                                                          :variant {:id (:id charge-data)
-                                                                    :version (:latest-version charge-data)}}
-                                                         {:attitude nil
-                                                          :facing nil}
-                                                         (select-keys charge-data
-                                                                      [:attitude :facing]))])}
-                                    (:name charge-data)]
-                                   " by "
-                                   [:a {:href (full-url-for-username username)
-                                        :target "_blank"} username]]
-                                  [charge-select/charge-properties charge-data]]))]
-            [:div "loading..."])])]]]))
+(defn charge-type-select [path]
+  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (let [current-value @(rf/subscribe [:get-value path])
+          {:keys [ui inherited default]} option
+          value (or current-value
+                    inherited
+                    default)
+          label (:label ui)
+          charge @(rf/subscribe [:get-value (vec (drop-last path))])]
+      [:div.ui-setting
+       (when label
+         [:label label])
+       [:div.option
+        [submenu/submenu path "Select Charge" (charge/title charge) {:width "21.5em"}
+         (for [[display-name key] charge/choices]
+           ^{:key key}
+           [charge-type-choice path key display-name :selected? (= key value)])
+         (let [[status charges] (state/async-fetch-data
+                                 [:all-charges]
+                                 :all-charges
+                                 frontend-charge/fetch-charges)]
+           [:div {:style {:padding "15px"}}
+            (if (= status :done)
+              [charge-select/component
+               charges
+               nil
+               #(state/invalidate-cache [:all-charges] :all-charges)
+               :render-variant (fn [node]
+                                 (let [charge-data (:data node)
+                                       username (:username charge-data)]
+                                   [:div {:style {:display "inline-block"
+                                                  :white-space "normal"
+                                                  :vertical-align "top"
+                                                  :line-height "1.5em"}}
+                                    [:div {:style {:display "inline-block"
+                                                   :vertical-align "top"}}
+                                     (if (-> charge-data :is-public)
+                                       [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
+                                       [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
+                                     " "
+                                     [:a.clickable
+                                      {:on-click #(state/dispatch-on-event
+                                                   %
+                                                   [:update-charge
+                                                    (vec (drop-last path))
+                                                    (merge {:type (->> charge-data
+                                                                       :type
+                                                                       name
+                                                                       (keyword "heraldry.charge.type"))
+                                                            :variant {:id (:id charge-data)
+                                                                      :version (:latest-version charge-data)}}
+                                                           {:attitude nil
+                                                            :facing nil}
+                                                           (select-keys charge-data
+                                                                        [:attitude :facing]))])}
+                                      (:name charge-data)]
+                                     " by "
+                                     [:a {:href (full-url-for-username username)
+                                          :target "_blank"} username]]
+                                    [charge-select/charge-properties charge-data]]))]
+              [:div "loading..."])])]]])))
 
 (defmethod interface/form-element :charge-type-select [path _]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui default choices]} option]
-      [charge-type-select path choices
-       :default default
-       :label (:label ui)])))
+  [charge-type-select path])

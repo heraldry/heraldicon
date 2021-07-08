@@ -11,7 +11,6 @@
   {:type {:type :choice
           ;; TODO: also a special case, probably can't include all choices here anyway
           :choices []
-          :default :heraldry.charge.type/roundel
           :ui {:label "Type"
                :form-type :charge-type-select}}
    :origin (-> position/default-options
