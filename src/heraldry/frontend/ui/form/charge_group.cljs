@@ -154,6 +154,7 @@
                                     (charge/title (-> component-data :charges first))
                                     "various"))
    :buttons [{:icon "fas fa-plus"
+              :title "Add"
               :menu [{:title "Charge"
                       :handler #(state/dispatch-on-event % [:add-element (conj path :charges) default/charge])}]}]
    :nodes (concat (->> component-data
