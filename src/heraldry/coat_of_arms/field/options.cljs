@@ -117,9 +117,12 @@
   (when field
     (let [line-style (-> (line/options (:line field))
                          (assoc :ui (-> default-options :line :ui)))
-          opposite-line-style (-> (line/options {:type (-> field :opposite-line :type (or (-> field :line :type)))})
+          sanitized-line (options/sanitize (:line field) line-style)
+          opposite-line-style (-> (line/options (:opposite-line field) :inherited sanitized-line)
+                                  (dissoc :fimbriation)
                                   (assoc :ui (-> default-options :opposite-line :ui)))
-          extra-line-style (-> (line/options {:type (-> field :extra-line :type (or (-> field :line :type)))})
+          extra-line-style (-> (line/options (:extra-line field) :inherited sanitized-line)
+                               (dissoc :fimbriation)
                                (-> default-options :extra-line :ui))]
       (-> (case (-> field :type name keyword)
             :plain (options/pick default-options
