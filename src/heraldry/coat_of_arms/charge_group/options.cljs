@@ -15,7 +15,6 @@
 (def default-options
   {:type {:type :choice
           :choices type-choices
-          :default :heraldry.charge-group.type/rows
           :ui {:label "Type"
                :form-type :charge-group-type-select}}
    :origin (-> position/default-options
