@@ -118,8 +118,7 @@
         (for [{:keys [icon menu handler disabled? tooltip]} buttons]
           (if menu
             ^{:key icon} [:span.node-icon.ui-hover-menu
-                          {:class (when disabled? "disabled")
-                           :title tooltip}
+                          {:class (when disabled? "disabled")}
                           [:i.ui-icon {:class icon
                                        :style {:margin-left "0.5em"
                                                :font-size "0.8em"}}]
