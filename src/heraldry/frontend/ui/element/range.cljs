@@ -4,7 +4,7 @@
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
-(defn range-input [path & {:keys [on-change disabled?]}]
+(defn range-input [path & {:keys [value on-change disabled?]}]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
     (let [component-id (util/id "range")
           current-value @(rf/subscribe [:get-value path])
@@ -12,7 +12,8 @@
           step (or (:step ui) 1)
           label (:label ui)
           tooltip (:tooltip ui)
-          value (or current-value
+          value (or value
+                    current-value
                     inherited
                     default
                     min)]

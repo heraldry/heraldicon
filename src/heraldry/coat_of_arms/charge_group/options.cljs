@@ -64,7 +64,6 @@
    :slots {:type :range
            :min 1
            :max 20
-           :default 5
            :integer? true
            :ui {:label "Number"
                 :form-type :charge-group-slot-number}}
