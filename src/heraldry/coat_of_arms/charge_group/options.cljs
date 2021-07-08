@@ -49,19 +49,19 @@
                  :max 90
                  :default 0
                  :ui {:label "Strip angle"
-                      :step 0.1}}
+                      :step 1}}
    :start-angle {:type :range
                  :min -180
                  :max 180
                  :default 0
-                 :ui {:label "start angle"
-                      :step 0.1}}
+                 :ui {:label "Start angle"
+                      :step 1}}
    :arc-angle {:type :range
                :min 0
                :max 360
                :default 360
                :ui {:label "Arc angle"
-                    :step 0.1}}
+                    :step 1}}
    :slots {:type :range
            :min 1
            :max 20
