@@ -60,9 +60,11 @@
 (defn options [ordinary]
   (when ordinary
     (let [line-style (-> (line/options (:line ordinary))
+                         set-line-defaults
                          (assoc :ui (-> default-options :line :ui)))
           sanitized-line (options/sanitize (:line ordinary) line-style)
           opposite-line-style (-> (line/options (:opposite-line ordinary) :inherited sanitized-line)
+                                  set-line-defaults
                                   (assoc :ui (-> default-options :opposite-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
