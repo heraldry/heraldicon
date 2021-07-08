@@ -1,11 +1,11 @@
 (ns heraldry.frontend.ui.element.range
-  (:require [heraldry.frontend.ui.element.hover-menu :as hover-menu]
+  (:require [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element.hover-menu :as hover-menu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.util :as util]
-            [re-frame.core :as rf]
-            [heraldry.frontend.state :as state]))
+            [re-frame.core :as rf]))
 
-(defn range-input [path & {:keys [value on-change default display-function step
+(defn range-input [path & {:keys [value on-change default step
                                   disabled? tooltip label
                                   min-value max-value]}]
   (let [component-id (util/id "range")
@@ -19,7 +19,13 @@
                               :icon (if current-value
                                       "far fa-square"
                                       "far fa-check-square")
-                              :handler #(state/dispatch-on-event % [:set path nil])}))]
+                              :handler #(state/dispatch-on-event % [:set path nil])}))
+        menu (cond-> menu
+               (seq menu) (conj {:title "Manual"
+                                 :icon (if current-value
+                                         "far fa-check-square"
+                                         "far fa-square")
+                                 :handler #(state/dispatch-on-event % [:set path value])}))]
 
     [:div.ui-setting
      [:label {:for component-id} label]
@@ -59,8 +65,7 @@
           path
           "Mode"
           menu
-          [:i.ui-icon {:class "fas fa-cog"
-                       :style {:font-size "1em"}}]
+          [:i.ui-icon {:class "fas fa-cog"}]
           :disabled? disabled?]])]]))
 
 (defmethod interface/form-element :range [path _]
