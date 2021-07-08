@@ -5,7 +5,7 @@
             [re-frame.core :as rf]))
 
 (defn value-mode-select [path & {:keys [display-fn disabled?]}]
-  (let [value @(rf/subscribe [:get-value path])
+  (let [current-value @(rf/subscribe [:get-value path])
         {:keys [inherited
                 default
                 type
@@ -14,28 +14,33 @@
                        (when (= type :choice)
                          (util/choices->map choices))
                        identity)
+        effective-value (->> [current-value
+                              inherited
+                              default]
+                             (keep (fn [v]
+                                     (when-not (nil? v)
+                                       v)))
+                             first)
         menu (cond-> []
-               (and inherited
-                    default) (conj {:title (str "Default (" (display-fn default) ")")
-                                    :icon "fas fa-redo"
-                                    :handler #(state/dispatch-on-event % [:set path default])})
-               (or inherited
-                   default) (conj {:title (str (if inherited
-                                                 "Inherited"
-                                                 "Auto")
-                                               " (" (display-fn (or inherited default)) ")")
-                                   :icon (if value
-                                           "far fa-square"
-                                           "far fa-check-square")
-                                   :handler #(state/dispatch-on-event % [:set path nil])}))
+               (and (some? inherited)
+                    (some? default)) (conj {:title (str "Default (" (display-fn default) ")")
+                                            :icon "fas fa-redo"
+                                            :handler #(state/dispatch-on-event % [:set path default])})
+               (or (some? inherited)
+                   (some? default)) (conj {:title (str (if (some? inherited)
+                                                         "Inherited"
+                                                         "Auto")
+                                                       " (" (display-fn (or inherited default)) ")")
+                                           :icon (if (some? current-value)
+                                                   "far fa-square"
+                                                   "far fa-check-square")
+                                           :handler #(state/dispatch-on-event % [:set path nil])}))
         menu (cond-> menu
                (seq menu) (conj {:title "Manual"
-                                 :icon (if value
+                                 :icon (if (some? current-value)
                                          "far fa-check-square"
                                          "far fa-square")
-                                 :handler #(state/dispatch-on-event % [:set path (or value
-                                                                                     inherited
-                                                                                     default)])}))]
+                                 :handler #(state/dispatch-on-event % [:set path effective-value])}))]
 
     [:<>
      (when (seq menu)
