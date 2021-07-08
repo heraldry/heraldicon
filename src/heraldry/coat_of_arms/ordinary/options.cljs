@@ -407,7 +407,8 @@
                               (when fimbriation
                                 (-> (fimbriation/options (:fimbriation ordinary))
                                     (assoc :ui {:label "Fimbriation"
-                                                :form-type :fimbriation})))))))))
+                                                :form-type :fimbriation})))))
+       (options/populate-inheritance [:opposite-line] [:line])))))
 
 (defn sanitize-opposite-line [ordinary line]
   (-> (options/sanitize

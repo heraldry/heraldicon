@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.options
   (:require [clojure.walk :as walk]
-            [heraldry.util :as util]))
+            [heraldry.util :as util]
+            [taoensso.timbre :as log]))
 
 (def types #{:range :choice :boolean})
 
@@ -84,3 +85,39 @@
   (if (get-in options path)
     (assoc-in options path value)
     options))
+
+(defn leaf-option-paths [m]
+  (if (or (not (map? m))
+          ;; TODO: maybe use a namespace here as well
+          (-> m :type #{:choice :range :boolean :text}))
+    {[] m}
+    (into {}
+          (for [[k v] m
+                [ks v'] (leaf-option-paths v)]
+            (when (and (:ui v')
+                       (:type v'))
+              [(cons k ks) v'])))))
+
+(defn starts-with [prefix-path path]
+  (= (take (count prefix-path) path)
+     prefix-path))
+
+(defn populate-inheritance [options target-path source-path]
+  (let [all-options (leaf-option-paths options)
+        all-options (keys all-options)
+        source-options (filter (partial starts-with source-path) all-options)
+        target-options (set (filter (partial starts-with target-path) all-options))
+        inheritable-options (keep (fn [path]
+                                    (let [relative-path (drop (count source-path) path)]
+                                      (when (->> relative-path
+                                                 (concat target-path)
+                                                 (get target-options))
+                                        relative-path))) source-options)
+        offset (- (count target-path))]
+    (loop [options options
+           [relative-path & rest] inheritable-options]
+      (if (not relative-path)
+        options
+        (recur
+         (assoc-in options (concat target-path relative-path [:ui :inherit-from]) [offset relative-path])
+         rest)))))
