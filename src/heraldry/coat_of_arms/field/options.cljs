@@ -11,7 +11,6 @@
   {:type {:type :choice
           ;; TODO: this should have the proper choices, but currently that's a circular dependency
           :choices []
-          :default :heraldry.field.type/plain
           :ui {:label "Division"
                :form-type :field-type-select}}
    :inherit-environment? {:type :boolean
