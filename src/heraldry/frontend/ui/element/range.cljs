@@ -1,7 +1,9 @@
 (ns heraldry.frontend.ui.element.range
-  (:require [heraldry.frontend.ui.interface :as interface]
+  (:require [heraldry.frontend.ui.element.hover-menu :as hover-menu]
+            [heraldry.frontend.ui.interface :as interface]
             [heraldry.util :as util]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [heraldry.frontend.state :as state]))
 
 (defn range-input [path & {:keys [value on-change default display-function step
                                   disabled? tooltip label
@@ -11,7 +13,14 @@
         value (or value
                   current-value
                   default
-                  min-value)]
+                  min-value)
+        menu (cond-> []
+               default (conj {:title "Auto"
+                              :icon (if current-value
+                                      "far fa-square"
+                                      "far fa-check-square")
+                              :handler #(state/dispatch-on-event % [:set path nil])}))]
+
     [:div.ui-setting
      [:label {:for component-id} label]
      (when tooltip
@@ -33,8 +42,26 @@
                              (if on-change
                                (on-change value)
                                (rf/dispatch [:set path value])))}]
-      [:span {:style {:margin-left "1em"}} (cond-> value
-                                             display-function display-function)]]]))
+      [:input {:type "text"
+               :value value
+               :on-change #(let [value (-> % .-target .-value)]
+                             (if on-change
+                               (on-change value)
+                               (rf/dispatch-sync [:set path value])))
+               :style {:display "inline-block"
+                       :width "2em"
+                       :margin-left "0.5em"}}]
+      (when (seq menu)
+        [:div {:style {:display "inline-block"
+                       :margin-left "0.5em"
+                       :position "absolute"}}
+         [hover-menu/hover-menu
+          path
+          "Mode"
+          menu
+          [:i.ui-icon {:class "fas fa-cog"
+                       :style {:font-size "1em"}}]
+          :disabled? disabled?]])]]))
 
 (defmethod interface/form-element :range [path _]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]

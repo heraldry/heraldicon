@@ -131,8 +131,7 @@
 }
 
 .ui-menu-item {
-  padding-left: 5px;
-  padding-right: 5px;
+  padding: 5px;
 }
 
 .ui-menu-item:hover {

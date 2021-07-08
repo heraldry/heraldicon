@@ -11,7 +11,8 @@
                          :font-weight 400
                          :display (if @(rf/subscribe [:ui-hover-menu-open? path])
                                     "block"
-                                    "none")}}
+                                    "none")
+                         :min-width "7em"}}
     [:li.ui-menu-header title]
     (for [{:keys [icon title handler]} menu]
       (let [handler (when handler
@@ -24,7 +25,8 @@
           :on-click (when-not disabled? handler)}
          (when icon
            [:i.ui-icon {:class icon
-                        :style {:color (if disabled?
+                        :style {:margin-right "5px"
+                                :color (if disabled?
                                          "#ccc"
                                          "#777")}}])
          title]))]])
