@@ -1,20 +1,23 @@
 (ns heraldry.frontend.ui.element.select
-  (:require [heraldry.frontend.ui.interface :as interface]
+  (:require [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
+            [heraldry.frontend.ui.interface :as interface]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (defn select [path choices & {:keys [default inherited label on-change]}]
   (let [component-id (util/id "select")
-        current-value @(rf/subscribe [:get-value path])]
+        current-value @(rf/subscribe [:get-value path])
+        value (or current-value
+                  inherited
+                  default
+                  :none)
+        choice-map (util/choices->map choices)]
     [:div.ui-setting
      (when label
        [:label {:for component-id} label])
      [:div.option
       [:select {:id component-id
-                :value (util/keyword->str (or current-value
-                                              inherited
-                                              default
-                                              :none))
+                :value (util/keyword->str value)
                 :on-change #(let [selected (keyword (-> % .-target .-value))]
                               (if on-change
                                 (on-change selected)
@@ -29,7 +32,13 @@
            [:optgroup {:label group-name}
             (for [[display-name key] group-choices]
               ^{:key key}
-              [:option {:value (util/keyword->str key)} display-name])]))]]]))
+              [:option {:value (util/keyword->str key)} display-name])]))]
+      [value-mode-select/value-mode-select
+       path
+       :value current-value
+       :inherited inherited
+       :default default
+       :display-fn choice-map]]]))
 
 (defmethod interface/form-element :select [path _]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]

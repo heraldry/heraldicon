@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.radio-select
-  (:require [heraldry.frontend.ui.interface :as interface]
+  (:require [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
+            [heraldry.frontend.ui.interface :as interface]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -17,22 +18,33 @@
      [:label {:for component-id
               :style {:margin-right "10px"}} display-name]]))
 
-(defn radio-select [path choices & {:keys [default label on-change]}]
+(defn radio-select [path choices & {:keys [inherited default label on-change]}]
   [:div.ui-setting
    (when label
      [:label label])
    [:div.option
-    (let [current-value (or @(rf/subscribe [:get-value path])
-                            default)]
-      (for [[display-name key] choices]
-        ^{:key key}
-        [radio-choice path key display-name
-         :selected? (= key current-value)
-         :on-change on-change]))]])
+    (let [current-value @(rf/subscribe [:get-value path])
+          value (or current-value
+                    inherited
+                    default)
+          choice-map (util/choices->map choices)]
+      [:<>
+       (for [[display-name key] choices]
+         ^{:key key}
+         [radio-choice path key display-name
+          :selected? (= key value)
+          :on-change on-change])
+       [value-mode-select/value-mode-select
+        path
+        :value current-value
+        :inherited inherited
+        :default default
+        :display-fn choice-map]])]])
 
 (defmethod interface/form-element :radio-select [path _]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [{:keys [ui default choices]} option]
+    (let [{:keys [ui inherited default choices]} option]
       [radio-select path choices
+       :inherited inherited
        :default default
        :label (:label ui)])))
