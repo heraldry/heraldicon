@@ -12,7 +12,7 @@
 (def default-options
   {:escutcheon-override {:type :choice
                          :choices escutcheon/choices
-                         :default :heater
+                         :default :none
                          :ui {:label "Escutcheon Override"
                               :form-type :escutcheon-select}}
 

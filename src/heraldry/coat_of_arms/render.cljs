@@ -1,13 +1,16 @@
 (ns heraldry.coat-of-arms.render
-  (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
+  (:require [heraldry.coat-of-arms.core :as coat-of-arms]
+            [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
+            [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.render-options :as render-options]
             [heraldry.util :as util]))
 
 (defn coat-of-arms [coat-of-arms width
@@ -16,23 +19,23 @@
                       svg-export?
                       metadata
                       texture-link] :as context}]
-  (let [escutcheon (if (-> render-options
+  (let [sanitized-coat-of-arms (options/sanitize coat-of-arms (coat-of-arms/options coat-of-arms))
+        sanitized-render-options (options/sanitize render-options (render-options/options render-options))
+        escutcheon (if (-> sanitized-render-options
                            :escutcheon-override
-                           (or :none)
                            (not= :none))
-                     (:escutcheon-override render-options)
-                     (:escutcheon coat-of-arms))
+                     (:escutcheon-override sanitized-render-options)
+                     (:escutcheon sanitized-coat-of-arms))
         shield (escutcheon/field escutcheon)
         environment (-> (environment/transform-to-width shield width)
                         (cond->
-                         (:squiggly? render-options) (update :shape svg/squiggly-path)))
+                         (:squiggly? sanitized-render-options) (update :shape svg/squiggly-path)))
         field (:field coat-of-arms)
         mask-id (util/id "mask")
-        texture (-> render-options
+        texture (-> sanitized-render-options
                     :texture
-                    (or :none)
                     (#(when (not= % :none) %)))
-        texture-displacement? (:texture-displacement? render-options)
+        texture-displacement? (:texture-displacement? sanitized-render-options)
         texture-id (util/id "texture")
         shiny-id (util/id "shiny")
         use-texture? (or texture-link texture)]
@@ -40,7 +43,7 @@
      :result [:g
               metadata
               [:defs
-               (when (:shiny? render-options)
+               (when (:shiny? sanitized-render-options)
                  [:filter {:id shiny-id}
                   [:feDiffuseLighting {:in "SourceGraphic"
                                        :result "light"
@@ -82,8 +85,8 @@
                                  :k4 0}]])
                (when-not svg-export?
                  filter/shadow)
-               [tincture/patterns render-options]
-               (when (-> render-options
+               [tincture/patterns sanitized-render-options]
+               (when (-> sanitized-render-options
                          :mode
                          (= :hatching))
                  hatching/patterns)]
@@ -99,7 +102,7 @@
                      :mask
                      :clip-path) (str "url(#" mask-id ")")}
                [:g {:filter (when use-texture? (str "url(#" texture-id ")"))}
-                [:g {:filter (when (:shiny? render-options)
+                [:g {:filter (when (:shiny? sanitized-render-options)
                                (str "url(#" shiny-id ")"))}
                  [:path {:d (:shape environment)
                          :fill "#f0f0f0"}]
@@ -107,7 +110,7 @@
                                                      (dissoc :metadata)
                                                      (update :db-path conj :field)
                                                      (assoc :root-escutcheon escutcheon))]]]]
-              (when (or (:escutcheon-outline? render-options)
-                        (:outline? render-options))
+              (when (or (:escutcheon-outline? sanitized-render-options)
+                        (:outline? sanitized-render-options))
                 [:g outline/style
                  [:path {:d (:shape environment)}]])]}))
