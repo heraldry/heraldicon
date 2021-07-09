@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.ordinary.type.chief
-  (:require [heraldry.coat-of-arms.cottising :as cottising]
-            [heraldry.coat-of-arms.counterchange :as counterchange]
+  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -16,7 +15,7 @@
    :value :heraldry.ordinary.type/chief}
   [{:keys [field] :as ordinary} parent environment
    {:keys [render-options override-real-start override-real-end override-shared-start-x] :as context}]
-  (let [{:keys [line geometry outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
+  (let [{:keys [line geometry outline? cottising]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
         points (:points environment)
         top (:top points)
@@ -81,7 +80,7 @@
       environment ordinary context]
      (line/render line [line-reversed-data] row-right outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)
+       (let [cottise-1-data (:cottise-1 cottising)
              fess-base {:type :heraldry.ordinary.type/fess
                         :line (:line cottise-1)
                         :opposite-line (:opposite-line cottise-1)}

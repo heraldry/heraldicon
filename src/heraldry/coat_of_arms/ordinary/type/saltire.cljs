@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.ordinary.type.saltire
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.cottising :as cottising]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
@@ -18,7 +17,7 @@
    :value :heraldry.ordinary.type/saltire}
   [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line origin anchor
-                geometry outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
+                geometry outline? cottising]} (options/sanitize ordinary (ordinary-options/options ordinary))
         {:keys [size]} geometry
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment :fess)
@@ -222,7 +221,7 @@
      (line/render line [line-bottom-left-upper-data
                         line-top-left-lower-data] bottom-left-upper outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)]
+       (let [cottise-1-data (:cottise-1 cottising)]
          [:<>
           (for [[chevron-angle
                  point

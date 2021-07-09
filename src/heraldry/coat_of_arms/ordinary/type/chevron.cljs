@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.ordinary.type.chevron
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.cottising :as cottising]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
@@ -28,7 +27,7 @@
                              (assoc-in [:anchor :angle :max] 360))
         {:keys [line opposite-line origin anchor
                 direction-anchor
-                geometry outline?]} (options/sanitize ordinary ordinary-options)
+                geometry outline? cottising]} (options/sanitize ordinary ordinary-options)
         raw-direction-anchor (:direction-anchor ordinary)
         direction-anchor (options/sanitize (cond-> raw-direction-anchor
                                              (-> direction-anchor
@@ -191,7 +190,7 @@
      (line/render opposite-line [line-right-lower-data
                                  line-left-lower-data] right-lower outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)
+       (let [cottise-1-data (:cottise-1 cottising)
              chevron-base {:type :heraldry.ordinary.type/chevron
                            :line (:line cottise-1)
                            :opposite-line (:opposite-line cottise-1)}
@@ -246,7 +245,7 @@
                      (assoc :anchor new-anchor)) parent environment
           context]))
      (when (:enabled? cottise-opposite-1)
-       (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-default-options)
+       (let [cottise-opposite-1-data (:cottise-opposite-1 cottising)
              chevron-base {:type :heraldry.ordinary.type/chevron
                            :line (:line cottise-opposite-1)
                            :opposite-line (:opposite-line cottise-opposite-1)}
