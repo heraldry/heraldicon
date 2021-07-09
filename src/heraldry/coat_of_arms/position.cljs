@@ -89,10 +89,6 @@
               :default 0
               :ui {:label "Offset y"
                    :step 0.1}}
-   ;; :type {:type :choice
-   ;;        :choices type-choices
-   ;;        :default :middle
-   ;;        :ui {:label "Type"}}
    :ui {:label "Position"
         :form-type :position}})
 
