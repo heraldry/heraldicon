@@ -405,6 +405,9 @@
        (update :opposite-line (fn [opposite-line]
                                 (when opposite-line
                                   (set-line-defaults opposite-line))))
+       (update :origin (fn [origin]
+                         (when origin
+                           (position/adjust-options origin (-> ordinary :origin)))))
        (update :anchor (fn [anchor]
                          (when anchor
                            (position/adjust-options anchor (-> ordinary :anchor)))))
