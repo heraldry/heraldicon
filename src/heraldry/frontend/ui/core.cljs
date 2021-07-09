@@ -33,6 +33,7 @@
             [heraldry.frontend.ui.form.charge] ;; needed for defmethods
             [heraldry.frontend.ui.form.charge-group] ;; needed for defmethods
             [heraldry.frontend.ui.form.coat-of-arms] ;; needed for defmethods
+            [heraldry.frontend.ui.form.cottise] ;; needed for defmethods
             [heraldry.frontend.ui.form.field] ;; needed for defmethods
             [heraldry.frontend.ui.form.ordinary] ;; needed for defmethods
             [heraldry.frontend.ui.form.render-options] ;; needed for defmethods
@@ -63,14 +64,15 @@
 (rf/reg-sub :component-node
   (fn [[_ path] _]
     [(rf/subscribe [:component-data path])
+     (rf/subscribe [:get-relevant-options path])
      (rf/subscribe [:get (flag-path path)])
      (rf/subscribe [:get ui-selected-component-path])])
 
-  (fn [[component-data open? selected-component-path] [_ path]]
+  (fn [[component-data component-options open? selected-component-path] [_ path]]
     (merge {:open? open?
             :selected? (= path selected-component-path)
             :selectable? true}
-           (interface/component-node-data path component-data))))
+           (interface/component-node-data path component-data component-options))))
 
 (rf/reg-sub :component-form
   (fn [[_ path] _]
@@ -115,7 +117,7 @@
         [:span.node-icon
          [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
       title
-      (when (-> buttons count pos?)
+      (when (seq buttons)
         (doall
          (for [[idx {:keys [icon menu handler disabled? tooltip title]}] (map-indexed vector buttons)]
            (if menu
@@ -126,7 +128,10 @@
               menu
               [:i.ui-icon {:class icon
                            :style {:margin-left "0.5em"
-                                   :font-size "0.8em"}}]
+                                   :font-size "0.8em"
+                                   :color (if disabled?
+                                            "#ccc"
+                                            "#777")}}]
               :disabled? disabled?]
              ^{:key icon} [:span.node-icon
                            {:class (when disabled? "disabled")

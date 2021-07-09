@@ -149,7 +149,7 @@
                      :vertical-align "top"}}
        [preview-form path]]]]))
 
-(defmethod interface/component-node-data :heraldry.component/charge-group [path component-data]
+(defmethod interface/component-node-data :heraldry.component/charge-group [path component-data _component-options]
   {:title (str "Charge group of " (if (-> component-data :charges count (= 1))
                                     (charge/title (-> component-data :charges first))
                                     "various"))

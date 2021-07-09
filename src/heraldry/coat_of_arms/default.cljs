@@ -12,6 +12,10 @@
    :field field
    :outline? true})
 
+(def cottise
+  {:field field
+   :enabled? true})
+
 (def charge
   {:type :heraldry.charge.type/roundel
    :field field

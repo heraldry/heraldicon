@@ -35,7 +35,7 @@
       (-> (field/part-name parent-field-type index)
           util/upper-case-first))))
 
-(defmethod interface/component-node-data :heraldry.component/field [path component-data]
+(defmethod interface/component-node-data :heraldry.component/field [path component-data _component-options]
   {:title (util/combine ": "
                         [(name-prefix-for-part path)
                          (field/title component-data)])
