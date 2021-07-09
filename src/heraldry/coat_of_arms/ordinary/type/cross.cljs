@@ -219,7 +219,7 @@
      (line/render line [line-pale-bottom-left-data
                         line-fess-bottom-left-data] pale-bottom-left outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)
+       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)
              chevron-base {:type :heraldry.ordinary.type/chevron
                            :line (:line cottise-1)
                            :opposite-line (:opposite-line cottise-1)}

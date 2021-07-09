@@ -124,7 +124,7 @@
      (line/render line [line-one-data] first-left outline? render-options)
      (line/render opposite-line [line-reversed-data] second-right outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)]
+       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)]
          [render (-> ordinary
                      (assoc :cottising {:cottise-1 cottise-2})
                      (assoc :line (:line cottise-1))
@@ -144,7 +144,7 @@
               (assoc :override-real-start real-start)
               (assoc :override-real-end real-end))]))
      (when (:enabled? cottise-opposite-1)
-       (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-options)
+       (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-default-options)
              fess-base {:type :heraldry.ordinary.type/fess
                         :line (:line cottise-opposite-1)
                         :opposite-line (:opposite-line cottise-opposite-1)}

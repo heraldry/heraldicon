@@ -54,7 +54,7 @@
               :default false
               :ui {:label "Outline"}}
    :fimbriation fimbriation/default-options
-   :cottising cottising/options})
+   :cottising cottising/default-options})
 
 (defn options [ordinary]
   (when ordinary
@@ -409,7 +409,10 @@
                               (when fimbriation
                                 (-> (fimbriation/options (:fimbriation ordinary))
                                     (assoc :ui {:label "Fimbriation"
-                                                :form-type :fimbriation})))))))))
+                                                :form-type :fimbriation})))))
+       (as-> options
+             (cond-> options
+               (:cottising options) (update :cottising cottising/options (:cottising ordinary))))))))
 
 (defmethod interface/component-options :ordinary [data _path]
   (options data))

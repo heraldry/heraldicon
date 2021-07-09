@@ -222,7 +222,7 @@
      (line/render line [line-bottom-left-upper-data
                         line-top-left-lower-data] bottom-left-upper outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)]
+       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)]
          [:<>
           (for [[chevron-angle
                  point

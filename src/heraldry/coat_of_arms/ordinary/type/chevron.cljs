@@ -191,7 +191,7 @@
      (line/render opposite-line [line-right-lower-data
                                  line-left-lower-data] right-lower outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)
+       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)
              chevron-base {:type :heraldry.ordinary.type/chevron
                            :line (:line cottise-1)
                            :opposite-line (:opposite-line cottise-1)}
@@ -246,7 +246,7 @@
                      (assoc :anchor new-anchor)) parent environment
           context]))
      (when (:enabled? cottise-opposite-1)
-       (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-options)
+       (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-default-options)
              chevron-base {:type :heraldry.ordinary.type/chevron
                            :line (:line cottise-opposite-1)
                            :opposite-line (:opposite-line cottise-opposite-1)}

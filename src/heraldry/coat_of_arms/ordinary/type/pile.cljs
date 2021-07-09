@@ -107,7 +107,7 @@
      (line/render line [line-left-data
                         line-right-data] left-point outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)
+       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)
              chevron-base {:type :heraldry.ordinary.type/chevron
                            :line (:line cottise-1)
                            :opposite-line (:opposite-line cottise-1)}
