@@ -1,11 +1,11 @@
 (ns heraldry.frontend.ui.interface
   (:require [clojure.string :as s]
-            [re-frame.core :as rf]
-            [reagent.core :as r]))
+            [re-frame.core :as rf]))
 
 (defn type->component-type [t]
   (let [ts (str t)]
     (cond
+      (s/starts-with? ts ":heraldry.component/cottise") :heraldry.component/cottise
       (s/starts-with? ts ":heraldry.component") t
       (s/starts-with? ts ":heraldry.field") :heraldry.component/field
       (s/starts-with? ts ":heraldry.ordinary") :heraldry.component/ordinary
@@ -21,10 +21,10 @@
 
 ;; component-node-data
 
-(defmulti component-node-data (fn [_path component-data]
+(defmulti component-node-data (fn [_path component-data _component-options]
                                 (effective-component-type component-data)))
 
-(defmethod component-node-data :heraldry.component/items [path component-data]
+(defmethod component-node-data :heraldry.component/items [path component-data _component-options]
   {:nodes (->> component-data
                count
                range
@@ -33,7 +33,7 @@
                vec)
    :selectable? false})
 
-(defmethod component-node-data :heraldry.component/unknown [_path _component-data]
+(defmethod component-node-data :heraldry.component/unknown [_path _component-data _component-options]
   {:title "unknown"})
 
 ;; component-form-data
@@ -41,7 +41,7 @@
 (defmulti component-form-data (fn [component-data]
                                 (effective-component-type component-data)))
 
-(defmethod component-form-data :heraldry.component/unknown [_path _component-data]
+(defmethod component-form-data :heraldry.component/unknown [_path _component-data _component-options]
   {:form (fn [_path _form-data]
            [:div])
    :form-args {}})
@@ -90,7 +90,7 @@
     ;; TODO: can this be done by feeding the subscriptions in again?
     ;; probably is more efficient, but the previous attempt didn't refresh the
     ;; subscription properly when the options changed (e.g. switching to "arc" in a charge-group)
-    (->> (range 1 (count path))
+    (->> (range (count path) 0 -1)
          (keep (fn [idx]
                  (let [option-path (subvec path 0 idx)
                        relative-path (subvec path idx)

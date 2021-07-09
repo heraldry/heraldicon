@@ -13,7 +13,7 @@
                  :fimbriation]]
      ^{:key option} [interface/form-element (conj path option)])])
 
-(defmethod interface/component-node-data :heraldry.component/charge [path component-data]
+(defmethod interface/component-node-data :heraldry.component/charge [path component-data _component-options]
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
   ;; depends on charge data
   {:title (str (charge/title component-data) " charge")
