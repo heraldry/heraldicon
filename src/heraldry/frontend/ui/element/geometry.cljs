@@ -29,7 +29,7 @@
                        :stretch
                        :mirrored?
                        :reversed?]]
-           ^{:key option} [interface/form-element (conj path option) (get options option)])]]])))
+           ^{:key option} [interface/form-element (conj path option)])]]])))
 
-(defmethod interface/form-element :geometry [path _]
+(defmethod interface/form-element :geometry [path]
   [geometry-submenu path])

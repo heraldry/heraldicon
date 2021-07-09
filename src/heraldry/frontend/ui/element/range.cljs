@@ -49,5 +49,5 @@
                          :margin-left "0.5em"}}]
         [value-mode-select/value-mode-select path :disabled? disabled?]]])))
 
-(defmethod interface/form-element :range [path _]
+(defmethod interface/form-element :range [path]
   [range-input path])

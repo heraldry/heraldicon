@@ -102,5 +102,5 @@
                                     [charge-select/charge-properties charge-data]]))]
               [:div "loading..."])])]]])))
 
-(defmethod interface/form-element :charge-type-select [path _]
+(defmethod interface/form-element :charge-type-select [path]
   [charge-type-select path])

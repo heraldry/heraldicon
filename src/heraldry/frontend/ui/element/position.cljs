@@ -35,7 +35,7 @@
                        :offset-x
                        :offset-y
                        :type]]
-           ^{:key option} [interface/form-element (conj path option) (get options option)])]]])))
+           ^{:key option} [interface/form-element (conj path option)])]]])))
 
-(defmethod interface/form-element :position [path _]
+(defmethod interface/form-element :position [path]
   [position-submenu path])
