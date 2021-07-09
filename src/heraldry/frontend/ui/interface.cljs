@@ -16,22 +16,12 @@
 (defn effective-component-type [data]
   (cond
     (map? data) (-> data :type type->component-type)
-    (vector? data) :heraldry.component/items
     :else :heraldry.component/unknown))
 
 ;; component-node-data
 
 (defmulti component-node-data (fn [_path component-data _component-options]
                                 (effective-component-type component-data)))
-
-(defmethod component-node-data :heraldry.component/items [path component-data _component-options]
-  {:nodes (->> component-data
-               count
-               range
-               (map (fn [idx]
-                      {:path (conj path idx)}))
-               vec)
-   :selectable? false})
 
 (defmethod component-node-data :heraldry.component/unknown [_path _component-data _component-options]
   {:title "unknown"})
