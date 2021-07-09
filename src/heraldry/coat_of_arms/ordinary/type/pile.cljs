@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.ordinary.type.pile
-  (:require [heraldry.coat-of-arms.cottising :as cottising]
-            [heraldry.coat-of-arms.counterchange :as counterchange]
+  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
@@ -16,7 +15,7 @@
    :value :heraldry.ordinary.type/pile}
   [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
   (let [{:keys [line opposite-line origin anchor
-                geometry outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
+                geometry outline? cottising]} (options/sanitize ordinary (ordinary-options/options ordinary))
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)
@@ -107,7 +106,7 @@
      (line/render line [line-left-data
                         line-right-data] left-point outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)
+       (let [cottise-1-data (:cottise-1 cottising)
              chevron-base {:type :heraldry.ordinary.type/chevron
                            :line (:line cottise-1)
                            :opposite-line (:opposite-line cottise-1)}

@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.ordinary.type.bend-sinister
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.cottising :as cottising]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
@@ -28,7 +27,7 @@
                              (assoc-in [:origin :offset-y :min] -100)
                              (assoc-in [:origin :offset-y :max] 100))
         {:keys [line opposite-line
-                origin anchor geometry outline?]} (options/sanitize ordinary ordinary-options)
+                origin anchor geometry outline? cottising]} (options/sanitize ordinary ordinary-options)
         {:keys [size]} geometry
         points (:points environment)
         top (:top points)
@@ -167,7 +166,7 @@
      (line/render line [line-one-data] first-start outline? render-options)
      (line/render opposite-line [line-reversed-data] second-end outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)
+       (let [cottise-1-data (:cottise-1 cottising)
              dist (-> (+ (:distance cottise-1-data))
                       (+ (/ (:thickness cottise-1-data) 2))
                       (/ 100)
@@ -205,7 +204,7 @@
               (assoc :override-real-start real-start)
               (assoc :override-real-end real-end))]))
      (when (:enabled? cottise-opposite-1)
-       (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-default-options)
+       (let [cottise-opposite-1-data (:cottise-opposite-1 cottising)
              bend-sinister-base {:type :heraldry.ordinary.type/bend-sinister
                                  :line (:line cottise-opposite-1)
                                  :opposite-line (:opposite-line cottise-opposite-1)}

@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.ordinary.type.pale
-  (:require [heraldry.coat-of-arms.cottising :as cottising]
-            [heraldry.coat-of-arms.counterchange :as counterchange]
+  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -23,7 +22,7 @@
                              (assoc-in [:origin :offset-y :min] -100)
                              (assoc-in [:origin :offset-y :max] 100))
         {:keys [line opposite-line
-                origin geometry outline?]} (options/sanitize ordinary ordinary-options)
+                origin geometry outline? cottising]} (options/sanitize ordinary ordinary-options)
         {:keys [size]} geometry
         points (:points environment)
         plain-origin (get points (:point origin))
@@ -126,7 +125,7 @@
      (line/render line [line-one-data] first-bottom outline? render-options)
      (line/render opposite-line [line-reversed-data] second-top outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)]
+       (let [cottise-1-data (:cottise-1 cottising)]
          [render (-> ordinary
                      (assoc :cottising {:cottise-1 cottise-2})
                      (assoc :line (:line cottise-1))
@@ -147,7 +146,7 @@
               (assoc :override-real-start real-start)
               (assoc :override-real-end real-end))]))
      (when (:enabled? cottise-opposite-1)
-       (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-default-options)
+       (let [cottise-opposite-1-data (:cottise-opposite-1 cottising)
              pale-base {:type :heraldry.ordinary.type/pale
                         :line (:line cottise-opposite-1)
                         :opposite-line (:opposite-line cottise-opposite-1)}
