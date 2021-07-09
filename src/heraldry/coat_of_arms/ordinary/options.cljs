@@ -249,7 +249,9 @@
                                 [:geometry :size-mode] {:type :choice
                                                         :choices [["Thickness" :thickness]
                                                                   ["Angle" :angle]]
-                                                        :default :thickness}
+                                                        :default :thickness
+                                                        :ui {:label "Size mode"
+                                                             :form-type :radio-select}}
                                 [:geometry :size :min] 5
                                 [:geometry :size :max] 100
                                 [:geometry :size :default] (case (-> ordinary :geometry :size-mode (or :thickness))
@@ -258,7 +260,9 @@
                                 [:geometry :stretch] {:type :range
                                                       :min 0.33
                                                       :max 2
-                                                      :default 1}
+                                                      :default 1
+                                                      :ui {:label "Stretch"
+                                                           :step 0.01}}
                                 [:origin :point :choices] (util/filter-choices
                                                            position/anchor-point-choices
                                                            [:top-left :top :top-right
@@ -287,7 +291,9 @@
                                                   {:type :choice
                                                    :choices [["Edge" :edge]
                                                              ["Point" :point]]
-                                                   :default :edge})
+                                                   :default :edge
+                                                   :ui {:label "Point mode"
+                                                        :form-type :radio-select}})
                                 [:cottising] (-> default-options
                                                  :cottising
                                                  (dissoc :cottise-opposite-1)
