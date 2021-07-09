@@ -36,7 +36,7 @@
                        :tincture-1
                        :thickness-2
                        :tincture-2]]
-           ^{:key option} [interface/form-element (conj path option) (get options option)])]]])))
+           ^{:key option} [interface/form-element (conj path option)])]]])))
 
-(defmethod interface/form-element :fimbriation [path _]
+(defmethod interface/form-element :fimbriation [path]
   [fimbriation-submenu path])

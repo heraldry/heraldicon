@@ -42,7 +42,7 @@
                        :stretch-x
                        :stretch-y
                        :rotation]]
-           ^{:key option} [interface/form-element (conj path option) (get options option)])]]])))
+           ^{:key option} [interface/form-element (conj path option)])]]])))
 
-(defmethod interface/form-element :semy-layout [path _]
+(defmethod interface/form-element :semy-layout [path]
   [layout-submenu path])

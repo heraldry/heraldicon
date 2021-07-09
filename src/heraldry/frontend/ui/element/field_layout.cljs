@@ -60,5 +60,5 @@
                        :rotation]]
            ^{:key option} [interface/form-element (conj path option)])]]])))
 
-(defmethod interface/form-element :field-layout [path _]
+(defmethod interface/form-element :field-layout [path]
   [layout-submenu path])

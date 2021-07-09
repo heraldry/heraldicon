@@ -55,5 +55,5 @@
               [tincture-choice path key display-name :selected? (= key value)])])]
         [value-mode-select/value-mode-select path]]])))
 
-(defmethod interface/form-element :tincture-select [path _]
+(defmethod interface/form-element :tincture-select [path]
   [tincture-select path])

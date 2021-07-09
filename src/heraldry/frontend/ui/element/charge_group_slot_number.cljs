@@ -3,7 +3,7 @@
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
-(defmethod interface/form-element :charge-group-slot-number [path _]
+(defmethod interface/form-element :charge-group-slot-number [path]
   (let [value (-> @(rf/subscribe [:get-value path])
                   count
                   (or 0))]

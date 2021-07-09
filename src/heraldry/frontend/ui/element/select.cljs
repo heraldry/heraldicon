@@ -37,5 +37,5 @@
                 [:option {:value (util/keyword->str key)} display-name])]))]
         [value-mode-select/value-mode-select path]]])))
 
-(defmethod interface/form-element :select [path _]
+(defmethod interface/form-element :select [path]
   [select path])

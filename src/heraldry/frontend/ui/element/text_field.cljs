@@ -21,5 +21,5 @@
                                  (on-change value)
                                  (rf/dispatch-sync [:set path value])))}]]])))
 
-(defmethod interface/form-element :text-field [path _]
+(defmethod interface/form-element :text-field [path]
   [text-field path])

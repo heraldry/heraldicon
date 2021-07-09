@@ -54,5 +54,5 @@
                        :fimbriation]]
            ^{:key option} [interface/form-element (conj path option)])]]])))
 
-(defmethod interface/form-element :line [path _]
+(defmethod interface/form-element :line [path]
   [line-submenu path])

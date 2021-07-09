@@ -63,5 +63,5 @@
         [value-mode-select/value-mode-select path
          :display-fn ordinary/ordinary-map]]])))
 
-(defmethod interface/form-element :ordinary-type-select [path _]
+(defmethod interface/form-element :ordinary-type-select [path]
   [ordinary-type-select path])

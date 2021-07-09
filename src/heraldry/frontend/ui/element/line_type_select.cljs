@@ -59,5 +59,5 @@
            [line-type-choice path key display-name :selected? (= key value)])]
         [value-mode-select/value-mode-select path]]])))
 
-(defmethod interface/form-element :line-type-select [path _]
+(defmethod interface/form-element :line-type-select [path]
   [line-type-select path])

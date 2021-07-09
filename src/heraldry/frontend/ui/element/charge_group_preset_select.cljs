@@ -321,5 +321,5 @@
           ^{:key display-name}
           [charge-group-preset-choice path charge-group charge-adjustments display-name])])]]])
 
-(defmethod interface/form-element :charge-group-preset-select [path _options]
+(defmethod interface/form-element :charge-group-preset-select [path]
   [charge-group-preset-select path])
