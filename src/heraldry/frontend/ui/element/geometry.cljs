@@ -23,8 +23,8 @@
         [submenu/submenu path label title {:width "30em"}
          (for [option [:width
                        :thickness
-                       :size
                        :size-mode
+                       :size
                        :eccentricity
                        :stretch
                        :mirrored?
