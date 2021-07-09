@@ -3,7 +3,7 @@
   (:require [heraldry.config :as config]))
 
 (def line
-  {})
+  {:type :straight})
 
 (def field
   {:type :heraldry.field.type/plain
@@ -11,7 +11,7 @@
 
 (def ordinary
   {:type :heraldry.ordinary.type/pale
-   :line {:type :straight}
+   :line line
    :field field
    :outline? true})
 
