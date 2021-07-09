@@ -81,7 +81,7 @@
       environment ordinary context]
      (line/render line [line-reversed-data] row-right outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)
+       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)
              fess-base {:type :heraldry.ordinary.type/fess
                         :line (:line cottise-1)
                         :opposite-line (:opposite-line cottise-1)}

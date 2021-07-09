@@ -167,7 +167,7 @@
      (line/render line [line-one-data] first-start outline? render-options)
      (line/render opposite-line [line-reversed-data] second-end outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)
+       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)
              dist (-> (+ (:distance cottise-1-data))
                       (+ (/ (:thickness cottise-1-data) 2))
                       (/ 100)
@@ -205,7 +205,7 @@
               (assoc :override-real-start real-start)
               (assoc :override-real-end real-end))]))
      (when (:enabled? cottise-opposite-1)
-       (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-options)
+       (let [cottise-opposite-1-data (options/sanitize cottise-opposite-1 cottising/cottise-default-options)
              bend-sinister-base {:type :heraldry.ordinary.type/bend-sinister
                                  :line (:line cottise-opposite-1)
                                  :opposite-line (:opposite-line cottise-opposite-1)}

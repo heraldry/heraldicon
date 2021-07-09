@@ -2,6 +2,9 @@
 (ns heraldry.coat-of-arms.default
   (:require [heraldry.config :as config]))
 
+(def line
+  {})
+
 (def field
   {:type :heraldry.field.type/plain
    :tincture :none})

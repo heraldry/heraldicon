@@ -78,7 +78,7 @@
       environment ordinary context]
      (line/render line [line-one-data] row-left outline? render-options)
      (when (:enabled? cottise-1)
-       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-options)]
+       (let [cottise-1-data (options/sanitize cottise-1 cottising/cottise-default-options)]
          [fess/render {:type :heraldry.ordinary.type/fess
                        :outline? (-> ordinary :outline?)
                        :cottising {:cottise-1 cottise-2}

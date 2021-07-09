@@ -3,7 +3,6 @@
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.interface :as interface]
-            [taoensso.timbre :as log]
             [re-frame.core :as rf]))
 
 (defn form [path _]
@@ -20,7 +19,6 @@
                  :anchor
                  :geometry
                  :fimbriation
-                 :cottising
                  :outline?]]
      ^{:key option} [interface/form-element (conj path option)])])
 
