@@ -49,9 +49,11 @@
                        types (:type v)))) [k (sanitize (get values k) v)]
             :else [k (get-value (get values k) v)]))))
 
-(defn remove-nil-values [m]
+(defn remove-nil-values-and-empty-maps [m]
   (walk/postwalk #(if (map? %)
-                    (into {} (filter (fn [[_ v]] (some? v)) %))
+                    (into {} (filter (fn [[_ v]] (not (or (nil? v)
+                                                          (and (map? v)
+                                                               (empty? v))))) %))
                     %)
                  m))
 
@@ -63,7 +65,7 @@
                      (not (contains?
                            types (:type v)))) [k (sanitize-or-nil (get values k) v)]
                 :else [k (get-sanitized-value-or-nil (get values k) v)])))
-      remove-nil-values))
+      remove-nil-values-and-empty-maps))
 
 (defn pick [opts paths & values]
   (let [values (first values)
