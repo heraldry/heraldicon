@@ -138,7 +138,21 @@
 
 (rf/reg-event-db :ui-component-node-toggle
   (fn-traced [db [_ path]]
-    (update-in db (conj node-flag-db-path path) not)))
+    (let [flag-path (conj node-flag-db-path path)
+          open? (get-in db flag-path)]
+      (if open?
+        ;; if it's open, then close all descendant nodes as well,
+        ;; by removing all paths starting with the given path
+        (update-in
+         db node-flag-db-path
+         (fn [flags]
+           (->> flags
+                (filter (fn [[other-path v]]
+                          (when (not= (take (count path) other-path)
+                                      path)
+                            [other-path v])))
+                (into {}))))
+        (assoc-in db flag-path true)))))
 
 (rf/reg-event-db :ui-component-node-select
   (fn-traced [db [_ path]]
