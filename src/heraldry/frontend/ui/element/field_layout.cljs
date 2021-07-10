@@ -7,41 +7,25 @@
 
 (rf/reg-sub :field-layout-submenu-link-name
   (fn [[_ path] _]
-    [(rf/subscribe [:get (drop-last path)])
-     (rf/subscribe [:get-relevant-options (drop-last path)])])
+    [(rf/subscribe [:get path])
+     (rf/subscribe [:get-relevant-options path])])
 
-  (fn [[field options] [_ _path]]
-    (let [stripped-field-type (-> field :type name keyword)
-          sanitized-field (options/sanitize field options)
-          sanitized-layout (:layout sanitized-field)
-          layout-options (:layout options)
-          main-name (cond
-                      (#{:paly}
-                       stripped-field-type) (str (:num-fields-x sanitized-layout) " fields")
-                      (#{:barry
-                         :bendy
-                         :bendy-sinister}
-                       stripped-field-type) (str (:num-fields-y sanitized-layout) " fields")
-                      (#{:quarterly
-                         :chequy
-                         :lozengy
-                         :vairy
-                         :potenty
-                         :papellony
-                         :masonry
-                         :bendy}
-                       stripped-field-type) (str (:num-fields-x sanitized-layout) "x"
-                                                 (:num-fields-y sanitized-layout) " fields"))
+  (fn [[layout options] [_ _path]]
+    (let [sanitized-layout (options/sanitize layout options)
+          main-name (str (util/combine "x"
+                                       [(:num-fields-x sanitized-layout)
+                                        (:num-fields-y sanitized-layout)])
+                         " fields")
           changes [main-name
-                   (when (options/changed? :num-base-fields sanitized-layout layout-options)
+                   (when (options/changed? :num-base-fields sanitized-layout options)
                      (str (:num-base-fields sanitized-layout) " base fields"))
-                   (when (some #(options/changed? % sanitized-layout layout-options)
+                   (when (some #(options/changed? % sanitized-layout options)
                                [:offset-x :offset-y])
                      "shifted")
-                   (when (some #(options/changed? % sanitized-layout layout-options)
+                   (when (some #(options/changed? % sanitized-layout options)
                                [:stretch-x :stretch-y])
                      "stretched")
-                   (when (options/changed? :rotation sanitized-layout layout-options)
+                   (when (options/changed? :rotation sanitized-layout options)
                      "rotated")]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
