@@ -6,6 +6,7 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element.charge-group-preset-select :as charge-group-preset-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
@@ -101,7 +102,7 @@
      [:div {:style {:display "table-row"}}
       [:div {:style {:display "table-cell"
                      :vertical-align "top"}}
-       [interface/form-element path {:ui {:form-type :charge-group-preset-select}}]
+       [charge-group-preset-select/charge-group-preset-select path]
        (for [option [:type
                      :origin
                      :spacing

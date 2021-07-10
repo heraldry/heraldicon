@@ -3,7 +3,6 @@
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
 (def presets
@@ -320,6 +319,3 @@
         (for [[display-name charge-group charge-adjustments] group]
           ^{:key display-name}
           [charge-group-preset-choice path charge-group charge-adjustments display-name])])]]])
-
-(defmethod interface/form-element :charge-group-preset-select [path]
-  [charge-group-preset-select path])
