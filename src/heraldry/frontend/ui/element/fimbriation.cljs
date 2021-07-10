@@ -11,12 +11,29 @@
      (rf/subscribe [:get-relevant-options path])])
 
   (fn [[fimbriation options] [_ _path]]
-    (let [sanitized-fimbriation (options/sanitize fimbriation options)]
-      (case (:mode sanitized-fimbriation)
-        :none "None"
-        :single (str (-> sanitized-fimbriation :tincture-1 util/translate-tincture util/upper-case-first))
-        :double (str (-> sanitized-fimbriation :tincture-1 util/translate-tincture util/upper-case-first)
-                     " and " (-> sanitized-fimbriation :tincture-2 util/translate-tincture util/upper-case-first))))))
+    (let [sanitized-fimbriation (options/sanitize fimbriation options)
+          main-name (case (:mode sanitized-fimbriation)
+                      :none "None"
+                      :single (str (-> sanitized-fimbriation
+                                       :tincture-1
+                                       util/translate-tincture
+                                       util/upper-case-first))
+                      :double (str (-> sanitized-fimbriation
+                                       :tincture-1
+                                       util/translate-tincture
+                                       util/upper-case-first)
+                                   " and "
+                                   (-> sanitized-fimbriation
+                                       :tincture-2
+                                       util/translate-tincture
+                                       util/upper-case-first)))
+          changes [main-name
+                   (when (some #(options/changed? % sanitized-fimbriation options)
+                               [:alignment :thickness-1 :thickness-2])
+                     "adjusted")]]
+
+      (-> (util/combine ", " changes)
+          util/upper-case-first))))
 
 (defn fimbriation-submenu [path]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
