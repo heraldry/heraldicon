@@ -426,6 +426,8 @@
                                     (-> charge-group :slots not)) (assoc :slots [0 0 0 0 0]))))))))
 
 (rf/reg-event-db :select-charge-group-preset
+  ;; TODO: this must not be an fn-traced, can be done once
+  ;; https://github.com/day8/re-frame-debux/issues/40 is resolved
   (fn [db [_ path charge-group-preset charge-adjustments]]
     (let [new-db (-> db
                      (update-in path (fn [charge-group]
