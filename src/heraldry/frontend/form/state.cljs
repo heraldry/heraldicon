@@ -164,9 +164,10 @@
                  [:ui-component-node-open path])}))
 
 (rf/reg-event-fx :ui-component-node-select
-  (fn-traced [{:keys [db]} [_ path]]
+  (fn-traced [{:keys [db]} [_ path {:keys [open?]}]]
     {:db (assoc-in db ui-component-node-selected-path path)
-     :dispatch [:ui-component-node-open (drop-last path)]}))
+     :dispatch [:ui-component-node-open (cond-> path
+                                          (not open?) drop-last)]}))
 
 (rf/reg-event-db :prune-false-flags
   (fn-traced [db [_ path]]
@@ -252,7 +253,7 @@
       {:db (update-in db components-path #(-> %
                                               (conj value)
                                               vec))
-       :dispatch [:ui-component-node-select (conj components-path index)]})))
+       :dispatch [:ui-component-node-select (conj components-path index) {:open? true}]})))
 
 (rf/reg-event-db :add-element
   (fn-traced [db [_ path value]]
