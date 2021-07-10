@@ -20,7 +20,7 @@
 
 (defn translate-tincture [keyword]
   (case keyword
-    :none "[no tincture]"
+    :none "void"
     (translate keyword)))
 
 (defn translate-line [{:keys [type]}]
