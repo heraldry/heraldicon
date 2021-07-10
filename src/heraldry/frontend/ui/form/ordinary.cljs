@@ -42,28 +42,36 @@
                (and (:cottise-1 cottising-options)
                     (not cottise-1?))
                (conj {:title "Cottise 1"
-                      :handler #(state/dispatch-on-event
-                                 % [:set (conj path :cottising :cottise-1) default/cottise])})
+                      :handler #(let [cottise-path (conj path :cottising :cottise-1)]
+                                  (rf/dispatch-sync [:set cottise-path default/cottise])
+                                  (state/dispatch-on-event
+                                   % [:ui-component-node-select cottise-path {:open? true}]))})
 
                (and (:cottise-2 cottising-options)
                     cottise-1
                     (not cottise-2?))
                (conj {:title "Cottise 2"
-                      :handler #(state/dispatch-on-event
-                                 % [:set (conj path :cottising :cottise-2) default/cottise])})
+                      :handler #(let [cottise-path (conj path :cottising :cottise-2)]
+                                  (rf/dispatch-sync [:set cottise-path default/cottise])
+                                  (state/dispatch-on-event
+                                   % [:ui-component-node-select cottise-path {:open? true}]))})
 
                (and (:cottise-opposite-1 cottising-options)
                     (not cottise-opposite-1?))
                (conj {:title "Cottise 1 (opposite)"
-                      :handler #(state/dispatch-on-event
-                                 % [:set (conj path :cottising :cottise-opposite-1) default/cottise])})
+                      :handler #(let [cottise-path (conj path :cottising :cottise-opposite-1)]
+                                  (rf/dispatch-sync [:set cottise-path default/cottise])
+                                  (state/dispatch-on-event
+                                   % [:ui-component-node-select cottise-path {:open? true}]))})
 
                (and (:cottise-opposite-2 cottising-options)
                     cottise-opposite-1
                     (not cottise-opposite-2?))
                (conj {:title "Cottise 2 (opposite)"
-                      :handler #(state/dispatch-on-event
-                                 % [:set (conj path :cottising :cottise-opposite-2) default/cottise])}))]
+                      :handler #(let [cottise-path (conj path :cottising :cottise-opposite-2)]
+                                  (rf/dispatch-sync [:set cottise-path default/cottise])
+                                  (state/dispatch-on-event
+                                   % [:ui-component-node-select cottise-path {:open? true}]))}))]
     {:title (ordinary/title component-data)
      :buttons [{:icon "fas fa-plus"
                 :title "Add"
