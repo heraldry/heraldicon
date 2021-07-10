@@ -172,5 +172,5 @@
         [form path form-args])]]))
 
 (defn selected-component []
-  (let [selected-component-path @(rf/subscribe [:get ui-selected-component-path])]
+  (let [selected-component-path @(rf/subscribe [:get-value ui-selected-component-path])]
     [component-form selected-component-path]))
