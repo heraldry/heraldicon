@@ -10,6 +10,9 @@
 
 ;; subs
 
+(def node-flag-db-path [:ui :component-tree :nodes])
+(def ui-component-node-selected-path [:ui :component-tree :selected-node])
+
 (rf/reg-sub :ui-component-open?
   (fn [db [_ path]]
     (get-in db [:ui :component-open? path])))
@@ -34,6 +37,20 @@
                                       vec
                                       (conj :fields (last path)))]
             (get-in db [:ui :component-selected? parent-field-path]))))))
+
+(rf/reg-sub :ui-component-node-open?
+  (fn [[_ path] _]
+    (rf/subscribe [:get (conj node-flag-db-path path)]))
+
+  (fn [flag [_ _path]]
+    flag))
+
+(rf/reg-sub :ui-component-node-selected-path
+  (fn [_ _]
+    (rf/subscribe [:get ui-component-node-selected-path]))
+
+  (fn [selected-node-path [_ _path]]
+    selected-node-path))
 
 ;; events
 
@@ -118,6 +135,14 @@
                 path (as-> db
                            (assoc-in db [:ui :component-selected? real-path] true))))
        :fx [[:dispatch [:ui-component-open real-path]]]})))
+
+(rf/reg-event-db :ui-component-node-toggle
+  (fn-traced [db [_ path]]
+    (update-in db (conj node-flag-db-path path) not)))
+
+(rf/reg-event-db :ui-component-node-select
+  (fn-traced [db [_ path]]
+    (assoc-in db ui-component-node-selected-path path)))
 
 (rf/reg-event-db :prune-false-flags
   (fn-traced [db [_ path]]
