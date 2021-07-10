@@ -255,12 +255,14 @@
                                               vec))
        :dispatch [:ui-component-node-select (conj components-path index) {:open? true}]})))
 
-(rf/reg-event-db :add-element
-  (fn-traced [db [_ path value]]
-    (update-in db path (fn [elements]
-                         (-> elements
-                             (conj value)
-                             vec)))))
+(rf/reg-event-fx :add-element
+  (fn-traced [{:keys [db]} [_ path value]]
+    (let [elements (-> (get-in db path)
+                       (conj value)
+                       vec)
+          element-path (conj path (-> elements count dec))]
+      {:db (assoc-in db path elements)
+       :dispatch [:ui-component-node-select element-path {:open? true}]})))
 
 (rf/reg-event-db :remove-element
   (fn-traced [db [_ path]]
