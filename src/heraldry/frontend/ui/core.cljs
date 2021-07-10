@@ -43,12 +43,6 @@
             [heraldry.render-options] ;; needed for defmethods
             [re-frame.core :as rf]))
 
-(def node-flag-db-path [:ui :component-tree :nodes])
-(def ui-selected-component-path [:ui :selected-component])
-
-(defn flag-path [path]
-  (conj node-flag-db-path path))
-
 (rf/reg-sub :component-data
   (fn [db [_ path]]
     (let [data (get-in db path)
@@ -65,8 +59,8 @@
   (fn [[_ path] _]
     [(rf/subscribe [:component-data path])
      (rf/subscribe [:get-relevant-options path])
-     (rf/subscribe [:get (flag-path path)])
-     (rf/subscribe [:get ui-selected-component-path])])
+     (rf/subscribe [:ui-component-node-open? path])
+     (rf/subscribe [:ui-component-node-selected-path])])
 
   (fn [[component-data component-options open? selected-component-path] [_ path]]
     (merge {:open? open?
@@ -104,13 +98,13 @@
                     (when (or (not open?)
                               (not selectable?)
                               selected?)
-                      (rf/dispatch [:set (flag-path path) (not open?)]))
+                      (rf/dispatch [:ui-component-node-toggle path]))
                     (when selectable?
-                      (rf/dispatch [:set ui-selected-component-path path]))
+                      (rf/dispatch [:ui-component-node-select path]))
                     (.stopPropagation %))}
       (if openable?
         [:span.node-icon.clickable
-         {:on-click #(state/dispatch-on-event % [:set (flag-path path) (not open?)])}
+         {:on-click #(state/dispatch-on-event % [:ui-component-node-toggle path])}
          [:i.fa.ui-icon {:class (if open?
                                   "fa-angle-down"
                                   "fa-angle-right")}]]
@@ -172,5 +166,5 @@
         [form path form-args])]]))
 
 (defn selected-component []
-  (let [selected-component-path @(rf/subscribe [:get-value ui-selected-component-path])]
+  (let [selected-component-path @(rf/subscribe [:ui-component-node-selected-path])]
     [component-form selected-component-path]))
