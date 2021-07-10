@@ -16,7 +16,6 @@
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.attribution :as attribution]
             [heraldry.frontend.form.charge-select :as charge-select]
-            [heraldry.frontend.form.coat-of-arms :as coat-of-arms-component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
             [heraldry.frontend.form.tag :as tag]
@@ -414,7 +413,7 @@
                                                              "disabled")}
            "Save"])]]
       [render-options/form [:example-coa :render-options]]
-      [coat-of-arms-component/form [:example-coa :coat-of-arms]]]]))
+      #_[coat-of-arms-component/form [:example-coa :coat-of-arms]]]]))
 
 (defn charge-display [charge-id version]
   (let [user-data (user/data)

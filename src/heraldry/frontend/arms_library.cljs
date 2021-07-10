@@ -12,7 +12,6 @@
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.arms-select :as arms-select]
             [heraldry.frontend.form.attribution :as attribution]
-            [heraldry.frontend.form.coat-of-arms :as coat-of-arms-component]
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.render-options :as render-options]
             [heraldry.frontend.form.tag :as tag]
