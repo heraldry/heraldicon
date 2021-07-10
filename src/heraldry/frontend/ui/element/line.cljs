@@ -1,6 +1,5 @@
 (ns heraldry.frontend.ui.element.line
-  (:require [clojure.string :as s]
-            [heraldry.coat-of-arms.line.core :as line]
+  (:require [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
@@ -10,26 +9,24 @@
 (rf/reg-sub :line-title
   (fn [[_ path] _]
     [(rf/subscribe [:get path])
-     (rf/subscribe [:fimbriation-title (conj path :fimbriation)])])
+     (rf/subscribe [:get-relevant-options path])])
 
-  (fn [[line fimbriation-title] [_ _path]]
-    (let [effective-data (options/sanitize line (line/options line))]
-      (-> (util/combine
-           ", "
-           [(or (-> effective-data :type line/line-map)
-                "Inherit")
-            (when (and (-> effective-data :offset)
-                       (-> effective-data :offset zero? not))
-              (str "shifted"))
-            (when (and (-> effective-data :spacing)
-                       (-> effective-data :spacing zero? not))
-              (str "spaced"))
-            (when (and (-> effective-data :rotation)
-                       (-> effective-data :rotation zero? not))
-              (str "rotated"))
-            (when (not= fimbriation-title "None")
-              (str "fimbriated " fimbriation-title))])
-          s/lower-case
+  (fn [[line options] [_ _path]]
+    (let [sanitized-line (options/sanitize line options)
+          changes (concat [(-> sanitized-line :type line/line-map)]
+                          (when (some #(options/changed? % sanitized-line options)
+                                      [:eccentricity :spacing :offset :base-line])
+                            ["adjusted"])
+                          (when (some #(options/changed? % sanitized-line options)
+                                      [:width :height])
+                            ["resized"])
+                          (when (:mirrored? sanitized-line)
+                            ["mirrored"])
+                          (when (:flipped? sanitized-line)
+                            ["flipped"])
+                          (when (-> sanitized-line :fimbriation :mode (not= :none))
+                            ["fimbriated"]))]
+      (-> (util/combine ", " changes)
           util/upper-case-first))))
 
 (defn line-submenu [path]
