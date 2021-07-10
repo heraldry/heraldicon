@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.core
-  (:require [heraldry.coat-of-arms.charge.core :as charge]
-            [heraldry.coat-of-arms.charge-group.core :as charge-group]
+  (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
+            [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.type.barry :as barry]
