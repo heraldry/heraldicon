@@ -489,3 +489,20 @@
           (recur
            (assoc-in new-db (concat path rel-path) value)
            rest))))))
+
+(rf/reg-event-fx :override-field-part-reference
+  (fn-traced [{:keys [db]} [_ path]]
+    (let [{:keys [index]} (get-in db path)
+          referenced-part (get-in db (-> path
+                                         drop-last
+                                         vec
+                                         (conj index)))]
+      {:db (assoc-in db path referenced-part)
+       :dispatch [:ui-component-node-select path {:open? true}]})))
+
+(rf/reg-event-fx :reset-field-part-reference
+  (fn-traced [{:keys [db]} [_ path]]
+    (let [index (last path)
+          parent (get-in db (drop-last 2 path))]
+      {:db (assoc-in db path (-> (field/default-fields parent)
+                                 (get index)))})))
