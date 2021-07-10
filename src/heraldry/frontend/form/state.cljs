@@ -136,27 +136,37 @@
                            (assoc-in db [:ui :component-selected? real-path] true))))
        :fx [[:dispatch [:ui-component-open real-path]]]})))
 
-(rf/reg-event-db :ui-component-node-toggle
+(rf/reg-event-db :ui-component-node-open
   (fn-traced [db [_ path]]
-    (let [flag-path (conj node-flag-db-path path)
-          open? (get-in db flag-path)]
-      (if open?
-        ;; if it's open, then close all descendant nodes as well,
-        ;; by removing all paths starting with the given path
-        (update-in
-         db node-flag-db-path
-         (fn [flags]
-           (->> flags
-                (filter (fn [[other-path v]]
-                          (when (not= (take (count path) other-path)
-                                      path)
-                            [other-path v])))
-                (into {}))))
-        (assoc-in db flag-path true)))))
+    (let [path (vec path)]
+      (->> (range (count path))
+           (map (fn [idx]
+                  [(subvec path 0 (inc idx)) true]))
+           (into {})
+           (update-in db node-flag-db-path merge)))))
 
-(rf/reg-event-db :ui-component-node-select
+(rf/reg-event-db :ui-component-node-close
   (fn-traced [db [_ path]]
-    (assoc-in db ui-component-node-selected-path path)))
+    (update-in
+     db node-flag-db-path
+     (fn [flags]
+       (->> flags
+            (filter (fn [[other-path v]]
+                      (when (not= (take (count path) other-path)
+                                  path)
+                        [other-path v])))
+            (into {}))))))
+
+(rf/reg-event-fx :ui-component-node-toggle
+  (fn-traced [{:keys [db]} [_ path]]
+    {:dispatch (if (get-in db (conj node-flag-db-path path))
+                 [:ui-component-node-close path]
+                 [:ui-component-node-open path])}))
+
+(rf/reg-event-fx :ui-component-node-select
+  (fn-traced [{:keys [db]} [_ path]]
+    {:db (assoc-in db ui-component-node-selected-path path)
+     :dispatch [:ui-component-node-open (drop-last path)]}))
 
 (rf/reg-event-db :prune-false-flags
   (fn-traced [db [_ path]]
@@ -242,13 +252,7 @@
       {:db (update-in db components-path #(-> %
                                               (conj value)
                                               vec))
-       :fx [[:dispatch [:ui-submenu-open (conj components-path index (case (-> value :type namespace)
-                                                                       "heraldry.ordinary.type" "Select Ordinary"
-                                                                       "heraldry.charge.type" "Select Charge"
-                                                                       "heraldry.charge-group.type" nil
-                                                                       "heraldry.component" "Select Semy"))]]
-            [:dispatch [:ui-component-open (conj components-path index)]]
-            [:dispatch [:ui-component-open (conj components-path index :field)]]]})))
+       :dispatch [:ui-component-node-select (conj components-path index)]})))
 
 (rf/reg-event-db :add-element
   (fn-traced [db [_ path value]]
