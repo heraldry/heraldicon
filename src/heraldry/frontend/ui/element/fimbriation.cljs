@@ -1,6 +1,5 @@
 (ns heraldry.frontend.ui.element.fimbriation
-  (:require [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
-            [heraldry.coat-of-arms.options :as options]
+  (:require [heraldry.coat-of-arms.options :as options]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
@@ -8,16 +7,16 @@
 
 (rf/reg-sub :fimbriation-title
   (fn [[_ path] _]
-    (rf/subscribe [:get path]))
+    [(rf/subscribe [:get path])
+     (rf/subscribe [:get-relevant-options path])])
 
-  (fn [fimbriation [_ _path]]
-    ;; TODO: needs to get real options or directly sanitized data
-    (let [effective-data (options/sanitize fimbriation (fimbriation/options fimbriation))]
-      (case (:mode effective-data)
+  (fn [[fimbriation options] [_ _path]]
+    (let [sanitized-fimbriation (options/sanitize fimbriation options)]
+      (case (:mode sanitized-fimbriation)
         :none "None"
-        :single (str (-> effective-data :tincture-1 util/translate-tincture util/upper-case-first))
-        :double (str (-> effective-data :tincture-1 util/translate-tincture util/upper-case-first)
-                     " and " (-> effective-data :tincture-2 util/translate-tincture util/upper-case-first))))))
+        :single (str (-> sanitized-fimbriation :tincture-1 util/translate-tincture util/upper-case-first))
+        :double (str (-> sanitized-fimbriation :tincture-1 util/translate-tincture util/upper-case-first)
+                     " and " (-> sanitized-fimbriation :tincture-2 util/translate-tincture util/upper-case-first))))))
 
 (defn fimbriation-submenu [path]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
