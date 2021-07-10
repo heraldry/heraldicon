@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.position
-  (:require [heraldry.coat-of-arms.position :as position]
+  (:require [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.position :as position]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
@@ -7,17 +8,21 @@
 
 (rf/reg-sub :position-title
   (fn [[_ path] _]
-    (rf/subscribe [:get path]))
+    [(rf/subscribe [:get path])
+     (rf/subscribe [:get-relevant-options path])])
 
-  (fn [position [_ _path]]
-    ;; TODO: smarter way is necessary, also getting the options, which relies on the parent
-    (util/combine ", "
-                  [(if-let [point (:point position)]
-                     (position/anchor-point-map point)
-                     "Default")
-                   (when (or (-> position :offset-x (or 0) zero? not)
-                             (-> position :offset-y (or 0) zero? not))
-                     "adjusted")])))
+  (fn [[position options] [_ _path]]
+    (let [sanitized-position (options/sanitize position options)
+          changes (concat [(-> sanitized-position
+                               :point
+                               position/anchor-point-map)]
+                          (when (some #(options/changed? % sanitized-position options)
+                                      [:offset-x :offset-y :angle])
+                            ["adjusted"])
+                          (when (options/changed? :alignment sanitized-position options)
+                            ["aligned"]))]
+      (-> (util/combine ", " changes)
+          util/upper-case-first))))
 
 (defn position-submenu [path]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]

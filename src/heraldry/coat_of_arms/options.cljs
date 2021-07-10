@@ -99,3 +99,9 @@
                  (assoc v :inherited (get inherited-values k))
                  v)]))
        (into {})))
+
+(defn changed? [key sanitized-data options]
+  (and (get options key)
+       (not= (get sanitized-data key)
+             (or (-> options (get key) :inherited)
+                 (-> options (get key) :default)))))
