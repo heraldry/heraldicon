@@ -34,20 +34,28 @@
                  :step step
                  :value value
                  :disabled disabled?
-                 :on-change #(let [value (-> % .-target .-value js/parseFloat)]
+                 :on-change #(let [value (-> % .-target .-value js/parseFloat)
+                                   value (if (js/isNaN value)
+                                           nil
+                                           value)]
                                (if on-change
                                  (on-change value)
                                  (rf/dispatch [:set path value])))}]
         [:input {:type "text"
                  :value value
-                 :on-change #(let [value (-> % .-target .-value)]
+                 :on-change #(let [value (-> % .-target .-value js/parseFloat)
+                                   value (if (js/isNaN value)
+                                           nil
+                                           value)]
                                (if on-change
                                  (on-change value)
                                  (rf/dispatch-sync [:set path value])))
                  :style {:display "inline-block"
                          :width "2em"
                          :margin-left "0.5em"}}]
-        [value-mode-select/value-mode-select path :disabled? disabled?]]])))
+        [value-mode-select/value-mode-select path
+         :disabled? disabled?
+         :on-change on-change]]])))
 
 (defmethod interface/form-element :range [path]
   [range-input path])

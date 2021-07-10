@@ -4,8 +4,15 @@
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
-(defn value-mode-select [path & {:keys [display-fn disabled?]}]
+(defn value-mode-select [path & {:keys [display-fn disabled? on-change]}]
   (let [current-value @(rf/subscribe [:get-value path])
+        handler-for-value (fn [new-value]
+                            (fn [event]
+                              (if on-change
+                                (do
+                                  (on-change new-value)
+                                  (.stopPropagation event))
+                                (state/dispatch-on-event event [:set path new-value]))))
         {:keys [inherited
                 default
                 type
@@ -25,7 +32,7 @@
                (and (some? inherited)
                     (some? default)) (conj {:title (str "Default (" (display-fn default) ")")
                                             :icon "fas fa-redo"
-                                            :handler #(state/dispatch-on-event % [:set path default])})
+                                            :handler (handler-for-value default)})
                (or (some? inherited)
                    (some? default)) (conj {:title (str (if (some? inherited)
                                                          "Inherited"
@@ -34,13 +41,13 @@
                                            :icon (if (some? current-value)
                                                    "far fa-square"
                                                    "far fa-check-square")
-                                           :handler #(state/dispatch-on-event % [:set path nil])}))
+                                           :handler (handler-for-value nil)}))
         menu (cond-> menu
                (seq menu) (conj {:title "Manual"
                                  :icon (if (some? current-value)
                                          "far fa-check-square"
                                          "far fa-square")
-                                 :handler #(state/dispatch-on-event % [:set path effective-value])}))]
+                                 :handler (handler-for-value effective-value)}))]
 
     [:<>
      (when (seq menu)

@@ -4,7 +4,8 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [heraldry.frontend.ui.element.range :as range]))
 
 (defn form [path _]
   [:<>
@@ -103,3 +104,18 @@
 
 (defmethod interface/component-form-data :heraldry.component/field [_component-data]
   {:form form})
+
+(defmethod interface/form-element :field-layout-num-fields-x [path]
+  [range/range-input path
+   :on-change (fn [value]
+                (rf/dispatch [:set-field-layout-num-fields-x path value]))])
+
+(defmethod interface/form-element :field-layout-num-fields-y [path]
+  [range/range-input path
+   :on-change (fn [value]
+                (rf/dispatch [:set-field-layout-num-fields-y path value]))])
+
+(defmethod interface/form-element :field-layout-num-base-fields [path]
+  [range/range-input path
+   :on-change (fn [value]
+                (rf/dispatch [:set-field-layout-num-base-fields path value]))])
