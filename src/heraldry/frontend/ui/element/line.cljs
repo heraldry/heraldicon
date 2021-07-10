@@ -13,19 +13,19 @@
 
   (fn [[line options] [_ _path]]
     (let [sanitized-line (options/sanitize line options)
-          changes (concat [(-> sanitized-line :type line/line-map)]
-                          (when (some #(options/changed? % sanitized-line options)
-                                      [:eccentricity :spacing :offset :base-line])
-                            ["adjusted"])
-                          (when (some #(options/changed? % sanitized-line options)
-                                      [:width :height])
-                            ["resized"])
-                          (when (:mirrored? sanitized-line)
-                            ["mirrored"])
-                          (when (:flipped? sanitized-line)
-                            ["flipped"])
-                          (when (-> sanitized-line :fimbriation :mode (not= :none))
-                            ["fimbriated"]))]
+          changes [(-> sanitized-line :type line/line-map)
+                   (when (some #(options/changed? % sanitized-line options)
+                               [:eccentricity :spacing :offset :base-line])
+                     "adjusted")
+                   (when (some #(options/changed? % sanitized-line options)
+                               [:width :height])
+                     "resized")
+                   (when (:mirrored? sanitized-line)
+                     "mirrored")
+                   (when (:flipped? sanitized-line)
+                     "flipped")
+                   (when (-> sanitized-line :fimbriation :mode (not= :none))
+                     "fimbriated")]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 

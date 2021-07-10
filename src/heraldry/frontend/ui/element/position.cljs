@@ -13,14 +13,14 @@
 
   (fn [[position options] [_ _path]]
     (let [sanitized-position (options/sanitize position options)
-          changes (concat [(-> sanitized-position
-                               :point
-                               position/anchor-point-map)]
-                          (when (some #(options/changed? % sanitized-position options)
-                                      [:offset-x :offset-y :angle])
-                            ["adjusted"])
-                          (when (options/changed? :alignment sanitized-position options)
-                            ["aligned"]))]
+          changes [(-> sanitized-position
+                       :point
+                       position/anchor-point-map)
+                   (when (some #(options/changed? % sanitized-position options)
+                               [:offset-x :offset-y :angle])
+                     "adjusted")
+                   (when (options/changed? :alignment sanitized-position options)
+                     "aligned")]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
