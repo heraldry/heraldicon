@@ -64,19 +64,22 @@
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label "x-Subfields"}}
+                           :ui {:label "x-Subfields"
+                                :form-type :field-layout-num-fields-x}}
             :num-fields-y {:type :range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label "y-Subfields"}}
+                           :ui {:label "y-Subfields"
+                                :form-type :field-layout-num-fields-y}}
             :num-base-fields {:type :range
                               :min 2
                               :max 8
                               :default 2
                               :integer? true
-                              :ui {:label "Base fields"}}
+                              :ui {:label "Base fields"
+                                   :form-type :field-layout-num-base-fields}}
             :offset-x {:type :range
                        :min -1
                        :max 1
