@@ -124,7 +124,9 @@
 
    :source-creator-link {:type :text
                          :default ""
-                         :ui {:label "Creator link"}}})
+                         :ui {:label "Creator link"}}
+   :ui {:label "Attribution"
+        :form-type :attribution}})
 
 (defn options [attribution]
   (-> default-options
@@ -148,6 +150,3 @@
                                 (dissoc :source-link)
                                 (dissoc :source-creator-name)
                                 (dissoc :source-creator-link)))))
-
-(defmethod interface/component-options :attribution [data _path]
-  (options data))

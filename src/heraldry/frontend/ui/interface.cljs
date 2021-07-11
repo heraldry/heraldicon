@@ -15,6 +15,7 @@
 
 (defn effective-component-type [path data]
   (cond
+    (-> path last (= :arms-form)) :heraldry.component/arms-general
     (map? data) (-> data :type type->component-type)
     :else :heraldry.component/unknown))
 
@@ -50,11 +51,11 @@
   (fn [data path]
     (cond
       (-> path last
+          (= :arms-form)) :arms-general
+      (-> path last
           (= :render-options)) :render-options
       (-> path last
           (= :coat-of-arms)) :coat-of-arms
-      (-> path last
-          (= :attribution)) :attribution
       :else (let [ts (-> data :type str)]
               (cond
                 (s/starts-with? ts ":heraldry.field") :field
