@@ -278,8 +278,8 @@
       #_[render-options/form (conj form-db-path :render-options)]
       #_[coat-of-arms-component/form (conj form-db-path :coat-of-arms)]
       [ui/selected-component]
-      [ui/component-tree [(conj form-db-path :render-options)
-                          (conj form-db-path :attribution)
+      [ui/component-tree [form-db-path
+                          (conj form-db-path :render-options)
                           (conj form-db-path :coat-of-arms)]]]]))
 
 (defn arms-display [arms-id version]
