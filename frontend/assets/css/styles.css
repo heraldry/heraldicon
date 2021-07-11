@@ -106,7 +106,8 @@ p {
 }
 
 .main-content {
-  margin-top: 2.5em;
+  grid-area: content;
+  overflow: auto;
 }
 
 .pure-menu-children {
@@ -511,4 +512,24 @@ li.nav-menu-item a:hover {
 
 .nav-menu-item.selected {
   background-color: #f0f0f0;
+}
+
+.release-row {
+  display: flex;
+}
+
+.release-row > div {
+  flex: 1;
+}
+
+.release-row .info {
+  text-align: justify;
+  min-width: 30em;
+  padding-right: 1em;
+}
+
+@media all and (max-width: 60em) {
+  .release-row {
+    flex-direction: column;
+  }
 }
