@@ -12,5 +12,5 @@
   {:title (str "Semy of " (charge/title (:charge component-data)))
    :nodes [{:path (conj path :charge)}]})
 
-(defmethod interface/component-form-data :heraldry.component/semy [_component-data]
+(defmethod interface/component-form-data :heraldry.component/semy [_path _component-data _component-options]
   {:form form})

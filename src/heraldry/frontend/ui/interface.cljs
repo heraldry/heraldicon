@@ -13,23 +13,23 @@
       (s/starts-with? ts ":heraldry.charge") :heraldry.component/charge
       :else :heraldry.component/unknown)))
 
-(defn effective-component-type [data]
+(defn effective-component-type [path data]
   (cond
     (map? data) (-> data :type type->component-type)
     :else :heraldry.component/unknown))
 
 ;; component-node-data
 
-(defmulti component-node-data (fn [_path component-data _component-options]
-                                (effective-component-type component-data)))
+(defmulti component-node-data (fn [path component-data _component-options]
+                                (effective-component-type path component-data)))
 
 (defmethod component-node-data :heraldry.component/unknown [_path _component-data _component-options]
   {:title "unknown"})
 
 ;; component-form-data
 
-(defmulti component-form-data (fn [component-data]
-                                (effective-component-type component-data)))
+(defmulti component-form-data (fn [path component-data _component-options]
+                                (effective-component-type path component-data)))
 
 (defmethod component-form-data :heraldry.component/unknown [_path _component-data _component-options]
   {:form (fn [_path _form-data]
