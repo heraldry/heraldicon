@@ -45,12 +45,7 @@
 
 (rf/reg-sub :component-data
   (fn [db [_ path]]
-    (let [data (get-in db path)
-          ;; TODO: this should either not be necessary or be done betterly
-          data (if (and (not data)
-                        (= (last path) :components))
-                 []
-                 data)]
+    (let [data (get-in db path)]
       (cond-> data
         (and (map? data)
              (-> data :type not)) (assoc :type (keyword "heraldry.component" (last path)))))))
