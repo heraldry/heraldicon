@@ -441,11 +441,11 @@ label div {
   width: 100%;
   height: 100vh;
   display: grid;
-  grid-template-columns: [start] auto [line2] 33% [line3] 33% [end];
+  grid-template-columns: [start] auto [end];
   grid-template-rows: [top] 2.5em [header-end] auto [bottom];
   grid-template-areas:
-    "header header header"
-    "content content content";
+    "header"
+    "content";
   overflow: auto;
 }
 
