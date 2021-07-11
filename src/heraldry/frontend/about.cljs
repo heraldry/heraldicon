@@ -1,9 +1,10 @@
 (ns heraldry.frontend.about)
 
 (defn view []
-  [:div.pure-u-1-2 {:style {:padding "10px"
-                            :text-align "justify"
-                            :min-width "30em"}}
+  [:div {:style {:padding "10px"
+                 :text-align "justify"
+                 :min-width "30em"
+                 :max-width "60em"}}
    [:h2 "Welcome to this thing"]
    [:h3 "Why is this thing?"]
    [:p
