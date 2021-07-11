@@ -367,8 +367,13 @@
   (let [[status _arms-form-data] (state/async-fetch-data
                                   form-db-path
                                   [arms-id version]
-                                  #(arms-select/fetch-arms arms-id version saved-data-db-path))]
+                                  #(arms-select/fetch-arms arms-id version saved-data-db-path))
+        selected-path @(rf/subscribe [:ui-component-node-selected-path])
+        selected-data (when selected-path
+                        @(rf/subscribe [:get-value selected-path]))]
     (when (= status :done)
+      (when-not selected-data
+        (rf/dispatch [:ui-component-node-select form-db-path]))
       [arms-form])))
 
 (defn edit-arms-by-id [{:keys [parameters] :as match}]
