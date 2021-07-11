@@ -21,5 +21,5 @@
 (defmethod interface/component-node-data :heraldry.component/attribution [_path _component-data _component-options]
   {:title "Attribution"})
 
-(defmethod interface/component-form-data :heraldry.component/attribution [_component-data]
+(defmethod interface/component-form-data :heraldry.component/attribution [_path _component-data _component-options]
   {:form form})

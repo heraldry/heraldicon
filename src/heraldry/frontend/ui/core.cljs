@@ -72,7 +72,7 @@
     (merge
      {:title title
       :path path}
-     (interface/component-form-data component-data))))
+     (interface/component-form-data path component-data nil))))
 
 (defn component-node [path & {:keys [title parent-buttons]}]
   (let [node-data @(rf/subscribe [:component-node path])
