@@ -185,10 +185,9 @@
   [{:keys [to path-params] :as props} & children]
   (let [active (or (name-matches? to path-params @current-match)
                    (url-matches? to @current-match))]
-    [:li.pure-menu-item {:class (when active "pure-menu-selected")}
+    [:li.nav-menu-item {:class (when active "selected")}
      [link (-> props
-               (assoc :active active)
-               (assoc :class "pure-menu-link")) children]]))
+               (assoc :active active)) children]]))
 
 (defn view []
   (when @current-match
