@@ -11,8 +11,8 @@
       link-name]
      (when submenu-open?
        [:div.ui-component.ui-submenu {:style styles}
-        [:div.header [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-close submenu-id])}
-                      [:i.far.fa-times-circle]]
+        [:div.ui-component-header [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-close submenu-id])}
+                                   [:i.far.fa-times-circle]]
          " " title]
         (into [:div.content]
               content)])]))

@@ -78,7 +78,8 @@
                                    [:example-coa :coat-of-arms] true
                                    [:example-coa :coat-of-arms :field] true}
                  :charge-tree {:show-public? true
-                               :show-own? true}}}
+                               :show-own? true}
+                 :component-tree {:selected-node [:arms-form]}}}
            db
            {:profile-timer (js/setInterval display-profiler-stats 5000)})))
 

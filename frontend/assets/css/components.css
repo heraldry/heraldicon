@@ -158,17 +158,6 @@ input:disabled + label {
   margin-bottom: 0.5em;
 }
 
-button {
-  min-height: 1.1em;
-  border: solid 1px #bbb;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #cce;
-}
-
 .disabled,
 .disabled:hover {
   color: #ccc !important;

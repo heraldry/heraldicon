@@ -5,23 +5,16 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.render :as render]
-            [heraldry.config :as config]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.arms-select :as arms-select]
-            [heraldry.frontend.form.attribution :as attribution]
-            [heraldry.frontend.form.core :as form]
-            [heraldry.frontend.form.render-options :as render-options]
-            [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.user :as user]
-            [heraldry.util
-             :refer
-             [full-url-for-arms full-url-for-username id-for-url]]
+            [heraldry.util :refer [full-url-for-arms full-url-for-username id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
             [taoensso.timbre :as log]))
@@ -78,30 +71,41 @@
                                      :db-path coat-of-arms-db-path
                                      :metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
             {:keys [width height]} environment]
-        [:div {:style {:margin-left "10px"
-                       :margin-right "10px"}}
-         [:svg {:id "svg"
-                :style {:width "25em"}
-                :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
-                :preserveAspectRatio "xMidYMin slice"}
-          [:g {:filter (when (:escutcheon-shadow? render-options)
-                         "url(#shadow)")}
-           [:g {:transform "translate(10,10) scale(5,5)"}
-            result]]]
-         [:div.blazonry
-          [:span.disclaimer "Blazon (very rudimentary, very beta)"]
-          [:div.blazon
-           (blazon/encode-field (:field coat-of-arms) :root? true)]]
-         [charge-credits]])
+        [:svg {:id "svg"
+               :style {:width "100%"
+                       :height "100%"}
+               :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
+               :preserveAspectRatio "xMidYMin meet"}
+         [:g {:filter (when (:escutcheon-shadow? render-options)
+                        "url(#shadow)")}
+          [:g {:transform "translate(10,10) scale(5,5)"}
+           result]]])
       [:<>])))
 
-(defn generate-svg-clicked [db-path]
+(defn blazonry []
+  (let [coat-of-arms-db-path (conj form-db-path :coat-of-arms)
+        coat-of-arms @(rf/subscribe [:get coat-of-arms-db-path])]
+    [:div.blazonry
+     [:span.disclaimer "Blazon (very rudimentary, very beta)"]
+     [:div.blazon
+      (blazon/encode-field (:field coat-of-arms) :root? true)]]))
+
+(defn attribution []
+  (let [arms-data @(rf/subscribe [:get form-db-path])]
+    [:<>
+     [:div.credits
+      [credits/for-arms arms-data]]
+     [charge-credits]]))
+
+(defn generate-svg-clicked [event]
+  (.preventDefault event)
+  (.stopPropagation event)
   (modal/start-loading)
   (go
     (try
-      (let [payload (select-keys @(rf/subscribe [:get db-path]) [:id
-                                                                 :version
-                                                                 :render-options])
+      (let [payload (select-keys @(rf/subscribe [:get form-db-path]) [:id
+                                                                      :version
+                                                                      :render-options])
             user-data (user/data)
             response (<? (api-request/call :generate-svg-arms payload user-data))]
         (js/window.open (:svg-url response))
@@ -110,13 +114,15 @@
         (log/error "generate svg arms error:" e)
         (modal/stop-loading)))))
 
-(defn generate-png-clicked [db-path]
+(defn generate-png-clicked [event]
+  (.preventDefault event)
+  (.stopPropagation event)
   (modal/start-loading)
   (go
     (try
-      (let [payload (select-keys @(rf/subscribe [:get db-path]) [:id
-                                                                 :version
-                                                                 :render-options])
+      (let [payload (select-keys @(rf/subscribe [:get form-db-path]) [:id
+                                                                      :version
+                                                                      :render-options])
             user-data (user/data)
             response (<? (api-request/call :generate-png-arms payload user-data))]
         (js/window.open (:png-url response))
@@ -128,7 +134,9 @@
 (defn invalidate-arms-cache [user-id]
   (state/invalidate-cache arms-select/list-db-path user-id))
 
-(defn save-arms-clicked []
+(defn save-arms-clicked [event]
+  (.preventDefault event)
+  (.stopPropagation event)
   (go
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (rf/dispatch-sync [:clear-form-message form-db-path])
@@ -154,171 +162,126 @@
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])
         (modal/stop-loading)))))
 
-(defn export-buttons [mode]
-  (let [logged-in? (-> (user/data)
-                       :logged-in?)
+(defn copy-to-new-clicked [event]
+  (.preventDefault event)
+  (.stopPropagation event)
+  (let [arms-data @(rf/subscribe [:get form-db-path])]
+    (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (rf/dispatch-sync [:set saved-data-db-path nil])
+    (state/set-async-fetch-data
+     form-db-path
+     :new
+     (-> arms-data
+         (dissoc :id)
+         (dissoc :version)
+         (dissoc :latest-version)
+         (dissoc :username)
+         (dissoc :user-id)
+         (dissoc :created-at)
+         (dissoc :first-version-created-at)
+         (dissoc :is-current-version)
+         (dissoc :name)))
+    (rf/dispatch-sync [:set-form-message form-db-path "Created an unsaved copy."])
+    (reife/push-state :create-arms)))
+
+(defn button-row []
+  (let [error-message @(rf/subscribe [:get-form-error form-db-path])
+        form-message @(rf/subscribe [:get-form-message form-db-path])
+        arms-data @(rf/subscribe [:get form-db-path])
+        user-data (user/data)
+        logged-in? (:logged-in? user-data)
         unsaved-changes? (not= (-> @(rf/subscribe [:get form-db-path])
                                    (dissoc :render-options))
                                (-> @(rf/subscribe [:get saved-data-db-path])
                                    (dissoc :render-options)))
-        disabled? (or (not logged-in?)
-                      (and (= mode :form)
-                           unsaved-changes?))]
+        can-export? (and logged-in?
+                         (not unsaved-changes?))
+        saved? (:id arms-data)
+        owned-by-me? (= (:username user-data) (:username arms-data))
+        can-copy? (and logged-in?
+                       saved?
+                       owned-by-me?)
+        can-save? (and logged-in?
+                       (or (not saved?)
+                           owned-by-me?))]
     [:<>
-     [:button.pure-button {:type "button"
-                           :class (when disabled? "disabled")
-                           :on-click (if disabled?
-                                       (if (not logged-in?)
-                                         #(js/alert "Need to be logged in")
-                                         #(js/alert "Save your changes first"))
-                                       #(generate-svg-clicked form-db-path))
-                           :style {:float "left"}}
-      "SVG Link"]
-     [:button.pure-button {:type "button"
-                           :class (when disabled? "disabled")
-                           :on-click (if disabled?
-                                       (if (not logged-in?)
-                                         #(js/alert "Need to be logged in")
-                                         #(js/alert "Save your changes first"))
-                                       #(generate-png-clicked form-db-path))
-                           :style {:float "left"
-                                   :margin-left "5px"}}
-      "PNG Link"]]))
+     (when form-message
+       [:div.success-message form-message])
+     (when error-message
+       [:div.error-message error-message])
+
+     [:div.buttons {:style {:display "flex"
+                            :gap "10px"}}
+      [:button.button {:type "button"
+                       :class (when-not can-export? "disabled")
+                       :on-click (if can-export?
+                                   generate-svg-clicked
+                                   (if (not logged-in?)
+                                     #(js/alert "Need to be logged in")
+                                     #(js/alert "Save your changes first")))
+                       :style {:flex 1}}
+       "SVG Link"]
+      [:button.button {:type "button"
+                       :class (when-not can-export? "disabled")
+                       :on-click (if can-export?
+                                   generate-png-clicked
+                                   (if (not logged-in?)
+                                     #(js/alert "Need to be logged in")
+                                     #(js/alert "Save your changes first")))
+                       :style {:flex 1}}
+       "PNG Link"]
+      [:div.spacer {:style {:flex 10}}]
+      [:button.button
+       {:type "button"
+        :class (when-not can-copy? "disabled")
+        :style {:flex 1}
+        :on-click (if can-copy?
+                    copy-to-new-clicked
+                    #(js/alert "Need to be logged in and arms must be saved."))}
+       "Copy to new"]
+      [:button.button.primary {:type "submit"
+                               :class (when-not can-save? "disabled")
+                               :on-click (if can-save?
+                                           save-arms-clicked
+                                           #(js/alert "Need to be logged in and own the arms."))}
+       "Save"]]]))
 
 (defn arms-form []
-  (let [error-message @(rf/subscribe [:get-form-error form-db-path])
-        form-message @(rf/subscribe [:get-form-message form-db-path])
-        on-submit (fn [event]
-                    (.preventDefault event)
-                    (.stopPropagation event)
-                    (save-arms-clicked))
-        user-data (user/data)
-        logged-in? (:logged-in? user-data)
-        arms-data @(rf/subscribe [:get form-db-path])
-        saved-and-owned-by-me? (and (:id arms-data)
-                                    (= (:username user-data) (:username arms-data)))]
-    [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
-                                 (rf/dispatch [:ui-submenu-close-all])
-                                 (.stopPropagation %))}
-     [:div.pure-u-1-2.no-scrollbar {:style {:position "fixed"
-                                            :height "100vh"
-                                            :overflow-y "scroll"}}
-      [render-coat-of-arms]]
-     [:div.pure-u-1-2 {:style {:margin-left "50%"
-                               :width "45%"}}
-      #_[attribution/form (conj form-db-path :attribution)]
-      #_[:form.pure-form.pure-form-aligned
-         {:style {:display "inline-block"
-                  :width "100%"}
-          :on-key-press (fn [event]
-                          (when (-> event .-code (= "Enter"))
-                            (on-submit event)))
-          :on-submit on-submit}
-         [:fieldset
-          [form/field (conj form-db-path :name)
-           (fn [& {:keys [value on-change]}]
-             [:div.pure-control-group
-              [:label {:for "name"
-                       :style {:width "6em"}} "Name"]
-              [:input {:id "name"
-                       :value value
-                       :on-change on-change
-                       :type "text"
-                       :style {:margin-right "0.5em"}}]
-              [form/checkbox (conj form-db-path :is-public) "Make public"
-               :style {:width "7em"}]])]]
-         [:fieldset
-          [tag/form (conj form-db-path :tags)]]
-         (when form-message
-           [:div.form-message form-message])
-         (when error-message
-           [:div.error-message error-message])
-         [:div.pure-control-group {:style {:text-align "right"
-                                           :margin-top "10px"}}
-          [export-buttons :form]
-          [:button.pure-button.pure-button
-           {:type "button"
-            :on-click (let [match @(rf/subscribe [:get [:route-match]])
-                            route (-> match :data :name)
-                            params (-> match :parameters :path)]
-                        (cond
-                          (= route :edit-arms-by-id) #(reife/push-state :view-arms-by-id params)
-                          (= route :create-arms) #(reife/push-state :arms params)
-                          :else nil))
-            :style {:margin-right "5px"}}
-           "View"]
-          (when saved-and-owned-by-me?
-            [:button.pure-button.pure-button
-             {:type "button"
-              :style {:margin-right "5px"}
-              :on-click #(do
-                           (rf/dispatch-sync [:clear-form-errors form-db-path])
-                           (rf/dispatch-sync [:set saved-data-db-path nil])
-                           (state/set-async-fetch-data
-                            form-db-path
-                            :new
-                            (-> arms-data
-                                (dissoc :id)
-                                (dissoc :version)
-                                (dissoc :latest-version)
-                                (dissoc :username)
-                                (dissoc :user-id)
-                                (dissoc :created-at)
-                                (dissoc :first-version-created-at)
-                                (dissoc :is-current-version)
-                                (dissoc :name)))
-                           (rf/dispatch-sync [:set-form-message form-db-path "Created an unsaved copy."])
-                           (reife/push-state :create-arms))}
-             "Copy to new"])
-          (let [disabled? (not logged-in?)]
-            [:button.pure-button.pure-button-primary {:type "submit"
-                                                      :class (when disabled? "disabled")}
-             "Save"])
-          [:div.spacer]]]
-      #_[render-options/form (conj form-db-path :render-options)]
-      #_[coat-of-arms-component/form (conj form-db-path :coat-of-arms)]
-      [ui/selected-component]
-      [ui/component-tree [form-db-path
-                          (conj form-db-path :render-options)
-                          (conj form-db-path :coat-of-arms)]]]]))
+  [:div {:style {:display "grid"
+                 :grid-gap "10px"
+                 :grid-template-columns "[start] auto [first] 33% [second] 25% [end]"
+                 :grid-template-rows "[top] 50% [middle] 25% [bottom-half] 25% [bottom]"
+                 :grid-template-areas "'arms selected-component component-tree'
+                                       'arms attribution component-tree'
+                                       'blazonry attribution component-tree'"
+                 :padding-left "10px"
+                 :padding-right "10px"
+                 :height "100%"}
+         :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
+   [:div.no-scrollbar {:style {:grid-area "arms"
+                               :overflow-y "scroll"}}
+    [render-coat-of-arms]]
+   [:div {:style {:grid-area "blazonry"}}
+    [blazonry]]
+   [:div {:style {:grid-area "selected-component"
+                  :padding-top "10px"}}
+    [ui/selected-component]
+    [button-row]]
+   [:div {:style {:grid-area "attribution"}}
+    [attribution]]
+   [:div {:style {:grid-area "component-tree"
+                  :padding-top "5px"}}
+    [ui/component-tree [form-db-path
+                        (conj form-db-path :render-options)
+                        (conj form-db-path :coat-of-arms)]]]])
 
 (defn arms-display [arms-id version]
-  (let [user-data (user/data)
-        [status arms-data] (state/async-fetch-data
-                            form-db-path
-                            [arms-id version]
-                            #(arms-select/fetch-arms arms-id version saved-data-db-path))
-        arms-id (-> arms-data
-                    :id
-                    id-for-url)]
+  (let [[status _] (state/async-fetch-data
+                    form-db-path
+                    [arms-id version]
+                    #(arms-select/fetch-arms arms-id version saved-data-db-path))]
     (when (= status :done)
-      [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
-                                   (rf/dispatch [:ui-submenu-close-all])
-                                   (.stopPropagation %))}
-       [:div.pure-u-1-2.no-scrollbar {:style {:position "fixed"
-                                              :height "100vh"
-                                              :overflow-y "scroll"}}
-        [render-coat-of-arms]]
-       [:div.pure-u-1-2 {:style {:margin-left "50%"
-                                 :width "45%"}}
-        [:div.credits
-         [credits/for-arms arms-data]]
-        [:div.pure-control-group {:style {:text-align "right"
-                                          :margin-top "10px"
-                                          :margin-bottom "10px"}}
-
-         [export-buttons :display]
-         (when (or (= (:username arms-data)
-                      (:username user-data))
-                   ((config/get :admins) (:username user-data)))
-           [:button.pure-button.pure-button-primary {:type "button"
-                                                     :on-click #(do
-                                                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                                                  (rf/dispatch-sync [:clear-form-message form-db-path])
-                                                                  (reife/push-state :edit-arms-by-id {:id arms-id}))}
-            "Edit"])
-         [:div.spacer]]
-        [render-options/form (conj form-db-path :render-options)]]])))
+      [arms-form])))
 
 (defn link-to-arms [arms]
   (let [arms-id (-> arms
@@ -362,25 +325,12 @@
     (when (= status :done)
       [arms-form])))
 
-(defn edit-arms [arms-id version]
-  (let [[status _arms-form-data] (state/async-fetch-data
-                                  form-db-path
-                                  [arms-id version]
-                                  #(arms-select/fetch-arms arms-id version saved-data-db-path))
-        selected-path @(rf/subscribe [:ui-component-node-selected-path])
-        selected-data (when selected-path
-                        @(rf/subscribe [:get-value selected-path]))]
-    (when (= status :done)
-      (when-not selected-data
-        (rf/dispatch [:ui-component-node-select form-db-path]))
-      [arms-form])))
-
 (defn edit-arms-by-id [{:keys [parameters] :as match}]
   (rf/dispatch [:set [:route-match] match])
   (let [id (-> parameters :path :id)
         version (-> parameters :path :version)
         arms-id (str "arms:" id)]
-    [edit-arms arms-id version]))
+    [arms-display arms-id version :edit? true]))
 
 (defn view-arms-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)

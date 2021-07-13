@@ -142,9 +142,6 @@
 
 (defn component-tree [paths]
   [:div.ui-tree
-   {:style {:border "1px solid #ddd"
-            :border-radius "10px"
-            :padding "10px"}}
    [:ul
     (for [[idx node-path] (map-indexed vector paths)]
       ^{:key idx} [:li [component-node node-path]])]])
@@ -153,11 +150,11 @@
   (let [{:keys [title path form form-args]} (when path
                                               @(rf/subscribe [:component-form path]))]
     [:div.ui-component
-     [:div.header
+     [:div.ui-component-header
       [:h1
        [:i.fa.fa-sliders-h.ui-icon {:style {:margin-right "0.5em"}}]
        title]]
-     [:div.content {:style {:height "30vh"}}
+     [:div.content
       (when form
         [form path form-args])]]))
 
