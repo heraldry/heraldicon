@@ -27,6 +27,7 @@
             [heraldry.frontend.ui.element.select] ;; needed for defmethods
             [heraldry.frontend.ui.element.semy-layout] ;; needed for defmethods
             [heraldry.frontend.ui.element.submenu] ;; needed for defmethods
+            [heraldry.frontend.ui.element.tags] ;; needed for defmethods
             [heraldry.frontend.ui.element.text-field] ;; needed for defmethods
             [heraldry.frontend.ui.element.theme-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.tincture-select] ;; needed for defmethods

@@ -6,13 +6,11 @@
   [:<>
    (for [option [:name
                  :attribution
-                 :is-public]]
+                 :is-public
+                 :tags]]
      ^{:key option} [interface/form-element (conj path option)])
 
-   [:div {:style {:height "1.5em"}}]
-
-   (for [option []]
-     ^{:key option} [interface/form-element (conj path option)])])
+   [:div {:style {:height "1.5em"}}]])
 
 (defmethod interface/component-node-data :heraldry.component/arms-general [_path _component-data _component-options]
   {:title "General"})
@@ -27,4 +25,5 @@
           :ui {:label "Name"}}
    :is-public {:type :boolean
                :ui {:label "Make public"}}
-   :attribution license/default-options})
+   :attribution license/default-options
+   :tags {:ui {:form-type :tags}}})

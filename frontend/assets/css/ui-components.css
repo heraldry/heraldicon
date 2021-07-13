@@ -95,6 +95,7 @@
 .ui-setting > label {
   display: inline-block;
   width: 13em;
+  vertical-align: top;
 }
 
 .ui-setting > label.for-checkbox {
