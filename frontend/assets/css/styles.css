@@ -590,17 +590,15 @@ li.nav-menu-item a:hover {
   border-color: #000;
 }
 
-.button[disabled],
-.button-disabled,
-.button-disabled:hover,
-.button-disabled:focus,
-.button-disabled:active {
+.button.disabled,
+.button.disabled:hover,
+.button.disabled:focus,
+.button.disabled:active {
   border: none;
   background-image: none;
   opacity: 0.4;
   cursor: not-allowed;
   box-shadow: none;
-  pointer-events: none;
 }
 
 .success-message {
