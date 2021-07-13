@@ -533,3 +533,90 @@ li.nav-menu-item a:hover {
     flex-direction: column;
   }
 }
+
+.button {
+}
+
+.button.primary {
+  background-color: #359db7;
+  color: #fff;
+}
+
+.button {
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 0;
+  display: inline-block;
+  line-height: normal;
+  white-space: nowrap;
+  vertical-align: middle;
+  text-align: center;
+  cursor: pointer;
+  -webkit-user-drag: none;
+  user-select: none;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 100%;
+  padding: 0.5em 1em;
+  color: rgba(0, 0, 0, 0.8);
+  border: none rgba(0, 0, 0, 0);
+  background-color: #e6e6e6;
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+.button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+.button-hover,
+.button:hover,
+.button:focus {
+  background-image: linear-gradient(
+    transparent,
+    rgba(0, 0, 0, 0.05) 40%,
+    rgba(0, 0, 0, 0.1)
+  );
+}
+.button:focus {
+  outline: 0;
+}
+.button-active,
+.button:active {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset,
+    0 0 6px rgba(0, 0, 0, 0.2) inset;
+  border-color: #000;
+}
+
+.button[disabled],
+.button-disabled,
+.button-disabled:hover,
+.button-disabled:focus,
+.button-disabled:active {
+  border: none;
+  background-image: none;
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.success-message {
+  border: 1px solid #4a4;
+  background-color: #efe;
+  color: #4a4;
+  padding: 0.5em 1em;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.error-message {
+  border: 1px solid #b44;
+  background-color: #fdd;
+  color: #b44;
+  padding: 0.5em 1em;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
