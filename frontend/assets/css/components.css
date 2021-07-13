@@ -158,12 +158,6 @@ input:disabled + label {
   margin-bottom: 0.5em;
 }
 
-.disabled,
-.disabled:hover {
-  color: #ccc !important;
-  cursor: default;
-}
-
 .submenu {
   position: absolute;
   top: -1em;

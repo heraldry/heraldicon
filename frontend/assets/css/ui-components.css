@@ -161,9 +161,3 @@ li.ui-menu-header {
   text-align: center;
   border-bottom: 1px solid #ddd;
 }
-
-.disabled,
-.disabled:hover {
-  color: #ddd !important;
-  cursor: default;
-}
