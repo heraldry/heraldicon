@@ -9,11 +9,9 @@
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.config :as config]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
-            [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.attribution :as attribution]
             [heraldry.frontend.form.charge-select :as charge-select]
             [heraldry.frontend.form.core :as form]
@@ -21,6 +19,7 @@
             [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [id-for-url]]
             [hickory.core :as hickory]
@@ -33,6 +32,9 @@
 
 (def list-db-path
   [:charge-list])
+
+(def example-coa-db-path
+  [:example-coa])
 
 (defn find-colours [data]
   (->> data
@@ -177,7 +179,7 @@
         prepared-charge-data (-> form-data
                                  (assoc :data edn-data)
                                  (update :username #(or % (:username (user/data)))))
-        db-path [:example-coa :coat-of-arms]
+        db-path (conj example-coa-db-path :coat-of-arms)
         render-options @(rf/subscribe [:get [:example-coa :render-options]])
         coat-of-arms @(rf/subscribe [:get db-path])
         {:keys [result
@@ -196,14 +198,14 @@
      [:g {:transform "translate(10,10) scale(5,5)"}
       result]]))
 
-(defn upload-file [event db-path]
+(defn upload-file [event]
   (modal/start-loading)
   (let [file (-> event .-target .-files (.item 0))]
     (when file
       (let [reader (js/FileReader.)]
         (set! (.-onloadend reader) (fn []
                                      (let [raw-data (.-result reader)]
-                                       (load-svg-file db-path raw-data))
+                                       (load-svg-file form-db-path raw-data))
                                      (modal/stop-loading)))
         (set! (-> event .-target .-value) "")
         (.readAsText reader file)))))
@@ -215,7 +217,9 @@
     (state/invalidate-cache list-db-path user-id)
     (state/invalidate-cache [:all-charges] :all-charges)))
 
-(defn save-charge-clicked []
+(defn save-charge-clicked [event]
+  (.preventDefault event)
+  (.stopPropagation event)
   (let [payload @(rf/subscribe [:get form-db-path])
         user-data (user/data)]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
@@ -237,194 +241,18 @@
           (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])
           (modal/stop-loading))))))
 
-(defn charge-form []
-  (let [error-message @(rf/subscribe [:get-form-error form-db-path])
-        form-message @(rf/subscribe [:get-form-message form-db-path])
-        on-submit (fn [event]
-                    (.preventDefault event)
-                    (.stopPropagation event)
-                    (save-charge-clicked))
-        logged-in? (-> (user/data)
-                       :logged-in?)
-        charge-data @(rf/subscribe [:get form-db-path])
-        saved-and-owned-by-me? (and (:id charge-data)
-                                    (= (:username charge-data) (:username charge-data)))]
-    [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
-                                 (rf/dispatch [:ui-submenu-close-all])
-                                 (.stopPropagation %))}
-     [:div.pure-u-1-2.no-scrollbar {:style {:position "fixed"
-                                            :height "100vh"
-                                            :overflow-y "scroll"}}
-      [preview]]
-     [:div.pure-u-1-2 {:style {:margin-left "50%"
-                               :width "45%"}}
-      [attribution/form (conj form-db-path :attribution)
-       :charge-presets? true]
-      [:form.pure-form.pure-form-aligned
-       {:style {:display "inline-block"}
-        :on-key-press (fn [event]
-                        (when (-> event .-code (= "Enter"))
-                          (on-submit event)))
-        :on-submit on-submit}
-       [:fieldset
-        [form/field (conj form-db-path :name)
-         (fn [& {:keys [value on-change]}]
-           [:div.pure-control-group
-            [:label {:for "name"
-                     :style {:width "6em"}}
-             [:div.tooltip.info {:style {:display "inline-block"}}
-              [:i.fas.fa-question-circle]
-              [:div.bottom
-               [:h3 {:style {:text-align "center"}} "A variant name that identifies the charge for you and others, if it is public."]
-               [:i]]]
-             " Name"]
-            [:input {:id "name"
-                     :value value
-                     :on-change on-change
-                     :type "text"
-                     :style {:margin-right "0.5em"}}]
-
-            [form/checkbox (conj form-db-path :is-public) "Make public"
-             :style {:width "7em"}]])]
-        [form/field (conj form-db-path :type)
-         (fn [& {:keys [value on-change]}]
-           [:div.pure-control-group
-            [:label {:for "type"
-                     :style {:width "6em"}}
-             [:div.tooltip.info {:style {:display "inline-block"}}
-              [:i.fas.fa-question-circle]
-              [:div.bottom
-               [:h3 {:style {:text-align "center"}} "The heraldic name of the charge, the name it would be blazoned as. E.g. lion, mullet, wolf"]
-               [:i]]]
-             " Charge type"]
-            [:input {:id "type"
-                     :value value
-                     :on-change on-change
-                     :type "text"}]])]
-        [form/select (conj form-db-path :attitude) "Attitude" attributes/attitude-choices
-         :label-style {:width "6em"}]
-        [form/select (conj form-db-path :facing) "Facing" attributes/facing-choices
-         :label-style {:width "6em"}]
-        [:div.pure-control-group
-         [:h4 {:style {:margin-top "1em"
-                       :margin-bottom "0.5em"}}
-          "Attributes "
-          [:div.tooltip.info {:style {:display "inline-block"}}
-           [:i.fas.fa-question-circle]
-           [:div.bottom
-            [:h3 {:style {:text-align "center"}} "Other optional heraldic attributes that describe your charge."]
-            [:i]]]]
-         (for [[group-name & attributes] attributes/attribute-choices]
-           ^{:key group-name}
-           [:div {:style {:display "inline-block"}}
-            (for [[display-name key] attributes]
-              ^{:key key}
-              [form/checkbox (conj form-db-path :attributes key) display-name])])]
-        [:div.pure-control-group
-         [:h4 {:style {:margin-top "1em"
-                       :margin-bottom "0.5em"}}
-          "Colours "
-          [:div.tooltip.info {:style {:display "inline-block"}}
-           [:i.fas.fa-question-circle]
-           [:div.bottom
-            [:h3 {:style {:text-align "center"}} "Colour replacements in the SVG that allow tincture overrides or identify the outline, etc.."]
-            [:i]]]]
-         (let [colours-path (conj form-db-path :colours)
-               colours @(rf/subscribe [:get colours-path])]
-           (for [[k _] (sort-by first colours)]
-             ^{:key k}
-             [form/select (conj colours-path k)
-              [:div.colour-preview.tooltip {:style {:background-color k}}
-               [:div.bottom {:style {:top "30px"}}
-                [:h3 {:style {:text-align "center"}} k]
-                [:i]]]
-              attributes/tincture-modifier-for-charge-choices
-              :label-style {:width "1.5em"
-                            :margin-right "0.5em"}
-              :style {:display "inline-block"
-                      :padding-left "0"
-                      :margin-right "0.5em"}]))
-         [form/checkbox [:example-coa :render-options :preview-original?]
-          "Preview original (don't replace colours)" :style {:margin-right "0.5em"
-                                                             :width "20em"}]]
-        [form/select (conj form-db-path :fixed-tincture) "Fixed tincture" tincture/fixed-tincture-choices
-         :label-style {:width "6em"}]]
-       [:fieldset
-        [tag/form (conj form-db-path :tags)]]
-       (when form-message
-         [:div.form-message form-message])
-       (when error-message
-         [:div.error-message error-message])
-       [:div.pure-control-group {:style {:text-align "right"
-                                         :margin-top "10px"}}
-        [form/field-without-error (conj form-db-path :data)
-         (fn [& _]
-           [:label.pure-button {:for "upload"
-                                :style {:display "inline-block"
-                                        :width "auto"
-                                        :float "left"}} "Upload SVG"
-            [:input {:type "file"
-                     :accept "image/svg+xml"
-                     :id "upload"
-                     :on-change #(upload-file % form-db-path)
-                     :style {:display "none"}}]])]
-        (when-let [svg-data-url (:svg-data-url charge-data)]
-          [:a {:href svg-data-url
-               :target "_blank"
-               :style {:float "left"
-                       :padding-top "0.5em"}}
-           "Original SVG"])
-        [:button.pure-button.pure-button
-         {:type "button"
-          :on-click (let [match @(rf/subscribe [:get [:route-match]])
-                          route (-> match :data :name)
-                          params (-> match :parameters :path)]
-                      (cond
-                        (= route :edit-charge-by-id) #(reife/push-state :view-charge-by-id params)
-                        (= route :create-charge) #(reife/push-state :charges params)
-                        :else nil))
-          :style {:margin-right "5px"}}
-         "View"]
-        (when saved-and-owned-by-me?
-          [:button.pure-button.pure-button
-           {:type "button"
-            :style {:margin-right "5px"}
-            :on-click #(do
-                         (rf/dispatch-sync [:clear-form-errors form-db-path])
-                         (state/set-async-fetch-data
-                          form-db-path
-                          :new
-                          (-> charge-data
-                              (dissoc :id)
-                              (dissoc :version)
-                              (dissoc :latest-version)
-                              (dissoc :username)
-                              (dissoc :user-id)
-                              (dissoc :created-at)
-                              (dissoc :first-version-created-at)
-                              (dissoc :is-current-version)
-                              (dissoc :name)))
-                         (rf/dispatch-sync [:set-form-message form-db-path "Created an unsaved copy."])
-                         (reife/push-state :create-charge))}
-           "Copy to new"])
-        (let [disabled? (not logged-in?)]
-          [:button.pure-button.pure-button-primary {:type "submit"
-                                                    :class (when disabled?
-                                                             "disabled")}
-           "Save"])]]
-      [render-options/form [:example-coa :render-options]]
-      #_[coat-of-arms-component/form [:example-coa :coat-of-arms]]]]))
-
-(defn charge-display [charge-id version]
-  (let [user-data (user/data)
-        [status charge-data] (state/async-fetch-data
-                              form-db-path
-                              [charge-id version]
-                              #(charge/fetch-charge-for-editing charge-id version))
-        charge-id (-> charge-data
-                      :id
-                      id-for-url)]
-    (when (= status :done)
+#_(defn charge-form-old []
+    (let [error-message @(rf/subscribe [:get-form-error form-db-path])
+          form-message @(rf/subscribe [:get-form-message form-db-path])
+          on-submit (fn [event]
+                      (.preventDefault event)
+                      (.stopPropagation event)
+                      (save-charge-clicked))
+          logged-in? (-> (user/data)
+                         :logged-in?)
+          charge-data @(rf/subscribe [:get form-db-path])
+          saved-and-owned-by-me? (and (:id charge-data)
+                                      (= (:username charge-data) (:username charge-data)))]
       [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
                                    (rf/dispatch [:ui-submenu-close-all])
                                    (.stopPropagation %))}
@@ -434,23 +262,276 @@
         [preview]]
        [:div.pure-u-1-2 {:style {:margin-left "50%"
                                  :width "45%"}}
-        [:div.credits
-         [credits/for-charge charge-data]]
-        [:div {:style {:margin-bottom "0.5em"}}
-         [charge-select/charge-properties charge-data]]
-        (when (or (= (:username charge-data)
-                     (:username user-data))
-                  ((config/get :admins) (:username user-data)))
-          [:div.pure-control-group {:style {:text-align "right"
-                                            :margin-top "10px"
-                                            :margin-bottom "10px"}}
-           [:button.pure-button.pure-button-primary {:type "button"
-                                                     :on-click #(do
-                                                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                                                  (rf/dispatch-sync [:clear-form-message form-db-path])
-                                                                  (reife/push-state :edit-charge-by-id {:id charge-id}))}
-            "Edit"]])
-        [render-options/form [:example-coa :render-options]]]])))
+        [attribution/form (conj form-db-path :attribution)
+         :charge-presets? true]
+        [:form.pure-form.pure-form-aligned
+         {:style {:display "inline-block"}
+          :on-key-press (fn [event]
+                          (when (-> event .-code (= "Enter"))
+                            (on-submit event)))
+          :on-submit on-submit}
+         [:fieldset
+          [form/field (conj form-db-path :name)
+           (fn [& {:keys [value on-change]}]
+             [:div.pure-control-group
+              [:label {:for "name"
+                       :style {:width "6em"}}
+               [:div.tooltip.info {:style {:display "inline-block"}}
+                [:i.fas.fa-question-circle]
+                [:div.bottom
+                 [:h3 {:style {:text-align "center"}} "A variant name that identifies the charge for you and others, if it is public."]
+                 [:i]]]
+               " Name"]
+              [:input {:id "name"
+                       :value value
+                       :on-change on-change
+                       :type "text"
+                       :style {:margin-right "0.5em"}}]
+
+              [form/checkbox (conj form-db-path :is-public) "Make public"
+               :style {:width "7em"}]])]
+          [form/field (conj form-db-path :type)
+           (fn [& {:keys [value on-change]}]
+             [:div.pure-control-group
+              [:label {:for "type"
+                       :style {:width "6em"}}
+               [:div.tooltip.info {:style {:display "inline-block"}}
+                [:i.fas.fa-question-circle]
+                [:div.bottom
+                 [:h3 {:style {:text-align "center"}} "The heraldic name of the charge, the name it would be blazoned as. E.g. lion, mullet, wolf"]
+                 [:i]]]
+               " Charge type"]
+              [:input {:id "type"
+                       :value value
+                       :on-change on-change
+                       :type "text"}]])]
+          [form/select (conj form-db-path :attitude) "Attitude" attributes/attitude-choices
+           :label-style {:width "6em"}]
+          [form/select (conj form-db-path :facing) "Facing" attributes/facing-choices
+           :label-style {:width "6em"}]
+          [:div.pure-control-group
+           [:h4 {:style {:margin-top "1em"
+                         :margin-bottom "0.5em"}}
+            "Attributes "
+            [:div.tooltip.info {:style {:display "inline-block"}}
+             [:i.fas.fa-question-circle]
+             [:div.bottom
+              [:h3 {:style {:text-align "center"}} "Other optional heraldic attributes that describe your charge."]
+              [:i]]]]
+           (for [[group-name & attributes] attributes/attribute-choices]
+             ^{:key group-name}
+             [:div {:style {:display "inline-block"}}
+              (for [[display-name key] attributes]
+                ^{:key key}
+                [form/checkbox (conj form-db-path :attributes key) display-name])])]
+          [:div.pure-control-group
+           [:h4 {:style {:margin-top "1em"
+                         :margin-bottom "0.5em"}}
+            "Colours "
+            [:div.tooltip.info {:style {:display "inline-block"}}
+             [:i.fas.fa-question-circle]
+             [:div.bottom
+              [:h3 {:style {:text-align "center"}} "Colour replacements in the SVG that allow tincture overrides or identify the outline, etc.."]
+              [:i]]]]
+           (let [colours-path (conj form-db-path :colours)
+                 colours @(rf/subscribe [:get colours-path])]
+             (for [[k _] (sort-by first colours)]
+               ^{:key k}
+               [form/select (conj colours-path k)
+                [:div.colour-preview.tooltip {:style {:background-color k}}
+                 [:div.bottom {:style {:top "30px"}}
+                  [:h3 {:style {:text-align "center"}} k]
+                  [:i]]]
+                attributes/tincture-modifier-for-charge-choices
+                :label-style {:width "1.5em"
+                              :margin-right "0.5em"}
+                :style {:display "inline-block"
+                        :padding-left "0"
+                        :margin-right "0.5em"}]))
+           [form/checkbox [:example-coa :render-options :preview-original?]
+            "Preview original (don't replace colours)" :style {:margin-right "0.5em"
+                                                               :width "20em"}]]
+          [form/select (conj form-db-path :fixed-tincture) "Fixed tincture" tincture/fixed-tincture-choices
+           :label-style {:width "6em"}]]
+         [:fieldset
+          [tag/form (conj form-db-path :tags)]]
+         (when form-message
+           [:div.form-message form-message])
+         (when error-message
+           [:div.error-message error-message])
+         [:div.pure-control-group {:style {:text-align "right"
+                                           :margin-top "10px"}}
+          [form/field-without-error (conj form-db-path :data)
+           (fn [& _]
+             [:label.pure-button {:for "upload"
+                                  :style {:display "inline-block"
+                                          :width "auto"
+                                          :float "left"}} "Upload SVG"
+              [:input {:type "file"
+                       :accept "image/svg+xml"
+                       :id "upload"
+                       :on-change #(upload-file % form-db-path)
+                       :style {:display "none"}}]])]
+          (when-let [svg-data-url (:svg-data-url charge-data)]
+            [:a {:href svg-data-url
+                 :target "_blank"
+                 :style {:float "left"
+                         :padding-top "0.5em"}}
+             "Original SVG"])
+          [:button.pure-button.pure-button
+           {:type "button"
+            :on-click (let [match @(rf/subscribe [:get [:route-match]])
+                            route (-> match :data :name)
+                            params (-> match :parameters :path)]
+                        (cond
+                          (= route :edit-charge-by-id) #(reife/push-state :view-charge-by-id params)
+                          (= route :create-charge) #(reife/push-state :charges params)
+                          :else nil))
+            :style {:margin-right "5px"}}
+           "View"]
+          (when saved-and-owned-by-me?
+            [:button.pure-button.pure-button
+             {:type "button"
+              :style {:margin-right "5px"}
+              :on-click #(do
+                           (rf/dispatch-sync [:clear-form-errors form-db-path])
+                           (state/set-async-fetch-data
+                            form-db-path
+                            :new
+                            (-> charge-data
+                                (dissoc :id)
+                                (dissoc :version)
+                                (dissoc :latest-version)
+                                (dissoc :username)
+                                (dissoc :user-id)
+                                (dissoc :created-at)
+                                (dissoc :first-version-created-at)
+                                (dissoc :is-current-version)
+                                (dissoc :name)))
+                           (rf/dispatch-sync [:set-form-message form-db-path "Created an unsaved copy."])
+                           (reife/push-state :create-charge))}
+             "Copy to new"])
+          (let [disabled? (not logged-in?)]
+            [:button.pure-button.pure-button-primary {:type "submit"
+                                                      :class (when disabled?
+                                                               "disabled")}
+             "Save"])]]
+        [render-options/form [:example-coa :render-options]]
+        #_[coat-of-arms-component/form [:example-coa :coat-of-arms]]]]))
+
+(defn copy-to-new-clicked [event]
+  (.preventDefault event)
+  (.stopPropagation event)
+  (let [charge-data @(rf/subscribe [:get form-db-path])]
+    (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (state/set-async-fetch-data
+     form-db-path
+     :new
+     (-> charge-data
+         (dissoc :id)
+         (dissoc :version)
+         (dissoc :latest-version)
+         (dissoc :username)
+         (dissoc :user-id)
+         (dissoc :created-at)
+         (dissoc :first-version-created-at)
+         (dissoc :is-current-version)
+         (dissoc :name)))
+    (rf/dispatch-sync [:set-form-message form-db-path "Created an unsaved copy."])
+    (reife/push-state :create-charge)))
+
+(defn button-row []
+  (let [error-message @(rf/subscribe [:get-form-error form-db-path])
+        form-message @(rf/subscribe [:get-form-message form-db-path])
+        charge-data @(rf/subscribe [:get form-db-path])
+        user-data (user/data)
+        logged-in? (:logged-in? user-data)
+        saved? (:id charge-data)
+        owned-by-me? (= (:username user-data) (:username charge-data))
+        can-copy? (and logged-in?
+                       saved?
+                       owned-by-me?)
+        can-save? (and logged-in?
+                       (or (not saved?)
+                           owned-by-me?))
+        can-upload? can-save?]
+    [:<>
+     (when form-message
+       [:div.success-message form-message])
+     (when error-message
+       [:div.error-message error-message])
+
+     [:div.buttons {:style {:display "flex"
+                            :gap "10px"}}
+      [:label.button {:for "upload"
+                      :disabled (not can-upload?)
+                      :style {:display "inline-block"
+                              :width "auto"
+                              :flex 1}} "Upload SVG"
+       [:input {:type "file"
+                :accept "image/svg+xml"
+                :id "upload"
+                :disabled (not can-upload?)
+                :on-change (when can-upload?
+                             upload-file)
+                :style {:display "none"}}]]
+      (when-let [svg-data-url (:svg-data-url charge-data)]
+        [:a {:href svg-data-url
+             :target "_blank"
+             :style {:flex "1"
+                     :padding-top "0.5em"
+                     :white-space "nowrap"}}
+         "Original SVG"])
+      [:div.spacer {:style {:flex 10}}]
+      [:button.button
+       {:type "button"
+        :class (when-not can-copy? "disabled")
+        :style {:flex 1}
+        :on-click (if can-copy?
+                    copy-to-new-clicked
+                    #(js/alert "Need to be logged in and arms must be saved."))}
+       "Copy to new"]
+      [:button.button.primary
+       {:type "submit"
+        :class (when-not can-save? "disabled")
+        :on-click (if can-save?
+                    save-charge-clicked
+                    #(js/alert "Need to be logged in and own the arms."))}
+       "Save"]]]))
+
+(defn charge-form []
+  (rf/dispatch [:ui-component-node-select-default form-db-path])
+  [:div {:style {:display "grid"
+                 :grid-gap "10px"
+                 :grid-template-columns "[start] auto [first] 33% [second] 25% [end]"
+                 :grid-template-rows "[top] 50% [middle] 25% [bottom-half] 25% [bottom]"
+                 :grid-template-areas "'preview selected-component component-tree'
+                                       'preview extra extra'
+                                       'extra-1 extra extra'"
+                 :padding-left "10px"
+                 :padding-right "10px"
+                 :height "100%"}
+         :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
+   [:div.no-scrollbar {:style {:grid-area "preview"
+                               :overflow-y "scroll"}}
+    [preview]]
+   [:div {:style {:grid-area "selected-component"
+                  :padding-top "10px"}}
+    [ui/selected-component]
+    [button-row]]
+   [:div {:style {:grid-area "component-tree"
+                  :padding-top "5px"}}
+    [ui/component-tree [form-db-path
+                        (conj example-coa-db-path :render-options)
+                        (conj example-coa-db-path :coat-of-arms :field :components 0)]]]])
+
+(defn charge-display [charge-id version]
+  (let [[status _] (state/async-fetch-data
+                    form-db-path
+                    [charge-id version]
+                    #(charge/fetch-charge-for-editing charge-id version))]
+    (when (= status :done)
+      [charge-form])))
 
 (defn link-to-charge [charge & {:keys [type-prefix?]}]
   (let [charge-id (-> charge

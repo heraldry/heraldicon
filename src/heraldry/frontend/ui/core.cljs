@@ -33,6 +33,7 @@
             [heraldry.frontend.ui.element.tincture-select] ;; needed for defmethods
             [heraldry.frontend.ui.form.arms-general] ;; needed for defmethods
             [heraldry.frontend.ui.form.charge] ;; needed for defmethods
+            [heraldry.frontend.ui.form.charge-general] ;; needed for defmethods
             [heraldry.frontend.ui.form.charge-group] ;; needed for defmethods
             [heraldry.frontend.ui.form.coat-of-arms] ;; needed for defmethods
             [heraldry.frontend.ui.form.cottise] ;; needed for defmethods

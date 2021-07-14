@@ -16,6 +16,7 @@
 (defn effective-component-type [path data]
   (cond
     (-> path last (= :arms-form)) :heraldry.component/arms-general
+    (-> path last (= :charge-form)) :heraldry.component/charge-general
     (map? data) (-> data :type type->component-type)
     :else :heraldry.component/unknown))
 
@@ -52,6 +53,8 @@
     (cond
       (-> path last
           (= :arms-form)) :arms-general
+      (-> path last
+          (= :charge-form)) :charge-general
       (-> path last
           (= :render-options)) :render-options
       (-> path last
