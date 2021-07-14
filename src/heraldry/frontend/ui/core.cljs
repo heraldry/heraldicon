@@ -13,6 +13,7 @@
             [heraldry.frontend.ui.element.charge-group-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.charge-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.checkbox] ;; needed for defmethods
+            [heraldry.frontend.ui.element.colours] ;; needed for defmethods
             [heraldry.frontend.ui.element.escutcheon-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.field-layout] ;; needed for defmethods
             [heraldry.frontend.ui.element.field-type-select] ;; needed for defmethods
