@@ -1,12 +1,20 @@
 (ns heraldry.frontend.ui.form.charge-general
   (:require [heraldry.frontend.ui.interface :as interface]
-            [heraldry.license :as license]))
+            [heraldry.license :as license]
+            [heraldry.coat-of-arms.attributes :as attributes]
+            [heraldry.coat-of-arms.tincture.core :as tincture]))
 
 (defn form [path _]
   [:<>
    (for [option [:name
                  :attribution
                  :is-public
+                 :type
+                 :attitude
+                 :facing
+                 :attributes
+                 :colours
+                 :fixed-tincture
                  :tags]]
      ^{:key option} [interface/form-element (conj path option)])
 
@@ -26,4 +34,18 @@
    :is-public {:type :boolean
                :ui {:label "Make public"}}
    :attribution license/default-options
-   :tags {:ui {:form-type :tags}}})
+   :tags {:ui {:form-type :tags}}
+   :type {:type :text
+          :ui {:label "Charge type"}}
+   :attitude {:type :choice
+              :choices attributes/attitude-choices
+              :default :none
+              :ui {:label "Attitude"}}
+   :facing {:type :choice
+            :choices attributes/facing-choices
+            :default :none
+            :ui {:label "Facing"}}
+   :fixed-tincture {:type :choice
+                    :choices tincture/fixed-tincture-choices
+                    :default :none
+                    :ui {:label "Fixed tincture"}}})
