@@ -282,8 +282,8 @@ label div {
 }
 
 .tag.attribute {
-  background-color: #bee;
-  color: #177;
+  background-color: #f80;
+  color: #fff;
 }
 
 .tag.modifier {

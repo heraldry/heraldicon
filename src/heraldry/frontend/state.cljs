@@ -148,6 +148,14 @@
                                        remaining)
                                 current-tags))))))
 
+(rf/reg-event-db :add-attribute
+  (fn-traced [db [_ db-path attribute]]
+    (update-in db db-path assoc attribute true)))
+
+(rf/reg-event-db :remove-attribute
+  (fn [db [_ db-path attribute]]
+    (update-in db db-path dissoc attribute)))
+
 (rf/reg-event-db :toggle-tag
   (fn-traced [db [_ db-path tag]]
     (update-in db db-path (fn [current-tags]
