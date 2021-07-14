@@ -1,8 +1,8 @@
 (ns heraldry.frontend.ui.form.charge-general
-  (:require [heraldry.frontend.ui.interface :as interface]
-            [heraldry.license :as license]
-            [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.coat-of-arms.tincture.core :as tincture]))
+  (:require [heraldry.coat-of-arms.attributes :as attributes]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.frontend.ui.interface :as interface]
+            [heraldry.license :as license]))
 
 (defn form [path _]
   [:<>
@@ -12,9 +12,9 @@
                  :type
                  :attitude
                  :facing
-                 :attributes
                  :colours
                  :fixed-tincture
+                 :attributes
                  :tags]]
      ^{:key option} [interface/form-element (conj path option)])
 
@@ -45,6 +45,7 @@
             :choices attributes/facing-choices
             :default :none
             :ui {:label "Facing"}}
+   :attributes {:ui {:form-type :attributes}}
    :fixed-tincture {:type :choice
                     :choices tincture/fixed-tincture-choices
                     :default :none
