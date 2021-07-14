@@ -169,6 +169,18 @@
      :dispatch [:ui-component-node-open (cond-> path
                                           (not open?) drop-last)]}))
 
+(rf/reg-event-fx :ui-component-node-select-default
+  (fn-traced [{:keys [db]} [_ path]]
+    (let [old-path (get-in db ui-component-node-selected-path)
+          new-path (if (or (not old-path)
+                           (not= (subvec old-path 0 (count path))
+                                 path))
+                     path
+                     old-path)]
+      (cond-> {}
+        (not= new-path
+              old-path) (assoc :dispatch [:ui-component-node-select new-path])))))
+
 (rf/reg-event-db :prune-false-flags
   (fn-traced [db [_ path]]
     (update-in db path (fn [flags]
