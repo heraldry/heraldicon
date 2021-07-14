@@ -4,8 +4,8 @@
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.filter :as filter]
-            [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [full-url-for-username]]
             [re-frame.core :as rf]
@@ -79,7 +79,7 @@
                    :target "_blank"} username]
 
               " "
-              [tag/tags-view (-> collection :tags keys)]])))])
+              [tags/tags-view (-> collection :tags keys)]])))])
      refresh-fn
      :hide-ownership-filter? hide-ownership-filter?]))
 

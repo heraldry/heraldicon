@@ -2,7 +2,7 @@
   (:require [clojure.set :as set]
             [clojure.string :as s]
             [heraldry.frontend.form.element :as element]
-            [heraldry.frontend.form.tag :as tag]
+            [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.util :as util]
             [re-frame.core :as rf]))
 
@@ -106,7 +106,7 @@
                                                  ["Private" :private]]
         :default :all])
      [:div
-      [tag/tags-view tags-to-display
+      [tags/tags-view tags-to-display
        :on-click #(rf/dispatch [:toggle-tag filter-tags-path %])
        :selected filter-tags]]
      (if (empty? filtered-items)
