@@ -247,6 +247,7 @@
        "Save"]]]))
 
 (defn arms-form []
+  (rf/dispatch [:ui-component-node-select-default form-db-path])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
                  :grid-template-columns "[start] auto [first] 33% [second] 25% [end]"
