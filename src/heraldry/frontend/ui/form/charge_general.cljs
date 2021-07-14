@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.form.charge-general
   (:require [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.frontend.ui.element.checkbox :as checkbox]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.license :as license]))
 
@@ -18,7 +19,8 @@
                  :tags]]
      ^{:key option} [interface/form-element (conj path option)])
 
-   [:div {:style {:height "1.5em"}}]])
+   ;; TODO: not ideal, probably should move this at some point
+   [checkbox/checkbox (conj [:example-coa :render-options :preview-original?])]])
 
 (defmethod interface/component-node-data :heraldry.component/charge-general [_path _component-data _component-options]
   {:title "General"})

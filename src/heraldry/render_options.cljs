@@ -64,5 +64,10 @@
         (= texture :none) (dissoc :texture-displacement?)
         (not= mode :colours) (dissoc :theme)))))
 
-(defmethod interface/component-options :render-options [data _path]
-  (options data))
+(defmethod interface/component-options :render-options [data path]
+  (cond-> (options data)
+    ;; TODO: not ideal, probably should move this at some point
+    (-> path
+        first
+        (= :example-coa)) (assoc :preview-original? {:type :boolean
+                                                     :ui {:label "Preview original (don't replace colours)"}})))
