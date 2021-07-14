@@ -204,8 +204,8 @@ label div {
 .colour-preview {
   display: inline-block;
   border: 1px solid #ddd;
-  width: 1.5em;
-  height: 1.5em;
+  width: 1.2em;
+  height: 1.2em;
 }
 
 .blazonry {

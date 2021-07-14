@@ -45,6 +45,7 @@
             :choices attributes/facing-choices
             :default :none
             :ui {:label "Facing"}}
+   :colours {:ui {:form-type :colours}}
    :attributes {:ui {:form-type :attributes}}
    :fixed-tincture {:type :choice
                     :choices tincture/fixed-tincture-choices
