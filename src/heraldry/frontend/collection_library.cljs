@@ -14,7 +14,7 @@
             [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.font :as font]
             [heraldry.frontend.form.render-options :as render-options]
-            [heraldry.frontend.form.tag :as tag]
+            [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [id-for-url]]
@@ -164,7 +164,7 @@
                        (* (inc num-rows)
                           margin))]
     (if collection-data
-      [:div {:style {:margin-left  "10px"
+      [:div {:style {:margin-left "10px"
                      :margin-right "10px"}}
        [:svg {:id "svg"
               :style {:width "100%"}
@@ -299,7 +299,7 @@
             [form/checkbox (conj form-db-path :is-public) "Make public"
              :style {:width "7em"}]])]]
        [:fieldset
-        [tag/form (conj form-db-path :tags)]]
+        [tags/form (conj form-db-path :tags)]]
        (when form-message
          [:div.form-message form-message])
        (when error-message
@@ -375,7 +375,7 @@
   (let [collection-id (-> collection
                           :id
                           id-for-url)]
-    [:a {:href     (reife/href :view-collection-by-id {:id collection-id})
+    [:a {:href (reife/href :view-collection-by-id {:id collection-id})
          :on-click #(do
                       (rf/dispatch-sync [:clear-form-errors form-db-path])
                       (rf/dispatch-sync [:clear-form-message form-db-path]))}

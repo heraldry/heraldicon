@@ -1,8 +1,8 @@
 (ns heraldry.frontend.form.charge-select
   (:require [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.filter :as filter]
-            [heraldry.frontend.form.tag :as tag]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
             [heraldry.util :refer [full-url-for-username]]
@@ -194,7 +194,7 @@
                        sort)]
      ^{:key modifier}
      [:<> [:div.tag.modifier (util/translate modifier)] " "])
-   [tag/tags-view (-> charge :tags keys)]])
+   [tags/tags-view (-> charge :tags keys)]])
 
 (defn component [charge-list link-fn refresh-fn & {:keys [remove-empty-groups?
                                                           hide-ownership-filter?
