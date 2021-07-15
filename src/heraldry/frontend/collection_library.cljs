@@ -3,19 +3,15 @@
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.render :as render]
-            [heraldry.config :as config]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.arms-select :as arms-select]
-            [heraldry.frontend.form.attribution :as attribution]
-            [heraldry.frontend.form.collection :as collection]
             [heraldry.frontend.form.collection-select :as collection-select]
-            [heraldry.frontend.form.core :as form]
             [heraldry.frontend.form.font :as font]
-            [heraldry.frontend.form.render-options :as render-options]
-            [heraldry.frontend.ui.element.tags :as tags]
+            [heraldry.frontend.form.state] ;; needed for subscriptions
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [id-for-url]]
             [re-frame.core :as rf]
@@ -30,9 +26,6 @@
 
 (def list-db-path
   [:collection-list])
-
-(def selected-arms-path
-  [:ui :collection :selected-arms])
 
 (defn fetch-collection [collection-id version]
   (go
@@ -134,13 +127,16 @@
        (:name data)]]]))
 
 (defn on-arms-click [event index]
-  (rf/dispatch [:set selected-arms-path index])
-  (rf/dispatch [:ui-submenu-open (conj form-db-path :collection :elements index)])
-  (state/dispatch-on-event event [:ui-component-open (conj form-db-path :collection :elements index)]))
+  (state/dispatch-on-event event [:ui-component-node-select (conj form-db-path :collection :elements index)]))
+
+(defn selected-element-index []
+  (let [selected-node-path @(rf/subscribe [:ui-component-node-selected-path])
+        index (last selected-node-path)]
+    (when (int? index)
+      index)))
 
 (defn render-collection [& {:keys [allow-adding?]}]
   (let [render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
-        selected-arms @(rf/subscribe [:get selected-arms-path])
         collection-data @(rf/subscribe [:get form-db-path])
         font (-> collection-data :font font/css-string)
         collection (:collection collection-data)
@@ -169,8 +165,7 @@
        [:svg {:id "svg"
               :style {:width "100%"}
               :viewBox (str "0 0 " roll-width " " roll-height)
-              :preserveAspectRatio "xMidYMin slice"
-              :on-click #(rf/dispatch [:set selected-arms-path nil])}
+              :preserveAspectRatio "xMidYMin slice"}
         [:g
          [:text {:x (/ roll-width 2)
                  :y 50
@@ -198,16 +193,14 @@
                 arms-width
                 (conj form-db-path :collection :elements idx)
                 render-options
-                :selected? (= idx selected-arms)
+                :selected? (= idx (selected-element-index))
                 :font font]])))
 
          (when allow-adding?
            (let [x (mod num-elements num-columns)
                  y (quot num-elements num-columns)]
              ^{:key num-elements}
-             [:g {:on-click #(do
-                               (rf/dispatch [:add-arms-to-collection form-db-path {}])
-                               (state/dispatch-on-event % [:set selected-arms-path num-elements]))
+             [:g {:on-click #(state/dispatch-on-event % [:add-element (conj form-db-path :collection :elements) {}])
                   :style {:cursor "pointer"}}
               [render-add-arms
                (+ margin
@@ -221,155 +214,111 @@
                arms-width]]))]]]
       [:div "loading..."])))
 
-(defn render-arms-preview [arms-reference]
-  (let [render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
-        {arms-id :id
-         version :version} arms-reference
-        [status arms-data] (when arms-id
-                             (state/async-fetch-data
-                              [:arms-references arms-id version]
-                              [arms-id version]
-                              #(arms-select/fetch-arms arms-id version nil)))
-        {:keys [result
-                environment]} (render/coat-of-arms
-                               (if-let [coat-of-arms (:coat-of-arms arms-data)]
-                                 coat-of-arms
-                                 default/coat-of-arms)
-                               100
-                               (merge
-                                context/default
-                                {:render-options render-options
-                                 :db-path []
-                                 :fn-select-component nil
-                                 #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
-        {:keys [width height]} environment]
-    (when (= status :done)
-      [:div
-       [:div.credits {:style {:margin-bottom 0}}
-        [credits/for-arms arms-data]]
+(defn render-arms-preview []
+  (when-let [selected-element-index (selected-element-index)]
+    (let [arms-reference @(rf/subscribe [:get-value (conj form-db-path :collection :elements selected-element-index :reference)])]
+      (when arms-reference
+        (let [render-options @(rf/subscribe [:get-value (conj form-db-path :render-options)])
+              {arms-id :id
+               version :version} arms-reference
+              [status arms-data] (when arms-id
+                                   (state/async-fetch-data
+                                    [:arms-references arms-id version]
+                                    [arms-id version]
+                                    #(arms-select/fetch-arms arms-id version nil)))
+              {:keys [result
+                      environment]} (render/coat-of-arms
+                                     (if-let [coat-of-arms (:coat-of-arms arms-data)]
+                                       coat-of-arms
+                                       default/coat-of-arms)
+                                     100
+                                     (merge
+                                      context/default
+                                      {:render-options render-options
+                                       :db-path []
+                                       :fn-select-component nil
+                                       #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
+              {:keys [width height]} environment]
+          (when (= status :done)
+            [:<>
+             [:div.no-scrollbar {:style {:grid-area "attribution"
+                                         :overflow-y "scroll"
+                                         :margin 0}}
+              [:div.credits
+               [credits/for-arms arms-data]]]
+             [:div.no-scrollbar {:style {:grid-area "arms-preview"
+                                         :overflow-y "scroll"}}
+              [:svg {:id "svg"
+                     :style {:width "100%"
+                             :height "95%"}
+                     :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
+                     :preserveAspectRatio "xMidYMin meet"}
+               [:g {:filter (when (:escutcheon-shadow? render-options)
+                              "url(#shadow)")}
+                [:g {:transform "translate(10,10) scale(5,5)"}
+                 result]]]]]))))))
 
-       [:svg {:id "svg"
-              :style {:width "100%"}
-              :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
-              :preserveAspectRatio "xMidYMin slice"}
-        [:g {:filter (when (:escutcheon-shadow? render-options)
-                       "url(#shadow)")}
-         [:g {:transform "translate(10,10) scale(5,5)"}
-          result]]]])))
+(defn button-row []
+  (let [error-message @(rf/subscribe [:get-form-error form-db-path])
+        form-message @(rf/subscribe [:get-form-message form-db-path])
+        collection-data @(rf/subscribe [:get form-db-path])
+        user-data (user/data)
+        logged-in? (:logged-in? user-data)
+        saved? (:id collection-data)
+        owned-by-me? (= (:username user-data) (:username collection-data))
+        can-save? (and logged-in?
+                       (or (not saved?)
+                           owned-by-me?))]
+    [:<>
+     (when form-message
+       [:div.success-message form-message])
+     (when error-message
+       [:div.error-message error-message])
+
+     [:div.buttons {:style {:display "flex"
+                            :gap "10px"}}
+      [:div.spacer {:style {:flex 10}}]
+      [:button.button.primary {:type "submit"
+                               :class (when-not can-save? "disabled")
+                               :on-click (if can-save?
+                                           save-collection-clicked
+                                           #(js/alert "Need to be logged in and own the collection."))}
+       "Save"]]]))
 
 (defn collection-form []
-  (let [selected-arms @(rf/subscribe [:get selected-arms-path])
-        collection-data @(rf/subscribe [:get form-db-path])
-        error-message @(rf/subscribe [:get-form-error form-db-path])
-        form-message @(rf/subscribe [:get-form-message form-db-path])
-        on-submit (fn [event]
-                    (.preventDefault event)
-                    (.stopPropagation event)
-                    (save-collection-clicked))
-        logged-in? (-> (user/data)
-                       :logged-in?)]
-    [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
-                                 (rf/dispatch [:ui-submenu-close-all])
-                                 (.stopPropagation %))}
-     [:div.pure-u-1-2.no-scrollbar {:style {:position "fixed"
-                                            :height "100vh"
-                                            :overflow-y "scroll"}}
-      [render-collection
-       :allow-adding? true]]
-     [:div.pure-u-1-2 {:style {:margin-left "50%"
-                               :width "45%"}}
-      [attribution/form (conj form-db-path :attribution)]
-      [:form.pure-form.pure-form-aligned
-       {:style {:display "inline-block"}
-        :on-key-press (fn [event]
-                        (when (-> event .-code (= "Enter"))
-                          (on-submit event)))
-        :on-submit on-submit}
-       [:fieldset
-        [form/field (conj form-db-path :name)
-         (fn [& {:keys [value on-change]}]
-           [:div.pure-control-group
-            [:label {:for "name"
-                     :style {:width "6em"}} "Name"]
-            [:input {:id "name"
-                     :value value
-                     :on-change on-change
-                     :type "text"
-                     :style {:margin-right "0.5em"}}]
-            [form/checkbox (conj form-db-path :is-public) "Make public"
-             :style {:width "7em"}]])]]
-       [:fieldset
-        [tags/form (conj form-db-path :tags)]]
-       (when form-message
-         [:div.form-message form-message])
-       (when error-message
-         [:div.error-message error-message])
-       [:div.pure-control-group {:style {:text-align "right"
-                                         :margin-top "10px"}}
-        [:button.pure-button.pure-button
-         {:type "button"
-          :on-click (let [match @(rf/subscribe [:get [:route-match]])
-                          route (-> match :data :name)
-                          params (-> match :parameters :path)]
-                      (cond
-                        (= route :edit-collection-by-id) #(reife/push-state :view-collection-by-id params)
-                        (= route :create-collection) #(reife/push-state :collection params)
-                        :else nil))
-          :style {:margin-right "5px"}}
-         "View"]
-        (let [disabled? (not logged-in?)]
-          [:button.pure-button.pure-button-primary {:type "submit"
-                                                    :class (when disabled? "disabled")}
-           "Save"])
-        [:div.spacer]]]
-      [render-options/form (conj form-db-path :render-options)]
-      [collection/form form-db-path selected-arms-path]
-
-      (when selected-arms
-        (let [element (get-in collection-data [:collection :elements selected-arms])]
-          [render-arms-preview (:reference element)]))]]))
+  (rf/dispatch [:ui-component-node-select-default form-db-path])
+  [:div {:style {:display "grid"
+                 :grid-gap "10px"
+                 :grid-template-columns "[start] auto [first] 33% [second] 25% [end]"
+                 :grid-template-rows "[top] 33% [middle] 57% [bottom-edge] calc(10% - 20px) [bottom]"
+                 :grid-template-areas "'arms selected-component component-tree'
+                                       'arms arms-preview component-tree'
+                                       'arms attribution component-tree'"
+                 :padding-left "10px"
+                 :padding-right "10px"
+                 :height "100%"}
+         :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
+   [:div.no-scrollbar {:style {:grid-area "arms"
+                               :overflow-y "scroll"}}
+    [render-collection :allow-adding? true]]
+   [:div {:style {:grid-area "selected-component"
+                  :padding-top "10px"}}
+    [ui/selected-component]
+    [button-row]]
+   [render-arms-preview]
+   [:div {:style {:grid-area "component-tree"
+                  :padding-top "5px"}}
+    [ui/component-tree [form-db-path
+                        (conj form-db-path :render-options)
+                        (conj form-db-path :collection)]]]])
 
 (defn collection-display [collection-id version]
-  (let [user-data (user/data)
-        selected-arms @(rf/subscribe [:get selected-arms-path])
-        [status collection-data] (state/async-fetch-data
-                                  form-db-path
-                                  [collection-id version]
-                                  #(fetch-collection collection-id version))
-        collection-id (-> collection-data
-                          :id
-                          id-for-url)]
+  (let [[status _collection-data] (state/async-fetch-data
+                                   form-db-path
+                                   [collection-id version]
+                                   #(fetch-collection collection-id version))]
     (when (= status :done)
-      [:div.pure-g {:on-click #(do (rf/dispatch [:ui-component-deselect-all])
-                                   (rf/dispatch [:ui-submenu-close-all])
-                                   (.stopPropagation %))}
-       [:div.pure-u-1-2.no-scrollbar {:style {:position "fixed"
-                                              :height "100vh"
-                                              :overflow-y "scroll"}}
-        [render-collection]]
-       [:div.pure-u-1-2 {:style {:margin-left "50%"
-                                 :width "45%"}}
-        [:div.credits
-         [credits/for-collection collection-data]]
-        [:div.pure-control-group {:style {:text-align "right"
-                                          :margin-top "10px"
-                                          :margin-bottom "10px"}}
-
-         (when (or (= (:username collection-data)
-                      (:username user-data))
-                   ((config/get :admins) (:username user-data)))
-           [:button.pure-button.pure-button-primary {:type "button"
-                                                     :on-click #(do
-                                                                  (rf/dispatch-sync [:clear-form-errors form-db-path])
-                                                                  (rf/dispatch-sync [:clear-form-message form-db-path])
-                                                                  (reife/push-state :edit-collection-by-id {:id collection-id}))}
-            "Edit"])
-         [:div.spacer]]
-        [render-options/form (conj form-db-path :render-options)]
-
-        (when selected-arms
-          (let [element (get-in collection-data [:collection :elements selected-arms])]
-            [render-arms-preview (:reference element)]))]])))
+      [collection-form])))
 
 (defn link-to-collection [collection]
   (let [collection-id (-> collection

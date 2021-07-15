@@ -6,6 +6,7 @@
             [heraldry.coat-of-arms.ordinary.options] ;; needed for defmethods
             [heraldry.coat-of-arms.semy.options] ;; needed for defmethods
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element.arms-reference-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.attributes] ;; needed for defmethods
             [heraldry.frontend.ui.element.attribution] ;; needed for defmethods
             [heraldry.frontend.ui.element.charge-group-preset-select] ;; needed for defmethods
@@ -38,6 +39,9 @@
             [heraldry.frontend.ui.form.charge-general] ;; needed for defmethods
             [heraldry.frontend.ui.form.charge-group] ;; needed for defmethods
             [heraldry.frontend.ui.form.coat-of-arms] ;; needed for defmethods
+            [heraldry.frontend.ui.form.collection] ;; needed for defmethods
+            [heraldry.frontend.ui.form.collection-element] ;; needed for defmethods
+            [heraldry.frontend.ui.form.collection-general] ;; needed for defmethods
             [heraldry.frontend.ui.form.cottise] ;; needed for defmethods
             [heraldry.frontend.ui.form.field] ;; needed for defmethods
             [heraldry.frontend.ui.form.ordinary] ;; needed for defmethods
