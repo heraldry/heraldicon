@@ -318,17 +318,6 @@
   (fn-traced [db [_ path changes]]
     (update-in db path merge changes)))
 
-(rf/reg-event-fx :add-arms-to-collection
-  (fn-traced [{:keys [db]} [_ path value index]]
-    (let [elements-path (conj path :collection :elements)
-          index (or index
-                    (count (get-in db elements-path)))]
-      {:db (update-in db elements-path #(let [before (take index %)
-                                              after (drop index %)]
-                                          (vec (concat before [value] after))))
-       :fx [[:dispatch [:ui-submenu-open (conj elements-path index)]]
-            [:dispatch [:ui-component-open (conj elements-path index)]]]})))
-
 (rf/reg-event-db :cycle-charge-index
   (fn-traced [db [_ path num-charges]]
     (let [slots-path (drop-last path)

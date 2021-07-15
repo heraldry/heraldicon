@@ -17,6 +17,9 @@
   (cond
     (-> path last (= :arms-form)) :heraldry.component/arms-general
     (-> path last (= :charge-form)) :heraldry.component/charge-general
+    (-> path last (= :collection-form)) :heraldry.component/collection-general
+    (-> path last (= :collection)) :heraldry.component/collection
+    (-> path drop-last (->> (take-last 2)) (= [:collection :elements])) :heraldry.component/collection-element
     (map? data) (-> data :type type->component-type)
     :else :heraldry.component/unknown))
 
@@ -55,6 +58,13 @@
           (= :arms-form)) :arms-general
       (-> path last
           (= :charge-form)) :charge-general
+      (-> path last
+          (= :collection-form)) :collection-general
+      (-> path last
+          (= :collection)) :collection
+      (-> path drop-last
+          (->> (take-last 2))
+          (= [:collection :elements])) :collection-element
       (-> path last
           (= :render-options)) :render-options
       (-> path last
