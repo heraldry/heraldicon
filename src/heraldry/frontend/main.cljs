@@ -10,7 +10,7 @@
 (defn app []
   [:<>
    [header/view]
-   [:div.main-content
+   [:div.main-content.no-scrollbar
     (if-let [view (route/view)]
       view
       [:div "Not found"])
