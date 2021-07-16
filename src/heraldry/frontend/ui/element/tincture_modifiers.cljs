@@ -74,10 +74,11 @@
                 ^{:key t}
                 [tincture-select/tincture-select
                  (conj path t)
-                 :option {:type :choice
-                          :choices tincture/choices
-                          :default :none
-                          :ui {:label (util/translate-cap-first t)}}])]])]]))))
+                 ;; TODO: this could probably be generated dynamically in charge/options
+                 :default-option {:type :choice
+                                  :choices tincture/choices
+                                  :default :none
+                                  :ui {:label (util/translate-cap-first t)}}])]])]]))))
 
 (defmethod interface/form-element :tincture-modifiers [path]
   [tincture-modifiers-submenu path])
