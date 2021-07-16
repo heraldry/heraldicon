@@ -56,6 +56,8 @@
                                                                                             [k :or]))
                                                                                      (into {}))
                                                                                 {:orbed :argent
+                                                                                 :eyed :argent
+                                                                                 :toothed :argent
                                                                                  :secondary :gules
                                                                                  :tertiary :vert
                                                                                  :armed :or
