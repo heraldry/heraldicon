@@ -82,7 +82,6 @@
     [mask-id mask mask-inverted-id mask-inverted]))
 
 (defn render [{:keys [field
-                      tincture
                       hints
                       variant
                       data]
@@ -100,10 +99,14 @@
       (let [{:keys [origin
                     anchor
                     geometry
-                    fimbriation]} (options/sanitize charge (update-in
-                                                            (charge-options/options charge)
-                                                            [:origin :point :choices]
-                                                            conj ["Special" :special]))
+                    fimbriation
+                    tincture]} (options/sanitize charge (update-in
+                                                         (charge-options/options charge)
+                                                         [:origin :point :choices]
+                                                         conj ["Special" :special]))
+            ;; not all tinctures have their own options, but some do, so
+            ;; override those with the sanitized values
+            tincture (merge (:tincture charge) tincture)
             {:keys [size stretch
                     mirrored? reversed?]} geometry
             {:keys [charge-group

@@ -131,8 +131,7 @@
     :heraldry/charge {:type :heraldry.charge.type/roundel
                       :field {:type :heraldry.field.type/plain
                               :tincture :azure}
-                      :tincture {:eyes-and-teeth :or
-                                 :shadow 0.5
+                      :tincture {:shadow 0.5
                                  :highlight 0.5
                                  :primary :or}
                       :geometry {:size 50}
@@ -158,12 +157,6 @@
                       :field {:type :heraldry.field.type/plain
                               :tincture :azure}
                       :tincture {:shadow true}}
-
-    :heraldry/charge {:type :heraldry.charge.type/wolf
-                      :attitude :rampant
-                      :field {:type :heraldry.field.type/plain
-                              :tincture :azure}
-                      :tincture {:eyes-and-teeth 0.5}}
 
     :heraldry/charge {:type :heraldry.charge.type/wolf
                       :attitude :rampant

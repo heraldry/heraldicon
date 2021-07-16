@@ -5,7 +5,8 @@
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
-            [heraldry.frontend.ui.interface :as interface]))
+            [heraldry.frontend.ui.interface :as interface]
+            [heraldry.coat-of-arms.tincture.core :as tincture]))
 
 (def default-options
   {:type {:type :choice
@@ -43,9 +44,12 @@
                     (assoc-in [:thickness-1 :default] 10)
                     (assoc-in [:thickness-2 :max] 50)
                     (assoc-in [:thickness-2 :default] 10))
-   :tincture {:eyes-and-teeth {:type :boolean
-                               :default false
-                               :ui {:label "White eyes and teeth"}}
+   :tincture {:eyed {:type :choice
+                     :choices tincture/choices
+                     :default :argent}
+              :toothed {:type :choice
+                        :choices tincture/choices
+                        :default :argent}
               :shadow {:type :range
                        :min 0
                        :max 1
