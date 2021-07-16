@@ -46,10 +46,12 @@
                     (assoc-in [:thickness-2 :default] 10))
    :tincture {:eyed {:type :choice
                      :choices tincture/choices
-                     :default :argent}
+                     :default :argent
+                     :ui {:label "Eyed"}}
               :toothed {:type :choice
                         :choices tincture/choices
-                        :default :argent}
+                        :default :argent
+                        :ui {:label "Toothed"}}
               :shadow {:type :range
                        :min 0
                        :max 1
