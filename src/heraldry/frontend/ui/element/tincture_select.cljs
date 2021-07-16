@@ -33,8 +33,9 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn tincture-select [path]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+(defn tincture-select [path & {:keys [option]}]
+  (when-let [option (or option
+                        @(rf/subscribe [:get-relevant-options path]))]
     (let [current-value @(rf/subscribe [:get-value path])
           {:keys [ui inherited default choices]} option
           value (or current-value

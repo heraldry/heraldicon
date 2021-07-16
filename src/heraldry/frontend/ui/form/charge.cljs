@@ -10,7 +10,8 @@
                  :origin
                  :anchor
                  :geometry
-                 :fimbriation]]
+                 :fimbriation
+                 :tincture]]
      ^{:key option} [interface/form-element (conj path option)])])
 
 (defmethod interface/component-node-data :heraldry.component/charge [path component-data _component-options]
