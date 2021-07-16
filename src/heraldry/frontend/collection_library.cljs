@@ -216,47 +216,48 @@
 
 (defn render-arms-preview []
   (when-let [selected-element-index (selected-element-index)]
-    (let [arms-reference @(rf/subscribe [:get-value (conj form-db-path :collection :elements selected-element-index :reference)])]
-      (when arms-reference
-        (let [render-options @(rf/subscribe [:get-value (conj form-db-path :render-options)])
-              {arms-id :id
-               version :version} arms-reference
-              [status arms-data] (when arms-id
-                                   (state/async-fetch-data
-                                    [:arms-references arms-id version]
-                                    [arms-id version]
-                                    #(arms-select/fetch-arms arms-id version nil)))
-              {:keys [result
-                      environment]} (render/coat-of-arms
-                                     (if-let [coat-of-arms (:coat-of-arms arms-data)]
-                                       coat-of-arms
-                                       default/coat-of-arms)
-                                     100
-                                     (merge
-                                      context/default
-                                      {:render-options render-options
-                                       :db-path []
-                                       :fn-select-component nil
-                                       #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
-              {:keys [width height]} environment]
-          (when (= status :done)
-            [:<>
-             [:div.no-scrollbar {:style {:grid-area "attribution"
-                                         :overflow-y "scroll"
-                                         :margin 0}}
-              [:div.credits
-               [credits/for-arms arms-data]]]
-             [:div.no-scrollbar {:style {:grid-area "arms-preview"
-                                         :overflow-y "scroll"}}
-              [:svg {:id "svg"
-                     :style {:width "100%"
-                             :height "95%"}
-                     :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
-                     :preserveAspectRatio "xMidYMin meet"}
-               [:g {:filter (when (:escutcheon-shadow? render-options)
-                              "url(#shadow)")}
-                [:g {:transform "translate(10,10) scale(5,5)"}
-                 result]]]]]))))))
+    (let [arms-reference @(rf/subscribe [:get-value (conj form-db-path :collection :elements selected-element-index :reference)])
+          render-options @(rf/subscribe [:get-value (conj form-db-path :render-options)])
+          {arms-id :id
+           version :version} arms-reference
+          [status arms-data] (when arms-id
+                               (state/async-fetch-data
+                                [:arms-references arms-id version]
+                                [arms-id version]
+                                #(arms-select/fetch-arms arms-id version nil)))
+          {:keys [result
+                  environment]} (render/coat-of-arms
+                                 (if-let [coat-of-arms (:coat-of-arms arms-data)]
+                                   coat-of-arms
+                                   default/coat-of-arms)
+                                 100
+                                 (merge
+                                  context/default
+                                  {:render-options render-options
+                                   :db-path []
+                                   :fn-select-component nil
+                                   #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
+          {:keys [width height]} environment]
+      (when (or (not arms-id)
+                (= status :done))
+        [:<>
+         (when arms-id
+           [:div.no-scrollbar {:style {:grid-area "attribution"
+                                       :overflow-y "scroll"
+                                       :margin 0}}
+            [:div.credits
+             [credits/for-arms arms-data]]])
+         [:div.no-scrollbar {:style {:grid-area "arms-preview"
+                                     :overflow-y "scroll"}}
+          [:svg {:id "svg"
+                 :style {:width "100%"
+                         :height "95%"}
+                 :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
+                 :preserveAspectRatio "xMidYMin meet"}
+           [:g {:filter (when (:escutcheon-shadow? render-options)
+                          "url(#shadow)")}
+            [:g {:transform "translate(10,10) scale(5,5)"}
+             result]]]]]))))
 
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
