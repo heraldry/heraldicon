@@ -279,40 +279,78 @@
 
 (rf/reg-event-db :remove-element
   (fn-traced [db [_ path]]
-    (let [elements-path (drop-last path)
-          index (last path)]
-      (update-in db elements-path (fn [elements]
-                                    (vec (concat (subvec elements 0 index)
-                                                 (subvec elements (inc index)))))))))
+    (let [elements-path (-> path drop-last vec)
+          index (last path)
+          elements (vec (get-in db elements-path))
+          num-elements (count elements)]
+      (if (>= index num-elements)
+        db
+        (-> db
+            (update-in elements-path (fn [elements]
+                                       (vec (concat (subvec elements 0 index)
+                                                    (subvec elements (inc index))))))
+            (update-in ui-component-node-selected-path
+                       (fn [selected-node-path]
+                         (let [selected-base-path (drop-last selected-node-path)
+                               selected-index (last selected-node-path)]
+                           (cond
+                             (and (= selected-base-path elements-path)
+                                  (= selected-index index)) nil
+                             (and (= selected-base-path elements-path)
+                                  (> selected-index index)) (conj elements-path (dec selected-index))
+                             :else selected-node-path)))))))))
 
 (rf/reg-event-db :move-element-up
   (fn-traced [db [_ path]]
-    (let [elements-path (drop-last path)
-          index (last path)]
-      (update-in db elements-path (fn [elements]
-                                    (let [num-elements (count elements)]
-                                      (if (>= index num-elements)
-                                        elements
-                                        (-> elements
-                                            (subvec 0 index)
-                                            (conj (get elements (inc index)))
-                                            (conj (get elements index))
-                                            (concat (subvec elements (+ index 2)))
-                                            vec))))))))
+    (let [elements-path (-> path drop-last vec)
+          index (last path)
+          elements (vec (get-in db elements-path))
+          num-elements (count elements)]
+      (if (>= index num-elements)
+        db
+        (-> db
+            (assoc-in elements-path (-> elements
+                                        (subvec 0 index)
+                                        (conj (get elements (inc index)))
+                                        (conj (get elements index))
+                                        (concat (subvec elements (+ index 2)))
+                                        vec))
+            (update-in ui-component-node-selected-path
+                       (fn [selected-node-path]
+                         (let [selected-base-path (drop-last selected-node-path)
+                               selected-index (last selected-node-path)]
+                           (cond
+                             (and (= selected-base-path elements-path)
+                                  (= selected-index (inc index))) (conj elements-path index)
+                             (and (= selected-base-path elements-path)
+                                  (= selected-index index)) (conj elements-path (inc index))
+                             :else selected-node-path)))))))))
 
 (rf/reg-event-db :move-element-down
   (fn-traced [db [_ path]]
-    (let [elements-path (drop-last path)
+    (let [elements-path (-> path drop-last vec)
           index (last path)]
-      (update-in db elements-path (fn [elements]
-                                    (if (zero? index)
-                                      elements
-                                      (-> elements
-                                          (subvec 0 (dec index))
-                                          (conj (get elements index))
-                                          (conj (get elements (dec index)))
-                                          (concat (subvec elements (inc index)))
-                                          vec)))))))
+      (if (zero? index)
+        db
+        (-> db
+            (update-in elements-path (fn [elements]
+                                       (-> elements
+                                           vec
+                                           (subvec 0 (dec index))
+                                           (conj (get elements index))
+                                           (conj (get elements (dec index)))
+                                           (concat (subvec elements (inc index)))
+                                           vec)))
+            (update-in ui-component-node-selected-path
+                       (fn [selected-node-path]
+                         (let [selected-base-path (drop-last selected-node-path)
+                               selected-index (last selected-node-path)]
+                           (cond
+                             (and (= selected-base-path elements-path)
+                                  (= selected-index (dec index))) (conj elements-path index)
+                             (and (= selected-base-path elements-path)
+                                  (= selected-index index)) (conj elements-path (dec index))
+                             :else selected-node-path)))))))))
 
 (rf/reg-event-db :update-charge
   (fn-traced [db [_ path changes]]
