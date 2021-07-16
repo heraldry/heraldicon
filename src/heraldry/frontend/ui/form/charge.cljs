@@ -4,7 +4,6 @@
 
 (defn form [path _]
   [:<>
-   ;; TODO: tincture modifiers need to be added, but they depend on the charge data
    (for [option [:type
                  :escutcheon
                  :origin

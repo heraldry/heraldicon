@@ -49,6 +49,7 @@
                                          :field {:type :heraldry.field.type/plain
                                                  :tincture :argent
                                                  :components [{:type :heraldry.charge.type/preview
+                                                               :preview? true
                                                                :field {:type :heraldry.field.type/plain
                                                                        :tincture :azure}
                                                                :tincture (merge (->> attributes/tincture-modifier-map
