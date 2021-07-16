@@ -2,9 +2,9 @@
   (:require [clojure.set :as set]
             [clojure.string :as s]
             [heraldry.coat-of-arms.attributes :as attributes]
+            [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.charge :as charge]
-            [heraldry.frontend.ui.element.checkbox :as checkbox]
             [heraldry.frontend.ui.element.range :as range]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.tincture-select :as tincture-select]
@@ -21,6 +21,8 @@
           {:keys [ui]} options
           label (:label ui)
           tincture-data @(rf/subscribe [:get-value path])
+          sanitized-tincture-data (merge tincture-data
+                                         (options/sanitize tincture-data options))
           charge-data (charge/fetch-charge-data variant)
           supported-tinctures (-> attributes/tincture-modifier-map
                                   keys
@@ -39,18 +41,32 @@
                                          (disj :highlight)
                                          sort
                                          vec)
-          tinctures-set (-> tincture-data
+          tinctures-set (-> sanitized-tincture-data
                             (->> (filter (fn [[_ v]]
                                            (and (some? v)
                                                 (not= v :none))))
                                  (map first)
                                  set)
+                            (disj :shadow)
+                            (disj :highlight)
                             (filter supported-tinctures)
-                            (->> (map util/translate-cap-first)))
+                            sort
+                            vec
+                            (cond->
+                             (and (:shadow supported-tinctures)
+                                  (-> sanitized-tincture-data
+                                      :shadow
+                                      pos?)) (conj :shadow)
+                             (and (:highlight supported-tinctures)
+                                  (-> sanitized-tincture-data
+                                      :highlight
+                                      pos?)) (conj :highlight)))
           tinctures-title (if (-> tinctures-set count pos?)
-                            (-> (util/combine ", " tinctures-set)
-                                s/lower-case
-                                util/upper-case-first)
+                            (->> tinctures-set
+                                 (map util/translate)
+                                 (util/combine ", ")
+                                 s/lower-case
+                                 util/upper-case-first)
                             "None")
           link-name (if (-> tinctures-title count (> 30))
                       (str (subs tinctures-title 0 27) "...")
