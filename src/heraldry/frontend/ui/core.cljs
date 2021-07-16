@@ -33,6 +33,7 @@
             [heraldry.frontend.ui.element.tags] ;; needed for defmethods
             [heraldry.frontend.ui.element.text-field] ;; needed for defmethods
             [heraldry.frontend.ui.element.theme-select] ;; needed for defmethods
+            [heraldry.frontend.ui.element.tincture-modifiers] ;; needed for defmethods
             [heraldry.frontend.ui.element.tincture-select] ;; needed for defmethods
             [heraldry.frontend.ui.form.arms-general] ;; needed for defmethods
             [heraldry.frontend.ui.form.charge] ;; needed for defmethods

@@ -42,7 +42,24 @@
                     (assoc-in [:thickness-1 :max] 50)
                     (assoc-in [:thickness-1 :default] 10)
                     (assoc-in [:thickness-2 :max] 50)
-                    (assoc-in [:thickness-2 :default] 10))})
+                    (assoc-in [:thickness-2 :default] 10))
+   :tincture {:eyes-and-teeth {:type :boolean
+                               :default false
+                               :ui {:label "White eyes and teeth"}}
+              :shadow {:type :range
+                       :min 0
+                       :max 1
+                       :default 1
+                       :ui {:label "Shadow"
+                            :step 0.01}}
+              :highlight {:type :range
+                          :min 0
+                          :max 1
+                          :default 1
+                          :ui {:label "Highlight"
+                               :step 0.01}}
+              :ui {:label "Tinctures"
+                   :form-type :tincture-modifiers}}})
 
 (defn options [charge & {:keys [part-of-semy? part-of-charge-group?]}]
   (let [type (-> charge :type name keyword)]
@@ -81,7 +98,8 @@
                                [:origin]
                                [:anchor]
                                [:geometry]
-                               [:fimbriation]]))
+                               [:fimbriation]
+                               [:tincture]]))
         (cond->
          (or part-of-semy?
              part-of-charge-group?) (dissoc :origin))
