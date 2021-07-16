@@ -25,7 +25,6 @@
           supported-tinctures (-> attributes/tincture-modifier-map
                                   keys
                                   set
-                                  (conj :eyes-and-teeth)
                                   (conj :secondary)
                                   (conj :tertiary)
                                   (conj :shadow)
@@ -36,7 +35,6 @@
                                        (->> (map second))
                                        set)))
           sorted-supported-tinctures (-> supported-tinctures
-                                         (disj :eyes-and-teeth)
                                          (disj :shadow)
                                          (disj :highlight)
                                          sort
@@ -66,12 +64,6 @@
             [:span.disabled "not supported by charge"]
             [submenu/submenu path label link-name {:width "30em"}
              [:div.placeholders
-              (when (get supported-tinctures :eyes-and-teeth)
-                [checkbox/checkbox
-                 (conj path :eyes-and-teeth)
-                 :on-change #(rf/dispatch [:set
-                                           (conj path :eyes-and-teeth)
-                                           (if % :argent nil)])])
               (when (get supported-tinctures :shadow)
                 [range/range-input
                  (conj path :shadow)])

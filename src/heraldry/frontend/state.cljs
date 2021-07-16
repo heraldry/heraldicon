@@ -55,8 +55,7 @@
                                                                                      (map (fn [[k _]]
                                                                                             [k :or]))
                                                                                      (into {}))
-                                                                                {:eyes-and-teeth :argent
-                                                                                 :orbed :argent
+                                                                                {:orbed :argent
                                                                                  :secondary :gules
                                                                                  :tertiary :vert
                                                                                  :armed :or

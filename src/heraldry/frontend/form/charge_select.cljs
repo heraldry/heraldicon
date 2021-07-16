@@ -187,7 +187,6 @@
                                     #{:primary
                                       :keep
                                       :outline
-                                      :eyes-and-teeth
                                       :shadow
                                       :highlight}
                                     not))
