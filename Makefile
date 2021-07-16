@@ -47,7 +47,7 @@ deploy-backend-local: release-backend-local
 	make setup-sharp-osx
 
 dev-local:
-	npx shadow-cljs watch frontend backend
+	npx shadow-cljs watch frontend backend test
 
 dev-test:
 	npx shadow-cljs watch test
