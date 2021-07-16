@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.tincture-select
-  (:require [heraldry.coat-of-arms.render :as render]
+  (:require [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.form.shared :as shared]
             [heraldry.frontend.state :as state]
@@ -33,14 +34,12 @@
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))
 
-(defn tincture-select [path & {:keys [option]}]
-  (when-let [option (or option
-                        @(rf/subscribe [:get-relevant-options path]))]
+(defn tincture-select [path & {:keys [default-option]}]
+  (when-let [option (or @(rf/subscribe [:get-relevant-options path])
+                        default-option)]
     (let [current-value @(rf/subscribe [:get-value path])
-          {:keys [ui inherited default choices]} option
-          value (or current-value
-                    inherited
-                    default)
+          {:keys [ui choices]} option
+          value (options/get-value current-value option)
           label (or (:label ui) "Tincture")]
       [:div.ui-setting
        (when label
@@ -54,7 +53,8 @@
             (for [[display-name key] group]
               ^{:key display-name}
               [tincture-choice path key display-name :selected? (= key value)])])]
-        [value-mode-select/value-mode-select path]]])))
+        [value-mode-select/value-mode-select path
+         :default-option default-option]]])))
 
 (defmethod interface/form-element :tincture-select [path]
   [tincture-select path])

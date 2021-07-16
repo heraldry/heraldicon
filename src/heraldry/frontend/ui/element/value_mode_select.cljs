@@ -4,7 +4,7 @@
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
-(defn value-mode-select [path & {:keys [display-fn disabled? on-change]}]
+(defn value-mode-select [path & {:keys [display-fn disabled? on-change default-option]}]
   (let [current-value @(rf/subscribe [:get-value path])
         handler-for-value (fn [new-value]
                             (fn [event]
@@ -16,7 +16,8 @@
         {:keys [inherited
                 default
                 type
-                choices]} @(rf/subscribe [:get-relevant-options path])
+                choices]} (or @(rf/subscribe [:get-relevant-options path])
+                              default-option)
         display-fn (or display-fn
                        (when (= type :choice)
                          (util/choices->map choices))
