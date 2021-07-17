@@ -3,7 +3,6 @@
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.aws.cognito :as cognito]
             [heraldry.frontend.api.request :as api-request]
-            [heraldry.frontend.form.core :as form]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
@@ -26,6 +25,15 @@
 (declare change-temporary-password-modal)
 (declare password-reset-confirmation-modal)
 
+(defn text-field [db-path function]
+  (let [value @(rf/subscribe [:get db-path])
+        error @(rf/subscribe [:get-form-error db-path])]
+    [:div {:class (when error "error")}
+     (when error
+       [:div.error-message error])
+     (function :value value
+               :on-change #(let [new-value (-> % .-target .-value)]
+                             (rf/dispatch-sync [:set db-path new-value])))]))
 (defn data []
   @(rf/subscribe [:get user-db-path]))
 
@@ -121,7 +129,7 @@
      (when error-message
        [:div.error-message error-message])
      [:fieldset
-      [form/field (conj db-path :username)
+      [text-field (conj db-path :username)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:input {:id "username"
@@ -129,7 +137,7 @@
                    :on-change on-change
                    :placeholder "Username"
                    :type "text"}]])]
-      [form/field (conj db-path :password)
+      [text-field (conj db-path :password)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:input {:id "password"
@@ -193,7 +201,7 @@
      (when error-message
        [:div.error-message error-message])
      [:fieldset
-      [form/field (conj db-path :username)
+      [text-field (conj db-path :username)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "username"} "Username"]
@@ -202,7 +210,7 @@
                    :on-change on-change
                    :placeholder "Username"
                    :type "text"}]])]
-      [form/field (conj db-path :email)
+      [text-field (conj db-path :email)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "email"} "Email"]
@@ -211,7 +219,7 @@
                    :on-change on-change
                    :placeholder "Email"
                    :type "text"}]])]
-      [form/field (conj db-path :password)
+      [text-field (conj db-path :password)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "password"} "Password:"]
@@ -220,7 +228,7 @@
                    :on-change on-change
                    :placeholder "Password"
                    :type "password"}]])]
-      [form/field (conj db-path :password-again)
+      [text-field (conj db-path :password-again)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "password-again"} "Password again:"]
@@ -285,7 +293,7 @@
      (when error-message
        [:div.error-message error-message])
      [:fieldset
-      [form/field (conj db-path :code)
+      [text-field (conj db-path :code)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:input {:id "code"
@@ -341,7 +349,7 @@
      (when error-message
        [:div.error-message error-message])
      [:fieldset
-      [form/field (conj db-path :new-password)
+      [text-field (conj db-path :new-password)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "new-password"} "New password:"]
@@ -350,7 +358,7 @@
                    :on-change on-change
                    :placeholder "New password"
                    :type "password"}]])]
-      [form/field (conj db-path :new-password-again)
+      [text-field (conj db-path :new-password-again)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "new-password-again"} "New password again:"]
@@ -410,7 +418,7 @@
      (when error-message
        [:div.error-message error-message])
      [:fieldset
-      [form/field (conj db-path :code)
+      [text-field (conj db-path :code)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:input {:id "code"
@@ -418,7 +426,7 @@
                    :on-change on-change
                    :placeholder "Confirmation code"
                    :type "text"}]])]
-      [form/field (conj db-path :new-password)
+      [text-field (conj db-path :new-password)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "new-password"} "New password:"]
@@ -427,7 +435,7 @@
                    :on-change on-change
                    :placeholder "New password"
                    :type "password"}]])]
-      [form/field (conj db-path :new-password-again)
+      [text-field (conj db-path :new-password-again)
        (fn [& {:keys [value on-change]}]
          [:div.pure-control-group
           [:label {:for "new-password-again"} "New password again:"]
