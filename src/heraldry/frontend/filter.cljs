@@ -8,6 +8,13 @@
             [heraldry.frontend.util :as util]
             [re-frame.core :as rf]))
 
+(rf/reg-event-db :filter-toggle-tag
+  (fn [db [_ db-path tag]]
+    (update-in db db-path (fn [current-tags]
+                            (if (get current-tags tag)
+                              (dissoc current-tags tag)
+                              (assoc current-tags tag true))))))
+
 (defn filter-items [user-data item-list filter-keys filter-string filter-tags filter-access filter-own]
   (let [words (-> filter-string
                   (s/split #" +")
@@ -88,7 +95,7 @@
 
      [:div
       [tags/tags-view tags-to-display
-       :on-click #(rf/dispatch [:toggle-tag filter-tags-path %])
+       :on-click #(rf/dispatch [:filter-toggle-tag filter-tags-path %])
        :selected filter-tags]]
      (if (empty? filtered-items)
        [:div "None"]
