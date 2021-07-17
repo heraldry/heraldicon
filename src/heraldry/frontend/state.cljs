@@ -173,25 +173,6 @@
                                           (update :current #(when (= % :new) :new)))]))
                             (into {})))]))
 
-(rf/reg-event-db :select-charge-group-preset
-  ;; TODO: this must not be an fn, can be done once
-  ;; https://github.com/day8/re-frame-debux/issues/40 is resolved
-  (fn [db [_ path charge-group-preset charge-adjustments]]
-    (let [new-db (-> db
-                     (update-in path (fn [charge-group]
-                                       (-> charge-group-preset
-                                           (assoc :charges (:charges charge-group)))))
-                     (assoc-in (conj path :charges 0 :anchor :point) :angle)
-                     (assoc-in (conj path :charges 0 :anchor :angle) 0)
-                     (assoc-in (conj path :charges 0 :geometry :size) nil))]
-      (loop [new-db new-db
-             [[rel-path value] & rest] charge-adjustments]
-        (if (not rel-path)
-          new-db
-          (recur
-           (assoc-in new-db (concat path rel-path) value)
-           rest))))))
-
 (rf/reg-event-fx :override-field-part-reference
   (fn [{:keys [db]} [_ path]]
     (let [{:keys [index]} (get-in db path)

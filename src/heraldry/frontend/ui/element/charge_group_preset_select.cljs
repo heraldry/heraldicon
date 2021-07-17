@@ -1,8 +1,8 @@
 (ns heraldry.frontend.ui.element.charge-group-preset-select
   (:require [heraldry.coat-of-arms.render :as render]
-            [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
+            [heraldry.frontend.ui.shared :as shared]
             [re-frame.core :as rf]))
 
 (def presets
@@ -284,6 +284,25 @@
      {[:charges 0 :anchor :point] :angle
       [:charges 0 :anchor :angle] 0
       [:charges 0 :geometry :size] 50}]]])
+
+(rf/reg-event-db :select-charge-group-preset
+  ;; TODO: this must not be an fn-traced, can be done once
+  ;; https://github.com/day8/re-frame-debux/issues/40 is resolved
+  (fn [db [_ path charge-group-preset charge-adjustments]]
+    (let [new-db (-> db
+                     (update-in path (fn [charge-group]
+                                       (-> charge-group-preset
+                                           (assoc :charges (:charges charge-group)))))
+                     (assoc-in (conj path :charges 0 :anchor :point) :angle)
+                     (assoc-in (conj path :charges 0 :anchor :angle) 0)
+                     (assoc-in (conj path :charges 0 :geometry :size) nil))]
+      (loop [new-db new-db
+             [[rel-path value] & rest] charge-adjustments]
+        (if (not rel-path)
+          new-db
+          (recur
+           (assoc-in new-db (concat path rel-path) value)
+           rest))))))
 
 (defn charge-group-preset-choice [path group charge-adjustments display-name]
   (let [{:keys [result]} (render/coat-of-arms
