@@ -25,9 +25,7 @@
                                                  :field {:type :heraldry.field.type/plain
                                                          :tincture (if selected? :or :azure)}}]}}
                           100
-                          (-> shared/coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
+                          shared/coa-select-option-context)]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:update-charge (vec (drop-last path)) {:type key
                                                                                                         :attitude nil
                                                                                                         :facing nil
@@ -37,9 +35,8 @@
                     :height "4.5em"}
             :viewBox "0 0 120 200"
             :preserveAspectRatio "xMidYMin slice"}
-      [:g {:filter "url(#shadow)"}
-       [:g {:transform "translate(10,10)"}
-        result]]]
+      [:g {:transform "translate(10,10)"}
+       result]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))

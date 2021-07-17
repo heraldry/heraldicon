@@ -2,11 +2,11 @@
   (:require [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.frontend.ui.shared :as shared]
             [re-frame.core :as rf]))
 
 (defn tincture-choice [path key display-name & {:keys [selected?]}]
@@ -15,9 +15,7 @@
                            :field {:type :heraldry.field.type/plain
                                    :tincture key}}
                           40
-                          (-> shared/coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)
-                              (assoc-in [:render-options :theme] @(rf/subscribe [:get shared/ui-render-options-theme-path]))))]
+                          shared/coa-select-option-context)]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
                           :style {:border (if selected?
                                             "1px solid #000"
@@ -27,9 +25,8 @@
                     :height "4.5em"}
             :viewBox "0 0 50 100"
             :preserveAspectRatio "xMidYMin slice"}
-      [:g {:filter "url(#shadow)"}
-       [:g {:transform "translate(5,5)"}
-        result]]]
+      [:g {:transform "translate(5,5)"}
+       result]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))

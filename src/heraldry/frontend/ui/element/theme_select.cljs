@@ -1,11 +1,11 @@
 (ns heraldry.frontend.ui.element.theme-select
   (:require [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.frontend.ui.shared :as shared]
             [re-frame.core :as rf]))
 
 (defn theme-choice [path key display-name & {:keys [selected?]}]
@@ -33,7 +33,6 @@
                                              :index 0}]}}
                           80
                           (-> shared/coa-select-option-context
-                              (assoc-in [:render-options :outline?] true)
                               (assoc-in [:render-options :theme] key)))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
                           :style {:border (if selected?
@@ -44,9 +43,8 @@
                     :height "4.5em"}
             :viewBox "0 0 100 200"
             :preserveAspectRatio "xMidYMin slice"}
-      [:g {:filter "url(#shadow)"}
-       [:g {:transform "translate(10,10)"}
-        result]]]
+      [:g {:transform "translate(10,10)"}
+       result]]
      [:div.bottom
       [:h3 {:style {:text-align "center"}} display-name]
       [:i]]]))

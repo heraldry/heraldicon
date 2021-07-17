@@ -46,7 +46,8 @@
         texture-id (util/id "texture")
         shiny-id (util/id "shiny")
         use-texture? (or texture-link texture)
-        escutcheon-shadow? @(rf/subscribe [:get-value (conj render-options-path :escutcheon-shadow?)])]
+        escutcheon-shadow? (or (:escutcheon-shadow? render-options)
+                               @(rf/subscribe [:get-value (conj render-options-path :escutcheon-shadow?)]))]
     {:environment environment
      :result [:g {:filter (when escutcheon-shadow?
                             "url(#shadow)")}

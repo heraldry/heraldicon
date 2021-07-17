@@ -152,7 +152,7 @@
   [:azure :or :vert :gules :purpure :sable])
 
 (defn preview-form [path]
-  (let [render-options {:theme @(rf/subscribe [:get-value shared/ui-render-options-theme-path])}
+  (let [render-options (:render-options shared/coa-select-option-context)
         charge-group @(rf/subscribe [:get-value path])
         environment {:width 200
                      :height 200}
