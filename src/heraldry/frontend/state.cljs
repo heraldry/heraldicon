@@ -171,36 +171,3 @@
                                           (update :queries select-keys [:new])
                                           (update :current #(when (= % :new) :new)))]))
                             (into {})))]))
-
-(rf/reg-event-fx :set-field-layout-num-fields-x
-  (fn [{:keys [db]} [_ path value]]
-    (let [field-path (drop-last 2 path)
-          field (get-in db field-path)]
-      {:dispatch [:set-field-type
-                  field-path
-                  (:type field)
-                  value
-                  (-> field :layout :num-fields-y)
-                  (-> field :layout :num-base-fields)]})))
-
-(rf/reg-event-fx :set-field-layout-num-fields-y
-  (fn [{:keys [db]} [_ path value]]
-    (let [field-path (drop-last 2 path)
-          field (get-in db field-path)]
-      {:dispatch [:set-field-type
-                  field-path
-                  (:type field)
-                  (-> field :layout :num-fields-x)
-                  value
-                  (-> field :layout :num-base-fields)]})))
-
-(rf/reg-event-fx :set-field-layout-num-base-fields
-  (fn [{:keys [db]} [_ path value]]
-    (let [field-path (drop-last 2 path)
-          field (get-in db field-path)]
-      {:dispatch [:set-field-type
-                  field-path
-                  (:type field)
-                  (-> field :layout :num-fields-x)
-                  (-> field :layout :num-fields-y)
-                  value]})))

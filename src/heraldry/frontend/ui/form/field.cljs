@@ -2,7 +2,6 @@
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.core :as field]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.range :as range]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
             [re-frame.core :as rf]))
@@ -121,18 +120,3 @@
 
 (defmethod interface/component-form-data :heraldry.component/field [_path _component-data _component-options]
   {:form form})
-
-(defmethod interface/form-element :field-layout-num-fields-x [path]
-  [range/range-input path
-   :on-change (fn [value]
-                (rf/dispatch [:set-field-layout-num-fields-x path value]))])
-
-(defmethod interface/form-element :field-layout-num-fields-y [path]
-  [range/range-input path
-   :on-change (fn [value]
-                (rf/dispatch [:set-field-layout-num-fields-y path value]))])
-
-(defmethod interface/form-element :field-layout-num-base-fields [path]
-  [range/range-input path
-   :on-change (fn [value]
-                (rf/dispatch [:set-field-layout-num-base-fields path value]))])
