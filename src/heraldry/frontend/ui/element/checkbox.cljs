@@ -4,8 +4,9 @@
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
-(defn checkbox [path & {:keys [disabled? on-change style]}]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+(defn checkbox [path & {:keys [disabled? on-change style option]}]
+  (when-let [option (or option
+                        @(rf/subscribe [:get-relevant-options path]))]
     (let [component-id (util/id "checkbox")
           {:keys [ui inherited default]} option
           label (:label ui)

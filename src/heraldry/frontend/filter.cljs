@@ -1,36 +1,12 @@
 (ns heraldry.frontend.filter
   (:require [clojure.set :as set]
             [clojure.string :as s]
-            [heraldry.frontend.form.element :as element]
+            [heraldry.frontend.ui.element.checkbox :as checkbox]
+            [heraldry.frontend.ui.element.radio-select :as radio-select]
+            [heraldry.frontend.ui.element.search-field :as search-field]
             [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.util :as util]
             [re-frame.core :as rf]))
-
-(defn items [item-list filter-string filter-keys filter-tags]
-  (if (and (or (not filter-string)
-               (-> filter-string s/trim count zero?))
-           (-> filter-tags count zero?))
-    item-list
-    (let [words (-> filter-string
-                    (s/split #" +")
-                    (->> (map s/lower-case)))
-          filter-tags-set (-> filter-tags
-                              keys
-                              set)]
-      (filterv (fn [arms]
-                 (and (every? (fn [word]
-                                (some (fn [attribute]
-                                        (-> arms
-                                            (get attribute)
-                                            (util/matches-word word)))
-                                      filter-keys))
-                              words)
-                      (set/subset? filter-tags-set
-                                   (-> arms
-                                       :tags
-                                       keys
-                                       set))))
-               item-list))))
 
 (defn filter-items [user-data item-list filter-keys filter-string filter-tags filter-access filter-own]
   (let [words (-> filter-string
@@ -88,7 +64,7 @@
         filtered? (or (-> filter-string count pos?)
                       (-> filter-tags count pos?))]
     [:<>
-     [element/search-field filter-string-path
+     [search-field/search-field filter-string-path
       :on-change (fn [value]
                    (rf/dispatch-sync [:set filter-string-path value])
                    (when on-filter-string-change
@@ -99,12 +75,17 @@
                          (refresh-fn)
                          (.stopPropagation %))} [:i.fas.fa-sync-alt]])
      (when-not hide-ownership-filter?
-       [element/checkbox filter-own-path "Mine only"])
+       [checkbox/checkbox filter-own-path
+        :option {:type :boolean
+                 :ui {:label "Mine only"}}])
      (when-not hide-access-filter?
-       [element/radio-select filter-access-path [["All" :all]
-                                                 ["Public" :public]
-                                                 ["Private" :private]]
-        :default :all])
+       [radio-select/radio-select filter-access-path
+        :option {:type :choice
+                 :default :all
+                 :choices [["All" :all]
+                           ["Public" :public]
+                           ["Private" :private]]}])
+
      [:div
       [tags/tags-view tags-to-display
        :on-click #(rf/dispatch [:toggle-tag filter-tags-path %])

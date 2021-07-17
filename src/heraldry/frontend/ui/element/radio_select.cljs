@@ -18,8 +18,9 @@
      [:label {:for component-id
               :style {:margin-right "10px"}} display-name]]))
 
-(defn radio-select [path & {:keys [on-change]}]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+(defn radio-select [path & {:keys [on-change option]}]
+  (when-let [option (or option
+                        @(rf/subscribe [:get-relevant-options path]))]
     (let [current-value @(rf/subscribe [:get-value path])
           {:keys [ui inherited default choices]} option
           label (:label ui)
