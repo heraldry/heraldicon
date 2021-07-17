@@ -4,6 +4,6 @@
 
 (def default
   {:load-charge-data charge/fetch-charge-data
-   :fn-component-selected? #(do
-                              @(rf/subscribe [:ui-component-selected? %]))
-   :fn-select-component #(rf/dispatch [:ui-component-select %])})
+   ;; TODO: re-write this feature: allowing highlighting/selecting components in the preview
+   :fn-component-selected? nil
+   :fn-select-component nil})
