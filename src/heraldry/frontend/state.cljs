@@ -173,18 +173,6 @@
                                           (update :current #(when (= % :new) :new)))]))
                             (into {})))]))
 
-(rf/reg-event-db :set-charge-group-slot-number
-  (fn [db [_ path num-slots]]
-    (-> db
-        (update-in path (fn [slots]
-                          (if (-> slots count (< num-slots))
-                            (-> slots
-                                (concat (repeat (- num-slots (count slots)) 0))
-                                vec)
-                            (->> slots
-                                 (take num-slots)
-                                 vec)))))))
-
 (rf/reg-event-db :change-charge-group-type
   (fn [db [_ path new-type]]
     (-> db
