@@ -24,11 +24,11 @@
                          :buttons [{:icon "fas fa-chevron-up"
                                     :disabled? (zero? idx)
                                     :tooltip "move down"
-                                    :handler #(state/dispatch-on-event % [:move-element-down component-path])}
+                                    :handler #(state/dispatch-on-event % [:move-element component-path (dec idx)])}
                                    {:icon "fas fa-chevron-down"
                                     :disabled? (= idx (dec (count (:elements component-data))))
                                     :tooltip "move up"
-                                    :handler #(state/dispatch-on-event % [:move-element-up component-path])}
+                                    :handler #(state/dispatch-on-event % [:move-element component-path (inc idx)])}
                                    {:icon "far fa-trash-alt"
                                     :tooltip "remove"
                                     :handler #(state/dispatch-on-event

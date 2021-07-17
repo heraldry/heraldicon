@@ -61,7 +61,8 @@
         (>= index (field/mandatory-part-count parent))))))
 
 (defmethod interface/component-node-data :heraldry.component/field [path component-data _component-options]
-  (let [ref? (-> component-data :type (= :heraldry.field.type/ref))]
+  (let [ref? (-> component-data :type (= :heraldry.field.type/ref))
+        components-path (conj path :components)]
     {:title (util/combine ": "
                           [(name-prefix-for-part path)
                            (if ref?
@@ -102,16 +103,16 @@
                          range
                          reverse
                          (map (fn [idx]
-                                (let [component-path (conj path :components idx)]
+                                (let [component-path (conj components-path idx)]
                                   {:path component-path
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :tooltip "move down"
-                                              :handler #(state/dispatch-on-event % [:move-element-down component-path])}
+                                              :handler #(state/dispatch-on-event % [:move-element component-path (dec idx)])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec (count (:components component-data))))
                                               :tooltip "move up"
-                                              :handler #(state/dispatch-on-event % [:move-element-up component-path])}
+                                              :handler #(state/dispatch-on-event % [:move-element component-path (inc idx)])}
                                              {:icon "far fa-trash-alt"
                                               :tooltip "remove"
                                               :handler #(state/dispatch-on-event

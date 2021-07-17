@@ -51,7 +51,8 @@
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.license] ;; needed for defmethods
             [heraldry.render-options] ;; needed for defmethods
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [heraldry.util :as util]))
 
 (def node-flag-db-path [:ui :component-tree :nodes])
 (def ui-component-node-selected-path [:ui :component-tree :selected-node])
@@ -168,6 +169,50 @@
       {:db (assoc-in db path elements)
        :dispatch [:ui-component-node-select element-path {:open? true}]})))
 
+(defn adjust-component-path-after-order-change [path elements-path index new-index]
+  (let [elements-path-size (count elements-path)
+        path-base (when (-> path count (>= elements-path-size))
+                    (subvec path 0 elements-path-size))
+        path-rest (when (-> path count (>= elements-path-size))
+                    (subvec path (count elements-path)))
+        current-index (first path-rest)
+        path-rest (when (-> path-rest count (> 1))
+                    (subvec path-rest 1))]
+    (if (or (not= path-base elements-path)
+            (= index new-index))
+      path
+      (if (nil? new-index)
+        (cond
+          (= current-index index) nil
+          (> current-index index) (vec (concat path-base
+                                               [(dec current-index)]
+                                               path-rest))
+          :else path)
+        (cond
+          (= current-index index) (vec (concat path-base
+                                               [new-index]
+                                               path-rest))
+          (<= index current-index new-index) (vec (concat path-base
+                                                          [(dec current-index)]
+                                                          path-rest))
+          (<= new-index current-index index) (vec (concat path-base
+                                                          [(inc current-index)]
+                                                          path-rest))
+          :else path)))))
+
+(defn element-order-changed [db elements-path index new-index]
+  (-> db
+      (update-in ui-component-node-selected-path
+                 adjust-component-path-after-order-change elements-path index new-index)
+      (update-in node-flag-db-path (fn [flags]
+                                     (->> flags
+                                          (keep (fn [[path flag]]
+                                                  (let [new-path (adjust-component-path-after-order-change
+                                                                  path elements-path index new-index)]
+                                                    (when new-path
+                                                      [new-path flag]))))
+                                          (into {}))))))
+
 (rf/reg-event-db :remove-element
   (fn [db [_ path]]
     (let [elements-path (-> path drop-last vec)
@@ -180,69 +225,22 @@
             (update-in elements-path (fn [elements]
                                        (vec (concat (subvec elements 0 index)
                                                     (subvec elements (inc index))))))
-            (update-in ui-component-node-selected-path
-                       (fn [selected-node-path]
-                         (let [selected-base-path (drop-last selected-node-path)
-                               selected-index (last selected-node-path)]
-                           (cond
-                             (and (= selected-base-path elements-path)
-                                  (= selected-index index)) nil
-                             (and (= selected-base-path elements-path)
-                                  (> selected-index index)) (conj elements-path (dec selected-index))
-                             :else selected-node-path)))))))))
+            (element-order-changed elements-path index nil))))))
 
-(rf/reg-event-db :move-element-up
-  (fn [db [_ path]]
+(rf/reg-event-db :move-element
+  (fn [db [_ path new-index]]
     (let [elements-path (-> path drop-last vec)
-          index (last path)
           elements (vec (get-in db elements-path))
-          num-elements (count elements)]
-      (if (>= index num-elements)
+          index (last path)
+          new-index (-> new-index
+                        (max 0)
+                        (min (dec (count elements))))]
+      (if (or (= index new-index)
+              (neg? new-index))
         db
         (-> db
-            (assoc-in elements-path (-> elements
-                                        (subvec 0 index)
-                                        (conj (get elements (inc index)))
-                                        (conj (get elements index))
-                                        (concat (subvec elements (+ index 2)))
-                                        vec))
-            (update-in ui-component-node-selected-path
-                       (fn [selected-node-path]
-                         (let [selected-base-path (drop-last selected-node-path)
-                               selected-index (last selected-node-path)]
-                           (cond
-                             (and (= selected-base-path elements-path)
-                                  (= selected-index (inc index))) (conj elements-path index)
-                             (and (= selected-base-path elements-path)
-                                  (= selected-index index)) (conj elements-path (inc index))
-                             :else selected-node-path)))))))))
-
-(rf/reg-event-db :move-element-down
-  (fn [db [_ path]]
-    (let [elements-path (-> path drop-last vec)
-          index (last path)]
-      (if (zero? index)
-        db
-        (-> db
-            (update-in elements-path (fn [elements]
-                                       (-> elements
-                                           vec
-                                           (subvec 0 (dec index))
-                                           (conj (get elements index))
-                                           (conj (get elements (dec index)))
-                                           (concat (subvec elements (inc index)))
-                                           vec)))
-            (update-in ui-component-node-selected-path
-                       (fn [selected-node-path]
-                         (let [selected-base-path (drop-last selected-node-path)
-                               selected-index (last selected-node-path)]
-                           (cond
-                             (and (= selected-base-path elements-path)
-                                  (= selected-index (dec index))) (conj elements-path index)
-                             (and (= selected-base-path elements-path)
-                                  (= selected-index index)) (conj elements-path (dec index))
-                             :else selected-node-path)))))))))
-
+            (update-in elements-path util/vec-move index new-index)
+            (element-order-changed elements-path index new-index))))))
 
 
 ;; functions
@@ -294,7 +292,8 @@
                                    :font-size "0.8em"
                                    :color (if disabled?
                                             "#ccc"
-                                            "#777")}}]
+                                            "#777")
+                                   :cursor (when disabled? "not-allowed")}}]
               :disabled? disabled?]
              ^{:key icon} [:span.node-icon
                            {:class (when disabled? "disabled")
@@ -305,7 +304,8 @@
                                                 :font-size "0.8em"
                                                 :color (if disabled?
                                                          "#ccc"
-                                                         "#777")}}]]))))]
+                                                         "#777")
+                                                :cursor (when disabled? "not-allowed")}}]]))))]
      (when open?
        [:ul
         (for [{node-path :path

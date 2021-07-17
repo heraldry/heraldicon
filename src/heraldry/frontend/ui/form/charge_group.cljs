@@ -101,6 +101,13 @@
                                             :else charge-index))
                                         slots)))))))
 
+(rf/reg-event-fx :add-charge-group-strip
+  (fn [{:keys [db]} [_ path value]]
+    (let [elements (-> (get-in db path)
+                       (conj value)
+                       vec)]
+      {:db (assoc-in db path elements)})))
+
 (rf/reg-event-db :move-charge-group-charge-down
   (fn [db [_ path]]
     (let [elements-path (drop-last path)
@@ -250,7 +257,7 @@
          [:<>
           [:div {:style {:margin-top "1em"
                          :margin-bottom "0.5em"}}
-           [:button {:on-click #(state/dispatch-on-event % [:add-element strips-path default/charge-group-strip])}
+           [:button {:on-click #(state/dispatch-on-event % [:add-charge-group-strip strips-path default/charge-group-strip])}
             [:i.fas.fa-plus] " " type-str]]
 
           [:div.components
@@ -263,19 +270,20 @@
                                           :white-space "nowrap"}}
                   [:a (if (zero? idx)
                         {:class "disabled"}
-                        {:on-click #(state/dispatch-on-event % [:move-element-down strip-path])})
+                        {:on-click #(state/dispatch-on-event % [:move-element strip-path (dec idx)])})
                    [:i.fas.fa-chevron-up]]
                   " "
                   [:a (if (= idx (dec (count strips)))
                         {:class "disabled"}
-                        {:on-click #(state/dispatch-on-event % [:move-element-up strip-path])})
+                        {:on-click #(state/dispatch-on-event % [:move-element strip-path (inc idx)])})
                    [:i.fas.fa-chevron-down]]]
                  [:div
                   [strip-form strip-path type-str]]
                  [:div {:style {:padding-left "10px"}}
-                  (when (-> strips count (> 1))
-                    [:a {:on-click #(state/dispatch-on-event % [:remove-element strip-path])}
-                     [:i.far.fa-trash-alt]])]]))]]])]
+                  [:a (if (-> strips count (< 2))
+                        {:class "disabled"}
+                        {:on-click #(state/dispatch-on-event % [:remove-element strip-path])})
+                   [:i.far.fa-trash-alt]]]]))]]])]
       [:div {:style {:display "table-cell"
                      :vertical-align "top"}}
        [preview-form path]]]]))
