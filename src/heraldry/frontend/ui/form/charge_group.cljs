@@ -4,12 +4,142 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.charge-group-preset-select :as charge-group-preset-select]
+            [heraldry.frontend.ui.element.charge-group-preset-select
+             :as
+             charge-group-preset-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.frontend.ui.shared :as shared]
             [re-frame.core :as rf]))
+
+(rf/reg-event-db :cycle-charge-index
+  (fn [db [_ path num-charges]]
+    (let [slots-path (drop-last path)
+          slot-index (last path)
+          slots (get-in db slots-path)
+          current-value (get-in db path)
+          new-value (cond
+                      (nil? current-value) 0
+                      (= current-value (dec num-charges)) nil
+                      (> current-value (dec num-charges)) 0
+                      :else (inc current-value))]
+      (assoc-in db slots-path (assoc slots slot-index new-value)))))
+
+(rf/reg-event-db :remove-charge-group-charge
+  (fn [db [_ path]]
+    (let [elements-path (drop-last path)
+          strips-path (-> path
+                          (->> (drop-last 2))
+                          vec
+                          (conj :strips))
+          slots-path (-> path
+                         (->> (drop-last 2))
+                         vec
+                         (conj :slots))
+          index (last path)]
+      (-> db
+          (update-in elements-path (fn [elements]
+                                     (vec (concat (subvec elements 0 index)
+                                                  (subvec elements (inc index))))))
+          (update-in strips-path (fn [strips]
+                                   (mapv (fn [strip]
+                                           (update strip :slots (fn [slots]
+                                                                  (mapv (fn [charge-index]
+                                                                          (cond
+                                                                            (= charge-index index) 0
+                                                                            (> charge-index index) (dec charge-index)
+                                                                            :else charge-index))
+                                                                        slots))))
+                                         strips)))
+          (update-in slots-path (fn [slots]
+                                  (mapv (fn [charge-index]
+                                          (cond
+                                            (= charge-index index) 0
+                                            (> charge-index index) (dec charge-index)
+                                            :else charge-index))
+                                        slots)))))))
+
+(rf/reg-event-db :move-charge-group-charge-up
+  (fn [db [_ path]]
+    (let [elements-path (drop-last path)
+          strips-path (-> path
+                          (->> (drop-last 2))
+                          vec
+                          (conj :strips))
+          slots-path (-> path
+                         (->> (drop-last 2))
+                         vec
+                         (conj :slots))
+          index (last path)]
+      (-> db
+          (update-in elements-path (fn [elements]
+                                     (let [num-elements (count elements)]
+                                       (if (>= index num-elements)
+                                         elements
+                                         (-> elements
+                                             (subvec 0 index)
+                                             (conj (get elements (inc index)))
+                                             (conj (get elements index))
+                                             (concat (subvec elements (+ index 2)))
+                                             vec)))))
+          (update-in strips-path (fn [strips]
+                                   (mapv (fn [strip]
+                                           (update strip :slots (fn [slots]
+                                                                  (mapv (fn [charge-index]
+                                                                          (cond
+                                                                            (= charge-index index) (inc charge-index)
+                                                                            (= charge-index (inc index)) (dec charge-index)
+                                                                            :else charge-index))
+                                                                        slots))))
+                                         strips)))
+          (update-in slots-path (fn [slots]
+                                  (mapv (fn [charge-index]
+                                          (cond
+                                            (= charge-index index) (inc charge-index)
+                                            (= charge-index (inc index)) (dec charge-index)
+                                            :else charge-index))
+                                        slots)))))))
+
+(rf/reg-event-db :move-charge-group-charge-down
+  (fn [db [_ path]]
+    (let [elements-path (drop-last path)
+          strips-path (-> path
+                          (->> (drop-last 2))
+                          vec
+                          (conj :strips))
+          slots-path (-> path
+                         (->> (drop-last 2))
+                         vec
+                         (conj :slots))
+          index (last path)]
+      (-> db
+          (update-in elements-path (fn [elements]
+                                     (if (zero? index)
+                                       elements
+                                       (-> elements
+                                           (subvec 0 (dec index))
+                                           (conj (get elements index))
+                                           (conj (get elements (dec index)))
+                                           (concat (subvec elements (inc index)))
+                                           vec))))
+          (update-in strips-path (fn [strips]
+                                   (mapv (fn [strip]
+                                           (update strip :slots (fn [slots]
+                                                                  (mapv (fn [charge-index]
+                                                                          (cond
+                                                                            (= charge-index (dec index)) (inc charge-index)
+                                                                            (= charge-index index) (dec charge-index)
+                                                                            :else charge-index))
+                                                                        slots))))
+                                         strips)))
+          (update-in slots-path (fn [slots]
+                                  (mapv (fn [charge-index]
+                                          (cond
+                                            (= charge-index (dec index)) (inc charge-index)
+                                            (= charge-index index) (dec charge-index)
+                                            :else charge-index))
+                                        slots)))))))
 
 (def preview-tinctures
   [:azure :or :vert :gules :purpure :sable])
