@@ -3,7 +3,7 @@
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.form.charge-select :as charge-select]
-            [heraldry.frontend.form.shared :as shared]
+            [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]

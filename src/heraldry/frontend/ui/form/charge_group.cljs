@@ -4,7 +4,7 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.form.shared :as shared]
+            [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.charge-group-preset-select :as charge-group-preset-select]
             [heraldry.frontend.ui.element.submenu :as submenu]

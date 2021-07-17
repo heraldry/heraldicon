@@ -1,7 +1,7 @@
 (ns heraldry.frontend.ui.element.ordinary-type-select
   (:require [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.coat-of-arms.render :as render]
-            [heraldry.frontend.form.shared :as shared]
+            [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
