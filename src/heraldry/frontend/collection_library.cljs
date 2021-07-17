@@ -83,8 +83,8 @@
        :height bar-width
        :style {:fill "#fff"}}]]))
 
-(defn render-arms [x y size path render-options & {:keys [selected? font font-size]
-                                                   :or {font-size 12}}]
+(defn render-arms [x y size path render-options-path & {:keys [selected? font font-size]
+                                                        :or {font-size 12}}]
   (let [data @(rf/subscribe [:get path])
         {arms-id :id
          version :version} (:reference data)
@@ -101,7 +101,7 @@
                                size
                                (merge
                                 context/default
-                                {:render-options render-options
+                                {:render-options-path render-options-path
                                  :db-path []
                                  :fn-select-component nil
                                  #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
@@ -115,9 +115,7 @@
                :height (+ height 14)
                :fill "#33f8"}])
      [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
-      [:g {:filter (when (:escutcheon-shadow? render-options)
-                     "url(#shadow)")}
-       result]
+      result
       [:text {:x (/ width 2)
               :y (+ height 10 font-size)
               :text-anchor "middle"
@@ -135,8 +133,7 @@
       index)))
 
 (defn render-collection [& {:keys [allow-adding?]}]
-  (let [render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
-        collection-data @(rf/subscribe [:get form-db-path])
+  (let [collection-data @(rf/subscribe [:get form-db-path])
         font (-> collection-data :font font/css-string)
         collection (:collection collection-data)
         {:keys [num-columns
@@ -191,7 +188,7 @@
                    (+ (/ arms-height 2)))
                 arms-width
                 (conj form-db-path :collection :elements idx)
-                render-options
+                (conj form-db-path :render-options)
                 :selected? (= idx (selected-element-index))
                 :font font]])))
 
@@ -216,7 +213,6 @@
 (defn render-arms-preview []
   (when-let [selected-element-index (selected-element-index)]
     (let [arms-reference @(rf/subscribe [:get-value (conj form-db-path :collection :elements selected-element-index :reference)])
-          render-options @(rf/subscribe [:get-value (conj form-db-path :render-options)])
           {arms-id :id
            version :version} arms-reference
           [status arms-data] (when arms-id
@@ -232,9 +228,10 @@
                                  100
                                  (merge
                                   context/default
-                                  {:render-options render-options
+                                  {:render-options-path (conj form-db-path :render-options)
                                    :db-path []
                                    :fn-select-component nil
+                                   :root-transform "scale(5,5)"
                                    #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
           {:keys [width height]} environment]
       (when (or (not arms-id)
@@ -253,10 +250,8 @@
                          :height "95%"}
                  :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
                  :preserveAspectRatio "xMidYMin meet"}
-           [:g {:filter (when (:escutcheon-shadow? render-options)
-                          "url(#shadow)")}
-            [:g {:transform "translate(10,10) scale(5,5)"}
-             result]]]]]))))
+           [:g {:transform "translate(10,10)"}
+            result]]]]))))
 
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
