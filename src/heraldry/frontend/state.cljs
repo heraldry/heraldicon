@@ -4,9 +4,6 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.core :as field]
-            [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.util :refer [deep-merge-with]]
             [re-frame.core :as rf]
             [taoensso.timbre :as log]
             [taoensso.tufte :as tufte]))
@@ -175,33 +172,6 @@
                                           (update :queries select-keys [:new])
                                           (update :current #(when (= % :new) :new)))]))
                             (into {})))]))
-
-(defn -default-line-style-of-ordinary-type [ordinary-type]
-  (case ordinary-type
-    :heraldry.ordinary.type/gore :enarched
-    :straight))
-
-(rf/reg-event-db :set-ordinary-type
-  (fn [db [_ path new-type]]
-    (let [current (get-in db path)
-          has-default-line-style? (-> current
-                                      :line
-                                      :type
-                                      (= (-default-line-style-of-ordinary-type (:type current))))
-          new-default-line-style (-default-line-style-of-ordinary-type new-type)
-          new-flipped (case new-type
-                        :heraldry.ordinary.type/gore true
-                        false)]
-      (-> db
-          (assoc-in (conj path :type) new-type)
-          (cond->
-           has-default-line-style? (->
-                                    (assoc-in (conj path :line :type) new-default-line-style)
-                                    (assoc-in (conj path :line :flipped?) new-flipped)))
-          (update-in path #(deep-merge-with (fn [_current-value new-value]
-                                              new-value)
-                                            %
-                                            (options/sanitize-or-nil % (ordinary-options/options %))))))))
 
 (rf/reg-event-db :update-charge
   (fn [db [_ path changes]]
