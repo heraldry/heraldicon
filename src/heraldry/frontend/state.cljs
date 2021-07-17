@@ -72,11 +72,14 @@
   (fn [db [_ path update-fn]]
     (update-in db path update-fn)))
 
+(defn remove [db path]
+  (cond-> db
+    (-> path count (= 1)) (dissoc (first path))
+    (-> path count (> 1)) (update-in (drop-last path) dissoc (last path))))
+
 (rf/reg-event-db :remove
   (fn [db [_ path]]
-    (cond-> db
-      (-> path count (= 1)) (dissoc (first path))
-      (-> path count (> 1)) (update-in (drop-last path) dissoc (last path)))))
+    (remove db path)))
 
 (rf/reg-event-db :set-form-error
   (fn [db [_ db-path error]]
@@ -86,19 +89,20 @@
   (fn [db [_ db-path message]]
     (assoc-in db (concat [:form-message] db-path [:message]) message)))
 
-(rf/reg-event-fx :clear-form-errors
-  (fn [_ [_ db-path]]
-    {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]]}))
+(rf/reg-event-db :clear-form-errors
+  (fn [db [_ db-path]]
+    (remove db (into [:form-errors] db-path))))
 
-(rf/reg-event-fx :clear-form-message
-  (fn [_ [_ db-path]]
-    {:fx [[:dispatch [:remove (into [:form-message] db-path)]]]}))
+(rf/reg-event-db :clear-form-message
+  (fn [db [_ db-path]]
+    (remove db (into [:form-message] db-path))))
 
-(rf/reg-event-fx :clear-form
-  (fn [_ [_ db-path]]
-    {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]
-          [:dispatch [:remove (into [:form-message] db-path)]]
-          [:dispatch [:remove db-path]]]}))
+(rf/reg-event-db :clear-form
+  (fn [db [_ db-path]]
+    (-> db
+        (remove (into [:form-errors] db-path))
+        (remove (into [:form-message] db-path))
+        (remove db-path))))
 
 (defn dispatch-on-event [event effect]
   (rf/dispatch effect)
