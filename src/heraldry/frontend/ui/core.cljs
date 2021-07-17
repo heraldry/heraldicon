@@ -53,6 +53,25 @@
             [heraldry.render-options] ;; needed for defmethods
             [re-frame.core :as rf]))
 
+(def node-flag-db-path [:ui :component-tree :nodes])
+(def ui-component-node-selected-path [:ui :component-tree :selected-node])
+
+;; subs
+
+(rf/reg-sub :ui-component-node-open?
+  (fn [[_ path] _]
+    (rf/subscribe [:get (conj node-flag-db-path path)]))
+
+  (fn [flag [_ _path]]
+    flag))
+
+(rf/reg-sub :ui-component-node-selected-path
+  (fn [_ _]
+    (rf/subscribe [:get ui-component-node-selected-path]))
+
+  (fn [selected-node-path [_ _path]]
+    selected-node-path))
+
 (rf/reg-sub :component-data
   (fn [db [_ path]]
     (let [data (get-in db path)]
@@ -83,6 +102,151 @@
      {:title title
       :path path}
      (interface/component-form-data path component-data nil))))
+
+;; events
+
+(rf/reg-event-db :ui-component-node-open
+  (fn [db [_ path]]
+    (let [path (vec path)]
+      (->> (range (count path))
+           (map (fn [idx]
+                  [(subvec path 0 (inc idx)) true]))
+           (into {})
+           (update-in db node-flag-db-path merge)))))
+
+(rf/reg-event-db :ui-component-node-close
+  (fn [db [_ path]]
+    (update-in
+     db node-flag-db-path
+     (fn [flags]
+       (->> flags
+            (filter (fn [[other-path v]]
+                      (when (not= (take (count path) other-path)
+                                  path)
+                        [other-path v])))
+            (into {}))))))
+
+(rf/reg-event-fx :ui-component-node-toggle
+  (fn [{:keys [db]} [_ path]]
+    {:dispatch (if (get-in db (conj node-flag-db-path path))
+                 [:ui-component-node-close path]
+                 [:ui-component-node-open path])}))
+
+(rf/reg-event-fx :ui-component-node-select
+  (fn [{:keys [db]} [_ path {:keys [open?]}]]
+    {:db (assoc-in db ui-component-node-selected-path path)
+     :dispatch [:ui-component-node-open (cond-> path
+                                          (not open?) drop-last)]}))
+
+(rf/reg-event-fx :ui-component-node-select-default
+  (fn [{:keys [db]} [_ path]]
+    (let [old-path (get-in db ui-component-node-selected-path)
+          new-path (if (or (not old-path)
+                           (not= (subvec old-path 0 (count path))
+                                 path))
+                     path
+                     old-path)]
+      (cond-> {}
+        (not= new-path
+              old-path) (assoc :dispatch [:ui-component-node-select new-path])))))
+
+(rf/reg-event-fx :add-component
+  (fn [{:keys [db]} [_ path value]]
+    (let [components-path (conj path :components)
+          index (count (get-in db components-path))]
+      {:db (update-in db components-path #(-> %
+                                              (conj value)
+                                              vec))
+       :dispatch [:ui-component-node-select (conj components-path index) {:open? true}]})))
+
+(rf/reg-event-fx :add-element
+  (fn [{:keys [db]} [_ path value]]
+    (let [elements (-> (get-in db path)
+                       (conj value)
+                       vec)
+          element-path (conj path (-> elements count dec))]
+      {:db (assoc-in db path elements)
+       :dispatch [:ui-component-node-select element-path {:open? true}]})))
+
+(rf/reg-event-db :remove-element
+  (fn [db [_ path]]
+    (let [elements-path (-> path drop-last vec)
+          index (last path)
+          elements (vec (get-in db elements-path))
+          num-elements (count elements)]
+      (if (>= index num-elements)
+        db
+        (-> db
+            (update-in elements-path (fn [elements]
+                                       (vec (concat (subvec elements 0 index)
+                                                    (subvec elements (inc index))))))
+            (update-in ui-component-node-selected-path
+                       (fn [selected-node-path]
+                         (let [selected-base-path (drop-last selected-node-path)
+                               selected-index (last selected-node-path)]
+                           (cond
+                             (and (= selected-base-path elements-path)
+                                  (= selected-index index)) nil
+                             (and (= selected-base-path elements-path)
+                                  (> selected-index index)) (conj elements-path (dec selected-index))
+                             :else selected-node-path)))))))))
+
+(rf/reg-event-db :move-element-up
+  (fn [db [_ path]]
+    (let [elements-path (-> path drop-last vec)
+          index (last path)
+          elements (vec (get-in db elements-path))
+          num-elements (count elements)]
+      (if (>= index num-elements)
+        db
+        (-> db
+            (assoc-in elements-path (-> elements
+                                        (subvec 0 index)
+                                        (conj (get elements (inc index)))
+                                        (conj (get elements index))
+                                        (concat (subvec elements (+ index 2)))
+                                        vec))
+            (update-in ui-component-node-selected-path
+                       (fn [selected-node-path]
+                         (let [selected-base-path (drop-last selected-node-path)
+                               selected-index (last selected-node-path)]
+                           (cond
+                             (and (= selected-base-path elements-path)
+                                  (= selected-index (inc index))) (conj elements-path index)
+                             (and (= selected-base-path elements-path)
+                                  (= selected-index index)) (conj elements-path (inc index))
+                             :else selected-node-path)))))))))
+
+(rf/reg-event-db :move-element-down
+  (fn [db [_ path]]
+    (let [elements-path (-> path drop-last vec)
+          index (last path)]
+      (if (zero? index)
+        db
+        (-> db
+            (update-in elements-path (fn [elements]
+                                       (-> elements
+                                           vec
+                                           (subvec 0 (dec index))
+                                           (conj (get elements index))
+                                           (conj (get elements (dec index)))
+                                           (concat (subvec elements (inc index)))
+                                           vec)))
+            (update-in ui-component-node-selected-path
+                       (fn [selected-node-path]
+                         (let [selected-base-path (drop-last selected-node-path)
+                               selected-index (last selected-node-path)]
+                           (cond
+                             (and (= selected-base-path elements-path)
+                                  (= selected-index (dec index))) (conj elements-path index)
+                             (and (= selected-base-path elements-path)
+                                  (= selected-index index)) (conj elements-path (dec index))
+                             :else selected-node-path)))))))))
+
+
+
+;; functions
+
 
 (defn component-node [path & {:keys [title parent-buttons]}]
   (let [node-data @(rf/subscribe [:component-node path])
