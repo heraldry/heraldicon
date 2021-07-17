@@ -4,6 +4,14 @@
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
+(rf/reg-event-db :add-attribute
+  (fn [db [_ db-path attribute]]
+    (update-in db db-path assoc attribute true)))
+
+(rf/reg-event-db :remove-attribute
+  (fn [db [_ db-path attribute]]
+    (update-in db db-path dissoc attribute)))
+
 (defn attribute-view [attribute & {:keys [on-delete]}]
   [:span.tag.attribute
    (name attribute)

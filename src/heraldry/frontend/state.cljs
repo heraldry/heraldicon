@@ -111,14 +111,6 @@
   (fn [db [_ db-path message]]
     (assoc-in db (concat [:form-message] db-path [:message]) message)))
 
-(rf/reg-event-db :add-attribute
-  (fn [db [_ db-path attribute]]
-    (update-in db db-path assoc attribute true)))
-
-(rf/reg-event-db :remove-attribute
-  (fn [db [_ db-path attribute]]
-    (update-in db db-path dissoc attribute)))
-
 (rf/reg-event-fx :clear-form-errors
   (fn [_ [_ db-path]]
     {:fx [[:dispatch [:remove (into [:form-errors] db-path)]]]}))
