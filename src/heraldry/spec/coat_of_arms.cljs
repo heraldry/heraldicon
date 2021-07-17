@@ -114,11 +114,12 @@
 (s/def :heraldry.charge/type keyword?)
 (s/def :heraldry.charge/tincture #(every? (fn [[key value]]
                                             (case key
-                                              :shadow (number? value)
-                                              :highlight (number? value)
-                                              (s/valid? :heraldry/tincture value))) %))
-(s/def :heraldry.charge.hint/outline? boolean?)
-(s/def :heraldry.charge/hints (s/keys :opt-un [:heraldry.charge.hint/outline?]))
+                                              :shadow (or (nil? value)
+                                                          (number? value))
+                                              :highlight (or (nil? value)
+                                                             (number? value))
+                                              (or (nil? value)
+                                                  (s/valid? :heraldry/tincture value)))) %))
 (s/def :heraldry.charge/attitude (s/nilable attributes/attitude-map))
 (s/def :heraldry.charge/facing (s/nilable attributes/facing-map))
 (s/def :heraldry.charge.variant/id string?)
