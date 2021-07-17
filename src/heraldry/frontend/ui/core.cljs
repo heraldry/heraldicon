@@ -51,24 +51,21 @@
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.license] ;; needed for defmethods
             [heraldry.render-options] ;; needed for defmethods
-            [re-frame.core :as rf]
-            [heraldry.util :as util]))
-
-(def node-flag-db-path [:ui :component-tree :nodes])
-(def ui-component-node-selected-path [:ui :component-tree :selected-node])
+            [heraldry.util :as util]
+            [re-frame.core :as rf]))
 
 ;; subs
 
 (rf/reg-sub :ui-component-node-open?
   (fn [[_ path] _]
-    (rf/subscribe [:get (conj node-flag-db-path path)]))
+    (rf/subscribe [:get (conj state/node-flag-db-path path)]))
 
   (fn [flag [_ _path]]
     flag))
 
 (rf/reg-sub :ui-component-node-selected-path
   (fn [_ _]
-    (rf/subscribe [:get ui-component-node-selected-path]))
+    (rf/subscribe [:get state/ui-component-node-selected-path]))
 
   (fn [selected-node-path [_ _path]]
     selected-node-path))
@@ -106,68 +103,15 @@
 
 ;; events
 
-(rf/reg-event-db :ui-component-node-open
-  (fn [db [_ path]]
-    (let [path (vec path)]
-      (->> (range (count path))
-           (map (fn [idx]
-                  [(subvec path 0 (inc idx)) true]))
-           (into {})
-           (update-in db node-flag-db-path merge)))))
-
-(rf/reg-event-db :ui-component-node-close
-  (fn [db [_ path]]
-    (update-in
-     db node-flag-db-path
-     (fn [flags]
-       (->> flags
-            (filter (fn [[other-path v]]
-                      (when (not= (take (count path) other-path)
-                                  path)
-                        [other-path v])))
-            (into {}))))))
-
-(rf/reg-event-fx :ui-component-node-toggle
-  (fn [{:keys [db]} [_ path]]
-    {:dispatch (if (get-in db (conj node-flag-db-path path))
-                 [:ui-component-node-close path]
-                 [:ui-component-node-open path])}))
-
-(rf/reg-event-fx :ui-component-node-select
-  (fn [{:keys [db]} [_ path {:keys [open?]}]]
-    {:db (assoc-in db ui-component-node-selected-path path)
-     :dispatch [:ui-component-node-open (cond-> path
-                                          (not open?) drop-last)]}))
-
-(rf/reg-event-fx :ui-component-node-select-default
-  (fn [{:keys [db]} [_ path]]
-    (let [old-path (get-in db ui-component-node-selected-path)
-          new-path (if (or (not old-path)
-                           (not= (subvec old-path 0 (count path))
-                                 path))
-                     path
-                     old-path)]
-      (cond-> {}
-        (not= new-path
-              old-path) (assoc :dispatch [:ui-component-node-select new-path])))))
-
-(rf/reg-event-fx :add-component
-  (fn [{:keys [db]} [_ path value]]
-    (let [components-path (conj path :components)
-          index (count (get-in db components-path))]
-      {:db (update-in db components-path #(-> %
-                                              (conj value)
-                                              vec))
-       :dispatch [:ui-component-node-select (conj components-path index) {:open? true}]})))
-
-(rf/reg-event-fx :add-element
-  (fn [{:keys [db]} [_ path value]]
+(rf/reg-event-db :add-element
+  (fn [db [_ path value]]
     (let [elements (-> (get-in db path)
                        (conj value)
                        vec)
           element-path (conj path (-> elements count dec))]
-      {:db (assoc-in db path elements)
-       :dispatch [:ui-component-node-select element-path {:open? true}]})))
+      (-> db
+          (assoc-in path elements)
+          (state/ui-component-node-select element-path :open? true)))))
 
 (defn adjust-component-path-after-order-change [path elements-path index new-index]
   (let [elements-path-size (count elements-path)
@@ -202,16 +146,16 @@
 
 (defn element-order-changed [db elements-path index new-index]
   (-> db
-      (update-in ui-component-node-selected-path
+      (update-in state/ui-component-node-selected-path
                  adjust-component-path-after-order-change elements-path index new-index)
-      (update-in node-flag-db-path (fn [flags]
-                                     (->> flags
-                                          (keep (fn [[path flag]]
-                                                  (let [new-path (adjust-component-path-after-order-change
-                                                                  path elements-path index new-index)]
-                                                    (when new-path
-                                                      [new-path flag]))))
-                                          (into {}))))))
+      (update-in state/node-flag-db-path (fn [flags]
+                                           (->> flags
+                                                (keep (fn [[path flag]]
+                                                        (let [new-path (adjust-component-path-after-order-change
+                                                                        path elements-path index new-index)]
+                                                          (when new-path
+                                                            [new-path flag]))))
+                                                (into {}))))))
 
 (rf/reg-event-db :remove-element
   (fn [db [_ path]]

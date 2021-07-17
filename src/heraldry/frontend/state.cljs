@@ -160,3 +160,61 @@
                                           (update :queries select-keys [:new])
                                           (update :current #(when (= % :new) :new)))]))
                             (into {})))]))
+
+(def node-flag-db-path [:ui :component-tree :nodes])
+(def ui-component-node-selected-path [:ui :component-tree :selected-node])
+
+(defn ui-component-node-open [db path]
+  (let [path (vec path)]
+    (->> (range (count path))
+         (map (fn [idx]
+                [(subvec path 0 (inc idx)) true]))
+         (into {})
+         (update-in db node-flag-db-path merge))))
+
+(rf/reg-event-db :ui-component-node-open
+  (fn [db [_ path]]
+    (ui-component-node-open db path)))
+
+(defn ui-component-node-close [db path]
+  (update-in
+   db node-flag-db-path
+   (fn [flags]
+     (->> flags
+          (filter (fn [[other-path v]]
+                    (when (not= (take (count path) other-path)
+                                path)
+                      [other-path v])))
+          (into {})))))
+
+(rf/reg-event-db :ui-component-node-close
+  (fn [db [_ path]]
+    (ui-component-node-close db path)))
+
+(rf/reg-event-db :ui-component-node-toggle
+  (fn [db [_ path]]
+    (if (get-in db (conj node-flag-db-path path))
+      (ui-component-node-close db path)
+      (ui-component-node-open db path))))
+
+(defn ui-component-node-select [db path & {:keys [open?]}]
+  (-> db
+      (assoc-in ui-component-node-selected-path path)
+      (ui-component-node-open (cond-> path
+                                (not open?) drop-last))))
+
+(rf/reg-event-db :ui-component-node-select
+  (fn [db [_ path {:keys [open?]}]]
+    (ui-component-node-select db path :open? open?)))
+
+(rf/reg-event-db :ui-component-node-select-default
+  (fn [db [_ path]]
+    (let [old-path (get-in db ui-component-node-selected-path)
+          new-path (if (or (not old-path)
+                           (not= (subvec old-path 0 (count path))
+                                 path))
+                     path
+                     old-path)]
+      (if (not= new-path old-path)
+        (ui-component-node-select db new-path)
+        db))))

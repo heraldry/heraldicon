@@ -6,15 +6,16 @@
             [heraldry.frontend.util :as util]
             [re-frame.core :as rf]))
 
-(rf/reg-event-fx :override-field-part-reference
-  (fn [{:keys [db]} [_ path]]
+(rf/reg-event-db :override-field-part-reference
+  (fn [db [_ path]]
     (let [{:keys [index]} (get-in db path)
           referenced-part (get-in db (-> path
                                          drop-last
                                          vec
                                          (conj index)))]
-      {:db (assoc-in db path referenced-part)
-       :dispatch [:ui-component-node-select path {:open? true}]})))
+      (-> db
+          (assoc-in path referenced-part)
+          (state/ui-component-node-select path :open? true)))))
 
 (rf/reg-event-fx :reset-field-part-reference
   (fn [{:keys [db]} [_ path]]
