@@ -4,10 +4,10 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.default :as default]
             [re-frame.core :as rf]
-            [taoensso.timbre :as log]
-            [taoensso.tufte :as tufte]))
+            [taoensso.timbre :as log]))
 
 ;; subs
+
 
 (rf/reg-sub :get
   (fn [db [_ path]]
@@ -30,18 +30,8 @@
 
 ;; events
 
-(defonce stats-accumulator (tufte/add-accumulating-handler! {:ns-pattern "*"}))
-
-(defn display-profiler-stats []
-  (when-let [m (not-empty @stats-accumulator)]
-    (js/console.log (tufte/format-grouped-pstats
-                     m
-                     {:format-pstats-opts {:columns [:n-calls :p95 :mean :clock :total]}}))))
-
 (rf/reg-event-db :initialize-db
   (fn [db [_]]
-    (when-let [profile-timer (:profile-timer db)]
-      (js/clearInterval profile-timer))
     (merge {:example-coa {:render-options default/render-options
                           :coat-of-arms {:escutcheon :rectangle
                                          :field {:type :heraldry.field.type/plain
@@ -72,8 +62,7 @@
             :ui {:charge-tree {:show-public? true
                                :show-own? true}
                  :component-tree {}}}
-           db
-           {:profile-timer (js/setInterval display-profiler-stats 5000)})))
+           db)))
 
 (rf/reg-event-db :set
   (fn [db [_ path value]]
