@@ -54,8 +54,8 @@
 (defn render-coat-of-arms []
   (let [coat-of-arms-db-path (conj form-db-path :coat-of-arms)
         coat-of-arms @(rf/subscribe [:get coat-of-arms-db-path])
-        render-options @(rf/subscribe [:get (conj form-db-path :render-options)])
         arms-data @(rf/subscribe [:get form-db-path])
+        render-options-path (conj form-db-path :render-options)
         attribution (:attribution arms-data)
         name (:name arms-data)
         arms-url (full-url-for-arms arms-data)
@@ -67,19 +67,18 @@
                                    100
                                    (merge
                                     context/default
-                                    {:render-options render-options
+                                    {:render-options-path render-options-path
                                      :db-path coat-of-arms-db-path
-                                     :metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
+                                     :metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]
+                                     :root-transform "scale(5,5)"}))
             {:keys [width height]} environment]
         [:svg {:id "svg"
                :style {:width "100%"
                        :height "100%"}
                :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
                :preserveAspectRatio "xMidYMin meet"}
-         [:g {:filter (when (:escutcheon-shadow? render-options)
-                        "url(#shadow)")}
-          [:g {:transform "translate(10,10) scale(5,5)"}
-           result]]])
+         [:g {:transform "translate(10,10)"}
+          result]])
       [:<>])))
 
 (defn blazonry []
