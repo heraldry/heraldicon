@@ -1,6 +1,5 @@
 (ns heraldry.frontend.state
   (:require [cljs.core.async :refer [go]]
-            [clojure.string :as s]
             [clojure.walk :as walk]
             [com.wsscode.common.async-cljs :refer [<?]]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
@@ -105,10 +104,6 @@
       (-> path count (= 1)) (dissoc (first path))
       (-> path count (> 1)) (update-in (drop-last path) dissoc (last path)))))
 
-(rf/reg-event-db :toggle
-  (fn-traced [db [_ path]]
-    (update-in db path not)))
-
 (rf/reg-event-db :set-form-error
   (fn-traced [db [_ db-path error]]
     (assoc-in db (concat [:form-errors] db-path [:message]) error)))
@@ -124,13 +119,6 @@
 (rf/reg-event-db :remove-attribute
   (fn [db [_ db-path attribute]]
     (update-in db db-path dissoc attribute)))
-
-(rf/reg-event-db :toggle-tag
-  (fn-traced [db [_ db-path tag]]
-    (update-in db db-path (fn [current-tags]
-                            (if (get current-tags tag)
-                              (dissoc current-tags tag)
-                              (assoc current-tags tag true))))))
 
 (rf/reg-event-fx :clear-form-errors
   (fn-traced [_ [_ db-path]]
