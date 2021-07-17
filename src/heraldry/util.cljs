@@ -140,3 +140,22 @@
   (-> k
       str
       (subs 1)))
+
+;; https://gist.github.com/sebastibe/27be496c34ba6a3cce3b6425810a3dda
+(defn vec-remove
+  "Remove elem in coll by index."
+  [coll pos]
+  (vec (concat (subvec coll 0 pos) (subvec coll (inc pos)))))
+
+(defn vec-add
+  "Add elem in coll by index."
+  [coll pos el]
+  (concat (subvec coll 0 pos) [el] (subvec coll pos)))
+
+(defn vec-move
+  "Move elem in coll by index"
+  [coll pos1 pos2]
+  (let [el (nth coll pos1)]
+    (if (= pos1 pos2)
+      coll
+      (into [] (vec-add (vec-remove coll pos1) pos2 el)))))

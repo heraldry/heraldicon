@@ -82,6 +82,11 @@ a:visited {
   cursor: pointer;
 }
 
+a.disabled {
+  color: #ccc !important;
+  cursor: not-allowed;
+}
+
 p {
   margin-top: 0;
 }
