@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.field-layout
   (:require [heraldry.coat-of-arms.options :as options]
+            [heraldry.frontend.ui.element.range :as range]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
@@ -30,6 +31,39 @@
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
+(rf/reg-event-fx :set-field-layout-num-fields-x
+  (fn [{:keys [db]} [_ path value]]
+    (let [field-path (drop-last 2 path)
+          field (get-in db field-path)]
+      {:dispatch [:set-field-type
+                  field-path
+                  (:type field)
+                  value
+                  (-> field :layout :num-fields-y)
+                  (-> field :layout :num-base-fields)]})))
+
+(rf/reg-event-fx :set-field-layout-num-fields-y
+  (fn [{:keys [db]} [_ path value]]
+    (let [field-path (drop-last 2 path)
+          field (get-in db field-path)]
+      {:dispatch [:set-field-type
+                  field-path
+                  (:type field)
+                  (-> field :layout :num-fields-x)
+                  value
+                  (-> field :layout :num-base-fields)]})))
+
+(rf/reg-event-fx :set-field-layout-num-base-fields
+  (fn [{:keys [db]} [_ path value]]
+    (let [field-path (drop-last 2 path)
+          field (get-in db field-path)]
+      {:dispatch [:set-field-type
+                  field-path
+                  (:type field)
+                  (-> field :layout :num-fields-x)
+                  (-> field :layout :num-fields-y)
+                  value]})))
+
 (defn layout-submenu [path]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
     (let [{:keys [ui]} options
@@ -52,3 +86,18 @@
 
 (defmethod interface/form-element :field-layout [path]
   [layout-submenu path])
+
+(defmethod interface/form-element :field-layout-num-fields-x [path]
+  [range/range-input path
+   :on-change (fn [value]
+                (rf/dispatch [:set-field-layout-num-fields-x path value]))])
+
+(defmethod interface/form-element :field-layout-num-fields-y [path]
+  [range/range-input path
+   :on-change (fn [value]
+                (rf/dispatch [:set-field-layout-num-fields-y path value]))])
+
+(defmethod interface/form-element :field-layout-num-base-fields [path]
+  [range/range-input path
+   :on-change (fn [value]
+                (rf/dispatch [:set-field-layout-num-base-fields path value]))])
