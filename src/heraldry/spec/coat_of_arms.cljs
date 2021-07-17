@@ -120,6 +120,9 @@
                                                              (number? value))
                                               (or (nil? value)
                                                   (s/valid? :heraldry/tincture value)))) %))
+;; TODO: outdated, now outline-mode
+;; (s/def :heraldry.charge.hint/outline? boolean?)
+;; (s/def :heraldry.charge/hints (s/keys :opt-un [:heraldry.charge.hint/outline?]))
 (s/def :heraldry.charge/attitude (s/nilable attributes/attitude-map))
 (s/def :heraldry.charge/facing (s/nilable attributes/facing-map))
 (s/def :heraldry.charge.variant/id string?)
