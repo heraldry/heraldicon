@@ -9,7 +9,6 @@
             [heraldry.frontend.form.arms-select :as arms-select]
             [heraldry.frontend.form.collection-select :as collection-select]
             [heraldry.frontend.form.font :as font]
-            [heraldry.frontend.form.state] ;; needed for subscriptions
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.user :as user]
