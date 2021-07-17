@@ -2,10 +2,27 @@
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.core :as field]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element.range :as range]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
-            [re-frame.core :as rf]
-            [heraldry.frontend.ui.element.range :as range]))
+            [re-frame.core :as rf]))
+
+(rf/reg-event-fx :override-field-part-reference
+  (fn [{:keys [db]} [_ path]]
+    (let [{:keys [index]} (get-in db path)
+          referenced-part (get-in db (-> path
+                                         drop-last
+                                         vec
+                                         (conj index)))]
+      {:db (assoc-in db path referenced-part)
+       :dispatch [:ui-component-node-select path {:open? true}]})))
+
+(rf/reg-event-fx :reset-field-part-reference
+  (fn [{:keys [db]} [_ path]]
+    (let [index (last path)
+          parent (get-in db (drop-last 2 path))]
+      {:db (assoc-in db path (-> (field/default-fields parent)
+                                 (get index)))})))
 
 (defn form [path _]
   [:<>

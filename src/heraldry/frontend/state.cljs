@@ -3,7 +3,6 @@
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.field.core :as field]
             [re-frame.core :as rf]
             [taoensso.timbre :as log]
             [taoensso.tufte :as tufte]))
@@ -172,23 +171,6 @@
                                           (update :queries select-keys [:new])
                                           (update :current #(when (= % :new) :new)))]))
                             (into {})))]))
-
-(rf/reg-event-fx :override-field-part-reference
-  (fn [{:keys [db]} [_ path]]
-    (let [{:keys [index]} (get-in db path)
-          referenced-part (get-in db (-> path
-                                         drop-last
-                                         vec
-                                         (conj index)))]
-      {:db (assoc-in db path referenced-part)
-       :dispatch [:ui-component-node-select path {:open? true}]})))
-
-(rf/reg-event-fx :reset-field-part-reference
-  (fn [{:keys [db]} [_ path]]
-    (let [index (last path)
-          parent (get-in db (drop-last 2 path))]
-      {:db (assoc-in db path (-> (field/default-fields parent)
-                                 (get index)))})))
 
 (rf/reg-event-fx :set-field-layout-num-fields-x
   (fn [{:keys [db]} [_ path value]]
