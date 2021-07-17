@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.field-layout
   (:require [heraldry.coat-of-arms.options :as options]
+            [heraldry.frontend.ui.element.field-type-select :as field-type-select]
             [heraldry.frontend.ui.element.range :as range]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
@@ -31,38 +32,41 @@
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
-(rf/reg-event-fx :set-field-layout-num-fields-x
-  (fn [{:keys [db]} [_ path value]]
+(rf/reg-event-db :set-field-layout-num-fields-x
+  (fn [db [_ path value]]
     (let [field-path (drop-last 2 path)
           field (get-in db field-path)]
-      {:dispatch [:set-field-type
-                  field-path
-                  (:type field)
-                  value
-                  (-> field :layout :num-fields-y)
-                  (-> field :layout :num-base-fields)]})))
+      (field-type-select/set-field-type
+       db
+       field-path
+       (:type field)
+       value
+       (-> field :layout :num-fields-y)
+       (-> field :layout :num-base-fields)))))
 
-(rf/reg-event-fx :set-field-layout-num-fields-y
-  (fn [{:keys [db]} [_ path value]]
+(rf/reg-event-db :set-field-layout-num-fields-y
+  (fn [db [_ path value]]
     (let [field-path (drop-last 2 path)
           field (get-in db field-path)]
-      {:dispatch [:set-field-type
-                  field-path
-                  (:type field)
-                  (-> field :layout :num-fields-x)
-                  value
-                  (-> field :layout :num-base-fields)]})))
+      (field-type-select/set-field-type
+       db
+       field-path
+       (:type field)
+       (-> field :layout :num-fields-x)
+       value
+       (-> field :layout :num-base-fields)))))
 
-(rf/reg-event-fx :set-field-layout-num-base-fields
-  (fn [{:keys [db]} [_ path value]]
+(rf/reg-event-db :set-field-layout-num-base-fields
+  (fn [db [_ path value]]
     (let [field-path (drop-last 2 path)
           field (get-in db field-path)]
-      {:dispatch [:set-field-type
-                  field-path
-                  (:type field)
-                  (-> field :layout :num-fields-x)
-                  (-> field :layout :num-fields-y)
-                  value]})))
+      (field-type-select/set-field-type
+       db
+       field-path
+       (:type field)
+       (-> field :layout :num-fields-x)
+       (-> field :layout :num-fields-y)
+       value))))
 
 (defn layout-submenu [path]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
