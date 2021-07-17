@@ -174,7 +174,6 @@
                                  (assoc :data edn-data)
                                  (update :username #(or % (:username (user/data)))))
         db-path (conj example-coa-db-path :coat-of-arms)
-        render-options @(rf/subscribe [:get [:example-coa :render-options]])
         coat-of-arms @(rf/subscribe [:get db-path])
         {:keys [result
                 environment]} (render/coat-of-arms
@@ -183,13 +182,14 @@
                                100
                                (merge
                                 context/default
-                                {:render-options render-options
+                                {:render-options-path (conj example-coa-db-path :render-options)
+                                 :root-transform "scale(5,5)"
                                  :db-path db-path}))
         {:keys [width height]} environment]
     [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
            :preserveAspectRatio "xMidYMid meet"
            :style {:width "97%"}}
-     [:g {:transform "translate(10,10) scale(5,5)"}
+     [:g {:transform "translate(10,10)"}
       result]]))
 
 (defn upload-file [event]
