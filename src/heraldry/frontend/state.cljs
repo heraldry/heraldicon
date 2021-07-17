@@ -191,10 +191,6 @@
 (def node-flag-db-path [:ui :component-tree :nodes])
 (def ui-component-node-selected-path [:ui :component-tree :selected-node])
 
-(rf/reg-sub :ui-hover-menu-open?
-  (fn [db [_ path]]
-    (get-in db [:ui :hover-menu-open? path])))
-
 (rf/reg-sub :ui-component-selected?
   (fn [db [_ path]]
     (or (get-in db [:ui :component-selected? path])
@@ -256,14 +252,6 @@
 (rf/reg-event-db :ui-component-deselect-all
   (fn [db _]
     (update db :ui dissoc :component-selected?)))
-
-(rf/reg-event-db :ui-hover-menu-open
-  (fn [db [_ path]]
-    (assoc-in db [:ui :hover-menu-open? path] true)))
-
-(rf/reg-event-db :ui-hover-menu-close
-  (fn [db [_ path]]
-    (update-in db [:ui :hover-menu-open?] dissoc path)))
 
 (rf/reg-event-fx :ui-component-select
   (fn [{:keys [db]} [_ path]]
