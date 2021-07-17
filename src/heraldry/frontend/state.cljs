@@ -129,16 +129,13 @@
   (rf/dispatch effect)
   (.stopPropagation event))
 
-(defn dispatch-on-event-sync [event effect]
-  (rf/dispatch-sync effect)
-  (.stopPropagation event))
-
 (defn set-async-fetch-data [db-path query-id data]
   (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
   (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id] {:state :done
                                                                          :data data}])
   (rf/dispatch-sync [:set db-path data]))
 
+;; TODO: this should be redone and also live elsewhere probably
 (defn async-fetch-data [db-path query-id async-function]
   (let [current-query @(rf/subscribe [:get [:async-fetch-data db-path :current]])
         query @(rf/subscribe [:get [:async-fetch-data db-path :queries query-id]])
@@ -179,9 +176,6 @@
       (rf/dispatch-sync [:set [:async-fetch-data db-path :current] nil])
       (rf/dispatch-sync [:set db-path nil]))))
 
-(defn invalidate-cache-all []
-  (rf/dispatch-sync [:set [:async-fetch-data] nil]))
-
 (defn invalidate-cache-all-but-new []
   (rf/dispatch-sync [:update [:async-fetch-data]
                      (fn [async-data]
@@ -196,10 +190,6 @@
 
 (def node-flag-db-path [:ui :component-tree :nodes])
 (def ui-component-node-selected-path [:ui :component-tree :selected-node])
-
-(rf/reg-sub :ui-component-open?
-  (fn [db [_ path]]
-    (get-in db [:ui :component-open? path])))
 
 (rf/reg-sub :ui-submenu-open?
   (fn [db [_ path]]
