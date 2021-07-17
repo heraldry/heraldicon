@@ -191,19 +191,6 @@
 (def node-flag-db-path [:ui :component-tree :nodes])
 (def ui-component-node-selected-path [:ui :component-tree :selected-node])
 
-(rf/reg-sub :ui-component-selected?
-  (fn [db [_ path]]
-    (or (get-in db [:ui :component-selected? path])
-        (when (get-in db (-> path
-                             (->> (drop-last 3))
-                             vec
-                             (conj :counterchanged?)))
-          (let [parent-field-path (-> path
-                                      (->> (drop-last 6))
-                                      vec
-                                      (conj :fields (last path)))]
-            (get-in db [:ui :component-selected? parent-field-path]))))))
-
 (rf/reg-sub :ui-component-node-open?
   (fn [[_ path] _]
     (rf/subscribe [:get (conj node-flag-db-path path)]))
@@ -252,26 +239,6 @@
 (rf/reg-event-db :ui-component-deselect-all
   (fn [db _]
     (update db :ui dissoc :component-selected?)))
-
-(rf/reg-event-fx :ui-component-select
-  (fn [{:keys [db]} [_ path]]
-    (let [real-path (if (get-in
-                         db
-                         (-> path
-                             (->> (drop-last 3))
-                             vec
-                             (conj :counterchanged?)))
-                      (-> path
-                          (->> (drop-last 6))
-                          vec
-                          (conj :fields (last path)))
-                      path)]
-      {:db (-> db
-               (update :ui dissoc :component-selected?)
-               (cond->
-                path (as-> db
-                           (assoc-in db [:ui :component-selected? real-path] true))))
-       :fx [[:dispatch [:ui-component-open real-path]]]})))
 
 (rf/reg-event-db :ui-component-node-open
   (fn [db [_ path]]
