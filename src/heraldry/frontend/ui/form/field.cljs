@@ -78,13 +78,13 @@
                 (cond-> [{:icon "fas fa-plus"
                           :title "Add"
                           :menu [{:title "Ordinary"
-                                  :handler #(state/dispatch-on-event % [:add-component path default/ordinary])}
+                                  :handler #(state/dispatch-on-event % [:add-element components-path default/ordinary])}
                                  {:title "Charge"
-                                  :handler #(state/dispatch-on-event % [:add-component path default/charge])}
+                                  :handler #(state/dispatch-on-event % [:add-element components-path default/charge])}
                                  {:title "Charge group"
-                                  :handler #(state/dispatch-on-event % [:add-component path default/charge-group])}
+                                  :handler #(state/dispatch-on-event % [:add-element components-path default/charge-group])}
                                  {:title "Semy"
-                                  :handler #(state/dispatch-on-event % [:add-component path default/semy])}]}]
+                                  :handler #(state/dispatch-on-event % [:add-element components-path default/semy])}]}]
                   (non-mandatory-part-of-parent? path)
                   (conj {:icon "fas fa-undo"
                          :title "Reset"
