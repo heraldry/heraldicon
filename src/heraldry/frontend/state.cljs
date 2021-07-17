@@ -173,22 +173,6 @@
                                           (update :current #(when (= % :new) :new)))]))
                             (into {})))]))
 
-(rf/reg-event-db :change-charge-group-type
-  (fn [db [_ path new-type]]
-    (-> db
-        (update-in path (fn [charge-group]
-                          (-> charge-group
-                              (assoc :type new-type)
-                              (cond->
-                               (and (-> new-type
-                                        #{:heraldry.charge-group.type/rows
-                                          :heraldry.charge-group.type/columns})
-                                    (-> charge-group :strips not)) (assoc :strips [{:slots [0 0]}
-                                                                                   {:slots [0]}])
-                               (and (-> new-type
-                                        (= :heraldry.charge-group.type/arc))
-                                    (-> charge-group :slots not)) (assoc :slots [0 0 0 0 0]))))))))
-
 (rf/reg-event-db :select-charge-group-preset
   ;; TODO: this must not be an fn, can be done once
   ;; https://github.com/day8/re-frame-debux/issues/40 is resolved
