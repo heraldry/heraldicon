@@ -1,10 +1,48 @@
 (ns heraldry.frontend.ui.element.tags
   (:require [clojure.string :as s]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (def value-path [:ui :tag-input-value])
+
+(defn normalize-tag [tag]
+  (let [normalized-tag (-> tag
+                           (cond->
+                            (keyword? tag) name)
+                           (or "")
+                           s/trim
+                           s/lower-case)]
+    (when (-> normalized-tag
+              count
+              pos?)
+      (keyword normalized-tag))))
+
+(rf/reg-event-db :add-tags
+  (fn [db [_ db-path tags]]
+    (update-in db db-path (fn [current-tags]
+                            (-> current-tags
+                                keys
+                                set
+                                (concat tags)
+                                (->> (map normalize-tag)
+                                     (filter identity)
+                                     set
+                                     (map (fn [tag]
+                                            [tag true]))
+                                     (into {})))))))
+
+(rf/reg-event-db :remove-tags
+  (fn [db [_ db-path tags]]
+    (update-in db db-path (fn [current-tags]
+                            (loop [current-tags current-tags
+                                   [tag & remaining] (->> tags
+                                                          (map normalize-tag)
+                                                          (filter identity)
+                                                          set)]
+                              (if tag
+                                (recur (dissoc current-tags tag)
+                                       remaining)
+                                current-tags))))))
 
 (defn on-change [event]
   (let [new-value (-> event .-target .-value)]
