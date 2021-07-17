@@ -320,10 +320,10 @@
   [:div {:style {:display "grid"
                  :grid-gap "10px"
                  :grid-template-columns "[start] auto [first] 33% [second] 25% [end]"
-                 :grid-template-rows "[top] 50% [middle] 25% [bottom-half] 25% [bottom]"
+                 :grid-template-rows "[top] 50% [middle] 25% [bottom-half] 23% [bottom]"
                  :grid-template-areas "'preview selected-component component-tree'
                                        'preview extra extra'
-                                       'extra-1 extra extra'"
+                                       'preview extra extra'"
                  :padding-left "10px"
                  :padding-right "10px"
                  :height "100%"}
