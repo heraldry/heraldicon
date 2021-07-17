@@ -1,12 +1,42 @@
 (ns heraldry.frontend.ui.element.ordinary-type-select
-  (:require [heraldry.coat-of-arms.ordinary.core :as ordinary]
+  (:require [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.ordinary.core :as ordinary]
+            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.render :as render]
-            [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.frontend.ui.shared :as shared]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
+
+(defn -default-line-style-of-ordinary-type [ordinary-type]
+  (case ordinary-type
+    :heraldry.ordinary.type/gore :enarched
+    :straight))
+
+(rf/reg-event-db :set-ordinary-type
+  (fn [db [_ path new-type]]
+    (let [current (get-in db path)
+          has-default-line-style? (-> current
+                                      :line
+                                      :type
+                                      (= (-default-line-style-of-ordinary-type (:type current))))
+          new-default-line-style (-default-line-style-of-ordinary-type new-type)
+          new-flipped (case new-type
+                        :heraldry.ordinary.type/gore true
+                        false)]
+      (-> db
+          (assoc-in (conj path :type) new-type)
+          (cond->
+           has-default-line-style? (->
+                                    (assoc-in (conj path :line :type) new-default-line-style)
+                                    (assoc-in (conj path :line :flipped?) new-flipped)))
+          (update-in path #(util/deep-merge-with (fn [_current-value new-value]
+                                                   new-value)
+                                                 %
+                                                 (options/sanitize-or-nil % (ordinary-options/options %))))))))
 
 (defn ordinary-type-choice [path key display-name & {:keys [selected?]}]
   (let [{:keys [result]} (render/coat-of-arms
