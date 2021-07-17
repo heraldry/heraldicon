@@ -5,7 +5,6 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.core :as field]
-            [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.util :refer [deep-merge-with]]
@@ -188,46 +187,6 @@
                                                  (into {}))
                                             value))
                                         flags)))))
-
-(rf/reg-event-db :set-field-type
-  (fn [db [_ path new-type num-fields-x num-fields-y num-base-fields]]
-    (let [path (vec path)]
-      (if (= new-type :heraldry.field.type/plain)
-        (-> db
-            (assoc-in (conj path :type) new-type)
-            (update-in (conj path :tincture) #(or % :none)))
-        (-> db
-            (assoc-in (conj path :type) new-type)
-            (update-in (conj path :line :type) #(or % :straight))
-            (assoc-in (conj path :layout :num-fields-x) num-fields-x)
-            (assoc-in (conj path :layout :num-fields-y) num-fields-y)
-            (assoc-in (conj path :layout :num-base-fields) num-base-fields)
-            (update-in path
-                       (fn [prepared-field]
-                         (let [current (or (:fields prepared-field) [])
-                               default (field/default-fields prepared-field)
-                               previous-default (field/default-fields (get-in db path))
-                               previous-default (cond
-                                                  (< (count previous-default) (count default)) (into previous-default (subvec default (count previous-default)))
-                                                  (> (count previous-default) (count default)) (subvec previous-default 0 (count default))
-                                                  :else previous-default)
-                               merged (cond
-                                        (< (count current) (count default)) (into current (subvec default (count current)))
-                                        (> (count current) (count default)) (subvec current 0 (count default))
-                                        :else current)]
-                           (-> prepared-field
-                               (assoc :fields (->> (map vector merged previous-default default)
-                                                   (map (fn [[cur old-def def]]
-                                                          (if (and (-> cur
-                                                                       :type
-                                                                       (not= :heraldry.field.type/ref))
-                                                                   (not= cur old-def))
-                                                            cur
-                                                            def)))
-                                                   vec))))))
-            (update-in path #(merge %
-                                    (options/sanitize-or-nil % (field-options/options %))))
-            (update-in path dissoc :tincture))))))
 
 (defn -default-line-style-of-ordinary-type [ordinary-type]
   (case ordinary-type
