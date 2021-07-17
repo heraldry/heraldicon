@@ -1,5 +1,6 @@
 (ns heraldry.frontend.form.charge-select
-  (:require [heraldry.frontend.charge-map :as charge-map]
+  (:require [clojure.walk :as walk]
+            [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.filter :as filter]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.tags :as tags]
@@ -194,6 +195,17 @@
      ^{:key modifier}
      [:<> [:div.tag.modifier (util/translate modifier)] " "])
    [tags/tags-view (-> charge :tags keys)]])
+
+(rf/reg-event-db :prune-false-flags
+  (fn [db [_ path]]
+    (update-in db path (fn [flags]
+                         (walk/postwalk (fn [value]
+                                          (if (map? value)
+                                            (->> value
+                                                 (filter #(-> % second (not= false)))
+                                                 (into {}))
+                                            value))
+                                        flags)))))
 
 (defn component [charge-list link-fn refresh-fn & {:keys [remove-empty-groups?
                                                           hide-ownership-filter?
