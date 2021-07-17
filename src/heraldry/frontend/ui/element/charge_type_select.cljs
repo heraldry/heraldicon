@@ -3,12 +3,16 @@
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.form.charge-select :as charge-select]
-            [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.frontend.ui.shared :as shared]
             [heraldry.util :refer [full-url-for-username]]
             [re-frame.core :as rf]))
+
+(rf/reg-event-db :update-charge
+  (fn [db [_ path changes]]
+    (update-in db path merge changes)))
 
 (defn charge-type-choice [path key display-name & {:keys [selected?]}]
   (let [{:keys [result]} (render/coat-of-arms

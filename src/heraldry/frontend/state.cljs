@@ -173,10 +173,6 @@
                                           (update :current #(when (= % :new) :new)))]))
                             (into {})))]))
 
-(rf/reg-event-db :update-charge
-  (fn [db [_ path changes]]
-    (update-in db path merge changes)))
-
 (rf/reg-event-db :cycle-charge-index
   (fn [db [_ path num-charges]]
     (let [slots-path (drop-last path)
