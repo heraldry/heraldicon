@@ -1,6 +1,5 @@
 (ns heraldry.frontend.state
   (:require [cljs.core.async :refer [go]]
-            [clojure.walk :as walk]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.default :as default]
@@ -176,17 +175,6 @@
                                           (update :queries select-keys [:new])
                                           (update :current #(when (= % :new) :new)))]))
                             (into {})))]))
-
-(rf/reg-event-db :prune-false-flags
-  (fn [db [_ path]]
-    (update-in db path (fn [flags]
-                         (walk/postwalk (fn [value]
-                                          (if (map? value)
-                                            (->> value
-                                                 (filter #(-> % second (not= false)))
-                                                 (into {}))
-                                            value))
-                                        flags)))))
 
 (defn -default-line-style-of-ordinary-type [ordinary-type]
   (case ordinary-type
