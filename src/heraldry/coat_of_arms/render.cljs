@@ -26,16 +26,26 @@
                               render-options)
         context (-> context
                     (assoc :render-options real-render-options))
-        mode (options/effective-value [:mode] render-options render-options/options)
-        escutcheon-override (options/effective-value [:escutcheon-override] render-options render-options/options)
-        escutcheon-shadow? (options/effective-value [:escutcheon-shadow?] render-options render-options/options)
-        escutcheon-outline? (options/effective-value [:escutcheon-outline?] render-options render-options/options)
-        outline? (options/effective-value [:outline?] render-options render-options/options)
-        shiny? (options/effective-value [:shiny?] render-options render-options/options)
-        squiggly? (options/effective-value [:squiggly?] render-options render-options/options)
-        theme (options/effective-value [:theme] render-options render-options/options)
-        texture (options/effective-value [:texture] render-options render-options/options)
-        texture-displacement? (options/effective-value [:texture-displacement?] render-options render-options/options)
+        [mode
+         escutcheon-override
+         escutcheon-shadow?
+         escutcheon-outline?
+         outline?
+         shiny?
+         squiggly?
+         theme
+         texture
+         texture-displacement?] (options/effective-values
+                                 [[:mode]
+                                  [:escutcheon-override]
+                                  [:escutcheon-shadow?]
+                                  [:escutcheon-outline?]
+                                  [:outline?]
+                                  [:shiny?]
+                                  [:squiggly?]
+                                  [:theme]
+                                  [:texture]
+                                  [:texture-displacement?]] render-options render-options/options)
         sanitized-coat-of-arms (options/sanitize coat-of-arms (coat-of-arms/options coat-of-arms))
         escutcheon (if (not= escutcheon-override :none)
                      escutcheon-override
