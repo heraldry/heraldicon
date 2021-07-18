@@ -130,4 +130,4 @@
 
 (defmethod form-element nil [path]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
-    [:div (str "not implemented: " (:type options) (-> options :ui :form-type))]))
+    [:div (str "not implemented: " path options)]))
