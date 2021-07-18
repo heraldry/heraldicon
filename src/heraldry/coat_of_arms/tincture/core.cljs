@@ -125,7 +125,7 @@
               (get furs tincture)
               "url(#void)")))
 
-(defn patterns [{:keys [theme]}]
+(defn patterns [theme]
   (into
    [:<>
     pattern/void

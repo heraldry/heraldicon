@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.options
   (:require [clojure.walk :as walk]
-            [heraldry.util :as util]))
+            [heraldry.util :as util]
+            [re-frame.core :as rf]))
 
 (def types #{:range :choice :boolean})
 
@@ -104,3 +105,9 @@
        (not= (get sanitized-data key)
              (or (-> options (get key) :inherited)
                  (-> options (get key) :default)))))
+
+(defn effective-value [rel-path data & {:keys [options-fn]}]
+  (if (vector? data)
+    @(rf/subscribe [:get-sanitized-value (vec (concat data rel-path))])
+    (let [sanitized-data (sanitize data (options-fn data))]
+      (get-in sanitized-data rel-path))))
