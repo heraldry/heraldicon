@@ -7,7 +7,8 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.render-options :as render-options]))
 
 (defn arm-diagonal [origin-point anchor-point]
   (-> (v/- anchor-point origin-point)
@@ -78,7 +79,8 @@
         field (if (:counterchanged? field)
                 (counterchange/counterchange-field ordinary parent)
                 field)
-        outline? (or (:outline? render-options)
+        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
+        outline? (or render-options-outline?
                      outline?)]
     [:<>
      [field-shared/make-subfields

@@ -3,6 +3,7 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.render-options :as render-options]
             [heraldry.util :as util]))
 
 (defn papellony-default [part-width part-height thickness]
@@ -141,11 +142,13 @@
         {pattern-width :width
          pattern-height :height
          papellony-pattern :pattern
-         papellony-outline :outline} (papellony-default part-width part-height thickness)]
+         papellony-outline :outline} (papellony-default part-width part-height thickness)
+        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
+        outline? (or render-options-outline?
+                     outline?)]
     [:g
      [:defs
-      (when (or (:outline? render-options)
-                outline?)
+      (when outline?
         [:pattern {:id (str pattern-id "-outline")
                    :width pattern-width
                    :height pattern-height
@@ -177,27 +180,27 @@
                  :fill (get ["#ffffff" "#000000"] idx)}]
          [:g {:fill (get ["#000000" "#ffffff"] idx)}
           papellony-pattern]])]
-     (for [idx (range 2)]
-       (let [mask-id (util/id "mask")
-             tincture (-> fields
-                          (get idx)
-                          :tincture)]
-         ^{:key idx}
-         [:<>
-          [:mask {:id mask-id}
+     (doall
+      (for [idx (range 2)]
+        (let [mask-id (util/id "mask")
+              tincture (-> fields
+                           (get idx)
+                           :tincture)]
+          ^{:key idx}
+          [:<>
+           [:mask {:id mask-id}
+            [:rect {:x -500
+                    :y -500
+                    :width 1100
+                    :height 1100
+                    :fill (str "url(#" pattern-id "-" idx ")")}]]
            [:rect {:x -500
                    :y -500
                    :width 1100
                    :height 1100
-                   :fill (str "url(#" pattern-id "-" idx ")")}]]
-          [:rect {:x -500
-                  :y -500
-                  :width 1100
-                  :height 1100
-                  :mask (str "url(#" mask-id ")")
-                  :fill (tincture/pick tincture render-options)}]]))
-     (when (or (:outline? render-options)
-               outline?)
+                   :mask (str "url(#" mask-id ")")
+                   :fill (render-options/pick-tincture tincture render-options)}]])))
+     (when outline?
        [:rect {:x -500
                :y -500
                :width 1100

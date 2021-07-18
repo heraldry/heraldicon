@@ -3,7 +3,7 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.render-options :as render-options]
             [heraldry.util :as util]))
 
 (defn render
@@ -47,11 +47,13 @@
                                       "L" [part-width (/ part-height 2)]
                                       "L" [(/ part-width 2) part-height]
                                       "L" [0 (/ part-height 2)]
-                                      "z"])]
+                                      "z"])
+        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
+        outline? (or render-options-outline?
+                     outline?)]
     [:g
      [:defs
-      (when (or (:outline? render-options)
-                outline?)
+      (when outline?
         [:pattern {:id (str pattern-id "-outline")
                    :width part-width
                    :height part-height
@@ -99,28 +101,28 @@
        [:path {:d lozenge-shape
                :fill "#000000"}]]]
      [:g {:transform (str "rotate(" (- rotation) ")")}
-      (for [idx (range 2)]
-        (let [mask-id (util/id "mask")
-              tincture (-> fields
-                           (get idx)
-                           :tincture)]
-          ^{:key idx}
-          [:<>
-           [:mask {:id mask-id}
-            [:rect {:x -500
-                    :y -500
-                    :width 1100
-                    :height 1100
-                    :fill (str "url(#" pattern-id "-" idx ")")}]]
-           [:g {:mask (str "url(#" mask-id ")")}
-            [:rect {:x -500
-                    :y -500
-                    :width 1100
-                    :height 1100
-                    :transform (str "rotate(" rotation ")")
-                    :fill (tincture/pick tincture render-options)}]]]))
-      (when (or (:outline? render-options)
-                outline?)
+      (doall
+       (for [idx (range 2)]
+         (let [mask-id (util/id "mask")
+               tincture (-> fields
+                            (get idx)
+                            :tincture)]
+           ^{:key idx}
+           [:<>
+            [:mask {:id mask-id}
+             [:rect {:x -500
+                     :y -500
+                     :width 1100
+                     :height 1100
+                     :fill (str "url(#" pattern-id "-" idx ")")}]]
+            [:g {:mask (str "url(#" mask-id ")")}
+             [:rect {:x -500
+                     :y -500
+                     :width 1100
+                     :height 1100
+                     :transform (str "rotate(" rotation ")")
+                     :fill (render-options/pick-tincture tincture render-options)}]]])))
+      (when outline?
         [:rect {:x -500
                 :y -500
                 :width 1100

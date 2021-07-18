@@ -7,6 +7,7 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.render-options :as render-options]
             [heraldry.util :as util]))
 
 (defn relative-points [points]
@@ -128,7 +129,8 @@
         field (if (:counterchanged? field)
                 (counterchange/counterchange-field ordinary parent)
                 field)
-        outline? (or (:outline? render-options)
+        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
+        outline? (or render-options-outline?
                      outline?)]
     [:<>
      [field-shared/make-subfields

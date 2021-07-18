@@ -55,7 +55,10 @@
 
    :squiggly? {:type :boolean
                :default false
-               :ui {:label "Squiggly lines (can be slow)"}}})
+               :ui {:label "Squiggly lines (can be slow)"}}
+
+   :preview-original? {:type :boolean
+                       :ui {:label "Preview original (don't replace colours)"}}})
 
 (defn options [render-options]
   (when render-options
@@ -64,10 +67,11 @@
         (= texture :none) (dissoc :texture-displacement?)
         (not= mode :colours) (dissoc :theme)))))
 
-(defmethod interface/component-options :render-options [data path]
-  (cond-> (options data)
-    ;; TODO: not ideal, probably should move this at some point
-    (-> path
-        first
-        (= :example-coa)) (assoc :preview-original? {:type :boolean
-                                                     :ui {:label "Preview original (don't replace colours)"}})))
+(defmethod interface/component-options :render-options [data _path]
+  (options data))
+
+;; TODO: this is a crutch, because this logic can't live in tincture/pick due to a cyclic dependency
+(defn pick-tincture [tincture render-options]
+  (let [[mode theme] (options/effective-values [[:mode] [:theme]] render-options options)]
+    (tincture/pick tincture {:mode mode
+                             :theme theme})))

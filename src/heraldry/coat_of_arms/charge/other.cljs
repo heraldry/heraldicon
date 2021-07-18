@@ -12,7 +12,8 @@
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.util :as util]))
+            [heraldry.util :as util]
+            [heraldry.render-options :as render-options]))
 
 (defn remove-outlines [data placeholder-colours]
   (walk/postwalk #(if (and (vector? %)
@@ -118,7 +119,12 @@
                               :fixed-tincture
                               (or :none)
                               (= :none))
-            hints (if (-> render-options :mode (= :hatching))
+            [render-options-mode
+             render-options-outline?
+             render-options-preview-original?] (options/effective-values [[:mode]
+                                                                          [:outline?]
+                                                                          [:preview-original?]] render-options render-options/options)
+            hints (if (= render-options-mode :hatching)
                     (assoc hints :outline-mode :keep)
                     hints)
             ;; since size now is filled with a default, check whether it was set at all,
@@ -193,7 +199,7 @@
             adjusted-charge (-> unadjusted-charge
                                 (cond->
                                  (not (or (-> hints :outline-mode (not= :remove))
-                                          (:outline? render-options))) (remove-outlines placeholder-colours)))
+                                          render-options-outline?)) (remove-outlines placeholder-colours)))
             adjusted-charge-without-shading (-> adjusted-charge
                                                 (remove-shading placeholder-colours))
             [mask-id mask
@@ -217,7 +223,7 @@
                                      kind (get placeholder-colours colour-lower)
                                      replacement (get-replacement kind tincture)]
                                  (cond
-                                   replacement (tincture/pick replacement render-options)
+                                   replacement (render-options/pick-tincture replacement render-options)
                                    (= kind :keep) colour
                                    :else "#000000"))))
             shift (-> (v/v positional-charge-width positional-charge-height)
@@ -257,7 +263,7 @@
             username (:username full-charge-data)
             charge-url (or (util/full-url-for-charge full-charge-data) "")
             attribution (:attribution full-charge-data)
-            outline? (or (:outline? render-options)
+            outline? (or render-options-outline?
                          (-> hints :outline-mode (= :keep)))]
         [:<>
          [:defs
@@ -359,7 +365,7 @@
                     outline? (- outline/stroke-width))
                   (-> fimbriation
                       :tincture-2
-                      (tincture/pick render-options)) render-options
+                      (render-options/pick-tincture render-options)) render-options
                   :transform reverse-transform
                   :corner (-> fimbriation :corner)]]))
             (when (-> fimbriation :mode #{:single :double})
@@ -380,11 +386,11 @@
                     outline? (- outline/stroke-width))
                   (-> fimbriation
                       :tincture-1
-                      (tincture/pick render-options)) render-options
+                      (render-options/pick-tincture render-options)) render-options
                   :transform reverse-transform
                   :corner (-> fimbriation :corner)]]))
 
-            (if (:preview-original? render-options)
+            (if render-options-preview-original?
               unadjusted-charge
               [:g
                [metadata/attribution charge-name username (util/full-url-for-username username) charge-url attribution]

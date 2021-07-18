@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.field.type.per-pile
-  (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.options :as field-options]
+  (:require [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -8,6 +7,7 @@
             [heraldry.coat-of-arms.shared.pile :as pile]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.render-options :as render-options]
             [heraldry.util :as util]))
 
 (defn render
@@ -145,7 +145,8 @@
                 [top-left top-right
                  bottom-left bottom-right]]]
 
-        outline? (or (:outline? render-options)
+        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
+        outline? (or render-options-outline?
                      outline?)]
     [:<>
      [shared/make-subfields
