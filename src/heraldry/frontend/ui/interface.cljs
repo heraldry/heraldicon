@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.interface
   (:require [clojure.string :as s]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [reagent.core :as r]))
 
 (defn type->component-type [t]
   (let [ts (str t)]
@@ -90,18 +91,19 @@
     (component-options data path)))
 
 (rf/reg-sub :get-relevant-options
-  (fn [_ [_ path]]
-    ;; TODO: can this be done by feeding the subscriptions in again?
-    ;; probably is more efficient, but the previous attempt didn't refresh the
-    ;; subscription properly when the options changed (e.g. switching to "arc" in a charge-group)
-    (->> (range (count path) 0 -1)
-         (keep (fn [idx]
-                 (let [option-path (subvec path 0 idx)
-                       relative-path (subvec path idx)
-                       options @(rf/subscribe [:get-options option-path])]
-                   (when-let [relevant-options (get-in options relative-path)]
-                     relevant-options))))
-         first)))
+  (fn [[_ path] _]
+    (or (->> (range (count path) 0 -1)
+             (keep (fn [idx]
+                     (let [option-path (subvec path 0 idx)
+                           relative-path (subvec path idx)
+                           sub (rf/subscribe [:get-options option-path])]
+                       (when @sub
+                         [sub (r/atom relative-path)]))))
+             first)
+        [(r/atom nil) (r/atom nil)]))
+
+  (fn [[relevant-options relative-path] [_ _path]]
+    (get-in relevant-options relative-path)))
 
 (rf/reg-sub :get-form-element-type
   (fn [[_ path] _]
