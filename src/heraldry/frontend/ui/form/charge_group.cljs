@@ -3,7 +3,6 @@
             [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.charge-group-preset-select
              :as
@@ -11,8 +10,8 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.ui.shared :as shared]
-            [re-frame.core :as rf]
-            [heraldry.render-options :as render-options]))
+            [heraldry.render-options :as render-options]
+            [re-frame.core :as rf]))
 
 (rf/reg-event-db :cycle-charge-index
   (fn [db [_ path num-charges]]
@@ -59,7 +58,8 @@
                                             (= charge-index index) 0
                                             (> charge-index index) (dec charge-index)
                                             :else charge-index))
-                                        slots)))))))
+                                        slots)))
+          (state/element-order-changed elements-path index nil)))))
 
 (rf/reg-event-db :move-charge-group-charge-up
   (fn [db [_ path]]
@@ -100,7 +100,8 @@
                                             (= charge-index index) (inc charge-index)
                                             (= charge-index (inc index)) (dec charge-index)
                                             :else charge-index))
-                                        slots)))))))
+                                        slots)))
+          (state/element-order-changed elements-path index (inc index))))))
 
 (rf/reg-event-fx :add-charge-group-strip
   (fn [{:keys [db]} [_ path value]]
@@ -147,7 +148,8 @@
                                             (= charge-index (dec index)) (inc charge-index)
                                             (= charge-index index) (dec charge-index)
                                             :else charge-index))
-                                        slots)))))))
+                                        slots)))
+          (state/element-order-changed elements-path index (dec index))))))
 
 (def preview-tinctures
   [:azure :or :vert :gules :purpure :sable])
