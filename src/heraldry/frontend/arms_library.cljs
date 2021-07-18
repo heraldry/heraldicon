@@ -55,7 +55,6 @@
   (let [coat-of-arms-db-path (conj form-db-path :coat-of-arms)
         coat-of-arms @(rf/subscribe [:get coat-of-arms-db-path])
         arms-data @(rf/subscribe [:get form-db-path])
-        render-options-path (conj form-db-path :render-options)
         attribution (:attribution arms-data)
         name (:name arms-data)
         arms-url (full-url-for-arms arms-data)
@@ -67,7 +66,7 @@
                                    100
                                    (merge
                                     context/default
-                                    {:render-options-path render-options-path
+                                    {:render-options (conj form-db-path :render-options)
                                      :db-path coat-of-arms-db-path
                                      :metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]
                                      :root-transform "scale(5,5)"}))

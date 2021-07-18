@@ -83,8 +83,8 @@
        :height bar-width
        :style {:fill "#fff"}}]]))
 
-(defn render-arms [x y size path render-options-path & {:keys [selected? font font-size]
-                                                        :or {font-size 12}}]
+(defn render-arms [x y size path render-options & {:keys [selected? font font-size]
+                                                   :or {font-size 12}}]
   (let [data @(rf/subscribe [:get path])
         {arms-id :id
          version :version} (:reference data)
@@ -101,7 +101,7 @@
                                size
                                (merge
                                 context/default
-                                {:render-options-path render-options-path
+                                {:render-options render-options
                                  :db-path []
                                  :fn-select-component nil
                                  #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
@@ -228,7 +228,7 @@
                                  100
                                  (merge
                                   context/default
-                                  {:render-options-path (conj form-db-path :render-options)
+                                  {:render-options (conj form-db-path :render-options)
                                    :db-path []
                                    :fn-select-component nil
                                    :root-transform "scale(5,5)"

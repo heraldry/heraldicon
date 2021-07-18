@@ -14,30 +14,28 @@
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
-(defn get-render-option [key render-options-path sanitized-render-options]
-  (if render-options-path
-    @(rf/subscribe [:get-sanitized-value (conj render-options-path key)])
-    (get sanitized-render-options key)))
-
 (defn coat-of-arms [coat-of-arms width
                     {:keys
                      [render-options
-                      render-options-path
                       svg-export?
                       metadata
                       root-transform
                       texture-link] :as context}]
-  (let [render-options (or render-options
-                           @(rf/subscribe [:get-value render-options-path]))
-        sanitized-render-options (when render-options
-                                   (options/sanitize render-options (render-options/options render-options)))
+  (let [real-render-options (if (vector? render-options)
+                              @(rf/subscribe [:get-value render-options])
+                              render-options)
         context (-> context
-                    (assoc :render-options render-options))
-        escutcheon-override (get-render-option :escutcheon-override render-options-path sanitized-render-options)
-        escutcheon-shadow? (get-render-option :escutcheon-shadow? render-options-path sanitized-render-options)
-        escutcheon-outline? (get-render-option :escutcheon-outline? render-options-path sanitized-render-options)
-        outline? (get-render-option :outline? render-options-path sanitized-render-options)
-        shiny? (get-render-option :shiny? render-options-path sanitized-render-options)
+                    (assoc :render-options real-render-options))
+        mode (options/effective-value [:mode] render-options render-options/options)
+        escutcheon-override (options/effective-value [:escutcheon-override] render-options render-options/options)
+        escutcheon-shadow? (options/effective-value [:escutcheon-shadow?] render-options render-options/options)
+        escutcheon-outline? (options/effective-value [:escutcheon-outline?] render-options render-options/options)
+        outline? (options/effective-value [:outline?] render-options render-options/options)
+        shiny? (options/effective-value [:shiny?] render-options render-options/options)
+        squiggly? (options/effective-value [:squiggly?] render-options render-options/options)
+        theme (options/effective-value [:theme] render-options render-options/options)
+        texture (options/effective-value [:texture] render-options render-options/options)
+        texture-displacement? (options/effective-value [:texture-displacement?] render-options render-options/options)
         sanitized-coat-of-arms (options/sanitize coat-of-arms (coat-of-arms/options coat-of-arms))
         escutcheon (if (not= escutcheon-override :none)
                      escutcheon-override
@@ -45,13 +43,11 @@
         shield (escutcheon/field escutcheon)
         environment (-> (environment/transform-to-width shield width)
                         (cond->
-                         (:squiggly? sanitized-render-options) (update :shape svg/squiggly-path)))
+                         squiggly? (update :shape svg/squiggly-path)))
         field (:field coat-of-arms)
         mask-id (util/id "mask")
-        texture (-> sanitized-render-options
-                    :texture
-                    (#(when (not= % :none) %)))
-        texture-displacement? (:texture-displacement? sanitized-render-options)
+        texture (when-not (= texture :none)
+                  texture)
         texture-id (util/id "texture")
         shiny-id (util/id "shiny")
         use-texture? (or texture-link texture)]
@@ -103,10 +99,8 @@
                                   :k4 0}]])
                 (when-not svg-export?
                   filter/shadow)
-                [tincture/patterns sanitized-render-options]
-                (when (-> sanitized-render-options
-                          :mode
-                          (= :hatching))
+                [tincture/patterns theme]
+                (when (= mode :hatching)
                   hatching/patterns)]
                [:defs
                 [(if svg-export?
@@ -120,7 +114,7 @@
                       :mask
                       :clip-path) (str "url(#" mask-id ")")}
                 [:g {:filter (when use-texture? (str "url(#" texture-id ")"))}
-                 [:g {:filter (when (:shiny? sanitized-render-options)
+                 [:g {:filter (when shiny?
                                 (str "url(#" shiny-id ")"))}
                   [:path {:d (:shape environment)
                           :fill "#f0f0f0"}]

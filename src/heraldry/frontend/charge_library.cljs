@@ -182,7 +182,7 @@
                                100
                                (merge
                                 context/default
-                                {:render-options-path (conj example-coa-db-path :render-options)
+                                {:render-options (conj example-coa-db-path :render-options)
                                  :root-transform "scale(5,5)"
                                  :db-path db-path}))
         {:keys [width height]} environment]
