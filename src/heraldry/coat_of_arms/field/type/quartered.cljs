@@ -7,7 +7,8 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.render-options :as render-options]))
 
 (defn render
   {:display-name "Quarterly 2x2"
@@ -141,7 +142,10 @@
                                  (v/+ point-bottom
                                       line-bottom-start)])
                  "z"]
-                [origin-point bottom-right]]]]
+                [origin-point bottom-right]]]
+        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
+        outline? (or render-options-outline?
+                     outline?)]
     [:<>
      [shared/make-subfields
       (shared/field-context-key type) fields parts
@@ -155,8 +159,7 @@
           (svg/stitch line-bottom)])]
        nil]
       environment field context]
-     (when (or (:outline? render-options)
-               outline?)
+     (when outline?
        [:g outline/style
         [:path {:d (svg/make-path
                     ["M" (v/+ point-top

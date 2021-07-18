@@ -5,7 +5,8 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.render-options :as render-options]))
 
 (defn quarterly-parts [{:keys [num-fields-x
                                offset-x
@@ -155,8 +156,10 @@
                                           "L" [x1 y2]])]))
                      vec)
         outline-extra 50
-        outlines (when (or (:outline? render-options)
-                           outline?)
+        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
+        outline? (or render-options-outline?
+                     outline?)
+        outlines (when outline?
                    [:g outline/style
                     (for [i (range 1 num-fields-x)]
                       (let [x1 (+ x0 (* i part-width))]

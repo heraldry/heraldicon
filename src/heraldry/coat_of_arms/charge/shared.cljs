@@ -10,7 +10,8 @@
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.util :as util]))
+            [heraldry.util :as util]
+            [heraldry.render-options :as render-options]))
 
 (defn make-charge
   [{:keys [field hints] :as charge} parent environment
@@ -164,7 +165,7 @@
              outline? (- outline/stroke-width))
            (-> fimbriation
                :tincture-2
-               (tincture/pick render-options)) render-options
+               (render-options/pick-tincture render-options)) render-options
            :corner (-> fimbriation :corner)]]))
      (when (-> fimbriation :mode #{:single :double})
        (let [thickness (-> fimbriation
@@ -185,7 +186,7 @@
              outline? (- outline/stroke-width))
            (-> fimbriation
                :tincture-1
-               (tincture/pick render-options)) render-options
+               (render-options/pick-tincture render-options)) render-options
            :corner (-> fimbriation :corner)]]))
      [:g {:id charge-id}
       [field-shared/make-subfields

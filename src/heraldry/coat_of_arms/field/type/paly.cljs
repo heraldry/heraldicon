@@ -6,7 +6,8 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.render-options :as render-options]))
 
 (defn paly-parts [{:keys [num-fields-x
                           offset-x
@@ -151,8 +152,10 @@
                     (->> (map vector))
                     vec
                     (conj nil))
-        outlines (when (or (:outline? render-options)
-                           outline?)
+        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
+        outline? (or render-options-outline?
+                     outline?)
+        outlines (when outline?
                    [:g outline/style
                     (for [i (range (dec num-fields-x))]
                       ^{:key i}

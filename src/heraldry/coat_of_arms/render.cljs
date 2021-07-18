@@ -21,14 +21,9 @@
                       metadata
                       root-transform
                       texture-link] :as context}]
-  (let [real-render-options (if (vector? render-options)
-                              @(rf/subscribe [:get-value render-options])
-                              render-options)
-        real-coat-of-arms (if (vector? coat-of-arms)
+  (let [real-coat-of-arms (if (vector? coat-of-arms)
                             @(rf/subscribe [:get-value coat-of-arms])
                             coat-of-arms)
-        context (-> context
-                    (assoc :render-options real-render-options))
         [mode
          escutcheon-override
          escutcheon-shadow?

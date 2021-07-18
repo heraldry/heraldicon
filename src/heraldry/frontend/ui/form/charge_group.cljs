@@ -11,7 +11,8 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.ui.shared :as shared]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [heraldry.render-options :as render-options]))
 
 (rf/reg-event-db :cycle-charge-index
   (fn [db [_ path num-charges]]
@@ -182,7 +183,7 @@
                         (-> charge-index
                             (mod (count preview-tinctures))
                             (->> (get preview-tinctures))
-                            (tincture/pick render-options)))]
+                            (render-options/pick-tincture render-options)))]
             ^{:key idx}
             [:g {:transform (str "translate(" (:x point) "," (:y point) ")")
                  :on-click #(state/dispatch-on-event % [:cycle-charge-index slot-path num-charges])

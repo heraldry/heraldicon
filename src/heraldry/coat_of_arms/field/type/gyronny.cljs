@@ -8,7 +8,8 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.shared.saltire :as saltire]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.render-options :as render-options]))
 
 (defn render
   {:display-name "Gyronny"
@@ -260,8 +261,10 @@
                  "z"]
                 [bottom-right
                  origin-point
-                 bottom]]]]
-
+                 bottom]]]
+        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
+        outline? (or render-options-outline?
+                     outline?)]
     [:<>
      [shared/make-subfields
       (shared/field-context-key type) fields parts
@@ -289,8 +292,7 @@
           (svg/stitch line-bottom)])]
        nil]
       environment field context]
-     (when (or (:outline? render-options)
-               outline?)
+     (when outline?
        [:g outline/style
         [:path {:d (svg/make-path
                     ["M" origin-point
