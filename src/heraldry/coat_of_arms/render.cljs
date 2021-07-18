@@ -14,6 +14,11 @@
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
+(defn get-render-option [key render-options-path sanitized-render-options]
+  (if render-options-path
+    @(rf/subscribe [:get-sanitized-value (conj render-options-path key)])
+    (get sanitized-render-options key)))
+
 (defn coat-of-arms [coat-of-arms width
                     {:keys
                      [render-options
@@ -24,14 +29,18 @@
                       texture-link] :as context}]
   (let [render-options (or render-options
                            @(rf/subscribe [:get-value render-options-path]))
+        sanitized-render-options (when render-options
+                                   (options/sanitize render-options (render-options/options render-options)))
         context (-> context
                     (assoc :render-options render-options))
+        escutcheon-override (get-render-option :escutcheon-override render-options-path sanitized-render-options)
+        escutcheon-shadow? (get-render-option :escutcheon-shadow? render-options-path sanitized-render-options)
+        escutcheon-outline? (get-render-option :escutcheon-outline? render-options-path sanitized-render-options)
+        outline? (get-render-option :outline? render-options-path sanitized-render-options)
+        shiny? (get-render-option :shiny? render-options-path sanitized-render-options)
         sanitized-coat-of-arms (options/sanitize coat-of-arms (coat-of-arms/options coat-of-arms))
-        sanitized-render-options (options/sanitize render-options (render-options/options render-options))
-        escutcheon (if (-> sanitized-render-options
-                           :escutcheon-override
-                           (not= :none))
-                     (:escutcheon-override sanitized-render-options)
+        escutcheon (if (not= escutcheon-override :none)
+                     escutcheon-override
                      (:escutcheon sanitized-coat-of-arms))
         shield (escutcheon/field escutcheon)
         environment (-> (environment/transform-to-width shield width)
@@ -45,16 +54,14 @@
         texture-displacement? (:texture-displacement? sanitized-render-options)
         texture-id (util/id "texture")
         shiny-id (util/id "shiny")
-        use-texture? (or texture-link texture)
-        escutcheon-shadow? (or (:escutcheon-shadow? render-options)
-                               @(rf/subscribe [:get-value (conj render-options-path :escutcheon-shadow?)]))]
+        use-texture? (or texture-link texture)]
     {:environment environment
      :result [:g {:filter (when escutcheon-shadow?
                             "url(#shadow)")}
               [:g {:transform root-transform}
                metadata
                [:defs
-                (when (:shiny? sanitized-render-options)
+                (when shiny?
                   [:filter {:id shiny-id}
                    [:feDiffuseLighting {:in "SourceGraphic"
                                         :result "light"
@@ -121,7 +128,7 @@
                                                       (dissoc :metadata)
                                                       (update :db-path conj :field)
                                                       (assoc :root-escutcheon escutcheon))]]]]
-               (when (or (:escutcheon-outline? sanitized-render-options)
-                         (:outline? sanitized-render-options))
+               (when (or escutcheon-outline?
+                         outline?)
                  [:g outline/style
                   [:path {:d (:shape environment)}]])]]}))

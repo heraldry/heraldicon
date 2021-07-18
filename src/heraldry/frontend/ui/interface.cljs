@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.interface
   (:require [clojure.string :as s]
+            [heraldry.coat-of-arms.options :as options]
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
@@ -104,6 +105,16 @@
 
   (fn [[relevant-options relative-path] [_ _path]]
     (get-in relevant-options relative-path)))
+
+(rf/reg-sub :get-sanitized-value
+  (fn [[_ path] _]
+    [(rf/subscribe [:get-value path])
+     (rf/subscribe [:get-relevant-options path])])
+
+  (fn [[value options] [_ _path]]
+    (if (map? value)
+      (options/sanitize value options)
+      (options/get-value value options))))
 
 (rf/reg-sub :get-form-element-type
   (fn [[_ path] _]
