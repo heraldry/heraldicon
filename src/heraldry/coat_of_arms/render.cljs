@@ -24,6 +24,9 @@
   (let [real-render-options (if (vector? render-options)
                               @(rf/subscribe [:get-value render-options])
                               render-options)
+        real-coat-of-arms (if (vector? coat-of-arms)
+                            @(rf/subscribe [:get-value coat-of-arms])
+                            coat-of-arms)
         context (-> context
                     (assoc :render-options real-render-options))
         [mode
@@ -46,15 +49,15 @@
                                   [:theme]
                                   [:texture]
                                   [:texture-displacement?]] render-options render-options/options)
-        sanitized-coat-of-arms (options/sanitize coat-of-arms (coat-of-arms/options coat-of-arms))
+        [escutcheon] (options/effective-values [[:escutcheon]] coat-of-arms coat-of-arms/options)
         escutcheon (if (not= escutcheon-override :none)
                      escutcheon-override
-                     (:escutcheon sanitized-coat-of-arms))
+                     escutcheon)
         shield (escutcheon/field escutcheon)
         environment (-> (environment/transform-to-width shield width)
                         (cond->
                          squiggly? (update :shape svg/squiggly-path)))
-        field (:field coat-of-arms)
+        field (:field real-coat-of-arms)
         mask-id (util/id "mask")
         texture (when-not (= texture :none)
                   texture)
