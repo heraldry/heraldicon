@@ -10,7 +10,7 @@
 
 (defn set-line-defaults [options]
   (-> options
-      (assoc-in [:fimbriation :alignment :default] :outside)))
+      (options/override-if-exists [:fimbriation :alignment :default] :outside)))
 
 (def default-options
   {:type {:type :choice
