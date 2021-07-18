@@ -52,33 +52,30 @@
             [:li [credits/for-charge charge]]))]])))
 
 (defn render-coat-of-arms []
-  (let [coat-of-arms-db-path (conj form-db-path :coat-of-arms)
-        coat-of-arms @(rf/subscribe [:get coat-of-arms-db-path])
+  (let [coat-of-arms-path (conj form-db-path :coat-of-arms)
         arms-data @(rf/subscribe [:get form-db-path])
         attribution (:attribution arms-data)
         name (:name arms-data)
         arms-url (full-url-for-arms arms-data)
-        username (:username arms-data)]
-    (if coat-of-arms
-      (let [{:keys [result
-                    environment]} (render/coat-of-arms
-                                   coat-of-arms
-                                   100
-                                   (merge
-                                    context/default
-                                    {:render-options (conj form-db-path :render-options)
-                                     :db-path coat-of-arms-db-path
-                                     :metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]
-                                     :root-transform "scale(5,5)"}))
-            {:keys [width height]} environment]
-        [:svg {:id "svg"
-               :style {:width "100%"
-                       :height "100%"}
-               :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
-               :preserveAspectRatio "xMidYMin meet"}
-         [:g {:transform "translate(10,10)"}
-          result]])
-      [:<>])))
+        username (:username arms-data)
+        {:keys [result
+                environment]} (render/coat-of-arms
+                               coat-of-arms-path
+                               100
+                               (merge
+                                context/default
+                                {:render-options (conj form-db-path :render-options)
+                                 :db-path coat-of-arms-path
+                                 :metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]
+                                 :root-transform "scale(5,5)"}))
+        {:keys [width height]} environment]
+    [:svg {:id "svg"
+           :style {:width "100%"
+                   :height "100%"}
+           :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
+           :preserveAspectRatio "xMidYMin meet"}
+     [:g {:transform "translate(10,10)"}
+      result]]))
 
 (defn blazonry []
   (let [coat-of-arms-db-path (conj form-db-path :coat-of-arms)
