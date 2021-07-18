@@ -106,8 +106,14 @@
              (or (-> options (get key) :inherited)
                  (-> options (get key) :default)))))
 
-(defn effective-value [rel-path data & {:keys [options-fn]}]
+(defn effective-values [rel-paths data options-fn]
   (if (vector? data)
-    @(rf/subscribe [:get-sanitized-value (vec (concat data rel-path))])
+    (->> rel-paths
+         (map (fn [path]
+                @(rf/subscribe [:get-sanitized-value (vec (concat data path))])))
+         vec)
     (let [sanitized-data (sanitize data (options-fn data))]
-      (get-in sanitized-data rel-path))))
+      (->> rel-paths
+           (map (fn [path]
+                  (get-in sanitized-data path)))
+           vec))))
