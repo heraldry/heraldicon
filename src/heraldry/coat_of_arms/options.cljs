@@ -1,7 +1,6 @@
 (ns heraldry.coat-of-arms.options
   (:require [clojure.walk :as walk]
-            [heraldry.util :as util]
-            [taoensso.timbre :as log]))
+            [heraldry.util :as util]))
 
 (def types #{:range :choice :boolean})
 
