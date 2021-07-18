@@ -222,3 +222,47 @@
       (if (not= new-path old-path)
         (ui-component-node-select db new-path)
         db))))
+
+(defn adjust-component-path-after-order-change [path elements-path index new-index]
+  (let [elements-path-size (count elements-path)
+        path-base (when (-> path count (>= elements-path-size))
+                    (subvec path 0 elements-path-size))
+        path-rest (when (-> path count (>= elements-path-size))
+                    (subvec path (count elements-path)))
+        current-index (first path-rest)
+        path-rest (when (-> path-rest count (> 1))
+                    (subvec path-rest 1))]
+    (if (or (not= path-base elements-path)
+            (= index new-index))
+      path
+      (if (nil? new-index)
+        (cond
+          (= current-index index) nil
+          (> current-index index) (vec (concat path-base
+                                               [(dec current-index)]
+                                               path-rest))
+          :else path)
+        (cond
+          (= current-index index) (vec (concat path-base
+                                               [new-index]
+                                               path-rest))
+          (<= index current-index new-index) (vec (concat path-base
+                                                          [(dec current-index)]
+                                                          path-rest))
+          (<= new-index current-index index) (vec (concat path-base
+                                                          [(inc current-index)]
+                                                          path-rest))
+          :else path)))))
+
+(defn element-order-changed [db elements-path index new-index]
+  (-> db
+      (update-in ui-component-node-selected-path
+                 adjust-component-path-after-order-change elements-path index new-index)
+      (update-in node-flag-db-path (fn [flags]
+                                     (->> flags
+                                          (keep (fn [[path flag]]
+                                                  (let [new-path (adjust-component-path-after-order-change
+                                                                  path elements-path index new-index)]
+                                                    (when new-path
+                                                      [new-path flag]))))
+                                          (into {}))))))
