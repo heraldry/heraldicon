@@ -3,7 +3,8 @@
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.util :as util]
-            [heraldry.coat-of-arms.options :as options]))
+            [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.field.interface :as interface]))
 
 (def overlap-stroke-width 0.1)
 
@@ -86,8 +87,32 @@
                                   (conj db-path :field)
                                   (conj db-path :fields idx))))]]]))]))
 
+(defn render [path environment
+              {:keys [svg-export? transform] :as context}]
+  (let [selected? false]
+    [:<>
+     [:g {:style (when (not svg-export?)
+                   {:pointer-events "visiblePainted"
+                    :cursor "pointer"})
+          :transform transform}
+      [interface/render-field path environment context]
+      #_(for [[idx element] (map-indexed vector components)]
+          (let [adjusted-context (-> context
+                                     (update :db-path conj :components idx))]
+            ^{:key idx}
+            [:<>
+             (case (-> element :type namespace)
+               "heraldry.ordinary.type" [ordinary/render element field environment adjusted-context]
+               "heraldry.charge.type" [charge/render element field environment adjusted-context]
+               "heraldry.charge-group.type" [charge-group/render element field environment adjusted-context]
+               "heraldry.component" [semy/render element environment adjusted-context])]))]
+     (when selected?
+       [:path {:d (:shape environment)
+               :style {:opacity 0.25}
+               :fill "url(#selected)"}])]))
+
 (defn make-subfields2 [field-path parts mask-overlaps parent-environment
-                       {:keys [render-field svg-export?] :as context}]
+                       {:keys [svg-export?] :as context}]
   [:<>
    (doall
     (for [[idx [shape-path bounding-box & extra]] (map-indexed vector parts)]
@@ -143,7 +168,7 @@
                 :clip-path) (str "url(#" clip-path-id ")")}
           [:g {:mask (when (-> env :meta :mask)
                        (str "url(#" mask-id ")"))}
-           [render-field
+           [render
             part-path
             env
             context]]]])))])

@@ -3,6 +3,7 @@
             [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.options :as field-options]
+            [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.type.barry :as barry]
             [heraldry.coat-of-arms.field.type.bendy :as bendy]
             [heraldry.coat-of-arms.field.type.bendy-sinister :as bendy-sinister]
@@ -32,7 +33,8 @@
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.coat-of-arms.semy.core :as semy]
             [heraldry.frontend.util :as frontend-util]
-            [heraldry.util :as util]))
+            [heraldry.util :as util]
+            [heraldry.coat-of-arms.field.shared :as shared]))
 
 (defn mandatory-part-count [{:keys [type] :as field}]
   (let [type (-> type name keyword)
@@ -149,8 +151,8 @@
       :else (subvec defaults 0 2))))
 
 (def fields
-  [#'plain/render
-   #'per-pale/render
+  [plain/field-type
+   per-pale/field-type
    ;; #'per-fess/render
    ;; #'per-bend/render
    ;; #'per-bend-sinister/render
@@ -176,23 +178,16 @@
    ;; #'masonry/render
    ])
 
-(def kinds-function-map
-  (->> fields
-       (map (fn [function]
-              [(-> function meta :value) function]))
-       (into {})))
-
 (def choices
   (->> fields
-       (map (fn [function]
-              [(-> function meta :display-name) (-> function meta :value)]))))
+       (map (fn [key]
+              [(interface/display-name key) key]))))
 
 (def field-map
   (util/choices->map choices))
 
-(defn part-name [type index]
-  (let [function (get kinds-function-map type)]
-    (-> function meta :parts (get index) (or (util/to-roman (inc index))))))
+(defn part-name [field-type index]
+  (-> field-type interface/part-names (get index) (or (util/to-roman (inc index)))))
 
 (defn title [field]
   (let [sanitized-field (options/sanitize field (field-options/options field))]
@@ -205,31 +200,5 @@
        (get field-map (:type field)))
      " field")))
 
-(defn render [path environment
-              {:keys [svg-export? transform] :as context}]
-  (let [selected? false
-        context (-> context
-                    (assoc :render-field render))
-        field-type (options/raw-value (conj path :type) context)
-        render-function (get kinds-function-map field-type)]
-    (js/console.log :ho field-type path context)
-    [:<>
-     [:g {:style (when (not svg-export?)
-                   {:pointer-events "visiblePainted"
-                    :cursor "pointer"})
-          :transform transform}
-      [render-function path environment context]
-      #_(for [[idx element] (map-indexed vector components)]
-          (let [adjusted-context (-> context
-                                     (update :db-path conj :components idx))]
-            ^{:key idx}
-            [:<>
-             (case (-> element :type namespace)
-               "heraldry.ordinary.type" [ordinary/render element field environment adjusted-context]
-               "heraldry.charge.type" [charge/render element field environment adjusted-context]
-               "heraldry.charge-group.type" [charge-group/render element field environment adjusted-context]
-               "heraldry.component" [semy/render element environment adjusted-context])]))]
-     (when selected?
-       [:path {:d (:shape environment)
-               :style {:opacity 0.25}
-               :fill "url(#selected)"}])]))
+;; TODO: should go away when not needed anymore
+(def render shared/render)
