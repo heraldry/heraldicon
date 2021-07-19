@@ -1,21 +1,32 @@
 (ns heraldry.coat-of-arms.field.type.quarterly
-  (:require [heraldry.coat-of-arms.field.options :as field-options]
+  (:require [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]
-            [heraldry.render-options :as render-options]))
+            [heraldry.coat-of-arms.vector :as v]))
 
-(defn quarterly-parts [{:keys [num-fields-x
-                               offset-x
-                               stretch-x
-                               num-fields-y
-                               offset-y
-                               stretch-y]} top-left bottom-right outline? render-options]
-  (let [offset-x (or offset-x 0)
-        stretch-x (or stretch-x 1)
+(def field-type
+  :heraldry.field.type/quarterly)
+
+(defmethod interface/display-name field-type [_] "Quarterly NxM")
+
+(defmethod interface/part-names field-type [_] nil)
+
+(defmethod interface/render-field field-type
+  [path environment context]
+  (let [num-fields-x (options/sanitized-value (conj path :layout :num-fields-x) context)
+        num-fields-y (options/sanitized-value (conj path :layout :num-fields-y) context)
+        offset-x (options/sanitized-value (conj path :layout :offset-x) context)
+        offset-y (options/sanitized-value (conj path :layout :offset-y) context)
+        stretch-x (options/sanitized-value (conj path :layout :stretch-x) context)
+        stretch-y (options/sanitized-value (conj path :layout :stretch-y) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
+        points (:points environment)
+        top-left (:top-left points)
+        bottom-right (:bottom-right points)
         width (- (:x bottom-right)
                  (:x top-left))
         part-width (-> width
@@ -30,8 +41,6 @@
                (- (/ required-width 2))
                (+ (* offset-x
                      part-width)))
-        offset-y (or offset-y 0)
-        stretch-y (or stretch-y 1)
         height (- (:y bottom-right)
                   (:y top-left))
         part-height (-> height
@@ -156,9 +165,6 @@
                                           "L" [x1 y2]])]))
                      vec)
         outline-extra 50
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)
         outlines (when outline?
                    [:g outline/style
                     (for [i (range 1 num-fields-x)]
@@ -171,21 +177,9 @@
                         ^{:key [:y j]}
                         [:path {:d (svg/make-path ["M" [(- x0 outline-extra) y1]
                                                    "L" [(+ x0 required-width outline-extra) y1]])}]))])]
-    [parts overlap outlines]))
-
-(defn render
-  {:display-name "Quarterly NxM"
-   :value :heraldry.field.type/quarterly
-   :parts []}
-  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [layout outline?]} (options/sanitize field (field-options/options field))
-        points (:points environment)
-        top-left (:top-left points)
-        bottom-right (:bottom-right points)
-        [parts overlap outlines] (quarterly-parts layout top-left bottom-right outline? render-options)]
     [:<>
-     [shared/make-subfields
-      (shared/field-context-key type) fields parts
+     [shared/make-subfields2
+      path parts
       overlap
-      environment field context]
+      environment context]
      outlines]))
