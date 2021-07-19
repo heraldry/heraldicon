@@ -165,7 +165,7 @@
    tierced-per-fess/field-type
    tierced-per-pairle/field-type
    tierced-per-pairle-reversed/field-type
-   ;; #'per-pile/render
+   per-pile/field-type
    ;; #'paly/render
    ;; #'barry/render
    ;; #'bendy/render
