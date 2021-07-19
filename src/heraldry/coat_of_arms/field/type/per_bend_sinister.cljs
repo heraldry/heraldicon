@@ -1,20 +1,28 @@
 (ns heraldry.coat-of-arms.field.type.per-bend-sinister
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.options :as field-options]
+            [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]
-            [heraldry.render-options :as render-options]))
+            [heraldry.coat-of-arms.vector :as v]))
 
-(defn render
-  {:display-name "Per bend sinister"
-   :value :heraldry.field.type/per-bend-sinister
-   :parts ["chief" "base"]}
-  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin anchor outline?]} (options/sanitize field (field-options/options field))
+(def field-type
+  :heraldry.field.type/per-bend-sinister)
+
+(defmethod interface/display-name field-type [_] "Per bend sinister")
+
+(defmethod interface/part-names field-type [_] ["chief" "base"])
+
+(defmethod interface/render-field field-type
+  [path environment context]
+  (let [line (options/sanitized-value (conj path :line) context)
+        origin (options/sanitized-value (conj path :origin) context)
+        anchor (options/sanitized-value (conj path :anchor) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
+
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
@@ -56,7 +64,7 @@
          line-one-end :line-end
          :as line-one-data} (line/create line
                                          diagonal-start diagonal-end
-                                         :render-options render-options
+                                         :context context
                                          :environment environment)
         parts [[["M" (v/+ diagonal-start
                           line-one-start)
@@ -84,13 +92,10 @@
                  "z"]
                 [real-diagonal-start
                  bottom-right
-                 real-diagonal-end]]]
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)]
+                 real-diagonal-end]]]]
     [:<>
-     [shared/make-subfields
-      (shared/field-context-key type) fields parts
+     [shared/make-subfields2
+      path parts
       [:all nil]
-      environment field context]
-     (line/render line [line-one-data] diagonal-start outline? render-options)]))
+      environment context]
+     (line/render line [line-one-data] diagonal-start outline? context)]))

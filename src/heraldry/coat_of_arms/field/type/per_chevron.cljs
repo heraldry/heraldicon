@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.per-chevron
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.options :as field-options]
+            [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -8,29 +8,36 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]
-            [heraldry.render-options :as render-options]))
+            [heraldry.coat-of-arms.vector :as v]))
 
-(defn render
-  {:display-name "Per chevron"
-   :value :heraldry.field.type/per-chevron
-   ;; TODO: this naming now depends on the angle of the chevron
-   :parts ["chief" "base"]}
-  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [field-options (field-options/options field)
-        {:keys [line opposite-line origin anchor
-                direction-anchor outline?]} (options/sanitize field field-options)
-        raw-direction-anchor (:direction-anchor field)
-        direction-anchor (options/sanitize (cond-> raw-direction-anchor
-                                             (-> direction-anchor
-                                                 :point
-                                                 #{:left
-                                                   :right
-                                                   :top
-                                                   :bottom}) (->
-                                                              (update :offset-x #(or % (:offset-x origin)))
-                                                              (update :offset-y #(or % (:offset-y origin)))))
-                                           (:direction-anchor field-options))
+(def field-type
+  :heraldry.field.type/per-chevron)
+
+(defmethod interface/display-name field-type [_] "Per chevron")
+
+(defmethod interface/part-names field-type [_] ["chief" "base"])
+
+(defmethod interface/render-field field-type
+  [path environment context]
+  (let [line (options/sanitized-value (conj path :line) context)
+        opposite-line (options/sanitized-value (conj path :opposite-line) context)
+        origin (options/sanitized-value (conj path :origin) context)
+        anchor (options/sanitized-value (conj path :anchor) context)
+        direction-anchor (options/sanitized-value (conj path :direction-anchor) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
+        raw-direction-anchor (options/raw-value (conj path :direction-anchor) context)
+        direction-anchor (cond-> direction-anchor
+                           (-> direction-anchor
+                               :point
+                               #{:left
+                                 :right
+                                 :top
+                                 :bottom}) (->
+                                            (assoc :offset-x (or (:offset-x raw-direction-anchor)
+                                                                 (:offset-x origin)))
+                                            (assoc :offset-y (or (:offset-y raw-direction-anchor)
+                                                                 (:offset-y origin)))))
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment)
         top-left (:top-left points)
@@ -77,7 +84,7 @@
                                           :real-start 0
                                           :real-end end
                                           :reversed? true
-                                          :render-options render-options
+                                          :context context
                                           :environment environment)
         {line-right :line
          line-right-end :line-end
@@ -85,7 +92,7 @@
                                            origin-point diagonal-right
                                            :real-start 0
                                            :real-end end
-                                           :render-options render-options
+                                           :context context
                                            :environment environment)
         infinity-points (cond
                           (<= 45 chevron-angle 135) [:right :left]
@@ -117,14 +124,11 @@
                                  (v/+ diagonal-left
                                       line-left-start)])
                  "z"]
-                [top-left bottom-right]]]
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)]
+                [top-left bottom-right]]]]
     [:<>
-     [shared/make-subfields
-      (shared/field-context-key type) fields parts
+     [shared/make-subfields2
+      path parts
       [:all nil]
-      environment field context]
+      environment context]
      (line/render line [line-left-data
-                        line-right-data] diagonal-left outline? render-options)]))
+                        line-right-data] diagonal-left outline? context)]))

@@ -19,7 +19,8 @@
   [path environment context]
   (let [line (options/sanitized-value (conj path :line) context)
         origin (options/sanitized-value (conj path :origin) context)
-        outline? (options/sanitized-value (conj path :outline?) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -69,10 +70,7 @@
                                       line-one-start)])
                  "z"]
                 [real-top
-                 bottom-right]]]
-        render-options-outline? (options/render-option :outline? context)
-        outline? (or render-options-outline?
-                     outline?)]
+                 bottom-right]]]]
     [:<>
      [shared/make-subfields2
       path parts

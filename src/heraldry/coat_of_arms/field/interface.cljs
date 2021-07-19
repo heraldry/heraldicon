@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.field.interface
-  (:require [heraldry.coat-of-arms.options :as options]))
+  (:require [heraldry.coat-of-arms.options :as options]
+            [taoensso.timbre :as log]))
 
 (defmulti display-name identity)
 
@@ -10,5 +11,5 @@
                          (options/raw-value (conj path :type) context)))
 
 (defmethod render-field nil [path _environment context]
-  (js/console.log :oi "not implemented" path context)
+  (log/warn :not-implemented path context)
   [:<>])
