@@ -1,10 +1,10 @@
 (ns heraldry.coat-of-arms.field.shared
   (:require [clojure.string :as s]
             [heraldry.coat-of-arms.field.environment :as environment]
-            [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.util :as util]
+            [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.field.interface :as interface]))
+            [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.util :as util]))
 
 (def overlap-stroke-width 0.1)
 
@@ -13,9 +13,6 @@
     (case (:type part)
       :heraldry.field.type/ref (get fields (:index part))
       part)))
-
-(defn field-context-key [key]
-  (keyword (str "field-" (name key))))
 
 (defn make-subfields [type fields parts mask-overlaps parent-environment parent
                       {:keys [render-field db-path svg-export?] :as context}]
