@@ -1,11 +1,5 @@
 (ns heraldry.coat-of-arms.field.options
-  (:require [heraldry.coat-of-arms.geometry :as geometry]
-            [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.position :as position]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.coat-of-arms.field.interface :as interface]
+  (:require [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.type.barry :as barry]
             [heraldry.coat-of-arms.field.type.bendy :as bendy]
             [heraldry.coat-of-arms.field.type.bendy-sinister :as bendy-sinister]
@@ -31,6 +25,12 @@
             [heraldry.coat-of-arms.field.type.tierced-per-pairle-reversed :as tierced-per-pairle-reversed]
             [heraldry.coat-of-arms.field.type.tierced-per-pale :as tierced-per-pale]
             [heraldry.coat-of-arms.field.type.vairy :as vairy]
+            [heraldry.coat-of-arms.geometry :as geometry]
+            [heraldry.coat-of-arms.line.core :as line]
+            [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.position :as position]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.util :as util]))
 
 (def fields
