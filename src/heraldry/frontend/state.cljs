@@ -30,6 +30,13 @@
   (fn [value [_ _path]]
     value))
 
+(rf/reg-sub :get-list-size
+  (fn [[_ path] _]
+    (rf/subscribe [:get path]))
+
+  (fn [value [_ _path]]
+    (count value)))
+
 ;; events
 
 (rf/reg-event-db :initialize-db
@@ -275,12 +282,19 @@
 (defn get-raw-data-by-state [path _context]
   @(rf/subscribe [:get-value path]))
 
+(defn get-list-size-by-state [path _context]
+  @(rf/subscribe [:get-list-size path]))
+
 (def access-by-state
   {:get-sanitized-data get-sanitized-data-by-state
-   :get-raw-data get-raw-data-by-state})
+   :get-raw-data get-raw-data-by-state
+   :get-list-size get-list-size-by-state})
 
 (defn get-raw-data-by-context [path context]
   (get-in (:data context) path))
+
+(defn get-list-size-by-context [path context]
+  (count (get-in (:data context) path)))
 
 (defn get-options-by-context [path context]
   (interface/component-options (get-raw-data-by-context path context) path))
@@ -308,4 +322,5 @@
 
 (def access-by-context
   {:get-sanitized-data get-sanitized-data-by-context
-   :get-raw-data get-raw-data-by-context})
+   :get-raw-data get-raw-data-by-context
+   :get-list-size get-list-size-by-context})

@@ -1,10 +1,11 @@
 (ns heraldry.coat-of-arms.field.shared
   (:require [clojure.string :as s]
             [heraldry.coat-of-arms.field.environment :as environment]
-            [heraldry.coat-of-arms.field.interface :as interface]
-            [heraldry.options :as options]
+            [heraldry.coat-of-arms.field.interface :as ui-interface]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.util :as util]))
+            [heraldry.options :as options]
+            [heraldry.util :as util]
+            [heraldry.interface :as interface]))
 
 (def overlap-stroke-width 0.1)
 
@@ -101,17 +102,12 @@
                    {:pointer-events "visiblePainted"
                     :cursor "pointer"})
           :transform transform}
-      [interface/render-field path environment context]
-      #_(for [[idx element] (map-indexed vector components)]
-          (let [adjusted-context (-> context
-                                     (update :db-path conj :components idx))]
-            ^{:key idx}
-            [:<>
-             (case (-> element :type namespace)
-               "heraldry.ordinary.type" [ordinary/render element field environment adjusted-context]
-               "heraldry.charge.type" [charge/render element field environment adjusted-context]
-               "heraldry.charge-group.type" [charge-group/render element field environment adjusted-context]
-               "heraldry.component" [semy/render element environment adjusted-context])]))]
+      [ui-interface/render-field path environment context]
+      (for [idx (range (options/list-size (conj path :components) context))]
+        ^{:key idx}
+        [interface/render-component
+         (conj path :components idx)
+         path environment context])]
      (when selected?
        [:path {:d (:shape environment)
                :style {:opacity 0.25}
