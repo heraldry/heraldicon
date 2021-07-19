@@ -5,8 +5,8 @@
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.coat-of-arms.ordinary.type.base :as base]
-            ;; [heraldry.coat-of-arms.ordinary.type.bend :as bend]
-            ;; [heraldry.coat-of-arms.ordinary.type.bend-sinister :as bend-sinister]
+            [heraldry.coat-of-arms.ordinary.type.bend :as bend]
+            [heraldry.coat-of-arms.ordinary.type.bend-sinister :as bend-sinister]
             ;; [heraldry.coat-of-arms.ordinary.type.chevron :as chevron]
             [heraldry.coat-of-arms.ordinary.type.chief :as chief]
             ;; [heraldry.coat-of-arms.ordinary.type.cross :as cross]
@@ -26,8 +26,8 @@
    fess/ordinary-type
    chief/ordinary-type
    base/ordinary-type
-   ;;bend/ordinary-type
-   ;;bend-sinister/ordinary-type
+   bend/ordinary-type
+   bend-sinister/ordinary-type
    ;;chevron/ordinary-type
    ;;saltire/ordinary-type
    ;;cross/ordinary-type
