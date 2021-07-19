@@ -7,7 +7,7 @@
             [heraldry.coat-of-arms.ordinary.type.base :as base]
             [heraldry.coat-of-arms.ordinary.type.bend :as bend]
             [heraldry.coat-of-arms.ordinary.type.bend-sinister :as bend-sinister]
-            ;; [heraldry.coat-of-arms.ordinary.type.chevron :as chevron]
+            [heraldry.coat-of-arms.ordinary.type.chevron :as chevron]
             [heraldry.coat-of-arms.ordinary.type.chief :as chief]
             ;; [heraldry.coat-of-arms.ordinary.type.cross :as cross]
             [heraldry.coat-of-arms.ordinary.type.fess :as fess]
@@ -28,7 +28,7 @@
    base/ordinary-type
    bend/ordinary-type
    bend-sinister/ordinary-type
-   ;;chevron/ordinary-type
+   chevron/ordinary-type
    ;;saltire/ordinary-type
    ;;cross/ordinary-type
    ;;pile/ordinary-type
