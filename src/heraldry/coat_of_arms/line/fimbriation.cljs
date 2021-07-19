@@ -1,8 +1,8 @@
 (ns heraldry.coat-of-arms.line.fimbriation
   (:require [clojure.walk :as walk]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (def type-choices
@@ -161,7 +161,7 @@
                :style (when (not svg-export?)
                         {:pointer-events "none"})}]]]]))
 
-(defn render [line-path mask-id thickness color outline? corner render-options]
+(defn render [line-path mask-id thickness color outline? corner context]
   [:g {:mask (when mask-id
                (str "url(#" mask-id ")"))}
    (when outline?
@@ -171,7 +171,7 @@
       (+ thickness
          outline/stroke-width)
       outline/color
-      render-options
+      context
       :corner corner
       :fill? false])
    (let [effective-thickness (cond-> thickness
@@ -182,6 +182,6 @@
         nil
         effective-thickness
         color
-        render-options
+        context
         :corner corner
         :fill? false]))])
