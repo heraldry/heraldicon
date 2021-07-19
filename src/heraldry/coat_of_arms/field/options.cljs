@@ -4,13 +4,73 @@
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.ui.interface :as interface]
+            [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.coat-of-arms.field.interface :as interface]
+            [heraldry.coat-of-arms.field.type.barry :as barry]
+            [heraldry.coat-of-arms.field.type.bendy :as bendy]
+            [heraldry.coat-of-arms.field.type.bendy-sinister :as bendy-sinister]
+            [heraldry.coat-of-arms.field.type.chequy :as chequy]
+            [heraldry.coat-of-arms.field.type.gyronny :as gyronny]
+            [heraldry.coat-of-arms.field.type.lozengy :as lozengy]
+            [heraldry.coat-of-arms.field.type.masonry :as masonry]
+            [heraldry.coat-of-arms.field.type.paly :as paly]
+            [heraldry.coat-of-arms.field.type.papellony :as papellony]
+            [heraldry.coat-of-arms.field.type.per-bend :as per-bend]
+            [heraldry.coat-of-arms.field.type.per-bend-sinister :as per-bend-sinister]
+            [heraldry.coat-of-arms.field.type.per-chevron :as per-chevron]
+            [heraldry.coat-of-arms.field.type.per-fess :as per-fess]
+            [heraldry.coat-of-arms.field.type.per-pale :as per-pale]
+            [heraldry.coat-of-arms.field.type.per-pile :as per-pile]
+            [heraldry.coat-of-arms.field.type.per-saltire :as per-saltire]
+            [heraldry.coat-of-arms.field.type.plain :as plain]
+            [heraldry.coat-of-arms.field.type.potenty :as potenty]
+            [heraldry.coat-of-arms.field.type.quartered :as quartered]
+            [heraldry.coat-of-arms.field.type.quarterly :as quarterly]
+            [heraldry.coat-of-arms.field.type.tierced-per-fess :as tierced-per-fess]
+            [heraldry.coat-of-arms.field.type.tierced-per-pairle :as tierced-per-pairle]
+            [heraldry.coat-of-arms.field.type.tierced-per-pairle-reversed :as tierced-per-pairle-reversed]
+            [heraldry.coat-of-arms.field.type.tierced-per-pale :as tierced-per-pale]
+            [heraldry.coat-of-arms.field.type.vairy :as vairy]
             [heraldry.util :as util]))
+
+(def fields
+  [plain/field-type
+   per-pale/field-type
+   per-fess/field-type
+   per-bend/field-type
+   per-bend-sinister/field-type
+   per-chevron/field-type
+   per-saltire/field-type
+   quartered/field-type
+   quarterly/field-type
+   gyronny/field-type
+   tierced-per-pale/field-type
+   tierced-per-fess/field-type
+   tierced-per-pairle/field-type
+   tierced-per-pairle-reversed/field-type
+   per-pile/field-type
+   paly/field-type
+   barry/field-type
+   bendy/field-type
+   bendy-sinister/field-type
+   chequy/field-type
+   lozengy/field-type
+   vairy/field-type
+   potenty/field-type
+   papellony/field-type
+   masonry/field-type])
+
+(def choices
+  (->> fields
+       (map (fn [key]
+              [(interface/display-name key) key]))))
+
+(def field-map
+  (util/choices->map choices))
 
 (def default-options
   {:type {:type :choice
-          ;; TODO: this should have the proper choices, but currently that's a circular dependency
-          :choices []
+          :choices choices
           :ui {:label "Division"
                :form-type :field-type-select}}
    :inherit-environment? {:type :boolean
@@ -685,7 +745,7 @@
                             (when layout
                               (assoc layout :ui (-> default-options :layout :ui)))))))))
 
-(defmethod interface/component-options :field [data path]
+(defmethod ui-interface/component-options :field [data path]
   (cond-> (options data)
     (-> path drop-last last
         (= :coat-of-arms)) (->
