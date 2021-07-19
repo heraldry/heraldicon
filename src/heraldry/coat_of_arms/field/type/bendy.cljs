@@ -1,21 +1,25 @@
 (ns heraldry.coat-of-arms.field.type.bendy
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.options :as field-options]
+            [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.field.type.barry :as barry]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.vector :as v]))
 
-(defn render
-  {:display-name "Bendy"
-   :value :heraldry.field.type/bendy
-   :parts []}
-  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line
-                layout
-                origin
-                anchor
-                outline?]} (options/sanitize field (field-options/options field))
+(def field-type
+  :heraldry.field.type/bendy)
+
+(defmethod interface/display-name field-type [_] "Bendy")
+
+(defmethod interface/part-names field-type [_] nil)
+
+(defmethod interface/render-field field-type
+  [path environment context]
+  (let [line (options/sanitized-value (conj path :line) context)
+        origin (options/sanitized-value (conj path :origin) context)
+        anchor (options/sanitized-value (conj path :anchor) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)
@@ -38,14 +42,14 @@
         required-half-width (v/distance-point-to-line top-left center-point (v/+ center-point direction-orthogonal))
         required-half-height (v/distance-point-to-line top-right center-point (v/+ center-point direction))
         [parts overlap outlines] (barry/barry-parts
-                                  layout
+                                  path
                                   (v/v (- required-half-width) (- required-half-height))
                                   (v/v required-half-width required-half-height)
-                                  line outline? render-options environment)]
+                                  line outline? context environment)]
     [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
                          "rotate(" angle ")")}
-     [shared/make-subfields
-      (shared/field-context-key type) fields parts
+     [shared/make-subfields2
+      path parts
       overlap
-      environment field context]
+      environment context]
      outlines]))

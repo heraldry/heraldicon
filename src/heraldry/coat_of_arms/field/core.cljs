@@ -166,16 +166,16 @@
    tierced-per-pairle/field-type
    tierced-per-pairle-reversed/field-type
    per-pile/field-type
-   ;; #'paly/render
-   ;; #'barry/render
-   ;; #'bendy/render
-   ;; #'bendy-sinister/render
-   ;; #'chequy/render
-   ;; #'lozengy/render
-   ;; #'vairy/render
-   ;; #'potenty/render
-   ;; #'papellony/render
-   ;; #'masonry/render
+   paly/field-type
+   barry/field-type
+   bendy/field-type
+   bendy-sinister/field-type
+   ;; chequy/field-type
+   ;; lozengy/field-type
+   ;; vairy/field-type
+   ;; potenty/field-type
+   ;; papellony/field-type
+   ;; masonry/field-type
    ])
 
 (def choices

@@ -1,19 +1,24 @@
 (ns heraldry.coat-of-arms.field.type.barry
-  (:require [heraldry.coat-of-arms.field.options :as field-options]
+  (:require [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]
-            [heraldry.render-options :as render-options]))
+            [heraldry.coat-of-arms.vector :as v]))
 
-(defn barry-parts [{:keys [num-fields-y
-                           offset-y
-                           stretch-y]} top-left bottom-right line outline? render-options environment]
-  (let [offset-y (or offset-y 0)
-        stretch-y (or stretch-y 1)
+(def field-type
+  :heraldry.field.type/barry)
+
+(defmethod interface/display-name field-type [_] "Barry")
+
+(defmethod interface/part-names field-type [_] nil)
+
+(defn barry-parts [path top-left bottom-right line outline? context environment]
+  (let [num-fields-y (options/sanitized-value (conj path :layout :num-fields-y) context)
+        offset-y (options/sanitized-value (conj path :layout :offset-y) context)
+        stretch-y (options/sanitized-value (conj path :layout :stretch-y) context)
         height (- (:y bottom-right)
                   (:y top-left))
         bar-height (-> height
@@ -38,7 +43,7 @@
                                                 (v/+ top-left (v/v width 0))
                                                 :real-start 0
                                                 :real-end width
-                                                :render-options render-options
+                                                :context context
                                                 :environment environment)
         {line-left :line
          line-left-start :line-start
@@ -50,7 +55,7 @@
                                                :reversed? true
                                                :real-start 0
                                                :real-end width
-                                               :render-options render-options
+                                               :context context
                                                :environment environment)
         parts (->> (range num-fields-y)
                    (map (fn [i]
@@ -149,28 +154,25 @@
                     (->> (map vector))
                     vec
                     (conj nil))
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outlines (when (or render-options-outline?
-                           outline?)
+        outlines (when outline?
                    [:g outline/style
                     (for [i (range (dec num-fields-y))]
                       ^{:key i}
                       [:path {:d (nth edges i)}])])]
     [parts overlap outlines]))
 
-(defn render
-  {:display-name "Barry"
-   :value :heraldry.field.type/barry
-   :parts []}
-  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line layout outline?]} (options/sanitize field (field-options/options field))
+(defmethod interface/render-field field-type
+  [path environment context]
+  (let [line (options/sanitized-value (conj path :line) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (barry-parts layout top-left bottom-right line outline? render-options environment)]
+        [parts overlap outlines] (barry-parts path top-left bottom-right line outline? context environment)]
     [:<>
-     [shared/make-subfields
-      (shared/field-context-key type) fields parts
+     [shared/make-subfields2
+      path parts
       overlap
-      environment field context]
+      environment context]
      outlines]))
