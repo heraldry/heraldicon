@@ -1,38 +1,38 @@
 (ns heraldry.coat-of-arms.field.type.chequy
-  (:require [heraldry.coat-of-arms.field.options :as field-options]
+  (:require [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.util :as util]
-            [heraldry.render-options :as render-options]))
+            [heraldry.util :as util]))
 
-(defn render
-  {:display-name "Chequy"
-   :value :heraldry.field.type/chequy
-   :parts []}
-  [{:keys [fields] :as field} environment {:keys [render-options]}]
-  (let [{:keys [layout outline?]} (options/sanitize field (field-options/options field))
+(def field-type
+  :heraldry.field.type/chequy)
+
+(defmethod interface/display-name field-type [_] "Chequy")
+
+(defmethod interface/part-names field-type [_] nil)
+
+(defmethod interface/render-field field-type
+  [path environment context]
+  (let [num-base-fields (options/sanitized-value (conj path :layout :num-base-fields) context)
+        num-fields-x (options/sanitized-value (conj path :layout :num-fields-x) context)
+        num-fields-y (options/sanitized-value (conj path :layout :num-fields-y) context)
+        raw-num-fields-y (options/raw-value (conj path :layout :num-fields-y) context)
+        offset-x (options/sanitized-value (conj path :layout :offset-x) context)
+        offset-y (options/sanitized-value (conj path :layout :offset-y) context)
+        stretch-x (options/sanitized-value (conj path :layout :stretch-x) context)
+        stretch-y (options/sanitized-value (conj path :layout :stretch-y) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        {:keys [num-base-fields
-                num-fields-x
-                offset-x
-                stretch-x
-                num-fields-y
-                offset-y
-                stretch-y]} layout
-        raw-num-fields-y (-> field :layout :num-fields-y)
-        offset-x (or offset-x 0)
-        stretch-x (or stretch-x 1)
         width (- (:x bottom-right)
                  (:x top-left))
         unstretched-part-width (-> width
                                    (/ num-fields-x))
         part-width (-> unstretched-part-width
                        (* stretch-x))
-        offset-y (or offset-y 0)
-        stretch-y (or stretch-y 1)
         height (- (:y bottom-right)
                   (:y top-left))
         unstretched-part-height (if raw-num-fields-y
@@ -44,10 +44,7 @@
         middle-x (/ width 2)
         origin-x (+ (:x top-left)
                     middle-x)
-        pattern-id (util/id "chequy")
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)]
+        pattern-id (util/id "chequy")]
     [:g
      [:defs
       (when outline?
@@ -66,38 +63,37 @@
           [:path {:d (str "M 0,0 v " part-height)}]
           [:path {:d (str "M 0," part-height " h " part-width)}]
           [:path {:d (str "M " part-width ",0 v " part-height)}]]])
-      (for [idx (range num-base-fields)]
-        ^{:key idx}
-        [:pattern {:id (str pattern-id "-" idx)
-                   :width (* part-width num-base-fields)
-                   :height (* part-height num-base-fields)
-                   :x (+ (* part-width offset-x)
-                         (:x top-left)
-                         (- middle-x
-                            (* origin-x stretch-x)))
-                   :y (+ (* part-height offset-y)
-                         (:y top-left))
-                   :pattern-units "userSpaceOnUse"}
-         [:rect {:x 0
-                 :y 0
-                 :width (* part-width num-base-fields)
-                 :height (* part-height num-base-fields)
-                 :fill "#000000"}]
-         (for [j (range num-base-fields)
-               i (range num-base-fields)]
-           (when (-> i (+ j) (mod num-base-fields) (= idx))
-             ^{:key [i j]}
-             [:rect {:x (* i part-width)
-                     :y (* j part-height)
-                     :width part-width
-                     :height part-height
-                     :fill "#ffffff"}]))])]
+      (doall
+       (for [idx (range num-base-fields)]
+         ^{:key idx}
+         [:pattern {:id (str pattern-id "-" idx)
+                    :width (* part-width num-base-fields)
+                    :height (* part-height num-base-fields)
+                    :x (+ (* part-width offset-x)
+                          (:x top-left)
+                          (- middle-x
+                             (* origin-x stretch-x)))
+                    :y (+ (* part-height offset-y)
+                          (:y top-left))
+                    :pattern-units "userSpaceOnUse"}
+          [:rect {:x 0
+                  :y 0
+                  :width (* part-width num-base-fields)
+                  :height (* part-height num-base-fields)
+                  :fill "#000000"}]
+          (for [j (range num-base-fields)
+                i (range num-base-fields)]
+            (when (-> i (+ j) (mod num-base-fields) (= idx))
+              ^{:key [i j]}
+              [:rect {:x (* i part-width)
+                      :y (* j part-height)
+                      :width part-width
+                      :height part-height
+                      :fill "#ffffff"}]))]))]
      (doall
       (for [idx (range num-base-fields)]
         (let [mask-id (util/id "mask")
-              tincture (-> fields
-                           (get idx)
-                           :tincture)]
+              tincture (options/sanitized-value (conj path :fields idx :tincture) context)]
           ^{:key idx}
           [:<>
            [:mask {:id mask-id}
@@ -111,7 +107,7 @@
                    :width 1100
                    :height 1100
                    :mask (str "url(#" mask-id ")")
-                   :fill (render-options/pick-tincture tincture render-options)}]])))
+                   :fill (tincture/pick2 tincture context)}]])))
      (when outline?
        [:rect {:x -500
                :y -500
