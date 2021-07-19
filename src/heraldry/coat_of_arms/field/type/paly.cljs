@@ -1,19 +1,31 @@
 (ns heraldry.coat-of-arms.field.type.paly
-  (:require [heraldry.coat-of-arms.field.options :as field-options]
+  (:require [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]
-            [heraldry.render-options :as render-options]))
+            [heraldry.coat-of-arms.vector :as v]))
 
-(defn paly-parts [{:keys [num-fields-x
-                          offset-x
-                          stretch-x]} top-left bottom-right line outline? render-options environment]
-  (let [offset-x (or offset-x 0)
-        stretch-x (or stretch-x 1)
+(def field-type
+  :heraldry.field.type/paly)
+
+(defmethod interface/display-name field-type [_] "Paly")
+
+(defmethod interface/part-names field-type [_] nil)
+
+(defmethod interface/render-field field-type
+  [path environment context]
+  (let [line (options/sanitized-value (conj path :line) context)
+        num-fields-x (options/sanitized-value (conj path :layout :num-fields-x) context)
+        offset-x (options/sanitized-value (conj path :layout :offset-x) context)
+        stretch-x (options/sanitized-value (conj path :layout :stretch-x) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
+        points (:points environment)
+        top-left (:top-left points)
+        bottom-right (:bottom-right points)
         width (- (:x bottom-right)
                  (:x top-left))
         pallet-width (-> width
@@ -38,7 +50,7 @@
                                                (v/+ top-left (v/v 0 height))
                                                :real-start 0
                                                :real-end height
-                                               :render-options render-options
+                                               :context context
                                                :environment environment)
         {line-up :line
          line-up-start :line-start
@@ -50,7 +62,7 @@
                                              :reversed? true
                                              :real-start 0
                                              :real-end height
-                                             :render-options render-options
+                                             :context context
                                              :environment environment)
         parts (->> (range num-fields-x)
                    (map (fn [i]
@@ -152,29 +164,14 @@
                     (->> (map vector))
                     vec
                     (conj nil))
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)
         outlines (when outline?
                    [:g outline/style
                     (for [i (range (dec num-fields-x))]
                       ^{:key i}
                       [:path {:d (nth edges i)}])])]
-    [parts overlap outlines]))
-
-(defn render
-  {:display-name "Paly"
-   :value :heraldry.field.type/paly
-   :parts []}
-  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line layout outline?]} (options/sanitize field (field-options/options field))
-        points (:points environment)
-        top-left (:top-left points)
-        bottom-right (:bottom-right points)
-        [parts overlap outlines] (paly-parts layout top-left bottom-right line outline? render-options environment)]
     [:<>
-     [shared/make-subfields
-      (shared/field-context-key type) fields parts
+     [shared/make-subfields2
+      path parts
       overlap
-      environment field context]
+      environment context]
      outlines]))
