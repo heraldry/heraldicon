@@ -128,3 +128,7 @@
 
 (defn render-option [key {:keys [render-options] :as context}]
   (sanitized-value (conj render-options key) context))
+
+(defn list-size [path {:keys [access] :as context}]
+  (let [{:keys [get-list-size]} access]
+    (get-list-size path context)))

@@ -1,45 +1,23 @@
 (ns heraldry.frontend.ui.interface
-  (:require [clojure.string :as s]
-            [heraldry.interface :as interface]
+  (:require [heraldry.interface :as interface]
             [heraldry.options :as options]
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
-(defn type->component-type [t]
-  (let [ts (str t)]
-    (cond
-      (s/starts-with? ts ":heraldry.component/cottise") :heraldry.component/cottise
-      (s/starts-with? ts ":heraldry.component") t
-      (s/starts-with? ts ":heraldry.field") :heraldry.component/field
-      (s/starts-with? ts ":heraldry.ordinary") :heraldry.component/ordinary
-      (s/starts-with? ts ":heraldry.charge-group") :heraldry.component/charge-group
-      (s/starts-with? ts ":heraldry.charge") :heraldry.component/charge
-      :else :heraldry.component/unknown)))
-
-(defn effective-component-type [path data]
-  (cond
-    (-> path last (= :arms-form)) :heraldry.component/arms-general
-    (-> path last (= :charge-form)) :heraldry.component/charge-general
-    (-> path last (= :collection-form)) :heraldry.component/collection-general
-    (-> path last (= :collection)) :heraldry.component/collection
-    (-> path drop-last (->> (take-last 2)) (= [:collection :elements])) :heraldry.component/collection-element
-    (map? data) (-> data :type type->component-type)
-    :else :heraldry.component/unknown))
-
 ;; component-node-data
 
 (defmulti component-node-data (fn [path component-data _component-options]
-                                (effective-component-type path component-data)))
+                                (interface/effective-component-type path component-data)))
 
-(defmethod component-node-data :heraldry.component/unknown [_path _component-data _component-options]
+(defmethod component-node-data nil [_path _component-data _component-options]
   {:title "unknown"})
 
 ;; component-form-data
 
 (defmulti component-form-data (fn [path component-data _component-options]
-                                (effective-component-type path component-data)))
+                                (interface/effective-component-type path component-data)))
 
-(defmethod component-form-data :heraldry.component/unknown [_path _component-data _component-options]
+(defmethod component-form-data nil [_path _component-data _component-options]
   {:form (fn [_path _form-data]
            [:div])
    :form-args {}})
