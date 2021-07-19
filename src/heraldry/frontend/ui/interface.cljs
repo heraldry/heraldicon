@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.interface
   (:require [clojure.string :as s]
+            [heraldry.interface :as interface]
             [heraldry.options :as options]
             [re-frame.core :as rf]
             [reagent.core :as r]))
@@ -53,43 +54,12 @@
     :text :text-field
     nil))
 
-(defmulti component-options
-  (fn [data path]
-    (cond
-      (-> path last
-          (= :arms-form)) :arms-general
-      (-> path last
-          (= :charge-form)) :charge-general
-      (-> path last
-          (= :collection-form)) :collection-general
-      (-> path last
-          (= :collection)) :collection
-      (-> path drop-last
-          (->> (take-last 2))
-          (= [:collection :elements])) :collection-element
-      (-> path last
-          (= :render-options)) :render-options
-      (-> path last
-          (= :coat-of-arms)) :coat-of-arms
-      :else (let [ts (-> data :type str)]
-              (cond
-                (s/starts-with? ts ":heraldry.field") :field
-                (s/starts-with? ts ":heraldry.ordinary") :ordinary
-                (s/starts-with? ts ":heraldry.component/charge-group-strip") :charge-group-strip
-                (s/starts-with? ts ":heraldry.charge-group") :charge-group
-                (s/starts-with? ts ":heraldry.charge") :charge
-                (s/starts-with? ts ":heraldry.component/semy") :semy
-                :else nil)))))
-
-(defmethod component-options nil [_data _path]
-  nil)
-
 (rf/reg-sub :get-options
   (fn [[_ path] _]
     (rf/subscribe [:get-value path]))
 
   (fn [data [_ path]]
-    (component-options data path)))
+    (interface/component-options data path)))
 
 (rf/reg-sub :get-relevant-options
   (fn [[_ path] _]

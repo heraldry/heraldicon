@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.field.options
-  (:require [heraldry.coat-of-arms.field.interface :as interface]
+  (:require [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.type.barry :as barry]
             [heraldry.coat-of-arms.field.type.bendy :as bendy]
             [heraldry.coat-of-arms.field.type.bendy-sinister :as bendy-sinister]
@@ -29,7 +29,7 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.interface :as interface]
             [heraldry.options :as options]
             [heraldry.util :as util]))
 
@@ -63,7 +63,7 @@
 (def choices
   (->> fields
        (map (fn [key]
-              [(interface/display-name key) key]))))
+              [(field-interface/display-name key) key]))))
 
 (def field-map
   (util/choices->map choices))
@@ -745,7 +745,7 @@
                             (when layout
                               (assoc layout :ui (-> default-options :layout :ui)))))))))
 
-(defmethod ui-interface/component-options :field [data path]
+(defmethod interface/component-options :heraldry.options/field [data path]
   (cond-> (options data)
     (-> path drop-last last
         (= :coat-of-arms)) (->
