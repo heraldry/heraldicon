@@ -2,8 +2,8 @@
   (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
             [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.interface :as interface]
+            [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.type.barry :as barry]
             [heraldry.coat-of-arms.field.type.bendy :as bendy]
             [heraldry.coat-of-arms.field.type.bendy-sinister :as bendy-sinister]
@@ -175,8 +175,7 @@
    vairy/field-type
    potenty/field-type
    papellony/field-type
-   ;; masonry/field-type
-   ])
+   masonry/field-type])
 
 (def choices
   (->> fields
