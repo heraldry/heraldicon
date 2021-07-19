@@ -3,11 +3,11 @@
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.ordinary.type.fess :as fess]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.options :as options]
             [heraldry.render-options :as render-options]
             [heraldry.util :as util]))
 

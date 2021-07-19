@@ -1,13 +1,12 @@
 (ns heraldry.frontend.ui.element.ordinary-type-select
-  (:require [heraldry.options :as options]
-            [heraldry.coat-of-arms.ordinary.core :as ordinary]
-            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+  (:require [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.ui.shared :as shared]
+            [heraldry.options :as options]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -74,7 +73,7 @@
 (defn ordinary-type-select [path]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
     (let [current-value @(rf/subscribe [:get-value path])
-          {:keys [ui inherited default]} option
+          {:keys [ui inherited default choices]} option
           value (or current-value
                     inherited
                     default)
@@ -83,12 +82,12 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path "Select Ordinary" (get ordinary/ordinary-map value) {:width "21.5em"}
-         (for [[display-name key] ordinary/choices]
+        [submenu/submenu path "Select Ordinary" (get ordinary-options/ordinary-map value) {:width "21.5em"}
+         (for [[display-name key] choices]
            ^{:key key}
            [ordinary-type-choice path key display-name :selected? (= key value)])]
         [value-mode-select/value-mode-select path
-         :display-fn ordinary/ordinary-map]]])))
+         :display-fn ordinary-options/ordinary-map]]])))
 
 (defmethod interface/form-element :ordinary-type-select [path]
   [ordinary-type-select path])

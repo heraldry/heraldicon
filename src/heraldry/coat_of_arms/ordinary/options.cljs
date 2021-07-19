@@ -3,10 +3,46 @@
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
+            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+            ;; [heraldry.coat-of-arms.ordinary.type.base :as base]
+            ;; [heraldry.coat-of-arms.ordinary.type.bend :as bend]
+            ;; [heraldry.coat-of-arms.ordinary.type.bend-sinister :as bend-sinister]
+            ;; [heraldry.coat-of-arms.ordinary.type.chevron :as chevron]
+            ;; [heraldry.coat-of-arms.ordinary.type.chief :as chief]
+            ;; [heraldry.coat-of-arms.ordinary.type.cross :as cross]
+            ;; [heraldry.coat-of-arms.ordinary.type.fess :as fess]
+            ;; [heraldry.coat-of-arms.ordinary.type.gore :as gore]
+            ;; [heraldry.coat-of-arms.ordinary.type.label :as label]
+            ;; [heraldry.coat-of-arms.ordinary.type.pale :as pale]
+            ;; [heraldry.coat-of-arms.ordinary.type.pile :as pile]
+            ;; [heraldry.coat-of-arms.ordinary.type.saltire :as saltire]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
             [heraldry.util :as util]))
+
+(def ordinaries
+  [;;pale/ordinary-type
+   ;;fess/ordinary-type
+   ;;chief/ordinary-type
+   ;;base/ordinary-type
+   ;;bend/ordinary-type
+   ;;bend-sinister/ordinary-type
+   ;;chevron/ordinary-type
+   ;;saltire/ordinary-type
+   ;;cross/ordinary-type
+   ;;pile/ordinary-type
+   ;;gore/ordinary-type
+   ;;label/ordinary-type
+   ])
+
+(def choices
+  (->> ordinaries
+       (map (fn [key]
+              [(ordinary-interface/display-name key) key]))))
+
+(def ordinary-map
+  (util/choices->map choices))
 
 (defn set-line-defaults [options]
   (-> options
@@ -14,8 +50,7 @@
 
 (def default-options
   {:type {:type :choice
-          ;; TODO: not ideal, but currently would create a circular dependency
-          :choices []
+          :choices choices
           :ui {:label "Type"
                :form-type :ordinary-type-select}}
    :origin (-> position/default-options
