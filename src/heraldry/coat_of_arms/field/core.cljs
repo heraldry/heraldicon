@@ -157,7 +157,7 @@
    per-bend/field-type
    per-bend-sinister/field-type
    per-chevron/field-type
-   ;; #'per-saltire/render
+   per-saltire/field-type
    ;; #'quartered/render
    ;; #'quarterly/render
    ;; #'gyronny/render

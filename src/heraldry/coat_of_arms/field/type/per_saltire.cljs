@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.per-saltire
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.options :as field-options]
+            [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -8,16 +8,23 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.shared.saltire :as saltire]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]
-            [heraldry.render-options :as render-options]))
+            [heraldry.coat-of-arms.vector :as v]))
 
-(defn render
-  {:display-name "Per saltire"
-   :value :heraldry.field.type/per-saltire
-   :parts ["chief" "dexter" "sinister" "base"]}
-  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line opposite-line
-                origin anchor outline?]} (options/sanitize field (field-options/options field))
+(def field-type
+  :heraldry.field.type/per-saltire)
+
+(defmethod interface/display-name field-type [_] "Per saltire")
+
+(defmethod interface/part-names field-type [_] ["chief" "dexter" "sinister" "base"])
+
+(defmethod interface/render-field field-type
+  [path environment context]
+  (let [line (options/sanitized-value (conj path :line) context)
+        opposite-line (options/sanitized-value (conj path :opposite-line) context)
+        origin (options/sanitized-value (conj path :origin) context)
+        anchor (options/sanitized-value (conj path :anchor) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment
@@ -51,7 +58,7 @@
                                                        :reversed? true
                                                        :real-start 0
                                                        :real-end arm-length
-                                                       :render-options render-options
+                                                       :context context
                                                        :environment environment)
         {line-top-right :line
          line-top-right-start :line-start} (line/create opposite-line
@@ -60,7 +67,7 @@
                                                         :mirrored? true
                                                         :real-start 0
                                                         :real-end arm-length
-                                                        :render-options render-options
+                                                        :context context
                                                         :environment environment)
         {line-bottom-right :line
          line-bottom-right-start :line-start} (line/create line
@@ -68,7 +75,7 @@
                                                            :reversed? true
                                                            :real-start 0
                                                            :real-end arm-length
-                                                           :render-options render-options
+                                                           :context context
                                                            :environment environment)
         {line-bottom-left :line
          line-bottom-left-start :line-start} (line/create opposite-line
@@ -77,7 +84,7 @@
                                                           :mirrored? true
                                                           :real-start 0
                                                           :real-end arm-length
-                                                          :render-options render-options
+                                                          :context context
                                                           :environment environment)
         ;; TODO: sub fields need better environment determination, especially with an adjusted origin,
         ;; the resulting environments won't be very well centered
@@ -143,14 +150,11 @@
                  "z"]
                 [intersection-bottom-left
                  intersection-bottom-right
-                 origin-point]]]
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)]
+                 origin-point]]]]
 
     [:<>
-     [shared/make-subfields
-      (shared/field-context-key type) fields parts
+     [shared/make-subfields2
+      path parts
       [:all
        [(svg/make-path
          ["M" (v/+ origin-point
@@ -161,7 +165,7 @@
                    line-bottom-right-start)
           (svg/stitch line-bottom-right)])]
        nil]
-      environment field context]
+      environment context]
      (when outline?
        [:g outline/style
         [:path {:d (svg/make-path

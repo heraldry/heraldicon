@@ -89,7 +89,14 @@
 
 (defn render [path environment
               {:keys [svg-export? transform] :as context}]
-  (let [selected? false]
+  (let [selected? false
+        field-type (options/raw-value (conj path :type) context)
+        path (if (= field-type :heraldry.field.type/ref)
+               (-> path
+                   drop-last
+                   vec
+                   (conj (options/raw-value (conj path :index) context)))
+               path)]
     [:<>
      [:g {:style (when (not svg-export?)
                    {:pointer-events "visiblePainted"
@@ -116,7 +123,7 @@
   [:<>
    (doall
     (for [[idx [shape-path bounding-box & extra]] (map-indexed vector parts)]
-      (let [clip-path-id (util/id (str "part-clip-" idx))
+      (let [clip-path-id (util/id (str "clip-" idx))
             mask-id (util/id (str "mask-" idx))
             part-path (conj field-path :fields idx)
             inherit-environment? (options/sanitized-value
@@ -136,7 +143,6 @@
                   :mask (first extra)})
             environment-shape (:shape env)
             overlap-paths (get mask-overlaps idx)]
-
         ^{:key idx}
         [:<>
          [:defs
