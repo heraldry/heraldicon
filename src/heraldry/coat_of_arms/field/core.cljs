@@ -174,7 +174,7 @@
    lozengy/field-type
    vairy/field-type
    potenty/field-type
-   ;; papellony/field-type
+   papellony/field-type
    ;; masonry/field-type
    ])
 
