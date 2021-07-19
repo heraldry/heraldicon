@@ -23,7 +23,6 @@
         origin (options/sanitized-value (conj path :origin) context)
         outline? (or (options/render-option :outline? context)
                      (options/sanitized-value (conj path :outline?) context))
-
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
