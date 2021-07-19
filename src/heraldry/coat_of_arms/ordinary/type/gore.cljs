@@ -1,26 +1,33 @@
 (ns heraldry.coat-of-arms.ordinary.type.gore
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
-            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+            [heraldry.coat-of-arms.ordinary.interface :as interface]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.render-options :as render-options]))
+            [heraldry.options :as options]))
 
 (defn arm-diagonal [origin-point anchor-point]
   (-> (v/- anchor-point origin-point)
       v/normal
       (v/* 200)))
 
-(defn render
-  {:display-name "Gore"
-   :value :heraldry.ordinary.type/gore}
-  [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line opposite-line
-                origin anchor outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
+(def ordinary-type
+  :heraldry.ordinary.type/gore)
+
+(defmethod interface/display-name ordinary-type [_] "Gore")
+
+(defmethod interface/render-ordinary ordinary-type
+  [path _parent-path environment context]
+  (let [line (options/sanitized-value (conj path :line) context)
+        opposite-line (options/sanitized-value (conj path :opposite-line) context)
+        origin (options/sanitized-value (conj path :origin) context)
+        anchor (options/sanitized-value (conj path :anchor) context)
+        ;; cottising (options/sanitized-value (conj path :cottising) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
+
         points (:points environment)
         left? (case (-> anchor :point)
                 :top-left true
@@ -47,7 +54,7 @@
                                                             v/abs)
                                               :flipped? flipped?
                                               :reversed? true
-                                              :render-options render-options
+                                              :context context
                                               :environment environment)
         {line-down :line
          line-down-end :line-end
@@ -57,34 +64,33 @@
                                           :real-start 0
                                           :real-end (-> (v/- bottom origin-point)
                                                         v/abs)
-                                          :render-options render-options
+                                          :context context
                                           :environment environment)
-        parts [[["M" (v/+ diagonal-top
-                          line-diagonal-start)
-                 (svg/stitch line-diagonal)
-                 "L" origin-point
-                 (svg/stitch line-down)
-                 (infinity/path (if left?
-                                  :clockwise
-                                  :counter-clockwise)
-                                [:bottom :top]
-                                [(v/+ bottom
-                                      line-down-end)
-                                 (v/+ diagonal-top
-                                      line-diagonal-start)])
-                 "z"]
-                [intersection-top
-                 origin-point
-                 bottom]]]
-        field (if (:counterchanged? field)
-                (counterchange/counterchange-field ordinary parent)
-                field)
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)]
+        part [["M" (v/+ diagonal-top
+                        line-diagonal-start)
+               (svg/stitch line-diagonal)
+               "L" origin-point
+               (svg/stitch line-down)
+               (infinity/path (if left?
+                                :clockwise
+                                :counter-clockwise)
+                              [:bottom :top]
+                              [(v/+ bottom
+                                    line-down-end)
+                               (v/+ diagonal-top
+                                    line-diagonal-start)])
+               "z"]
+              [intersection-top
+               origin-point
+               bottom]]
+        ;; TODO: counterchanged
+        ;; field (if (:counterchanged? field)
+        ;;         (counterchange/counterchange-field ordinary parent)
+        ;;         field)
+        ]
     [:<>
-     [field-shared/make-subfields
-      :ordinary-base [field] parts
-      [:all]
-      environment ordinary context]
-     (line/render line [line-diagonal-data line-down-data] diagonal-top outline? render-options)]))
+     [field-shared/make-subfield
+      (conj path :field) part
+      :all
+      environment context]
+     (line/render line [line-diagonal-data line-down-data] diagonal-top outline? context)]))
