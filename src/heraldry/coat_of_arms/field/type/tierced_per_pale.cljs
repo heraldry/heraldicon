@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.field.type.tierced-per-pale
-  (:require [heraldry.coat-of-arms.field.options :as field-options]
+  (:require [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
@@ -7,16 +7,22 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]
-            [heraldry.render-options :as render-options]))
+            [heraldry.coat-of-arms.vector :as v]))
 
-(defn render
-  {:display-name "Tierced per pale"
-   :value :heraldry.field.type/tierced-per-pale
-   :parts ["dexter" "fess" "sinister"]}
-  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line layout origin outline?]} (options/sanitize field (field-options/options field))
-        {:keys [stretch-x]} layout
+(def field-type
+  :heraldry.field.type/tierced-per-pale)
+
+(defmethod interface/display-name field-type [_] "Tierced per pale")
+
+(defmethod interface/part-names field-type [_] ["dexter" "fess" "sinister"])
+
+(defmethod interface/render-field field-type
+  [path environment context]
+  (let [line (options/sanitized-value (conj path :line) context)
+        stretch-x (options/sanitized-value (conj path :layout :stretch-x) context)
+        origin (options/sanitized-value (conj path :origin) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -54,7 +60,7 @@
                                                   first-top first-bottom
                                                   :real-start real-start
                                                   :real-end real-end
-                                                  :render-options render-options
+                                                  :context context
                                                   :environment environment)
         {line-reversed :line
          line-reversed-start :line-start} (line/create line
@@ -64,7 +70,7 @@
                                                        :mirrored? true
                                                        :real-start real-start
                                                        :real-end real-end
-                                                       :render-options render-options
+                                                       :context context
                                                        :environment environment)
         parts [[["M" (v/+ first-top
                           line-one-start)
@@ -111,20 +117,17 @@
                                       line-reversed-start)])
                  "z"]
                 [second-top
-                 bottom-right]]]
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)]
+                 bottom-right]]]]
     [:<>
-     [shared/make-subfields
-      (shared/field-context-key type) fields parts
+     [shared/make-subfields2
+      path parts
       [:all
        [(svg/make-path
          ["M" (v/+ second-bottom
                    line-reversed-start)
           (svg/stitch line-reversed)])]
        nil]
-      environment field context]
+      environment context]
      (when outline?
        [:g outline/style
         [:path {:d (svg/make-path

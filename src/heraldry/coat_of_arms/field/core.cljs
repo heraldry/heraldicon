@@ -161,10 +161,10 @@
    quartered/field-type
    quarterly/field-type
    gyronny/field-type
-   ;; #'tierced-per-pale/render
-   ;; #'tierced-per-fess/render
-   ;; #'tierced-per-pairle/render
-   ;; #'tierced-per-pairle-reversed/render
+   tierced-per-pale/field-type
+   tierced-per-fess/field-type
+   tierced-per-pairle/field-type
+   tierced-per-pairle-reversed/field-type
    ;; #'per-pile/render
    ;; #'paly/render
    ;; #'barry/render
