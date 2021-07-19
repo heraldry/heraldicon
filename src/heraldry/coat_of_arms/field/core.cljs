@@ -3,7 +3,7 @@
             [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.shared :as shared]
-            [heraldry.coat-of-arms.options :as options]
+            [heraldry.options :as options]
             [heraldry.frontend.util :as frontend-util]
             [heraldry.util :as util]))
 

@@ -4,11 +4,11 @@
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
-            [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (defn coat-of-arms [path width

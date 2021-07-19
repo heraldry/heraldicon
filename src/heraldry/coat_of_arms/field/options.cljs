@@ -27,10 +27,10 @@
             [heraldry.coat-of-arms.field.type.vairy :as vairy]
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (def fields

@@ -2,7 +2,7 @@
   (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
             [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.options :as options]
+            [heraldry.options :as options]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.charge-group-preset-select
              :as

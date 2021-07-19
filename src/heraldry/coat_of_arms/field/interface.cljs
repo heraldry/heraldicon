@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.field.interface
-  (:require [heraldry.coat-of-arms.options :as options]
+  (:require [heraldry.options :as options]
             [taoensso.timbre :as log]))
 
 (defmulti display-name identity)

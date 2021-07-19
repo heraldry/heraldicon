@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.charge-group.core
   (:require [heraldry.coat-of-arms.charge-group.options :as charge-group-options]
             [heraldry.coat-of-arms.charge.core :as charge]
-            [heraldry.coat-of-arms.options :as options]
+            [heraldry.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.util :as util]))

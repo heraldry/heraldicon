@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.options
+(ns heraldry.options
   (:require [clojure.walk :as walk]
             [heraldry.util :as util]
             [re-frame.core :as rf]))

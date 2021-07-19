@@ -1,6 +1,6 @@
 (ns heraldry.frontend.ui.element.line
   (:require [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.options :as options]
+            [heraldry.options :as options]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]

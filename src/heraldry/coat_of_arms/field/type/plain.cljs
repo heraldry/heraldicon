@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.plain
   (:require [heraldry.coat-of-arms.field.interface :as interface]
-            [heraldry.coat-of-arms.options :as options]
+            [heraldry.options :as options]
             [heraldry.coat-of-arms.tincture.core :as tincture]))
 
 (def field-type

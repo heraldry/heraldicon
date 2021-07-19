@@ -1,6 +1,6 @@
 (ns heraldry.frontend.ui.interface
   (:require [clojure.string :as s]
-            [heraldry.coat-of-arms.options :as options]
+            [heraldry.options :as options]
             [re-frame.core :as rf]
             [reagent.core :as r]))
 

@@ -3,7 +3,7 @@
             [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.field.type.barry :as barry]
-            [heraldry.coat-of-arms.options :as options]
+            [heraldry.options :as options]
             [heraldry.coat-of-arms.vector :as v]))
 
 (def field-type

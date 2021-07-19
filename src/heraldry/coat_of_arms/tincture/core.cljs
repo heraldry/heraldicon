@@ -3,7 +3,7 @@
             [heraldry.coat-of-arms.tincture.pattern :as pattern]
             [heraldry.coat-of-arms.tincture.theme :as theme]
             [heraldry.util :as util]
-            [heraldry.coat-of-arms.options :as options]))
+            [heraldry.options :as options]))
 
 (def themes
   [["General"

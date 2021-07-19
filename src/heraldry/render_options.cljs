@@ -1,9 +1,9 @@
 (ns heraldry.render-options
   (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
-            [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.ui.interface :as interface]))
+            [heraldry.frontend.ui.interface :as interface]
+            [heraldry.options :as options]))
 
 (def mode-choices
   [["Colours" :colours]

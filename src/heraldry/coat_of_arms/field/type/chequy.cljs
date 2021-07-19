@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.chequy
   (:require [heraldry.coat-of-arms.field.interface :as interface]
-            [heraldry.coat-of-arms.options :as options]
+            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.util :as util]))
