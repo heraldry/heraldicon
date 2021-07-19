@@ -171,7 +171,7 @@
    bendy/field-type
    bendy-sinister/field-type
    chequy/field-type
-   ;; lozengy/field-type
+   lozengy/field-type
    ;; vairy/field-type
    ;; potenty/field-type
    ;; papellony/field-type

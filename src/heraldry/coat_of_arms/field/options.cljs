@@ -448,8 +448,7 @@
                                     [:layout :stretch-y]
                                     [:layout :rotation]
                                     [:outline?]]
-                                   {[:layout :num-fields-y :default] nil
-                                    [:layout :stretch-y :max] 3})
+                                   {[:layout :stretch-y :max] 3})
             :vairy (options/pick default-options
                                  [[:type]
                                   [:inherit-environment?]
@@ -461,7 +460,7 @@
                                   [:layout :num-fields-y]
                                   [:layout :offset-y]
                                   [:layout :stretch-y]]
-                                 {[:layout :num-fields-y :default] nil})
+                                 {})
             :potenty (options/pick default-options
                                    [[:type]
                                     [:inherit-environment?]
@@ -474,8 +473,7 @@
                                     [:layout :offset-y]
                                     [:layout :stretch-y]
                                     [:outline?]]
-                                   {[:layout :num-fields-y :default] nil
-                                    [:variant :choices] [["Default" :default]
+                                   {[:variant :choices] [["Default" :default]
                                                          ["Counter" :counter]
                                                          ["In pale" :in-pale]
                                                          ["En point" :en-point]]})
@@ -491,7 +489,7 @@
                                       [:layout :offset-y]
                                       [:layout :stretch-y]
                                       [:outline?]]
-                                     {[:layout :num-fields-y :default] nil})
+                                     {})
             :masonry (options/pick default-options
                                    [[:type]
                                     [:inherit-environment?]
@@ -504,7 +502,7 @@
                                     [:layout :offset-y]
                                     [:layout :stretch-y]
                                     [:outline?]]
-                                   {[:layout :num-fields-y :default] nil})
+                                   {})
             :bendy (options/pick default-options
                                  [[:type]
                                   [:inherit-environment?]
