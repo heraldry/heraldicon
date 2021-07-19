@@ -126,9 +126,9 @@
               (get furs tincture)
               "url(#void)")))
 
-(defn pick2 [tincture {:keys [render-options] :as context}]
-  (let [mode (options/sanitized-value (conj render-options :mode) context)
-        theme (options/sanitized-value (conj render-options :theme) context)]
+(defn pick2 [tincture context]
+  (let [mode (options/render-option :mode context)
+        theme (options/render-option :theme context)]
     (cond
       (= tincture :none) "url(#void)"
       (get furs tincture) (let [[id _ _] (get furs tincture)]

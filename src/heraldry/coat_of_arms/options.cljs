@@ -125,3 +125,6 @@
 (defn raw-value [path {:keys [access] :as context}]
   (let [{:keys [get-raw-data]} access]
     (get-raw-data path context)))
+
+(defn render-option [key {:keys [render-options] :as context}]
+  (sanitized-value (conj render-options key) context))

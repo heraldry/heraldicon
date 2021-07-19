@@ -414,7 +414,7 @@
                                                  :form-type :fimbriation}))))))))
 
 (defn create-raw [{:keys [type] :or {type :straight} :as line} length
-                  & {:keys [angle flipped? render-options seed reversed?] :as line-options}]
+                  & {:keys [angle flipped? context seed reversed?] :as line-options}]
   (let [line-function (get kinds-function-map type)
         line-options-values (cond-> line #_(options/sanitize line (options line))
                                     (= type :straight) (-> (assoc :width length)
@@ -459,12 +459,13 @@
         [line-start line-end] (if effective-flipped?
                                 [(v/dot line-start (v/v 1 -1))
                                  (v/dot line-end (v/v 1 -1))]
-                                [line-start line-end])]
+                                [line-start line-end])
+        squiggly? (options/render-option :squiggly? context)]
     (-> line-data
         (assoc :line
                (-> line-path
                    (cond->
-                    (:squiggly? render-options) (svg/squiggly-path :seed seed))
+                    squiggly? (svg/squiggly-path :seed seed))
                    svgpath
                    (cond->
                     effective-flipped? (.scale 1 -1))
@@ -542,7 +543,7 @@
                   {start2 :start end2 :end}]]
               (v/line-intersection start1 end1 start2 end2)))))
 
-(defn render [line line-datas start outline? render-options]
+(defn render [line line-datas start outline? context]
   (let [{:keys [fimbriation]} line
         line-start (-> line-datas first :line-start)
         base-path ["M" (v/+ start line-start)
@@ -583,7 +584,8 @@
         mask-id-top (when mask-shape-top
                       (util/id "mask-line-top"))
         mask-id-bottom (when mask-shape-bottom
-                         (util/id "mask-line-bottom"))]
+                         (util/id "mask-line-bottom"))
+        render-options (:render-options context)]
     [:<>
      (when (#{:single :double} mode)
        [:<>
@@ -601,29 +603,29 @@
           [:<>
            (if (= mode :single)
              [fimbriation/render line-path nil (/ thickness-1 2)
-              (render-options/pick-tincture tincture-1 render-options)
+              (tincture/pick tincture-1 context)
               outline? corner render-options]
              (cond
                (> thickness-1 thickness-2) [:<>
                                             [fimbriation/render line-path nil (/ combined-thickness 2)
-                                             (render-options/pick-tincture tincture-2 render-options)
+                                             (tincture/pick2 tincture-2 context)
                                              outline? corner render-options]
                                             [fimbriation/render line-path nil (-> combined-thickness
                                                                                   (/ 2)
                                                                                   (- thickness-2))
-                                             (render-options/pick-tincture tincture-1 render-options)
+                                             (tincture/pick2 tincture-1 render-options)
                                              outline? corner render-options]
                                             [fimbriation/render line-path mask-id-bottom
                                              (cond-> (/ combined-thickness 2)
                                                outline? (- outline/stroke-width))
-                                             (render-options/pick-tincture tincture-1 render-options)
+                                             (tincture/pick2 tincture-1 render-options)
                                              false corner render-options]]
                (= thickness-1 thickness-2) [:<>
                                             [fimbriation/render line-path mask-id-top (/ combined-thickness 2)
-                                             (render-options/pick-tincture tincture-2 render-options)
+                                             (tincture/pick2 tincture-2 render-options)
                                              outline? corner render-options]
                                             [fimbriation/render line-path mask-id-bottom (/ combined-thickness 2)
-                                             (render-options/pick-tincture tincture-1 render-options)
+                                             (tincture/pick2 tincture-1 render-options)
                                              outline? corner render-options]
                                             (when outline?
                                               [fimbriation/render line-path mask-id-bottom 0
@@ -631,17 +633,17 @@
                                                outline? corner render-options])]
                (< thickness-1 thickness-2) [:<>
                                             [fimbriation/render line-path nil (/ combined-thickness 2)
-                                             (render-options/pick-tincture tincture-1 render-options)
+                                             (tincture/pick2 tincture-1 render-options)
                                              outline? corner render-options]
                                             [fimbriation/render line-path nil (-> combined-thickness
                                                                                   (/ 2)
                                                                                   (- thickness-1))
-                                             (render-options/pick-tincture tincture-2 render-options)
+                                             (tincture/pick2 tincture-2 render-options)
                                              outline? corner render-options]
                                             [fimbriation/render line-path mask-id-top
                                              (cond-> (/ combined-thickness 2)
                                                outline? (- outline/stroke-width))
-                                             (render-options/pick-tincture tincture-2 render-options)
+                                             (tincture/pick2 tincture-2 render-options)
                                              false corner render-options]]))]
           [:g {:mask (case alignment
                        :outside (str "url(#" mask-id-top ")")
@@ -649,11 +651,11 @@
                        nil)}
            (when (#{:double} mode)
              [fimbriation/render line-path nil combined-thickness
-              (render-options/pick-tincture tincture-2 render-options)
+              (tincture/pick2 tincture-2 render-options)
               outline? corner render-options])
            (when (#{:single :double} mode)
              [fimbriation/render line-path nil thickness-1
-              (render-options/pick-tincture tincture-1 render-options)
+              (tincture/pick2 tincture-1 render-options)
               outline? corner render-options])])])
      (when (and outline?
                 (not (and (= alignment :even)

@@ -151,29 +151,30 @@
 (def fields
   [#'plain/render
    #'per-pale/render
-   #'per-fess/render
-   #'per-bend/render
-   #'per-bend-sinister/render
-   #'per-chevron/render
-   #'per-saltire/render
-   #'quartered/render
-   #'quarterly/render
-   #'gyronny/render
-   #'tierced-per-pale/render
-   #'tierced-per-fess/render
-   #'tierced-per-pairle/render
-   #'tierced-per-pairle-reversed/render
-   #'per-pile/render
-   #'paly/render
-   #'barry/render
-   #'bendy/render
-   #'bendy-sinister/render
-   #'chequy/render
-   #'lozengy/render
-   #'vairy/render
-   #'potenty/render
-   #'papellony/render
-   #'masonry/render])
+   ;; #'per-fess/render
+   ;; #'per-bend/render
+   ;; #'per-bend-sinister/render
+   ;; #'per-chevron/render
+   ;; #'per-saltire/render
+   ;; #'quartered/render
+   ;; #'quarterly/render
+   ;; #'gyronny/render
+   ;; #'tierced-per-pale/render
+   ;; #'tierced-per-fess/render
+   ;; #'tierced-per-pairle/render
+   ;; #'tierced-per-pairle-reversed/render
+   ;; #'per-pile/render
+   ;; #'paly/render
+   ;; #'barry/render
+   ;; #'bendy/render
+   ;; #'bendy-sinister/render
+   ;; #'chequy/render
+   ;; #'lozengy/render
+   ;; #'vairy/render
+   ;; #'potenty/render
+   ;; #'papellony/render
+   ;; #'masonry/render
+   ])
 
 (def kinds-function-map
   (->> fields
@@ -211,6 +212,7 @@
                     (assoc :render-field render))
         field-type (options/raw-value (conj path :type) context)
         render-function (get kinds-function-map field-type)]
+    (js/console.log :ho field-type path context)
     [:<>
      [:g {:style (when (not svg-export?)
                    {:pointer-events "visiblePainted"
