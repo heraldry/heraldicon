@@ -12,7 +12,7 @@
             [heraldry.coat-of-arms.ordinary.type.cross :as cross]
             [heraldry.coat-of-arms.ordinary.type.fess :as fess]
             [heraldry.coat-of-arms.ordinary.type.gore :as gore]
-            ;; [heraldry.coat-of-arms.ordinary.type.label :as label]
+            [heraldry.coat-of-arms.ordinary.type.label :as label]
             [heraldry.coat-of-arms.ordinary.type.pale :as pale]
             [heraldry.coat-of-arms.ordinary.type.pile :as pile]
             [heraldry.coat-of-arms.ordinary.type.saltire :as saltire]
@@ -33,8 +33,7 @@
    cross/ordinary-type
    pile/ordinary-type
    gore/ordinary-type
-   ;;label/ordinary-type
-   ])
+   label/ordinary-type])
 
 (def choices
   (->> ordinaries

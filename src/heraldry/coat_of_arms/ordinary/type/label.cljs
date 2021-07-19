@@ -1,21 +1,24 @@
 (ns heraldry.coat-of-arms.ordinary.type.label
-  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.field.shared :as field-shared]
+  (:require [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
-            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+            [heraldry.coat-of-arms.ordinary.interface :as interface]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.render-options :as render-options]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
+
+(def ordinary-type
+  :heraldry.ordinary.type/label)
+
+(defmethod interface/display-name ordinary-type [_] "Label")
 
 (defn relative-points [points]
   (reduce (fn [result point]
             (conj result (v/+ (last result) point))) [(first points)] (rest points)))
 
 (defn draw-label [variant origin-point num-points width band-height point-width point-height eccentricity
-                  line environment {:keys [render-options]}]
+                  line environment context]
   (let [points (:points environment)
         left (:left points)
         right (:right points)
@@ -74,7 +77,7 @@
                                         p1 p2
                                         :real-start 0
                                         :real-end (v/abs (v/- p2 p1))
-                                        :render-options render-options
+                                        :context context
                                         :environment environment))))]
     {:points points
      :environment-points (-> dynamic-points
@@ -87,21 +90,20 @@
                 (into (map (comp svg/stitch :line) lines))
                 (conj "z"))}))
 
-(defn render
-  {:display-name "Label"
-   :value :heraldry.ordinary.type/label}
-  [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [origin
-                variant
-                num-points
-                geometry
-                fimbriation
-                outline?]} (options/sanitize ordinary (ordinary-options/options ordinary))
-        {:keys [width
-                size
-                thickness
-                eccentricity
-                stretch]} geometry
+(defmethod interface/render-ordinary ordinary-type
+  [path _parent-path environment context]
+  (let [origin (options/sanitized-value (conj path :origin) context)
+        variant (options/sanitized-value (conj path :variant) context)
+        num-points (options/sanitized-value (conj path :num-points) context)
+        fimbriation (options/sanitized-value (conj path :fimbriation) context)
+        width (options/sanitized-value (conj path :geometry :width) context)
+        size (options/sanitized-value (conj path :geometry :size) context)
+        thickness (options/sanitized-value (conj path :geometry :thickness) context)
+        eccentricity (options/sanitized-value (conj path :geometry :eccentricity) context)
+        stretch (options/sanitized-value (conj path :geometry :stretch) context)
+        ;; cottising (options/sanitized-value (conj path :cottising) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
         line {:type :straight
               :fimbriation fimbriation}
         origin-point (position/calculate origin environment :fess)
@@ -124,17 +126,16 @@
                                                  line
                                                  environment
                                                  context)
-        parts [[shape
-                environment-points]]
-        field (if (:counterchanged? field)
-                (counterchange/counterchange-field ordinary parent)
-                field)
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)]
+        part [shape
+              environment-points]
+        ;; TODO: counterchanged
+        ;; field (if (:counterchanged? field)
+        ;;         (counterchange/counterchange-field ordinary parent)
+        ;;         field)
+        ]
     [:<>
-     [field-shared/make-subfields
-      :ordinary-fess [field] parts
-      [:all]
-      environment ordinary context]
-     (line/render line lines (first points) outline? render-options)]))
+     [field-shared/make-subfield
+      (conj path :field) part
+      :all
+      environment context]
+     (line/render line lines (first points) outline? context)]))
