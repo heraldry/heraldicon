@@ -7,9 +7,12 @@
 (defmulti part-names identity)
 
 (defmulti render-field (fn [path _environment context]
-                         ;; TODO: still got that foot gun here: type must not be sanitized right now
-                         (options/raw-value (conj path :type) context)))
+                         (options/sanitized-value (conj path :type) context)))
 
 (defmethod render-field nil [path _environment context]
+  (log/warn :not-implemented path context)
+  [:<>])
+
+(defmethod render-field {} [path _environment context]
   (log/warn :not-implemented path context)
   [:<>])

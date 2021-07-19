@@ -1,40 +1,11 @@
 (ns heraldry.coat-of-arms.field.core
-  (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
-            [heraldry.coat-of-arms.charge.core :as charge]
-            [heraldry.coat-of-arms.default :as default]
+  (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.options :as field-options]
-            [heraldry.coat-of-arms.field.type.barry :as barry]
-            [heraldry.coat-of-arms.field.type.bendy :as bendy]
-            [heraldry.coat-of-arms.field.type.bendy-sinister :as bendy-sinister]
-            [heraldry.coat-of-arms.field.type.chequy :as chequy]
-            [heraldry.coat-of-arms.field.type.gyronny :as gyronny]
-            [heraldry.coat-of-arms.field.type.lozengy :as lozengy]
-            [heraldry.coat-of-arms.field.type.masonry :as masonry]
-            [heraldry.coat-of-arms.field.type.paly :as paly]
-            [heraldry.coat-of-arms.field.type.papellony :as papellony]
-            [heraldry.coat-of-arms.field.type.per-bend :as per-bend]
-            [heraldry.coat-of-arms.field.type.per-bend-sinister :as per-bend-sinister]
-            [heraldry.coat-of-arms.field.type.per-chevron :as per-chevron]
-            [heraldry.coat-of-arms.field.type.per-fess :as per-fess]
-            [heraldry.coat-of-arms.field.type.per-pale :as per-pale]
-            [heraldry.coat-of-arms.field.type.per-pile :as per-pile]
-            [heraldry.coat-of-arms.field.type.per-saltire :as per-saltire]
-            [heraldry.coat-of-arms.field.type.plain :as plain]
-            [heraldry.coat-of-arms.field.type.potenty :as potenty]
-            [heraldry.coat-of-arms.field.type.quartered :as quartered]
-            [heraldry.coat-of-arms.field.type.quarterly :as quarterly]
-            [heraldry.coat-of-arms.field.type.tierced-per-fess :as tierced-per-fess]
-            [heraldry.coat-of-arms.field.type.tierced-per-pairle :as tierced-per-pairle]
-            [heraldry.coat-of-arms.field.type.tierced-per-pairle-reversed :as tierced-per-pairle-reversed]
-            [heraldry.coat-of-arms.field.type.tierced-per-pale :as tierced-per-pale]
-            [heraldry.coat-of-arms.field.type.vairy :as vairy]
+            [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.options :as options]
-            [heraldry.coat-of-arms.ordinary.core :as ordinary]
-            [heraldry.coat-of-arms.semy.core :as semy]
             [heraldry.frontend.util :as frontend-util]
-            [heraldry.util :as util]
-            [heraldry.coat-of-arms.field.shared :as shared]))
+            [heraldry.util :as util]))
 
 (defn mandatory-part-count [{:keys [type] :as field}]
   (let [type (-> type name keyword)
@@ -150,41 +121,6 @@
                                 [(nth defaults 2)])
       :else (subvec defaults 0 2))))
 
-(def fields
-  [plain/field-type
-   per-pale/field-type
-   per-fess/field-type
-   per-bend/field-type
-   per-bend-sinister/field-type
-   per-chevron/field-type
-   per-saltire/field-type
-   quartered/field-type
-   quarterly/field-type
-   gyronny/field-type
-   tierced-per-pale/field-type
-   tierced-per-fess/field-type
-   tierced-per-pairle/field-type
-   tierced-per-pairle-reversed/field-type
-   per-pile/field-type
-   paly/field-type
-   barry/field-type
-   bendy/field-type
-   bendy-sinister/field-type
-   chequy/field-type
-   lozengy/field-type
-   vairy/field-type
-   potenty/field-type
-   papellony/field-type
-   masonry/field-type])
-
-(def choices
-  (->> fields
-       (map (fn [key]
-              [(interface/display-name key) key]))))
-
-(def field-map
-  (util/choices->map choices))
-
 (defn part-name [field-type index]
   (-> field-type interface/part-names (get index) (or (util/to-roman (inc index)))))
 
@@ -196,7 +132,7 @@
            :tincture
            frontend-util/translate-tincture
            frontend-util/upper-case-first)
-       (get field-map (:type field)))
+       (get field-options/field-map (:type field)))
      " field")))
 
 ;; TODO: should go away when not needed anymore

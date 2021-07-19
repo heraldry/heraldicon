@@ -108,7 +108,7 @@
 (defn field-type-select [path]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
     (let [current-value @(rf/subscribe [:get-value path])
-          {:keys [ui inherited default]} option
+          {:keys [ui inherited default choices]} option
           value (or current-value
                     inherited
                     default)
@@ -117,12 +117,12 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path "Select Division" (get field/field-map value) {:width "21.5em"}
-         (for [[display-name key] field/choices]
+        [submenu/submenu path "Select Division" (get field-options/field-map value) {:width "21.5em"}
+         (for [[display-name key] choices]
            ^{:key key}
            [field-type-choice path key display-name :selected? (= key value)])]
         [value-mode-select/value-mode-select path
-         :display-fn field/field-map]]])))
+         :display-fn field-options/field-map]]])))
 
 (defmethod interface/form-element :field-type-select [path]
   [field-type-select path])

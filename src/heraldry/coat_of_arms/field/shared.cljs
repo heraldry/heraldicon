@@ -90,6 +90,8 @@
 (defn render [path environment
               {:keys [svg-export? transform] :as context}]
   (let [selected? false
+        ;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
+        ;; adding it to the choices in the option would affect the UI
         field-type (options/raw-value (conj path :type) context)
         path (if (= field-type :heraldry.field.type/ref)
                (-> path
