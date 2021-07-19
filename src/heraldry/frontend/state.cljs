@@ -300,7 +300,9 @@
 (defn get-sanitized-data-by-context [path context]
   (let [value (get-raw-data-by-context path context)
         options (get-relevant-options-by-context path context)]
-    (if (map? value)
+    ;; TODO: find better way to determine option leaf or branch
+    (if (or (-> options :type not)
+            (-> options :type :type))
       (options/sanitize value options)
       (options/get-value value options))))
 
