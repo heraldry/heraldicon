@@ -1,23 +1,27 @@
 (ns heraldry.coat-of-arms.ordinary.type.chief
-  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.field.shared :as field-shared]
+  (:require [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
-            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.coat-of-arms.ordinary.type.fess :as fess]
+            [heraldry.coat-of-arms.ordinary.interface :as interface]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.render-options :as render-options]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
-(defn render
-  {:display-name "Chief"
-   :value :heraldry.ordinary.type/chief}
-  [{:keys [field] :as ordinary} parent environment
-   {:keys [render-options override-real-start override-real-end override-shared-start-x] :as context}]
-  (let [{:keys [line geometry outline? cottising]} (options/sanitize ordinary (ordinary-options/options ordinary))
-        {:keys [size]} geometry
+(def ordinary-type
+  :heraldry.ordinary.type/chief)
+
+(defmethod interface/display-name ordinary-type [_] "Chief")
+
+(defmethod interface/render-ordinary ordinary-type
+  [path _parent-path environment {:keys [override-real-start
+                                         override-real-end
+                                         override-shared-start-x] :as context}]
+  (let [line (options/sanitized-value (conj path :line) context)
+        size (options/sanitized-value (conj path :geometry :size) context)
+        ;; cottising (options/sanitized-value (conj path :cottising) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
         points (:points environment)
         top (:top points)
         top-left (:top-left points)
@@ -54,59 +58,57 @@
                                               :reversed? true
                                               :real-start real-start
                                               :real-end real-end
-                                              :render-options render-options
+                                              :context context
                                               :environment environment)
-        parts [[["M" (v/+ row-right
-                          line-reversed-start)
-                 (svg/stitch line-reversed)
-                 (infinity/path :clockwise
-                                [:left :right]
-                                [(v/+ row-left
-                                      line-reversed-start)
-                                 (v/+ row-right
-                                      line-reversed-start)])
-                 "z"]
-                [top-left row-right]]]
-        field (if (:counterchanged? field)
-                (counterchange/counterchange-field ordinary parent)
-                field)
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)
-        {:keys [cottise-1
-                cottise-2]} (-> ordinary :cottising)]
+        part [["M" (v/+ row-right
+                        line-reversed-start)
+               (svg/stitch line-reversed)
+               (infinity/path :clockwise
+                              [:left :right]
+                              [(v/+ row-left
+                                    line-reversed-start)
+                               (v/+ row-right
+                                    line-reversed-start)])
+               "z"]
+              [top-left row-right]]
+        ;; TODO: counterchanged
+        ;; field (if (:counterchanged? field)
+        ;;         (counterchange/counterchange-field ordinary parent)
+        ;;         field)
+        #_#_{:keys [cottise-1
+                    cottise-2]} (-> ordinary :cottising)]
     [:<>
-     [field-shared/make-subfields
-      :ordinary-chief [field] parts
-      [:all]
-      environment ordinary context]
-     (line/render line [line-reversed-data] row-right outline? render-options)
-     (when (:enabled? cottise-1)
-       (let [cottise-1-data (:cottise-1 cottising)
-             fess-base {:type :heraldry.ordinary.type/fess
-                        :line (:line cottise-1)
-                        :opposite-line (:opposite-line cottise-1)}
-             fess-options (ordinary-options/options fess-base)
-             {:keys [line
-                     opposite-line]} (options/sanitize fess-base fess-options)]
-         [fess/render (-> fess-base
-                          (merge {:outline? (-> ordinary :outline?)
-                                  :field (:field cottise-1)
+     [field-shared/make-subfield
+      (conj path :field) part
+      :all
+      environment context]
+     (line/render line [line-reversed-data] row-right outline? context)
+     #_(when (:enabled? cottise-1)
+         (let [cottise-1-data (:cottise-1 cottising)
+               fess-base {:type :heraldry.ordinary.type/fess
+                          :line (:line cottise-1)
+                          :opposite-line (:opposite-line cottise-1)}
+               fess-options (ordinary-options/options fess-base)
+               {:keys [line
+                       opposite-line]} (options/sanitize fess-base fess-options)]
+           [fess/render (-> fess-base
+                            (merge {:outline? (-> ordinary :outline?)
+                                    :field (:field cottise-1)
                                   ;; swap line/opposite-line because the cottise fess is upside down
-                                  :line opposite-line
-                                  :opposite-line line
-                                  :cottising {:cottise-opposite-1 cottise-2}
-                                  :geometry {:size (:thickness cottise-1-data)}
-                                  :origin {:point :top
-                                           :offset-y (-> top
-                                                         :y
-                                                         (- row)
-                                                         (+ line-reversed-min)
-                                                         (/ height)
-                                                         (* 100)
-                                                         (- (:distance cottise-1-data)))
-                                           :alignment :left}})) parent environment
-          (-> context
-              (assoc :override-shared-start-x shared-start-x)
-              (assoc :override-real-start real-start)
-              (assoc :override-real-end real-end))]))]))
+                                    :line opposite-line
+                                    :opposite-line line
+                                    :cottising {:cottise-opposite-1 cottise-2}
+                                    :geometry {:size (:thickness cottise-1-data)}
+                                    :origin {:point :top
+                                             :offset-y (-> top
+                                                           :y
+                                                           (- row)
+                                                           (+ line-reversed-min)
+                                                           (/ height)
+                                                           (* 100)
+                                                           (- (:distance cottise-1-data)))
+                                             :alignment :left}})) parent environment
+            (-> context
+                (assoc :override-shared-start-x shared-start-x)
+                (assoc :override-real-start real-start)
+                (assoc :override-real-end real-end))]))]))

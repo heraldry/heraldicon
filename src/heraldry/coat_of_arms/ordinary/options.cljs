@@ -8,7 +8,7 @@
             ;; [heraldry.coat-of-arms.ordinary.type.bend :as bend]
             ;; [heraldry.coat-of-arms.ordinary.type.bend-sinister :as bend-sinister]
             ;; [heraldry.coat-of-arms.ordinary.type.chevron :as chevron]
-            ;; [heraldry.coat-of-arms.ordinary.type.chief :as chief]
+            [heraldry.coat-of-arms.ordinary.type.chief :as chief]
             ;; [heraldry.coat-of-arms.ordinary.type.cross :as cross]
             [heraldry.coat-of-arms.ordinary.type.fess :as fess]
             ;; [heraldry.coat-of-arms.ordinary.type.gore :as gore]
@@ -24,7 +24,7 @@
 (def ordinaries
   [pale/ordinary-type
    fess/ordinary-type
-   ;;chief/ordinary-type
+   chief/ordinary-type
    ;;base/ordinary-type
    ;;bend/ordinary-type
    ;;bend-sinister/ordinary-type
