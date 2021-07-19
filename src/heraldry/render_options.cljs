@@ -2,7 +2,7 @@
   (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.ui.interface :as interface]
+            [heraldry.interface :as interface]
             [heraldry.options :as options]))
 
 (def mode-choices
@@ -67,7 +67,7 @@
         (= texture :none) (dissoc :texture-displacement?)
         (not= mode :colours) (dissoc :theme)))))
 
-(defmethod interface/component-options :render-options [data _path]
+(defmethod interface/component-options :heraldry.options/render-options [data _path]
   (options data))
 
 ;; TODO: this is a crutch, because this logic can't live in tincture/pick due to a cyclic dependency

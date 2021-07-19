@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.semy.options
   (:require [heraldry.coat-of-arms.position :as position]
-            [heraldry.frontend.ui.interface :as interface]))
+            [heraldry.interface :as interface]))
 
 (def default-options
   {:origin (-> position/default-options
@@ -55,5 +55,5 @@
                         (when origin
                           (position/adjust-options origin (-> data :origin)))))))
 
-(defmethod interface/component-options :semy [data _path]
+(defmethod interface/component-options :heraldry.options/semy [data _path]
   (options data))

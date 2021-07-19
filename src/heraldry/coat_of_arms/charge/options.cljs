@@ -3,10 +3,10 @@
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.position :as position]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.coat-of-arms.tincture.core :as tincture]))
+            [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.interface :as interface]
+            [heraldry.options :as options]))
 
 (def default-options
   {:type {:type :choice
@@ -121,5 +121,5 @@
                                      (assoc :ui {:label "Fimbriation"
                                                  :form-type :fimbriation}))))))))
 
-(defmethod interface/component-options :charge [data _path]
+(defmethod interface/component-options :heraldry.options/charge [data _path]
   (options data))

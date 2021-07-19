@@ -1,5 +1,5 @@
 (ns heraldry.collection.element
-  (:require [heraldry.frontend.ui.interface :as interface]))
+  (:require [heraldry.interface :as interface]))
 
 (def default-options
   {:name {:type :text
@@ -7,5 +7,5 @@
    :reference {:ui {:label "Arms"
                     :form-type :arms-reference-select}}})
 
-(defmethod interface/component-options :collection-element [_data _path]
+(defmethod interface/component-options :heraldry.options/collection-element [_data _path]
   default-options)

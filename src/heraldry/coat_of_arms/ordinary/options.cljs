@@ -3,9 +3,9 @@
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.position :as position]
-            [heraldry.frontend.ui.interface :as interface]
+            [heraldry.interface :as interface]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (defn set-line-defaults [options]
@@ -423,5 +423,5 @@
              (cond-> options
                (:cottising options) (update :cottising cottising/options (:cottising ordinary))))))))
 
-(defmethod interface/component-options :ordinary [data _path]
+(defmethod interface/component-options :heraldry.options/ordinary [data _path]
   (options data))

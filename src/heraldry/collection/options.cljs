@@ -1,5 +1,5 @@
 (ns heraldry.collection.options
-  (:require [heraldry.frontend.ui.interface :as interface]))
+  (:require [heraldry.interface :as interface]))
 
 (def default-options
   {:num-columns {:type :range
@@ -8,5 +8,5 @@
                  :max 10
                  :ui {:label "Columns"}}})
 
-(defmethod interface/component-options :collection [_data _path]
+(defmethod interface/component-options :heraldry.options/collection [_data _path]
   default-options)

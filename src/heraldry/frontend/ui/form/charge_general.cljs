@@ -2,7 +2,8 @@
   (:require [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.ui.element.checkbox :as checkbox]
-            [heraldry.frontend.ui.interface :as interface]
+            [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.interface :as interface]
             [heraldry.license :as license]))
 
 (defn form [path _]
@@ -17,19 +18,19 @@
                  :fixed-tincture
                  :attributes
                  :tags]]
-     ^{:key option} [interface/form-element (conj path option)])
+     ^{:key option} [ui-interface/form-element (conj path option)])
 
    ;; TODO: not ideal, probably should move this at some point
    [checkbox/checkbox (conj [:example-coa :render-options :preview-original?])]])
 
-(defmethod interface/component-node-data :heraldry.component/charge-general [_path _component-data _component-options]
+(defmethod ui-interface/component-node-data :heraldry.component/charge-general [_path _component-data _component-options]
   {:title "General"})
 
-(defmethod interface/component-form-data :heraldry.component/charge-general [_path _component-data _component-options]
+(defmethod ui-interface/component-form-data :heraldry.component/charge-general [_path _component-data _component-options]
   {:form form})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-charge.[thing].options namespaces
-(defmethod interface/component-options :charge-general [_data _path]
+(defmethod interface/component-options :heraldry.options/charge-general [_data _path]
   {:name {:type :text
           :default ""
           :ui {:label "Name"}}
