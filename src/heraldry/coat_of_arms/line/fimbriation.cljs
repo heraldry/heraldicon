@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.line.fimbriation
   (:require [clojure.walk :as walk]
-            [heraldry.coat-of-arms.options :as options]
+            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.util :as util]))

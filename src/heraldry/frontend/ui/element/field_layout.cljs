@@ -1,5 +1,5 @@
 (ns heraldry.frontend.ui.element.field-layout
-  (:require [heraldry.coat-of-arms.options :as options]
+  (:require [heraldry.options :as options]
             [heraldry.frontend.ui.element.field-type-select :as field-type-select]
             [heraldry.frontend.ui.element.range :as range]
             [heraldry.frontend.ui.element.submenu :as submenu]

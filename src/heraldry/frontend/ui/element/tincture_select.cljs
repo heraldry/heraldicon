@@ -1,5 +1,5 @@
 (ns heraldry.frontend.ui.element.tincture-select
-  (:require [heraldry.coat-of-arms.options :as options]
+  (:require [heraldry.options :as options]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.state :as state]

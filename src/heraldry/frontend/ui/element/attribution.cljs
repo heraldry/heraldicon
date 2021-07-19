@@ -1,5 +1,5 @@
 (ns heraldry.frontend.ui.element.attribution
-  (:require [heraldry.coat-of-arms.options :as options]
+  (:require [heraldry.options :as options]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
@@ -52,3 +52,4 @@
 
 (defmethod interface/form-element :attribution [path]
   [attribution-submenu path])
+

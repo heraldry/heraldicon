@@ -3,10 +3,10 @@
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.default :as default]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as log]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.coat-of-arms.options :as options]))
+            [heraldry.options :as options]
+            [re-frame.core :as rf]
+            [taoensso.timbre :as log]))
 
 ;; subs
 

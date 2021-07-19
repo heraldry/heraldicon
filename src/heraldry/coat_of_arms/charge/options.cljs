@@ -3,7 +3,7 @@
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
-            [heraldry.coat-of-arms.options :as options]
+            [heraldry.options :as options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.coat-of-arms.tincture.core :as tincture]))

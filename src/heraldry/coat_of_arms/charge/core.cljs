@@ -9,7 +9,7 @@
             [heraldry.coat-of-arms.charge.type.mascle :as mascle]
             [heraldry.coat-of-arms.charge.type.roundel :as roundel]
             [heraldry.coat-of-arms.charge.type.rustre :as rustre]
-            [heraldry.coat-of-arms.options :as options]
+            [heraldry.options :as options]
             [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.frontend.util :as util]
             [clojure.string :as s]))

@@ -1,5 +1,5 @@
 (ns heraldry.frontend.ui.element.ordinary-type-select
-  (:require [heraldry.coat-of-arms.options :as options]
+  (:require [heraldry.options :as options]
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.render :as render]
