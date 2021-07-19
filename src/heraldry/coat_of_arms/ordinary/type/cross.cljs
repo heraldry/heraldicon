@@ -1,23 +1,27 @@
 (ns heraldry.coat-of-arms.ordinary.type.cross
-  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.field.shared :as field-shared]
+  (:require [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
-            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.coat-of-arms.ordinary.type.chevron :as chevron]
+            [heraldry.coat-of-arms.ordinary.interface :as interface]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.render-options :as render-options]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
-(defn render
-  {:display-name "Cross"
-   :value :heraldry.ordinary.type/cross}
-  [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin geometry outline? cottising]} (options/sanitize ordinary (ordinary-options/options ordinary))
-        {:keys [size]} geometry
+(def ordinary-type
+  :heraldry.ordinary.type/cross)
+
+(defmethod interface/display-name ordinary-type [_] "Cross")
+
+(defmethod interface/render-ordinary ordinary-type
+  [path _parent-path environment context]
+  (let [line (options/sanitized-value (conj path :line) context)
+        origin (options/sanitized-value (conj path :origin) context)
+        size (options/sanitized-value (conj path :geometry :size) context)
+        ;; cottising (options/sanitized-value (conj path :cottising) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -94,7 +98,7 @@
                                                    corner-top-left pale-top-left
                                                    :real-start 0
                                                    :real-end end
-                                                   :render-options render-options
+                                                   :context context
                                                    :environment environment)
         {line-pale-top-right :line
          line-pale-top-right-start :line-start
@@ -103,7 +107,7 @@
                                                     :reversed? true
                                                     :real-start 0
                                                     :real-end end
-                                                    :render-options render-options
+                                                    :context context
                                                     :environment environment)
         {line-fess-top-right :line
          line-fess-top-right-start :line-start
@@ -111,7 +115,7 @@
                                                     corner-top-right fess-top-right
                                                     :real-start 0
                                                     :real-end end
-                                                    :render-options render-options
+                                                    :context context
                                                     :environment environment)
         {line-fess-bottom-right :line
          line-fess-bottom-right-start :line-start
@@ -120,7 +124,7 @@
                                                        :reversed? true
                                                        :real-start 0
                                                        :real-end end
-                                                       :render-options render-options
+                                                       :context context
                                                        :environment environment)
         {line-pale-bottom-right :line
          line-pale-bottom-right-start :line-start
@@ -128,7 +132,7 @@
                                                        corner-bottom-right pale-bottom-right
                                                        :real-start 0
                                                        :real-end end
-                                                       :render-options render-options
+                                                       :context context
                                                        :environment environment)
         {line-pale-bottom-left :line
          line-pale-bottom-left-start :line-start
@@ -137,7 +141,7 @@
                                                       :reversed? true
                                                       :real-start 0
                                                       :real-end end
-                                                      :render-options render-options
+                                                      :context context
                                                       :environment environment)
         {line-fess-bottom-left :line
          line-fess-bottom-left-start :line-start
@@ -145,7 +149,7 @@
                                                       corner-bottom-left fess-bottom-left
                                                       :real-start 0
                                                       :real-end end
-                                                      :render-options render-options
+                                                      :context context
                                                       :environment environment)
         {line-fess-top-left :line
          line-fess-top-left-start :line-start
@@ -154,124 +158,121 @@
                                                    :reversed? true
                                                    :real-start 0
                                                    :real-end end
-                                                   :render-options render-options
+                                                   :context context
                                                    :environment environment)
-        parts [[["M" (v/+ corner-top-left
-                          line-pale-top-left-start)
-                 (svg/stitch line-pale-top-left)
-                 (infinity/path :clockwise
-                                [:top :top]
-                                [(v/+ pale-top-left
-                                      line-pale-top-left-start)
-                                 (v/+ pale-top-right
-                                      line-pale-top-right-start)])
-                 (svg/stitch line-pale-top-right)
-                 "L" (v/+ corner-top-right
-                          line-fess-top-right-start)
-                 (svg/stitch line-fess-top-right)
-                 (infinity/path :clockwise
-                                [:right :right]
-                                [(v/+ fess-top-right
-                                      line-fess-top-right-start)
-                                 (v/+ fess-bottom-right
-                                      line-fess-bottom-right-start)])
-                 (svg/stitch line-fess-bottom-right)
-                 "L" (v/+ corner-bottom-right
-                          line-pale-bottom-right-start)
-                 (svg/stitch line-pale-bottom-right)
-                 (infinity/path :clockwise
-                                [:bottom :bottom]
-                                [(v/+ pale-bottom-right
-                                      line-pale-bottom-right-start)
-                                 (v/+ pale-bottom-left
-                                      line-pale-bottom-left-start)])
-                 (svg/stitch line-pale-bottom-left)
-                 "L" (v/+ corner-bottom-left
-                          line-fess-bottom-left-start)
-                 (svg/stitch line-fess-bottom-left)
-                 (infinity/path :clockwise
-                                [:left :left]
-                                [(v/+ fess-bottom-left
-                                      line-fess-bottom-left-start)
-                                 (v/+ fess-top-left
-                                      line-fess-top-left-start)])
-                 (svg/stitch line-fess-top-left)
-                 "z"]
-                [top bottom left right]]]
-        field (if (:counterchanged? field)
-                (counterchange/counterchange-field ordinary parent)
-                field)
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)
-        {:keys [cottise-1
-                cottise-2]} (-> ordinary :cottising)]
+        part [["M" (v/+ corner-top-left
+                        line-pale-top-left-start)
+               (svg/stitch line-pale-top-left)
+               (infinity/path :clockwise
+                              [:top :top]
+                              [(v/+ pale-top-left
+                                    line-pale-top-left-start)
+                               (v/+ pale-top-right
+                                    line-pale-top-right-start)])
+               (svg/stitch line-pale-top-right)
+               "L" (v/+ corner-top-right
+                        line-fess-top-right-start)
+               (svg/stitch line-fess-top-right)
+               (infinity/path :clockwise
+                              [:right :right]
+                              [(v/+ fess-top-right
+                                    line-fess-top-right-start)
+                               (v/+ fess-bottom-right
+                                    line-fess-bottom-right-start)])
+               (svg/stitch line-fess-bottom-right)
+               "L" (v/+ corner-bottom-right
+                        line-pale-bottom-right-start)
+               (svg/stitch line-pale-bottom-right)
+               (infinity/path :clockwise
+                              [:bottom :bottom]
+                              [(v/+ pale-bottom-right
+                                    line-pale-bottom-right-start)
+                               (v/+ pale-bottom-left
+                                    line-pale-bottom-left-start)])
+               (svg/stitch line-pale-bottom-left)
+               "L" (v/+ corner-bottom-left
+                        line-fess-bottom-left-start)
+               (svg/stitch line-fess-bottom-left)
+               (infinity/path :clockwise
+                              [:left :left]
+                              [(v/+ fess-bottom-left
+                                    line-fess-bottom-left-start)
+                               (v/+ fess-top-left
+                                    line-fess-top-left-start)])
+               (svg/stitch line-fess-top-left)
+               "z"]]
+        ;; TODO: counterchanged
+        ;; field (if (:counterchanged? field)
+        ;;         (counterchange/counterchange-field ordinary parent)
+        ;;         field)
+        #_#_{:keys [cottise-1
+                    cottise-2]} (-> ordinary :cottising)]
     [:<>
-     [field-shared/make-subfields
-      :ordinary-pale [field] parts
-      [:all]
-      environment ordinary context]
+     [field-shared/make-subfield
+      (conj path :field) part
+      :all
+      environment context]
      (line/render line [line-fess-top-left-data
-                        line-pale-top-left-data] fess-top-left outline? render-options)
+                        line-pale-top-left-data] fess-top-left outline? context)
      (line/render line [line-pale-top-right-data
-                        line-fess-top-right-data] pale-top-right outline? render-options)
+                        line-fess-top-right-data] pale-top-right outline? context)
      (line/render line [line-fess-bottom-right-data
-                        line-pale-bottom-right-data] fess-bottom-right outline? render-options)
+                        line-pale-bottom-right-data] fess-bottom-right outline? context)
      (line/render line [line-pale-bottom-left-data
-                        line-fess-bottom-left-data] pale-bottom-left outline? render-options)
-     (when (:enabled? cottise-1)
-       (let [cottise-1-data (:cottise-1 cottising)
-             chevron-base {:type :heraldry.ordinary.type/chevron
-                           :line (:line cottise-1)
-                           :opposite-line (:opposite-line cottise-1)}
-             chevron-options (ordinary-options/options chevron-base)
-             {:keys [line
-                     opposite-line]} (options/sanitize chevron-base chevron-options)
-             half-joint-angle 45
-             half-joint-angle-rad (-> half-joint-angle
-                                      (/ 180)
-                                      (* Math/PI)
-                                      Math/sin)
-             dist (-> (+ (:distance cottise-1-data))
-                      (/ 100)
-                      (* width)
-                      (- line-pale-top-left-min)
-                      (/ (if (zero? half-joint-angle)
-                           0.00001
-                           (Math/sin half-joint-angle-rad))))
-             new-anchor {:point :angle
-                         :angle half-joint-angle}]
-         [:<>
-          (for [[chevron-angle point] [[225 corner-top-left]
-                                       [315 corner-top-right]
-                                       [135 corner-bottom-left]
-                                       [45 corner-bottom-right]]]
-            (let [point-offset (-> (v/v dist 0)
-                                   (v/rotate chevron-angle)
-                                   (v/+ point))
-                  fess-offset (v/- point-offset (get points :fess))
-                  new-origin {:point :fess
-                              :offset-x (-> fess-offset
-                                            :x
-                                            (/ width)
-                                            (* 100))
-                              :offset-y (-> fess-offset
-                                            :y
-                                            (/ height)
-                                            (* 100)
-                                            -)
-                              :alignment :right}
-                  new-direction-anchor {:point :angle
-                                        :angle (- chevron-angle 90)}]
-              ^{:key chevron-angle} [chevron/render (-> {:type :heraldry.ordinary.type/chevron
-                                                         :outline? (-> ordinary :outline?)}
-                                                        (assoc :cottising {:cottise-opposite-1 cottise-2})
+                        line-fess-bottom-left-data] pale-bottom-left outline? context)
+     #_(when (:enabled? cottise-1)
+         (let [cottise-1-data (:cottise-1 cottising)
+               chevron-base {:type :heraldry.ordinary.type/chevron
+                             :line (:line cottise-1)
+                             :opposite-line (:opposite-line cottise-1)}
+               chevron-options (ordinary-options/options chevron-base)
+               {:keys [line
+                       opposite-line]} (options/sanitize chevron-base chevron-options)
+               half-joint-angle 45
+               half-joint-angle-rad (-> half-joint-angle
+                                        (/ 180)
+                                        (* Math/PI)
+                                        Math/sin)
+               dist (-> (+ (:distance cottise-1-data))
+                        (/ 100)
+                        (* width)
+                        (- line-pale-top-left-min)
+                        (/ (if (zero? half-joint-angle)
+                             0.00001
+                             (Math/sin half-joint-angle-rad))))
+               new-anchor {:point :angle
+                           :angle half-joint-angle}]
+           [:<>
+            (for [[chevron-angle point] [[225 corner-top-left]
+                                         [315 corner-top-right]
+                                         [135 corner-bottom-left]
+                                         [45 corner-bottom-right]]]
+              (let [point-offset (-> (v/v dist 0)
+                                     (v/rotate chevron-angle)
+                                     (v/+ point))
+                    fess-offset (v/- point-offset (get points :fess))
+                    new-origin {:point :fess
+                                :offset-x (-> fess-offset
+                                              :x
+                                              (/ width)
+                                              (* 100))
+                                :offset-y (-> fess-offset
+                                              :y
+                                              (/ height)
+                                              (* 100)
+                                              -)
+                                :alignment :right}
+                    new-direction-anchor {:point :angle
+                                          :angle (- chevron-angle 90)}]
+                ^{:key chevron-angle} [chevron/render (-> {:type :heraldry.ordinary.type/chevron
+                                                           :outline? (-> ordinary :outline?)}
+                                                          (assoc :cottising {:cottise-opposite-1 cottise-2})
                                                         ;; swap line/opposite-line because the cottise fess is upside down
-                                                        (assoc :line opposite-line)
-                                                        (assoc :opposite-line line)
-                                                        (assoc :field (:field cottise-1))
-                                                        (assoc-in [:geometry :size] (:thickness cottise-1-data))
-                                                        (assoc :origin new-origin)
-                                                        (assoc :direction-anchor new-direction-anchor)
-                                                        (assoc :anchor new-anchor)) parent environment
-                                     context]))]))]))
+                                                          (assoc :line opposite-line)
+                                                          (assoc :opposite-line line)
+                                                          (assoc :field (:field cottise-1))
+                                                          (assoc-in [:geometry :size] (:thickness cottise-1-data))
+                                                          (assoc :origin new-origin)
+                                                          (assoc :direction-anchor new-direction-anchor)
+                                                          (assoc :anchor new-anchor)) parent environment
+                                       context]))]))]))

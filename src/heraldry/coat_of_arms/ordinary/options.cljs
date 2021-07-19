@@ -9,7 +9,7 @@
             [heraldry.coat-of-arms.ordinary.type.bend-sinister :as bend-sinister]
             [heraldry.coat-of-arms.ordinary.type.chevron :as chevron]
             [heraldry.coat-of-arms.ordinary.type.chief :as chief]
-            ;; [heraldry.coat-of-arms.ordinary.type.cross :as cross]
+            [heraldry.coat-of-arms.ordinary.type.cross :as cross]
             [heraldry.coat-of-arms.ordinary.type.fess :as fess]
             ;; [heraldry.coat-of-arms.ordinary.type.gore :as gore]
             ;; [heraldry.coat-of-arms.ordinary.type.label :as label]
@@ -30,7 +30,7 @@
    bend-sinister/ordinary-type
    chevron/ordinary-type
    saltire/ordinary-type
-   ;;cross/ordinary-type
+   cross/ordinary-type
    ;;pile/ordinary-type
    ;;gore/ordinary-type
    ;;label/ordinary-type
