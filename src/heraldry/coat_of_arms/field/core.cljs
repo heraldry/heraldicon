@@ -153,10 +153,10 @@
 (def fields
   [plain/field-type
    per-pale/field-type
-   ;; #'per-fess/render
-   ;; #'per-bend/render
-   ;; #'per-bend-sinister/render
-   ;; #'per-chevron/render
+   per-fess/field-type
+   per-bend/field-type
+   per-bend-sinister/field-type
+   per-chevron/field-type
    ;; #'per-saltire/render
    ;; #'quartered/render
    ;; #'quarterly/render
