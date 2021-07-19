@@ -204,35 +204,29 @@
        (get field-map (:type field)))
      " field")))
 
-(defn render [{:keys [type components] :as field} environment
-              {:keys
-               [db-path fn-component-selected?
-                fn-select-component svg-export? transform] :as context}]
-  (let [selected? (when fn-component-selected?
-                    (fn-component-selected? db-path))
+(defn render [path environment
+              {:keys [svg-export? transform] :as context}]
+  (let [selected? false
         context (-> context
                     (assoc :render-field render))
-        render-function (get kinds-function-map type)]
+        field-type (options/raw-value (conj path :type) context)
+        render-function (get kinds-function-map field-type)]
     [:<>
-     [:g {:on-click (when fn-select-component
-                      (fn [event]
-                        (fn-select-component db-path)
-                        (.stopPropagation event)))
-          :style (when (not svg-export?)
+     [:g {:style (when (not svg-export?)
                    {:pointer-events "visiblePainted"
                     :cursor "pointer"})
           :transform transform}
-      [render-function field environment context]
-      (for [[idx element] (map-indexed vector components)]
-        (let [adjusted-context (-> context
-                                   (update :db-path conj :components idx))]
-          ^{:key idx}
-          [:<>
-           (case (-> element :type namespace)
-             "heraldry.ordinary.type" [ordinary/render element field environment adjusted-context]
-             "heraldry.charge.type" [charge/render element field environment adjusted-context]
-             "heraldry.charge-group.type" [charge-group/render element field environment adjusted-context]
-             "heraldry.component" [semy/render element environment adjusted-context])]))]
+      [render-function path environment context]
+      #_(for [[idx element] (map-indexed vector components)]
+          (let [adjusted-context (-> context
+                                     (update :db-path conj :components idx))]
+            ^{:key idx}
+            [:<>
+             (case (-> element :type namespace)
+               "heraldry.ordinary.type" [ordinary/render element field environment adjusted-context]
+               "heraldry.charge.type" [charge/render element field environment adjusted-context]
+               "heraldry.charge-group.type" [charge-group/render element field environment adjusted-context]
+               "heraldry.component" [semy/render element environment adjusted-context])]))]
      (when selected?
        [:path {:d (:shape environment)
                :style {:opacity 0.25}

@@ -2,7 +2,8 @@
   (:require [heraldry.coat-of-arms.hatching :as hatching]
             [heraldry.coat-of-arms.tincture.pattern :as pattern]
             [heraldry.coat-of-arms.tincture.theme :as theme]
-            [heraldry.util :as util]))
+            [heraldry.util :as util]
+            [heraldry.coat-of-arms.options :as options]))
 
 (def themes
   [["General"
@@ -124,6 +125,20 @@
     :else (or (lookup-colour tincture theme)
               (get furs tincture)
               "url(#void)")))
+
+(defn pick2 [tincture {:keys [render-options] :as context}]
+  (let [mode (options/sanitized-value (conj render-options :mode) context)
+        theme (options/sanitized-value (conj render-options :theme) context)]
+    (cond
+      (= tincture :none) "url(#void)"
+      (get furs tincture) (let [[id _ _] (get furs tincture)]
+                            (str "url(#" id ")"))
+      (= mode :hatching) (or
+                          (hatching/get-for tincture)
+                          "#888")
+      :else (or (lookup-colour tincture theme)
+                (get furs tincture)
+                "url(#void)"))))
 
 (defn patterns [theme]
   (into
