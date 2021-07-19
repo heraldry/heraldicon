@@ -13,8 +13,10 @@
   {:display-name "Per pale"
    :value :heraldry.field.type/per-pale
    :parts ["dexter" "sinister"]}
-  [{:keys [type fields] :as field} environment {:keys [render-options] :as context}]
-  (let [{:keys [line origin outline?]} (options/sanitize field (field-options/options field))
+  [path environment context]
+  (let [line (options/sanitized-value (conj path :line) context)
+        origin (options/sanitized-value (conj path :origin) context)
+        outline? (options/sanitized-value (conj path :outline?) context)
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)
@@ -37,7 +39,7 @@
          :as line-one-data} (line/create line
                                          top
                                          bottom
-                                         :render-options render-options
+                                         :context context
                                          :environment environment)
 
         parts [[["M" (v/+ top
@@ -65,12 +67,12 @@
                  "z"]
                 [real-top
                  bottom-right]]]
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
+        render-options-outline? (options/render-option :outline? context)
         outline? (or render-options-outline?
                      outline?)]
     [:<>
-     [shared/make-subfields
-      (shared/field-context-key type) fields parts
+     [shared/make-subfields2
+      path parts
       [:all nil]
-      environment field context]
-     (line/render line [line-one-data] top outline? render-options)]))
+      environment context]
+     (line/render line [line-one-data] top outline? context)]))

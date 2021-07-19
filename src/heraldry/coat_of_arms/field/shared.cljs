@@ -2,7 +2,8 @@
   (:require [clojure.string :as s]
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.util :as util]))
+            [heraldry.util :as util]
+            [heraldry.coat-of-arms.options :as options]))
 
 (def overlap-stroke-width 0.1)
 
@@ -84,3 +85,65 @@
                                         (->> (get #{"charge" "ordinary"}))) ;; FIXME: bit of a hack
                                   (conj db-path :field)
                                   (conj db-path :fields idx))))]]]))]))
+
+(defn make-subfields2 [field-path parts mask-overlaps parent-environment
+                       {:keys [render-field svg-export?] :as context}]
+  [:<>
+   (doall
+    (for [[idx [shape-path bounding-box & extra]] (map-indexed vector parts)]
+      (let [clip-path-id (util/id (str "part-clip-" idx))
+            mask-id (util/id (str "mask-" idx))
+            part-path (conj field-path :fields idx)
+            inherit-environment? (options/sanitized-value
+                                  (conj part-path :inherit-environment?)
+                                  context)
+            counterchanged? (options/sanitized-value
+                             (conj part-path :counterchanged?)
+                             context)
+            env (environment/create
+                 (svg/make-path shape-path)
+                 {:parent field-path
+                  :parent-environment parent-environment
+                  :bounding-box (svg/bounding-box bounding-box)
+                  :override-environment (when (or inherit-environment?
+                                                  counterchanged?)
+                                          parent-environment)
+                  :mask (first extra)})
+            environment-shape (:shape env)
+            overlap-paths (get mask-overlaps idx)]
+
+        ^{:key idx}
+        [:<>
+         [:defs
+          [(if svg-export?
+             :mask
+             :clipPath) {:id clip-path-id}
+           [:path {:d environment-shape
+                   :fill "#fff"}]
+           (cond
+             (= overlap-paths :all) [:path {:d environment-shape
+                                            :fill "none"
+                                            :stroke-width overlap-stroke-width
+                                            :stroke "#fff"}]
+             overlap-paths (for [[idx shape] (map-indexed vector overlap-paths)]
+                             ^{:key idx}
+                             [:path {:d shape
+                                     :fill "none"
+                                     :stroke-width overlap-stroke-width
+                                     :stroke "#fff"}]))]
+          (when-let [mask-shape (-> env :meta :mask)]
+            [:mask {:id mask-id}
+             [:path {:d environment-shape
+                     :fill "#fff"}]
+             [:path {:d mask-shape
+                     :fill "#000"}]])]
+
+         [:g {(if svg-export?
+                :mask
+                :clip-path) (str "url(#" clip-path-id ")")}
+          [:g {:mask (when (-> env :meta :mask)
+                       (str "url(#" mask-id ")"))}
+           [render-field
+            part-path
+            env
+            context]]]])))])

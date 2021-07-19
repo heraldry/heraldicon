@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.render
-  (:require [heraldry.coat-of-arms.core :as coat-of-arms]
-            [heraldry.coat-of-arms.escutcheon :as escutcheon]
+  (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.filter :as filter]
@@ -10,27 +9,24 @@
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.render-options :as render-options]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+            [heraldry.util :as util]))
 
 (defn coat-of-arms [path width
                     {:keys
-                     [render-options
-                      svg-export?
+                     [svg-export?
                       metadata
                       root-transform
                       texture-link] :as context}]
-  (let [mode (options/sanitized-value (conj render-options :mode) context)
-        escutcheon-override (options/sanitized-value (conj render-options :escutcheon-override) context)
-        escutcheon-shadow? (options/sanitized-value (conj render-options :shadow?) context)
-        escutcheon-outline? (options/sanitized-value (conj render-options :outline?) context)
-        outline? (options/sanitized-value (conj render-options :outline?) context)
-        shiny? (options/sanitized-value (conj render-options :shiny?) context)
-        squiggly? (options/sanitized-value (conj render-options :squiggly?) context)
-        theme (options/sanitized-value (conj render-options :theme) context)
-        texture (options/sanitized-value (conj render-options :texture) context)
-        texture-displacement? (options/sanitized-value (conj render-options :texture-displacement?) context)
+  (let [mode (options/render-option :mode context)
+        escutcheon-override (options/render-option :escutcheon-override context)
+        escutcheon-shadow? (options/render-option :escutcheon-shadow? context)
+        escutcheon-outline? (options/render-option :escutcheon-outline? context)
+        outline? (options/render-option :outline? context)
+        shiny? (options/render-option :shiny? context)
+        squiggly? (options/render-option :squiggly? context)
+        theme (options/render-option :theme context)
+        texture (options/render-option :texture context)
+        texture-displacement? (options/render-option :texture-displacement? context)
         escutcheon (options/sanitized-value (conj path :escutcheon) context)
         escutcheon (if (not= escutcheon-override :none)
                      escutcheon-override
