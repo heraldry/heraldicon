@@ -1,22 +1,28 @@
 (ns heraldry.coat-of-arms.ordinary.type.pile
-  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.field.shared :as field-shared]
+  (:require [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
-            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.coat-of-arms.ordinary.type.chevron :as chevron]
+            [heraldry.coat-of-arms.ordinary.interface :as interface]
             [heraldry.coat-of-arms.shared.pile :as pile]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.render-options :as render-options]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
-(defn render
-  {:display-name "Pile"
-   :value :heraldry.ordinary.type/pile}
-  [{:keys [field] :as ordinary} parent environment {:keys [render-options] :as context}]
-  (let [{:keys [line opposite-line origin anchor
-                geometry outline? cottising]} (options/sanitize ordinary (ordinary-options/options ordinary))
+(def ordinary-type
+  :heraldry.ordinary.type/pile)
+
+(defmethod interface/display-name ordinary-type [_] "Pile")
+
+(defmethod interface/render-ordinary ordinary-type
+  [path _parent-path environment context]
+  (let [line (options/sanitized-value (conj path :line) context)
+        opposite-line (options/sanitized-value (conj path :opposite-line) context)
+        origin (options/sanitized-value (conj path :origin) context)
+        anchor (options/sanitized-value (conj path :anchor) context)
+        geometry (options/sanitized-value (conj path :geometry) context)
+        ;; cottising (options/sanitized-value (conj path :cottising) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)
@@ -76,90 +82,88 @@
                                           :reversed? true
                                           :real-start 0
                                           :real-end end
-                                          :render-options render-options
+                                          :context context
                                           :environment environment)
         {line-right :line
          :as line-right-data} (line/create opposite-line
                                            point right-point
                                            :real-start 0
                                            :real-end end
-                                           :render-options render-options
+                                           :context context
                                            :environment environment)
-        parts [[["M" (v/+ left-point
-                          line-left-start)
-                 (svg/stitch line-left)
-                 (svg/stitch line-right)
-                 "z"]
-                [top-left top-right
-                 bottom-left bottom-right]]]
-        field (if (:counterchanged? field)
-                (counterchange/counterchange-field ordinary parent)
-                field)
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)
-        {:keys [cottise-1
-                cottise-2]} (-> ordinary :cottising)]
+        part [["M" (v/+ left-point
+                        line-left-start)
+               (svg/stitch line-left)
+               (svg/stitch line-right)
+               "z"]
+              [top-left top-right
+               bottom-left bottom-right]]
+        ;; TODO: counterchanged
+        ;; field (if (:counterchanged? field)
+        ;;         (counterchange/counterchange-field ordinary parent)
+        ;;         field)
+        #_#_{:keys [cottise-1
+                    cottise-2]} (-> ordinary :cottising)]
     [:<>
-     [field-shared/make-subfields
-      :ordinary-pile [field] parts
-      [:all]
-      environment ordinary context]
+     [field-shared/make-subfield
+      (conj path :field) part
+      :all
+      environment context]
      (line/render line [line-left-data
-                        line-right-data] left-point outline? render-options)
-     (when (:enabled? cottise-1)
-       (let [cottise-1-data (:cottise-1 cottising)
-             chevron-base {:type :heraldry.ordinary.type/chevron
-                           :line (:line cottise-1)
-                           :opposite-line (:opposite-line cottise-1)}
-             chevron-options (ordinary-options/options chevron-base)
-             {:keys [line
-                     opposite-line]} (options/sanitize chevron-base chevron-options)
-             half-joint-angle (/ joint-angle 2)
-             half-joint-angle-rad (-> half-joint-angle
-                                      (/ 180)
-                                      (* Math/PI)
-                                      Math/sin)
-             dist (-> (+ (:distance cottise-1-data))
-                      (/ 100)
-                      (* thickness-base)
-                      (- line-left-min)
-                      (/ (if (zero? half-joint-angle)
-                           0.00001
-                           (Math/sin half-joint-angle-rad))))
-             line-offset (or (-> cottise-1 :opposite-line :offset)
-                             (-> half-joint-angle-rad
-                                 Math/cos
-                                 (* dist)
-                                 (/ (:width opposite-line))))
-             point-offset (-> (v/v (- dist) 0)
-                              (v/rotate pile-angle)
-                              (v/+ point))
-             fess-offset (v/- point-offset (get points :fess))
-             new-origin {:point :fess
-                         :offset-x (-> fess-offset
-                                       :x
-                                       (/ width)
-                                       (* 100))
-                         :offset-y (-> fess-offset
-                                       :y
-                                       (/ height)
-                                       (* 100)
-                                       -)
-                         :alignment :left}
-             new-anchor {:point :angle
-                         :angle half-joint-angle}
-             new-direction-anchor {:point :angle
-                                   :angle (- pile-angle 90)}]
-         [chevron/render (-> {:type :heraldry.ordinary.type/chevron
-                              :outline? (-> ordinary :outline?)}
-                             (assoc :cottising {:cottise-1 cottise-2})
-                             (assoc :line line)
-                             (assoc :opposite-line (-> opposite-line
-                                                       (assoc :offset line-offset)))
-                             (assoc :field (:field cottise-1))
-                             (assoc-in [:geometry :size] (:thickness cottise-1-data))
-                             (assoc :origin new-origin)
-                             (assoc :direction-anchor new-direction-anchor)
-                             (assoc :anchor new-anchor)) parent environment
-          context]))]))
+                        line-right-data] left-point outline? context)
+     #_(when (:enabled? cottise-1)
+         (let [cottise-1-data (:cottise-1 cottising)
+               chevron-base {:type :heraldry.ordinary.type/chevron
+                             :line (:line cottise-1)
+                             :opposite-line (:opposite-line cottise-1)}
+               chevron-options (ordinary-options/options chevron-base)
+               {:keys [line
+                       opposite-line]} (options/sanitize chevron-base chevron-options)
+               half-joint-angle (/ joint-angle 2)
+               half-joint-angle-rad (-> half-joint-angle
+                                        (/ 180)
+                                        (* Math/PI)
+                                        Math/sin)
+               dist (-> (+ (:distance cottise-1-data))
+                        (/ 100)
+                        (* thickness-base)
+                        (- line-left-min)
+                        (/ (if (zero? half-joint-angle)
+                             0.00001
+                             (Math/sin half-joint-angle-rad))))
+               line-offset (or (-> cottise-1 :opposite-line :offset)
+                               (-> half-joint-angle-rad
+                                   Math/cos
+                                   (* dist)
+                                   (/ (:width opposite-line))))
+               point-offset (-> (v/v (- dist) 0)
+                                (v/rotate pile-angle)
+                                (v/+ point))
+               fess-offset (v/- point-offset (get points :fess))
+               new-origin {:point :fess
+                           :offset-x (-> fess-offset
+                                         :x
+                                         (/ width)
+                                         (* 100))
+                           :offset-y (-> fess-offset
+                                         :y
+                                         (/ height)
+                                         (* 100)
+                                         -)
+                           :alignment :left}
+               new-anchor {:point :angle
+                           :angle half-joint-angle}
+               new-direction-anchor {:point :angle
+                                     :angle (- pile-angle 90)}]
+           [chevron/render (-> {:type :heraldry.ordinary.type/chevron
+                                :outline? (-> ordinary :outline?)}
+                               (assoc :cottising {:cottise-1 cottise-2})
+                               (assoc :line line)
+                               (assoc :opposite-line (-> opposite-line
+                                                         (assoc :offset line-offset)))
+                               (assoc :field (:field cottise-1))
+                               (assoc-in [:geometry :size] (:thickness cottise-1-data))
+                               (assoc :origin new-origin)
+                               (assoc :direction-anchor new-direction-anchor)
+                               (assoc :anchor new-anchor)) parent environment
+            context]))]))

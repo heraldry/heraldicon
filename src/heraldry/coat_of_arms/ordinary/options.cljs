@@ -14,7 +14,7 @@
             ;; [heraldry.coat-of-arms.ordinary.type.gore :as gore]
             ;; [heraldry.coat-of-arms.ordinary.type.label :as label]
             [heraldry.coat-of-arms.ordinary.type.pale :as pale]
-            ;; [heraldry.coat-of-arms.ordinary.type.pile :as pile]
+            [heraldry.coat-of-arms.ordinary.type.pile :as pile]
             [heraldry.coat-of-arms.ordinary.type.saltire :as saltire]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.interface :as interface]
@@ -31,7 +31,7 @@
    chevron/ordinary-type
    saltire/ordinary-type
    cross/ordinary-type
-   ;;pile/ordinary-type
+   pile/ordinary-type
    ;;gore/ordinary-type
    ;;label/ordinary-type
    ])
