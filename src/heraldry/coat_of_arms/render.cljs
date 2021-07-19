@@ -14,37 +14,24 @@
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
-(defn coat-of-arms [coat-of-arms width
+(defn coat-of-arms [path width
                     {:keys
                      [render-options
                       svg-export?
                       metadata
                       root-transform
                       texture-link] :as context}]
-  (let [real-coat-of-arms (if (vector? coat-of-arms)
-                            @(rf/subscribe [:get-value coat-of-arms])
-                            coat-of-arms)
-        [mode
-         escutcheon-override
-         escutcheon-shadow?
-         escutcheon-outline?
-         outline?
-         shiny?
-         squiggly?
-         theme
-         texture
-         texture-displacement?] (options/effective-values
-                                 [[:mode]
-                                  [:escutcheon-override]
-                                  [:escutcheon-shadow?]
-                                  [:escutcheon-outline?]
-                                  [:outline?]
-                                  [:shiny?]
-                                  [:squiggly?]
-                                  [:theme]
-                                  [:texture]
-                                  [:texture-displacement?]] render-options render-options/options)
-        [escutcheon] (options/effective-values [[:escutcheon]] coat-of-arms coat-of-arms/options)
+  (let [mode (options/sanitized-value (conj render-options :mode) context)
+        escutcheon-override (options/sanitized-value (conj render-options :escutcheon-override) context)
+        escutcheon-shadow? (options/sanitized-value (conj render-options :shadow?) context)
+        escutcheon-outline? (options/sanitized-value (conj render-options :outline?) context)
+        outline? (options/sanitized-value (conj render-options :outline?) context)
+        shiny? (options/sanitized-value (conj render-options :shiny?) context)
+        squiggly? (options/sanitized-value (conj render-options :squiggly?) context)
+        theme (options/sanitized-value (conj render-options :theme) context)
+        texture (options/sanitized-value (conj render-options :texture) context)
+        texture-displacement? (options/sanitized-value (conj render-options :texture-displacement?) context)
+        escutcheon (options/sanitized-value (conj path :escutcheon) context)
         escutcheon (if (not= escutcheon-override :none)
                      escutcheon-override
                      escutcheon)
@@ -52,7 +39,6 @@
         environment (-> (environment/transform-to-width shield width)
                         (cond->
                          squiggly? (update :shape svg/squiggly-path)))
-        field (:field real-coat-of-arms)
         mask-id (util/id "mask")
         texture (when-not (= texture :none)
                   texture)
@@ -126,10 +112,11 @@
                                 (str "url(#" shiny-id ")"))}
                   [:path {:d (:shape environment)
                           :fill "#f0f0f0"}]
-                  [field/render field environment (-> context
-                                                      (dissoc :metadata)
-                                                      (update :db-path conj :field)
-                                                      (assoc :root-escutcheon escutcheon))]]]]
+                  [field/render (conj path :field)
+                   environment
+                   (-> context
+                       (dissoc :metadata)
+                       (assoc :root-escutcheon escutcheon))]]]]
                (when (or escutcheon-outline?
                          outline?)
                  [:g outline/style

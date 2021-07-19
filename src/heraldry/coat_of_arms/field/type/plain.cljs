@@ -1,12 +1,13 @@
 (ns heraldry.coat-of-arms.field.type.plain
-  (:require [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.render-options :as render-options]))
+  (:require [heraldry.coat-of-arms.options :as options]
+            [heraldry.coat-of-arms.tincture.core :as tincture]))
 
 (defn render
   {:display-name "Plain"
    :value :heraldry.field.type/plain}
-  [field _environment {:keys [render-options] :as _context}]
-  (let [fill (render-options/pick-tincture (:tincture field) render-options)]
+  [path _environment context]
+  (let [tincture (options/sanitized-value (conj path :tincture) context)
+        fill (tincture/pick2 tincture context)]
     [:rect {:x -500
             :y -500
             :width 1100

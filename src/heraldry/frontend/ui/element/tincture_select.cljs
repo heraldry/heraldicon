@@ -9,18 +9,16 @@
             [heraldry.frontend.ui.shared :as shared]
             [re-frame.core :as rf]))
 
-(defn tincture-choice [path key display-name & {:keys [selected?]}]
+(defn tincture-choice [key display-name]
   (let [{:keys [result]} (render/coat-of-arms
-                          {:escutcheon :rectangle
-                           :field {:type :heraldry.field.type/plain
-                                   :tincture key}}
+                          [:coat-of-arms]
                           40
-                          shared/coa-select-option-context)]
-    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
-                          :style {:border (if selected?
-                                            "1px solid #000"
-                                            "1px solid transparent")
-                                  :border-radius "5px"}}
+                          (-> shared/coa-select-option-context
+                              (assoc-in [:data :coat-of-arms]
+                                        {:escutcheon :rectangle
+                                         :field {:type :heraldry.field.type/plain
+                                                 :tincture key}})))]
+    [:<>
      [:svg {:style {:width "4em"
                     :height "4.5em"}
             :viewBox "0 0 50 100"
@@ -43,13 +41,20 @@
          [:label label])
        [:div.option
         [submenu/submenu path "Select Tincture" (get tincture/tincture-map value) {:width "22em"}
-         (for [[group-name & group] choices]
-           ^{:key group-name}
-           [:<>
-            [:h4 group-name]
-            (for [[display-name key] group]
-              ^{:key display-name}
-              [tincture-choice path key display-name :selected? (= key value)])])]
+         (doall
+          (for [[group-name & group] choices]
+            ^{:key group-name}
+            [:<>
+             [:h4 group-name]
+             (doall
+              (for [[display-name key] group]
+                ^{:key display-name}
+                [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
+                                      :style {:border (if (= key value)
+                                                        "1px solid #000"
+                                                        "1px solid transparent")
+                                              :border-radius "5px"}}
+                 [tincture-choice key display-name]]))]))]
         [value-mode-select/value-mode-select path
          :default-option default-option]]])))
 

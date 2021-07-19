@@ -117,3 +117,11 @@
            (map (fn [path]
                   (get-in sanitized-data path)))
            vec))))
+
+(defn sanitized-value [path {:keys [access] :as context}]
+  (let [{:keys [get-sanitized-data]} access]
+    (get-sanitized-data path context)))
+
+(defn raw-value [path {:keys [access] :as context}]
+  (let [{:keys [get-raw-data]} access]
+    (get-raw-data path context)))

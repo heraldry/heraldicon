@@ -4,7 +4,9 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.default :as default]
             [re-frame.core :as rf]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [heraldry.frontend.ui.interface :as interface]
+            [heraldry.coat-of-arms.options :as options]))
 
 ;; subs
 
@@ -266,3 +268,42 @@
                                                     (when new-path
                                                       [new-path flag]))))
                                           (into {}))))))
+
+(defn get-sanitized-data-by-state [path _context]
+  @(rf/subscribe [:get-sanitized-value path]))
+
+(defn get-raw-data-by-state [path _context]
+  @(rf/subscribe [:get-value path]))
+
+(def access-by-state
+  {:get-sanitized-data get-sanitized-data-by-state
+   :get-raw-data get-raw-data-by-state})
+
+(defn get-raw-data-by-context [path context]
+  (get-in (:data context) path))
+
+(defn get-options-by-context [path context]
+  (interface/component-options (get-raw-data-by-context path context) path))
+
+(defn get-relevant-options-by-context [path context]
+  (let [[options relative-path] (or (->> (range (count path) 0 -1)
+                                         (keep (fn [idx]
+                                                 (let [option-path (subvec path 0 idx)
+                                                       relative-path (subvec path idx)
+                                                       options (get-options-by-context option-path context)]
+                                                   (when options
+                                                     [options relative-path]))))
+                                         first)
+                                    [nil nil])]
+    (get-in options relative-path)))
+
+(defn get-sanitized-data-by-context [path context]
+  (let [value (get-raw-data-by-context path context)
+        options (get-relevant-options-by-context path context)]
+    (if (map? value)
+      (options/sanitize value options)
+      (options/get-value value options))))
+
+(def access-by-context
+  {:get-sanitized-data get-sanitized-data-by-context
+   :get-raw-data get-raw-data-by-context})
