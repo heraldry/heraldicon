@@ -173,7 +173,7 @@
    chequy/field-type
    lozengy/field-type
    vairy/field-type
-   ;; potenty/field-type
+   potenty/field-type
    ;; papellony/field-type
    ;; masonry/field-type
    ])

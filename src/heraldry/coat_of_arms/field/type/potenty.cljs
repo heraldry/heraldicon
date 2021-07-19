@@ -1,9 +1,16 @@
 (ns heraldry.coat-of-arms.field.type.potenty
-  (:require [heraldry.coat-of-arms.field.options :as field-options]
+  (:require [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.render-options :as render-options]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.util :as util]))
+
+(def field-type
+  :heraldry.field.type/potenty)
+
+(defmethod interface/display-name field-type [_] "Potenty")
+
+(defmethod interface/part-names field-type [_] nil)
 
 (defn units [n]
   (-> n
@@ -237,24 +244,21 @@
                [:path {:d (str "M" middle-x "," height
                                "h" w)}]]}))
 
-(defn render
-  {:display-name "Potenty"
-   :value :heraldry.field.type/potenty
-   :parts []}
-  [{:keys [fields] :as field} environment {:keys [render-options]}]
-  (let [{:keys [layout variant outline?]} (options/sanitize field (field-options/options field))
+(defmethod interface/render-field field-type
+  [path environment context]
+  (let [variant (options/sanitized-value (conj path :variant) context)
+        num-fields-x (options/sanitized-value (conj path :layout :num-fields-x) context)
+        num-fields-y (options/sanitized-value (conj path :layout :num-fields-y) context)
+        raw-num-fields-y (options/raw-value (conj path :layout :num-fields-y) context)
+        offset-x (options/sanitized-value (conj path :layout :offset-x) context)
+        offset-y (options/sanitized-value (conj path :layout :offset-y) context)
+        stretch-x (options/sanitized-value (conj path :layout :stretch-x) context)
+        stretch-y (options/sanitized-value (conj path :layout :stretch-y) context)
+        outline? (or (options/render-option :outline? context)
+                     (options/sanitized-value (conj path :outline?) context))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        {:keys [num-fields-x
-                offset-x
-                stretch-x
-                num-fields-y
-                offset-y
-                stretch-y]} layout
-        raw-num-fields-y (-> field :layout :num-fields-y)
-        offset-x (or offset-x 0)
-        stretch-x (or stretch-x 1)
         width (- (:x bottom-right)
                  (:x top-left))
         unstretched-part-width (-> width
@@ -262,8 +266,6 @@
                                    (* 4))
         part-width (-> unstretched-part-width
                        (* stretch-x))
-        offset-y (or offset-y 0)
-        stretch-y (or stretch-y 1)
         height (- (:y bottom-right)
                   (:y top-left))
         unstretched-part-height (if raw-num-fields-y
@@ -285,10 +287,7 @@
         {pattern-width :width
          pattern-height :height
          potent-pattern :pattern
-         potent-outline :outline} (potent-function part-width part-height)
-        [render-options-outline?] (options/effective-values [[:outline?]] render-options render-options/options)
-        outline? (or render-options-outline?
-                     outline?)]
+         potent-outline :outline} (potent-function part-width part-height)]
     [:g
      [:defs
       (when outline?
@@ -327,9 +326,7 @@
      (doall
       (for [idx (range 2)]
         (let [mask-id (util/id "mask")
-              tincture (-> fields
-                           (get idx)
-                           :tincture)]
+              tincture (options/sanitized-value (conj path :fields idx :tincture) context)]
           ^{:key idx}
           [:<>
            [:mask {:id mask-id}
@@ -343,7 +340,7 @@
                    :width 1100
                    :height 1100
                    :mask (str "url(#" mask-id ")")
-                   :fill (render-options/pick-tincture tincture render-options)}]])))
+                   :fill (tincture/pick2 tincture context)}]])))
      (when outline?
        [:rect {:x -500
                :y -500
