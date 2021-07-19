@@ -4,7 +4,7 @@
             [heraldry.coat-of-arms.charge-group.options :as charge-group]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.ordinary.core :as ordinary]
+            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]))
@@ -102,7 +102,7 @@
                                                :heraldry.field/anchor
                                                :heraldry.field/outline?])))
 
-(s/def :heraldry.ordinary/type ordinary/ordinary-map)
+(s/def :heraldry.ordinary/type ordinary-options/ordinary-map)
 (s/def :heraldry/ordinary (s/keys :req-un [:heraldry.ordinary/type
                                            :heraldry/field]
                                   :opt-un [:heraldry/line
