@@ -158,7 +158,7 @@
    per-bend-sinister/field-type
    per-chevron/field-type
    per-saltire/field-type
-   ;; #'quartered/render
+   quartered/field-type
    ;; #'quarterly/render
    ;; #'gyronny/render
    ;; #'tierced-per-pale/render
