@@ -1,9 +1,10 @@
 (ns heraldry.coat-of-arms.ordinary.core
-  (:require [heraldry.frontend.util :as frontend-util]))
+  (:require [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+            [heraldry.frontend.util :as frontend-util]
+            [heraldry.interface :as interface]))
 
-(defn render [{:keys [type] :as ordinary} parent environment context]
-  #_(let [function (get kinds-function-map type)]
-      [function ordinary parent environment context]))
+(defmethod interface/render-component :heraldry.component/ordinary [path parent-path environment context]
+  (ordinary-interface/render-ordinary path parent-path environment context))
 
 (defn title [ordinary]
   (-> ordinary :type frontend-util/translate-cap-first))

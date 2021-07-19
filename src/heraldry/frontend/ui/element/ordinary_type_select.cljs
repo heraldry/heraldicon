@@ -39,26 +39,28 @@
 
 (defn ordinary-type-choice [path key display-name & {:keys [selected?]}]
   (let [{:keys [result]} (render/coat-of-arms
-                          {:escutcheon :rectangle
-                           :field {:type :heraldry.field.type/plain
-                                   :tincture :argent
-                                   :components [{:type key
-                                                 :line (when (= key :heraldry.ordinary.type/gore)
-                                                         {:type :enarched
-                                                          :flipped? true})
-                                                 :origin (case key
-                                                           :heraldry.ordinary.type/label {:alignment :left}
-                                                           nil)
-                                                 :geometry (case key
-                                                             :heraldry.ordinary.type/label {:width 75
-                                                                                            :size 12
-                                                                                            :thickness 20}
-                                                             :heraldry.ordinary.type/pile {:stretch 0.85}
-                                                             nil)
-                                                 :field {:type :heraldry.field.type/plain
-                                                         :tincture (if selected? :or :azure)}}]}}
+                          [:coat-of-arms]
                           100
-                          shared/coa-select-option-context)]
+                          (-> shared/coa-select-option-context
+                              (assoc-in [:data :coat-of-arms]
+                                        {:escutcheon :rectangle
+                                         :field {:type :heraldry.field.type/plain
+                                                 :tincture :argent
+                                                 :components [{:type key
+                                                               :line (when (= key :heraldry.ordinary.type/gore)
+                                                                       {:type :enarched
+                                                                        :flipped? true})
+                                                               :origin (case key
+                                                                         :heraldry.ordinary.type/label {:alignment :left}
+                                                                         nil)
+                                                               :geometry (case key
+                                                                           :heraldry.ordinary.type/label {:width 75
+                                                                                                          :size 12
+                                                                                                          :thickness 20}
+                                                                           :heraldry.ordinary.type/pile {:stretch 0.85}
+                                                                           nil)
+                                                               :field {:type :heraldry.field.type/plain
+                                                                       :tincture (if selected? :or :azure)}}]}})))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type (vec (drop-last path)) key])}
      [:svg {:style {:width "4em"
                     :height "4.5em"}
