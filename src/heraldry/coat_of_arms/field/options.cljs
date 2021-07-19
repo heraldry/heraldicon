@@ -435,7 +435,7 @@
                                    [:layout :offset-y]
                                    [:layout :stretch-y]
                                    [:outline?]]
-                                  {[:layout :num-fields-y :default] nil})
+                                  {})
             :lozengy (options/pick default-options
                                    [[:type]
                                     [:inherit-environment?]
