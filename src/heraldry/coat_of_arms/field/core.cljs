@@ -160,7 +160,7 @@
    per-saltire/field-type
    quartered/field-type
    quarterly/field-type
-   ;; #'gyronny/render
+   gyronny/field-type
    ;; #'tierced-per-pale/render
    ;; #'tierced-per-fess/render
    ;; #'tierced-per-pairle/render
