@@ -16,16 +16,18 @@
 
 (defn charge-type-choice [path key display-name & {:keys [selected?]}]
   (let [{:keys [result]} (render/coat-of-arms
-                          {:escutcheon :rectangle
-                           :field {:type :heraldry.field.type/plain
-                                   :tincture :argent
-                                   :components [{:type key
-                                                 :geometry {:size 75}
-                                                 :escutcheon (if (= key :heraldry.charge.type/escutcheon) :heater nil)
-                                                 :field {:type :heraldry.field.type/plain
-                                                         :tincture (if selected? :or :azure)}}]}}
+                          [:coat-of-arms]
                           100
-                          shared/coa-select-option-context)]
+                          (-> shared/coa-select-option-context
+                              (assoc-in [:data :coat-of-arms]
+                                        {:escutcheon :rectangle
+                                         :field {:type :heraldry.field.type/plain
+                                                 :tincture :argent
+                                                 :components [{:type key
+                                                               :geometry {:size 75}
+                                                               :escutcheon (if (= key :heraldry.charge.type/escutcheon) :heater nil)
+                                                               :field {:type :heraldry.field.type/plain
+                                                                       :tincture (if selected? :or :azure)}}]}})))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:update-charge (vec (drop-last path)) {:type key
                                                                                                         :attitude nil
                                                                                                         :facing nil

@@ -7,7 +7,7 @@
             ;; [heraldry.coat-of-arms.charge.type.fusil :as fusil]
             ;; [heraldry.coat-of-arms.charge.type.lozenge :as lozenge]
             ;; [heraldry.coat-of-arms.charge.type.mascle :as mascle]
-            ;; [heraldry.coat-of-arms.charge.type.roundel :as roundel]
+            [heraldry.coat-of-arms.charge.type.roundel :as roundel]
             ;; [heraldry.coat-of-arms.charge.type.rustre :as rustre]
             [heraldry.coat-of-arms.escutcheon :as root-escutcheon]
             [heraldry.coat-of-arms.geometry :as geometry]
@@ -19,7 +19,7 @@
             [heraldry.options :as options]))
 
 (def charges
-  [#_roundel/charge-type
+  [roundel/charge-type
    #_annulet/charge-type
    #_billet/charge-type
    #_escutcheon/charge-type
