@@ -139,8 +139,7 @@
            masonry-pattern]]))]
      (doall
       (for [idx (range 2)]
-        (let [mask-id (util/id "mask")
-              tincture (options/sanitized-value (conj path :fields idx :tincture) context)]
+        (let [mask-id (util/id "mask")]
           ^{:key idx}
           [:<>
            [:mask {:id mask-id}
@@ -149,12 +148,10 @@
                     :width 1100
                     :height 1100
                     :fill (str "url(#" pattern-id "-" idx ")")}]]
-           [:rect {:x -500
-                   :y -500
-                   :width 1100
-                   :height 1100
-                   :mask (str "url(#" mask-id ")")
-                   :fill (tincture/pick tincture context)}]])))
+           [tincture/tinctured-field
+            (conj path :fields idx :tincture)
+            context
+            :mask-id mask-id]])))
      (when outline?
        [:rect {:x -500
                :y -500
