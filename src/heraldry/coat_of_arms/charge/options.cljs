@@ -3,7 +3,7 @@
             [heraldry.coat-of-arms.charge.type.annulet :as annulet]
             [heraldry.coat-of-arms.charge.type.billet :as billet]
             [heraldry.coat-of-arms.charge.type.crescent :as crescent]
-            ;; [heraldry.coat-of-arms.charge.type.escutcheon :as escutcheon]
+            [heraldry.coat-of-arms.charge.type.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.charge.type.fusil :as fusil]
             [heraldry.coat-of-arms.charge.type.lozenge :as lozenge]
             [heraldry.coat-of-arms.charge.type.mascle :as mascle]
@@ -22,7 +22,7 @@
   [roundel/charge-type
    annulet/charge-type
    billet/charge-type
-   #_escutcheon/charge-type
+   escutcheon/charge-type
    lozenge/charge-type
    fusil/charge-type
    mascle/charge-type
