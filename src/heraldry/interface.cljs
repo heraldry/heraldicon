@@ -21,6 +21,8 @@
           (= :render-options)) :heraldry.options/render-options
       (-> path last
           (= :coat-of-arms)) :heraldry.options/coat-of-arms
+      (-> path drop-last last
+          (= :strips)) :heraldry.options/charge-group-strip
       :else (let [ts (-> data :type str)]
               (cond
                 (s/starts-with? ts ":heraldry.field") :heraldry.options/field
