@@ -24,7 +24,7 @@
   {:form form})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-collection.[thing].options namespaces
-(defmethod interface/component-options :heraldry.options/collection-general [_data _path]
+(defmethod interface/component-options :heraldry.options/collection-general [_path _data]
   {:name {:type :text
           :default ""
           :ui {:label "Name"}}

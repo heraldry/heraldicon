@@ -37,7 +37,7 @@
     (rf/subscribe [:get-value path]))
 
   (fn [data [_ path]]
-    (interface/component-options data path)))
+    (interface/component-options path data)))
 
 (rf/reg-sub :get-relevant-options
   (fn [[_ path] _]

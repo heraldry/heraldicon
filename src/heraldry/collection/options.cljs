@@ -8,5 +8,5 @@
                  :max 10
                  :ui {:label "Columns"}}})
 
-(defmethod interface/component-options :heraldry.options/collection [_data _path]
+(defmethod interface/component-options :heraldry.options/collection [_path _data]
   default-options)

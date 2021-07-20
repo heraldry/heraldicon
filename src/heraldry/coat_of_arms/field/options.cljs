@@ -746,7 +746,7 @@
                             (when layout
                               (assoc layout :ui (-> default-options :layout :ui)))))))))
 
-(defmethod interface/component-options :heraldry.options/field [data path]
+(defmethod interface/component-options :heraldry.options/field [path data]
   (cond-> (options data)
     (-> path drop-last last
         (= :coat-of-arms)) (->

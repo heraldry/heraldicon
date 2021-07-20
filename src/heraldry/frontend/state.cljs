@@ -297,7 +297,7 @@
   (count (get-in (:data context) path)))
 
 (defn get-options-by-context [path context]
-  (interface/component-options (get-raw-data-by-context path context) path))
+  (interface/component-options path (get-raw-data-by-context path context)))
 
 (defn get-relevant-options-by-context [path context]
   (let [[options relative-path] (or (->> (range (count path) 0 -1)
