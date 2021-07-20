@@ -2,15 +2,12 @@
   (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
             [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.default :as default]
-            [heraldry.options :as options]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.charge-group-preset-select
-             :as
-             charge-group-preset-select]
+            [heraldry.frontend.ui.element.charge-group-preset-select :as charge-group-preset-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.ui.shared :as shared]
-            [heraldry.render-options :as render-options]
+            [heraldry.options :as options]
             [re-frame.core :as rf]))
 
 (rf/reg-event-db :cycle-charge-index
@@ -155,17 +152,17 @@
   [:azure :or :vert :gules :purpure :sable])
 
 (defn preview-form [path]
-  (let [render-options (:render-options shared/coa-select-option-context)
-        charge-group @(rf/subscribe [:get-value path])
+  (let [context {:render-options [:render-options]
+                 :access state/access-by-state}
         environment {:width 200
                      :height 200}
         {:keys [slot-positions
-                slot-spacing]} (charge-group/calculate-points charge-group environment {:db-path path})
+                slot-spacing]} (charge-group/calculate-points path environment context)
+        num-charges (options/list-size (conj path :charges) context)
         dot-size (/ (min (:width slot-spacing)
                          (:height slot-spacing))
                     2
-                    1.05)
-        num-charges (-> charge-group :charges count)]
+                    1.05)]
     [:div
      [:svg {:style {:width "10em"
                     :height "10em"}
@@ -185,7 +182,7 @@
                         (-> charge-index
                             (mod (count preview-tinctures))
                             (->> (get preview-tinctures))
-                            (render-options/pick-tincture render-options)))]
+                            (tincture/pick2 context)))]
             ^{:key idx}
             [:g {:transform (str "translate(" (:x point) "," (:y point) ")")
                  :on-click #(state/dispatch-on-event % [:cycle-charge-index slot-path num-charges])

@@ -113,7 +113,8 @@
                                  :hatching)) :keep
                           (options/sanitized-value (conj path :outline-mode) context))
             outline? (= outline-mode :keep)
-            {:keys [charge-group
+            {:keys [charge-group-path
+                    origin-override
                     slot-spacing
                     slot-angle]} charge-group
             context (dissoc context :charge-group)
@@ -135,9 +136,17 @@
             positional-charge-height (js/parseFloat (-> charge-data :height (or "1")))
             width (:width environment)
             height (:height environment)
+            environment-for-origin (if origin-override
+                                     (assoc-in environment [:points :special] origin-override)
+                                     environment)
+            origin (if origin-override
+                     {:point :special
+                      :offset-x 0
+                      :offset-y 0}
+                     origin)
             {origin-point :real-origin
              anchor-point :real-anchor} (angle/calculate-origin-and-anchor
-                                         environment
+                                         environment-for-origin
                                          origin
                                          anchor
                                          0
