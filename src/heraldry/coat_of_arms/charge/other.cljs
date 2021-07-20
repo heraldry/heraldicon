@@ -2,18 +2,17 @@
   (:require [clojure.string :as s]
             [clojure.walk :as walk]
             [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.charge.options :as charge-options]
-            [heraldry.coat-of-arms.counterchange :as counterchange]
+            [heraldry.coat-of-arms.charge.interface :as interface]
             [heraldry.coat-of-arms.field.environment :as environment]
+            [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.metadata :as metadata]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.util :as util]
-            [heraldry.render-options :as render-options]))
+            [heraldry.options :as options]
+            [heraldry.util :as util]))
 
 (defn remove-outlines [data placeholder-colours]
   (walk/postwalk #(if (and (vector? %)
@@ -82,34 +81,34 @@
                                "#fff")))))]
     [mask-id mask mask-inverted-id mask-inverted]))
 
-(defn render [{:keys [field
-                      hints
-                      variant
-                      data]
-               :as charge}
-              parent
-              environment
-              {:keys [render-field
-                      render-options
-                      load-charge-data
-                      fn-select-component
-                      charge-group]
-               :as context}]
-  (let [full-charge-data (or data (when variant (load-charge-data variant)))]
+(defmethod interface/render-charge :heraldry.charge.type/other
+  [path parent-path environment {:keys [load-charge-data charge-group] :as context}]
+  (let [data (options/raw-value (conj path :data) context)
+        variant (options/raw-value (conj path :variant) context)
+        full-charge-data (or data (when variant (load-charge-data variant)))]
     (if (:data full-charge-data)
-      (let [{:keys [origin
-                    anchor
-                    geometry
-                    fimbriation
-                    tincture]} (options/sanitize charge (update-in
-                                                         (charge-options/options charge)
-                                                         [:origin :point :choices]
-                                                         conj ["Special" :special]))
+      (let [;; TODO: bring this back
+            ;; this is a bit hacky, but allows
+            ;; overriding the origin point
+            #_(update-in
+               (charge-options/options charge)
+               [:origin :point :choices]
+               conj ["Special" :special])
+            origin (options/sanitized-value (conj path :origin) context)
+            anchor (options/sanitized-value (conj path :anchor) context)
+            fimbriation (options/sanitized-value (conj path :fimbriation) context)
+            size (options/sanitized-value (conj path :geometry :size) context)
+            stretch (options/sanitized-value (conj path :geometry :stretch) context)
+            mirrored? (options/sanitized-value (conj path :geometry :mirrored?) context)
+            reversed? (options/sanitized-value (conj path :geometry :reversed?) context)
             ;; not all tinctures have their own options, but some do, so
             ;; override those with the sanitized values
-            tincture (merge (:tincture charge) tincture)
-            {:keys [size stretch
-                    mirrored? reversed?]} geometry
+            tincture (merge
+                      (options/raw-value (conj path :tincture) context)
+                      (options/sanitized-value (conj path :tincture) context))
+            render-options-mode (options/render-option :mode context)
+            render-options-outline? (options/render-option :outline? context)
+            render-options-preview-original? (options/render-option :preview-original? context)
             {:keys [charge-group
                     slot-spacing
                     slot-angle]} charge-group
@@ -119,18 +118,17 @@
                               :fixed-tincture
                               (or :none)
                               (= :none))
-            [render-options-mode
-             render-options-outline?
-             render-options-preview-original?] (options/effective-values [[:mode]
-                                                                          [:outline?]
-                                                                          [:preview-original?]] render-options render-options/options)
-            hints (if (= render-options-mode :hatching)
-                    (assoc hints :outline-mode :keep)
-                    hints)
+            ;; TODO: fix hint/outline-mode
+            ;; hints (if (= render-options-mode :hatching)
+            ;;         (assoc hints :outline-mode :keep)
+            ;;         hints)
+            outline? true #_(or render-options-outline?
+                                (-> hints :outline-mode (= :keep)))
+            hints {:outline-mode :keep}
             ;; since size now is filled with a default, check whether it was set at all,
             ;; if not, then use nil
             ;; TODO: this probably needs a better mechanism and form representation
-            size (if (-> charge :geometry :size) size nil)
+            size (if (options/raw-value (conj path :geometry :size) context) size nil)
             points (:points environment)
             top (:top points)
             bottom (:bottom points)
@@ -223,7 +221,7 @@
                                      kind (get placeholder-colours colour-lower)
                                      replacement (get-replacement kind tincture)]
                                  (cond
-                                   replacement (render-options/pick-tincture replacement render-options)
+                                   replacement (tincture/pick2 replacement context)
                                    (= kind :keep) colour
                                    :else "#000000"))))
             shift (-> (v/v positional-charge-width positional-charge-height)
@@ -247,24 +245,24 @@
                                                 "l" (v/v (- (:x clip-size)) 0)
                                                 "l" (v/v 0 (- (:y clip-size)))
                                                 "z"])
-                                {:parent field
+                                {:parent path
                                  :parent-environment environment
                                  :context [:charge]
                                  :bounding-box (svg/bounding-box
                                                 [position (v/+ position
                                                                clip-size)])
-                                 :override-environment (when (or (:inherit-environment? field)
-                                                                 (:counterchanged? field))
-                                                         environment)})
-            field (if (:counterchanged? field)
-                    (counterchange/counterchange-field charge parent :charge-group charge-group)
-                    field)
+                                 ;; TODO: counterchanged, inherit-environment
+                                 :override-environment nil #_(when (or (:inherit-environment? field)
+                                                                       (:counterchanged? field))
+                                                               environment)})
+            ;; TODO: counterchanged
+            ;; field (if (:counterchanged? field)
+            ;;         (counterchange/counterchange-field charge parent :charge-group charge-group)
+            ;;         field)
             charge-name (or (:name full-charge-data) "")
             username (:username full-charge-data)
             charge-url (or (util/full-url-for-charge full-charge-data) "")
-            attribution (:attribution full-charge-data)
-            outline? (or render-options-outline?
-                         (-> hints :outline-mode (= :keep)))]
+            attribution (:attribution full-charge-data)]
         [:<>
          [:defs
           (when render-shadow?
@@ -356,7 +354,7 @@
                    [fimbriation/dilate-and-fill
                     adjusted-charge-without-shading
                     (+ thickness outline/stroke-width)
-                    outline/color render-options
+                    outline/color context
                     :transform reverse-transform
                     :corner (-> fimbriation :corner)])
                  [fimbriation/dilate-and-fill
@@ -365,7 +363,7 @@
                     outline? (- outline/stroke-width))
                   (-> fimbriation
                       :tincture-2
-                      (render-options/pick-tincture render-options)) render-options
+                      (tincture/pick2 context)) context
                   :transform reverse-transform
                   :corner (-> fimbriation :corner)]]))
             (when (-> fimbriation :mode #{:single :double})
@@ -377,7 +375,7 @@
                    [fimbriation/dilate-and-fill
                     adjusted-charge-without-shading
                     (+ thickness outline/stroke-width)
-                    outline/color render-options
+                    outline/color context
                     :transform reverse-transform
                     :corner (-> fimbriation :corner)])
                  [fimbriation/dilate-and-fill
@@ -386,7 +384,7 @@
                     outline? (- outline/stroke-width))
                   (-> fimbriation
                       :tincture-1
-                      (render-options/pick-tincture render-options)) render-options
+                      (tincture/pick2 context)) context
                   :transform reverse-transform
                   :corner (-> fimbriation :corner)]]))
 
@@ -397,16 +395,15 @@
                (when render-field?
                  [:g {:mask (str "url(#" mask-inverted-id ")")}
                   [:g {:transform reverse-transform}
-                   [render-field field charge-environment (-> context
-                                                              (update :db-path conj :field)
-                                                              (dissoc :fn-select-component))]]])
+                   [field-shared/render (conj path :field) charge-environment context]]])
                [:g {:mask (str "url(#" mask-id ")")
-                    :on-click (when fn-select-component
-                                (fn [event]
-                                  (fn-select-component (-> context
-                                                           :db-path
-                                                           (conj :field)))
-                                  (.stopPropagation event)))}
+                    ;; TODO: select component
+                    :on-click nil #_(when fn-select-component
+                                      (fn [event]
+                                        (fn-select-component (-> context
+                                                                 :db-path
+                                                                 (conj :field)))
+                                        (.stopPropagation event)))}
                 (svg/make-unique-ids coloured-charge)]
                (when render-shadow?
                  [:g {:mask (str "url(#" shadow-mask-id ")")}
