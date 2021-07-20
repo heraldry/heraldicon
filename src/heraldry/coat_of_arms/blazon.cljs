@@ -80,7 +80,7 @@
     (let [field-description (case (:type field)
                               :heraldry.field.type/plain (util/translate-tincture (:tincture field))
                               (let [{:keys [type line fields]} field
-                                    mandatory-part-count (field/mandatory-part-count field)]
+                                    mandatory-part-count (field/mandatory-part-count-old field)]
                                 (util/combine
                                  " "
                                  [(util/translate type)
