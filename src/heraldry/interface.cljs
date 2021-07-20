@@ -37,7 +37,6 @@
 (defn type->component-type [t]
   (let [ts (str t)]
     (cond
-      (s/starts-with? ts ":heraldry.component/cottise") :heraldry.component/cottise
       (s/starts-with? ts ":heraldry.component") t
       (s/starts-with? ts ":heraldry.field") :heraldry.component/field
       (s/starts-with? ts ":heraldry.ordinary") :heraldry.component/ordinary
@@ -54,6 +53,8 @@
     (-> path drop-last (->> (take-last 2)) (= [:collection :elements])) :heraldry.component/collection-element
     (-> path last (= :render-options)) :heraldry.component/render-options
     (-> path last (= :coat-of-arms)) :heraldry.component/coat-of-arms
+    (and (-> path last keyword?)
+         (-> path last name (s/starts-with? "cottise"))) :heraldry.component/cottise
     (keyword? raw-type) (type->component-type raw-type)
     :else nil))
 
