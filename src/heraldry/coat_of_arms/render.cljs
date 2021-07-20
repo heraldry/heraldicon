@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.render
   (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
-            [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.field.environment :as environment]
+            [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
             [heraldry.coat-of-arms.outline :as outline]
@@ -108,7 +108,7 @@
                                 (str "url(#" shiny-id ")"))}
                   [:path {:d (:shape environment)
                           :fill "#f0f0f0"}]
-                  [field/render (conj path :field)
+                  [field-shared/render (conj path :field)
                    environment
                    (-> context
                        (dissoc :metadata)
