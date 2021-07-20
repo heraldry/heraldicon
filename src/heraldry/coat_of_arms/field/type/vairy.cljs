@@ -303,7 +303,7 @@
                    :width 1100
                    :height 1100
                    :mask (str "url(#" mask-id ")")
-                   :fill (tincture/pick2 tincture context)}]])))
+                   :fill (tincture/pick tincture context)}]])))
      (when outline?
        [:rect {:x -500
                :y -500

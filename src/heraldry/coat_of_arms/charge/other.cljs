@@ -229,7 +229,7 @@
                                      kind (get placeholder-colours colour-lower)
                                      replacement (get-replacement kind tincture)]
                                  (cond
-                                   replacement (tincture/pick2 replacement context)
+                                   replacement (tincture/pick replacement context)
                                    (= kind :keep) colour
                                    :else "#000000"))))
             shift (-> (v/v positional-charge-width positional-charge-height)
@@ -371,7 +371,7 @@
                     outline? (- outline/stroke-width))
                   (-> fimbriation
                       :tincture-2
-                      (tincture/pick2 context)) context
+                      (tincture/pick context)) context
                   :transform reverse-transform
                   :corner (-> fimbriation :corner)]]))
             (when (-> fimbriation :mode #{:single :double})
@@ -392,7 +392,7 @@
                     outline? (- outline/stroke-width))
                   (-> fimbriation
                       :tincture-1
-                      (tincture/pick2 context)) context
+                      (tincture/pick context)) context
                   :transform reverse-transform
                   :corner (-> fimbriation :corner)]]))
 
