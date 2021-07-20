@@ -8,7 +8,7 @@
                           (let [data (options/raw-value (conj path :data) context)
                                 variant (options/sanitized-value (conj path :variant) context)
                                 charge-type (options/sanitized-value (conj path :type) context)]
-                            (if (or data variant)
+                            (if (or data (seq variant))
                               :heraldry.charge.type/other
                               charge-type))))
 

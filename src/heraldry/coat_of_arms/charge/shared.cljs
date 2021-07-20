@@ -1,34 +1,33 @@
 (ns heraldry.coat-of-arms.charge.shared
   (:require ["svgpath" :as svgpath]
             [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.charge.options :as charge-options]
-            [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.util :as util]
-            [heraldry.render-options :as render-options]))
+            [heraldry.options :as options]
+            [heraldry.util :as util]))
 
 (defn make-charge
-  [{:keys [field hints] :as charge} parent environment
-   {:keys [render-options
-           charge-group] :as context} arg function]
-  (let [{:keys [origin
-                anchor
-                geometry
-                fimbriation]} (options/sanitize charge
-                                                ;; TODO: this is a bit hacky, but allows
-                                                ;; overriding the origin point
-                                                (update-in
-                                                 (charge-options/options charge)
-                                                 [:origin :point :choices]
-                                                 conj ["Special" :special]))
-        {:keys [size stretch
-                mirrored? reversed?]} geometry
+  [path _parent-path environment
+   {:keys [charge-group] :as context} arg function]
+  (let [;; TODO: bring this back
+        ;; this is a bit hacky, but allows
+        ;; overriding the origin point
+        #_(update-in
+           (charge-options/options charge)
+           [:origin :point :choices]
+           conj ["Special" :special])
+        origin (options/sanitized-value (conj path :origin) context)
+        anchor (options/sanitized-value (conj path :anchor) context)
+        fimbriation (options/sanitized-value (conj path :fimbriation) context)
+        size (options/sanitized-value (conj path :geometry :size) context)
+        stretch (options/sanitized-value (conj path :geometry :stretch) context)
+        mirrored? (options/sanitized-value (conj path :geometry :mirrored?) context)
+        reversed? (options/sanitized-value (conj path :geometry :reversed?) context)
+        squiggly? (options/render-option :squiggly? context)
         {:keys [charge-group
                 slot-spacing
                 slot-angle]} charge-group
@@ -47,17 +46,21 @@
         right (:right points)
         width (:width environment)
         height (:height environment)
-        hints (if (-> render-options :mode (= :hatching))
-                (assoc hints :outline-mode :keep)
-                hints)
+        ;; TODO: fix hint/outline-mode
+        ;; hints (if (-> render-options :mode (= :hatching))
+        ;;         (assoc hints :outline-mode :keep)
+        ;;         hints)
+        ;; outline? (or (:outline? render-options)
+        ;;              (-> hints :outline-mode (= :keep)))
+        outline? true
         angle (+ (v/angle-to-point origin-point anchor-point)
                  90)
         arg-value (get environment arg)
 
-            ;; since size now is filled with a default, check whether it was set at all,
-            ;; if not, then use nil
-            ;; TODO: this probably needs a better mechanism and form representation
-        size (if (-> charge :geometry :size) size nil)
+        ;; since size now is filled with a default, check whether it was set at all,
+        ;; if not, then use nil
+        ;; TODO: this probably needs a better mechanism and form representation
+        size (if (options/raw-value (conj path :geometry :size) context) size nil)
         target-arg-value (-> (or size
                                  80)
                              ((util/percent-of arg-value)))
@@ -102,7 +105,7 @@
                           (.scale scale-x scale-y)
                           (.toString))
                          (cond->
-                          (:squiggly? render-options) svg/squiggly-path
+                          squiggly? svg/squiggly-path
                           (not= angle 0) (->
                                           (svgpath)
                                           (.rotate angle)
@@ -116,7 +119,7 @@
                           (.scale scale-x scale-y)
                           (.toString))
                          (cond->
-                          (:squiggly? render-options) svg/squiggly-path
+                          squiggly? svg/squiggly-path
                           (not= angle 0) (->
                                           (svgpath)
                                           (.rotate angle)
@@ -129,18 +132,17 @@
                                                             angle
                                                             :middle (v/v 0 0)
                                                             :scale (v/v scale-x scale-y))
-        parts [[charge-shape
-                [(v/+ origin-point
-                      (v/v min-x min-y))
-                 (v/+ origin-point
-                      (v/v max-x max-y))]
-                mask-shape]]
-        field (if (:counterchanged? field)
-                (counterchange/counterchange-field charge parent :charge-group charge-group)
-                field)
+        part [charge-shape
+              [(v/+ origin-point
+                    (v/v min-x min-y))
+               (v/+ origin-point
+                    (v/v max-x max-y))]
+              mask-shape]
+        ;; TODO: counterchanged
+        ;; field (if (:counterchanged? field)
+        ;;         (counterchange/counterchange-field charge parent-path :charge-group charge-group)
+        ;;         field)
         charge-id (util/id "charge")
-        outline? (or (:outline? render-options)
-                     (-> hints :outline-mode (= :keep)))
         environment (update environment :points dissoc :special)]
     [:<>
      (when (-> fimbriation :mode #{:double})
@@ -156,7 +158,7 @@
              charge-shape
              mask-shape
              (+ thickness outline/stroke-width)
-             outline/color render-options
+             outline/color context
              :corner (-> fimbriation :corner)])
           [fimbriation/dilate-and-fill-path
            charge-shape
@@ -165,7 +167,7 @@
              outline? (- outline/stroke-width))
            (-> fimbriation
                :tincture-2
-               (render-options/pick-tincture render-options)) render-options
+               (tincture/pick2 context)) context
            :corner (-> fimbriation :corner)]]))
      (when (-> fimbriation :mode #{:single :double})
        (let [thickness (-> fimbriation
@@ -177,7 +179,7 @@
              charge-shape
              mask-shape
              (+ thickness outline/stroke-width)
-             outline/color render-options
+             outline/color context
              :corner (-> fimbriation :corner)])
           [fimbriation/dilate-and-fill-path
            charge-shape
@@ -186,13 +188,13 @@
              outline? (- outline/stroke-width))
            (-> fimbriation
                :tincture-1
-               (render-options/pick-tincture render-options)) render-options
+               (tincture/pick2 context)) context
            :corner (-> fimbriation :corner)]]))
      [:g {:id charge-id}
-      [field-shared/make-subfields
-       :charge-pale [field] parts
-       [:all]
-       environment charge context]
+      [field-shared/make-subfield
+       (conj path :field) part
+       :all
+       environment context]
       (when outline?
         [:g outline/style
          [:path {:d charge-shape}]
