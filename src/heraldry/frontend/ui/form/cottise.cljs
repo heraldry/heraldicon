@@ -10,7 +10,7 @@
                  :thickness]]
      ^{:key option} [interface/form-element (conj path option)])])
 
-(defmethod interface/component-node-data :heraldry.component/cottise [path component-data _component-options]
+(defmethod interface/component-node-data :heraldry.component/cottise [path]
   {:title (str "Cottise"
                (case (last path)
                  :cottise-1 " 1"
@@ -19,9 +19,7 @@
                  :cottise-opposite-2 " 2 (opposite)"
                  "")
                ": "
-               (-> component-data
-                   :field
-                   field/title))
+               (field/title path))
    :nodes [{:path (conj path :field)}]})
 
 (defmethod interface/component-form-data :heraldry.component/cottise [_path _component-data _component-options]

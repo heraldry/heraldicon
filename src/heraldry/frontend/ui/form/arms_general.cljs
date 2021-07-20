@@ -13,7 +13,7 @@
 
    [:div {:style {:height "1.5em"}}]])
 
-(defmethod ui-interface/component-node-data :heraldry.component/arms-general [_path _component-data _component-options]
+(defmethod ui-interface/component-node-data :heraldry.component/arms-general [_path]
   {:title "General"})
 
 (defmethod ui-interface/component-form-data :heraldry.component/arms-general [_path _component-data _component-options]

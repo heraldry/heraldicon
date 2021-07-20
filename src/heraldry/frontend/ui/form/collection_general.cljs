@@ -17,7 +17,7 @@
    (for [option [:font]]
      ^{:key option} [ui-interface/form-element (conj path option)])])
 
-(defmethod ui-interface/component-node-data :heraldry.component/collection-general [_path _component-data _component-options]
+(defmethod ui-interface/component-node-data :heraldry.component/collection-general [_path]
   {:title "General"})
 
 (defmethod ui-interface/component-form-data :heraldry.component/collection-general [_path _component-data _component-options]

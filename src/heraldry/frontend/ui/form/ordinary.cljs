@@ -22,12 +22,12 @@
                  :outline?]]
      ^{:key option} [interface/form-element (conj path option)])])
 
-(defmethod interface/component-node-data :heraldry.component/ordinary [path component-data component-options]
-  (let [cottising-options (:cottising component-options)
-        {:keys [cottise-1
-                cottise-2
-                cottise-opposite-1
-                cottise-opposite-2]} (:cottising component-data)
+(defmethod interface/component-node-data :heraldry.component/ordinary [path]
+  (let [cottising-options (:cottising @(rf/subscribe [:get-relevant-options path]))
+        cottise-1 @(rf/subscribe [:get-sanitized-value (conj path :cottising :cottise-1)])
+        cottise-2 @(rf/subscribe [:get-sanitized-value (conj path :cottising :cottise-2)])
+        cottise-opposite-1 @(rf/subscribe [:get-sanitized-value (conj path :cottising :cottise-opposite-1)])
+        cottise-opposite-2 @(rf/subscribe [:get-sanitized-value (conj path :cottising :cottise-opposite-2)])
         cottise-1? (and (:cottise-1 cottising-options)
                         cottise-1)
         cottise-2? (and (:cottise-2 cottising-options)
@@ -72,7 +72,7 @@
                                   (rf/dispatch-sync [:set cottise-path default/cottise])
                                   (state/dispatch-on-event
                                    % [:ui-component-node-select cottise-path {:open? true}]))}))]
-    {:title (ordinary/title component-data)
+    {:title (ordinary/title path)
      :buttons [{:icon "fas fa-plus"
                 :title "Add"
                 :disabled? (empty? menu)

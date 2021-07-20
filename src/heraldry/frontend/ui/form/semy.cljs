@@ -8,8 +8,8 @@
                  :layout]]
      ^{:key option} [interface/form-element (conj path option)])])
 
-(defmethod interface/component-node-data :heraldry.component/semy [path component-data _component-options]
-  {:title (str "Semy of " (charge/title (:charge component-data)))
+(defmethod interface/component-node-data :heraldry.component/semy [path]
+  {:title (str "Semy of " (charge/title (conj path :charge)))
    :nodes [{:path (conj path :charge)}]})
 
 (defmethod interface/component-form-data :heraldry.component/semy [_path _component-data _component-options]
