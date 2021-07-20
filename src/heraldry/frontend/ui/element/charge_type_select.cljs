@@ -44,7 +44,7 @@
 (defn charge-type-select [path]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
     (let [current-value @(rf/subscribe [:get-value path])
-          {:keys [ui inherited default]} option
+          {:keys [ui inherited default choices]} option
           value (or current-value
                     inherited
                     default)
@@ -55,7 +55,7 @@
          [:label label])
        [:div.option
         [submenu/submenu path "Select Charge" (charge/title charge) {:width "21.5em"}
-         (for [[display-name key] charge/choices]
+         (for [[display-name key] choices]
            ^{:key key}
            [charge-type-choice path key display-name :selected? (= key value)])
          (let [[status charges] (state/async-fetch-data

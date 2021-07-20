@@ -123,18 +123,18 @@
          real-origin (position/calculate origin environment)
          {:keys [slot-positions
                  slot-spacing]} (calculate-points charge-group environment context)]
-     (for [[idx {:keys [point charge-index angle]}] (map-indexed vector slot-positions)
-           :when (and charge-index
-                      (< charge-index (count charges)))]
-       (let [charge (-> charges
-                        (get charge-index)
-                        (assoc :origin {:point :special}))]
-         ^{:key idx}
-         [charge/render charge parent
-          (assoc-in environment [:points :special] (v/+ real-origin point))
-          (-> context
-              (update :db-path conj :charges charge-index)
-              (assoc :charge-group {:charge-group charge-group
-                                    :slot-spacing slot-spacing
-                                    :slot-angle (when rotate-charges?
-                                                  angle)}))])))])
+     #_(for [[idx {:keys [point charge-index angle]}] (map-indexed vector slot-positions)
+             :when (and charge-index
+                        (< charge-index (count charges)))]
+         (let [charge (-> charges
+                          (get charge-index)
+                          (assoc :origin {:point :special}))]
+           ^{:key idx}
+           [charge/render charge parent
+            (assoc-in environment [:points :special] (v/+ real-origin point))
+            (-> context
+                (update :db-path conj :charges charge-index)
+                (assoc :charge-group {:charge-group charge-group
+                                      :slot-spacing slot-spacing
+                                      :slot-angle (when rotate-charges?
+                                                    angle)}))])))])
