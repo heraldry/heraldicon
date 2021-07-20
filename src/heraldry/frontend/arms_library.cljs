@@ -66,10 +66,8 @@
                                (merge
                                 context/default
                                 {:render-options (conj form-db-path :render-options)
-                                 :db-path coat-of-arms-path
                                  :metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]
-                                 :root-transform "scale(5,5)"
-                                 :access state/access-by-state}))
+                                 :root-transform "scale(5,5)"}))
         {:keys [width height]} environment]
     [:svg {:id "svg"
            :style {:width "100%"
