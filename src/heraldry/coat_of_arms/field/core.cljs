@@ -3,8 +3,8 @@
             [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.shared :as shared]
-            [heraldry.options :as options]
             [heraldry.frontend.util :as frontend-util]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (defn mandatory-part-count [{:keys [type] :as field}]
