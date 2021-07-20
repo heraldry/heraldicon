@@ -90,14 +90,13 @@
 
 (rf/reg-sub :component-form
   (fn [[_ path] _]
-    [(rf/subscribe [:component-node path])
-     (rf/subscribe [:component-data path])])
+    (rf/subscribe [:component-node path]))
 
-  (fn [[{:keys [title]} component-data] [_ path]]
+  (fn [{:keys [title]} [_ path]]
     (merge
      {:title title
       :path path}
-     (interface/component-form-data path component-data nil))))
+     (interface/component-form-data path))))
 
 ;; events
 

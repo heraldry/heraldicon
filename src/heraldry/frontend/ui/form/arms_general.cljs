@@ -16,7 +16,7 @@
 (defmethod ui-interface/component-node-data :heraldry.component/arms-general [_path]
   {:title "General"})
 
-(defmethod ui-interface/component-form-data :heraldry.component/arms-general [_path _component-data _component-options]
+(defmethod ui-interface/component-form-data :heraldry.component/arms-general [_path]
   {:form form})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-arms.[thing].options namespaces

@@ -33,5 +33,5 @@
                                                  % [:remove-element component-path])}]})))
                  vec)}))
 
-(defmethod interface/component-form-data :heraldry.component/collection [_path _component-data _component-options]
+(defmethod interface/component-form-data :heraldry.component/collection [_path]
   {:form form})

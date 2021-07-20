@@ -104,5 +104,5 @@
                                                     :handler #(state/dispatch-on-event
                                                                % [:set (conj path :cottising :cottise-opposite-2) nil])}]}))}))
 
-(defmethod interface/component-form-data :heraldry.component/ordinary [_path _component-data _component-options]
+(defmethod interface/component-form-data :heraldry.component/ordinary [_path]
   {:form form})

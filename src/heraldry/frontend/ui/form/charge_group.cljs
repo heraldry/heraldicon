@@ -317,5 +317,5 @@
                                                          % [:remove-charge-group-charge charge-path])}]})))
                          vec))}))
 
-(defmethod interface/component-form-data :heraldry.component/charge-group [_path _component-data _component-options]
+(defmethod interface/component-form-data :heraldry.component/charge-group [_path]
   {:form form})

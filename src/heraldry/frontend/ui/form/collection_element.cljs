@@ -17,5 +17,5 @@
                    name
                    "<no name>"))}))
 
-(defmethod interface/component-form-data :heraldry.component/collection-element [_path _component-data _component-options]
+(defmethod interface/component-form-data :heraldry.component/collection-element [_path]
   {:form form})

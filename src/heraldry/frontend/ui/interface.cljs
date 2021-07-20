@@ -16,12 +16,12 @@
 
 ;; component-form-data
 
-(defmulti component-form-data (fn [path component-data _component-options]
+(defmulti component-form-data (fn [path]
                                 (interface/effective-component-type
                                  path
                                  @(rf/subscribe [:get-value (conj path :type)]))))
 
-(defmethod component-form-data nil [_path _component-data _component-options]
+(defmethod component-form-data nil [_path]
   {:form (fn [_path _form-data]
            [:div])
    :form-args {}})
