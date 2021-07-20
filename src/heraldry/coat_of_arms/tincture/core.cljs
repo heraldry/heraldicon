@@ -138,3 +138,12 @@
       id
       (lookup-colour background theme)
       (lookup-colour foreground theme)))))
+
+(defn tinctured-field [tincture-path context & {:keys [mask-id]}]
+  (let [tincture (options/sanitized-value tincture-path context)]
+    [:rect (cond-> {:x -500
+                    :y -500
+                    :width 1100
+                    :height 1100
+                    :fill (pick tincture context)}
+             mask-id (assoc :mask (str "url(#" mask-id ")")))]))

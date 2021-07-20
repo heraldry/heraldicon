@@ -1,8 +1,8 @@
 (ns heraldry.coat-of-arms.field.type.papellony
   (:require [heraldry.coat-of-arms.field.interface :as interface]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (def field-type
@@ -139,7 +139,7 @@
         middle-x (/ width 2)
         origin-x (+ (:x top-left)
                     middle-x)
-        pattern-id (util/id "papellony")
+        pattern-id-prefix (util/stable-id path)
         {pattern-width :width
          pattern-height :height
          papellony-pattern :pattern
@@ -147,7 +147,7 @@
     [:g
      [:defs
       (when outline?
-        [:pattern {:id (str pattern-id "-outline")
+        [:pattern {:id (str pattern-id-prefix "-outline")
                    :width pattern-width
                    :height pattern-height
                    :x (+ (* part-width offset-x)
@@ -161,7 +161,7 @@
           papellony-outline]])
       (for [idx (range 2)]
         ^{:key idx}
-        [:pattern {:id (str pattern-id "-" idx)
+        [:pattern {:id (str pattern-id-prefix "-" idx)
                    :width pattern-width
                    :height pattern-height
                    :x (+ (* part-width offset-x)
@@ -180,8 +180,7 @@
           papellony-pattern]])]
      (doall
       (for [idx (range 2)]
-        (let [mask-id (util/id "mask")
-              tincture (options/sanitized-value (conj path :fields idx :tincture) context)]
+        (let [mask-id (util/stable-id (conj path idx))]
           ^{:key idx}
           [:<>
            [:mask {:id mask-id}
@@ -189,16 +188,13 @@
                     :y -500
                     :width 1100
                     :height 1100
-                    :fill (str "url(#" pattern-id "-" idx ")")}]]
-           [:rect {:x -500
-                   :y -500
-                   :width 1100
-                   :height 1100
-                   :mask (str "url(#" mask-id ")")
-                   :fill (tincture/pick tincture context)}]])))
+                    :fill (str "url(#" pattern-id-prefix "-" idx ")")}]]
+           [tincture/tinctured-field
+            (conj path :fields idx :tincture) context
+            :mask-id mask-id]])))
      (when outline?
        [:rect {:x -500
                :y -500
                :width 1100
                :height 1100
-               :fill (str "url(#" pattern-id "-outline)")}])]))
+               :fill (str "url(#" pattern-id-prefix "-outline)")}])]))
