@@ -28,6 +28,12 @@
         mirrored? (options/sanitized-value (conj path :geometry :mirrored?) context)
         reversed? (options/sanitized-value (conj path :geometry :reversed?) context)
         squiggly? (options/render-option :squiggly? context)
+        outline-mode (if
+                      (or (options/render-option :outline? context)
+                          (= (options/render-option :mode context)
+                             :hatching)) :keep
+                      (options/sanitized-value (conj path :outline-mode) context))
+        outline? (= outline-mode :keep)
         {:keys [charge-group
                 slot-spacing
                 slot-angle]} charge-group
@@ -46,13 +52,6 @@
         right (:right points)
         width (:width environment)
         height (:height environment)
-        ;; TODO: fix hint/outline-mode
-        ;; hints (if (-> render-options :mode (= :hatching))
-        ;;         (assoc hints :outline-mode :keep)
-        ;;         hints)
-        ;; outline? (or (:outline? render-options)
-        ;;              (-> hints :outline-mode (= :keep)))
-        outline? true
         angle (+ (v/angle-to-point origin-point anchor-point)
                  90)
         arg-value (get environment arg)

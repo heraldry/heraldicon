@@ -23,8 +23,7 @@
   {:type :heraldry.charge.type/roundel
    :field field
    :tincture {:shadow 1
-              :highlight 1}
-   :hints {:outline-mode :keep}})
+              :highlight 1}})
 
 (def charge-group
   {:type :heraldry.charge-group.type/rows
@@ -50,8 +49,7 @@
             :field {:type :heraldry.field.type/plain
                     :tincture :or}
             :tincture {:shadow 1
-                       :highlight 1}
-            :hints {:outline-mode :keep}}})
+                       :highlight 1}}})
 
 (def coat-of-arms
   {:spec-version 1

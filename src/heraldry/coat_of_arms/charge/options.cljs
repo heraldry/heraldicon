@@ -91,7 +91,14 @@
                           :ui {:label "Highlight"
                                :step 0.01}}
               :ui {:label "Tinctures"
-                   :form-type :tincture-modifiers}}})
+                   :form-type :tincture-modifiers}}
+   :outline-mode {:type :choice
+                  :choices [["Keep" :keep]
+                            ["Transparent" :transparent]
+                            ["Primary" :primary]
+                            ["Remove" :remove]]
+                  :default :keep
+                  :ui {:label "Outline"}}})
 
 (defn options [charge & {:keys [part-of-semy? part-of-charge-group?]}]
   (let [type (-> charge :type name keyword)]
@@ -102,7 +109,8 @@
                                               [:anchor]
                                               [:geometry]
                                               [:escutcheon]
-                                              [:fimbriation]]
+                                              [:fimbriation]
+                                              [:outline-mode]]
                                              {[:geometry :size :default] 30})
           (#{:roundel
              :annulet
@@ -115,7 +123,8 @@
                                            [:origin]
                                            [:anchor]
                                            [:geometry]
-                                           [:fimbriation]]
+                                           [:fimbriation]
+                                           [:outline-mode]]
                                           {[:geometry :reversed?] nil
                                            [:geometry :mirrored?] nil})
           (= type :crescent) (options/pick default-options
@@ -123,7 +132,8 @@
                                             [:origin]
                                             [:anchor]
                                             [:geometry]
-                                            [:fimbriation]]
+                                            [:fimbriation]
+                                            [:outline-mode]]
                                            {[:geometry :mirrored?] nil})
           :else (options/pick default-options
                               [[:type]
@@ -131,7 +141,8 @@
                                [:anchor]
                                [:geometry]
                                [:fimbriation]
-                               [:tincture]]))
+                               [:tincture]
+                               [:outline-mode]]))
         (cond->
          (or part-of-semy?
              part-of-charge-group?) (dissoc :origin))

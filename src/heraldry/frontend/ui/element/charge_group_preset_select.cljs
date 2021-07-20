@@ -13,8 +13,7 @@
                  :stretch 0.866
                  :charges [{:type :heraldry.charge.type/roundel
                             :field {:type :heraldry.field.type/plain
-                                    :tincture :azure}
-                            :hints {:outline-mode :keep}}]
+                                    :tincture :azure}}]
                  :strips [{:slots [0 0 0]}]}]
     ["Palewise" {:type :heraldry.charge-group.type/columns
                  :strip-angle 0
@@ -22,8 +21,7 @@
                  :stretch 0.866
                  :charges [{:type :heraldry.charge.type/roundel
                             :field {:type :heraldry.field.type/plain
-                                    :tincture :azure}
-                            :hints {:outline-mode :keep}}]
+                                    :tincture :azure}}]
                  :strips [{:slots [0 0 0]}]}]
     ["Bendwise" {:type :heraldry.charge-group.type/rows
                  :strip-angle 45
@@ -31,8 +29,7 @@
                  :stretch 0.866
                  :charges [{:type :heraldry.charge.type/roundel
                             :field {:type :heraldry.field.type/plain
-                                    :tincture :azure}
-                            :hints {:outline-mode :keep}}]
+                                    :tincture :azure}}]
                  :strips [{:slots [0 0 0]}]}]
     ["Bendwise (sinister)" {:type :heraldry.charge-group.type/rows
                             :strip-angle -45
@@ -40,8 +37,7 @@
                             :stretch 0.866
                             :charges [{:type :heraldry.charge.type/roundel
                                        :field {:type :heraldry.field.type/plain
-                                               :tincture :azure}
-                                       :hints {:outline-mode :keep}}]
+                                               :tincture :azure}}]
                             :strips [{:slots [0 0 0]}]}]
     ["Chevronwise" {:type :heraldry.charge-group.type/rows
                     :strip-angle 0
@@ -49,8 +45,7 @@
                     :stretch 0.6
                     :charges [{:type :heraldry.charge.type/roundel
                                :field {:type :heraldry.field.type/plain
-                                       :tincture :azure}
-                               :hints {:outline-mode :keep}}]
+                                       :tincture :azure}}]
                     :strips [{:slots [0]}
                              {:slots [0 0]}
                              {:slots [0 nil 0]}]}]
@@ -60,8 +55,7 @@
                  :stretch 1
                  :charges [{:type :heraldry.charge.type/roundel
                             :field {:type :heraldry.field.type/plain
-                                    :tincture :azure}
-                            :hints {:outline-mode :keep}}]
+                                    :tincture :azure}}]
                  :strips [{:slots [nil nil 0 nil nil]}
                           {:slots [nil nil 0 nil nil]}
                           {:slots [0 0 0 0 0]}
@@ -73,8 +67,7 @@
                    :stretch 1
                    :charges [{:type :heraldry.charge.type/roundel
                               :field {:type :heraldry.field.type/plain
-                                      :tincture :azure}
-                              :hints {:outline-mode :keep}}]
+                                      :tincture :azure}}]
                    :strips [{:slots [nil nil 0 nil nil]}
                             {:slots [nil nil 0 nil nil]}
                             {:slots [0 0 0 0 0]}
@@ -87,8 +80,7 @@
                 :charges [{:type :heraldry.charge.type/roundel
                            :field {:type :heraldry.field.type/plain
                                    :tincture :azure}
-                           :geometry {:size 18}
-                           :hints {:outline-mode :keep}}]
+                           :geometry {:size 18}}]
                 :strips [{:slots [0 nil nil nil nil]}
                          {:slots [nil 0 nil nil nil]}
                          {:slots [nil nil 0 0 0]
@@ -102,8 +94,7 @@
                             :charges [{:type :heraldry.charge.type/roundel
                                        :field {:type :heraldry.field.type/plain
                                                :tincture :azure}
-                                       :geometry {:size 20}
-                                       :hints {:outline-mode :keep}}]
+                                       :geometry {:size 20}}]
                             :strips [{:slots [0 0]}
                                      {:slots [nil 0]}]}]
     ["Three below bend" {:type :heraldry.charge-group.type/rows
@@ -113,8 +104,7 @@
                          :charges [{:type :heraldry.charge.type/roundel
                                     :field {:type :heraldry.field.type/plain
                                             :tincture :azure}
-                                    :geometry {:size 20}
-                                    :hints {:outline-mode :keep}}]
+                                    :geometry {:size 20}}]
                          :strips [{:slots [0 0]}
                                   {:slots [0]}]}]]
    ["Triangular"
@@ -124,8 +114,7 @@
               :stretch 0.866
               :charges [{:type :heraldry.charge.type/roundel
                          :field {:type :heraldry.field.type/plain
-                                 :tincture :azure}
-                         :hints {:outline-mode :keep}}]
+                                 :tincture :azure}}]
               :strips [{:slots [0 0]}
                        {:slots [0]}]}]
     ["Three (inverted)" {:type :heraldry.charge-group.type/rows
@@ -134,8 +123,7 @@
                          :stretch 0.866
                          :charges [{:type :heraldry.charge.type/roundel
                                     :field {:type :heraldry.field.type/plain
-                                            :tincture :azure}
-                                    :hints {:outline-mode :keep}}]
+                                            :tincture :azure}}]
                          :strips [{:slots [0]}
                                   {:slots [0 0]}]}]
 
@@ -145,8 +133,7 @@
                         :stretch 0.866
                         :charges [{:type :heraldry.charge.type/roundel
                                    :field {:type :heraldry.field.type/plain
-                                           :tincture :azure}
-                                   :hints {:outline-mode :keep}}]
+                                           :tincture :azure}}]
                         :strips [{:slots [0 0]}
                                  {:slots [0]}]}]
     ["Three (columns, inverted)" {:type :heraldry.charge-group.type/columns
@@ -155,8 +142,7 @@
                                   :stretch 0.866
                                   :charges [{:type :heraldry.charge.type/roundel
                                              :field {:type :heraldry.field.type/plain
-                                                     :tincture :azure}
-                                             :hints {:outline-mode :keep}}]
+                                                     :tincture :azure}}]
                                   :strips [{:slots [0]}
                                            {:slots [0 0]}]}]
     ["Six" {:type :heraldry.charge-group.type/rows
@@ -165,8 +151,7 @@
             :stretch 0.866
             :charges [{:type :heraldry.charge.type/roundel
                        :field {:type :heraldry.field.type/plain
-                               :tincture :azure}
-                       :hints {:outline-mode :keep}}]
+                               :tincture :azure}}]
             :strips [{:slots [0 0 0]}
                      {:slots [0 0]}
                      {:slots [0]}]}]]
@@ -177,8 +162,7 @@
                :stretch 1
                :charges [{:type :heraldry.charge.type/roundel
                           :field {:type :heraldry.field.type/plain
-                                  :tincture :azure}
-                          :hints {:outline-mode :keep}}]
+                                  :tincture :azure}}]
                :strips [{:slots [0 0 0]}
                         {:slots [0 0 0]}
                         {:slots [0 0 0]}]}]
@@ -188,8 +172,7 @@
                 :stretch 1
                 :charges [{:type :heraldry.charge.type/roundel
                            :field {:type :heraldry.field.type/plain
-                                   :tincture :azure}
-                           :hints {:outline-mode :keep}}]
+                                   :tincture :azure}}]
                 :strips [{:slots [0 0 0]}
                          {:slots [0 0 0]}
                          {:slots [0 0 0]}]}]
@@ -199,8 +182,7 @@
                   :stretch 0.866
                   :charges [{:type :heraldry.charge.type/roundel
                              :field {:type :heraldry.field.type/plain
-                                     :tincture :azure}
-                             :hints {:outline-mode :keep}}]
+                                     :tincture :azure}}]
                   :strips [{:slots [0 0 0 0]}
                            {:slots [0 0 0]}
                            {:slots [0 0 0 0]}
@@ -212,8 +194,7 @@
                      :stretch 0.866
                      :charges [{:type :heraldry.charge.type/roundel
                                 :field {:type :heraldry.field.type/plain
-                                        :tincture :azure}
-                                :hints {:outline-mode :keep}}]
+                                        :tincture :azure}}]
                      :strips [{:slots [0 0 0 0]}
                               {:slots [0 0 0]}
                               {:slots [0 0 0 0]}
@@ -225,8 +206,7 @@
               :stretch 1
               :charges [{:type :heraldry.charge.type/roundel
                          :field {:type :heraldry.field.type/plain
-                                 :tincture :azure}
-                         :hints {:outline-mode :keep}}]
+                                 :tincture :azure}}]
               :strips [{:slots [0 0 0 0 0]}
                        {:slots [0 nil nil nil 0]}
                        {:slots [0 nil nil nil 0]}
@@ -236,16 +216,14 @@
     ["In annullo" {:type :heraldry.charge-group.type/arc
                    :charges [{:type :heraldry.charge.type/roundel
                               :field {:type :heraldry.field.type/plain
-                                      :tincture :azure}
-                              :hints {:outline-mode :keep}}]
+                                      :tincture :azure}}]
                    :slots [0 0 0 0 0 0 0]}]
     ["Arc" {:type :heraldry.charge-group.type/arc
             :start-angle 10
             :arc-angle 180
             :charges [{:type :heraldry.charge.type/roundel
                        :field {:type :heraldry.field.type/plain
-                               :tincture :azure}
-                       :hints {:outline-mode :keep}}]
+                               :tincture :azure}}]
             :slots [0 0 0 0 0]}]
     ["In annullo (point to center)" {:type :heraldry.charge-group.type/arc
                                      :rotate-charges? true
@@ -253,8 +231,7 @@
                                                 :field {:type :heraldry.field.type/plain
                                                         :tincture :azure}
                                                 :anchor {:point :angle
-                                                         :angle -180}
-                                                :hints {:outline-mode :keep}}]
+                                                         :angle -180}}]
                                      :slots [0 0 0 0 0 0 0]}
      {[:charges 0 :anchor :point] :angle
       [:charges 0 :anchor :angle] -180}]
@@ -264,8 +241,7 @@
                                        :field {:type :heraldry.field.type/plain
                                                :tincture :azure}
                                        :anchor {:point :angle
-                                                :angle -90}
-                                       :hints {:outline-mode :keep}}]
+                                                :angle -90}}]
                             :slots [0 0 0 0 0 0 0]}
      {[:charges 0 :anchor :point] :angle
       [:charges 0 :anchor :angle] -90}]
@@ -278,8 +254,7 @@
                             :field {:type :heraldry.field.type/plain
                                     :tincture :azure}
                             :geometry {:size 50
-                                       :stretch 3}
-                            :hints {:outline-mode :keep}}]
+                                       :stretch 3}}]
                  :slots [0 0 0]}
      {[:charges 0 :anchor :point] :angle
       [:charges 0 :anchor :angle] 0

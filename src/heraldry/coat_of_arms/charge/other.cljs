@@ -106,9 +106,13 @@
             tincture (merge
                       (options/raw-value (conj path :tincture) context)
                       (options/sanitized-value (conj path :tincture) context))
-            render-options-mode (options/render-option :mode context)
-            render-options-outline? (options/render-option :outline? context)
             render-options-preview-original? (options/render-option :preview-original? context)
+            outline-mode (if
+                          (or (options/render-option :outline? context)
+                              (= (options/render-option :mode context)
+                                 :hatching)) :keep
+                          (options/sanitized-value (conj path :outline-mode) context))
+            outline? (= outline-mode :keep)
             {:keys [charge-group
                     slot-spacing
                     slot-angle]} charge-group
@@ -118,13 +122,6 @@
                               :fixed-tincture
                               (or :none)
                               (= :none))
-            ;; TODO: fix hint/outline-mode
-            ;; hints (if (= render-options-mode :hatching)
-            ;;         (assoc hints :outline-mode :keep)
-            ;;         hints)
-            outline? true #_(or render-options-outline?
-                                (-> hints :outline-mode (= :keep)))
-            hints {:outline-mode :keep}
             ;; since size now is filled with a default, check whether it was set at all,
             ;; if not, then use nil
             ;; TODO: this probably needs a better mechanism and form representation
@@ -196,15 +193,14 @@
             unadjusted-charge (:data charge-data)
             adjusted-charge (-> unadjusted-charge
                                 (cond->
-                                 (not (or (-> hints :outline-mode (not= :remove))
-                                          render-options-outline?)) (remove-outlines placeholder-colours)))
+                                 (= outline-mode :remove) (remove-outlines placeholder-colours)))
             adjusted-charge-without-shading (-> adjusted-charge
                                                 (remove-shading placeholder-colours))
             [mask-id mask
              mask-inverted-id mask-inverted] (make-mask adjusted-charge-without-shading
                                                         placeholder-colours
                                                         tincture
-                                                        (:outline-mode hints))
+                                                        outline-mode)
             ;; this is the one drawn on top of the masked field version, for the tincture replacements
             ;; and outline; the primary colour has no replacement here, which might make it shine through
             ;; around the edges, to prevent that, it is specifically replaced with black
