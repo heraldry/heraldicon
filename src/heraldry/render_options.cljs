@@ -69,9 +69,3 @@
 
 (defmethod interface/component-options :heraldry.options/render-options [data _path]
   (options data))
-
-;; TODO: this is a crutch, because this logic can't live in tincture/pick due to a cyclic dependency
-(defn pick-tincture [tincture render-options]
-  (let [[mode theme] (options/effective-values [[:mode] [:theme]] render-options options)]
-    (tincture/pick tincture {:mode mode
-                             :theme theme})))
