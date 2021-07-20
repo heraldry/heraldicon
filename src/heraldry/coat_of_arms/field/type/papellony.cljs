@@ -139,7 +139,7 @@
         middle-x (/ width 2)
         origin-x (+ (:x top-left)
                     middle-x)
-        pattern-id-prefix (util/stable-id path)
+        pattern-id-prefix (util/id "papellony")
         {pattern-width :width
          pattern-height :height
          papellony-pattern :pattern
@@ -180,7 +180,7 @@
           papellony-pattern]])]
      (doall
       (for [idx (range 2)]
-        (let [mask-id (util/stable-id (conj path idx))]
+        (let [mask-id (util/id "mask")]
           ^{:key idx}
           [:<>
            [:mask {:id mask-id}

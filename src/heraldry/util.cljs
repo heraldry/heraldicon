@@ -23,6 +23,8 @@
       (.update data)
       (.digest "hex")))
 
+;; probably not safe to use with the path, as elements with the same path
+;; could be rendered multiple times (e.g. charges in a charge-group)
 (defn stable-id
   ([seed]
    (stable-id seed nil))
