@@ -22,5 +22,5 @@
                (field/title path))
    :nodes [{:path (conj path :field)}]})
 
-(defmethod interface/component-form-data :heraldry.component/cottise [_path _component-data _component-options]
+(defmethod interface/component-form-data :heraldry.component/cottise [_path]
   {:form form})

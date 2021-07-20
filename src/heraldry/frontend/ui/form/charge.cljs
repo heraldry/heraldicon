@@ -20,5 +20,5 @@
   {:title (str (charge/title path) " charge")
    :nodes [{:path (conj path :field)}]})
 
-(defmethod interface/component-form-data :heraldry.component/charge [_path _component-data _component-options]
+(defmethod interface/component-form-data :heraldry.component/charge [_path]
   {:form form})

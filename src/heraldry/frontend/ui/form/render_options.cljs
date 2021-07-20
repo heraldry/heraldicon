@@ -18,5 +18,5 @@
 (defmethod interface/component-node-data :heraldry.component/render-options [_path]
   {:title "Render Options"})
 
-(defmethod interface/component-form-data :heraldry.component/render-options [_path _component-data _component-options]
+(defmethod interface/component-form-data :heraldry.component/render-options [_path]
   {:form form})
