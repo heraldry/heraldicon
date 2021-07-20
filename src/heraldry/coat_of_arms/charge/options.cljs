@@ -1,14 +1,14 @@
 (ns heraldry.coat-of-arms.charge.options
   (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
-            ;; [heraldry.coat-of-arms.charge.type.annulet :as annulet]
-            ;; [heraldry.coat-of-arms.charge.type.billet :as billet]
-            ;; [heraldry.coat-of-arms.charge.type.crescent :as crescent]
+            [heraldry.coat-of-arms.charge.type.annulet :as annulet]
+            [heraldry.coat-of-arms.charge.type.billet :as billet]
+            [heraldry.coat-of-arms.charge.type.crescent :as crescent]
             ;; [heraldry.coat-of-arms.charge.type.escutcheon :as escutcheon]
-            ;; [heraldry.coat-of-arms.charge.type.fusil :as fusil]
-            ;; [heraldry.coat-of-arms.charge.type.lozenge :as lozenge]
-            ;; [heraldry.coat-of-arms.charge.type.mascle :as mascle]
+            [heraldry.coat-of-arms.charge.type.fusil :as fusil]
+            [heraldry.coat-of-arms.charge.type.lozenge :as lozenge]
+            [heraldry.coat-of-arms.charge.type.mascle :as mascle]
             [heraldry.coat-of-arms.charge.type.roundel :as roundel]
-            ;; [heraldry.coat-of-arms.charge.type.rustre :as rustre]
+            [heraldry.coat-of-arms.charge.type.rustre :as rustre]
             [heraldry.coat-of-arms.escutcheon :as root-escutcheon]
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.line.core :as line]
@@ -20,14 +20,14 @@
 
 (def charges
   [roundel/charge-type
-   #_annulet/charge-type
-   #_billet/charge-type
+   annulet/charge-type
+   billet/charge-type
    #_escutcheon/charge-type
-   #_lozenge/charge-type
-   #_fusil/charge-type
-   #_mascle/charge-type
-   #_rustre/charge-type
-   #_crescent/charge-type])
+   lozenge/charge-type
+   fusil/charge-type
+   mascle/charge-type
+   rustre/charge-type
+   crescent/charge-type])
 
 (def choices
   (->> charges

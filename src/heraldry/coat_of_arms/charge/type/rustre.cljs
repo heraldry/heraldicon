@@ -1,13 +1,17 @@
 (ns heraldry.coat-of-arms.charge.type.rustre
-  (:require [heraldry.coat-of-arms.charge.shared :as charge-shared]
+  (:require [heraldry.coat-of-arms.charge.interface :as interface]
+            [heraldry.coat-of-arms.charge.shared :as charge-shared]
             [heraldry.coat-of-arms.vector :as v]))
 
-(defn render
-  {:display-name "Rustre"
-   :value :heraldry.charge.type/rustre}
-  [charge parent environment context]
+(def charge-type
+  :heraldry.charge.type/rustre)
+
+(defmethod interface/display-name charge-type [_] "Rustre")
+
+(defmethod interface/render-charge charge-type
+  [path parent-path environment context]
   (charge-shared/make-charge
-   charge parent environment context
+   path parent-path environment context
    :height
    (fn [height]
      (let [width (/ height 1.3)
