@@ -9,11 +9,11 @@
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.charge :as charge]
-            [heraldry.frontend.context :as context]
             [heraldry.frontend.form.charge-select :as charge-select]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
+            [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [id-for-url]]
             [hickory.core :as hickory]
@@ -173,18 +173,18 @@
         prepared-charge-data (-> form-data
                                  (assoc :data edn-data)
                                  (update :username #(or % (:username (user/data)))))
-        db-path (conj example-coa-db-path :coat-of-arms)
-        coat-of-arms @(rf/subscribe [:get db-path])
+        coat-of-arms @(rf/subscribe [:get-value (conj example-coa-db-path :coat-of-arms)])
         {:keys [result
                 environment]} (render/coat-of-arms
-                               (-> coat-of-arms
-                                   (assoc-in [:field :components 0 :data] prepared-charge-data))
+                               [:coat-of-arms]
                                100
-                               (merge
-                                context/default
-                                {:render-options (conj example-coa-db-path :render-options)
-                                 :root-transform "scale(5,5)"
-                                 :db-path db-path}))
+                               (-> shared/coa-select-option-context
+                                   (assoc :root-transform "scale(5,5)")
+                                   (assoc-in [:data :render-options]
+                                             @(rf/subscribe [:get-value (conj example-coa-db-path :render-options)]))
+                                   (assoc-in [:data :coat-of-arms]
+                                             (-> coat-of-arms
+                                                 (assoc-in [:field :components 0 :data] prepared-charge-data)))))
         {:keys [width height]} environment]
     [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
            :preserveAspectRatio "xMidYMid meet"
