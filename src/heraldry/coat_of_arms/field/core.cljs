@@ -2,7 +2,6 @@
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.options :as field-options]
-            [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.semy.core] ;; needed for defmethods
             [heraldry.frontend.util :as frontend-util]
             [heraldry.options :as options]
@@ -135,6 +134,3 @@
            frontend-util/upper-case-first)
        (get field-options/field-map (:type field)))
      " field")))
-
-;; TODO: should go away when not needed anymore
-(def render shared/render)
