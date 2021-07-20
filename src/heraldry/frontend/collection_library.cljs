@@ -5,12 +5,12 @@
             [heraldry.coat-of-arms.render :as render]
             [heraldry.font :as font]
             [heraldry.frontend.api.request :as api-request]
-            [heraldry.frontend.context :as context]
             [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.arms-select :as arms-select]
             [heraldry.frontend.form.collection-select :as collection-select]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
+            [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [id-for-url]]
             [re-frame.core :as rf]
@@ -95,16 +95,16 @@
                                #(arms-select/fetch-arms arms-id version nil)))
         {:keys [result
                 environment]} (render/coat-of-arms
-                               (if-let [coat-of-arms (:coat-of-arms arms-data)]
-                                 coat-of-arms
-                                 default/coat-of-arms)
+                               [:coat-of-arms]
                                size
-                               (merge
-                                context/default
-                                {:render-options render-options
-                                 :db-path []
-                                 :fn-select-component nil
-                                 #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
+                               (-> shared/coa-select-option-context
+                                   (assoc-in [:data :render-options]
+                                             @(rf/subscribe [:get-value (conj form-db-path :render-options)]))
+                                   (assoc-in [:data :coat-of-arms]
+                                             (if-let [coat-of-arms (:coat-of-arms arms-data)]
+                                               coat-of-arms
+                                               default/coat-of-arms))))
+
         {:keys [width height]} environment]
     [:g
      (when selected?
@@ -222,17 +222,16 @@
                                 #(arms-select/fetch-arms arms-id version nil)))
           {:keys [result
                   environment]} (render/coat-of-arms
-                                 (if-let [coat-of-arms (:coat-of-arms arms-data)]
-                                   coat-of-arms
-                                   default/coat-of-arms)
+                                 [:coat-of-arms]
                                  100
-                                 (merge
-                                  context/default
-                                  {:render-options (conj form-db-path :render-options)
-                                   :db-path []
-                                   :fn-select-component nil
-                                   :root-transform "scale(5,5)"
-                                   #_#_:metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]}))
+                                 (-> shared/coa-select-option-context
+                                     (assoc :root-transform "scale(5,5)")
+                                     (assoc-in [:data :render-options]
+                                               @(rf/subscribe [:get-value (conj form-db-path :render-options)]))
+                                     (assoc-in [:data :coat-of-arms]
+                                               (if-let [coat-of-arms (:coat-of-arms arms-data)]
+                                                 coat-of-arms
+                                                 default/coat-of-arms))))
           {:keys [width height]} environment]
       (when (or (not arms-id)
                 (= status :done))
