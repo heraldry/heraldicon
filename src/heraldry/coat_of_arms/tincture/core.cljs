@@ -114,18 +114,6 @@
    :erminois erminois
    :pean pean})
 
-(defn pick [tincture {:keys [mode theme]}]
-  (cond
-    (= tincture :none) "url(#void)"
-    (get furs tincture) (let [[id _ _] (get furs tincture)]
-                          (str "url(#" id ")"))
-    (= mode :hatching) (or
-                        (hatching/get-for tincture)
-                        "#888")
-    :else (or (lookup-colour tincture theme)
-              (get furs tincture)
-              "url(#void)")))
-
 (defn pick2 [tincture context]
   (let [mode (options/render-option :mode context)
         theme (options/render-option :theme context)]
