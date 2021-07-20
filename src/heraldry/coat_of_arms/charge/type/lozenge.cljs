@@ -1,13 +1,17 @@
 (ns heraldry.coat-of-arms.charge.type.lozenge
-  (:require [heraldry.coat-of-arms.charge.shared :as charge-shared]
+  (:require [heraldry.coat-of-arms.charge.interface :as interface]
+            [heraldry.coat-of-arms.charge.shared :as charge-shared]
             [heraldry.coat-of-arms.vector :as v]))
 
-(defn render
-  {:display-name "Lozenge"
-   :value :heraldry.charge.type/lozenge}
-  [charge parent environment context]
+(def charge-type
+  :heraldry.charge.type/lozenge)
+
+(defmethod interface/display-name charge-type [_] "Lozenge")
+
+(defmethod interface/render-charge charge-type
+  [path parent-path environment context]
   (charge-shared/make-charge
-   charge parent environment context
+   path parent-path environment context
    :height
    (fn [height]
      (let [width (/ height 1.3)
