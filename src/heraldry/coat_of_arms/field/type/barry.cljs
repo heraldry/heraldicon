@@ -171,7 +171,7 @@
         bottom-right (:bottom-right points)
         [parts overlap outlines] (barry-parts path top-left bottom-right line outline? context environment)]
     [:<>
-     [shared/make-subfields2
+     [shared/make-subfields
       path parts
       overlap
       environment context]

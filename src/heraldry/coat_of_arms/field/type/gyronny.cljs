@@ -270,7 +270,7 @@
                  origin-point
                  bottom]]]]
     [:<>
-     [shared/make-subfields2
+     [shared/make-subfields
       path parts
       [:all
        [(svg/make-path

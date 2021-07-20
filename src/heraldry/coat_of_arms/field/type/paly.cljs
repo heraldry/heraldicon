@@ -170,7 +170,7 @@
                       ^{:key i}
                       [:path {:d (nth edges i)}])])]
     [:<>
-     [shared/make-subfields2
+     [shared/make-subfields
       path parts
       overlap
       environment context]

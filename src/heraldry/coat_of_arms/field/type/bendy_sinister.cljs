@@ -49,7 +49,7 @@
                                   line outline? context environment)]
     [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
                          "rotate(" angle ")")}
-     [shared/make-subfields2
+     [shared/make-subfields
       path parts
       overlap
       environment context]

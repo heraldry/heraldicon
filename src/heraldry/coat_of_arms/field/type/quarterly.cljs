@@ -178,7 +178,7 @@
                         [:path {:d (svg/make-path ["M" [(- x0 outline-extra) y1]
                                                    "L" [(+ x0 required-width outline-extra) y1]])}]))])]
     [:<>
-     [shared/make-subfields2
+     [shared/make-subfields
       path parts
       overlap
       environment context]

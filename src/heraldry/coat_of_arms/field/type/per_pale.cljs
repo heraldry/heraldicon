@@ -72,7 +72,7 @@
                 [real-top
                  bottom-right]]]]
     [:<>
-     [shared/make-subfields2
+     [shared/make-subfields
       path parts
       [:all nil]
       environment context]

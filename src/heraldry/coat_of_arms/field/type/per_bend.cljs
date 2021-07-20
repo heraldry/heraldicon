@@ -93,7 +93,7 @@
                  real-diagonal-end
                  bottom-left]]]]
     [:<>
-     [shared/make-subfields2
+     [shared/make-subfields
       path parts
       [:all nil]
       environment context]
