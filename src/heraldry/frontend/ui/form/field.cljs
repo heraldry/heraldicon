@@ -43,23 +43,25 @@
                  :outline?]]
      ^{:key option} [interface/form-element (conj path option)])])
 
-(defn parent-field [path]
+(defn parent-path [path]
   (let [index (last path)
-        parent @(rf/subscribe [:get-value (drop-last 2 path)])]
+        parent-path (->> path (drop-last 2) vec)
+        parent-type @(rf/subscribe [:get-value (conj parent-path :type)])]
     (when (and (int? index)
-               (-> parent :type (or :dummy) namespace (= "heraldry.field.type")))
-      parent)))
+               (-> parent-type (or :dummy) namespace (= "heraldry.field.type")))
+      parent-path)))
 
 (defn name-prefix-for-part [path]
-  (when-let [parent (parent-field path)]
-    (-> (field/part-name (:type parent) (last path))
-        util/upper-case-first)))
+  (when-let [parent-path (parent-path path)]
+    (let [parent-type @(rf/subscribe [:get-value (conj parent-path :type)])]
+      (-> (field/part-name parent-type (last path))
+          util/upper-case-first))))
 
 (defn non-mandatory-part-of-parent? [path]
   (let [index (last path)]
     (when (int? index)
-      (when-let [parent (parent-field path)]
-        (>= index (field/mandatory-part-count parent))))))
+      (when-let [parent-path (parent-path path)]
+        (>= index (field/mandatory-part-count parent-path))))))
 
 (defmethod interface/component-node-data :heraldry.component/field [path]
   (let [field-type @(rf/subscribe [:get-value (conj path :type)])
