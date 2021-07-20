@@ -23,21 +23,21 @@
      ^{:key option} [interface/form-element (conj path option)])])
 
 (defmethod interface/component-node-data :heraldry.component/ordinary [path]
-  (let [cottising-options (:cottising @(rf/subscribe [:get-relevant-options path]))
+  (let [cottising-options @(rf/subscribe [:get-relevant-options (conj path :cottising)])
         cottise-1 @(rf/subscribe [:get-sanitized-value (conj path :cottising :cottise-1)])
         cottise-2 @(rf/subscribe [:get-sanitized-value (conj path :cottising :cottise-2)])
         cottise-opposite-1 @(rf/subscribe [:get-sanitized-value (conj path :cottising :cottise-opposite-1)])
         cottise-opposite-2 @(rf/subscribe [:get-sanitized-value (conj path :cottising :cottise-opposite-2)])
         cottise-1? (and (:cottise-1 cottising-options)
-                        cottise-1)
+                        (:enabled? cottise-1))
         cottise-2? (and (:cottise-2 cottising-options)
-                        cottise-1
-                        cottise-2)
+                        (:enabled? cottise-1)
+                        (:enabled? cottise-2))
         cottise-opposite-1? (and (:cottise-opposite-1 cottising-options)
-                                 cottise-opposite-1)
+                                 (:enabled? cottise-opposite-1))
         cottise-opposite-2? (and (:cottise-opposite-2 cottising-options)
-                                 cottise-opposite-1
-                                 cottise-opposite-2)
+                                 (:enabled? cottise-opposite-1)
+                                 (:enabled? cottise-opposite-2))
         menu (cond-> []
                (and (:cottise-1 cottising-options)
                     (not cottise-1?))
@@ -48,7 +48,7 @@
                                    % [:ui-component-node-select cottise-path {:open? true}]))})
 
                (and (:cottise-2 cottising-options)
-                    cottise-1
+                    cottise-1?
                     (not cottise-2?))
                (conj {:title "Cottise 2"
                       :handler #(let [cottise-path (conj path :cottising :cottise-2)]
@@ -65,7 +65,7 @@
                                    % [:ui-component-node-select cottise-path {:open? true}]))})
 
                (and (:cottise-opposite-2 cottising-options)
-                    cottise-opposite-1
+                    cottise-opposite-1?
                     (not cottise-opposite-2?))
                (conj {:title "Cottise 2 (opposite)"
                       :handler #(let [cottise-path (conj path :cottising :cottise-opposite-2)]

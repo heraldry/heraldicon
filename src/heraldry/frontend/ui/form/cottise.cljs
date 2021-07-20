@@ -19,7 +19,7 @@
                  :cottise-opposite-2 " 2 (opposite)"
                  "")
                ": "
-               (field/title path))
+               (field/title (conj path :field)))
    :nodes [{:path (conj path :field)}]})
 
 (defmethod interface/component-form-data :heraldry.component/cottise [_path]
