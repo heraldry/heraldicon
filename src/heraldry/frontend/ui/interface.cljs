@@ -65,8 +65,9 @@
 
   (fn [[value options] [_ _path]]
     ;; TODO: find better way to determine option leaf or branch
-    (if (or (-> options :type not)
-            (-> options :type :type))
+    (if (and (map? options)
+             (or (-> options :type not)
+                 (-> options :type :type)))
       (options/sanitize value options)
       (options/get-value value options))))
 
