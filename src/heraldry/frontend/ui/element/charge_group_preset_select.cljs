@@ -281,12 +281,14 @@
 
 (defn charge-group-preset-choice [path group charge-adjustments display-name]
   (let [{:keys [result]} (render/coat-of-arms
-                          {:escutcheon :rectangle
-                           :field {:type :heraldry.field.type/plain
-                                   :tincture :argent
-                                   :components [group]}}
+                          [:coat-of-arms]
                           100
-                          shared/coa-select-option-context)]
+                          (-> shared/coa-select-option-context
+                              (assoc-in [:data :coat-of-arms]
+                                        {:escutcheon :rectangle
+                                         :field {:type :heraldry.field.type/plain
+                                                 :tincture :argent
+                                                 :components [group]}})))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:select-charge-group-preset path group charge-adjustments])}
      [:svg {:style {:width "4em"
                     :height "4.5em"}

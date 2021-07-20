@@ -1,32 +1,34 @@
 (ns heraldry.frontend.ui.element.line-type-select
   (:require [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.ui.shared :as shared]
+            [heraldry.options :as options]
             [re-frame.core :as rf]))
 
 (defn line-type-choice [path key display-name & {:keys [selected?]}]
   (let [options (line/options {:type key})
         {:keys [result]} (render/coat-of-arms
-                          {:escutcheon :flag
-                           :field {:type :heraldry.field.type/per-fess
-                                   :line {:type key
-                                          :width (case key
-                                                   :enarched nil
-                                                   (* 2 (options/get-value nil (:width options))))
-                                          :height (case key
-                                                    :enarched 0.25
-                                                    nil)}
-                                   :fields [{:type :heraldry.field.type/plain
-                                             :tincture :argent}
-                                            {:type :heraldry.field.type/plain
-                                             :tincture (if selected? :or :azure)}]}}
+                          [:coat-of-arms]
                           100
-                          shared/coa-select-option-context)]
+                          (-> shared/coa-select-option-context
+                              (assoc-in [:data :coat-of-arms]
+                                        {:escutcheon :flag
+                                         :field {:type :heraldry.field.type/per-fess
+                                                 :line {:type key
+                                                        :width (case key
+                                                                 :enarched nil
+                                                                 (* 2 (options/get-value nil (:width options))))
+                                                        :height (case key
+                                                                  :enarched 0.25
+                                                                  nil)}
+                                                 :fields [{:type :heraldry.field.type/plain
+                                                           :tincture :argent}
+                                                          {:type :heraldry.field.type/plain
+                                                           :tincture (if selected? :or :azure)}]}})))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
      [:svg {:style {:width "6.5em"
                     :height "4.5em"}
