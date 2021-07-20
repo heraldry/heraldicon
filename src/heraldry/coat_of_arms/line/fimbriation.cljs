@@ -63,19 +63,20 @@
    :ui {:label "Fimbriation"
         :form-type :fimbriation}})
 
-(defn options [fimbriation & {:keys [inherited]}]
+(defn options [fimbriation & {:keys [inherited base-options]
+                              :or {base-options default-options}}]
   (-> (case (or (:mode fimbriation)
                 (:mode inherited)
                 :none)
-        :none (options/pick default-options
+        :none (options/pick base-options
                             [[:mode]])
-        :single (options/pick default-options
+        :single (options/pick base-options
                               [[:mode]
                                [:alignment]
                                [:corner]
                                [:thickness-1]
                                [:tincture-1]])
-        :double (options/pick default-options
+        :double (options/pick base-options
                               [[:mode]
                                [:alignment]
                                [:corner]

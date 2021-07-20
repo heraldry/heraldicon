@@ -154,7 +154,8 @@
                             (position/adjust-options position (-> charge :anchor)))))
         (update :fimbriation (fn [fimbriation]
                                (when fimbriation
-                                 (-> (fimbriation/options (:fimbriation charge))
+                                 (-> (fimbriation/options (:fimbriation charge)
+                                                          :base-options (:fimbriation default-options))
                                      (assoc :ui {:label "Fimbriation"
                                                  :form-type :fimbriation}))))))))
 

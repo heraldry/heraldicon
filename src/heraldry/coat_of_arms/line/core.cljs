@@ -402,7 +402,9 @@
         (options/populate-inheritance inherited)
         (update :fimbriation (fn [fimbriation]
                                (when fimbriation
-                                 (-> (fimbriation/options (:fimbriation line) :inherited (:fimbriation inherited))
+                                 (-> (fimbriation/options (:fimbriation line)
+                                                          :inherited (:fimbriation inherited)
+                                                          :base-options (:fimbriation default-options))
                                      (assoc :ui {:label "Fimbriation"
                                                  :form-type :fimbriation}))))))))
 

@@ -450,7 +450,8 @@
                                      (position/adjust-options direction-anchor (-> ordinary :direction-anchor)))))
        (update :fimbriation (fn [fimbriation]
                               (when fimbriation
-                                (-> (fimbriation/options (:fimbriation ordinary))
+                                (-> (fimbriation/options (:fimbriation ordinary)
+                                                         :base-options (:fimbriation default-options))
                                     (assoc :ui {:label "Fimbriation"
                                                 :form-type :fimbriation})))))
        (as-> options

@@ -1,8 +1,8 @@
 (ns heraldry.frontend.ui.element.fimbriation
-  (:require [heraldry.options :as options]
-            [heraldry.frontend.ui.element.submenu :as submenu]
+  (:require [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
+            [heraldry.options :as options]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :fimbriation-submenu-link-name
