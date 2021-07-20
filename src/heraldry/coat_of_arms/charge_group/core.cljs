@@ -55,7 +55,8 @@
                         :heraldry.charge-group.type/columns (fn [y x] (v/v x y)))]
     {:slot-positions (->> (range num-strips)
                           (map (fn [idx]
-                                 (let [slot-positions (calculate-strip-slot-positions (conj path :strips idx) spacing context)
+                                 (let [slot-positions (calculate-strip-slot-positions
+                                                       (conj path :strips idx) spacing context)
                                        strip-position (-> idx
                                                           (* strip-spacing)
                                                           (- (/ length 2)))]
