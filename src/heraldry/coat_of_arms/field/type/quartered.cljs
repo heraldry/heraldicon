@@ -150,7 +150,7 @@
                  "z"]
                 [origin-point bottom-right]]]]
     [:<>
-     [shared/make-subfields2
+     [shared/make-subfields
       path parts
       [:all
        [(svg/make-path

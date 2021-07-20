@@ -36,8 +36,8 @@
                :style {:opacity 0.25}
                :fill "url(#selected)"}])]))
 
-(defn make-subfields2 [field-path parts mask-overlaps parent-environment
-                       {:keys [svg-export?] :as context}]
+(defn make-subfields [field-path parts mask-overlaps parent-environment
+                      {:keys [svg-export?] :as context}]
   [:<>
    (doall
     (for [[idx [shape-path bounding-box & extra]] (map-indexed vector parts)]

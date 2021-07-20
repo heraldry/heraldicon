@@ -154,7 +154,7 @@
                 [top-left top-right
                  bottom-left bottom-right]]]]
     [:<>
-     [shared/make-subfields2
+     [shared/make-subfields
       path parts
       [:all nil nil]
       environment context]
