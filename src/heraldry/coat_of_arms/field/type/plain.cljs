@@ -13,7 +13,7 @@
 (defmethod interface/render-field field-type
   [path _environment context]
   (let [tincture (options/sanitized-value (conj path :tincture) context)
-        fill (tincture/pick2 tincture context)]
+        fill (tincture/pick tincture context)]
     [:rect {:x -500
             :y -500
             :width 1100

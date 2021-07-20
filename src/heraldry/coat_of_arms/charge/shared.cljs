@@ -179,7 +179,7 @@
              outline? (- outline/stroke-width))
            (-> fimbriation
                :tincture-2
-               (tincture/pick2 context)) context
+               (tincture/pick context)) context
            :corner (-> fimbriation :corner)]]))
      (when (-> fimbriation :mode #{:single :double})
        (let [thickness (-> fimbriation
@@ -200,7 +200,7 @@
              outline? (- outline/stroke-width))
            (-> fimbriation
                :tincture-1
-               (tincture/pick2 context)) context
+               (tincture/pick context)) context
            :corner (-> fimbriation :corner)]]))
      [:g {:id charge-id}
       [field-shared/make-subfield

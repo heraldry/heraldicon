@@ -182,7 +182,7 @@
                         (-> charge-index
                             (mod (count preview-tinctures))
                             (->> (get preview-tinctures))
-                            (tincture/pick2 context)))]
+                            (tincture/pick context)))]
             ^{:key idx}
             [:g {:transform (str "translate(" (:x point) "," (:y point) ")")
                  :on-click #(state/dispatch-on-event % [:cycle-charge-index slot-path num-charges])

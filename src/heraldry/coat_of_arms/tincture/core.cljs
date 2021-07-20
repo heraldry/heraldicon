@@ -114,7 +114,7 @@
    :erminois erminois
    :pean pean})
 
-(defn pick2 [tincture context]
+(defn pick [tincture context]
   (let [mode (options/render-option :mode context)
         theme (options/render-option :theme context)]
     (cond
