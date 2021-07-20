@@ -1,5 +1,6 @@
 (ns heraldry.util
-  (:require [clojure.pprint :refer [pprint]]
+  (:require ["crypto" :as crypto]
+            [clojure.pprint :refer [pprint]]
             [clojure.string :as s]
             [clojure.walk :as walk]
             [goog.crypt :as crypt]
@@ -15,6 +16,20 @@
 
 (defn id [prefix]
   (str prefix "_" (swap! -current-id inc)))
+
+(defn sha1 [data]
+  (-> crypto
+      (.createHash "sha1")
+      (.update data)
+      (.digest "hex")))
+
+(defn stable-id
+  ([seed]
+   (stable-id seed nil))
+
+  ([seed suffix]
+   (cond-> (-> seed pr-str sha1)
+     suffix (str "-" suffix))))
 
 (defn id-for-url [id]
   (when id
