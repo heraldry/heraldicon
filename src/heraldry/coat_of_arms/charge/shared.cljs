@@ -12,7 +12,9 @@
 
 (defn make-charge
   [path _parent-path environment
-   {:keys [charge-group] :as context} arg function]
+   {:keys [charge-group
+           origin-override
+           size-default] :as context} arg function]
   (let [;; TODO: bring this back
         ;; this is a bit hacky, but allows
         ;; overriding the origin point
@@ -23,7 +25,10 @@
         origin (options/sanitized-value (conj path :origin) context)
         anchor (options/sanitized-value (conj path :anchor) context)
         fimbriation (options/sanitized-value (conj path :fimbriation) context)
-        size (options/sanitized-value (conj path :geometry :size) context)
+        size (if (and size-default
+                      (not (options/raw-value (conj path :geometry :size) context)))
+               size-default
+               (options/sanitized-value (conj path :geometry :size) context))
         stretch (options/sanitized-value (conj path :geometry :stretch) context)
         mirrored? (options/sanitized-value (conj path :geometry :mirrored?) context)
         reversed? (options/sanitized-value (conj path :geometry :reversed?) context)
@@ -35,7 +40,6 @@
                       (options/sanitized-value (conj path :outline-mode) context))
         outline? (= outline-mode :keep)
         {:keys [charge-group-path
-                origin-override
                 slot-spacing
                 slot-angle]} charge-group
         context (dissoc context :charge-group)

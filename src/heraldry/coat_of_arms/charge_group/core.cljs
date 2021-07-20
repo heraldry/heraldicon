@@ -133,8 +133,8 @@
          [charge-interface/render-charge charge-path parent-path
           environment
           (-> context
+              (assoc :origin-override (v/+ origin-point point))
               (assoc :charge-group {:charge-group-path path
-                                    :origin-override (v/+ origin-point point)
                                     :slot-spacing slot-spacing
                                     :slot-angle (when rotate-charges?
                                                   angle)}))]))]))

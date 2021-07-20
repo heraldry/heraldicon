@@ -82,7 +82,8 @@
     [mask-id mask mask-inverted-id mask-inverted]))
 
 (defmethod interface/render-charge :heraldry.charge.type/other
-  [path parent-path environment {:keys [load-charge-data charge-group] :as context}]
+  [path parent-path environment {:keys [load-charge-data charge-group
+                                        origin-override size-default] :as context}]
   (let [data (options/raw-value (conj path :data) context)
         variant (options/raw-value (conj path :variant) context)
         full-charge-data (or data (when variant (load-charge-data variant)))]
@@ -97,7 +98,10 @@
             origin (options/sanitized-value (conj path :origin) context)
             anchor (options/sanitized-value (conj path :anchor) context)
             fimbriation (options/sanitized-value (conj path :fimbriation) context)
-            size (options/sanitized-value (conj path :geometry :size) context)
+            size (if (and size-default
+                          (not (options/raw-value (conj path :geometry :size) context)))
+                   size-default
+                   (options/sanitized-value (conj path :geometry :size) context))
             stretch (options/sanitized-value (conj path :geometry :stretch) context)
             mirrored? (options/sanitized-value (conj path :geometry :mirrored?) context)
             reversed? (options/sanitized-value (conj path :geometry :reversed?) context)
@@ -114,7 +118,6 @@
                           (options/sanitized-value (conj path :outline-mode) context))
             outline? (= outline-mode :keep)
             {:keys [charge-group-path
-                    origin-override
                     slot-spacing
                     slot-angle]} charge-group
             context (dissoc context :charge-group)
