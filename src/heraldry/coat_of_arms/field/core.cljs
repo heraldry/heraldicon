@@ -3,6 +3,7 @@
             [heraldry.coat-of-arms.field.interface :as interface]
             [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.field.shared :as shared]
+            [heraldry.coat-of-arms.semy.core] ;; needed for defmethods
             [heraldry.frontend.util :as frontend-util]
             [heraldry.options :as options]
             [heraldry.util :as util]))

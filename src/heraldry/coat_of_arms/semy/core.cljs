@@ -1,8 +1,8 @@
 (ns heraldry.coat-of-arms.semy.core
-  (:require [heraldry.coat-of-arms.charge.core :as charge]
-            [heraldry.options :as options]
-            [heraldry.coat-of-arms.semy.options :as semy-options]
+  (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.interface :as interface]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (defn shift-environment [environment point]
@@ -13,20 +13,18 @@
                                     [k (v/+ v point)]))
                              (into {}))))))
 
-(defn render
-  [{:keys [charge] :as semy} environment context]
-  (let [{:keys [layout]} (options/sanitize semy semy-options/default-options)
-        points (:points environment)
+(defmethod interface/render-component :heraldry.component/semy [path parent-path environment context]
+  (let [points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        {:keys [num-fields-x
-                offset-x
-                stretch-x
-                num-fields-y
-                offset-y
-                stretch-y
-                rotation]} layout
-        raw-num-fields-y (-> semy :layout :num-fields-y)
+        num-fields-x (options/sanitized-value (conj path :layout :num-fields-x) context)
+        num-fields-y (options/sanitized-value (conj path :layout :num-fields-y) context)
+        raw-num-fields-y (options/raw-value (conj path :layout :num-fields-y) context)
+        offset-x (options/sanitized-value (conj path :layout :offset-x) context)
+        offset-y (options/sanitized-value (conj path :layout :offset-y) context)
+        stretch-x (options/sanitized-value (conj path :layout :stretch-x) context)
+        stretch-y (options/sanitized-value (conj path :layout :stretch-y) context)
+        rotation (options/sanitized-value (conj path :layout :rotation) context)
         offset-x (or offset-x 0)
         stretch-x (or stretch-x 1)
         width (- (:x bottom-right)
@@ -60,9 +58,9 @@
                                      :bottom-left {:x (- part-width-half) :y part-height-half}
                                      :bottom {:x 0 :y part-height-half}
                                      :bottom-right {:x part-width-half :y part-height-half}}}
-        charge (-> charge
-                   (assoc-in [:origin :point] :fess)
-                   (update-in [:geometry :size] #(or % 50)))]
+        charge-path (conj path :charge)
+        charge-context (-> context
+                           (assoc :size-default 50))]
     [:g
      [:defs
       [:pattern {:id pattern-id
@@ -75,31 +73,20 @@
                  :y (+ (* part-height offset-y)
                        (:y top-left))
                  :pattern-units "userSpaceOnUse"}
-       [charge/render
-        charge
-        nil
-        charge-environment
-        context]
-       [charge/render
-        charge
-        nil
-        (shift-environment charge-environment {:x part-width :y 0})
-        context]
-       [charge/render
-        charge
-        nil
-        (shift-environment charge-environment {:x 0 :y part-height})
-        context]
-       [charge/render
-        charge
-        nil
-        (shift-environment charge-environment {:x part-width :y part-height})
-        context]
-       [charge/render
-        charge
-        nil
-        (shift-environment charge-environment {:x part-width-half :y part-height-half})
-        context]]]
+       (doall
+        (for [[idx shift] (map-indexed
+                           vector
+                           [(v/v 0 0)
+                            {:x part-width :y 0}
+                            {:x 0 :y part-height}
+                            {:x part-width :y part-height}
+                            {:x part-width-half :y part-height-half}])]
+          ^{:key idx}
+          [charge-interface/render-charge
+           charge-path
+           path
+           (shift-environment charge-environment shift)
+           (assoc charge-context :origin-override shift)]))]]
      [:g {:transform (str "rotate(" (- rotation) ")")}
       [:rect {:x -500
               :y -500
