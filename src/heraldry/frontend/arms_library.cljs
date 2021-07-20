@@ -46,10 +46,11 @@
       [:div.credits
        [:span.credits-heading "Charge attribution"]
        [:ul
-        (for [charge charges-data]
-          (when-let [charge-id (:id charge)]
-            ^{:key charge-id}
-            [:li [credits/for-charge charge]]))]])))
+        (doall
+         (for [charge charges-data]
+           (when-let [charge-id (:id charge)]
+             ^{:key charge-id}
+             [:li [credits/for-charge charge]])))]])))
 
 (defn render-coat-of-arms []
   (let [coat-of-arms-path (conj form-db-path :coat-of-arms)
