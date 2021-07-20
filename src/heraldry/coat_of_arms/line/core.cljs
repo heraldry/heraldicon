@@ -25,11 +25,11 @@
             [heraldry.coat-of-arms.line.type.urdy :as urdy]
             [heraldry.coat-of-arms.line.type.wavy :as wavy]
             [heraldry.coat-of-arms.line.type.wolf-toothed :as wolf-toothed]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (defn line-base [{:keys [base-line]} {line-min :min
@@ -146,14 +146,6 @@
 (def line-map
   (util/choices->map choices))
 
-(def base-line-choices
-  [["Bottom" :bottom]
-   ["Middle" :middle]
-   ["Top" :top]])
-
-(def base-line-map
-  (util/choices->map base-line-choices))
-
 (def default-options
   {:type {:type :choice
           :choices choices
@@ -191,7 +183,9 @@
              :ui {:label "Spacing"
                   :step 0.01}}
    :base-line {:type :choice
-               :choices base-line-choices
+               :choices [["Bottom" :bottom]
+                         ["Middle" :middle]
+                         ["Top" :top]]
                :default :middle
                :ui {:label "Base line"
                     :form-type :radio-select}}
