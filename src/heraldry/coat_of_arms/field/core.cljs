@@ -5,7 +5,8 @@
             [heraldry.coat-of-arms.semy.core] ;; needed for defmethods
             [heraldry.frontend.util :as frontend-util]
             [heraldry.options :as options]
-            [heraldry.util :as util]))
+            [heraldry.util :as util]
+            [re-frame.core :as rf]))
 
 (defn mandatory-part-count [{:keys [type] :as field}]
   (let [type (-> type name keyword)
@@ -124,13 +125,12 @@
 (defn part-name [field-type index]
   (-> field-type interface/part-names (get index) (or (util/to-roman (inc index)))))
 
-(defn title [field]
-  (let [sanitized-field (options/sanitize field (field-options/options field))]
+(defn title [path]
+  (let [field-type @(rf/subscribe [:get-sanitized-value (conj path :type)])]
     (str
-     (if (-> field :type (= :heraldry.field.type/plain))
-       (-> sanitized-field
-           :tincture
+     (if (= field-type :heraldry.field.type/plain)
+       (-> @(rf/subscribe [:get-value (conj path :tincture)])
            frontend-util/translate-tincture
            frontend-util/upper-case-first)
-       (get field-options/field-map (:type field)))
+       (get field-options/field-map field-type))
      " field")))

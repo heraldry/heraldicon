@@ -45,21 +45,23 @@
       (s/starts-with? ts ":heraldry.charge") :heraldry.component/charge
       :else nil)))
 
-(defn effective-component-type [path data]
+(defn effective-component-type [path raw-type]
   (cond
     (-> path last (= :arms-form)) :heraldry.component/arms-general
     (-> path last (= :charge-form)) :heraldry.component/charge-general
     (-> path last (= :collection-form)) :heraldry.component/collection-general
     (-> path last (= :collection)) :heraldry.component/collection
     (-> path drop-last (->> (take-last 2)) (= [:collection :elements])) :heraldry.component/collection-element
-    (map? data) (-> data :type type->component-type)
+    (-> path last (= :render-options)) :heraldry.component/render-options
+    (-> path last (= :coat-of-arms)) :heraldry.component/coat-of-arms
+    (keyword? raw-type) (type->component-type raw-type)
     :else nil))
 
 (defmulti render-component (fn [path _parent-path _environment context]
                              (effective-component-type
                               path
                               ;; TODO: need the raw value here for type
-                              (options/raw-value path context))))
+                              (options/raw-value (conj path :type) context))))
 
 (defmethod render-component nil [path parent-path _environment _context]
   (log/warn :not-implemented path parent-path)

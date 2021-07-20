@@ -61,17 +61,20 @@
       (when-let [parent (parent-field path)]
         (>= index (field/mandatory-part-count parent))))))
 
-(defmethod interface/component-node-data :heraldry.component/field [path component-data _component-options]
-  (let [ref? (-> component-data :type (= :heraldry.field.type/ref))
-        components-path (conj path :components)]
+(defmethod interface/component-node-data :heraldry.component/field [path]
+  (let [field-type @(rf/subscribe [:get-value (conj path :type)])
+        ref? (= field-type :heraldry.field.type/ref)
+        components-path (conj path :components)
+        num-components @(rf/subscribe [:get-list-size components-path])]
     {:title (util/combine ": "
                           [(name-prefix-for-part path)
                            (if ref?
                              (str "like " (name-prefix-for-part (-> path
                                                                     drop-last
                                                                     vec
-                                                                    (conj (:index component-data)))))
-                             (field/title component-data))])
+                                                                    (conj
+                                                                     @(rf/subscribe [:get-value (conj path :index)])))))
+                             (field/title path))])
      :buttons (if ref?
                 [{:icon "fas fa-sliders-h"
                   :title "Change"
@@ -90,18 +93,12 @@
                   (conj {:icon "fas fa-undo"
                          :title "Reset"
                          :handler #(state/dispatch-on-event % [:reset-field-part-reference path])})))
-     :nodes (concat (when (-> component-data :type name keyword (not= :plain))
-                      (->> component-data
-                           :fields
-                           count
-                           range
+     :nodes (concat (when (-> field-type name keyword (not= :plain))
+                      (->> (range @(rf/subscribe [:get-list-size (conj path :fields)]))
                            (map (fn [idx]
                                   {:path (conj path :fields idx)}))
                            vec))
-                    (->> component-data
-                         :components
-                         count
-                         range
+                    (->> (range num-components)
                          reverse
                          (map (fn [idx]
                                 (let [component-path (conj components-path idx)]
@@ -111,7 +108,7 @@
                                               :tooltip "move down"
                                               :handler #(state/dispatch-on-event % [:move-element component-path (dec idx)])}
                                              {:icon "fas fa-chevron-up"
-                                              :disabled? (= idx (dec (count (:components component-data))))
+                                              :disabled? (= idx (dec num-components))
                                               :tooltip "move up"
                                               :handler #(state/dispatch-on-event % [:move-element component-path (inc idx)])}
                                              {:icon "far fa-trash-alt"

@@ -6,16 +6,20 @@
 
 ;; component-node-data
 
-(defmulti component-node-data (fn [path component-data _component-options]
-                                (interface/effective-component-type path component-data)))
+(defmulti component-node-data (fn [path]
+                                (interface/effective-component-type
+                                 path
+                                 @(rf/subscribe [:get-value (conj path :type)]))))
 
-(defmethod component-node-data nil [_path _component-data _component-options]
+(defmethod component-node-data nil [_path]
   {:title "unknown"})
 
 ;; component-form-data
 
 (defmulti component-form-data (fn [path component-data _component-options]
-                                (interface/effective-component-type path component-data)))
+                                (interface/effective-component-type
+                                 path
+                                 @(rf/subscribe [:get-value (conj path :type)]))))
 
 (defmethod component-form-data nil [_path _component-data _component-options]
   {:form (fn [_path _form-data]

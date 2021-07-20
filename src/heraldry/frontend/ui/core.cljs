@@ -79,16 +79,14 @@
 
 (rf/reg-sub :component-node
   (fn [[_ path] _]
-    [(rf/subscribe [:component-data path])
-     (rf/subscribe [:get-relevant-options path])
-     (rf/subscribe [:ui-component-node-open? path])
+    [(rf/subscribe [:ui-component-node-open? path])
      (rf/subscribe [:ui-component-node-selected-path])])
 
-  (fn [[component-data component-options open? selected-component-path] [_ path]]
+  (fn [[open? selected-component-path] [_ path]]
     (merge {:open? open?
             :selected? (= path selected-component-path)
             :selectable? true}
-           (interface/component-node-data path component-data component-options))))
+           (interface/component-node-data path))))
 
 (rf/reg-sub :component-form
   (fn [[_ path] _]

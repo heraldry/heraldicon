@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.form.collection-element
   (:require [heraldry.collection.element] ;; needed for defmethods
-            [heraldry.frontend.ui.interface :as interface]))
+            [heraldry.frontend.ui.interface :as interface]
+            [re-frame.core :as rf]))
 
 (defn form [path _]
   [:<>
@@ -8,8 +9,8 @@
                  :reference]]
      ^{:key option} [interface/form-element (conj path option)])])
 
-(defmethod interface/component-node-data :heraldry.component/collection-element [path component-data _component-options]
-  (let [name (-> component-data :name)
+(defmethod interface/component-node-data :heraldry.component/collection-element [path]
+  (let [name @(rf/subscribe [:get-value (conj path :name)])
         index (last path)]
     {:title (str (inc index) ": "
                  (if (-> name count pos?)

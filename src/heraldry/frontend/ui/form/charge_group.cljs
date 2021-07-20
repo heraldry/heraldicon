@@ -176,26 +176,27 @@
                :style {:stroke "#000"
                        :fill "none"}}]
        [:g {:transform "translate(100,100)"}
-        (for [[idx {:keys [point charge-index slot-path]}] (map-indexed vector slot-positions)]
-          (let [color (if (nil? charge-index)
-                        "#fff"
-                        (-> charge-index
-                            (mod (count preview-tinctures))
-                            (->> (get preview-tinctures))
-                            (tincture/pick context)))]
-            ^{:key idx}
-            [:g {:transform (str "translate(" (:x point) "," (:y point) ")")
-                 :on-click #(state/dispatch-on-event % [:cycle-charge-index slot-path num-charges])
-                 :style {:cursor "pointer"}}
-             [:circle {:r dot-size
-                       :style {:stroke "#000"
-                               :stroke-width 0.5
-                               :fill color}}]
-             (when (>= charge-index (count preview-tinctures))
-               [:circle {:r (* 2 (quot charge-index (count preview-tinctures)))
-                         :style {:stroke "#000"
-                                 :stroke-width 0.5
-                                 :fill "#fff"}}])]))]]]
+        (doall
+         (for [[idx {:keys [point charge-index slot-path]}] (map-indexed vector slot-positions)]
+           (let [color (if (nil? charge-index)
+                         "#fff"
+                         (-> charge-index
+                             (mod (count preview-tinctures))
+                             (->> (get preview-tinctures))
+                             (tincture/pick context)))]
+             ^{:key idx}
+             [:g {:transform (str "translate(" (:x point) "," (:y point) ")")
+                  :on-click #(state/dispatch-on-event % [:cycle-charge-index slot-path num-charges])
+                  :style {:cursor "pointer"}}
+              [:circle {:r dot-size
+                        :style {:stroke "#000"
+                                :stroke-width 0.5
+                                :fill color}}]
+              (when (>= charge-index (count preview-tinctures))
+                [:circle {:r (* 2 (quot charge-index (count preview-tinctures)))
+                          :style {:stroke "#000"
+                                  :stroke-width 0.5
+                                  :fill "#fff"}}])])))]]]
      [:div.tooltip.info {:style {:display "inline-block"
                                  :margin-left "0.2em"
                                  :vertical-align "top"}}
@@ -205,15 +206,14 @@
        [:i]]]]))
 
 (defn strip-form [path type-str]
-  (let [strip-data @(rf/subscribe [:get-value path])
-        strip-options @(rf/subscribe [:get-relevant-options path])
-        sanitized-strip-data (options/sanitize strip-data strip-options)
-        num-slots (-> strip-data :slots count)
+  (let [num-slots @(rf/subscribe [:get-list-size (conj path :slots)])
+        stretch @(rf/subscribe [:get-sanitized-value (conj path :stretch)])
+        offset @(rf/subscribe [:get-sanitized-value (conj path :offset)])
         title (str num-slots
                    " slot" (when (not= num-slots 1) "s")
-                   (when-not (-> sanitized-strip-data :stretch (= 1))
+                   (when-not (= stretch 1)
                      ", stretched")
-                   (when-not (-> sanitized-strip-data :offset zero?)
+                   (when-not (zero? offset)
                      ", offset"))]
     [:div {:style {:position "relative"}}
      [submenu/submenu path type-str title {:width "22em"}
@@ -223,17 +223,16 @@
         ^{:key option} [interface/form-element (conj path option)])]]))
 
 (defn form [path _]
-  (let [component-data @(rf/subscribe [:get-value path])
-        strip-type? (-> component-data
-                        :type
-                        #{:heraldry.charge-group.type/rows
-                          :heraldry.charge-group.type/columns})
-        type-str (case (:type component-data)
+  (let [charge-group-type @(rf/subscribe [:get-value (conj path :type)])
+        strip-type? (#{:heraldry.charge-group.type/rows
+                       :heraldry.charge-group.type/columns}
+                     charge-group-type)
+        type-str (case charge-group-type
                    :heraldry.charge-group.type/rows "Row"
                    :heraldry.charge-group.type/columns "Column"
                    nil)
-        strips (:strips component-data)
-        strips-path (conj path :strips)]
+        strips-path (conj path :strips)
+        num-strips @(rf/subscribe [:get-list-size strips-path])]
     [:div {:style {:display "table"
                    :width "100%"}}
      [:div {:style {:display "table-row"}}
@@ -262,62 +261,61 @@
 
           [:div.components
            [:ul
-            (for [[idx _] (map-indexed vector strips)]
-              (let [strip-path (conj strips-path idx)]
-                ^{:key idx}
-                [:li
-                 [:div.no-select {:style {:padding-right "10px"
-                                          :white-space "nowrap"}}
-                  [:a (if (zero? idx)
-                        {:class "disabled"}
-                        {:on-click #(state/dispatch-on-event % [:move-element strip-path (dec idx)])})
-                   [:i.fas.fa-chevron-up]]
-                  " "
-                  [:a (if (= idx (dec (count strips)))
-                        {:class "disabled"}
-                        {:on-click #(state/dispatch-on-event % [:move-element strip-path (inc idx)])})
-                   [:i.fas.fa-chevron-down]]]
-                 [:div
-                  [strip-form strip-path type-str]]
-                 [:div {:style {:padding-left "10px"}}
-                  [:a (if (-> strips count (< 2))
-                        {:class "disabled"}
-                        {:on-click #(state/dispatch-on-event % [:remove-element strip-path])})
-                   [:i.far.fa-trash-alt]]]]))]]])]
+            (doall
+             (for [idx (range num-strips)]
+               (let [strip-path (conj strips-path idx)]
+                 ^{:key idx}
+                 [:li
+                  [:div.no-select {:style {:padding-right "10px"
+                                           :white-space "nowrap"}}
+                   [:a (if (zero? idx)
+                         {:class "disabled"}
+                         {:on-click #(state/dispatch-on-event % [:move-element strip-path (dec idx)])})
+                    [:i.fas.fa-chevron-up]]
+                   " "
+                   [:a (if (= idx (dec num-strips))
+                         {:class "disabled"}
+                         {:on-click #(state/dispatch-on-event % [:move-element strip-path (inc idx)])})
+                    [:i.fas.fa-chevron-down]]]
+                  [:div
+                   [strip-form strip-path type-str]]
+                  [:div {:style {:padding-left "10px"}}
+                   [:a (if (< num-strips 2)
+                         {:class "disabled"}
+                         {:on-click #(state/dispatch-on-event % [:remove-element strip-path])})
+                    [:i.far.fa-trash-alt]]]])))]]])]
       [:div {:style {:display "table-cell"
                      :vertical-align "top"}}
        [preview-form path]]]]))
 
-(defmethod interface/component-node-data :heraldry.component/charge-group [path component-data _component-options]
-  {:title (str "Charge group of " (if (-> component-data :charges count (= 1))
-                                    (charge/title (-> component-data :charges first))
-                                    "various"))
-   :buttons [{:icon "fas fa-plus"
-              :title "Add"
-              :menu [{:title "Charge"
-                      :handler #(state/dispatch-on-event % [:add-element (conj path :charges) default/charge])}]}]
-   :nodes (concat (->> component-data
-                       :charges
-                       count
-                       range
-                       reverse
-                       (map (fn [idx]
-                              (let [charge-path (conj path :charges idx)]
-                                {:path charge-path
-                                 :buttons [{:icon "fas fa-chevron-down"
-                                            :disabled? (zero? idx)
-                                            :tooltip "move down"
-                                            :handler #(state/dispatch-on-event % [:move-charge-group-charge-down charge-path])}
-                                           {:icon "fas fa-chevron-up"
-                                            :disabled? (-> component-data :charges count dec (= idx))
-                                            :tooltip "move up"
-                                            :handler #(state/dispatch-on-event % [:move-charge-group-charge-up charge-path])}
-                                           {:icon "far fa-trash-alt"
-                                            :disabled? (-> component-data :charges count (= 1))
-                                            :tooltip "remove"
-                                            :handler #(state/dispatch-on-event
-                                                       % [:remove-charge-group-charge charge-path])}]})))
-                       vec))})
+(defmethod interface/component-node-data :heraldry.component/charge-group [path]
+  (let [num-charges @(rf/subscribe [:get-list-size (conj path :charges)])]
+    {:title (str "Charge group of " (if (= num-charges 1)
+                                      (charge/title (conj path :charges 0))
+                                      "various"))
+     :buttons [{:icon "fas fa-plus"
+                :title "Add"
+                :menu [{:title "Charge"
+                        :handler #(state/dispatch-on-event % [:add-element (conj path :charges) default/charge])}]}]
+     :nodes (concat (->> (range num-charges)
+                         reverse
+                         (map (fn [idx]
+                                (let [charge-path (conj path :charges idx)]
+                                  {:path charge-path
+                                   :buttons [{:icon "fas fa-chevron-down"
+                                              :disabled? (zero? idx)
+                                              :tooltip "move down"
+                                              :handler #(state/dispatch-on-event % [:move-charge-group-charge-down charge-path])}
+                                             {:icon "fas fa-chevron-up"
+                                              :disabled? (= idx (dec num-charges))
+                                              :tooltip "move up"
+                                              :handler #(state/dispatch-on-event % [:move-charge-group-charge-up charge-path])}
+                                             {:icon "far fa-trash-alt"
+                                              :disabled? (= num-charges 1)
+                                              :tooltip "remove"
+                                              :handler #(state/dispatch-on-event
+                                                         % [:remove-charge-group-charge charge-path])}]})))
+                         vec))}))
 
 (defmethod interface/component-form-data :heraldry.component/charge-group [_path _component-data _component-options]
   {:form form})

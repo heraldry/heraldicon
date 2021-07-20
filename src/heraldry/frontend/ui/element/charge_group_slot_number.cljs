@@ -16,9 +16,8 @@
                                  vec)))))))
 
 (defmethod interface/form-element :charge-group-slot-number [path]
-  (let [value (-> @(rf/subscribe [:get-value path])
-                  count
-                  (or 0))]
+  (let [value @(rf/subscribe [:get-list-size path])
+        default (:default @(rf/subscribe [:get-relevant-options path]))]
     [range/range-input path
      :value value
-     :on-change #(rf/dispatch [:set-charge-group-slot-number path %])]))
+     :on-change #(rf/dispatch [:set-charge-group-slot-number path (or % default)])]))
