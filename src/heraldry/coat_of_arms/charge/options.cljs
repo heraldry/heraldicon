@@ -1,5 +1,15 @@
 (ns heraldry.coat-of-arms.charge.options
-  (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
+  (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
+            ;; [heraldry.coat-of-arms.charge.type.annulet :as annulet]
+            ;; [heraldry.coat-of-arms.charge.type.billet :as billet]
+            ;; [heraldry.coat-of-arms.charge.type.crescent :as crescent]
+            ;; [heraldry.coat-of-arms.charge.type.escutcheon :as escutcheon]
+            ;; [heraldry.coat-of-arms.charge.type.fusil :as fusil]
+            ;; [heraldry.coat-of-arms.charge.type.lozenge :as lozenge]
+            ;; [heraldry.coat-of-arms.charge.type.mascle :as mascle]
+            ;; [heraldry.coat-of-arms.charge.type.roundel :as roundel]
+            ;; [heraldry.coat-of-arms.charge.type.rustre :as rustre]
+            [heraldry.coat-of-arms.escutcheon :as root-escutcheon]
             [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
@@ -8,10 +18,25 @@
             [heraldry.interface :as interface]
             [heraldry.options :as options]))
 
+(def charges
+  [#_roundel/charge-type
+   #_annulet/charge-type
+   #_billet/charge-type
+   #_escutcheon/charge-type
+   #_lozenge/charge-type
+   #_fusil/charge-type
+   #_mascle/charge-type
+   #_rustre/charge-type
+   #_crescent/charge-type])
+
+(def choices
+  (->> charges
+       (map (fn [key]
+              [(charge-interface/display-name key) key]))))
+
 (def default-options
   {:type {:type :choice
-          ;; TODO: also a special case, probably can't include all choices here anyway
-          :choices []
+          :choices choices
           :ui {:label "Type"
                :form-type :charge-type-select}}
    :origin (-> position/default-options
@@ -31,7 +56,7 @@
                (assoc-in [:ui :label] "Anchor"))
    :geometry geometry/default-options
    :escutcheon {:type :choice
-                :choices (assoc-in (vec escutcheon/choices) [0 0] "Root")
+                :choices (assoc-in (vec root-escutcheon/choices) [0 0] "Root")
                 :default :none
                 :ui {:label "Escutcheon"
                      :form-type :escutcheon-select}}
