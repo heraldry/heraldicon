@@ -67,5 +67,5 @@
         (= texture :none) (dissoc :texture-displacement?)
         (not= mode :colours) (dissoc :theme)))))
 
-(defmethod interface/component-options :heraldry.options/render-options [data _path]
+(defmethod interface/component-options :heraldry.options/render-options [_path data]
   (options data))

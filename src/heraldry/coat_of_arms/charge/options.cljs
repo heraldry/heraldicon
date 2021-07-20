@@ -158,5 +158,5 @@
                                      (assoc :ui {:label "Fimbriation"
                                                  :form-type :fimbriation}))))))))
 
-(defmethod interface/component-options :heraldry.options/charge [data _path]
+(defmethod interface/component-options :heraldry.options/charge [_path data]
   (options data))

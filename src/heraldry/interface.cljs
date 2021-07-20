@@ -4,7 +4,7 @@
             [taoensso.timbre :as log]))
 
 (defmulti component-options
-  (fn [data path]
+  (fn [path data]
     (cond
       (-> path last
           (= :arms-form)) :heraldry.options/arms-general
@@ -31,7 +31,7 @@
                 (s/starts-with? ts ":heraldry.component/semy") :heraldry.options/semy
                 :else nil)))))
 
-(defmethod component-options nil [_data _path]
+(defmethod component-options nil [_path _data]
   nil)
 
 (defn type->component-type [t]

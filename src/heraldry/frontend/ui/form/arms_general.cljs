@@ -20,7 +20,7 @@
   {:form form})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-arms.[thing].options namespaces
-(defmethod interface/component-options :heraldry.options/arms-general [_data _path]
+(defmethod interface/component-options :heraldry.options/arms-general [_path _data]
   {:name {:type :text
           :default ""
           :ui {:label "Name"}}

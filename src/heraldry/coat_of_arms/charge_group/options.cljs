@@ -132,8 +132,8 @@
             :ui {:label "Offset"
                  :step 0.01}}})
 
-(defmethod interface/component-options :heraldry.options/charge-group [data _path]
+(defmethod interface/component-options :heraldry.options/charge-group [_path data]
   (options data))
 
-(defmethod interface/component-options :heraldry.options/charge-group-strip [_data _path]
+(defmethod interface/component-options :heraldry.options/charge-group-strip [_path _data]
   strip-options)
