@@ -10,30 +10,32 @@
 
 (defn theme-choice [path key display-name & {:keys [selected?]}]
   (let [{:keys [result]} (render/coat-of-arms
-                          {:escutcheon :rectangle
-                           :field {:type :heraldry.field.type/bendy-sinister
-                                   :line {:type :straight}
-                                   :layout {:num-base-fields 7
-                                            :num-fields-y 7}
-                                   :fields [{:type :heraldry.field.type/plain
-                                             :tincture :argent}
-                                            {:type :heraldry.field.type/plain
-                                             :tincture :gules}
-                                            {:type :heraldry.field.type/plain
-                                             :tincture :or}
-                                            {:type :heraldry.field.type/plain
-                                             :tincture :vert}
-                                            {:type :heraldry.field.type/plain
-                                             :tincture :azure}
-                                            {:type :heraldry.field.type/plain
-                                             :tincture :purpure}
-                                            {:type :heraldry.field.type/plain
-                                             :tincture :sable}
-                                            {:type :heraldry.field.type/ref
-                                             :index 0}]}}
+                          [:coat-of-arms]
                           80
                           (-> shared/coa-select-option-context
-                              (assoc-in [:render-options :theme] key)))]
+                              (assoc-in [:data :render-options :theme] key)
+                              (assoc-in [:data :coat-of-arms]
+                                        {:escutcheon :rectangle
+                                         :field {:type :heraldry.field.type/bendy-sinister
+                                                 :line {:type :straight}
+                                                 :layout {:num-base-fields 7
+                                                          :num-fields-y 7}
+                                                 :fields [{:type :heraldry.field.type/plain
+                                                           :tincture :argent}
+                                                          {:type :heraldry.field.type/plain
+                                                           :tincture :gules}
+                                                          {:type :heraldry.field.type/plain
+                                                           :tincture :or}
+                                                          {:type :heraldry.field.type/plain
+                                                           :tincture :vert}
+                                                          {:type :heraldry.field.type/plain
+                                                           :tincture :azure}
+                                                          {:type :heraldry.field.type/plain
+                                                           :tincture :purpure}
+                                                          {:type :heraldry.field.type/plain
+                                                           :tincture :sable}
+                                                          {:type :heraldry.field.type/ref
+                                                           :index 0}]}})))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
                           :style {:border (if selected?
                                             "1px solid #000"
