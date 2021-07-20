@@ -519,7 +519,8 @@
                                   [:layout :stretch-x]
                                   [:layout :num-fields-y]
                                   [:layout :offset-y]
-                                  [:layout :stretch-y]]
+                                  [:layout :stretch-y]
+                                  [:outline?]]
                                  {})
             :potenty (options/pick default-options
                                    [[:type]
