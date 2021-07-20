@@ -1,8 +1,8 @@
 (ns heraldry.coat-of-arms.field.type.vairy
   (:require [heraldry.coat-of-arms.field.interface :as interface]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (def field-type
@@ -288,8 +288,7 @@
           vair-pattern]])]
      (doall
       (for [idx (range 2)]
-        (let [mask-id (util/id "mask")
-              tincture (options/sanitized-value (conj path :fields idx :tincture) context)]
+        (let [mask-id (util/id "mask")]
           ^{:key idx}
           [:<>
            [:mask {:id mask-id}
@@ -298,12 +297,9 @@
                     :width 1100
                     :height 1100
                     :fill (str "url(#" pattern-id "-" idx ")")}]]
-           [:rect {:x -500
-                   :y -500
-                   :width 1100
-                   :height 1100
-                   :mask (str "url(#" mask-id ")")
-                   :fill (tincture/pick tincture context)}]])))
+           [tincture/tinctured-field
+            (conj path :fields idx :tincture) context
+            :mask-id mask-id]])))
      (when outline?
        [:rect {:x -500
                :y -500
