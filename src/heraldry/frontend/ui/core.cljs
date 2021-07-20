@@ -194,7 +194,8 @@
                                             "#ccc"
                                             "#777")
                                    :cursor (when disabled? "not-allowed")}}]
-              :disabled? disabled?]
+              :disabled? disabled?
+              :require-click? true]
              ^{:key icon} [:span.node-icon
                            {:class (when disabled? "disabled")
                             :on-click (when-not disabled? handler)
