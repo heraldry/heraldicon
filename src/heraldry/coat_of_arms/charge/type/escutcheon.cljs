@@ -1,19 +1,22 @@
 (ns heraldry.coat-of-arms.charge.type.escutcheon
-  (:require [heraldry.coat-of-arms.charge.options :as charge-options]
+  (:require [heraldry.coat-of-arms.charge.interface :as interface]
             [heraldry.coat-of-arms.charge.shared :as charge-shared]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.environment :as environment]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.options :as options]))
 
-(defn render
-  {:display-name "Escutcheon"
-   :value :heraldry.charge.type/escutcheon}
-  [charge parent environment {:keys [root-escutcheon] :as context}]
-  (let [{:keys [escutcheon]} (options/sanitize charge (charge-options/options charge))]
+(def charge-type
+  :heraldry.charge.type/escutcheon)
+
+(defmethod interface/display-name charge-type [_] "Escutcheon")
+
+(defmethod interface/render-charge charge-type
+  [path parent-path environment {:keys [root-escutcheon] :as context}]
+  (let [escutcheon (options/sanitized-value (conj path :escutcheon) context)]
     (charge-shared/make-charge
-     charge parent environment context
+     path parent-path environment context
      :width
      (fn [width]
        (let [env (environment/transform-to-width

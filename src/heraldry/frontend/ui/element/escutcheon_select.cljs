@@ -10,15 +10,17 @@
 
 (defn escutcheon-choice [path key display-name & {:keys [selected?]}]
   (let [{:keys [result]} (render/coat-of-arms
-                          (if (= key :none)
-                            {:escutcheon :rectangle
-                             :field {:type :heraldry.field.type/plain
-                                     :tincture :void}}
-                            {:escutcheon key
-                             :field {:type :heraldry.field.type/plain
-                                     :tincture (if selected? :or :azure)}})
+                          [:coat-of-arms]
                           100
-                          shared/coa-select-option-context)]
+                          (-> shared/coa-select-option-context
+                              (assoc-in [:data :coat-of-arms]
+                                        (if (= key :none)
+                                          {:escutcheon :rectangle
+                                           :field {:type :heraldry.field.type/plain
+                                                   :tincture :void}}
+                                          {:escutcheon key
+                                           :field {:type :heraldry.field.type/plain
+                                                   :tincture (if selected? :or :azure)}}))))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
      [:svg {:style {:width "4em"
                     :height "5em"}
