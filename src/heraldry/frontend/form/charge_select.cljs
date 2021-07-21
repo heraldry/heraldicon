@@ -6,7 +6,7 @@
             [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
-            [heraldry.license :as license]
+            [heraldry.attribution :as attribution]
             [re-frame.core :as rf]))
 
 (def node-icons
@@ -240,7 +240,7 @@
                                     " "
                                     [link-fn (-> node :data)]
                                     " by "
-                                    [:a {:href (license/full-url-for-username username)
+                                    [:a {:href (attribution/full-url-for-username username)
                                          :target "_blank"} username]]
                                    [charge-properties charge]])))}]])
      refresh-fn

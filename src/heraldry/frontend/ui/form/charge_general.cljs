@@ -4,7 +4,7 @@
             [heraldry.frontend.ui.element.checkbox :as checkbox]
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.interface :as interface]
-            [heraldry.license :as license]))
+            [heraldry.attribution :as attribution]))
 
 (defn form [path _]
   [:<>
@@ -36,7 +36,7 @@
           :ui {:label "Name"}}
    :is-public {:type :boolean
                :ui {:label "Make public"}}
-   :attribution license/default-options
+   :attribution attribution/default-options
    :tags {:ui {:form-type :tags}}
    :type {:type :text
           :ui {:label "Charge type"}}
