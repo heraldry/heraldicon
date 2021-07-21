@@ -1,7 +1,9 @@
 (ns heraldry.coat-of-arms.cottising
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.options :as field-options]
-            [heraldry.coat-of-arms.line.core :as line]))
+            [heraldry.coat-of-arms.line.core :as line]
+            [heraldry.interface :as interface]
+            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]))
 
 (def cottise-default-options
   {:line (-> line/default-options
@@ -67,3 +69,37 @@
     (and (:cottise-opposite-2 options)
          cottise-opposite-2)
     (update :cottise-opposite-2 cottise-options cottise-opposite-2)))
+
+(defn fess-cottise [which path environment context & {:keys [offset-y-fn alignment]}]
+  (let [cottise-key (case which
+                      :cottise :cottise-1
+                      :cottise-opposite :cottise-opposite-1)
+        cottise-path (conj path :cottising cottise-key)
+        cottise-2-path (conj path :cottising
+                             (case which
+                               :cottise :cottise-2
+                               :cottise-opposite :cottise-opposite-2))]
+    (when (interface/get-raw-data cottise-path context)
+      (let [line (interface/get-sanitized-data (conj cottise-path :line) context)
+            opposite-line (interface/get-sanitized-data (conj cottise-path :opposite-line) context)
+            [line
+             opposite-line] (case which
+                              :cottise [line opposite-line]
+                              :cottise-opposite [opposite-line line])
+            thickness (interface/get-sanitized-data (conj cottise-path :thickness) context)
+            distance (interface/get-sanitized-data (conj cottise-path :distance) context)]
+        [ordinary-interface/render-ordinary
+         [:context :cottise]
+         path
+         environment
+         (assoc
+          context
+          :cottise {:type :heraldry.ordinary.type/fess
+                    :field (interface/get-raw-data (conj cottise-path :field) context)
+                    :line line
+                    :opposite-line opposite-line
+                    :geometry {:size thickness}
+                    :cottising {cottise-key (interface/get-raw-data cottise-2-path context)}
+                    :origin (-> (interface/get-raw-data (conj path :origin) context)
+                                (assoc :offset-y [:force (offset-y-fn distance)])
+                                (assoc :alignment alignment))})]))))
