@@ -1,29 +1,31 @@
 (ns heraldry.options
   (:require [clojure.walk :as walk]
-            [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
 (def option-types #{:range :choice :boolean :text})
 
 (defn get-value [value options]
-  (let [value (or value
-                  (:inherited options)
-                  (:default options))]
-    (case (:type options)
-      :boolean (boolean value)
-      :choice (let [choices (util/choices->map (:choices options))]
-                (if (contains? choices value)
-                  value
-                  (-> options :choices first second)))
-      :range (cond
-               (and (nil? value)
-                    (-> options :default nil?)) nil
-               (nil? value) (:min options)
-               :else (-> value
-                         (max (:min options))
-                         (min (:max options))))
-      :text (or value (:default options))
-      nil)))
+  (if (and (vector? value)
+           (-> value first (= :force)))
+    (second value)
+    (let [value (or value
+                    (:inherited options)
+                    (:default options))]
+      (case (:type options)
+        :boolean (boolean value)
+        :choice (let [choices (util/choices->map (:choices options))]
+                  (if (contains? choices value)
+                    value
+                    (-> options :choices first second)))
+        :range (cond
+                 (and (nil? value)
+                      (-> options :default nil?)) nil
+                 (nil? value) (:min options)
+                 :else (-> value
+                           (max (:min options))
+                           (min (:max options))))
+        :text (or value (:default options))
+        nil))))
 
 (defn get-sanitized-value-or-nil [value options]
   (if (nil? value)
