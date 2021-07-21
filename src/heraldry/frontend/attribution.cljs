@@ -1,4 +1,4 @@
-(ns heraldry.frontend.credits
+(ns heraldry.frontend.attribution
   (:require [heraldry.attribution :as attribution]
             [heraldry.util :as util]))
 

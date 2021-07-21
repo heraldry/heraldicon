@@ -25,7 +25,7 @@
 
 ;; views
 
-(defn charge-credits []
+(defn charge-attribution []
   (let [coat-of-arms-db-path (conj form-db-path :coat-of-arms)
         coat-of-arms @(rf/subscribe [:get coat-of-arms-db-path])
         used-charges (->> coat-of-arms
@@ -41,14 +41,14 @@
         charges-data (->> used-charges
                           (map charge/fetch-charge-data))]
     (when (-> charges-data first :id)
-      [:div.credits
-       [:span.credits-heading "Charge attribution"]
+      [:div.attribution
+       [:span.attribution-heading "Charge attribution"]
        [:ul
         (doall
          (for [charge charges-data]
            (when-let [charge-id (:id charge)]
              ^{:key charge-id}
-             [:li #_[credits/for-charge charge]])))]])))
+             [:li #_[attribution/for-charge charge]])))]])))
 
 (defn render-coat-of-arms []
   (let [coat-of-arms-path (conj form-db-path :coat-of-arms)
@@ -80,9 +80,9 @@
 (defn attribution []
   (let [arms-data @(rf/subscribe [:get form-db-path])]
     [:<>
-     [:div.credits
-      #_[credits/for-arms arms-data]]
-     [charge-credits]]))
+     [:div.attribution
+      #_[attribution/for-arms arms-data]]
+     [charge-attribution]]))
 
 (defn generate-svg-clicked [event]
   (.preventDefault event)

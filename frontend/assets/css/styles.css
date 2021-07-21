@@ -231,14 +231,14 @@ label div {
   color: #aaa;
 }
 
-.credits {
+.attribution {
   border: 1px solid #ddd;
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 1em;
 }
 
-.credits-heading {
+.attribution-heading {
   font-size: 1.2em;
 }
 
