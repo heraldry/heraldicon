@@ -1,10 +1,10 @@
 (ns heraldry.frontend.ui.form.charge-general
-  (:require [heraldry.coat-of-arms.attributes :as attributes]
+  (:require [heraldry.attribution :as attribution]
+            [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.ui.element.checkbox :as checkbox]
             [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.interface :as interface]
-            [heraldry.attribution :as attribution]))
+            [heraldry.interface :as interface]))
 
 (defn form [path _]
   [:<>
@@ -30,13 +30,13 @@
   {:form form})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-charge.[thing].options namespaces
-(defmethod interface/component-options :heraldry.options/charge-general [_path _data]
+(defmethod interface/component-options :heraldry.options/charge-general [_path data]
   {:name {:type :text
           :default ""
           :ui {:label "Name"}}
    :is-public {:type :boolean
                :ui {:label "Make public"}}
-   :attribution attribution/default-options
+   :attribution (attribution/options (:attribution data))
    :tags {:ui {:form-type :tags}}
    :type {:type :text
           :ui {:label "Charge type"}}
