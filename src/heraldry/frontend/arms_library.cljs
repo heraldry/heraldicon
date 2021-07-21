@@ -3,18 +3,16 @@
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.blazon :as blazon]
             [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
-            [heraldry.frontend.credits :as credits]
             [heraldry.frontend.form.arms-select :as arms-select]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.user :as user]
-            [heraldry.util :refer [full-url-for-arms full-url-for-username id-for-url]]
+            [heraldry.util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
             [taoensso.timbre :as log]))
@@ -50,15 +48,10 @@
          (for [charge charges-data]
            (when-let [charge-id (:id charge)]
              ^{:key charge-id}
-             [:li [credits/for-charge charge]])))]])))
+             [:li #_[credits/for-charge charge]])))]])))
 
 (defn render-coat-of-arms []
   (let [coat-of-arms-path (conj form-db-path :coat-of-arms)
-        arms-data @(rf/subscribe [:get form-db-path])
-        attribution (:attribution arms-data)
-        name (:name arms-data)
-        arms-url (full-url-for-arms arms-data)
-        username (:username arms-data)
         {:keys [result
                 environment]} (render/coat-of-arms
                                coat-of-arms-path
@@ -66,7 +59,6 @@
                                (merge
                                 context/default
                                 {:render-options (conj form-db-path :render-options)
-                                 :metadata [metadata/attribution name username (full-url-for-username username) arms-url attribution]
                                  :root-transform "scale(5,5)"}))
         {:keys [width height]} environment]
     [:svg {:id "svg"
@@ -89,7 +81,7 @@
   (let [arms-data @(rf/subscribe [:get form-db-path])]
     [:<>
      [:div.credits
-      [credits/for-arms arms-data]]
+      #_[credits/for-arms arms-data]]
      [charge-credits]]))
 
 (defn generate-svg-clicked [event]

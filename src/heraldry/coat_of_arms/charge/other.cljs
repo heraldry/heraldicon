@@ -11,6 +11,7 @@
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.frontend.state :as state]
             [heraldry.options :as options]
             [heraldry.util :as util]))
 
@@ -267,10 +268,7 @@
             ;; field (if (:counterchanged? field)
             ;;         (counterchange/counterchange-field charge parent :charge-group charge-group)
             ;;         field)
-            charge-name (or (:name full-charge-data) "")
-            username (:username full-charge-data)
-            charge-url (or (util/full-url-for-charge full-charge-data) "")
-            attribution (:attribution full-charge-data)]
+            ]
         [:<>
          [:defs
           (when render-shadow?
@@ -399,7 +397,10 @@
             (if render-options-preview-original?
               unadjusted-charge
               [:g
-               [metadata/attribution charge-name username (util/full-url-for-username username) charge-url attribution]
+               [metadata/attribution
+                [:charge-data]
+                :charge {:data {:charge-data full-charge-data}
+                         :access state/access-by-context}]
                (when render-field?
                  [:g {:mask (str "url(#" mask-inverted-id ")")}
                   [:g {:transform reverse-transform}

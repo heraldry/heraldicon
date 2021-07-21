@@ -1,5 +1,6 @@
 (ns heraldry.license
-  (:require [heraldry.frontend.ui.interface :as interface]
+  (:require [heraldry.config :as config]
+            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (def license-choices
@@ -150,3 +151,23 @@
                                 (dissoc :source-link)
                                 (dissoc :source-creator-name)
                                 (dissoc :source-creator-link)))))
+
+(defn full-url [path base context]
+  (when-let [object-id (options/raw-value (conj path :id) context)]
+    (let [version (options/raw-value (conj path :version) context)
+          version (if (zero? version)
+                    (options/raw-value (conj path :latest-version) context)
+                    version)]
+      (str (config/get :heraldry-url) base (util/id-for-url object-id) "/" version))))
+
+(defn full-url-for-arms [path context]
+  (full-url path "/arms/" context))
+
+(defn full-url-for-collection [path context]
+  (full-url path "/collection/" context))
+
+(defn full-url-for-charge [path context]
+  (full-url path "/charges/" context))
+
+(defn full-url-for-username [username]
+  (str (config/get :heraldry-url) "/users/" username))

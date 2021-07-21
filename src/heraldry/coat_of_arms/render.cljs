@@ -4,6 +4,7 @@
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
+            [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.texture :as texture]
@@ -14,7 +15,7 @@
 (defn coat-of-arms [path width
                     {:keys
                      [svg-export?
-                      metadata
+                      metadata-path
                       root-transform
                       texture-link] :as context}]
   (let [mode (options/render-option :mode context)
@@ -45,7 +46,8 @@
      :result [:g {:filter (when escutcheon-shadow?
                             "url(#shadow)")}
               [:g {:transform root-transform}
-               metadata
+               (when metadata-path
+                 [metadata/attribution metadata-path :arms context])
                [:defs
                 (when shiny?
                   [:filter {:id shiny-id}
@@ -111,7 +113,7 @@
                   [field-shared/render (conj path :field)
                    environment
                    (-> context
-                       (dissoc :metadata)
+                       (dissoc :metadata-path)
                        (assoc :root-escutcheon escutcheon))]]]]
                (when (or escutcheon-outline?
                          outline?)
