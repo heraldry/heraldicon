@@ -1,28 +1,27 @@
 (ns heraldry.coat-of-arms.field.type.quartered
-  (:require [heraldry.coat-of-arms.field.interface :as interface]
+  (:require [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.interface :as interface]))
 
-(def field-type
-  :heraldry.field.type/quartered)
+(def field-type :heraldry.field.type/quartered)
 
-(defmethod interface/display-name field-type [_] "Quartered")
+(defmethod field-interface/display-name field-type [_] "Quartered")
 
-(defmethod interface/part-names field-type [_] ["I" "II" "III" "IV"])
+(defmethod field-interface/part-names field-type [_] ["I" "II" "III" "IV"])
 
-(defmethod interface/render-field field-type
+(defmethod field-interface/render-field field-type
   [path environment context]
-  (let [line (options/sanitized-value (conj path :line) context)
-        opposite-line (options/sanitized-value (conj path :opposite-line) context)
-        origin (options/sanitized-value (conj path :origin) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
+  (let [line (interface/get-sanitized-data (conj path :line) context)
+        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
+        origin (interface/get-sanitized-data (conj path :origin) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))

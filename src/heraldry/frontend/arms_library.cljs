@@ -39,12 +39,11 @@
            (when-let [charge-id (:id charge)]
              ^{:key charge-id}
              [attribution/for-charge
-              [:charge-data]
-              {:data {:charge-data charge}
-               :access state/access-by-context}])))]])))
+              [:context :charge-data]
+              {:charge-data charge}])))]])))
 
 (defn attribution []
-  (let [attribution-data (attribution/for-arms form-db-path {:access state/access-by-state})]
+  (let [attribution-data (attribution/for-arms form-db-path {})]
     [:div.attribution
      [:h3 "Attribution"]
      [:div {:style {:padding-left "1em"}}

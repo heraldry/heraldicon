@@ -1,16 +1,15 @@
 (ns heraldry.coat-of-arms.field.type.masonry
-  (:require [heraldry.coat-of-arms.field.interface :as interface]
-            [heraldry.options :as options]
+  (:require [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
-(def field-type
-  :heraldry.field.type/masonry)
+(def field-type :heraldry.field.type/masonry)
 
-(defmethod interface/display-name field-type [_] "Masonry")
+(defmethod field-interface/display-name field-type [_] "Masonry")
 
-(defmethod interface/part-names field-type [_] nil)
+(defmethod field-interface/part-names field-type [_] nil)
 
 (defn masonry-default [part-width part-height thickness]
   (let [width part-width
@@ -65,18 +64,18 @@
                                "V" (- height dx)
                                "H" width)}]]}))
 
-(defmethod interface/render-field field-type
+(defmethod field-interface/render-field field-type
   [path environment context]
-  (let [thickness (options/sanitized-value (conj path :thickness) context)
-        num-fields-x (options/sanitized-value (conj path :layout :num-fields-x) context)
-        num-fields-y (options/sanitized-value (conj path :layout :num-fields-y) context)
-        raw-num-fields-y (options/raw-value (conj path :layout :num-fields-y) context)
-        offset-x (options/sanitized-value (conj path :layout :offset-x) context)
-        offset-y (options/sanitized-value (conj path :layout :offset-y) context)
-        stretch-x (options/sanitized-value (conj path :layout :stretch-x) context)
-        stretch-y (options/sanitized-value (conj path :layout :stretch-y) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
+  (let [thickness (interface/get-sanitized-data (conj path :thickness) context)
+        num-fields-x (interface/get-sanitized-data (conj path :layout :num-fields-x) context)
+        num-fields-y (interface/get-sanitized-data (conj path :layout :num-fields-y) context)
+        raw-num-fields-y (interface/get-raw-data (conj path :layout :num-fields-y) context)
+        offset-x (interface/get-sanitized-data (conj path :layout :offset-x) context)
+        offset-y (interface/get-sanitized-data (conj path :layout :offset-y) context)
+        stretch-x (interface/get-sanitized-data (conj path :layout :stretch-x) context)
+        stretch-y (interface/get-sanitized-data (conj path :layout :stretch-y) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)

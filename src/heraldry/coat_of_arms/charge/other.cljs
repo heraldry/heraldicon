@@ -2,7 +2,7 @@
   (:require [clojure.string :as s]
             [clojure.walk :as walk]
             [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.charge.interface :as interface]
+            [heraldry.coat-of-arms.charge.interface :as charge-interface]
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
@@ -11,8 +11,7 @@
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.frontend.state :as state]
-            [heraldry.options :as options]
+            [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
 (defn remove-outlines [data placeholder-colours]
@@ -82,11 +81,11 @@
                                "#fff")))))]
     [mask-id mask mask-inverted-id mask-inverted]))
 
-(defmethod interface/render-charge :heraldry.charge.type/other
+(defmethod charge-interface/render-charge :heraldry.charge.type/other
   [path parent-path environment {:keys [load-charge-data charge-group
                                         origin-override size-default] :as context}]
-  (let [data (options/raw-value (conj path :data) context)
-        variant (options/raw-value (conj path :variant) context)
+  (let [data (interface/get-raw-data (conj path :data) context)
+        variant (interface/get-raw-data (conj path :variant) context)
         full-charge-data (or data (when variant (load-charge-data variant)))]
     (if (:data full-charge-data)
       (let [;; TODO: bring this back
@@ -96,27 +95,27 @@
                (charge-options/options charge)
                [:origin :point :choices]
                conj ["Special" :special])
-            origin (options/sanitized-value (conj path :origin) context)
-            anchor (options/sanitized-value (conj path :anchor) context)
-            fimbriation (options/sanitized-value (conj path :fimbriation) context)
+            origin (interface/get-sanitized-data (conj path :origin) context)
+            anchor (interface/get-sanitized-data (conj path :anchor) context)
+            fimbriation (interface/get-sanitized-data (conj path :fimbriation) context)
             size (if (and size-default
-                          (not (options/raw-value (conj path :geometry :size) context)))
+                          (not (interface/get-raw-data (conj path :geometry :size) context)))
                    size-default
-                   (options/sanitized-value (conj path :geometry :size) context))
-            stretch (options/sanitized-value (conj path :geometry :stretch) context)
-            mirrored? (options/sanitized-value (conj path :geometry :mirrored?) context)
-            reversed? (options/sanitized-value (conj path :geometry :reversed?) context)
+                   (interface/get-sanitized-data (conj path :geometry :size) context))
+            stretch (interface/get-sanitized-data (conj path :geometry :stretch) context)
+            mirrored? (interface/get-sanitized-data (conj path :geometry :mirrored?) context)
+            reversed? (interface/get-sanitized-data (conj path :geometry :reversed?) context)
             ;; not all tinctures have their own options, but some do, so
             ;; override those with the sanitized values
             tincture (merge
-                      (options/raw-value (conj path :tincture) context)
-                      (options/sanitized-value (conj path :tincture) context))
-            render-options-preview-original? (options/render-option :preview-original? context)
+                      (interface/get-raw-data (conj path :tincture) context)
+                      (interface/get-sanitized-data (conj path :tincture) context))
+            render-options-preview-original? (interface/render-option :preview-original? context)
             outline-mode (if
-                          (or (options/render-option :outline? context)
-                              (= (options/render-option :mode context)
+                          (or (interface/render-option :outline? context)
+                              (= (interface/render-option :mode context)
                                  :hatching)) :keep
-                          (options/sanitized-value (conj path :outline-mode) context))
+                          (interface/get-sanitized-data (conj path :outline-mode) context))
             outline? (= outline-mode :keep)
             {:keys [charge-group-path
                     slot-spacing
@@ -130,7 +129,7 @@
             ;; since size now is filled with a default, check whether it was set at all,
             ;; if not, then use nil
             ;; TODO: this probably needs a better mechanism and form representation
-            size (if (options/raw-value (conj path :geometry :size) context) size nil)
+            size (if (interface/get-raw-data (conj path :geometry :size) context) size nil)
             points (:points environment)
             top (:top points)
             bottom (:bottom points)
@@ -398,9 +397,8 @@
               unadjusted-charge
               [:g
                [metadata/attribution
-                [:charge-data]
-                :charge {:data {:charge-data full-charge-data}
-                         :access state/access-by-context}]
+                [:context :charge-data]
+                :charge {:charge-data full-charge-data}]
                (when render-field?
                  [:g {:mask (str "url(#" mask-inverted-id ")")}
                   [:g {:transform reverse-transform}

@@ -1,15 +1,14 @@
 (ns heraldry.coat-of-arms.field.type.plain
-  (:require [heraldry.coat-of-arms.field.interface :as interface]
+  (:require [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.tincture.core :as tincture]))
 
-(def field-type
-  :heraldry.field.type/plain)
+(def field-type :heraldry.field.type/plain)
 
-(defmethod interface/display-name field-type [_] "Plain")
+(defmethod field-interface/display-name field-type [_] "Plain")
 
-(defmethod interface/part-names field-type [_] [])
+(defmethod field-interface/part-names field-type [_] [])
 
-(defmethod interface/render-field field-type
+(defmethod field-interface/render-field field-type
   [path _environment context]
   (tincture/tinctured-field
    (conj path :tincture)

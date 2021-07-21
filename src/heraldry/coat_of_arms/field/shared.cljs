@@ -13,12 +13,12 @@
   (let [selected? false
         ;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
         ;; adding it to the choices in the option would affect the UI
-        field-type (options/raw-value (conj path :type) context)
+        field-type (interface/get-raw-data (conj path :type) context)
         path (if (= field-type :heraldry.field.type/ref)
                (-> path
                    drop-last
                    vec
-                   (conj (options/raw-value (conj path :index) context)))
+                   (conj (interface/get-raw-data (conj path :index) context)))
                path)]
     [:<>
      [:g {:style (when (not svg-export?)
@@ -26,7 +26,7 @@
                     :cursor "pointer"})
           :transform transform}
       [ui-interface/render-field path environment context]
-      (for [idx (range (options/list-size (conj path :components) context))]
+      (for [idx (range (interface/get-list-size (conj path :components) context))]
         ^{:key idx}
         [interface/render-component
          (conj path :components idx)
@@ -44,10 +44,10 @@
       (let [clip-path-id (util/id (str "clip-" idx))
             mask-id (util/id (str "mask-" idx))
             part-path (conj field-path :fields idx)
-            inherit-environment? (options/sanitized-value
+            inherit-environment? (interface/get-sanitized-data
                                   (conj part-path :inherit-environment?)
                                   context)
-            counterchanged? (options/sanitized-value
+            counterchanged? (interface/get-sanitized-data
                              (conj part-path :counterchanged?)
                              context)
             env (environment/create
@@ -103,10 +103,10 @@
    (let [[shape-path bounding-box & extra] part
          clip-path-id (util/id "clip")
          mask-id (util/id "mask")
-         inherit-environment? (options/sanitized-value
+         inherit-environment? (interface/get-sanitized-data
                                (conj field-path :inherit-environment?)
                                context)
-         counterchanged? (options/sanitized-value
+         counterchanged? (interface/get-sanitized-data
                           (conj field-path :counterchanged?)
                           context)
          env (environment/create

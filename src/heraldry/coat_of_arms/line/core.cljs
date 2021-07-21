@@ -29,6 +29,7 @@
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.interface :as interface]
             [heraldry.options :as options]
             [heraldry.util :as util]))
 
@@ -455,7 +456,7 @@
                                 [(v/dot line-start (v/v 1 -1))
                                  (v/dot line-end (v/v 1 -1))]
                                 [line-start line-end])
-        squiggly? (options/render-option :squiggly? context)]
+        squiggly? (interface/render-option :squiggly? context)]
     (-> line-data
         (assoc :line
                (-> line-path

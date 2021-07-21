@@ -1,10 +1,10 @@
 (ns heraldry.frontend.attribution
   (:require [heraldry.attribution :as attribution]
-            [heraldry.options :as options]))
+            [heraldry.interface :as interface]))
 
 (defn general [path attribution-type context]
   [:div.credit
-   (if (options/raw-value (conj path :id) context)
+   (if (interface/get-raw-data (conj path :id) context)
      (let [{:keys [nature
                    license
                    license-version
@@ -13,9 +13,9 @@
                    source-creator-link
                    source-link
                    source-license
-                   source-license-version]} (options/sanitized-value (conj path :attribution) context)
-           title (options/raw-value (conj path :name) context)
-           username (options/raw-value (conj path :username) context)
+                   source-license-version]} (interface/get-sanitized-data (conj path :attribution) context)
+           title (interface/get-raw-data (conj path :name) context)
+           username (interface/get-raw-data (conj path :username) context)
            url (attribution/full-url path attribution-type context)
            license-url (attribution/license-url license license-version)
            license-display-name (attribution/license-display-name license license-version)

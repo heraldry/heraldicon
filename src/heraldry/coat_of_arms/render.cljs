@@ -9,7 +9,7 @@
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.options :as options]
+            [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
 (defn coat-of-arms [path width
@@ -18,17 +18,17 @@
                       metadata-path
                       root-transform
                       texture-link] :as context}]
-  (let [mode (options/render-option :mode context)
-        escutcheon-override (options/render-option :escutcheon-override context)
-        escutcheon-shadow? (options/render-option :escutcheon-shadow? context)
-        escutcheon-outline? (options/render-option :escutcheon-outline? context)
-        outline? (options/render-option :outline? context)
-        shiny? (options/render-option :shiny? context)
-        squiggly? (options/render-option :squiggly? context)
-        theme (options/render-option :theme context)
-        texture (options/render-option :texture context)
-        texture-displacement? (options/render-option :texture-displacement? context)
-        escutcheon (options/sanitized-value (conj path :escutcheon) context)
+  (let [mode (interface/render-option :mode context)
+        escutcheon-override (interface/render-option :escutcheon-override context)
+        escutcheon-shadow? (interface/render-option :escutcheon-shadow? context)
+        escutcheon-outline? (interface/render-option :escutcheon-outline? context)
+        outline? (interface/render-option :outline? context)
+        shiny? (interface/render-option :shiny? context)
+        squiggly? (interface/render-option :squiggly? context)
+        theme (interface/render-option :theme context)
+        texture (interface/render-option :texture context)
+        texture-displacement? (interface/render-option :texture-displacement? context)
+        escutcheon (interface/get-sanitized-data (conj path :escutcheon) context)
         escutcheon (if (not= escutcheon-override :none)
                      escutcheon-override
                      escutcheon)

@@ -3,30 +3,29 @@
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.ordinary.interface :as interface]
+            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.options :as options]))
+            [heraldry.interface :as interface]))
 
 (defn arm-diagonal [origin-point anchor-point]
   (-> (v/- anchor-point origin-point)
       v/normal
       (v/* 200)))
 
-(def ordinary-type
-  :heraldry.ordinary.type/gore)
+(def ordinary-type :heraldry.ordinary.type/gore)
 
-(defmethod interface/display-name ordinary-type [_] "Gore")
+(defmethod ordinary-interface/display-name ordinary-type [_] "Gore")
 
-(defmethod interface/render-ordinary ordinary-type
+(defmethod ordinary-interface/render-ordinary ordinary-type
   [path _parent-path environment context]
-  (let [line (options/sanitized-value (conj path :line) context)
-        opposite-line (options/sanitized-value (conj path :opposite-line) context)
-        origin (options/sanitized-value (conj path :origin) context)
-        anchor (options/sanitized-value (conj path :anchor) context)
-        ;; cottising (options/sanitized-value (conj path :cottising) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
+  (let [line (interface/get-sanitized-data (conj path :line) context)
+        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
+        origin (interface/get-sanitized-data (conj path :origin) context)
+        anchor (interface/get-sanitized-data (conj path :anchor) context)
+        ;; cottising (interface/get-sanitized-data (conj path :cottising) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
 
         points (:points environment)
         left? (case (-> anchor :point)

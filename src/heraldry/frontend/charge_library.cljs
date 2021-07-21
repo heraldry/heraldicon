@@ -317,7 +317,7 @@
        "Save"]]]))
 
 (defn attribution []
-  (let [attribution-data (attribution/for-charge form-db-path {:access state/access-by-state})]
+  (let [attribution-data (attribution/for-charge form-db-path {})]
     [:div.attribution
      [:h3 "Attribution"]
      [:div {:style {:padding-left "1em"}}

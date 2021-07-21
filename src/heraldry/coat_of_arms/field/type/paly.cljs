@@ -1,28 +1,27 @@
 (ns heraldry.coat-of-arms.field.type.paly
-  (:require [heraldry.coat-of-arms.field.interface :as interface]
+  (:require [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.interface :as interface]))
 
-(def field-type
-  :heraldry.field.type/paly)
+(def field-type :heraldry.field.type/paly)
 
-(defmethod interface/display-name field-type [_] "Paly")
+(defmethod field-interface/display-name field-type [_] "Paly")
 
-(defmethod interface/part-names field-type [_] nil)
+(defmethod field-interface/part-names field-type [_] nil)
 
-(defmethod interface/render-field field-type
+(defmethod field-interface/render-field field-type
   [path environment context]
-  (let [line (options/sanitized-value (conj path :line) context)
-        num-fields-x (options/sanitized-value (conj path :layout :num-fields-x) context)
-        offset-x (options/sanitized-value (conj path :layout :offset-x) context)
-        stretch-x (options/sanitized-value (conj path :layout :stretch-x) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
+  (let [line (interface/get-sanitized-data (conj path :line) context)
+        num-fields-x (interface/get-sanitized-data (conj path :layout :num-fields-x) context)
+        offset-x (interface/get-sanitized-data (conj path :layout :offset-x) context)
+        stretch-x (interface/get-sanitized-data (conj path :layout :stretch-x) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
