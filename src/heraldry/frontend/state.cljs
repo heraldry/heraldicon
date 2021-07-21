@@ -303,10 +303,10 @@
   @(rf/subscribe [:get-list-size path]))
 
 (defmethod interface/get-raw-data :context [path context]
-  (get-in context path))
+  (get-in context (drop 1 path)))
 
 (defmethod interface/get-list-size :context [path context]
-  (count (get-in context path)))
+  (count (get-in context (drop 1 path))))
 
 (defn get-options-by-context [path context]
   (interface/component-options path (interface/get-raw-data path context)))
