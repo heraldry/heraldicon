@@ -5,6 +5,7 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.api.request :as api-request]
+            [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.form.arms-select :as arms-select]
@@ -26,29 +27,29 @@
 ;; views
 
 (defn charge-attribution []
-  (let [coat-of-arms-db-path (conj form-db-path :coat-of-arms)
-        coat-of-arms @(rf/subscribe [:get coat-of-arms-db-path])
-        used-charges (->> coat-of-arms
-                          (tree-seq #(or (map? %)
-                                         (vector? %)
-                                         (seq? %)) seq)
-                          (filter #(and (map? %)
-                                        (some-> % :type namespace (= "heraldry.charge.type"))
-                                        (-> % :variant :version)
-                                        (-> % :variant :id)))
-                          (map :variant)
-                          set)
+  (let [used-charges @(rf/subscribe [:used-charge-variants (conj form-db-path :coat-of-arms)])
         charges-data (->> used-charges
                           (map charge/fetch-charge-data))]
     (when (-> charges-data first :id)
-      [:div.attribution
-       [:span.attribution-heading "Charge attribution"]
+      [:<>
+       [:h3 "Charges"]
        [:ul
         (doall
          (for [charge charges-data]
            (when-let [charge-id (:id charge)]
              ^{:key charge-id}
-             [:li #_[attribution/for-charge charge]])))]])))
+             [attribution/for-charge
+              [:charge-data]
+              {:data {:charge-data charge}
+               :access state/access-by-context}])))]])))
+
+(defn attribution []
+  (let [attribution-data (attribution/for-arms form-db-path {:access state/access-by-state})]
+    [:div.attribution
+     [:h3 "Attribution"]
+     [:div {:style {:padding-left "1em"}}
+      attribution-data]
+     [charge-attribution]]))
 
 (defn render-coat-of-arms []
   (let [coat-of-arms-path (conj form-db-path :coat-of-arms)
@@ -76,13 +77,6 @@
      [:span.disclaimer "Blazon (very rudimentary, very beta)"]
      [:div.blazon
       (blazon/encode-field (:field coat-of-arms) :root? true)]]))
-
-(defn attribution []
-  (let [arms-data @(rf/subscribe [:get form-db-path])]
-    [:<>
-     [:div.attribution
-      #_[attribution/for-arms arms-data]]
-     [charge-attribution]]))
 
 (defn generate-svg-clicked [event]
   (.preventDefault event)

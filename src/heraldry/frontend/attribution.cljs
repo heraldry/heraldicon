@@ -1,58 +1,63 @@
 (ns heraldry.frontend.attribution
   (:require [heraldry.attribution :as attribution]
-            [heraldry.util :as util]))
+            [heraldry.options :as options]))
 
-(defn general [title url username data]
-  #_(let [{:keys [license
-                  license-version
-                  source-license
-                  source-license-version]} data
-          license-url (attribution/url license license-version)
-          license-display-name (attribution/display-name license license-version)
-          source-license-url (attribution/url source-license source-license-version)
-          source-license-display-name (attribution/display-name source-license source-license-version)]
-      [:div.credit
-       [:a {:href url
-            :target "_blank"} title]
-       " by "
-       [:a {:href (util/full-url-for-username username)
-            :target "_blank"} username]
-       " "
-       (case (or license :none)
-         :none "is private"
-         :public-domain "is in the public domain"
-         [:<> "is licensed under "
-          [:a {:href license-url :target "_blank"} license-display-name]])
-       (when (-> data :nature (= :derivative))
-         [:div.sub-credit
-          "source: "
-          [:a {:href (-> data :source-link)
-               :target "_blank"} " " (-> data :source-name)]
-          " by "
-          [:a {:href (-> data :source-creator-link)
-               :target "_blank"} (-> data :source-creator-name)]
-          " "
-          (case (or source-license :none)
-            :none "is private"
-            :public-domain "is in the public domain"
-            [:<> "is licensed under "
-             [:a {:href source-license-url :target "_blank"} source-license-display-name]])])]))
+(defn general [path attribution-type context]
+  [:div.credit
+   (if (options/raw-value (conj path :id) context)
+     (let [{:keys [nature
+                   license
+                   license-version
+                   source-name
+                   source-creator-name
+                   source-creator-link
+                   source-link
+                   source-license
+                   source-license-version]} (options/sanitized-value (conj path :attribution) context)
+           title (options/raw-value (conj path :name) context)
+           username (options/raw-value (conj path :username) context)
+           url (attribution/full-url path attribution-type context)
+           license-url (attribution/license-url license license-version)
+           license-display-name (attribution/license-display-name license license-version)
+           source-license-url (attribution/license-url source-license source-license-version)
+           source-license-display-name (attribution/license-display-name source-license source-license-version)]
+       [:<>
+        [:a {:href url
+             :target "_blank"} title]
+        " by "
+        [:a {:href (attribution/full-url-for-username username)
+             :target "_blank"} username]
+        " "
+        (case (or license :none)
+          :none "is private"
+          :public-domain "is in the public domain"
+          [:<> "is licensed under "
+           [:a {:href license-url :target "_blank"} license-display-name]])
+        (when (= nature :derivative)
+          [:div.sub-credit
+           "source: "
+           (if (-> source-name count pos?)
+             [:a {:href source-link
+                  :target "_blank"} " " source-name]
+             "unnamed")
+           (when (-> source-creator-name count pos?)
+             [:<>
+              " by "
+              [:a {:href source-creator-link
+                   :target "_blank"} source-creator-name]])
+           " "
+           (case (or source-license :none)
+             :none "is private"
+             :public-domain "is in the public domain"
+             [:<> "is licensed under "
+              [:a {:href source-license-url :target "_blank"} source-license-display-name]])])])
+     "unsaved data")])
 
-(defn for-charge [charge]
-  #_(when (:id charge)
-      (let [attribution (-> charge :attribution)
-            username (:username charge)
-            title (str " " (-> charge :type name) ": " (:name charge))
-            url (util/full-url-for-charge charge)]
-        [general title url username attribution])))
+(defn for-charge [path context]
+  [general path :charge context])
 
-(defn for-arms [arms]
-  #_(when (:id arms)
-      (let [attribution (-> arms :attribution)
-            username (:username arms)
-            title (:name arms)
-            url (util/full-url-for-arms arms)]
-        [general title url username attribution])))
+(defn for-arms [path context]
+  [general path :arms context])
 
 (defn for-collection [collection]
   #_(when (:id collection)

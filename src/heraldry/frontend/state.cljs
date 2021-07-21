@@ -37,7 +37,24 @@
   (fn [value [_ _path]]
     (count value)))
 
+(rf/reg-sub :used-charge-variants
+  (fn [[_ path] _]
+    (rf/subscribe [:get path]))
+
+  (fn [data [_ _path]]
+    (->> data
+         (tree-seq #(or (map? %)
+                        (vector? %)
+                        (seq? %)) seq)
+         (filter #(and (map? %)
+                       (some-> % :type namespace (= "heraldry.charge.type"))
+                       (-> % :variant :version)
+                       (-> % :variant :id)))
+         (map :variant)
+         set)))
+
 ;; events
+
 
 (rf/reg-event-db :initialize-db
   (fn [db [_]]
