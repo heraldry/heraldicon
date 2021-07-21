@@ -232,18 +232,11 @@ label div {
 }
 
 .attribution {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
   margin-bottom: 1em;
 }
 
-.attribution-heading {
-  font-size: 1.2em;
-}
-
-.sub-credit {
-  margin-left: 1em;
+.attribution ul {
+  padding-left: 1em;
 }
 
 .tags {
