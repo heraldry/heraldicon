@@ -5,6 +5,21 @@
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
+(rf/reg-event-db :remove-cottise
+  (fn [db [_ path cottise]]
+    (cond-> db
+      (= cottise :cottise-1) (-> (update-in path dissoc :cottise-2)
+                                 (assoc-in (conj path :cottise-1)
+                                           (get-in db (conj path :cottise-2))))
+
+      (= cottise :cottise-2) (update-in path dissoc :cottise-2)
+
+      (= cottise :cottise-opposite-1) (-> (update-in path dissoc :cottise-opposite-2)
+                                          (assoc-in (conj path :cottise-opposite-1)
+                                                    (get-in db (conj path :cottise-opposite-2))))
+
+      (= cottise :cottise-opposite-2) (update-in path dissoc :cottise-opposite-2))))
+
 (defn form [path _]
   [:<>
    (for [option [:type
@@ -24,20 +39,20 @@
 
 (defmethod interface/component-node-data :heraldry.component/ordinary [path]
   (let [cottising-options @(rf/subscribe [:get-relevant-options (conj path :cottising)])
-        cottise-1 @(rf/subscribe [:get-sanitized-value (conj path :cottising :cottise-1)])
-        cottise-2 @(rf/subscribe [:get-sanitized-value (conj path :cottising :cottise-2)])
-        cottise-opposite-1 @(rf/subscribe [:get-sanitized-value (conj path :cottising :cottise-opposite-1)])
-        cottise-opposite-2 @(rf/subscribe [:get-sanitized-value (conj path :cottising :cottise-opposite-2)])
+        cottise-1 @(rf/subscribe [:get-value (conj path :cottising :cottise-1)])
+        cottise-2 @(rf/subscribe [:get-value (conj path :cottising :cottise-2)])
+        cottise-opposite-1 @(rf/subscribe [:get-value (conj path :cottising :cottise-opposite-1)])
+        cottise-opposite-2 @(rf/subscribe [:get-value (conj path :cottising :cottise-opposite-2)])
         cottise-1? (and (:cottise-1 cottising-options)
-                        (:enabled? cottise-1))
+                        cottise-1)
         cottise-2? (and (:cottise-2 cottising-options)
-                        (:enabled? cottise-1)
-                        (:enabled? cottise-2))
+                        cottise-1
+                        cottise-2)
         cottise-opposite-1? (and (:cottise-opposite-1 cottising-options)
-                                 (:enabled? cottise-opposite-1))
+                                 cottise-opposite-1)
         cottise-opposite-2? (and (:cottise-opposite-2 cottising-options)
-                                 (:enabled? cottise-opposite-1)
-                                 (:enabled? cottise-opposite-2))
+                                 cottise-opposite-1
+                                 cottise-opposite-2)
         menu (cond-> []
                (and (:cottise-1 cottising-options)
                     (not cottise-1?))
@@ -82,27 +97,23 @@
                                 :buttons [{:icon "far fa-trash-alt"
                                            :tooltip "remove"
                                            :handler #(state/dispatch-on-event
-                                                      % [:set (conj path :cottising :cottise-2) nil])}]})
+                                                      % [:remove-cottise (conj path :cottising) :cottise-2])}]})
               cottise-1? (conj {:path (conj path :cottising :cottise-1)
                                 :buttons [{:icon "far fa-trash-alt"
                                            :tooltip "remove"
-                                           :handler #(do
-                                                       (rf/dispatch [:set (conj path :cottising :cottise-1) cottise-2])
-                                                       (state/dispatch-on-event
-                                                        % [:set (conj path :cottising :cottise-2) nil]))}]})
+                                           :handler #(state/dispatch-on-event
+                                                      % [:remove-cottise (conj path :cottising) :cottise-1])}]})
               cottise-opposite-1? (conj {:path (conj path :cottising :cottise-opposite-1)
                                          :buttons [{:icon "far fa-trash-alt"
                                                     :tooltip "remove"
-                                                    :handler #(do
-                                                                (rf/dispatch [:set (conj path :cottising :cottise-opposite-1) cottise-opposite-2])
-                                                                (state/dispatch-on-event
-                                                                 % [:set (conj path :cottising :cottise-opposite-2) nil]))}]})
+                                                    :handler #(state/dispatch-on-event
+                                                               % [:remove-cottise (conj path :cottising) :cottise-opposite-1])}]})
 
               cottise-opposite-2? (conj {:path (conj path :cottising :cottise-opposite-2)
                                          :buttons [{:icon "far fa-trash-alt"
                                                     :tooltip "remove"
                                                     :handler #(state/dispatch-on-event
-                                                               % [:set (conj path :cottising :cottise-opposite-2) nil])}]}))}))
+                                                               % [:remove-cottise (conj path :cottising) :cottise-opposite-2])}]}))}))
 
 (defmethod interface/component-form-data :heraldry.component/ordinary [_path]
   {:form form})

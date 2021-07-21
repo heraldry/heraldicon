@@ -4,9 +4,7 @@
             [heraldry.coat-of-arms.line.core :as line]))
 
 (def cottise-default-options
-  {:enabled? {:type :boolean
-              :default false}
-   :line (-> line/default-options
+  {:line (-> line/default-options
              (assoc-in [:ui :label] "Line"))
    :opposite-line (-> line/default-options
                       (assoc-in [:ui :label] "Opposite line"))

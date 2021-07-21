@@ -6,7 +6,6 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.frontend.state :as state]
             [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
@@ -25,8 +24,6 @@
         ;; cottising (interface/get-sanitized-data (conj path :cottising) context)
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (conj path :outline?) context))
-        cottise-1 (interface/get-sanitized-data (conj path :cottising :cottise-1) context)
-        cottise-opposite-1 (interface/get-sanitized-data (conj path :cottising :cottise-opposite-1) context)
         points (:points environment)
         plain-origin (get points (:point origin))
         origin-point (position/calculate origin environment :fess)
@@ -123,52 +120,62 @@
       environment context]
      (line/render line [line-one-data] first-left outline? context)
      (line/render opposite-line [line-reversed-data] second-right outline? context)
-     (when (:enabled? cottise-1)
-       [ordinary-interface/render-ordinary
-        [:context :ordinary]
-        path
-        environment
-        (-> context
-            (assoc :ordinary {:type :heraldry.ordinary.type/fess
-                              :field (interface/get-raw-data (conj path :cottising :cottise-1 :field) context)
-                              :line (:line cottise-1)
-                              :opposite-line (:opposite-line cottise-1)
-                              :geometry {:size (:thickness cottise-1)}
-                              :cottising {:cottise-1 (interface/get-raw-data (conj path :cottising :cottise-2) context)}
-                              :origin (-> (interface/get-raw-data (conj path :origin) context)
-                                          (assoc :offset-y [:force (-> plain-origin
-                                                                       :y
-                                                                       (- row1)
-                                                                       (- line-one-min)
-                                                                       (/ height)
-                                                                       (* 100)
-                                                                       (+ (:distance cottise-1)))])
-                                          (assoc :alignment :right))})
-            (assoc :override-shared-start-x shared-start-x)
-            (assoc :override-real-start real-start)
-            (assoc :override-real-end real-end))])
-     (when (:enabled? cottise-opposite-1)
-       [ordinary-interface/render-ordinary
-        [:context :ordinary]
-        path
-        environment
-        (-> context
-            (assoc :ordinary {:type :heraldry.ordinary.type/fess
-                              :field (interface/get-raw-data (conj path :cottising :cottise-opposite-1 :field) context)
-                              ;; swap line/opposite-line because the cottise fess is upside down
-                              :line (:opposite-line cottise-opposite-1)
-                              :opposite-line (:line cottise-opposite-1)
-                              :geometry {:size (:thickness cottise-opposite-1)}
-                              :cottising {:cottise-opposite-1 (interface/get-raw-data (conj path :cottising :cottise-opposite-2) context)}
-                              :origin (-> (interface/get-raw-data (conj path :origin) context)
-                                          (assoc :offset-y [:force (-> plain-origin
-                                                                       :y
-                                                                       (- row2)
-                                                                       (+ line-reversed-min)
-                                                                       (/ height)
-                                                                       (* 100)
-                                                                       (- (:distance cottise-opposite-1)))])
-                                          (assoc :alignment :left))})
-            (assoc :override-shared-start-x shared-start-x)
-            (assoc :override-real-start real-start)
-            (assoc :override-real-end real-end))])]))
+     (when (interface/get-raw-data (conj path :cottising :cottise-1) context)
+       (let [cottise-path (conj path :cottising :cottise-1)
+             line (interface/get-sanitized-data (conj cottise-path :line) context)
+             opposite-line (interface/get-sanitized-data (conj cottise-path :opposite-line) context)
+             thickness (interface/get-sanitized-data (conj cottise-path :thickness) context)
+             distance (interface/get-sanitized-data (conj cottise-path :distance) context)]
+         [ordinary-interface/render-ordinary
+          [:context :ordinary]
+          path
+          environment
+          (-> context
+              (assoc :ordinary {:type :heraldry.ordinary.type/fess
+                                :field (interface/get-raw-data (conj cottise-path :field) context)
+                                :line line
+                                :opposite-line opposite-line
+                                :geometry {:size thickness}
+                                :cottising {:cottise-1 (interface/get-raw-data (conj path :cottising :cottise-2) context)}
+                                :origin (-> (interface/get-raw-data (conj path :origin) context)
+                                            (assoc :offset-y [:force (-> plain-origin
+                                                                         :y
+                                                                         (- row1)
+                                                                         (- line-one-min)
+                                                                         (/ height)
+                                                                         (* 100)
+                                                                         (+ distance))])
+                                            (assoc :alignment :right))})
+              (assoc :override-shared-start-x shared-start-x)
+              (assoc :override-real-start real-start)
+              (assoc :override-real-end real-end))]))
+     (when (interface/get-raw-data (conj path :cottising :cottise-opposite-1) context)
+       (let [cottise-path (conj path :cottising :cottise-opposite-1)
+             line (interface/get-sanitized-data (conj cottise-path :line) context)
+             opposite-line (interface/get-sanitized-data (conj cottise-path :opposite-line) context)
+             thickness (interface/get-sanitized-data (conj cottise-path :thickness) context)
+             distance (interface/get-sanitized-data (conj cottise-path :distance) context)]
+         [ordinary-interface/render-ordinary
+          [:context :ordinary]
+          path
+          environment
+          (-> context
+              (assoc :ordinary {:type :heraldry.ordinary.type/fess
+                                :field (interface/get-raw-data (conj path :cottising :cottise-opposite-1 :field) context)
+                               ;; swap line/opposite-line because the cottise fess is upside down
+                                :line opposite-line
+                                :opposite-line line
+                                :geometry {:size thickness}
+                                :cottising {:cottise-opposite-1 (interface/get-raw-data (conj path :cottising :cottise-opposite-2) context)}
+                                :origin (-> (interface/get-raw-data (conj path :origin) context)
+                                            (assoc :offset-y [:force (-> plain-origin
+                                                                         :y
+                                                                         (- row2)
+                                                                         (+ line-reversed-min)
+                                                                         (/ height)
+                                                                         (* 100)
+                                                                         (- distance))])
+                                            (assoc :alignment :left))})
+              (assoc :override-shared-start-x shared-start-x)
+              (assoc :override-real-start real-start)
+              (assoc :override-real-end real-end))]))]))
