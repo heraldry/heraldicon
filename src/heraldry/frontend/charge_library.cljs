@@ -177,15 +177,15 @@
         coat-of-arms @(rf/subscribe [:get-value (conj example-coa-db-path :coat-of-arms)])
         {:keys [result
                 environment]} (render/coat-of-arms
-                               [:coat-of-arms]
+                               [:context :coat-of-arms]
                                100
                                (-> shared/coa-select-option-context
                                    (assoc :root-transform "scale(5,5)")
-                                   (assoc-in [:data :render-options]
-                                             @(rf/subscribe [:get-value (conj example-coa-db-path :render-options)]))
-                                   (assoc-in [:data :coat-of-arms]
-                                             (-> coat-of-arms
-                                                 (assoc-in [:field :components 0 :data] prepared-charge-data)))))
+                                   (assoc :render-options
+                                          (conj example-coa-db-path :render-options))
+                                   (assoc :coat-of-arms
+                                          (-> coat-of-arms
+                                              (assoc-in [:field :components 0 :data] prepared-charge-data)))))
         {:keys [width height]} environment]
     [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
            :preserveAspectRatio "xMidYMid meet"
