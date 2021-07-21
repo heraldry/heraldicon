@@ -97,5 +97,7 @@
                     :geometry {:size thickness}
                     :cottising {next-cottise-key (interface/get-raw-data cottise-2-path context)}
                     :origin {:point :fess
-                             :offset-y [:force (offset-y-fn distance)]
+                             :offset-y [:force (offset-y-fn
+                                                (-> environment :points :fess :y)
+                                                distance)]
                              :alignment alignment}})]))))
