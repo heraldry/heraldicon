@@ -1,25 +1,24 @@
 (ns heraldry.coat-of-arms.field.type.bendy
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.interface :as interface]
+            [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.field.type.barry :as barry]
-            [heraldry.options :as options]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.interface :as interface]))
 
-(def field-type
-  :heraldry.field.type/bendy)
+(def field-type :heraldry.field.type/bendy)
 
-(defmethod interface/display-name field-type [_] "Bendy")
+(defmethod field-interface/display-name field-type [_] "Bendy")
 
-(defmethod interface/part-names field-type [_] nil)
+(defmethod field-interface/part-names field-type [_] nil)
 
-(defmethod interface/render-field field-type
+(defmethod field-interface/render-field field-type
   [path environment context]
-  (let [line (options/sanitized-value (conj path :line) context)
-        origin (options/sanitized-value (conj path :origin) context)
-        anchor (options/sanitized-value (conj path :anchor) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
+  (let [line (interface/get-sanitized-data (conj path :line) context)
+        origin (interface/get-sanitized-data (conj path :origin) context)
+        anchor (interface/get-sanitized-data (conj path :anchor) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)

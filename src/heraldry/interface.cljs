@@ -1,6 +1,5 @@
 (ns heraldry.interface
   (:require [clojure.string :as s]
-            [heraldry.options :as options]
             [taoensso.timbre :as log]))
 
 (defmulti component-options
@@ -60,11 +59,28 @@
     (keyword? raw-type) (type->component-type raw-type)
     :else nil))
 
+(defn state-source [path]
+  (if (-> path first (= :context))
+    :context
+    :state))
+
+(defmulti get-sanitized-data (fn [path _context]
+                               (state-source path)))
+
+(defmulti get-raw-data (fn [path _context]
+                         (state-source path)))
+
+(defmulti get-list-size (fn [path _context]
+                          (state-source path)))
+
+(defn render-option [key {:keys [render-options] :as context}]
+  (get-sanitized-data (conj render-options key) context))
+
 (defmulti render-component (fn [path _parent-path _environment context]
                              (effective-component-type
                               path
                               ;; TODO: need the raw value here for type
-                              (options/raw-value (conj path :type) context))))
+                              (get-raw-data (conj path :type) context))))
 
 (defmethod render-component nil [path parent-path _environment _context]
   (log/warn :not-implemented path parent-path)

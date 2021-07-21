@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.metadata
   (:require [heraldry.attribution :as attribution]
-            [heraldry.options :as options]))
+            [heraldry.interface :as interface]))
 
 (defn actual-attribution [title creator creator-url url
                           {:keys [license license-version nature
@@ -57,14 +57,14 @@
            [:cc:attributionURL {:rdf:resource source-creator-link}]]]))]))
 
 (defn attribution [path attribution-type context]
-  (let [username (options/raw-value (conj path :username) context)
+  (let [username (interface/get-raw-data (conj path :username) context)
         creator-url (attribution/full-url-for-username username)
         url (case attribution-type
               :arms (attribution/full-url-for-arms path context)
               :charge (attribution/full-url-for-charge path context))]
     [actual-attribution
-     (options/raw-value (conj path :name) context)
+     (interface/get-raw-data (conj path :name) context)
      username
      creator-url
      url
-     (options/sanitized-value (conj path :attribution) context)]))
+     (interface/get-sanitized-data (conj path :attribution) context)]))

@@ -1,14 +1,13 @@
 (ns heraldry.coat-of-arms.charge.type.fusil
-  (:require [heraldry.coat-of-arms.charge.interface :as interface]
+  (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
             [heraldry.coat-of-arms.charge.shared :as charge-shared]
             [heraldry.coat-of-arms.vector :as v]))
 
-(def charge-type
-  :heraldry.charge.type/fusil)
+(def charge-type :heraldry.charge.type/fusil)
 
-(defmethod interface/display-name charge-type [_] "Fusil")
+(defmethod charge-interface/display-name charge-type [_] "Fusil")
 
-(defmethod interface/render-charge charge-type
+(defmethod charge-interface/render-charge charge-type
   [path parent-path environment context]
   (charge-shared/make-charge
    path parent-path environment context

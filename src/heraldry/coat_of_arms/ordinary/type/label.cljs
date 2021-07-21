@@ -1,17 +1,16 @@
 (ns heraldry.coat-of-arms.ordinary.type.label
   (:require [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.ordinary.interface :as interface]
+            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.options :as options]
+            [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
-(def ordinary-type
-  :heraldry.ordinary.type/label)
+(def ordinary-type :heraldry.ordinary.type/label)
 
-(defmethod interface/display-name ordinary-type [_] "Label")
+(defmethod ordinary-interface/display-name ordinary-type [_] "Label")
 
 (defn relative-points [points]
   (reduce (fn [result point]
@@ -90,20 +89,20 @@
                 (into (map (comp svg/stitch :line) lines))
                 (conj "z"))}))
 
-(defmethod interface/render-ordinary ordinary-type
+(defmethod ordinary-interface/render-ordinary ordinary-type
   [path _parent-path environment context]
-  (let [origin (options/sanitized-value (conj path :origin) context)
-        variant (options/sanitized-value (conj path :variant) context)
-        num-points (options/sanitized-value (conj path :num-points) context)
-        fimbriation (options/sanitized-value (conj path :fimbriation) context)
-        width (options/sanitized-value (conj path :geometry :width) context)
-        size (options/sanitized-value (conj path :geometry :size) context)
-        thickness (options/sanitized-value (conj path :geometry :thickness) context)
-        eccentricity (options/sanitized-value (conj path :geometry :eccentricity) context)
-        stretch (options/sanitized-value (conj path :geometry :stretch) context)
-        ;; cottising (options/sanitized-value (conj path :cottising) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
+  (let [origin (interface/get-sanitized-data (conj path :origin) context)
+        variant (interface/get-sanitized-data (conj path :variant) context)
+        num-points (interface/get-sanitized-data (conj path :num-points) context)
+        fimbriation (interface/get-sanitized-data (conj path :fimbriation) context)
+        width (interface/get-sanitized-data (conj path :geometry :width) context)
+        size (interface/get-sanitized-data (conj path :geometry :size) context)
+        thickness (interface/get-sanitized-data (conj path :geometry :thickness) context)
+        eccentricity (interface/get-sanitized-data (conj path :geometry :eccentricity) context)
+        stretch (interface/get-sanitized-data (conj path :geometry :stretch) context)
+        ;; cottising (interface/get-sanitized-data (conj path :cottising) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
         line {:type :straight
               :fimbriation fimbriation}
         origin-point (position/calculate origin environment :fess)

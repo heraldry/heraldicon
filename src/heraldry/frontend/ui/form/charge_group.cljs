@@ -6,8 +6,8 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.charge-group-preset-select :as charge-group-preset-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.options :as options]
+            [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.interface :as interface]
             [re-frame.core :as rf]))
 
 (rf/reg-event-db :cycle-charge-index
@@ -152,13 +152,12 @@
   [:azure :or :vert :gules :purpure :sable])
 
 (defn preview-form [path]
-  (let [context {:render-options [:render-options]
-                 :access state/access-by-state}
+  (let [context {:render-options [:render-options]}
         environment {:width 200
                      :height 200}
         {:keys [slot-positions
                 slot-spacing]} (charge-group/calculate-points path environment context)
-        num-charges (options/list-size (conj path :charges) context)
+        num-charges (interface/get-list-size (conj path :charges) context)
         dot-size (/ (min (:width slot-spacing)
                          (:height slot-spacing))
                     2
@@ -220,7 +219,7 @@
       (for [option [:slots
                     :stretch
                     :offset]]
-        ^{:key option} [interface/form-element (conj path option)])]]))
+        ^{:key option} [ui-interface/form-element (conj path option)])]]))
 
 (defn form [path _]
   (let [charge-group-type @(rf/subscribe [:get-value (conj path :type)])
@@ -250,7 +249,7 @@
                      :arc-stretch
                      :rotate-charges?
                      :slots]]
-         ^{:key option} [interface/form-element (conj path option)])
+         ^{:key option} [ui-interface/form-element (conj path option)])
 
        (when strip-type?
          [:<>
@@ -288,7 +287,7 @@
                      :vertical-align "top"}}
        [preview-form path]]]]))
 
-(defmethod interface/component-node-data :heraldry.component/charge-group [path]
+(defmethod ui-interface/component-node-data :heraldry.component/charge-group [path]
   (let [num-charges @(rf/subscribe [:get-list-size (conj path :charges)])]
     {:title (str "Charge group of " (if (= num-charges 1)
                                       (charge/title (conj path :charges 0))
@@ -317,5 +316,5 @@
                                                          % [:remove-charge-group-charge charge-path])}]})))
                          vec))}))
 
-(defmethod interface/component-form-data :heraldry.component/charge-group [_path]
+(defmethod ui-interface/component-form-data :heraldry.component/charge-group [_path]
   {:form form})

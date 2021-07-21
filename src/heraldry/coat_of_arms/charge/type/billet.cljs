@@ -1,14 +1,13 @@
 (ns heraldry.coat-of-arms.charge.type.billet
-  (:require [heraldry.coat-of-arms.charge.interface :as interface]
+  (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
             [heraldry.coat-of-arms.charge.shared :as charge-shared]
             [heraldry.coat-of-arms.vector :as v]))
 
-(def charge-type
-  :heraldry.charge.type/billet)
+(def charge-type :heraldry.charge.type/billet)
 
-(defmethod interface/display-name charge-type [_] "Billet")
+(defmethod charge-interface/display-name charge-type [_] "Billet")
 
-(defmethod interface/render-charge charge-type
+(defmethod charge-interface/render-charge charge-type
   [path parent-path environment context]
   (charge-shared/make-charge
    path parent-path environment context

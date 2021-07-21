@@ -1,24 +1,23 @@
 (ns heraldry.coat-of-arms.field.type.barry
-  (:require [heraldry.coat-of-arms.field.interface :as interface]
+  (:require [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.interface :as interface]))
 
-(def field-type
-  :heraldry.field.type/barry)
+(def field-type :heraldry.field.type/barry)
 
-(defmethod interface/display-name field-type [_] "Barry")
+(defmethod field-interface/display-name field-type [_] "Barry")
 
-(defmethod interface/part-names field-type [_] nil)
+(defmethod field-interface/part-names field-type [_] nil)
 
 (defn barry-parts [path top-left bottom-right line outline? context environment]
-  (let [num-fields-y (options/sanitized-value (conj path :layout :num-fields-y) context)
-        offset-y (options/sanitized-value (conj path :layout :offset-y) context)
-        stretch-y (options/sanitized-value (conj path :layout :stretch-y) context)
+  (let [num-fields-y (interface/get-sanitized-data (conj path :layout :num-fields-y) context)
+        offset-y (interface/get-sanitized-data (conj path :layout :offset-y) context)
+        stretch-y (interface/get-sanitized-data (conj path :layout :stretch-y) context)
         height (- (:y bottom-right)
                   (:y top-left))
         bar-height (-> height
@@ -161,11 +160,11 @@
                       [:path {:d (nth edges i)}])])]
     [parts overlap outlines]))
 
-(defmethod interface/render-field field-type
+(defmethod field-interface/render-field field-type
   [path environment context]
-  (let [line (options/sanitized-value (conj path :line) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
+  (let [line (interface/get-sanitized-data (conj path :line) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)

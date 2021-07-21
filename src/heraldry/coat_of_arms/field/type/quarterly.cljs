@@ -1,29 +1,28 @@
 (ns heraldry.coat-of-arms.field.type.quarterly
-  (:require [heraldry.coat-of-arms.field.interface :as interface]
+  (:require [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.interface :as interface]))
 
-(def field-type
-  :heraldry.field.type/quarterly)
+(def field-type :heraldry.field.type/quarterly)
 
-(defmethod interface/display-name field-type [_] "Quarterly NxM")
+(defmethod field-interface/display-name field-type [_] "Quarterly NxM")
 
-(defmethod interface/part-names field-type [_] nil)
+(defmethod field-interface/part-names field-type [_] nil)
 
-(defmethod interface/render-field field-type
+(defmethod field-interface/render-field field-type
   [path environment context]
-  (let [num-fields-x (options/sanitized-value (conj path :layout :num-fields-x) context)
-        num-fields-y (options/sanitized-value (conj path :layout :num-fields-y) context)
-        offset-x (options/sanitized-value (conj path :layout :offset-x) context)
-        offset-y (options/sanitized-value (conj path :layout :offset-y) context)
-        stretch-x (options/sanitized-value (conj path :layout :stretch-x) context)
-        stretch-y (options/sanitized-value (conj path :layout :stretch-y) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
+  (let [num-fields-x (interface/get-sanitized-data (conj path :layout :num-fields-x) context)
+        num-fields-y (interface/get-sanitized-data (conj path :layout :num-fields-y) context)
+        offset-x (interface/get-sanitized-data (conj path :layout :offset-x) context)
+        offset-y (interface/get-sanitized-data (conj path :layout :offset-y) context)
+        stretch-x (interface/get-sanitized-data (conj path :layout :stretch-x) context)
+        stretch-y (interface/get-sanitized-data (conj path :layout :stretch-y) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)

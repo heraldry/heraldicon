@@ -2,19 +2,18 @@
   (:require [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.ordinary.interface :as interface]
+            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.options :as options]
+            [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
-(def ordinary-type
-  :heraldry.ordinary.type/pale)
+(def ordinary-type :heraldry.ordinary.type/pale)
 
-(defmethod interface/display-name ordinary-type [_] "Pale")
+(defmethod ordinary-interface/display-name ordinary-type [_] "Pale")
 
-(defmethod interface/render-ordinary ordinary-type
+(defmethod ordinary-interface/render-ordinary ordinary-type
   [path _parent-path environment {:keys [override-real-start
                                          override-real-end
                                          override-shared-start-y] :as context}]
@@ -25,13 +24,13 @@
         ;;                      (assoc-in [:origin :offset-x :max] 100)
         ;;                      (assoc-in [:origin :offset-y :min] -100)
         ;;                      (assoc-in [:origin :offset-y :max] 100))
-        line (options/sanitized-value (conj path :line) context)
-        opposite-line (options/sanitized-value (conj path :opposite-line) context)
-        origin (options/sanitized-value (conj path :origin) context)
-        size (options/sanitized-value (conj path :geometry :size) context)
-        ;; cottising (options/sanitized-value (conj path :cottising) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
+        line (interface/get-sanitized-data (conj path :line) context)
+        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
+        origin (interface/get-sanitized-data (conj path :origin) context)
+        size (interface/get-sanitized-data (conj path :geometry :size) context)
+        ;; cottising (interface/get-sanitized-data (conj path :cottising) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
         ;;plain-origin (get points (:point origin))
         origin-point (position/calculate origin environment :fess)

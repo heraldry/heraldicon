@@ -293,28 +293,23 @@
                                                       [new-path flag]))))
                                           (into {}))))))
 
-(defn get-sanitized-data-by-state [path _context]
+(defmethod interface/get-sanitized-data :state [path _context]
   @(rf/subscribe [:get-sanitized-value path]))
 
-(defn get-raw-data-by-state [path _context]
+(defmethod interface/get-raw-data :state [path _context]
   @(rf/subscribe [:get-value path]))
 
-(defn get-list-size-by-state [path _context]
+(defmethod interface/get-list-size :state [path _context]
   @(rf/subscribe [:get-list-size path]))
 
-(def access-by-state
-  {:get-sanitized-data get-sanitized-data-by-state
-   :get-raw-data get-raw-data-by-state
-   :get-list-size get-list-size-by-state})
+(defmethod interface/get-raw-data :context [path context]
+  (get-in context path))
 
-(defn get-raw-data-by-context [path context]
-  (get-in (:data context) path))
-
-(defn get-list-size-by-context [path context]
-  (count (get-in (:data context) path)))
+(defmethod interface/get-list-size :context [path context]
+  (count (get-in context path)))
 
 (defn get-options-by-context [path context]
-  (interface/component-options path (get-raw-data-by-context path context)))
+  (interface/component-options path (interface/get-raw-data path context)))
 
 (defn get-relevant-options-by-context [path context]
   (let [[options relative-path] (or (->> (range (count path) 0 -1)
@@ -328,16 +323,11 @@
                                     [nil nil])]
     (get-in options relative-path)))
 
-(defn get-sanitized-data-by-context [path context]
-  (let [value (get-raw-data-by-context path context)
+(defmethod interface/get-sanitized-data :context [path context]
+  (let [value (interface/get-raw-data path context)
         options (get-relevant-options-by-context path context)]
     ;; TODO: find better way to determine option leaf or branch
     (if (or (-> options :type not)
             (-> options :type :type))
       (options/sanitize value options)
       (options/get-value value options))))
-
-(def access-by-context
-  {:get-sanitized-data get-sanitized-data-by-context
-   :get-raw-data get-raw-data-by-context
-   :get-list-size get-list-size-by-context})

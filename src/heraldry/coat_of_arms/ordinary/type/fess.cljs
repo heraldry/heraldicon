@@ -2,20 +2,19 @@
   (:require [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.ordinary.interface :as interface]
+            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.options :as options]
-            [heraldry.util :as util]
-            [heraldry.frontend.state :as state]))
+            [heraldry.frontend.state :as state]
+            [heraldry.interface :as interface]
+            [heraldry.util :as util]))
 
-(def ordinary-type
-  :heraldry.ordinary.type/fess)
+(def ordinary-type :heraldry.ordinary.type/fess)
 
-(defmethod interface/display-name ordinary-type [_] "Fess")
+(defmethod ordinary-interface/display-name ordinary-type [_] "Fess")
 
-(defmethod interface/render-ordinary ordinary-type
+(defmethod ordinary-interface/render-ordinary ordinary-type
   [path _parent-path environment {:keys [override-real-start
                                          override-real-end
                                          override-shared-start-x] :as context}]
@@ -24,21 +23,21 @@
         ;; ordinary-options (-> (ordinary-options/options ordinary)
         ;;                      (assoc-in [:origin :offset-y :min] -100)
         ;;                      (assoc-in [:origin :offset-y :max] 100))
-        line (options/sanitized-value (conj path :line) context)
-        opposite-line (options/sanitized-value (conj path :opposite-line) context)
-        origin (options/sanitized-value (conj path :origin) context)
-        size (options/sanitized-value (conj path :geometry :size) context)
-        ;; cottising (options/sanitized-value (conj path :cottising) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
-        cottise-1 (options/sanitized-value (conj path :cottising :cottise-1) context)
-        cottise-2 (options/sanitized-value (conj path :cottising :cottise-2) context)
-        cottise-opposite-1 (options/sanitized-value (conj path :cottising :cottise-opposite-1) context)
-        cottise-opposite-2 (options/sanitized-value (conj path :cottising :cottise-opposite-2) context)
-        cottise-1-raw (options/raw-value (conj path :cottising :cottise-1) context)
-        cottise-2-raw (options/raw-value (conj path :cottising :cottise-2) context)
-        cottise-opposite-1-raw (options/raw-value (conj path :cottising :cottise-opposite-1) context)
-        cottise-opposite-2-raw (options/raw-value (conj path :cottising :cottise-opposite-2) context)
+        line (interface/get-sanitized-data (conj path :line) context)
+        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
+        origin (interface/get-sanitized-data (conj path :origin) context)
+        size (interface/get-sanitized-data (conj path :geometry :size) context)
+        ;; cottising (interface/get-sanitized-data (conj path :cottising) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
+        cottise-1 (interface/get-sanitized-data (conj path :cottising :cottise-1) context)
+        cottise-2 (interface/get-sanitized-data (conj path :cottising :cottise-2) context)
+        cottise-opposite-1 (interface/get-sanitized-data (conj path :cottising :cottise-opposite-1) context)
+        cottise-opposite-2 (interface/get-sanitized-data (conj path :cottising :cottise-opposite-2) context)
+        cottise-1-raw (interface/get-raw-data (conj path :cottising :cottise-1) context)
+        cottise-2-raw (interface/get-raw-data (conj path :cottising :cottise-2) context)
+        cottise-opposite-1-raw (interface/get-raw-data (conj path :cottising :cottise-opposite-1) context)
+        cottise-opposite-2-raw (interface/get-raw-data (conj path :cottising :cottise-opposite-2) context)
         points (:points environment)
         plain-origin (get points (:point origin))
         origin-point (position/calculate origin environment :fess)
@@ -136,31 +135,27 @@
      (line/render line [line-one-data] first-left outline? context)
      (line/render opposite-line [line-reversed-data] second-right outline? context)
      (when (:enabled? cottise-1)
-       [interface/render-ordinary
-        [:ordinary]
+       [ordinary-interface/render-ordinary
+        [:context :ordinary]
         path
         environment
         (merge
          context
-         {:access state/access-by-context
-          :data {:ordinary {:type :heraldry.ordinary.type/fess
-                            :field (:field cottise-1-raw)
-                            :line (:line cottise-1-raw)
-                            :opposite-line (:opposite-line cottise-1-raw)
-                            :geometry {:size (:thickness cottise-1)}
-                            :cottising {:cottise-1 cottise-2-raw}
-                            :origin (-> (options/raw-value (conj path :origin) context)
-                                        (assoc :offset-y (-> plain-origin
-                                                             :y
-                                                             (- row1)
-                                                             (- line-one-min)
-                                                             (/ height)
-                                                             (* 100)
-                                                             (+ (:distance cottise-1))))
-                                        (assoc :alignment :right))}}
-          :override-shared-start-x shared-start-x
-          :override-real-start real-start
-          :override-real-end real-end})])
+         {:ordinary {:type :heraldry.ordinary.type/fess
+                     :field (:field cottise-1-raw)
+                     :line (:line cottise-1-raw)
+                     :opposite-line (:opposite-line cottise-1-raw)
+                     :geometry {:size (:thickness cottise-1)}
+                     :cottising {:cottise-1 cottise-2-raw}
+                     :origin (-> (interface/get-raw-data (conj path :origin) context)
+                                 (assoc :offset-y (-> plain-origin
+                                                      :y
+                                                      (- row1)
+                                                      (- line-one-min)
+                                                      (/ height)
+                                                      (* 100)
+                                                      (+ (:distance cottise-1))))
+                                 (assoc :alignment :right))}})])
 
      #_(when (:enabled? cottise-opposite-1)
          (let [cottise-opposite-1-data (:cottise-opposite-1 cottising)

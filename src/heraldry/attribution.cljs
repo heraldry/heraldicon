@@ -1,6 +1,6 @@
 (ns heraldry.attribution
   (:require [heraldry.config :as config]
-            [heraldry.options :as options]
+            [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
 (def license-choices
@@ -153,10 +153,10 @@
                                 (dissoc :source-creator-link)))))
 
 (defn full-url [path base context]
-  (when-let [object-id (options/raw-value (conj path :id) context)]
-    (let [version (options/raw-value (conj path :version) context)
+  (when-let [object-id (interface/get-raw-data (conj path :id) context)]
+    (let [version (interface/get-raw-data (conj path :version) context)
           version (if (zero? version)
-                    (options/raw-value (conj path :latest-version) context)
+                    (interface/get-raw-data (conj path :latest-version) context)
                     version)]
       (str (config/get :heraldry-url) base (util/id-for-url object-id) "/" version))))
 

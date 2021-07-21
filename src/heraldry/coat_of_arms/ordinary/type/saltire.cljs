@@ -2,28 +2,27 @@
   (:require [heraldry.coat-of-arms.angle :as angle]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.ordinary.interface :as interface]
+            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.shared.saltire :as saltire]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.options :as options]
+            [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
-(def ordinary-type
-  :heraldry.ordinary.type/saltire)
+(def ordinary-type :heraldry.ordinary.type/saltire)
 
-(defmethod interface/display-name ordinary-type [_] "Saltire")
+(defmethod ordinary-interface/display-name ordinary-type [_] "Saltire")
 
-(defmethod interface/render-ordinary ordinary-type
+(defmethod ordinary-interface/render-ordinary ordinary-type
   [path _parent-path environment context]
-  (let [line (options/sanitized-value (conj path :line) context)
-        origin (options/sanitized-value (conj path :origin) context)
-        anchor (options/sanitized-value (conj path :anchor) context)
-        size (options/sanitized-value (conj path :geometry :size) context)
-        ;; cottising (options/sanitized-value (conj path :cottising) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
+  (let [line (interface/get-sanitized-data (conj path :line) context)
+        origin (interface/get-sanitized-data (conj path :origin) context)
+        anchor (interface/get-sanitized-data (conj path :anchor) context)
+        size (interface/get-sanitized-data (conj path :geometry :size) context)
+        ;; cottising (interface/get-sanitized-data (conj path :cottising) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x unadjusted-origin-point))

@@ -1,30 +1,29 @@
 (ns heraldry.coat-of-arms.field.type.per-pile
-  (:require [heraldry.coat-of-arms.field.interface :as interface]
+  (:require [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.shared.pile :as pile]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
-(def field-type
-  :heraldry.field.type/per-pile)
+(def field-type :heraldry.field.type/per-pile)
 
-(defmethod interface/display-name field-type [_] "Per pile")
+(defmethod field-interface/display-name field-type [_] "Per pile")
 
-(defmethod interface/part-names field-type [_] nil)
+(defmethod field-interface/part-names field-type [_] nil)
 
-(defmethod interface/render-field field-type
+(defmethod field-interface/render-field field-type
   [path environment context]
-  (let [line (options/sanitized-value (conj path :line) context)
-        opposite-line (options/sanitized-value (conj path :opposite-line) context)
-        origin (options/sanitized-value (conj path :origin) context)
-        anchor (options/sanitized-value (conj path :anchor) context)
-        geometry (options/sanitized-value (conj path :geometry) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
+  (let [line (interface/get-sanitized-data (conj path :line) context)
+        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
+        origin (interface/get-sanitized-data (conj path :origin) context)
+        anchor (interface/get-sanitized-data (conj path :anchor) context)
+        geometry (interface/get-sanitized-data (conj path :geometry) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
         anchor (-> anchor
                    (assoc :type :edge))
         geometry (-> geometry

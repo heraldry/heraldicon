@@ -1,7 +1,7 @@
 (ns heraldry.options
   (:require [clojure.walk :as walk]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+            [heraldry.interface :as interface]
+            [heraldry.util :as util]))
 
 (def option-types #{:range :choice :boolean :text})
 
@@ -107,30 +107,3 @@
        (not= (get sanitized-data key)
              (or (-> options (get key) :inherited)
                  (-> options (get key) :default)))))
-
-(defn effective-values [rel-paths data options-fn]
-  (if (vector? data)
-    (->> rel-paths
-         (map (fn [path]
-                @(rf/subscribe [:get-sanitized-value (vec (concat data path))])))
-         vec)
-    (let [sanitized-data (sanitize data (options-fn data))]
-      (->> rel-paths
-           (map (fn [path]
-                  (get-in sanitized-data path)))
-           vec))))
-
-(defn sanitized-value [path {:keys [access] :as context}]
-  (let [{:keys [get-sanitized-data]} access]
-    (get-sanitized-data path context)))
-
-(defn raw-value [path {:keys [access] :as context}]
-  (let [{:keys [get-raw-data]} access]
-    (get-raw-data path context)))
-
-(defn render-option [key {:keys [render-options] :as context}]
-  (sanitized-value (conj render-options key) context))
-
-(defn list-size [path {:keys [access] :as context}]
-  (let [{:keys [get-list-size]} access]
-    (get-list-size path context)))

@@ -1,30 +1,29 @@
 (ns heraldry.coat-of-arms.field.type.gyronny
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.interface :as interface]
+            [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.shared.saltire :as saltire]
             [heraldry.coat-of-arms.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.interface :as interface]))
 
-(def field-type
-  :heraldry.field.type/gyronny)
+(def field-type :heraldry.field.type/gyronny)
 
-(defmethod interface/display-name field-type [_] "Gyronny")
+(defmethod field-interface/display-name field-type [_] "Gyronny")
 
-(defmethod interface/part-names field-type [_] ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"])
+(defmethod field-interface/part-names field-type [_] ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"])
 
-(defmethod interface/render-field field-type
+(defmethod field-interface/render-field field-type
   [path environment context]
-  (let [line (options/sanitized-value (conj path :line) context)
-        opposite-line (options/sanitized-value (conj path :opposite-line) context)
-        origin (options/sanitized-value (conj path :origin) context)
-        anchor (options/sanitized-value (conj path :anchor) context)
-        outline? (or (options/render-option :outline? context)
-                     (options/sanitized-value (conj path :outline?) context))
+  (let [line (interface/get-sanitized-data (conj path :line) context)
+        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
+        origin (interface/get-sanitized-data (conj path :origin) context)
+        anchor (interface/get-sanitized-data (conj path :anchor) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)
