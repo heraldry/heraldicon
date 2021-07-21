@@ -12,23 +12,23 @@
 (defn line-type-choice [path key display-name & {:keys [selected?]}]
   (let [options (line/options {:type key})
         {:keys [result]} (render/coat-of-arms
-                          [:coat-of-arms]
+                          [:context :coat-of-arms]
                           100
                           (-> shared/coa-select-option-context
-                              (assoc-in [:data :coat-of-arms]
-                                        {:escutcheon :flag
-                                         :field {:type :heraldry.field.type/per-fess
-                                                 :line {:type key
-                                                        :width (case key
-                                                                 :enarched nil
-                                                                 (* 2 (options/get-value nil (:width options))))
-                                                        :height (case key
-                                                                  :enarched 0.25
-                                                                  nil)}
-                                                 :fields [{:type :heraldry.field.type/plain
-                                                           :tincture :argent}
-                                                          {:type :heraldry.field.type/plain
-                                                           :tincture (if selected? :or :azure)}]}})))]
+                              (assoc :coat-of-arms
+                                     {:escutcheon :flag
+                                      :field {:type :heraldry.field.type/per-fess
+                                              :line {:type key
+                                                     :width (case key
+                                                              :enarched nil
+                                                              (* 2 (options/get-value nil (:width options))))
+                                                     :height (case key
+                                                               :enarched 0.25
+                                                               nil)}
+                                              :fields [{:type :heraldry.field.type/plain
+                                                        :tincture :argent}
+                                                       {:type :heraldry.field.type/plain
+                                                        :tincture (if selected? :or :azure)}]}})))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
      [:svg {:style {:width "6.5em"
                     :height "4.5em"}
