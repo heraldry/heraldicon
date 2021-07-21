@@ -8,6 +8,7 @@
             [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.frontend.api.request :as api-request]
+            [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.form.charge-select :as charge-select]
             [heraldry.frontend.modal :as modal]
@@ -315,6 +316,13 @@
                     #(js/alert "Need to be logged in and own the arms."))}
        "Save"]]]))
 
+(defn attribution []
+  (let [attribution-data (attribution/for-charge form-db-path {:access state/access-by-state})]
+    [:div.attribution
+     [:h3 "Attribution"]
+     [:div {:style {:padding-left "1em"}}
+      attribution-data]]))
+
 (defn charge-form []
   (rf/dispatch [:ui-component-node-select-default form-db-path])
   [:div {:style {:display "grid"
@@ -322,8 +330,8 @@
                  :grid-template-columns "[start] auto [first] 33% [second] 25% [end]"
                  :grid-template-rows "[top] 50% [middle] 25% [bottom-half] 23% [bottom]"
                  :grid-template-areas "'preview selected-component component-tree'
-                                       'preview extra extra'
-                                       'preview extra extra'"
+                                       'preview attribution extra'
+                                       'preview attribution extra'"
                  :padding-left "10px"
                  :padding-right "10px"
                  :height "100%"}
@@ -335,6 +343,8 @@
                   :padding-top "10px"}}
     [ui/selected-component]
     [button-row]]
+   [:div {:style {:grid-area "attribution"}}
+    [attribution]]
    [:div {:style {:grid-area "component-tree"
                   :padding-top "5px"}}
     [ui/component-tree [form-db-path
