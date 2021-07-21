@@ -747,8 +747,10 @@
                               (assoc layout :ui (-> default-options :layout :ui)))))))))
 
 (defmethod interface/component-options :heraldry.options/field [path data]
-  (cond-> (options data)
-    (-> path drop-last last
-        (= :coat-of-arms)) (->
-                            (dissoc :inherit-environment?)
-                            (dissoc :counterchanged?))))
+  (let [root-field? (-> path drop-last last (= :coat-of-arms))
+        subfield? (-> path last int?)]
+    (cond-> (options data)
+      root-field? (->
+                   (dissoc :inherit-environment?)
+                   (dissoc :counterchanged?))
+      subfield? (dissoc :counterchanged?))))
