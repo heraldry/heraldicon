@@ -70,22 +70,18 @@
          cottise-opposite-2)
     (update :cottise-opposite-2 cottise-options cottise-opposite-2)))
 
-(defn fess-cottise [which path environment context & {:keys [offset-y-fn alignment]}]
-  (let [cottise-key (case which
-                      :cottise :cottise-1
-                      :cottise-opposite :cottise-opposite-1)
-        cottise-path (conj path :cottising cottise-key)
-        cottise-2-path (conj path :cottising
-                             (case which
-                               :cottise :cottise-2
-                               :cottise-opposite :cottise-opposite-2))]
+(defn fess-cottise [cottise-1-key cottise-2-key next-cottise-key
+                    path environment context & {:keys [offset-y-fn
+                                                       alignment
+                                                       swap-lines?]}]
+  (let [cottise-path (conj path :cottising cottise-1-key)
+        cottise-2-path (conj path :cottising cottise-2-key)]
     (when (interface/get-raw-data cottise-path context)
       (let [line (interface/get-sanitized-data (conj cottise-path :line) context)
             opposite-line (interface/get-sanitized-data (conj cottise-path :opposite-line) context)
-            [line
-             opposite-line] (case which
-                              :cottise [line opposite-line]
-                              :cottise-opposite [opposite-line line])
+            [line opposite-line] (if swap-lines?
+                                   [opposite-line line]
+                                   [line opposite-line])
             thickness (interface/get-sanitized-data (conj cottise-path :thickness) context)
             distance (interface/get-sanitized-data (conj cottise-path :distance) context)]
         [ordinary-interface/render-ordinary
@@ -99,7 +95,7 @@
                     :line line
                     :opposite-line opposite-line
                     :geometry {:size thickness}
-                    :cottising {cottise-key (interface/get-raw-data cottise-2-path context)}
-                    :origin (-> (interface/get-raw-data (conj path :origin) context)
-                                (assoc :offset-y [:force (offset-y-fn distance)])
-                                (assoc :alignment alignment))})]))))
+                    :cottising {next-cottise-key (interface/get-raw-data cottise-2-path context)}
+                    :origin {:point :fess
+                             :offset-y [:force (offset-y-fn distance)]
+                             :alignment alignment}})]))))

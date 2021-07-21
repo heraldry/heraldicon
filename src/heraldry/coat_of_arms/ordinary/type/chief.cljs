@@ -6,7 +6,8 @@
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.util :as util]))
+            [heraldry.util :as util]
+            [heraldry.coat-of-arms.cottising :as cottising]))
 
 (def ordinary-type :heraldry.ordinary.type/chief)
 
@@ -18,7 +19,6 @@
                                          override-shared-start-x] :as context}]
   (let [line (interface/get-sanitized-data (conj path :line) context)
         size (interface/get-sanitized-data (conj path :geometry :size) context)
-        ;; cottising (interface/get-sanitized-data (conj path :cottising) context)
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
@@ -74,40 +74,28 @@
         ;; field (if (:counterchanged? field)
         ;;         (counterchange/counterchange-field ordinary parent)
         ;;         field)
-        #_#_{:keys [cottise-1
-                    cottise-2]} (-> ordinary :cottising)]
+        cottise-context (merge
+                         context
+                         {:override-shared-start-x shared-start-x
+                          :override-real-start real-start
+                          :override-real-end real-end})]
     [:<>
      [field-shared/make-subfield
       (conj path :field) part
       :all
       environment context]
      (line/render line [line-reversed-data] row-right outline? context)
-     #_(when (:enabled? cottise-1)
-         (let [cottise-1-data (:cottise-1 cottising)
-               fess-base {:type :heraldry.ordinary.type/fess
-                          :line (:line cottise-1)
-                          :opposite-line (:opposite-line cottise-1)}
-               fess-options (ordinary-options/options fess-base)
-               {:keys [line
-                       opposite-line]} (options/sanitize fess-base fess-options)]
-           [fess/render (-> fess-base
-                            (merge {:outline? (-> ordinary :outline?)
-                                    :field (:field cottise-1)
-                                  ;; swap line/opposite-line because the cottise fess is upside down
-                                    :line opposite-line
-                                    :opposite-line line
-                                    :cottising {:cottise-opposite-1 cottise-2}
-                                    :geometry {:size (:thickness cottise-1-data)}
-                                    :origin {:point :top
-                                             :offset-y (-> top
-                                                           :y
-                                                           (- row)
-                                                           (+ line-reversed-min)
-                                                           (/ height)
-                                                           (* 100)
-                                                           (- (:distance cottise-1-data)))
-                                             :alignment :left}})) parent environment
-            (-> context
-                (assoc :override-shared-start-x shared-start-x)
-                (assoc :override-real-start real-start)
-                (assoc :override-real-end real-end))]))]))
+     [cottising/fess-cottise
+      :cottise-1 :cottise-2 :cottise-opposite-1
+      path environment cottise-context
+      :offset-y-fn (fn [distance]
+                     (-> points
+                         :fess
+                         :y
+                         (- row)
+                         (+ line-reversed-min)
+                         (/ height)
+                         (* 100)
+                         (- distance)))
+      :alignment :left
+      :swap-lines? true]]))
