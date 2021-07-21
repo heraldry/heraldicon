@@ -7,7 +7,8 @@
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.options :as options]
-            [heraldry.util :as util]))
+            [heraldry.util :as util]
+            [heraldry.frontend.state :as state]))
 
 (def ordinary-type
   :heraldry.ordinary.type/fess)
@@ -30,8 +31,16 @@
         ;; cottising (options/sanitized-value (conj path :cottising) context)
         outline? (or (options/render-option :outline? context)
                      (options/sanitized-value (conj path :outline?) context))
+        cottise-1 (options/sanitized-value (conj path :cottising :cottise-1) context)
+        cottise-2 (options/sanitized-value (conj path :cottising :cottise-2) context)
+        cottise-opposite-1 (options/sanitized-value (conj path :cottising :cottise-opposite-1) context)
+        cottise-opposite-2 (options/sanitized-value (conj path :cottising :cottise-opposite-2) context)
+        cottise-1-raw (options/raw-value (conj path :cottising :cottise-1) context)
+        cottise-2-raw (options/raw-value (conj path :cottising :cottise-2) context)
+        cottise-opposite-1-raw (options/raw-value (conj path :cottising :cottise-opposite-1) context)
+        cottise-opposite-2-raw (options/raw-value (conj path :cottising :cottise-opposite-2) context)
         points (:points environment)
-        ;; plain-origin (get points (:point origin))
+        plain-origin (get points (:point origin))
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
         right (assoc (:right points) :y (:y origin-point))
@@ -118,10 +127,7 @@
         ;; field (if (:counterchanged? field)
         ;;         (counterchange/counterchange-field ordinary parent)
         ;;         field)
-        #_#_{:keys [cottise-1
-                    cottise-2
-                    cottise-opposite-1
-                    cottise-opposite-2]} (-> ordinary :cottising)]
+        ]
     [:<>
      [field-shared/make-subfield
       (conj path :field) part
@@ -129,26 +135,33 @@
       environment context]
      (line/render line [line-one-data] first-left outline? context)
      (line/render opposite-line [line-reversed-data] second-right outline? context)
-     #_(when (:enabled? cottise-1)
-         (let [cottise-1-data (:cottise-1 cottising)]
-           [render (-> ordinary
-                       (assoc :cottising {:cottise-1 cottise-2})
-                       (assoc :line (:line cottise-1))
-                       (assoc :opposite-line (:opposite-line cottise-1))
-                       (assoc :field (:field cottise-1))
-                       (assoc-in [:geometry :size] (:thickness cottise-1-data))
-                       (assoc-in [:origin :offset-y] (-> plain-origin
-                                                         :y
-                                                         (- row1)
-                                                         (- line-one-min)
-                                                         (/ height)
-                                                         (* 100)
-                                                         (+ (:distance cottise-1-data))))
-                       (assoc-in [:origin :alignment] :right)) parent environment
-            (-> context
-                (assoc :override-shared-start-x shared-start-x)
-                (assoc :override-real-start real-start)
-                (assoc :override-real-end real-end))]))
+     (when (:enabled? cottise-1)
+       [interface/render-ordinary
+        [:ordinary]
+        path
+        environment
+        (merge
+         context
+         {:access state/access-by-context
+          :data {:ordinary {:type :heraldry.ordinary.type/fess
+                            :field (:field cottise-1-raw)
+                            :line (:line cottise-1-raw)
+                            :opposite-line (:opposite-line cottise-1-raw)
+                            :geometry {:size (:thickness cottise-1)}
+                            :cottising {:cottise-1 cottise-2-raw}
+                            :origin (-> (options/raw-value (conj path :origin) context)
+                                        (assoc :offset-y (-> plain-origin
+                                                             :y
+                                                             (- row1)
+                                                             (- line-one-min)
+                                                             (/ height)
+                                                             (* 100)
+                                                             (+ (:distance cottise-1))))
+                                        (assoc :alignment :right))}}
+          :override-shared-start-x shared-start-x
+          :override-real-start real-start
+          :override-real-end real-end})])
+
      #_(when (:enabled? cottise-opposite-1)
          (let [cottise-opposite-1-data (:cottise-opposite-1 cottising)
                fess-base {:type :heraldry.ordinary.type/fess
