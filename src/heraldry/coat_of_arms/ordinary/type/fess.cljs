@@ -26,7 +26,6 @@
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
-        plain-origin (get points (:point origin))
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
         right (assoc (:right points) :y (:y origin-point))
@@ -125,9 +124,12 @@
       environment context]
      (line/render line [line-one-data] first-left outline? context)
      (line/render opposite-line [line-reversed-data] second-right outline? context)
-     [cottising/fess-cottise :cottise path environment cottise-context
+     [cottising/fess-cottise
+      :cottise-1 :cottise-2 :cottise-1
+      path environment cottise-context
       :offset-y-fn (fn [distance]
-                     (-> plain-origin
+                     (-> points
+                         :fess
                          :y
                          (- row1)
                          (- line-one-min)
@@ -136,13 +138,17 @@
                          (+ distance)))
       :alignment :right]
 
-     [cottising/fess-cottise :cottise-opposite path environment cottise-context
+     [cottising/fess-cottise
+      :cottise-opposite-1 :cottise-opposite-2 :cottise-opposite-1
+      path environment cottise-context
       :offset-y-fn (fn [distance]
-                     (-> plain-origin
+                     (-> points
+                         :fess
                          :y
                          (- row2)
                          (+ line-reversed-min)
                          (/ height)
                          (* 100)
                          (- distance)))
-      :alignment :left]]))
+      :alignment :left
+      :swap-lines? true]]))
