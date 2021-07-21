@@ -1,23 +1,23 @@
 (ns heraldry.frontend.ui.element.tincture-select
-  (:require [heraldry.options :as options]
-            [heraldry.coat-of-arms.render :as render]
+  (:require [heraldry.coat-of-arms.render :as render]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.ui.shared :as shared]
+            [heraldry.options :as options]
             [re-frame.core :as rf]))
 
 (defn tincture-choice [key display-name]
   (let [{:keys [result]} (render/coat-of-arms
-                          [:coat-of-arms]
+                          [:context :coat-of-arms]
                           40
                           (-> shared/coa-select-option-context
-                              (assoc-in [:data :coat-of-arms]
-                                        {:escutcheon :rectangle
-                                         :field {:type :heraldry.field.type/plain
-                                                 :tincture key}})))]
+                              (assoc :coat-of-arms
+                                     {:escutcheon :rectangle
+                                      :field {:type :heraldry.field.type/plain
+                                              :tincture key}})))]
     [:<>
      [:svg {:style {:width "4em"
                     :height "4.5em"}

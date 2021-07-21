@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.charge-type-select
-  (:require [heraldry.coat-of-arms.charge.core :as charge]
+  (:require [heraldry.attribution :as attribution]
+            [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.form.charge-select :as charge-select]
@@ -7,8 +8,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.ui.shared :as shared]
-            [re-frame.core :as rf]
-            [heraldry.attribution :as attribution]))
+            [re-frame.core :as rf]))
 
 (rf/reg-event-db :update-charge
   (fn [db [_ path changes]]
@@ -16,18 +16,18 @@
 
 (defn charge-type-choice [path key display-name & {:keys [selected?]}]
   (let [{:keys [result]} (render/coat-of-arms
-                          [:coat-of-arms]
+                          [:context :coat-of-arms]
                           100
                           (-> shared/coa-select-option-context
-                              (assoc-in [:data :coat-of-arms]
-                                        {:escutcheon :rectangle
-                                         :field {:type :heraldry.field.type/plain
-                                                 :tincture :argent
-                                                 :components [{:type key
-                                                               :geometry {:size 75}
-                                                               :escutcheon (if (= key :heraldry.charge.type/escutcheon) :heater nil)
-                                                               :field {:type :heraldry.field.type/plain
-                                                                       :tincture (if selected? :or :azure)}}]}})))]
+                              (assoc :coat-of-arms
+                                     {:escutcheon :rectangle
+                                      :field {:type :heraldry.field.type/plain
+                                              :tincture :argent
+                                              :components [{:type key
+                                                            :geometry {:size 75}
+                                                            :escutcheon (if (= key :heraldry.charge.type/escutcheon) :heater nil)
+                                                            :field {:type :heraldry.field.type/plain
+                                                                    :tincture (if selected? :or :azure)}}]}})))]
     [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:update-charge (vec (drop-last path)) {:type key
                                                                                                         :attitude nil
                                                                                                         :facing nil

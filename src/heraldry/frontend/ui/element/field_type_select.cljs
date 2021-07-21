@@ -1,7 +1,6 @@
 (ns heraldry.frontend.ui.element.field-type-select
   (:require [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.field.options :as field-options]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
@@ -9,6 +8,7 @@
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.util :as util]
+            [heraldry.options :as options]
             [re-frame.core :as rf]))
 
 (defn set-field-type [db path new-type num-fields-x num-fields-y num-base-fields]
@@ -56,35 +56,35 @@
 
 (defn field-type-choice [path key display-name & {:keys [selected?]}]
   (let [{:keys [result]} (render/coat-of-arms
-                          [:coat-of-arms]
+                          [:context :coat-of-arms]
                           100
                           (-> shared/coa-select-option-context
-                              (assoc-in [:data :coat-of-arms]
-                                        {:escutcheon :rectangle
-                                         :field (if (= key :heraldry.field.type/plain)
-                                                  {:type :heraldry.field.type/plain
-                                                   :tincture (if selected? :or :azure)}
-                                                  {:type key
-                                                   :fields (-> (field/default-fields {:type key})
-                                                               (util/replace-recursively :none :argent)
-                                                               (cond->
-                                                                selected? (util/replace-recursively :azure :or)))
-                                                   :layout {:num-fields-x (case key
-                                                                            :heraldry.field.type/chequy 4
-                                                                            :heraldry.field.type/lozengy 3
-                                                                            :heraldry.field.type/vairy 2
-                                                                            :heraldry.field.type/potenty 2
-                                                                            :heraldry.field.type/papellony 2
-                                                                            :heraldry.field.type/masonry 2
-                                                                            nil)
-                                                            :num-fields-y (case key
-                                                                            :heraldry.field.type/chequy 5
-                                                                            :heraldry.field.type/lozengy 4
-                                                                            :heraldry.field.type/vairy 3
-                                                                            :heraldry.field.type/potenty 3
-                                                                            :heraldry.field.type/papellony 4
-                                                                            :heraldry.field.type/masonry 4
-                                                                            nil)}})})))]
+                              (assoc :coat-of-arms
+                                     {:escutcheon :rectangle
+                                      :field (if (= key :heraldry.field.type/plain)
+                                               {:type :heraldry.field.type/plain
+                                                :tincture (if selected? :or :azure)}
+                                               {:type key
+                                                :fields (-> (field/default-fields {:type key})
+                                                            (util/replace-recursively :none :argent)
+                                                            (cond->
+                                                             selected? (util/replace-recursively :azure :or)))
+                                                :layout {:num-fields-x (case key
+                                                                         :heraldry.field.type/chequy 4
+                                                                         :heraldry.field.type/lozengy 3
+                                                                         :heraldry.field.type/vairy 2
+                                                                         :heraldry.field.type/potenty 2
+                                                                         :heraldry.field.type/papellony 2
+                                                                         :heraldry.field.type/masonry 2
+                                                                         nil)
+                                                         :num-fields-y (case key
+                                                                         :heraldry.field.type/chequy 5
+                                                                         :heraldry.field.type/lozengy 4
+                                                                         :heraldry.field.type/vairy 3
+                                                                         :heraldry.field.type/potenty 3
+                                                                         :heraldry.field.type/papellony 4
+                                                                         :heraldry.field.type/masonry 4
+                                                                         nil)}})})))]
     [:div.choice.tooltip {:on-click #(let [;; TODO: this should move into the event handler
                                            field-path (vec (drop-last path))
                                            field @(rf/subscribe [:get field-path])
