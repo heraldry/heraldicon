@@ -4,7 +4,10 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [heraldry.options :as options]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.frontend.ui.element.tincture-select :as tincture-select]))
 
 (rf/reg-event-db :override-field-part-reference
   (fn [db [_ path]]
@@ -24,6 +27,15 @@
       {:db (assoc-in db path (-> (field/default-fields parent)
                                  (get index)))})))
 
+(defn show-tinctures-only? [field-type]
+  (-> field-type name keyword
+      #{:chequy
+        :lozengy
+        :vairy
+        :potenty
+        :masonry
+        :papellony}))
+
 (defn form [path _]
   [:<>
    (for [option [:inherit-environment?
@@ -41,7 +53,11 @@
                  :geometry
                  :layout
                  :outline?]]
-     ^{:key option} [interface/form-element (conj path option)])])
+     ^{:key option} [interface/form-element (conj path option)])
+   [:div {:style {:margin-bottom "1em"}}]
+   (for [idx (range @(rf/subscribe [:get-list-size (conj path :fields)]))]
+     ^{:key idx}
+     [tincture-select/tincture-select (conj path :fields idx :tincture)])])
 
 (defn parent-path [path]
   (let [index (last path)
@@ -95,7 +111,8 @@
                   (conj {:icon "fas fa-undo"
                          :title "Reset"
                          :handler #(state/dispatch-on-event % [:reset-field-part-reference path])})))
-     :nodes (concat (when (-> field-type name keyword (not= :plain))
+     :nodes (concat (when (and (not (show-tinctures-only? field-type))
+                               (-> field-type name keyword (not= :plain)))
                       (->> (range @(rf/subscribe [:get-list-size (conj path :fields)]))
                            (map (fn [idx]
                                   {:path (conj path :fields idx)}))
