@@ -3,7 +3,7 @@
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
-(def types #{:range :choice :boolean})
+(def option-types #{:range :choice :boolean :text})
 
 (defn get-value [value options]
   (let [value (or value
@@ -22,6 +22,7 @@
                :else (-> value
                          (max (:min options))
                          (min (:max options))))
+      :text (or value (:default options))
       nil)))
 
 (defn get-sanitized-value-or-nil [value options]
@@ -38,6 +39,7 @@
                (-> value
                    (max (:min options))
                    (min (:max options))))
+      :text value
       nil)))
 
 (defn sanitize [values given-options]
@@ -46,7 +48,7 @@
           (cond
             (and (map? v)
                  (not (contains?
-                       types (:type v)))) [k (sanitize (get values k) v)]
+                       option-types (:type v)))) [k (sanitize (get values k) v)]
             :else [k (get-value (get values k) v)]))))
 
 (defn remove-nil-values-and-empty-maps [m]
@@ -63,7 +65,7 @@
               (cond
                 (and (map? v)
                      (not (contains?
-                           types (:type v)))) [k (sanitize-or-nil (get values k) v)]
+                           option-types (:type v)))) [k (sanitize-or-nil (get values k) v)]
                 :else [k (get-sanitized-value-or-nil (get values k) v)])))
       remove-nil-values-and-empty-maps))
 
