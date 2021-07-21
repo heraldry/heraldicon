@@ -73,8 +73,8 @@
 (defmulti get-list-size (fn [path _context]
                           (state-source path)))
 
-(defn render-option [key {:keys [render-options] :as context}]
-  (get-sanitized-data (conj render-options key) context))
+(defn render-option [key {:keys [render-options-path] :as context}]
+  (get-sanitized-data (conj render-options-path key) context))
 
 (defmulti render-component (fn [path _parent-path _environment context]
                              (effective-component-type

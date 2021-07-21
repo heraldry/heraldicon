@@ -3,7 +3,7 @@
 
 (def coa-select-option-context
   (-> context/default
-      (assoc :data {:render-options {:theme :wappenwiki
-                                     :outline? true
-                                     :escutcheon-shadow? true}})
-      (assoc :render-options [:context :data :render-options])))
+      (assoc :render-options {:theme :wappenwiki
+                              :outline? true
+                              :escutcheon-shadow? true})
+      (assoc :render-options-path [:context :render-options])))

@@ -83,8 +83,8 @@
        :height bar-width
        :style {:fill "#fff"}}]]))
 
-(defn render-arms [x y size path render-options & {:keys [selected? font font-size]
-                                                   :or {font-size 12}}]
+(defn render-arms [x y size path & {:keys [selected? font font-size]
+                                    :or {font-size 12}}]
   (let [data @(rf/subscribe [:get path])
         {arms-id :id
          version :version} (:reference data)
@@ -98,7 +98,8 @@
                                [:context :coat-of-arms]
                                size
                                (-> shared/coa-select-option-context
-                                   (assoc :render-options render-options)
+                                   (assoc :render-options-path
+                                          (conj form-db-path :render-options))
                                    (assoc :coat-of-arms
                                           (if-let [coat-of-arms (:coat-of-arms arms-data)]
                                             coat-of-arms
@@ -187,7 +188,6 @@
                    (+ (/ arms-height 2)))
                 arms-width
                 (conj form-db-path :collection :elements idx)
-                (conj form-db-path :render-options)
                 :selected? (= idx (selected-element-index))
                 :font font]])))
 
@@ -225,7 +225,7 @@
                                  100
                                  (-> shared/coa-select-option-context
                                      (assoc :root-transform "scale(5,5)")
-                                     (assoc :render-options
+                                     (assoc :render-options-path
                                             (conj form-db-path :render-options))
                                      (assoc :coat-of-arms
                                             (if-let [coat-of-arms (:coat-of-arms arms-data)]

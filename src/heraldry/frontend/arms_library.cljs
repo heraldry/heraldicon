@@ -58,7 +58,7 @@
                                100
                                (merge
                                 context/default
-                                {:render-options (conj form-db-path :render-options)
+                                {:render-options-path (conj form-db-path :render-options)
                                  :root-transform "scale(5,5)"}))
         {:keys [width height]} environment]
     [:svg {:id "svg"

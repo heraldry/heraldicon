@@ -181,7 +181,7 @@
                                100
                                (-> shared/coa-select-option-context
                                    (assoc :root-transform "scale(5,5)")
-                                   (assoc :render-options
+                                   (assoc :render-options-path
                                           (conj example-coa-db-path :render-options))
                                    (assoc :coat-of-arms
                                           (-> coat-of-arms
