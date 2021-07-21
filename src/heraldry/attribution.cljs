@@ -1,4 +1,4 @@
-(ns heraldry.license
+(ns heraldry.attribution
   (:require [heraldry.config :as config]
             [heraldry.options :as options]
             [heraldry.util :as util]))
@@ -44,7 +44,7 @@
     :v1 "1.0"
     "4.0"))
 
-(defn url [license license-version]
+(defn license-url [license license-version]
   (when license
     (let [version (cc-version-string license-version)]
       (case license
@@ -54,7 +54,7 @@
         :public-domain "https://creativecommons.org/publicdomain/mark/1.0/"
         "private"))))
 
-(defn display-name [license license-version]
+(defn license-display-name [license license-version]
   (when license
     (let [version (cc-version-string license-version)]
       (case license
@@ -64,7 +64,7 @@
         :public-domain "public domain"
         "none"))))
 
-(defn compatible? [license source-license]
+(defn license-compatible? [license source-license]
   (let [compatible-licenses
         (case (or source-license :none)
           :none #{:none}

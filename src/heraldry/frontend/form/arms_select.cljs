@@ -7,7 +7,7 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
-            [heraldry.license :as license]
+            [heraldry.attribution :as attribution]
             [re-frame.core :as rf]
             [taoensso.timbre :as log]))
 
@@ -75,7 +75,7 @@
               " "
               [link-fn arms]
               " by "
-              [:a {:href (license/full-url-for-username username)
+              [:a {:href (attribution/full-url-for-username username)
                    :target "_blank"} username]
               " "
               [tags/tags-view (-> arms :tags keys)]])))])

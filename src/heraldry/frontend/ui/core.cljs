@@ -49,7 +49,7 @@
             [heraldry.frontend.ui.form.render-options] ;; needed for defmethods
             [heraldry.frontend.ui.form.semy] ;; needed for defmethods
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.license] ;; needed for defmethods
+            [heraldry.attribution] ;; needed for defmethods
             [heraldry.render-options] ;; needed for defmethods
             [heraldry.util :as util]
             [re-frame.core :as rf]))

@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.metadata
-  (:require [heraldry.license :as license]
+  (:require [heraldry.attribution :as attribution]
             [heraldry.options :as options]))
 
 (defn actual-attribution [title creator creator-url url
@@ -7,7 +7,7 @@
                                   source-name source-link
                                   source-license source-license-version
                                   source-creator-name source-creator-link]}]
-  (let [license-url (license/url license license-version)]
+  (let [license-url (attribution/license-url license license-version)]
     [:metadata {:xmlns:rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
                 :xmlns:cc "http://creativecommons.org/ns#"
                 :xmlns:dc "http://purl.org/dc/elements/1.1/"}
@@ -47,7 +47,7 @@
                          [:cc:permits {:rdf:resource "http://creativecommons.org/ns#Distribution"}]]
          nil)]]
      (when (= nature :derivative)
-       (let [source-license-url (license/url source-license source-license-version)]
+       (let [source-license-url (attribution/license-url source-license source-license-version)]
          [:rdf:RDF {:rdf:about source-link}
           [:rdf:Description {:dc:title source-name
                              :dc:creator source-creator-name}]
@@ -58,13 +58,13 @@
 
 (defn attribution [path attribution-type context]
   (let [username (options/raw-value (conj path :username) context)
-        creator-url (license/full-url-for-username username)
+        creator-url (attribution/full-url-for-username username)
         url (case attribution-type
-              :arms (license/full-url-for-arms path context)
-              :charge (license/full-url-for-charge path context))]
+              :arms (attribution/full-url-for-arms path context)
+              :charge (attribution/full-url-for-charge path context))]
     [actual-attribution
      (options/raw-value (conj path :name) context)
      username
      creator-url
      url
-     (options/raw-value (conj path :attribution) context)]))
+     (options/sanitized-value (conj path :attribution) context)]))

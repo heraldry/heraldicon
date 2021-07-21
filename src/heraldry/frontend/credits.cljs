@@ -1,5 +1,5 @@
 (ns heraldry.frontend.credits
-  (:require [heraldry.license :as license]
+  (:require [heraldry.attribution :as attribution]
             [heraldry.util :as util]))
 
 (defn general [title url username data]
@@ -7,10 +7,10 @@
                   license-version
                   source-license
                   source-license-version]} data
-          license-url (license/url license license-version)
-          license-display-name (license/display-name license license-version)
-          source-license-url (license/url source-license source-license-version)
-          source-license-display-name (license/display-name source-license source-license-version)]
+          license-url (attribution/url license license-version)
+          license-display-name (attribution/display-name license license-version)
+          source-license-url (attribution/url source-license source-license-version)
+          source-license-display-name (attribution/display-name source-license source-license-version)]
       [:div.credit
        [:a {:href url
             :target "_blank"} title]

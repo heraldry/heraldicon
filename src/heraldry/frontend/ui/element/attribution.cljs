@@ -3,7 +3,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
-            [heraldry.license :as attribution]
+            [heraldry.attribution :as attribution]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :attribution-submenu-link-name
@@ -20,7 +20,7 @@
           changes [main-name
                    (if (= license :none)
                      "no license"
-                     (attribution/display-name license (:license-version attribution)))]]
+                     (attribution/license-display-name license (:license-version attribution)))]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 

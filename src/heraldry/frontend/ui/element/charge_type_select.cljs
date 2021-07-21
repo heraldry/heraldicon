@@ -8,7 +8,7 @@
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.ui.shared :as shared]
             [re-frame.core :as rf]
-            [heraldry.license :as license]))
+            [heraldry.attribution :as attribution]))
 
 (rf/reg-event-db :update-charge
   (fn [db [_ path changes]]
@@ -100,7 +100,7 @@
                                                                         [:attitude :facing]))])}
                                       (:name charge-data)]
                                      " by "
-                                     [:a {:href (license/full-url-for-username username)
+                                     [:a {:href (attribution/full-url-for-username username)
                                           :target "_blank"} username]]
                                     [charge-select/charge-properties charge-data]]))]
               [:div "loading..."])])]]])))
