@@ -5,7 +5,7 @@
             [heraldry.coat-of-arms.render :as render]
             [heraldry.font :as font]
             [heraldry.frontend.api.request :as api-request]
-            [heraldry.frontend.credits :as credits]
+            [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.form.arms-select :as arms-select]
             [heraldry.frontend.form.collection-select :as collection-select]
             [heraldry.frontend.state :as state]
@@ -240,8 +240,8 @@
            [:div.no-scrollbar {:style {:grid-area "attribution"
                                        :overflow-y "scroll"
                                        :margin 0}}
-            [:div.credits
-             [credits/for-arms arms-data]]])
+            [:div.attribution
+             [attribution/for-arms arms-data]]])
          [:div.no-scrollbar {:style {:grid-area "arms-preview"
                                      :overflow-y "scroll"}}
           [:svg {:id "svg"
