@@ -1,11 +1,12 @@
 (ns heraldry.coat-of-arms.metadata
-  (:require [heraldry.license :as license]))
+  (:require [heraldry.license :as license]
+            [heraldry.options :as options]))
 
-(defn attribution [title creator creator-url url
-                   {:keys [license license-version nature
-                           source-name source-link
-                           source-license source-license-version
-                           source-creator-name source-creator-link]}]
+(defn actual-attribution [title creator creator-url url
+                          {:keys [license license-version nature
+                                  source-name source-link
+                                  source-license source-license-version
+                                  source-creator-name source-creator-link]}]
   (let [license-url (license/url license license-version)]
     [:metadata {:xmlns:rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
                 :xmlns:cc "http://creativecommons.org/ns#"
@@ -54,3 +55,16 @@
            [:cc:license {:rdf:resource source-license-url}]
            [:cc:attributionName source-creator-name]
            [:cc:attributionURL {:rdf:resource source-creator-link}]]]))]))
+
+(defn attribution [path attribution-type context]
+  (let [username (options/raw-value (conj path :username) context)
+        creator-url (license/full-url-for-username username)
+        url (case attribution-type
+              :arms (license/full-url-for-arms path context)
+              :charge (license/full-url-for-charge path context))]
+    [actual-attribution
+     (options/raw-value (conj path :name) context)
+     username
+     creator-url
+     url
+     (options/raw-value (conj path :attribution) context)]))
