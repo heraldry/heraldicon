@@ -54,10 +54,13 @@
                  :layout
                  :outline?]]
      ^{:key option} [interface/form-element (conj path option)])
-   [:div {:style {:margin-bottom "1em"}}]
-   (for [idx (range @(rf/subscribe [:get-list-size (conj path :fields)]))]
-     ^{:key idx}
-     [tincture-select/tincture-select (conj path :fields idx :tincture)])])
+   (when (show-tinctures-only?
+          @(rf/subscribe [:get-value (conj path :type)]))
+     [:<>
+      [:div {:style {:margin-bottom "1em"}}]
+      (for [idx (range @(rf/subscribe [:get-list-size (conj path :fields)]))]
+        ^{:key idx}
+        [tincture-select/tincture-select (conj path :fields idx :tincture)])])])
 
 (defn parent-path [path]
   (let [index (last path)
