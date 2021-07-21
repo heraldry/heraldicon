@@ -152,7 +152,7 @@
   [:azure :or :vert :gules :purpure :sable])
 
 (defn preview-form [path]
-  (let [context {:render-options [:render-options]}
+  (let [context {:render-options-path [:example-coa :render-options]}
         environment {:width 200
                      :height 200}
         {:keys [slot-positions
