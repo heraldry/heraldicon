@@ -95,15 +95,14 @@
                                #(arms-select/fetch-arms arms-id version nil)))
         {:keys [result
                 environment]} (render/coat-of-arms
-                               [:coat-of-arms]
+                               [:context :coat-of-arms]
                                size
                                (-> shared/coa-select-option-context
-                                   (assoc-in [:data :render-options]
-                                             @(rf/subscribe [:get-value (conj form-db-path :render-options)]))
-                                   (assoc-in [:data :coat-of-arms]
-                                             (if-let [coat-of-arms (:coat-of-arms arms-data)]
-                                               coat-of-arms
-                                               default/coat-of-arms))))
+                                   (assoc :render-options render-options)
+                                   (assoc :coat-of-arms
+                                          (if-let [coat-of-arms (:coat-of-arms arms-data)]
+                                            coat-of-arms
+                                            default/coat-of-arms))))
 
         {:keys [width height]} environment]
     [:g
@@ -222,16 +221,16 @@
                                 #(arms-select/fetch-arms arms-id version nil)))
           {:keys [result
                   environment]} (render/coat-of-arms
-                                 [:coat-of-arms]
+                                 [:context :coat-of-arms]
                                  100
                                  (-> shared/coa-select-option-context
                                      (assoc :root-transform "scale(5,5)")
-                                     (assoc-in [:data :render-options]
-                                               @(rf/subscribe [:get-value (conj form-db-path :render-options)]))
-                                     (assoc-in [:data :coat-of-arms]
-                                               (if-let [coat-of-arms (:coat-of-arms arms-data)]
-                                                 coat-of-arms
-                                                 default/coat-of-arms))))
+                                     (assoc :render-options
+                                            (conj form-db-path :render-options))
+                                     (assoc :coat-of-arms
+                                            (if-let [coat-of-arms (:coat-of-arms arms-data)]
+                                              coat-of-arms
+                                              default/coat-of-arms))))
           {:keys [width height]} environment]
       (when (or (not arms-id)
                 (= status :done))
@@ -241,7 +240,7 @@
                                        :overflow-y "scroll"
                                        :margin 0}}
             [:div.attribution
-             [attribution/for-arms arms-data]]])
+             [attribution/for-arms [:context :arms] {:arms arms-data}]]])
          [:div.no-scrollbar {:style {:grid-area "arms-preview"
                                      :overflow-y "scroll"}}
           [:svg {:id "svg"
