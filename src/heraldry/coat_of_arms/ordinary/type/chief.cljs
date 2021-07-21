@@ -88,10 +88,8 @@
      [cottising/fess-cottise
       :cottise-1 :cottise-2 :cottise-opposite-1
       path environment cottise-context
-      :offset-y-fn (fn [distance]
-                     (-> points
-                         :fess
-                         :y
+      :offset-y-fn (fn [base distance]
+                     (-> base
                          (- row)
                          (+ line-reversed-min)
                          (/ height)
