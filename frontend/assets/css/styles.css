@@ -115,15 +115,6 @@ p {
   overflow: auto;
 }
 
-.pure-menu-children {
-  border: 1px solid #ddd;
-  border-top: 0;
-}
-
-.pure-menu-selected {
-  background-color: #f0f0f0;
-}
-
 .modal-background {
   position: fixed;
   top: 0;
