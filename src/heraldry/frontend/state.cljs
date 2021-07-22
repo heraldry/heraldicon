@@ -194,6 +194,31 @@
 (def node-flag-db-path [:ui :component-tree :nodes])
 (def ui-component-node-selected-path [:ui :component-tree :selected-node])
 
+(defn component-node-open-by-default? [path]
+  (or (->> path (take-last 1) #{[:coat-of-arms]})
+      (->> path (take-last 2) #{[:coat-of-arms :field]
+                                [:collection-form :collection]})
+      (->> path (take-last 5) #{[:example-coa :coat-of-arms :field :components 0]})))
+
+(defn component-node-open? [flag path]
+  (if (nil? flag)
+    (component-node-open-by-default? path)
+    flag))
+
+(rf/reg-sub :ui-component-node-open?
+  (fn [[_ path] _]
+    (rf/subscribe [:get (conj node-flag-db-path path)]))
+
+  (fn [flag [_ path]]
+    (component-node-open? flag path)))
+
+(rf/reg-sub :ui-component-node-selected-path
+  (fn [_ _]
+    (rf/subscribe [:get ui-component-node-selected-path]))
+
+  (fn [selected-node-path [_ _path]]
+    selected-node-path))
+
 (defn ui-component-node-open [db path]
   (let [path (vec path)]
     (->> (range (count path))
@@ -210,11 +235,12 @@
   (update-in
    db node-flag-db-path
    (fn [flags]
-     (->> flags
-          (filter (fn [[other-path v]]
-                    (when (not= (take (count path) other-path)
-                                path)
-                      [other-path v])))
+     (->> (assoc flags path false)
+          (map (fn [[other-path v]]
+                 (if (= (take (count path) other-path)
+                        path)
+                   [other-path false]
+                   [other-path v])))
           (into {})))))
 
 (rf/reg-event-db :ui-component-node-close
@@ -223,7 +249,9 @@
 
 (rf/reg-event-db :ui-component-node-toggle
   (fn [db [_ path]]
-    (if (get-in db (conj node-flag-db-path path))
+    (if (component-node-open?
+         (get-in db (conj node-flag-db-path path))
+         path)
       (ui-component-node-close db path)
       (ui-component-node-open db path))))
 
