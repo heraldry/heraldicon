@@ -331,14 +331,13 @@
 
 (defn view-list-collection []
   [:div {:style {:padding "15px"}}
-   [:div.pure-u-1-2 {:style {:display "block"
-                             :text-align "justify"
-                             :min-width "30em"}}
+   [:div {:style {:text-align "justify"
+                  :max-width "40em"}}
     [:p
      "Here you can view and create collections of coats of arms. "
      "You explicitly have to save your collection as "
      [:b "public"] " and add a license, if you want to share the link and allow others to view it."]]
-   [:button.pure-button.pure-button-primary
+   [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])

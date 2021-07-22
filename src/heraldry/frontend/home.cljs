@@ -9,9 +9,11 @@
 
 (defn view []
   [:div {:style {:padding "10px"}}
-   [:h2 "News"]
-   [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll "
-    "group some features and new development and post an update here, so it is easy to stay informed."]
+   [:div {:style {:text-align "justify"
+                  :max-width "40em"}}
+    [:h2 "News"]
+    [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll "
+     "group some features and new development and post an update here, so it is easy to stay informed."]]
 
    [:h3 "2021-06-12 - Charge groups, public arms, collections, users"]
    [:div.release-row
