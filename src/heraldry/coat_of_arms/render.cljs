@@ -20,7 +20,8 @@
                       texture-link] :as context}]
   (let [mode (interface/render-option :mode context)
         escutcheon-override (interface/render-option :escutcheon-override context)
-        escutcheon-shadow? (interface/render-option :escutcheon-shadow? context)
+        escutcheon-shadow? (when-not svg-export?
+                             (interface/render-option :escutcheon-shadow? context))
         escutcheon-outline? (interface/render-option :escutcheon-outline? context)
         outline? (interface/render-option :outline? context)
         shiny? (interface/render-option :shiny? context)
