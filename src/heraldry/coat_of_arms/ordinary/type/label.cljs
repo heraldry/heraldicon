@@ -100,7 +100,6 @@
         thickness (interface/get-sanitized-data (conj path :geometry :thickness) context)
         eccentricity (interface/get-sanitized-data (conj path :geometry :eccentricity) context)
         stretch (interface/get-sanitized-data (conj path :geometry :stretch) context)
-        ;; cottising (interface/get-sanitized-data (conj path :cottising) context)
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (conj path :outline?) context))
         line {:type :straight
