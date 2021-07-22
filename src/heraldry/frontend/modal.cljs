@@ -30,7 +30,7 @@
        [:<>
         [:div.modal-background {:on-click #(clear)}]
         [:div.modal.dialog
-         [:div.header title]
+         [:div.modal-header title]
          [:div.content content]]])
      (when loader
        [:<>
