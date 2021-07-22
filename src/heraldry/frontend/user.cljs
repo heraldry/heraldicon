@@ -155,14 +155,14 @@
        "Forgotten password"]
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
-       [:button.pure-button
+       [:button.button
         {:style {:margin-right "5px"}
          :type "reset"
          :on-click #(do
                       (rf/dispatch [:clear-form db-path])
                       (modal/clear))}
         "Cancel"]
-       [:button.pure-button.pure-button-primary {:type "submit"}
+       [:button.button.primary {:type "submit"}
         "Login"]]]]))
 
 (defn sign-up-clicked [db-path]
@@ -239,14 +239,14 @@
                    :type "password"}]])]
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
-       [:button.pure-button
+       [:button.button
         {:style {:margin-right "5px"}
          :type "reset"
          :on-click #(do
                       (rf/dispatch [:clear-form db-path])
                       (modal/clear))}
         "Cancel"]
-       [:button.pure-button.pure-button-primary {:type "submit"}
+       [:button.button.primary {:type "submit"}
         "Register"]]]]))
 
 (defn confirm-clicked [db-path]
@@ -303,12 +303,12 @@
                    :type "text"}]])]
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
-       [:button.pure-button
+       [:button.button
         {:style {:margin-right "5px"}
          :type "button"
          :on-click #(resend-code-clicked db-path)}
         "Resend code"]
-       [:button.pure-button.pure-button-primary {:type "submit"} "Confirm"]]]]))
+       [:button.button.primary {:type "submit"} "Confirm"]]]]))
 
 (defn change-temporary-password-clicked [db-path]
   (let [user-data (data)
@@ -369,14 +369,14 @@
                    :type "password"}]])]
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
-       [:button.pure-button
+       [:button.button
         {:style {:margin-right "5px"}
          :type "reset"
          :on-click #(do
                       (rf/dispatch [:clear-form db-path])
                       (modal/clear))}
         "Cancel"]
-       [:button.pure-button.pure-button-primary {:type "submit"}
+       [:button.button.primary {:type "submit"}
         "Change"]]]]))
 
 (defn reset-password-clicked [db-path]
@@ -446,7 +446,7 @@
                    :type "password"}]])]
       [:div.pure-control-group {:style {:text-align "right"
                                         :margin-top "10px"}}
-       [:button.pure-button.pure-button-primary {:type "submit"} "Reset password"]]]]))
+       [:button.button.primary {:type "submit"} "Reset password"]]]]))
 
 (defn logout []
   ;; TODO: logout via API
