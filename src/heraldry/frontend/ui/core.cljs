@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.core
-  (:require [heraldry.coat-of-arms.charge-group.options] ;; needed for defmethods
+  (:require [heraldry.attribution] ;; needed for defmethods
+            [heraldry.coat-of-arms.charge-group.options] ;; needed for defmethods
             [heraldry.coat-of-arms.charge.options] ;; needed for defmethods
             [heraldry.coat-of-arms.core] ;; needed for defmethods
             [heraldry.coat-of-arms.field.options] ;; needed for defmethods
@@ -49,7 +50,6 @@
             [heraldry.frontend.ui.form.render-options] ;; needed for defmethods
             [heraldry.frontend.ui.form.semy] ;; needed for defmethods
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.attribution] ;; needed for defmethods
             [heraldry.render-options] ;; needed for defmethods
             [heraldry.util :as util]
             [re-frame.core :as rf]))
