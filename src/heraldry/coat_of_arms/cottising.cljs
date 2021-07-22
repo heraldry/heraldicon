@@ -2,8 +2,9 @@
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.interface :as interface]
-            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]))
+            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.interface :as interface]))
 
 (def cottise-default-options
   {:line (-> line/default-options
@@ -101,3 +102,59 @@
                                                 (-> environment :points :fess :y)
                                                 distance)]
                              :alignment alignment}})]))))
+
+(defn render-bend-cottise [cottise-1-key cottise-2-key next-cottise-key
+                           path environment context & {:keys [distance-fn
+                                                              alignment
+                                                              swap-lines?
+                                                              angle
+                                                              direction-orthogonal
+                                                              center-point
+                                                              width
+                                                              height
+                                                              middle-real-start-fn
+                                                              middle-real-end-fn]}]
+  (let [cottise-path (conj path :cottising cottise-1-key)
+        cottise-2-path (conj path :cottising cottise-2-key)]
+    (when (interface/get-raw-data cottise-path context)
+      (let [line (interface/get-sanitized-data (conj cottise-path :line) context)
+            opposite-line (interface/get-sanitized-data (conj cottise-path :opposite-line) context)
+            [line opposite-line] (if swap-lines?
+                                   [opposite-line line]
+                                   [line opposite-line])
+            thickness (interface/get-sanitized-data (conj cottise-path :thickness) context)
+            distance (interface/get-sanitized-data (conj cottise-path :distance) context)
+            effective-distance (distance-fn distance thickness)
+            point-offset (v/* direction-orthogonal effective-distance)
+            new-center-point (v/+ center-point point-offset)
+            fess-offset (v/- new-center-point (-> environment :points :fess))
+            origin {:point :fess
+                    :offset-x (-> fess-offset
+                                  :x
+                                  (/ width)
+                                  (* 100))
+                    :offset-y (-> fess-offset
+                                  :y
+                                  (/ height)
+                                  (* 100)
+                                  -)
+                    :alignment alignment}
+            anchor {:point :angle
+                    :angle angle}]
+        [ordinary-interface/render-ordinary
+         [:context :cottise]
+         path
+         environment
+         (-> context
+             (assoc
+              :cottise {:type :heraldry.ordinary.type/bend
+                        :field (interface/get-raw-data (conj cottise-path :field) context)
+                        :line line
+                        :opposite-line opposite-line
+                        :geometry {:size thickness}
+                        :cottising {next-cottise-key (interface/get-raw-data cottise-2-path context)}
+                        :origin origin
+                        :anchor anchor})
+             (assoc :override-center-point new-center-point)
+             (assoc :override-middle-real-start (middle-real-start-fn point-offset))
+             (assoc :override-middle-real-end (middle-real-end-fn point-offset)))]))))
