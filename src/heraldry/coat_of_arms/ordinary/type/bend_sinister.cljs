@@ -124,10 +124,10 @@
                                               :real-end real-end
                                               :context context
                                               :environment environment)
-        ;; TODO: counterchanged
-        counterchanged? false #_(:counterchanged? field)
-        use-parent-environment? false #_(or counterchanged?
-                                            (:inherit-environment? field))
+        counterchanged? (interface/get-sanitized-data (conj path :field :counterchanged?) context)
+        inherit-environment? (interface/get-sanitized-data (conj path :field :inherit-environment?) context)
+        use-parent-environment? (or counterchanged?
+                                    inherit-environment?)
         part [["M" (v/+ first-start
                         line-one-start)
                (svg/stitch line-one)
@@ -137,10 +137,6 @@
                "L" (v/+ first-start
                         line-one-start)
                "z"]]
-        ;; TODO: counterchanged
-        ;; field (if counterchanged?
-        ;;         (counterchange/counterchange-field ordinary parent)
-        ;;         field)
         cottise-context (merge
                          context
                          {:override-real-start real-start

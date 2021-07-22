@@ -167,12 +167,7 @@
                         line-left-upper-start)
                (svg/stitch line-left-upper)
                "z"]
-              [top-left bottom-right]]
-        ;; TODO: counterchanged
-        ;; field (if (:counterchanged? field)
-        ;;         (counterchange/counterchange-field ordinary parent)
-        ;;         field)
-        ]
+              [top-left bottom-right]]]
     [:<>
      [field-shared/make-subfield
       (conj path :field) part

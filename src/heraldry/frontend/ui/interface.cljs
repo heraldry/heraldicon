@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.interface
-  (:require [heraldry.interface :as interface]
+  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
+            [heraldry.interface :as interface]
             [heraldry.options :as options]
             [re-frame.core :as rf]
             [reagent.core :as r]))
@@ -70,6 +71,13 @@
                  (-> options :type :type)))
       (options/sanitize value options)
       (options/get-value value options))))
+
+(rf/reg-sub :get-counterchange-tinctures
+  (fn [[_ path _context] _]
+    (rf/subscribe [:get-value path]))
+
+  (fn [data [_ _path context]]
+    (counterchange/get-counterchange-tinctures data context)))
 
 (rf/reg-sub :get-form-element-type
   (fn [[_ path] _]

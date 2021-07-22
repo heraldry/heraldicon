@@ -246,6 +246,12 @@
                          (v// 2)
                          (v/+ origin-point))
             environment (update environment :points dissoc :special)
+            inherit-environment? (interface/get-sanitized-data
+                                  (conj path :field :inherit-environment?)
+                                  context)
+            counterchanged? (interface/get-sanitized-data
+                             (conj path :field :counterchanged?)
+                             context)
             charge-environment (environment/create
                                 (svg/make-path ["M" position
                                                 "l" (v/v (:x clip-size) 0)
@@ -259,15 +265,9 @@
                                  :bounding-box (svg/bounding-box
                                                 [position (v/+ position
                                                                clip-size)])
-                                 ;; TODO: counterchanged, inherit-environment
-                                 :override-environment nil #_(when (or (:inherit-environment? field)
-                                                                       (:counterchanged? field))
-                                                               environment)})
-            ;; TODO: counterchanged
-            ;; field (if (:counterchanged? field)
-            ;;         (counterchange/counterchange-field charge parent :charge-group charge-group)
-            ;;         field)
-            ]
+                                 :override-environment (when (or inherit-environment?
+                                                                 counterchanged?)
+                                                         environment)})]
         [:<>
          [:defs
           (when render-shadow?

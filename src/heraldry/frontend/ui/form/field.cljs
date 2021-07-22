@@ -2,12 +2,10 @@
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.core :as field]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element.tincture-select :as tincture-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.util :as util]
-            [re-frame.core :as rf]
-            [heraldry.options :as options]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.ui.element.tincture-select :as tincture-select]))
+            [re-frame.core :as rf]))
 
 (rf/reg-event-db :override-field-part-reference
   (fn [db [_ path]]
@@ -38,8 +36,8 @@
 
 (defn form [path _]
   [:<>
-   (for [option [:inherit-environment?
-                 :counterchanged?
+   (for [option [:counterchanged?
+                 :inherit-environment?
                  :type
                  :tincture
                  :line

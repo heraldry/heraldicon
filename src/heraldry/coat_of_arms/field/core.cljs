@@ -141,11 +141,13 @@
   (-> field-type interface/part-names (get index) (or (util/to-roman (inc index)))))
 
 (defn title [path]
-  (let [field-type @(rf/subscribe [:get-sanitized-value (conj path :type)])]
-    (str
-     (if (= field-type :heraldry.field.type/plain)
-       (-> @(rf/subscribe [:get-value (conj path :tincture)])
-           frontend-util/translate-tincture
-           frontend-util/upper-case-first)
-       (get field-options/field-map field-type))
-     " field")))
+  (if @(rf/subscribe [:get-sanitized-value (conj path :counterchanged?)])
+    "Counterchanged field"
+    (let [field-type @(rf/subscribe [:get-sanitized-value (conj path :type)])]
+      (str
+       (if (= field-type :heraldry.field.type/plain)
+         (-> @(rf/subscribe [:get-value (conj path :tincture)])
+             frontend-util/translate-tincture
+             frontend-util/upper-case-first)
+         (get field-options/field-map field-type))
+       " field"))))

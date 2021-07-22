@@ -199,12 +199,7 @@
                                (v/+ fess-top-left
                                     line-fess-top-left-start)])
                (svg/stitch line-fess-top-left)
-               "z"]]
-        ;; TODO: counterchanged
-        ;; field (if (:counterchanged? field)
-        ;;         (counterchange/counterchange-field ordinary parent)
-        ;;         field)
-        ]
+               "z"]]]
     [:<>
      [field-shared/make-subfield
       (conj path :field) part

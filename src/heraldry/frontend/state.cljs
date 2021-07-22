@@ -2,6 +2,7 @@
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.attributes :as attributes]
+            [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
@@ -330,11 +331,18 @@
 (defmethod interface/get-list-size :state [path _context]
   @(rf/subscribe [:get-list-size path]))
 
+(defmethod interface/get-counterchange-tinctures :state [path context]
+  @(rf/subscribe [:get-counterchange-tinctures path context]))
+
 (defmethod interface/get-raw-data :context [path context]
   (get-in context (drop 1 path)))
 
 (defmethod interface/get-list-size :context [path context]
   (count (get-in context (drop 1 path))))
+
+(defmethod interface/get-counterchange-tinctures :context [path context]
+  (-> (interface/get-raw-data path context)
+      (counterchange/get-counterchange-tinctures context)))
 
 (defn get-options-by-context [path context]
   (interface/component-options path (interface/get-raw-data path context)))

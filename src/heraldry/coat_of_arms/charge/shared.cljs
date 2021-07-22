@@ -150,10 +150,6 @@
                (v/+ origin-point
                     (v/v max-x max-y))]
               mask-shape]
-        ;; TODO: counterchanged
-        ;; field (if (:counterchanged? field)
-        ;;         (counterchange/counterchange-field charge parent-path :charge-group charge-group)
-        ;;         field)
         charge-id (util/id "charge")
         environment (update environment :points dissoc :special)]
     [:<>

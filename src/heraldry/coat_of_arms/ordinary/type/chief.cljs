@@ -70,10 +70,6 @@
                                     line-reversed-start)])
                "z"]
               [top-left row-right]]
-        ;; TODO: counterchanged
-        ;; field (if (:counterchanged? field)
-        ;;         (counterchange/counterchange-field ordinary parent)
-        ;;         field)
         cottise-context (merge
                          context
                          {:override-shared-start-x shared-start-x

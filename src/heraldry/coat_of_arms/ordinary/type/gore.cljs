@@ -80,12 +80,7 @@
                "z"]
               [intersection-top
                origin-point
-               bottom]]
-        ;; TODO: counterchanged
-        ;; field (if (:counterchanged? field)
-        ;;         (counterchange/counterchange-field ordinary parent)
-        ;;         field)
-        ]
+               bottom]]]
     [:<>
      [field-shared/make-subfield
       (conj path :field) part
