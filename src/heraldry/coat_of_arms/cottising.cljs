@@ -70,10 +70,10 @@
          cottise-opposite-2)
     (update :cottise-opposite-2 cottise-options cottise-opposite-2)))
 
-(defn fess-cottise [cottise-1-key cottise-2-key next-cottise-key
-                    path environment context & {:keys [offset-y-fn
-                                                       alignment
-                                                       swap-lines?]}]
+(defn render-fess-cottise [cottise-1-key cottise-2-key next-cottise-key
+                           path environment context & {:keys [offset-y-fn
+                                                              alignment
+                                                              swap-lines?]}]
   (let [cottise-path (conj path :cottising cottise-1-key)
         cottise-2-path (conj path :cottising cottise-2-key)]
     (when (interface/get-raw-data cottise-path context)
