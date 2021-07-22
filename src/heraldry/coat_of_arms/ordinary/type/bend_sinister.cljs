@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.ordinary.type.bend-sinister
   (:require [heraldry.coat-of-arms.angle :as angle]
+            [heraldry.coat-of-arms.cottising :as cottising]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
@@ -18,14 +19,7 @@
                                          override-real-start
                                          override-real-end
                                          override-center-point] :as context}]
-  (let [;; TODO: bring this back
-        ;; ignore offset constraints, because cottises might exceed them
-        ;; ordinary-options (-> (ordinary-options/options ordinary)
-        ;;                      (assoc-in [:origin :offset-x :min] -100)
-        ;;                      (assoc-in [:origin :offset-x :max] 100)
-        ;;                      (assoc-in [:origin :offset-y :min] -100)
-        ;;                      (assoc-in [:origin :offset-y :max] 100))
-        line (interface/get-sanitized-data (conj path :line) context)
+  (let [line (interface/get-sanitized-data (conj path :line) context)
         opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
         origin (interface/get-sanitized-data (conj path :origin) context)
         anchor (interface/get-sanitized-data (conj path :anchor) context)
@@ -148,10 +142,10 @@
         ;; field (if counterchanged?
         ;;         (counterchange/counterchange-field ordinary parent)
         ;;         field)
-        #_#_{:keys [cottise-1
-                    cottise-2
-                    cottise-opposite-1
-                    cottise-opposite-2]} (-> ordinary :cottising)]
+        cottise-context (merge
+                         context
+                         {:override-real-start real-start
+                          :override-real-end real-end})]
     [:<>
      [field-shared/make-subfield
       (conj path :field) part
@@ -163,86 +157,46 @@
                                    "rotate(" angle ")"))))]
      (line/render line [line-one-data] first-start outline? context)
      (line/render opposite-line [line-reversed-data] second-end outline? context)
-     #_(when (:enabled? cottise-1)
-         (let [cottise-1-data (:cottise-1 cottising)
-               dist (-> (+ (:distance cottise-1-data))
-                        (+ (/ (:thickness cottise-1-data) 2))
-                        (/ 100)
-                        (* height)
-                        (+ (/ band-height 2))
-                        (- line-one-min))
-               point-offset (v/* direction-orthogonal dist)
-               new-center-point (v/+ center-point point-offset)
-               fess-offset (v/- new-center-point (get points :fess))
-               new-origin {:point :fess
-                           :offset-x (-> fess-offset
-                                         :x
-                                         (/ width)
-                                         (* 100))
-                           :offset-y (-> fess-offset
-                                         :y
-                                         (/ height)
-                                         (* 100)
-                                         -)
-                           :alignment :right}
-               new-anchor {:point :angle
-                           :angle (- angle)}]
-           [render (-> ordinary
-                       (assoc :cottising {:cottise-1 cottise-2})
-                       (assoc :line (:line cottise-1))
-                       (assoc :opposite-line (:opposite-line cottise-1))
-                       (assoc :field (:field cottise-1))
-                       (assoc-in [:geometry :size] (:thickness cottise-1-data))
-                       (assoc :origin new-origin)
-                       (assoc :anchor new-anchor)) parent environment
-            (-> context
-                (assoc :override-center-point new-center-point)
-                (assoc :override-middle-real-start (v/+ middle-real-start point-offset))
-                (assoc :override-middle-real-end (v/+ middle-real-end point-offset))
-                (assoc :override-real-start real-start)
-                (assoc :override-real-end real-end))]))
-     #_(when (:enabled? cottise-opposite-1)
-         (let [cottise-opposite-1-data (:cottise-opposite-1 cottising)
-               bend-sinister-base {:type :heraldry.ordinary.type/bend-sinister
-                                   :line (:line cottise-opposite-1)
-                                   :opposite-line (:opposite-line cottise-opposite-1)}
-               bend-sinister-options (ordinary-options/options bend-sinister-base)
-               {:keys [line
-                       opposite-line]} (options/sanitize bend-sinister-base bend-sinister-options)
-               dist (-> (+ (:distance cottise-opposite-1-data))
-                        (+ (/ (:thickness cottise-opposite-1-data) 2))
-                        (/ 100)
-                        (* height)
-                        (+ (/ band-height 2))
-                        (- line-reversed-min))
-               point-offset (v/* direction-orthogonal dist)
-               new-center-point (v/- center-point point-offset)
-               fess-offset (v/- new-center-point (get points :fess))
-               new-origin {:point :fess
-                           :offset-x (-> fess-offset
-                                         :x
-                                         (/ width)
-                                         (* 100))
-                           :offset-y (-> fess-offset
-                                         :y
-                                         (/ height)
-                                         (* 100)
-                                         -)
-                           :alignment :left}
-               new-anchor {:point :angle
-                           :angle (- angle)}]
-           [render (-> ordinary
-                       (assoc :cottising {:cottise-opposite-1 cottise-opposite-2})
-                     ;; swap line/opposite-line because the cottise fess is upside down
-                       (assoc :line opposite-line)
-                       (assoc :opposite-line line)
-                       (assoc :field (:field cottise-opposite-1))
-                       (assoc-in [:geometry :size] (:thickness cottise-opposite-1-data))
-                       (assoc :origin new-origin)
-                       (assoc :anchor new-anchor)) parent environment
-            (-> context
-                (assoc :override-center-point new-center-point)
-                (assoc :override-middle-real-start (v/- middle-real-start point-offset))
-                (assoc :override-middle-real-end (v/- middle-real-end point-offset))
-                (assoc :override-real-start real-start)
-                (assoc :override-real-end real-end))]))]))
+     [cottising/render-bend-cottise
+      :cottise-1 :cottise-2 :cottise-1
+      path environment cottise-context
+      :sinister? true
+      :distance-fn (fn [distance thickness]
+                     (-> (+ distance)
+                         (+ (/ thickness 2))
+                         (/ 100)
+                         (* height)
+                         (+ (/ band-height 2))
+                         (- line-one-min)))
+      :alignment :right
+      :width width
+      :height height
+      :angle (- angle)
+      :direction-orthogonal direction-orthogonal
+      :center-point center-point
+      :middle-real-start-fn (fn [point-offset]
+                              (v/+ middle-real-start point-offset))
+      :middle-real-end-fn (fn [point-offset]
+                            (v/+ middle-real-end point-offset))]
+     [cottising/render-bend-cottise
+      :cottise-opposite-1 :cottise-opposite-2 :cottise-opposite-1
+      path environment cottise-context
+      :sinister? true
+      :distance-fn (fn [distance thickness]
+                     (-> (+ distance)
+                         (+ (/ thickness 2))
+                         (/ 100)
+                         (* height)
+                         (+ (/ band-height 2))
+                         (- line-reversed-min)))
+      :alignment :left
+      :width width
+      :height height
+      :angle (- angle)
+      :direction-orthogonal direction-orthogonal
+      :center-point center-point
+      :middle-real-start-fn (fn [point-offset]
+                              (v/- middle-real-start point-offset))
+      :middle-real-end-fn (fn [point-offset]
+                            (v/- middle-real-end point-offset))
+      :swap-lines? true]]))
