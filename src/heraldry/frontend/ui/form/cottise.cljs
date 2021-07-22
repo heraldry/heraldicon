@@ -8,7 +8,8 @@
    (for [option [:line
                  :opposite-line
                  :distance
-                 :thickness]]
+                 :thickness
+                 :outline?]]
      ^{:key option} [interface/form-element (conj path option)])])
 
 (defn cottise-name [path]
