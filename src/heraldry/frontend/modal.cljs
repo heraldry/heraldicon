@@ -25,15 +25,16 @@
 (defn render []
   (let [{:keys [title content]} @(rf/subscribe [:get dialog-db-path])
         loader @(rf/subscribe [:get loader-db-path])]
+    ^{:key title}
     [:<>
      (when content
        [:<>
         [:div.modal-background {:on-click #(clear)}]
         [:div.modal.dialog
          [:div.modal-header title]
-         [:div.content content]]])
+         [:div.modal-content content]]])
      (when loader
        [:<>
         [:div.modal-background {:style {:z-index 2000}}]
-        [:div.modal {:style {:z-index 2001}}
+        [:div.modal-modal {:style {:z-index 2001}}
          [:div.loader]]])]))

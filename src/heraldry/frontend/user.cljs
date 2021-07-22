@@ -121,49 +121,50 @@
                     (.preventDefault event)
                     (.stopPropagation event)
                     (login-clicked db-path))]
-    [:form.pure-form.pure-form-stacked
+    [:form.modal-form
      {:on-key-press (fn [event]
                       (when (-> event .-code (= "Enter"))
                         (on-submit event)))
       :on-submit on-submit}
      (when error-message
        [:div.error-message error-message])
-     [:fieldset
-      [text-field (conj db-path :username)
-       (fn [& {:keys [value on-change]}]
-         [:div.pure-control-group
-          [:input {:id "username"
-                   :value value
-                   :on-change on-change
-                   :placeholder "Username"
-                   :type "text"}]])]
-      [text-field (conj db-path :password)
-       (fn [& {:keys [value on-change]}]
-         [:div.pure-control-group
-          [:input {:id "password"
-                   :value value
-                   :on-change on-change
-                   :placeholder "Password"
-                   :type "password"}]])]
-      [:a
+     [text-field (conj db-path :username)
+      (fn [& {:keys [value on-change]}]
+        [:div
+         [:input {:id "username"
+                  :name "username"
+                  :value value
+                  :on-change on-change
+                  :placeholder "Username"
+                  :type "text"}]])]
+     [text-field (conj db-path :password)
+      (fn [& {:keys [value on-change]}]
+        [:div
+         [:input {:id "password"
+                  :name "password"
+                  :value value
+                  :on-change on-change
+                  :placeholder "Password"
+                  :type "password"}]])]
+     [:a
+      {:style {:margin-right "5px"}
+       :href "#"
+       :on-click (fn [event]
+                   (.preventDefault event)
+                   (.stopPropagation event)
+                   (forgotten-password-clicked db-path))}
+      "Forgotten password"]
+     [:div {:style {:text-align "right"
+                    :margin-top "10px"}}
+      [:button.button
        {:style {:margin-right "5px"}
-        :href "#"
-        :on-click (fn [event]
-                    (.preventDefault event)
-                    (.stopPropagation event)
-                    (forgotten-password-clicked db-path))}
-       "Forgotten password"]
-      [:div.pure-control-group {:style {:text-align "right"
-                                        :margin-top "10px"}}
-       [:button.button
-        {:style {:margin-right "5px"}
-         :type "reset"
-         :on-click #(do
-                      (rf/dispatch [:clear-form db-path])
-                      (modal/clear))}
-        "Cancel"]
-       [:button.button.primary {:type "submit"}
-        "Login"]]]]))
+        :type "reset"
+        :on-click #(do
+                     (rf/dispatch [:clear-form db-path])
+                     (modal/clear))}
+       "Cancel"]
+      [:button.button.primary {:type "submit"}
+       "Login"]]]))
 
 (defn sign-up-clicked [db-path]
   (let [{:keys [username email password password-again]} @(rf/subscribe [:get db-path])]
@@ -193,61 +194,69 @@
                     (.preventDefault event)
                     (.stopPropagation event)
                     (sign-up-clicked db-path))]
-    [:form.pure-form.pure-form-aligned
-     {:on-key-press (fn [event]
+    [:form.modal-form
+     {:autoComplete "off"
+      :on-key-press (fn [event]
                       (when (-> event .-code (= "Enter"))
                         (on-submit event)))
       :on-submit on-submit}
      (when error-message
        [:div.error-message error-message])
-     [:fieldset
-      [text-field (conj db-path :username)
-       (fn [& {:keys [value on-change]}]
-         [:div.pure-control-group
-          [:label {:for "username"} "Username"]
-          [:input {:id "username"
-                   :value value
-                   :on-change on-change
-                   :placeholder "Username"
-                   :type "text"}]])]
-      [text-field (conj db-path :email)
-       (fn [& {:keys [value on-change]}]
-         [:div.pure-control-group
-          [:label {:for "email"} "Email"]
-          [:input {:id "email"
-                   :value value
-                   :on-change on-change
-                   :placeholder "Email"
-                   :type "text"}]])]
-      [text-field (conj db-path :password)
-       (fn [& {:keys [value on-change]}]
-         [:div.pure-control-group
-          [:label {:for "password"} "Password:"]
-          [:input {:id "password"
-                   :value value
-                   :on-change on-change
-                   :placeholder "Password"
-                   :type "password"}]])]
-      [text-field (conj db-path :password-again)
-       (fn [& {:keys [value on-change]}]
-         [:div.pure-control-group
-          [:label {:for "password-again"} "Password again:"]
-          [:input {:id "password-again"
-                   :value value
-                   :on-change on-change
-                   :placeholder "Password again"
-                   :type "password"}]])]
-      [:div.pure-control-group {:style {:text-align "right"
-                                        :margin-top "10px"}}
-       [:button.button
-        {:style {:margin-right "5px"}
-         :type "reset"
-         :on-click #(do
-                      (rf/dispatch [:clear-form db-path])
-                      (modal/clear))}
-        "Cancel"]
-       [:button.button.primary {:type "submit"}
-        "Register"]]]]))
+     [text-field (conj db-path :username)
+      (fn [& {:keys [value on-change]}]
+        [:<>
+         [:label {:for "username"} "Username"]
+         [:input {:id "username"
+                  :name "username"
+                  :autoComplete "off"
+                  :value value
+                  :on-change on-change
+                  :placeholder "Username"
+                  :type "text"}]])]
+     [text-field (conj db-path :email)
+      (fn [& {:keys [value on-change]}]
+        [:<>
+         [:label {:for "email"} "Email"]
+         [:input {:id "email"
+                  :name "email"
+                  :autoComplete "off"
+                  :value value
+                  :on-change on-change
+                  :placeholder "Email"
+                  :type "text"}]])]
+     [text-field (conj db-path :password)
+      (fn [& {:keys [value on-change]}]
+        [:<>
+         [:label {:for "password"} "Password"]
+         [:input {:id "password"
+                  :name "password"
+                  :autoComplete "off"
+                  :value value
+                  :on-change on-change
+                  :placeholder "Password"
+                  :type "password"}]])]
+     [text-field (conj db-path :password-again)
+      (fn [& {:keys [value on-change]}]
+        [:<>
+         [:label {:for "password-again"} "Password again"]
+         [:input {:id "password-again"
+                  :name "password-again"
+                  :autoComplete "off"
+                  :value value
+                  :on-change on-change
+                  :placeholder "Password again"
+                  :type "password"}]])]
+     [:div {:style {:text-align "right"
+                    :margin-top "10px"}}
+      [:button.button
+       {:style {:margin-right "5px"}
+        :type "reset"
+        :on-click #(do
+                     (rf/dispatch [:clear-form db-path])
+                     (modal/clear))}
+       "Cancel"]
+      [:button.button.primary {:type "submit"}
+       "Register"]]]))
 
 (defn confirm-clicked [db-path]
   (let [{:keys [code]} @(rf/subscribe [:get db-path])
@@ -284,31 +293,31 @@
                     (.preventDefault event)
                     (.stopPropagation event)
                     (confirm-clicked db-path))]
-    [:form.pure-form.pure-form-stacked
-     {:on-key-press (fn [event]
+    [:form.modal-form
+     {:autoComplete "off"
+      :on-key-press (fn [event]
                       (when (-> event .-code (= "Enter"))
                         (on-submit event)))
       :on-submit on-submit}
      "A confirmation code was sent to your email address."
      (when error-message
        [:div.error-message error-message])
-     [:fieldset
-      [text-field (conj db-path :code)
-       (fn [& {:keys [value on-change]}]
-         [:div.pure-control-group
-          [:input {:id "code"
-                   :value value
-                   :on-change on-change
-                   :placeholder "Confirmation code"
-                   :type "text"}]])]
-      [:div.pure-control-group {:style {:text-align "right"
-                                        :margin-top "10px"}}
-       [:button.button
-        {:style {:margin-right "5px"}
-         :type "button"
-         :on-click #(resend-code-clicked db-path)}
-        "Resend code"]
-       [:button.button.primary {:type "submit"} "Confirm"]]]]))
+     [text-field (conj db-path :code)
+      (fn [& {:keys [value on-change]}]
+        [:input {:id "code"
+                 :name "code"
+                 :value value
+                 :on-change on-change
+                 :placeholder "Confirmation code"
+                 :type "text"}])]
+     [:div {:style {:text-align "right"
+                    :margin-top "10px"}}
+      [:button.button
+       {:style {:margin-right "5px"}
+        :type "button"
+        :on-click #(resend-code-clicked db-path)}
+       "Resend code"]
+      [:button.button.primary {:type "submit"} "Confirm"]]]))
 
 (defn change-temporary-password-clicked [db-path]
   (let [user-data (data)
@@ -341,43 +350,47 @@
                     (.preventDefault event)
                     (.stopPropagation event)
                     (change-temporary-password-clicked db-path))]
-    [:form.pure-form.pure-form-aligned
-     {:on-key-press (fn [event]
+    [:form.modal-form
+     {:autoComplete "off"
+      :on-key-press (fn [event]
                       (when (-> event .-code (= "Enter"))
                         (on-submit event)))
       :on-submit on-submit}
      (when error-message
        [:div.error-message error-message])
-     [:fieldset
-      [text-field (conj db-path :new-password)
-       (fn [& {:keys [value on-change]}]
-         [:div.pure-control-group
-          [:label {:for "new-password"} "New password:"]
-          [:input {:id "new-password"
-                   :value value
-                   :on-change on-change
-                   :placeholder "New password"
-                   :type "password"}]])]
-      [text-field (conj db-path :new-password-again)
-       (fn [& {:keys [value on-change]}]
-         [:div.pure-control-group
-          [:label {:for "new-password-again"} "New password again:"]
-          [:input {:id "new-password-again"
-                   :value value
-                   :on-change on-change
-                   :placeholder "New password again"
-                   :type "password"}]])]
-      [:div.pure-control-group {:style {:text-align "right"
-                                        :margin-top "10px"}}
-       [:button.button
-        {:style {:margin-right "5px"}
-         :type "reset"
-         :on-click #(do
-                      (rf/dispatch [:clear-form db-path])
-                      (modal/clear))}
-        "Cancel"]
-       [:button.button.primary {:type "submit"}
-        "Change"]]]]))
+     [text-field (conj db-path :new-password)
+      (fn [& {:keys [value on-change]}]
+        [:<>
+         [:label {:for "new-password"} "New password:"]
+         [:input {:id "new-password"
+                  :name "new-password"
+                  :value value
+                  :on-change on-change
+                  :autoComplete "off"
+                  :placeholder "New password"
+                  :type "password"}]])]
+     [text-field (conj db-path :new-password-again)
+      (fn [& {:keys [value on-change]}]
+        [:<>
+         [:label {:for "new-password-again"} "New password again:"]
+         [:input {:id "new-password-again"
+                  :name "new-password-again"
+                  :value value
+                  :autoComplete "off"
+                  :on-change on-change
+                  :placeholder "New password again"
+                  :type "password"}]])]
+     [:div {:style {:text-align "right"
+                    :margin-top "10px"}}
+      [:button.button
+       {:style {:margin-right "5px"}
+        :type "reset"
+        :on-click #(do
+                     (rf/dispatch [:clear-form db-path])
+                     (modal/clear))}
+       "Cancel"]
+      [:button.button.primary {:type "submit"}
+       "Change"]]]))
 
 (defn reset-password-clicked [db-path]
   (let [{:keys [code
@@ -409,44 +422,49 @@
                     (.preventDefault event)
                     (.stopPropagation event)
                     (reset-password-clicked db-path))]
-    [:form.pure-form.pure-form-stacked
-     {:on-key-press (fn [event]
+    [:form.modal-form
+     {:autoComplete "off"
+      :on-key-press (fn [event]
                       (when (-> event .-code (= "Enter"))
                         (on-submit event)))
       :on-submit on-submit}
      "A password reset confirmation code was sent to your email address."
      (when error-message
        [:div.error-message error-message])
-     [:fieldset
-      [text-field (conj db-path :code)
-       (fn [& {:keys [value on-change]}]
-         [:div.pure-control-group
-          [:input {:id "code"
-                   :value value
-                   :on-change on-change
-                   :placeholder "Confirmation code"
-                   :type "text"}]])]
-      [text-field (conj db-path :new-password)
-       (fn [& {:keys [value on-change]}]
-         [:div.pure-control-group
-          [:label {:for "new-password"} "New password:"]
-          [:input {:id "new-password"
-                   :value value
-                   :on-change on-change
-                   :placeholder "New password"
-                   :type "password"}]])]
-      [text-field (conj db-path :new-password-again)
-       (fn [& {:keys [value on-change]}]
-         [:div.pure-control-group
-          [:label {:for "new-password-again"} "New password again:"]
-          [:input {:id "new-password-again"
-                   :value value
-                   :on-change on-change
-                   :placeholder "New password again"
-                   :type "password"}]])]
-      [:div.pure-control-group {:style {:text-align "right"
-                                        :margin-top "10px"}}
-       [:button.button.primary {:type "submit"} "Reset password"]]]]))
+     [text-field (conj db-path :code)
+      (fn [& {:keys [value on-change]}]
+        [:input {:id "code"
+                 :name "code"
+                 :autoComplete "off"
+                 :value value
+                 :on-change on-change
+                 :placeholder "Confirmation code"
+                 :type "text"}])]
+     [text-field (conj db-path :new-password)
+      (fn [& {:keys [value on-change]}]
+        [:<>
+         [:label {:for "new-password"} "New password:"]
+         [:input {:id "new-password"
+                  :name "new-password"
+                  :autoComplete "off"
+                  :value value
+                  :on-change on-change
+                  :placeholder "New password"
+                  :type "password"}]])]
+     [text-field (conj db-path :new-password-again)
+      (fn [& {:keys [value on-change]}]
+        [:<>
+         [:label {:for "new-password-again"} "New password again:"]
+         [:input {:id "new-password-again"
+                  :name "new-password-again"
+                  :autoComplete "off"
+                  :value value
+                  :on-change on-change
+                  :placeholder "New password again"
+                  :type "password"}]])]
+     [:div {:style {:text-align "right"
+                    :margin-top "10px"}}
+      [:button.button.primary {:type "submit"} "Reset password"]]]))
 
 (defn logout []
   ;; TODO: logout via API
