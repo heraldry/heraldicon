@@ -280,7 +280,7 @@
 (defn view-list-arms []
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
-                  :min-width "30em"}}
+                  :max-width "40em"}}
     [:p
      "Here you can create and view coats of arms. You explicitly have to save your coat of arms as "
      [:b "public"] " and add a license, if you want to share the link and allow others to view it."]

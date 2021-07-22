@@ -79,22 +79,31 @@
 (defn user-display []
   (let [user-info-data @(rf/subscribe [:get user-info-db-path])
         user-id (:id user-info-data)]
-    [:<>
-     [:div {:style {:padding-left "15px"}}
+    [:div {:style {:display "grid"
+                   :grid-gap "10px"
+                   :grid-template-columns "[start] 33% [first] auto [second] 25% [end]"
+                   :grid-template-rows "[top] 3em [middle] auto [bottom]"
+                   :grid-template-areas "'user-info user-info user-info'
+                                       'collections arms charges'"
+                   :padding-left "20px"
+                   :padding-right "10px"
+                   :height "100%"}
+           :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
+     [:div.no-scrollbar {:style {:grid-area "user-info"
+                                 :overflow-y "scroll"}}
       [:h3 (str "User: " (:username user-info-data))]]
-     [:div.pure-g
-      [:div.pure-u-1-3
-       [:div {:style {:padding-left "15px"}}
-        [:h4 "Collections"]
-        [view-collections-for-user user-id]]]
-      [:div.pure-u-1-3
-       [:div {:style {:padding-left "15px"}}
-        [:h4 "Arms"]
-        [view-arms-for-user user-id]]]
-      [:div.pure-u-1-3
-       [:div {:style {:padding-left "15px"}}
-        [:h4 "Charges"]
-        [view-charges-for-user user-id]]]]]))
+     [:div.no-scrollbar {:style {:grid-area "collections"
+                                 :overflow-y "scroll"}}
+      [:h4 "Collections"]
+      [view-collections-for-user user-id]]
+     [:div.no-scrollbar {:style {:grid-area "arms"
+                                 :overflow-y "scroll"}}
+      [:h4 "Arms"]
+      [view-arms-for-user user-id]]
+     [:div.no-scrollbar {:style {:grid-area "charges"
+                                 :overflow-y "scroll"}}
+      [:h4 "Charges"]
+      [view-charges-for-user user-id]]]))
 
 (defn view-user [username]
   (let [[status _userform-data] (state/async-fetch-data
@@ -121,9 +130,4 @@
 
 (defn view-list-users []
   [:div {:style {:padding "15px"}}
-   [:div.pure-u-1-2 {:style {:display "block"
-                             :text-align "justify"
-                             :min-width "30em"}}
-
-    [:div {:style {:padding-top "0.5em"}}
-     [list-all-users]]]])
+   [list-all-users]])
