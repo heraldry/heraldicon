@@ -24,6 +24,9 @@
                :ui {:label "Thickness"
                     :step 0.1}}
    :field (field-options/options default/field)
+   :outline? {:type :boolean
+              :default false
+              :ui {:label "Outline"}}
    :ui {:form-type :cottising}})
 
 (def default-options
@@ -84,7 +87,8 @@
                                    [opposite-line line]
                                    [line opposite-line])
             thickness (interface/get-sanitized-data (conj cottise-path :thickness) context)
-            distance (interface/get-sanitized-data (conj cottise-path :distance) context)]
+            distance (interface/get-sanitized-data (conj cottise-path :distance) context)
+            outline? (interface/get-sanitized-data (conj cottise-path :outline?) context)]
         [ordinary-interface/render-ordinary
          [:context :cottise]
          path
@@ -101,7 +105,8 @@
                              :offset-y [:force (offset-y-fn
                                                 (-> environment :points :fess :y)
                                                 distance)]
-                             :alignment alignment}})]))))
+                             :alignment alignment}
+                    :outline? outline?})]))))
 
 (defn render-pale-cottise [cottise-1-key cottise-2-key next-cottise-key
                            path environment context & {:keys [offset-x-fn
@@ -116,7 +121,8 @@
                                    [opposite-line line]
                                    [line opposite-line])
             thickness (interface/get-sanitized-data (conj cottise-path :thickness) context)
-            distance (interface/get-sanitized-data (conj cottise-path :distance) context)]
+            distance (interface/get-sanitized-data (conj cottise-path :distance) context)
+            outline? (interface/get-sanitized-data (conj cottise-path :outline?) context)]
         [ordinary-interface/render-ordinary
          [:context :cottise]
          path
@@ -133,7 +139,8 @@
                              :offset-x [:force (offset-x-fn
                                                 (-> environment :points :fess :y)
                                                 distance)]
-                             :alignment alignment}})]))))
+                             :alignment alignment}
+                    :outline? outline?})]))))
 
 (defn render-bend-cottise [cottise-1-key cottise-2-key next-cottise-key
                            path environment context & {:keys [distance-fn
@@ -160,7 +167,8 @@
             effective-distance (distance-fn distance thickness)
             point-offset (v/* direction-orthogonal effective-distance)
             new-center-point (v/+ center-point point-offset)
-            fess-offset (v/- new-center-point (-> environment :points :fess))]
+            fess-offset (v/- new-center-point (-> environment :points :fess))
+            outline? (interface/get-sanitized-data (conj cottise-path :outline?) context)]
         [ordinary-interface/render-ordinary
          [:context :cottise]
          path
@@ -187,7 +195,8 @@
                                                        -)]
                                  :alignment alignment}
                         :anchor {:point :angle
-                                 :angle angle}})
+                                 :angle angle}
+                        :outline? outline?})
              (assoc :override-center-point new-center-point)
              (assoc :override-middle-real-start (middle-real-start-fn point-offset))
              (assoc :override-middle-real-end (middle-real-end-fn point-offset)))]))))
@@ -219,7 +228,8 @@
             point-offset (-> (v/v effective-distance 0)
                              (v/rotate chevron-angle)
                              (v/+ corner-point))
-            fess-offset (v/- point-offset (-> environment :points :fess))]
+            fess-offset (v/- point-offset (-> environment :points :fess))
+            outline? (interface/get-sanitized-data (conj cottise-path :outline?) context)]
         [ordinary-interface/render-ordinary
          [:context :cottise]
          path
@@ -246,4 +256,5 @@
                         :anchor {:point :angle
                                  :angle [:force half-joint-angle]}
                         :direction-anchor {:point :angle
-                                           :angle [:force (- chevron-angle 90)]}}))]))))
+                                           :angle [:force (- chevron-angle 90)]}
+                        :outline? outline?}))]))))
