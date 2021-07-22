@@ -723,11 +723,6 @@ public-encrypt@^4.0.0:
     randombytes "^2.0.1"
     safe-buffer "^5.1.2"
 
-purecss@^2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/purecss/-/purecss-2.0.5.tgz#9b9331155ae8d96bbbf876d98bb848c6925b4e2d"
-  integrity sha512-T9yg6NwJf1fgjUs+Vo0cEhHAR7lnkYbqhNYGdKzL9KjZ0ZECvvYZ2pgvOTN3jDa+1mpouMFaskuffG+lOADwxQ==
-
 q@^1.1.2:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
