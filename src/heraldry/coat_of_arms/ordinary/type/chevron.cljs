@@ -23,7 +23,6 @@
         anchor (interface/get-sanitized-data (conj path :anchor) context)
         direction-anchor (interface/get-sanitized-data (conj path :direction-anchor) context)
         size (interface/get-sanitized-data (conj path :geometry :size) context)
-        ;; cottising (interface/get-sanitized-data (conj path :cottising) context)
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (conj path :outline?) context))
         raw-direction-anchor (interface/get-raw-data (conj path :direction-anchor) context)
