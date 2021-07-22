@@ -1,6 +1,6 @@
 (ns heraldry.frontend.ui.element.arms-reference-select
-  (:require [heraldry.frontend.form.arms-select :as arms-select]
-            [heraldry.frontend.state :as state]
+  (:require [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element.arms-select :as arms-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
