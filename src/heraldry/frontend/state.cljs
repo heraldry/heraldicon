@@ -360,10 +360,6 @@
     (get-in options relative-path)))
 
 (defmethod interface/get-sanitized-data :context [path context]
-  (let [value (interface/get-raw-data path context)
+  (let [data (interface/get-raw-data path context)
         options (get-relevant-options-by-context path context)]
-    ;; TODO: find better way to determine option leaf or branch
-    (if (or (-> options :type not)
-            (-> options :type :type))
-      (options/sanitize value options)
-      (options/get-value value options))))
+    (options/sanitize-value-or-data data options)))
