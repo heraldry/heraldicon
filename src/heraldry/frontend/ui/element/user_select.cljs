@@ -1,4 +1,4 @@
-(ns heraldry.frontend.form.user-select
+(ns heraldry.frontend.ui.element.user-select
   (:require [cljs.core.async :refer [go]]
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<?]]

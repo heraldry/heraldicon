@@ -1,12 +1,12 @@
-(ns heraldry.frontend.form.charge-select
+(ns heraldry.frontend.ui.element.charge-select
   (:require [clojure.walk :as walk]
+            [heraldry.attribution :as attribution]
             [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.filter :as filter]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
             [heraldry.frontend.util :as util]
-            [heraldry.attribution :as attribution]
             [re-frame.core :as rf]))
 
 (def node-icons
