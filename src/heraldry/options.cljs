@@ -53,6 +53,14 @@
                        option-types (:type v)))) [k (sanitize (get values k) v)]
             :else [k (get-value (get values k) v)]))))
 
+(defn sanitize-value-or-data [data options]
+  (when (map? options)
+    ;; TODO: find better way to determine option leaf or branch
+    (if (or (-> options :type not)
+            (-> options :type :type))
+      (sanitize data options)
+      (get-value data options))))
+
 (defn remove-nil-values-and-empty-maps [m]
   (walk/postwalk #(if (map? %)
                     (into {} (filter (fn [[_ v]] (not (or (nil? v)
