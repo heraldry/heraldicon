@@ -1,14 +1,9 @@
 (ns heraldry.frontend.ui.core
-  (:require [heraldry.attribution] ;; needed for defmethods
-            [heraldry.coat-of-arms.charge-group.options] ;; needed for defmethods
-            [heraldry.coat-of-arms.charge.options] ;; needed for defmethods
-            [heraldry.coat-of-arms.core] ;; needed for defmethods
-            [heraldry.coat-of-arms.field.options] ;; needed for defmethods
-            [heraldry.coat-of-arms.ordinary.options] ;; needed for defmethods
-            [heraldry.coat-of-arms.semy.options] ;; needed for defmethods
-            [heraldry.frontend.state :as state]
+  (:require [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element.hover-menu :as hover-menu]
+            [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.frontend.ui.required] ;; needed for side effects
             [heraldry.frontend.ui.element.arms-reference-select] ;; needed for defmethods
-            [heraldry.frontend.ui.element.attributes] ;; needed for defmethods
             [heraldry.frontend.ui.element.attribution] ;; needed for defmethods
             [heraldry.frontend.ui.element.charge-group-preset-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.charge-group-slot-number] ;; needed for defmethods
@@ -22,8 +17,8 @@
             [heraldry.frontend.ui.element.fimbriation] ;; needed for defmethods
             [heraldry.frontend.ui.element.geometry] ;; needed for defmethods
             [heraldry.frontend.ui.element.hover-menu :as hover-menu]
-            [heraldry.frontend.ui.element.line] ;; needed for defmethods
             [heraldry.frontend.ui.element.line-type-select] ;; needed for defmethods
+            [heraldry.frontend.ui.element.line] ;; needed for defmethods
             [heraldry.frontend.ui.element.ordinary-type-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.position] ;; needed for defmethods
             [heraldry.frontend.ui.element.radio-select] ;; needed for defmethods
@@ -36,25 +31,21 @@
             [heraldry.frontend.ui.element.theme-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.tincture-modifiers] ;; needed for defmethods
             [heraldry.frontend.ui.element.tincture-select] ;; needed for defmethods
-            [heraldry.frontend.ui.form.arms-general] ;; needed for defmethods
-            [heraldry.frontend.ui.form.charge] ;; needed for defmethods
-            [heraldry.frontend.ui.form.charge-general] ;; needed for defmethods
             [heraldry.frontend.ui.form.charge-group] ;; needed for defmethods
+            [heraldry.frontend.ui.form.charge] ;; needed for defmethods
             [heraldry.frontend.ui.form.coat-of-arms] ;; needed for defmethods
-            [heraldry.frontend.ui.form.collection] ;; needed for defmethods
             [heraldry.frontend.ui.form.collection-element] ;; needed for defmethods
-            [heraldry.frontend.ui.form.collection-general] ;; needed for defmethods
+            [heraldry.frontend.ui.form.collection] ;; needed for defmethods
             [heraldry.frontend.ui.form.cottise] ;; needed for defmethods
             [heraldry.frontend.ui.form.field] ;; needed for defmethods
             [heraldry.frontend.ui.form.ordinary] ;; needed for defmethods
             [heraldry.frontend.ui.form.render-options] ;; needed for defmethods
             [heraldry.frontend.ui.form.semy] ;; needed for defmethods
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.render-options] ;; needed for defmethods
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 ;; subs
+
 
 (rf/reg-sub :ui-component-node-open?
   (fn [[_ path] _]
@@ -86,7 +77,7 @@
     (merge {:open? open?
             :selected? (= path selected-component-path)
             :selectable? true}
-           (interface/component-node-data path))))
+           (ui-interface/component-node-data path))))
 
 (rf/reg-sub :component-form
   (fn [[_ path] _]
@@ -96,7 +87,7 @@
     (merge
      {:title title
       :path path}
-     (interface/component-form-data path))))
+     (ui-interface/component-form-data path))))
 
 ;; events
 
