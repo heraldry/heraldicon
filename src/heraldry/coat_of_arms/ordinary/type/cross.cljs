@@ -19,7 +19,6 @@
   (let [line (interface/get-sanitized-data (conj path :line) context)
         origin (interface/get-sanitized-data (conj path :origin) context)
         size (interface/get-sanitized-data (conj path :geometry :size) context)
-        ;; cottising (interface/get-sanitized-data (conj path :cottising) context)
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
