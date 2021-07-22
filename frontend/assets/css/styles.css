@@ -151,7 +151,7 @@ p {
   box-shadow: 3px 3px 10px 5px #555;
 }
 
-.modal > .header {
+.modal > .modal-header {
   font-size: 1.1em;
   background-color: #eee;
   border-bottom: 1px solid #ddd;
