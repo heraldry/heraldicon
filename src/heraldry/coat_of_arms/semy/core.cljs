@@ -2,7 +2,6 @@
   (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (defn shift-environment [environment point]
