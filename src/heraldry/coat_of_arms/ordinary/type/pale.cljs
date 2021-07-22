@@ -107,10 +107,6 @@
                "z"]
               [first-bottom
                second-top]]
-        ;; TODO: counterchanged
-        ;; field (if (:counterchanged? field)
-        ;;         (counterchange/counterchange-field ordinary parent)
-        ;;         field)
         cottise-context (merge
                          context
                          {:override-shared-start-y shared-start-y

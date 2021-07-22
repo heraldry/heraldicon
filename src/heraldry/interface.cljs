@@ -73,6 +73,9 @@
 (defmulti get-list-size (fn [path _context]
                           (state-source path)))
 
+(defmulti get-counterchange-tinctures (fn [path _context]
+                                        (state-source path)))
+
 (defn render-option [key {:keys [render-options-path] :as context}]
   (get-sanitized-data (conj render-options-path key) context))
 

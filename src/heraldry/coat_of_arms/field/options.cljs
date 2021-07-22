@@ -744,7 +744,9 @@
                                   (assoc :ui (-> default-options :anchor :ui))))))
           (update :layout (fn [layout]
                             (when layout
-                              (assoc layout :ui (-> default-options :layout :ui)))))))))
+                              (assoc layout :ui (-> default-options :layout :ui)))))
+          (cond->
+           (-> field :counterchanged?) (select-keys [:counterchanged?]))))))
 
 (defmethod interface/component-options :heraldry.options/field [path data]
   (let [root-field? (-> path drop-last last (= :coat-of-arms))

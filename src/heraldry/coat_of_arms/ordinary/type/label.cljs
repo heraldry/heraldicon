@@ -125,12 +125,7 @@
                                                  environment
                                                  context)
         part [shape
-              environment-points]
-        ;; TODO: counterchanged
-        ;; field (if (:counterchanged? field)
-        ;;         (counterchange/counterchange-field ordinary parent)
-        ;;         field)
-        ]
+              environment-points]]
     [:<>
      [field-shared/make-subfield
       (conj path :field) part

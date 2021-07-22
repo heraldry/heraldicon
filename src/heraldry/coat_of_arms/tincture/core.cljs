@@ -115,9 +115,10 @@
    :erminois erminois
    :pean pean})
 
-(defn pick [tincture context]
+(defn pick [tincture {:keys [tincture-mapping] :as context}]
   (let [mode (interface/render-option :mode context)
-        theme (interface/render-option :theme context)]
+        theme (interface/render-option :theme context)
+        tincture (get tincture-mapping tincture tincture)]
     (cond
       (= tincture :none) "url(#void)"
       (get furs tincture) (let [[id _ _] (get furs tincture)]

@@ -7,33 +7,100 @@
 
 (def overlap-stroke-width 0.1)
 
+(defn field-path-allowed? [path {:keys [counterchanged-paths]}]
+  (let [component-path (->> path
+                            reverse
+                            (drop-while (comp not int?)))
+        index (first component-path)
+        components-path (->> component-path
+                             (drop 1)
+                             reverse
+                             vec)
+        length (count components-path)]
+    (loop [[counterchanged-path & rest] counterchanged-paths]
+      (if (nil? counterchanged-path)
+        true
+        (let [counterchanged-path (vec counterchanged-path)
+              start (when (-> counterchanged-path count (>= length))
+                      (subvec counterchanged-path 0 length))]
+          (if (and (= start components-path)
+                   (>= index (get counterchanged-path length)))
+            false
+            (recur rest)))))))
+
+(defn add-tinctures-to-mapping [context counterchange-tinctures]
+  (if (-> counterchange-tinctures count (= 2))
+    (let [[t1 t2] counterchange-tinctures
+          tincture-replacer {t1 t2
+                             t2 t1}]
+      (update context
+              :tincture-mapping
+              (fn [tincture-mapping]
+                (-> tincture-mapping
+                    (->>
+                     (map (fn [[k v]]
+                            [k (get tincture-replacer v v)]))
+                     (into {}))
+                    (as-> new-mapping
+                          (cond-> new-mapping
+                            (not (contains? new-mapping t1)) (assoc t1 t2)
+                            (not (contains? new-mapping t2)) (assoc t2 t1)))))))
+    context))
+
+(defn add-components [path environment context]
+  [:<>
+   (doall
+    (for [idx (range (interface/get-list-size (conj path :components) context))
+          :while (field-path-allowed?
+                  (conj path :components idx)
+                  context)]
+      ^{:key idx}
+      [interface/render-component
+       (conj path :components idx)
+       path environment
+       context]))])
+
+(defn render-counterchanged-field [path environment {:keys [parent-field-path
+                                                            parent-field-environment] :as context} render-fn]
+  (if parent-field-path
+    (let [counterchange-tinctures (interface/get-counterchange-tinctures parent-field-path context)
+          context (-> context
+                      (update :counterchanged-paths conj path)
+                      (add-tinctures-to-mapping counterchange-tinctures))]
+      [:<>
+       [render-fn parent-field-path parent-field-environment context]
+       [add-components path environment context]])
+    [:<>]))
+
 (defn render [path environment
-              {:keys [svg-export? transform] :as context}]
-  (let [selected? false
-        ;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
-        ;; adding it to the choices in the option would affect the UI
-        field-type (interface/get-raw-data (conj path :type) context)
-        path (if (= field-type :heraldry.field.type/ref)
-               (-> path
-                   drop-last
-                   vec
-                   (conj (interface/get-raw-data (conj path :index) context)))
-               path)]
-    [:<>
-     [:g {:style (when (not svg-export?)
-                   {:pointer-events "visiblePainted"
-                    :cursor "pointer"})
-          :transform transform}
-      [ui-interface/render-field path environment context]
-      (for [idx (range (interface/get-list-size (conj path :components) context))]
-        ^{:key idx}
-        [interface/render-component
-         (conj path :components idx)
-         path environment context])]
-     (when selected?
-       [:path {:d (:shape environment)
-               :style {:opacity 0.25}
-               :fill "url(#selected)"}])]))
+              {:keys [svg-export?
+                      transform] :as context}]
+  (if (interface/get-sanitized-data (conj path :counterchanged?) context)
+    (render-counterchanged-field path environment context render)
+    (let [selected? false
+          ;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
+          ;; adding it to the choices in the option would affect the UI
+          field-type (interface/get-raw-data (conj path :type) context)
+          path (if (= field-type :heraldry.field.type/ref)
+                 (-> path
+                     drop-last
+                     vec
+                     (conj (interface/get-raw-data (conj path :index) context)))
+                 path)]
+      [:<>
+       [:g {:style (when (not svg-export?)
+                     {:pointer-events "visiblePainted"
+                      :cursor "pointer"})
+            :transform transform}
+        [ui-interface/render-field path environment context]
+        [add-components path environment
+         (-> context
+             (assoc :parent-field-path path)
+             (assoc :parent-field-environment environment))]]
+       (when selected?
+         [:path {:d (:shape environment)
+                 :style {:opacity 0.25}
+                 :fill "url(#selected)"}])])))
 
 (defn -make-subfields [field-path paths parts mask-overlaps parent-environment
                        {:keys [svg-export?] :as context}]
