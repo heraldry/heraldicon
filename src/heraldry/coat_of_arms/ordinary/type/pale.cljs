@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.ordinary.type.pale
-  (:require [heraldry.coat-of-arms.field.shared :as field-shared]
+  (:require [heraldry.coat-of-arms.cottising :as cottising]
+            [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
@@ -17,14 +18,7 @@
   [path _parent-path environment {:keys [override-real-start
                                          override-real-end
                                          override-shared-start-y] :as context}]
-  (let [;; TODO: bring this back
-        ;; ignore offset-x constraints, because cottises might exceed them
-        ;; ordinary-options (-> (ordinary-options/options ordinary)
-        ;;                      (assoc-in [:origin :offset-x :min] -100)
-        ;;                      (assoc-in [:origin :offset-x :max] 100)
-        ;;                      (assoc-in [:origin :offset-y :min] -100)
-        ;;                      (assoc-in [:origin :offset-y :max] 100))
-        line (interface/get-sanitized-data (conj path :line) context)
+  (let [line (interface/get-sanitized-data (conj path :line) context)
         opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
         origin (interface/get-sanitized-data (conj path :origin) context)
         size (interface/get-sanitized-data (conj path :geometry :size) context)
@@ -119,10 +113,11 @@
         ;; field (if (:counterchanged? field)
         ;;         (counterchange/counterchange-field ordinary parent)
         ;;         field)
-        #_#_{:keys [cottise-1
-                    cottise-2
-                    cottise-opposite-1
-                    cottise-opposite-2]} (-> ordinary :cottising)]
+        cottise-context (merge
+                         context
+                         {:override-shared-start-y shared-start-y
+                          :override-real-start real-start
+                          :override-real-end real-end})]
     [:<>
      [field-shared/make-subfield
       (conj path :field) part
@@ -130,52 +125,28 @@
       environment context]
      (line/render line [line-one-data] first-bottom outline? context)
      (line/render opposite-line [line-reversed-data] second-top outline? context)
-     #_(when (:enabled? cottise-1)
-         (let [cottise-1-data (:cottise-1 cottising)]
-           [render (-> ordinary
-                       (assoc :cottising {:cottise-1 cottise-2})
-                       (assoc :line (:line cottise-1))
-                       (assoc :opposite-line (:opposite-line cottise-1))
-                       (assoc :field (:field cottise-1))
-                       (assoc-in [:geometry :size] (:thickness cottise-1-data))
-                       (assoc-in [:origin :offset-x] (-> plain-origin
-                                                         :x
-                                                         (- col1)
-                                                         (- line-one-min)
-                                                         (/ width)
-                                                         (* 100)
-                                                         (+ (:distance cottise-1-data))
-                                                         -))
-                       (assoc-in [:origin :alignment] :right)) parent environment
-            (-> context
-                (assoc :override-shared-start-y shared-start-y)
-                (assoc :override-real-start real-start)
-                (assoc :override-real-end real-end))]))
-     #_(when (:enabled? cottise-opposite-1)
-         (let [cottise-opposite-1-data (:cottise-opposite-1 cottising)
-               pale-base {:type :heraldry.ordinary.type/pale
-                          :line (:line cottise-opposite-1)
-                          :opposite-line (:opposite-line cottise-opposite-1)}
-               pale-options (ordinary-options/options pale-base)
-               {:keys [line
-                       opposite-line]} (options/sanitize pale-base pale-options)]
-           [render (-> ordinary
-                       (assoc :cottising {:cottise-opposite-1 cottise-opposite-2})
-                     ;; swap line/opposite-line because the cottise fess is upside down
-                       (assoc :line opposite-line)
-                       (assoc :opposite-line line)
-                       (assoc :field (:field cottise-opposite-1))
-                       (assoc-in [:geometry :size] (:thickness cottise-opposite-1-data))
-                       (assoc-in [:origin :offset-x] (-> plain-origin
-                                                         :x
-                                                         (- col2)
-                                                         (+ line-reversed-min)
-                                                         (/ width)
-                                                         (* 100)
-                                                         (- (:distance cottise-opposite-1-data))
-                                                         -))
-                       (assoc-in [:origin :alignment] :left)) parent environment
-            (-> context
-                (assoc :override-shared-start-y shared-start-y)
-                (assoc :override-real-start real-start)
-                (assoc :override-real-end real-end))]))]))
+     [cottising/render-pale-cottise
+      :cottise-1 :cottise-2 :cottise-1
+      path environment cottise-context
+      :offset-x-fn (fn [base distance]
+                     (-> base
+                         (- col1)
+                         (- line-one-min)
+                         (/ width)
+                         (* 100)
+                         (+ distance)
+                         -))
+      :alignment :right]
+     [cottising/render-pale-cottise
+      :cottise-opposite-1 :cottise-opposite-2 :cottise-opposite-1
+      path environment cottise-context
+      :offset-x-fn (fn [base distance]
+                     (-> base
+                         (- col2)
+                         (+ line-reversed-min)
+                         (/ width)
+                         (* 100)
+                         (- distance)
+                         -))
+      :alignment :left
+      :swap-lines? true]]))
