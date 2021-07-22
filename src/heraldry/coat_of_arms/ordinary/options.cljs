@@ -299,9 +299,7 @@
                                                            :step 0.01}}
                                 [:origin :point :choices] (util/filter-choices
                                                            position/anchor-point-choices
-                                                           [:top-left :top :top-right
-                                                            :left :right
-                                                            :bottom-left :bottom :bottom-right])
+                                                           anchor-points)
                                 [:origin :point :default] :top
                                 [:anchor :point :choices] (util/filter-choices
                                                            position/anchor-point-choices
