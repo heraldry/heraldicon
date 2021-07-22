@@ -3,7 +3,6 @@
             [heraldry.coat-of-arms.field.interface :as ui-interface]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.interface :as interface]
-            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (def overlap-stroke-width 0.1)
@@ -36,14 +35,15 @@
                :style {:opacity 0.25}
                :fill "url(#selected)"}])]))
 
-(defn make-subfields [field-path parts mask-overlaps parent-environment
-                      {:keys [svg-export?] :as context}]
+(defn -make-subfields [field-path paths parts mask-overlaps parent-environment
+                       {:keys [svg-export?] :as context}]
   [:<>
    (doall
-    (for [[idx [shape-path bounding-box & extra]] (map-indexed vector parts)]
+    (for [[idx [part-path [shape-path bounding-box & extra] overlap-paths]]
+          (->> (map vector paths parts mask-overlaps)
+               (map-indexed vector))]
       (let [clip-path-id (util/id (str "clip-" idx))
             mask-id (util/id (str "mask-" idx))
-            part-path (conj field-path :fields idx)
             inherit-environment? (interface/get-sanitized-data
                                   (conj part-path :inherit-environment?)
                                   context)
@@ -59,8 +59,7 @@
                                                   counterchanged?)
                                           parent-environment)
                   :mask (first extra)})
-            environment-shape (:shape env)
-            overlap-paths (get mask-overlaps idx)]
+            environment-shape (:shape env)]
         ^{:key idx}
         [:<>
          [:defs
@@ -97,59 +96,12 @@
             env
             context]]]])))])
 
-(defn make-subfield [field-path part mask-overlap parent-environment
-                     {:keys [svg-export?] :as context}]
-  [:<>
-   (let [[shape-path bounding-box & extra] part
-         clip-path-id (util/id "clip")
-         mask-id (util/id "mask")
-         inherit-environment? (interface/get-sanitized-data
-                               (conj field-path :inherit-environment?)
-                               context)
-         counterchanged? (interface/get-sanitized-data
-                          (conj field-path :counterchanged?)
-                          context)
-         env (environment/create
-              (svg/make-path shape-path)
-              {:parent field-path
-               :parent-environment parent-environment
-               :bounding-box (svg/bounding-box bounding-box)
-               :override-environment (when (or inherit-environment?
-                                               counterchanged?)
-                                       parent-environment)
-               :mask (first extra)})
-         environment-shape (:shape env)]
-     [:<>
-      [:defs
-       [(if svg-export?
-          :mask
-          :clipPath) {:id clip-path-id}
-        [:path {:d environment-shape
-                :fill "#fff"}]
-        (cond
-          (= mask-overlap :all) [:path {:d environment-shape
-                                        :fill "none"
-                                        :stroke-width overlap-stroke-width
-                                        :stroke "#fff"}]
-          mask-overlap (for [[idx shape] (map-indexed vector mask-overlap)]
-                         ^{:key idx}
-                         [:path {:d shape
-                                 :fill "none"
-                                 :stroke-width overlap-stroke-width
-                                 :stroke "#fff"}]))]
-       (when-let [mask-shape (-> env :meta :mask)]
-         [:mask {:id mask-id}
-          [:path {:d environment-shape
-                  :fill "#fff"}]
-          [:path {:d mask-shape
-                  :fill "#000"}]])]
+(defn make-subfields [field-path parts mask-overlaps parent-environment context]
+  (-make-subfields field-path
+                   (map (fn [idx]
+                          (conj field-path :fields idx)) (-> parts count range))
+                   parts mask-overlaps parent-environment context))
 
-      [:g {(if svg-export?
-             :mask
-             :clip-path) (str "url(#" clip-path-id ")")}
-       [:g {:mask (when (-> env :meta :mask)
-                    (str "url(#" mask-id ")"))}
-        [render
-         field-path
-         env
-         context]]]])])
+(defn make-subfield [part-path part mask-overlap parent-environment context]
+  (-make-subfields (vec (drop-last part-path))
+                   [part-path] [part] [mask-overlap] parent-environment context))
