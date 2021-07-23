@@ -3,6 +3,18 @@
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
+(def ui-highlighted-element-path [:ui :collection-library :selected-element])
+
+(rf/reg-sub :collection-library-highlighted-element
+  (fn [_ _]
+    (rf/subscribe [:get ui-highlighted-element-path]))
+
+  (fn [value [_ _path]]
+    value))
+
+(defn highlight-element [path]
+  (rf/dispatch-sync [:set ui-highlighted-element-path path]))
+
 (defn form [path _]
   [:<>
    (for [option [:name
