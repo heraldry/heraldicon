@@ -210,7 +210,7 @@
                                      #(js/alert "Save your changes first")))
                        :style {:flex 1}}
        "PNG Link"]
-      [:div.spacer {:style {:flex 10}}]
+      [:div {:style {:flex 10}}]
       [:button.button
        {:type "button"
         :class (when-not can-copy? "disabled")

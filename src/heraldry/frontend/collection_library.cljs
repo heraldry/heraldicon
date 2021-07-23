@@ -276,7 +276,7 @@
 
      [:div.buttons {:style {:display "flex"
                             :gap "10px"}}
-      [:div.spacer {:style {:flex 10}}]
+      [:div {:style {:flex 10}}]
       [:button.button.primary {:type "submit"
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?

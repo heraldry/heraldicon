@@ -91,25 +91,6 @@ p {
   margin-top: 0;
 }
 
-@media (min-width: 48em) {
-  body {
-    font-size: 16px;
-  }
-
-  .home-menu {
-    text-align: left;
-  }
-
-  .home-menu ul {
-    float: right;
-  }
-}
-
-.home-menu {
-  border: 1px solid #ddd;
-  background-color: #fff;
-}
-
 .main-content {
   grid-area: content;
   overflow: auto;
@@ -158,13 +139,6 @@ button {
   border-radius: 5px;
 }
 
-form > .form-message {
-  border: 1px solid #4a4;
-  background-color: #efe;
-  color: #4a4;
-  padding: 5px;
-}
-
 form > .error-message {
   border: 1px solid #b44;
   background-color: #fdd;
@@ -183,14 +157,6 @@ form .error input {
 
 form .error label {
   color: #b44;
-}
-
-.horizontal-spacer {
-  display: inline-block;
-}
-
-.spacer {
-  display: block;
 }
 
 label div {
@@ -409,14 +375,6 @@ label div {
   }
 }
 
-.selected-arms {
-  margin-bottom: 0.5em;
-}
-
-.selected-arms > div {
-  display: table-cell;
-}
-
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -560,7 +518,6 @@ li.nav-menu-item a:hover {
   border: 0;
 }
 
-.button-hover,
 .button:hover,
 .button:focus {
   background-image: linear-gradient(
@@ -572,7 +529,7 @@ li.nav-menu-item a:hover {
 .button:focus {
   outline: 0;
 }
-.button-active,
+
 .button:active {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset,
     0 0 6px rgba(0, 0, 0, 0.2) inset;
@@ -627,4 +584,262 @@ li.nav-menu-item a:hover {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin-bottom: 5px;
+}
+
+.ui-component {
+  padding: 0;
+  margin-bottom: 0.5em;
+}
+
+.ui-component > .ui-component-header {
+  background-color: #eee;
+  border: solid 1px #ddd;
+  border-radius: 10px 10px 0 0;
+  padding: 4px;
+}
+
+.ui-component > .content {
+  background-color: #fff;
+  border: solid 1px #ddd;
+  border-radius: 0 0 10px 10px;
+  border-top: 0;
+  padding: 10px;
+}
+
+.ui-component > .ui-component-header > h1 {
+  display: inline-block;
+  font-weight: 400;
+  font-size: 1em;
+  margin: 0;
+  margin-left: 0.5em;
+}
+
+.ui-component > .content > h2 {
+  display: inline-block;
+  font-weight: 400;
+  font-size: 1em;
+  margin: 0;
+  margin-bottom: 0.5em;
+}
+
+.ui-tree {
+  padding: 10px;
+  /* height: calc(100% - 20px); */
+}
+
+.ui-tree ul {
+  list-style: none;
+  padding-left: 1.3em;
+  margin: 0;
+}
+
+.ui-tree > ul {
+  padding-left: 0;
+}
+
+.ui-tree ul li {
+  vertical-align: top;
+}
+
+.ui-tree .node-name {
+  display: inline-block;
+  white-space: nowrap;
+  line-height: 1.5em;
+  color: #1b6690;
+}
+
+.ui-tree .selected {
+  font-weight: 600;
+  color: #1b6690;
+}
+
+.ui-icon {
+  color: #777;
+}
+
+.selected .ui-icon {
+  color: inherit;
+}
+
+.ui-tree .node-icon {
+  display: inline-block;
+  width: 1.3em;
+}
+
+.ui-tree .node-name i {
+  width: 1.25em;
+  vertical-align: middle;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.ui-setting {
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.ui-setting > label {
+  display: inline-block;
+  width: 13em;
+  vertical-align: top;
+}
+
+.ui-setting > label.for-checkbox {
+  width: inherit;
+}
+
+.ui-setting > .option {
+  position: relative;
+  display: inline-block;
+}
+
+.ui-submenu {
+  position: absolute;
+  left: -10em;
+  width: 25em;
+  min-height: 3em;
+  z-index: 2;
+}
+
+.ui-setting input[type="checkbox"],
+.ui-setting input[type="radio"] {
+  margin-left: 0px;
+  margin-right: 5px;
+}
+
+.ui-hover-menu {
+  position: relative;
+}
+
+.ui-hover-menu .ui-menu {
+  position: absolute;
+  display: none;
+  top: 0em;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.ui-menu-item {
+  padding: 5px;
+}
+
+.ui-menu-item:hover {
+  background-color: #eee;
+}
+
+ul.ui-menu {
+  list-style: none;
+  padding-left: 1.3em;
+  margin: 0;
+  padding-left: 0;
+}
+
+ul.ui-menu li {
+  vertical-align: top;
+  white-space: pre;
+}
+
+li.ui-menu-header {
+  color: #000;
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.tooltip {
+  display: inline-block;
+  position: relative;
+  text-align: left;
+}
+
+.tooltip .bottom {
+  min-width: 150px;
+  top: 60px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  padding: 5px 10px;
+  color: #444444;
+  background-color: #eeeeee;
+  font-weight: normal;
+  font-size: 13px;
+  border-radius: 8px;
+  position: absolute;
+  z-index: 99999999;
+  box-sizing: border-box;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.8s;
+  pointer-events: none;
+}
+
+.tooltip.info .bottom {
+  top: 30px;
+  font-weight: normal;
+}
+
+.tooltip:hover .bottom {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip .bottom i {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -12px;
+  width: 24px;
+  height: 12px;
+  overflow: hidden;
+}
+
+.tooltip .bottom i::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  left: 50%;
+  transform: translate(-50%, 50%) rotate(45deg);
+  background-color: #eeeeee;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+.tree ul {
+  list-style: none;
+  padding-left: 1.3em;
+  margin: 0;
+}
+
+.tree > ul {
+  padding-left: 0;
+}
+
+.tree ul li {
+  vertical-align: top;
+}
+
+.tree .node-name {
+  display: inline-block;
+  white-space: nowrap;
+  line-height: 1.5em;
+}
+
+.tree .selected {
+  font-weight: 600;
+  color: #1b6690;
+}
+
+.tree .node-icon {
+  display: inline-block;
+  width: 1.3em;
+}
+
+.tree .node-name i {
+  width: 1.25em;
+  vertical-align: middle;
 }

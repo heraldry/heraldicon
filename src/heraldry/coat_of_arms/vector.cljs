@@ -51,21 +51,11 @@
       (+ v2)
       (/ 2)))
 
-(defn div-x [{x :x :as p}]
-  (/ p (Math/abs x)))
-
 (defn project [{from-x :x from-y :y} {to-x :x to-y :y} x]
   {:x x
    :y (-> to-y
           (cljs.core/- from-y)
           (cljs.core// (cljs.core/- to-x from-x))
-          (cljs.core/* (cljs.core/- x from-x))
-          (cljs.core/+ from-y))})
-
-(defn project-x [{from-x :x from-y :y} {dir-x :x dir-y :y} x]
-  {:x x
-   :y (-> dir-y
-          (cljs.core// dir-x)
           (cljs.core/* (cljs.core/- x from-x))
           (cljs.core/+ from-y))})
 
@@ -306,21 +296,6 @@
     (if (> angle 180)
       (cljs.core/- angle 180)
       angle)))
-
-(defn bounding-box-intersections [from to environment]
-  (let [{:keys [top-left top-right
-                bottom-left bottom-right]} (:points environment)
-        line-path (str "M" (->str from)
-                       "L" (->str to))
-        box-shape (str "M" (->str top-left)
-                       "L" (->str top-right)
-                       "L" (->str bottom-right)
-                       "L" (->str bottom-left)
-                       "z")]
-    (-> (path-intersection line-path box-shape)
-        (js->clj :keywordize-keys true)
-        prune-duplicates
-        (->> (sort-by :t1)))))
 
 (defn environment-intersections [from to environment]
   (let [direction (normal (- to from))

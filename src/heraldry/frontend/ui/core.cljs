@@ -47,13 +47,6 @@
 ;; subs
 
 
-(rf/reg-sub :component-data
-  (fn [db [_ path]]
-    (let [data (get-in db path)]
-      (cond-> data
-        (and (map? data)
-             (-> data :type not)) (assoc :type (keyword "heraldry.component" (last path)))))))
-
 (rf/reg-sub :component-node
   (fn [[_ path] _]
     [(rf/subscribe [:ui-component-node-open? path])

@@ -24,30 +24,6 @@
    :celeste "#359db7"
    :orange "#e58a39"})
 
-;; fallback theme, taken from theme-wappenwiki
-(def theme-default
-  {;; metals
-   :argent "#f6f6f6"
-   :argent-dark "#e5e5e5"
-   :or "#f2bc51"
-   ;; colours
-   :azure "#0c6793"
-   :vert "#3e933f"
-   :gules "#bb2f2e"
-   :sable "#333333"
-   :purpure "#913a6a"
-   ;; stains
-   :murrey "#a32c45"
-   :sanguine "#a42f2d"
-   :tenne "#bf7433"
-   ;; untraditional
-   :carnation "#e9bfa2"
-   :brunatre "#725942"
-   :cendree "#cbcaca"
-   :rose "#d99292"
-   :celeste "#359db7"
-   :orange "#e58a39"})
-
 (def theme-web
   {;; metals
    :argent "#ffffff"

@@ -236,10 +236,6 @@
          (into {})
          (update-in db node-flag-db-path merge))))
 
-(rf/reg-event-db :ui-component-node-open
-  (fn [db [_ path]]
-    (ui-component-node-open db path)))
-
 (defn ui-component-node-close [db path]
   (update-in
    db node-flag-db-path
@@ -251,10 +247,6 @@
                    [other-path false]
                    [other-path v])))
           (into {})))))
-
-(rf/reg-event-db :ui-component-node-close
-  (fn [db [_ path]]
-    (ui-component-node-close db path)))
 
 (rf/reg-event-db :ui-component-node-toggle
   (fn [db [_ path]]

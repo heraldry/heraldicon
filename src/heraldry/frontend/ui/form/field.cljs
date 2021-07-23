@@ -133,8 +133,7 @@
                                               :handler #(state/dispatch-on-event % [:move-element component-path (inc idx)])}
                                              {:icon "far fa-trash-alt"
                                               :tooltip "remove"
-                                              :handler #(state/dispatch-on-event
-                                                         % [:remove-element component-path])}]})))
+                                              :handler #(state/dispatch-on-event % [:remove-element component-path])}]})))
                          vec))}))
 
 (defmethod interface/component-form-data :heraldry.component/field [_path]
