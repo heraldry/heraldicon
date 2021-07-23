@@ -14,8 +14,8 @@
                      :none)
         facing (or @(rf/subscribe [:get-value (conj path :facing)])
                    :none)]
-    (s/join " " [(util/translate-cap-first charge-type)
-                 (when-not (= attitude :none)
-                   (util/translate attitude))
-                 (when-not (#{:none :to-dexter} facing)
-                   (util/translate facing))])))
+    (util/combine " " [(util/translate-cap-first charge-type)
+                       (when-not (= attitude :none)
+                         (util/translate attitude))
+                       (when-not (#{:none :to-dexter} facing)
+                         (util/translate facing))])))
