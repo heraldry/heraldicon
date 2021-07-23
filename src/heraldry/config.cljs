@@ -15,7 +15,9 @@
 
 (def config-data
   (case stage
-    "local" {:heraldry-api-endpoint "http://localhost:4000/local/api"
+    "local" {;;
+             :heraldry-api-endpoint "https://d52eru9ag9.execute-api.eu-central-1.amazonaws.com/api"
+             ;;:heraldry-api-endpoint "http://localhost:4000/api"
              :heraldry-url "http://localhost:8081"
              :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                    :ClientId "2v90eij0l4aluf2amqumqh9gko"
