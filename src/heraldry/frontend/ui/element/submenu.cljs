@@ -4,16 +4,16 @@
 
 (rf/reg-sub :ui-submenu-open?
   (fn [db [_ path]]
-    (get-in db [:ui :submenu-open? path])))
+    (get-in db (conj state/ui-submenu-open?-path path))))
 
 (rf/reg-event-db :ui-submenu-close-all
   (fn [db _]
-    (update db :ui dissoc :submenu-open?)))
+    (assoc-in db state/ui-submenu-open?-path nil)))
 
 (rf/reg-event-db :ui-submenu-open
   (fn [db [_ path]]
     (-> db
-        (update-in [:ui :submenu-open?]
+        (update-in state/ui-submenu-open?-path
                    (fn [open-flags]
                      (->> open-flags
                           (keep (fn [[key value]]
@@ -21,11 +21,11 @@
                                            (take (count key) path))
                                     [key value])))
                           (into {}))))
-        (assoc-in [:ui :submenu-open? path] true))))
+        (assoc-in (conj state/ui-submenu-open?-path path) true))))
 
 (rf/reg-event-db :ui-submenu-close
   (fn [db [_ path]]
-    (assoc-in db [:ui :submenu-open? path] false)))
+    (assoc-in db (conj state/ui-submenu-open?-path path) false)))
 
 (defn submenu [path title link-name styles & content]
   (let [submenu-id path
