@@ -36,5 +36,5 @@
      (when loader
        [:<>
         [:div.modal-background {:style {:z-index 2000}}]
-        [:div.modal-modal {:style {:z-index 2001}}
+        [:div.modal {:style {:z-index 2001}}
          [:div.loader]]])]))
