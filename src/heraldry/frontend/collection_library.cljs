@@ -241,21 +241,15 @@
       (when (or (not arms-id)
                 (= status :done))
         [:<>
+         [:svg {:id "svg"
+                :style {:width "100%"}
+                :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
+                :preserveAspectRatio "xMidYMin meet"}
+          [:g {:transform "translate(10,10)"}
+           result]]
          (when arms-id
-           [:div.no-scrollbar {:style {:grid-area "attribution"
-                                       :overflow-y "scroll"
-                                       :margin 0}}
-            [:div.attribution
-             [attribution/for-arms [:context :arms] {:arms arms-data}]]])
-         [:div.no-scrollbar {:style {:grid-area "arms-preview"
-                                     :overflow-y "scroll"}}
-          [:svg {:id "svg"
-                 :style {:width "100%"
-                         :height "95%"}
-                 :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
-                 :preserveAspectRatio "xMidYMin meet"}
-           [:g {:transform "translate(10,10)"}
-            result]]]]))))
+           [:div.attribution
+            [attribution/for-arms [:context :arms] {:arms arms-data}]])]))))
 
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
@@ -289,24 +283,24 @@
   [:div {:style {:display "grid"
                  :grid-gap "10px"
                  :grid-template-columns "[start] auto [first] 33% [second] 25% [end]"
-                 :grid-template-rows "[top] 33% [middle] 57% [bottom-edge] calc(10% - 20px) [bottom]"
-                 :grid-template-areas "'arms selected-component component-tree'
-                                       'arms arms-preview component-tree'
-                                       'arms attribution component-tree'"
+                 :grid-template-rows "[top] 100% [bottom]"
+                 :grid-template-areas "'left middle right'"
                  :padding-left "10px"
                  :padding-right "10px"
                  :height "100%"}
          :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
-   [:div.no-scrollbar {:style {:grid-area "arms"
+   [:div.no-scrollbar {:style {:grid-area "left"
                                :overflow-y "scroll"}}
     [render-collection :allow-adding? true]]
-   [:div {:style {:grid-area "selected-component"
-                  :padding-top "10px"}}
+   [:div.no-scrollbar {:style {:grid-area "middle"
+                               :overflow-y "scroll"
+                               :padding-top "10px"}}
     [ui/selected-component]
-    [button-row]]
-   [render-arms-preview]
-   [:div {:style {:grid-area "component-tree"
-                  :padding-top "5px"}}
+    [button-row]
+    [render-arms-preview]]
+   [:div.no-scrollbar {:style {:grid-area "right"
+                               :overflow-y "scroll"
+                               :padding-top "5px"}}
     [ui/component-tree [form-db-path
                         (conj form-db-path :render-options)
                         (conj form-db-path :collection)]]]])

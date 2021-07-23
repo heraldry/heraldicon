@@ -62,9 +62,8 @@
                                  :root-transform "scale(5,5)"}))
         {:keys [width height]} environment]
     [:svg {:id "svg"
-           :style {:width "100%"
-                   :height "100%"}
-           :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
+           :style {:width "100%"}
+           :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
            :preserveAspectRatio "xMidYMin meet"}
      [:g {:transform "translate(10,10)"}
       result]]))
@@ -231,27 +230,25 @@
   [:div {:style {:display "grid"
                  :grid-gap "10px"
                  :grid-template-columns "[start] auto [first] 33% [second] 25% [end]"
-                 :grid-template-rows "[top] 50% [middle] 25% [bottom-half] 25% [bottom]"
-                 :grid-template-areas "'arms selected-component component-tree'
-                                       'arms attribution component-tree'
-                                       'blazonry attribution component-tree'"
+                 :grid-template-rows "[top] 100% [bottom]"
+                 :grid-template-areas "'left middle right'"
                  :padding-left "10px"
                  :padding-right "10px"
                  :height "100%"}
          :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
-   [:div.no-scrollbar {:style {:grid-area "arms"
+   [:div.no-scrollbar {:style {:grid-area "left"
                                :overflow-y "scroll"}}
-    [render-coat-of-arms]]
-   [:div {:style {:grid-area "blazonry"}}
+    [render-coat-of-arms]
     [blazonry]]
-   [:div {:style {:grid-area "selected-component"
-                  :padding-top "10px"}}
+   [:div.no-scrollbar {:style {:grid-area "middle"
+                               :overflow-y "scroll"
+                               :padding-top "10px"}}
     [ui/selected-component]
-    [button-row]]
-   [:div {:style {:grid-area "attribution"}}
+    [button-row]
     [attribution]]
-   [:div {:style {:grid-area "component-tree"
-                  :padding-top "5px"}}
+   [:div.no-scrollbar {:style {:grid-area "right"
+                               :overflow-y "scroll"
+                               :padding-top "5px"}}
     [ui/component-tree [form-db-path
                         (conj form-db-path :render-options)
                         (conj form-db-path :coat-of-arms)]]]])
