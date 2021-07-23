@@ -1,7 +1,5 @@
 (ns heraldry.frontend.ui.form.arms-general
-  (:require [heraldry.attribution :as attribution]
-            [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.interface :as interface]))
+  (:require [heraldry.frontend.ui.interface :as ui-interface]))
 
 (defn form [path _]
   [:<>
@@ -18,13 +16,3 @@
 
 (defmethod ui-interface/component-form-data :heraldry.component/arms-general [_path]
   {:form form})
-
-;; TODO: might not be the right place for it, others live in the coat-of-arms.[thing].options namespaces
-(defmethod interface/component-options :heraldry.options/arms-general [_path data]
-  {:name {:type :text
-          :default ""
-          :ui {:label "Name"}}
-   :is-public {:type :boolean
-               :ui {:label "Make public"}}
-   :attribution (attribution/options (:attribution data))
-   :tags {:ui {:form-type :tags}}})

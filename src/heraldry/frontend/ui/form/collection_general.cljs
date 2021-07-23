@@ -1,8 +1,5 @@
 (ns heraldry.frontend.ui.form.collection-general
-  (:require [heraldry.font :as font]
-            [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.interface :as interface]
-            [heraldry.attribution :as attribution]))
+  (:require [heraldry.frontend.ui.interface :as ui-interface]))
 
 (defn form [path _]
   [:<>
@@ -22,14 +19,3 @@
 
 (defmethod ui-interface/component-form-data :heraldry.component/collection-general [_path]
   {:form form})
-
-;; TODO: might not be the right place for it, others live in the coat-of-collection.[thing].options namespaces
-(defmethod interface/component-options :heraldry.options/collection-general [_path _data]
-  {:name {:type :text
-          :default ""
-          :ui {:label "Name"}}
-   :is-public {:type :boolean
-               :ui {:label "Make public"}}
-   :attribution attribution/default-options
-   :tags {:ui {:form-type :tags}}
-   :font font/default-options})
