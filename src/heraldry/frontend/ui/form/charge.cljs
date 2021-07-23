@@ -18,7 +18,7 @@
 (defmethod interface/component-node-data :heraldry.component/charge [path]
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
   ;; depends on charge data
-  {:title (str (charge/title path) " charge")
+  {:title (str (charge/title path {}) " charge")
    :nodes [{:path (conj path :field)}]})
 
 (defmethod interface/component-form-data :heraldry.component/charge [_path]

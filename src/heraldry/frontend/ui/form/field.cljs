@@ -79,7 +79,7 @@
   (let [index (last path)]
     (when (int? index)
       (when-let [parent-path (parent-path path)]
-        (>= index (field/mandatory-part-count parent-path))))))
+        (>= index (field/mandatory-part-count parent-path {}))))))
 
 (defmethod interface/component-node-data :heraldry.component/field [path]
   (let [field-type @(rf/subscribe [:get-value (conj path :type)])
@@ -94,7 +94,7 @@
                                                                     vec
                                                                     (conj
                                                                      @(rf/subscribe [:get-value (conj path :index)])))))
-                             (field/title path))])
+                             (field/title path {}))])
      :buttons (if ref?
                 [{:icon "fas fa-sliders-h"
                   :title "Change"

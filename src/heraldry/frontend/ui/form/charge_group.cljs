@@ -292,7 +292,7 @@
 (defmethod ui-interface/component-node-data :heraldry.component/charge-group [path]
   (let [num-charges @(rf/subscribe [:get-list-size (conj path :charges)])]
     {:title (str "Charge group of " (if (= num-charges 1)
-                                      (charge/title (conj path :charges 0))
+                                      (charge/title (conj path :charges 0) {})
                                       "various"))
      :buttons [{:icon "fas fa-plus"
                 :title "Add"

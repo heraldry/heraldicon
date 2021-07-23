@@ -1,8 +1,7 @@
 (ns heraldry.coat-of-arms.ordinary.core
   (:require [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.frontend.util :as frontend-util]
-            [heraldry.interface :as interface]
-            [re-frame.core :as rf]))
+            [heraldry.interface :as interface]))
 
 (defmethod interface/render-component :heraldry.component/ordinary [path parent-path environment context]
   (ordinary-interface/render-ordinary path parent-path environment context))
@@ -18,6 +17,6 @@
                   "a")]
     (frontend-util/combine " " [article rest])))
 
-(defn title [path]
-  (let [ordinary-type @(rf/subscribe [:get-value (conj path :type)])]
+(defn title [path context]
+  (let [ordinary-type (interface/get-raw-data (conj path :type) context)]
     (frontend-util/translate-cap-first ordinary-type)))
