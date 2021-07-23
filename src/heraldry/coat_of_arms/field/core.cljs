@@ -6,13 +6,12 @@
             [heraldry.frontend.util :as frontend-util]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+            [heraldry.util :as util]))
 
-(defn mandatory-part-count [path]
-  (let [field-type (-> @(rf/subscribe [:get-value (conj path :type)])
+(defn mandatory-part-count [path context]
+  (let [field-type (-> (interface/get-raw-data (conj path :type) context)
                        name keyword)
-        num-base-fields @(rf/subscribe [:get-sanitized-value (conj path :layout :num-base-fields)])]
+        num-base-fields (interface/get-sanitized-data (conj path :type) context)]
     (if num-base-fields
       num-base-fields
       (case field-type
@@ -127,13 +126,13 @@
 (defn part-name [field-type index]
   (-> field-type field-interface/part-names (get index) (or (util/to-roman (inc index)))))
 
-(defn title [path]
-  (if @(rf/subscribe [:get-sanitized-value (conj path :counterchanged?)])
+(defn title [path context]
+  (if (interface/get-sanitized-data (conj path :counterchanged?) context)
     "Counterchanged field"
-    (let [field-type @(rf/subscribe [:get-sanitized-value (conj path :type)])]
+    (let [field-type (interface/get-sanitized-data (conj path :type) context)]
       (str
        (if (= field-type :heraldry.field.type/plain)
-         (-> @(rf/subscribe [:get-value (conj path :tincture)])
+         (-> (interface/get-raw-data (conj path :tincture) context)
              frontend-util/translate-tincture
              frontend-util/upper-case-first)
          (get field-options/field-map field-type))
@@ -152,7 +151,7 @@
             :heraldry.field.type/plain (frontend-util/translate-tincture
                                         (interface/get-sanitized-data (conj path :tincture) context))
             (let [line (interface/get-sanitized-data (conj path :line) context)
-                  mandatory-part-count (mandatory-part-count path)
+                  mandatory-part-count (mandatory-part-count path context)
                   num-fields (interface/get-list-size (conj path :fields) context)]
               (frontend-util/combine
                " "

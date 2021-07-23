@@ -3,17 +3,16 @@
             [heraldry.coat-of-arms.charge.interface :as charge-interface]
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.util :as util]
-            [heraldry.interface :as interface]
-            [re-frame.core :as rf]))
+            [heraldry.interface :as interface]))
 
 (defmethod interface/render-component :heraldry.component/charge [path parent-path environment context]
   [charge-interface/render-charge path parent-path environment context])
 
-(defn title [path]
-  (let [charge-type @(rf/subscribe [:get-value (conj path :type)])
-        attitude (or @(rf/subscribe [:get-value (conj path :attitude)])
+(defn title [path context]
+  (let [charge-type (interface/get-raw-data (conj path :type) context)
+        attitude (or (interface/get-raw-data (conj path :attitude) context)
                      :none)
-        facing (or @(rf/subscribe [:get-value (conj path :facing)])
+        facing (or (interface/get-raw-data (conj path :facing) context)
                    :none)]
     (util/combine " " [(util/translate-cap-first charge-type)
                        (when-not (= attitude :none)

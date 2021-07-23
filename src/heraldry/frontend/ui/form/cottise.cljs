@@ -39,7 +39,7 @@
 
 (defmethod interface/component-node-data :heraldry.component/cottise [path]
   {:title (str "Cottise " (cottise-name path) ": "
-               (field/title (conj path :field)))
+               (field/title (conj path :field) {}))
    :nodes [{:path (conj path :field)}]})
 
 (defmethod interface/component-form-data :heraldry.component/cottise [_path]
