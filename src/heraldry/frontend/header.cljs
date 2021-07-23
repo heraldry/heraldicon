@@ -6,10 +6,11 @@
   (let [user-data (user/data)]
     [:div.header
      [:div {:style {:flex 1.5
-                    :line-height "2.5em"
-                    :padding-left "0.5em"}}
-      [route/link {:to :home
-                   :style {:padding-right "5px"}} "Heraldry"]
+                    :line-height "2em"
+                    :padding-left "1em"}}
+      [:span {:style {:text-transform "uppercase"}}
+       [route/link {:to :home
+                    :style {:padding-right "5px"}} "Heraldry"]]
       [:sup {:style {:color "#d82"}} "beta"]]
      [:ul.nav-menu {:style {:flex 1}}
       [route/nav-link {:to :home} "Home"]
