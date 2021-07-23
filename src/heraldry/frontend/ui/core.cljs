@@ -84,7 +84,8 @@
           (cond->
            (#{:heraldry.component/ordinary
               :heraldry.component/charge} added-type) (submenu/ui-submenu-open (conj element-path :type))
-           (#{:heraldry.component/charge-group} added-type) (submenu/ui-submenu-open element-path)
+           ;; this is nice, but it's a bit slow (1.1s)
+           #_#_(#{:heraldry.component/charge-group} added-type) (submenu/ui-submenu-open element-path)
            (#{:heraldry.component/collection-element} added-type) (submenu/ui-submenu-open (conj element-path :reference)))))))
 
 (rf/reg-event-db :remove-element
