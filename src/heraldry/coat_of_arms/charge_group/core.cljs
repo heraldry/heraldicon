@@ -3,7 +3,6 @@
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.frontend.util :as frontend-util]
             [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
@@ -151,7 +150,7 @@
                           (sort-by second))
         context (assoc-in context [:blazonry :part-of-charge-group?] true)]
     (str "a charge group of "
-         (frontend-util/combine
+         (util/combine
           " and "
           (map (fn [[charge-index number]]
                  (str number " "

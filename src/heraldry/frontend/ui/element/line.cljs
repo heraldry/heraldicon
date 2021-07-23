@@ -1,9 +1,9 @@
 (ns heraldry.frontend.ui.element.line
   (:require [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.options :as options]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.util :as util]
+            [heraldry.options :as options]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :line-submenu-link-name

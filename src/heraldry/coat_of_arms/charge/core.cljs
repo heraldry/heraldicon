@@ -2,7 +2,7 @@
   (:require [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.charge.interface :as charge-interface]
             [heraldry.frontend.charge :as frontend-charge]
-            [heraldry.frontend.util :as util]
+            [heraldry.util :as util]
             [heraldry.interface :as interface]))
 
 (defmethod interface/render-component :heraldry.component/charge [path parent-path environment context]
