@@ -50,7 +50,8 @@
                  :anchor
                  :geometry
                  :layout
-                 :outline?]]
+                 :outline?
+                 :manual-blazon]]
      ^{:key option} [interface/form-element (conj path option)])
    (when (show-tinctures-only?
           @(rf/subscribe [:get-value (conj path :type)]))

@@ -282,7 +282,9 @@
                    [:a (if (< num-strips 2)
                          {:class "disabled"}
                          {:on-click #(state/dispatch-on-event % [:remove-element strip-path])})
-                    [:i.far.fa-trash-alt]]]])))]]])]
+                    [:i.far.fa-trash-alt]]]])))]]])
+
+       [ui-interface/form-element (conj path :manual-blazon)]]
       [:div {:style {:display "table-cell"
                      :vertical-align "top"}}
        [preview-form path]]]]))

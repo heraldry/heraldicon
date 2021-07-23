@@ -3,7 +3,8 @@
 
 (defn form [path _]
   [:<>
-   (for [option [:escutcheon]]
+   (for [option [:escutcheon
+                 :manual-blazon]]
      ^{:key option} [interface/form-element (conj path option)])])
 
 (defmethod interface/component-node-data :heraldry.component/coat-of-arms [path]

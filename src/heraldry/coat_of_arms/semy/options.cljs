@@ -47,7 +47,10 @@
                        :default 0
                        :ui {:label "Rotation"}}
             :ui {:label "Layout"
-                 :form-type :semy-layout}}})
+                 :form-type :semy-layout}}
+   :manual-blazon {:type :text
+                   :default nil
+                   :ui {:label "Manual blazon"}}})
 
 (defn options [data]
   (-> default-options

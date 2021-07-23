@@ -82,7 +82,10 @@
                       :step 0.01}}
    :rotate-charges? {:type :boolean
                      :default false
-                     :ui {:label "Rotate charges"}}})
+                     :ui {:label "Rotate charges"}}
+   :manual-blazon {:type :text
+                   :default nil
+                   :ui {:label "Manual blazon"}}})
 
 (defn options [charge-group]
   (when charge-group
@@ -103,6 +106,7 @@
                                                                                      [:slots]
                                                                                      [:radius]
                                                                                      [:rotate-charges?]]))
+        (assoc :manual-blazon (:manual-blazon default-options))
         (update :origin (fn [position]
                           (when position
                             (-> position

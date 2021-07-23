@@ -5,7 +5,8 @@
 (defn form [path _]
   [:<>
    (for [option [:origin
-                 :layout]]
+                 :layout
+                 :manual-blazon]]
      ^{:key option} [interface/form-element (conj path option)])])
 
 (defmethod interface/component-node-data :heraldry.component/semy [path]
