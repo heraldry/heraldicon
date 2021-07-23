@@ -36,8 +36,7 @@
                    (for [[display-name key] group-choices]
                      ^{:key key}
                      [:option {:value (util/keyword->str key)} display-name])]))]]
-            (when (-> idx inc (mod 2) zero?)
-              [:br])]))]]]))
+            [:br]]))]]]))
 
 (defmethod interface/form-element :colours [path]
   [form path])

@@ -187,9 +187,9 @@
                                           (-> coat-of-arms
                                               (assoc-in [:field :components 0 :data] prepared-charge-data)))))
         {:keys [width height]} environment]
-    [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 30)))
+    [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
            :preserveAspectRatio "xMidYMid meet"
-           :style {:width "97%"}}
+           :style {:width "100%"}}
      [:g {:transform "translate(10,10)"}
       result]]))
 
@@ -329,25 +329,24 @@
   [:div {:style {:display "grid"
                  :grid-gap "10px"
                  :grid-template-columns "[start] auto [first] 33% [second] 25% [end]"
-                 :grid-template-rows "[top] 50% [middle] 25% [bottom-half] 23% [bottom]"
-                 :grid-template-areas "'preview selected-component component-tree'
-                                       'preview attribution extra'
-                                       'preview attribution extra'"
+                 :grid-template-rows "[top] 100% [bottom]"
+                 :grid-template-areas "'left middle right'"
                  :padding-left "10px"
                  :padding-right "10px"
                  :height "100%"}
          :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
-   [:div.no-scrollbar {:style {:grid-area "preview"
+   [:div.no-scrollbar {:style {:grid-area "left"
                                :overflow-y "scroll"}}
     [preview]]
-   [:div {:style {:grid-area "selected-component"
-                  :padding-top "10px"}}
+   [:div.no-scrollbar {:style {:grid-area "middle"
+                               :overflow-y "scroll"
+                               :padding-top "10px"}}
     [ui/selected-component]
-    [button-row]]
-   [:div {:style {:grid-area "attribution"}}
+    [button-row]
     [attribution]]
-   [:div {:style {:grid-area "component-tree"
-                  :padding-top "5px"}}
+   [:div.no-scrollbar {:style {:grid-area "right"
+                               :overflow-y "scroll"
+                               :padding-top "5px"}}
     [ui/component-tree [form-db-path
                         (conj example-coa-db-path :render-options)
                         (conj example-coa-db-path :coat-of-arms :field :components 0)]]]])
