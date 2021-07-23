@@ -88,3 +88,12 @@
 (defmethod render-component nil [path parent-path _environment _context]
   (log/warn :not-implemented path parent-path)
   [:<>])
+
+(defmulti blazon-component (fn [path context]
+                             (effective-component-type
+                              path
+                              ;; TODO: need the raw value here for type
+                              (get-raw-data (conj path :type) context))))
+
+(defn blazon [path context]
+  (blazon-component path context))
