@@ -129,12 +129,12 @@
 
 (defn component-node [path & {:keys [title parent-buttons]}]
   (let [node-data @(rf/subscribe [:component-node path])
-        {node-title :title
-         open? :open?
-         selected? :selected?
-         selectable? :selectable?
-         nodes :nodes
-         buttons :buttons} node-data
+        node-title (:title node-data)
+        {:keys [open?
+                selected?
+                selectable?
+                nodes
+                buttons]} node-data
         openable? (-> nodes count pos?)
         title (or node-title title)
         buttons (concat buttons parent-buttons)]

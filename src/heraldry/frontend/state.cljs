@@ -4,6 +4,7 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.default :as default]
+            [heraldry.frontend.ui.form.collection-element :as collection-element]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
             [re-frame.core :as rf]
@@ -258,10 +259,15 @@
       (ui-component-node-open db path))))
 
 (defn ui-component-node-select [db path & {:keys [open?]}]
-  (-> db
-      (assoc-in ui-component-node-selected-path path)
-      (ui-component-node-open (cond-> path
-                                (not open?) drop-last))))
+  (let [raw-type (get-in db (conj path :type))
+        component-type (interface/effective-component-type path raw-type)]
+    (-> db
+        (assoc-in ui-component-node-selected-path path)
+        (ui-component-node-open (cond-> path
+                                  (not open?) drop-last))
+        (cond->
+         (= component-type :heraldry.component/collection-element)
+          (assoc-in collection-element/ui-highlighted-element-path path)))))
 
 (rf/reg-event-db :ui-component-node-select
   (fn [db [_ path {:keys [open?]}]]
@@ -313,6 +319,8 @@
 (defn element-order-changed [db elements-path index new-index]
   (-> db
       (update-in ui-component-node-selected-path
+                 adjust-component-path-after-order-change elements-path index new-index)
+      (update-in collection-element/ui-highlighted-element-path
                  adjust-component-path-after-order-change elements-path index new-index)
       (update-in ui-submenu-open?-path
                  (fn [flags]

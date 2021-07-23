@@ -10,6 +10,7 @@
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.ui.element.arms-select :as arms-select]
             [heraldry.frontend.ui.element.collection-select :as collection-select]
+            [heraldry.frontend.ui.form.collection-element :as collection-element]
             [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.user :as user]
             [heraldry.util :refer [id-for-url]]
@@ -127,13 +128,18 @@
   (state/dispatch-on-event event [:ui-component-node-select (conj form-db-path :collection :elements index)]))
 
 (defn selected-element-index []
-  (let [selected-node-path @(rf/subscribe [:ui-component-node-selected-path])
+  (let [selected-node-path @(rf/subscribe [:collection-library-highlighted-element])
         index (last selected-node-path)]
     (when (int? index)
-      index)))
+      (if (< index @(rf/subscribe [:get-list-size (conj form-db-path :collection :elements)]))
+        index
+        ;; index not valid anymore
+        (do
+          (collection-element/highlight-element nil)
+          nil)))))
 
 (defn render-collection [& {:keys [allow-adding?]}]
-  (let [collection-data @(rf/subscribe [:get form-db-path])
+  (let [collection-data @(rf/subscribe [:get-value form-db-path])
         font (-> collection-data :font font/css-string)
         collection (:collection collection-data)
         {:keys [num-columns
