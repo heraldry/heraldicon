@@ -2,11 +2,9 @@
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.coat-of-arms.counterchange :as counterchange]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.frontend.ui.form.collection-element :as collection-element]
             [heraldry.interface :as interface]
-            [heraldry.options :as options]
             [re-frame.core :as rf]
             [taoensso.timbre :as log]))
 
@@ -348,33 +346,3 @@
 
 (defmethod interface/get-counterchange-tinctures :state [path context]
   @(rf/subscribe [:get-counterchange-tinctures path context]))
-
-(defmethod interface/get-raw-data :context [path context]
-  (get-in context (drop 1 path)))
-
-(defmethod interface/get-list-size :context [path context]
-  (count (get-in context (drop 1 path))))
-
-(defmethod interface/get-counterchange-tinctures :context [path context]
-  (-> (interface/get-raw-data path context)
-      (counterchange/get-counterchange-tinctures context)))
-
-(defn get-options-by-context [path context]
-  (interface/component-options path (interface/get-raw-data path context)))
-
-(defn get-relevant-options-by-context [path context]
-  (let [[options relative-path] (or (->> (range (count path) 0 -1)
-                                         (keep (fn [idx]
-                                                 (let [option-path (subvec path 0 idx)
-                                                       relative-path (subvec path idx)
-                                                       options (get-options-by-context option-path context)]
-                                                   (when options
-                                                     [options relative-path]))))
-                                         first)
-                                    [nil nil])]
-    (get-in options relative-path)))
-
-(defmethod interface/get-sanitized-data :context [path context]
-  (let [data (interface/get-raw-data path context)
-        options (get-relevant-options-by-context path context)]
-    (options/sanitize-value-or-data data options)))

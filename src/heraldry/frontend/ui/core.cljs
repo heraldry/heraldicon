@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.core
   (:require [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.arms-reference-select] ;; needed for defmethods
+            [heraldry.frontend.ui.element.attributes] ;; needed for defmethods
             [heraldry.frontend.ui.element.attribution] ;; needed for defmethods
             [heraldry.frontend.ui.element.charge-group-preset-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.charge-group-slot-number] ;; needed for defmethods
@@ -28,19 +29,22 @@
             [heraldry.frontend.ui.element.theme-select] ;; needed for defmethods
             [heraldry.frontend.ui.element.tincture-modifiers] ;; needed for defmethods
             [heraldry.frontend.ui.element.tincture-select] ;; needed for defmethods
+            [heraldry.frontend.ui.form.arms-general] ;; needed for defmethods
             [heraldry.frontend.ui.form.charge] ;; needed for defmethods
+            [heraldry.frontend.ui.form.charge-general] ;; needed for defmethods
             [heraldry.frontend.ui.form.charge-group] ;; needed for defmethods
             [heraldry.frontend.ui.form.coat-of-arms] ;; needed for defmethods
             [heraldry.frontend.ui.form.collection] ;; needed for defmethods
             [heraldry.frontend.ui.form.collection-element] ;; needed for defmethods
+            [heraldry.frontend.ui.form.collection-general] ;; needed for defmethods
             [heraldry.frontend.ui.form.cottise] ;; needed for defmethods
             [heraldry.frontend.ui.form.field] ;; needed for defmethods
             [heraldry.frontend.ui.form.ordinary] ;; needed for defmethods
             [heraldry.frontend.ui.form.render-options] ;; needed for defmethods
             [heraldry.frontend.ui.form.semy] ;; needed for defmethods
             [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.frontend.ui.required] ;; needed for side effects
             [heraldry.interface :as interface]
+            [heraldry.shared] ;; needed for side effects
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
