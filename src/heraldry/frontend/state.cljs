@@ -196,6 +196,7 @@
 (def node-flag-db-path [:ui :component-tree :nodes])
 (def ui-submenu-open?-path [:ui :submenu-open?])
 (def ui-component-node-selected-path [:ui :component-tree :selected-node])
+(def ui-component-node-selected-default-path [:ui :component-tree :selected-node-default])
 
 (defn component-node-open-by-default? [path]
   (or (->> path (take-last 1) #{[:coat-of-arms]})
@@ -217,10 +218,15 @@
 
 (rf/reg-sub :ui-component-node-selected-path
   (fn [_ _]
-    (rf/subscribe [:get ui-component-node-selected-path]))
+    [(rf/subscribe [:get ui-component-node-selected-path])
+     (rf/subscribe [:get @(rf/subscribe [:get ui-component-node-selected-path])])
+     (rf/subscribe [:get ui-component-node-selected-default-path])])
 
-  (fn [selected-node-path [_ _path]]
-    selected-node-path))
+  (fn [[selected-node-path data default] [_ _path]]
+    (if (and selected-node-path
+             data)
+      selected-node-path
+      default)))
 
 (defn ui-component-node-open [db path]
   (let [path (vec path)]
@@ -275,15 +281,7 @@
 
 (rf/reg-event-db :ui-component-node-select-default
   (fn [db [_ path]]
-    (let [old-path (get-in db ui-component-node-selected-path)
-          new-path (if (or (not old-path)
-                           (not= (subvec old-path 0 (count path))
-                                 path))
-                     path
-                     old-path)]
-      (if (not= new-path old-path)
-        (ui-component-node-select db new-path)
-        db))))
+    (assoc-in db ui-component-node-selected-default-path path)))
 
 (defn adjust-component-path-after-order-change [path elements-path index new-index]
   (let [elements-path-size (count elements-path)
