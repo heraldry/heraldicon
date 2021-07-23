@@ -13,7 +13,7 @@
             [heraldry.frontend.ui.element.arms-select :as arms-select]
             [heraldry.frontend.user :as user]
             [heraldry.interface :as interface]
-            [heraldry.util :refer [id-for-url]]
+            [heraldry.util :as util]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
             [taoensso.timbre :as log]))
@@ -132,7 +132,7 @@
         (invalidate-arms-cache user-id)
         (invalidate-arms-cache :all)
         (rf/dispatch-sync [:set-form-message form-db-path (str "Arms saved, new version: " (:version response))])
-        (reife/push-state :edit-arms-by-id {:id (id-for-url arms-id)}))
+        (reife/push-state :edit-arms-by-id {:id (util/id-for-url arms-id)}))
       (modal/stop-loading)
       (catch :default e
         (log/error "save form error:" e)
@@ -262,7 +262,7 @@
 (defn link-to-arms [arms]
   (let [arms-id (-> arms
                     :id
-                    id-for-url)]
+                    util/id-for-url)]
     [:a {:href (reife/href :view-arms-by-id {:id arms-id})
          :on-click #(do
                       (rf/dispatch-sync [:clear-form-errors form-db-path])

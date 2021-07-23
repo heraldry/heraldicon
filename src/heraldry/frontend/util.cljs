@@ -1,53 +1,7 @@
 (ns heraldry.frontend.util
-  (:require [clojure.string :as s]
-            [clojure.walk :as walk]
-            [heraldry.config :as config]
+  (:require [heraldry.config :as config]
+            [heraldry.util :as util]
             [reitit.frontend.easy :as reife]))
-
-(defn upper-case-first [s]
-  (str (s/upper-case (or (first s) "")) (s/join (rest s))))
-
-(defn translate [keyword]
-  (when keyword
-    (-> keyword
-        name
-        (s/replace "-" " ")
-        (s/replace "fleur de lis" "fleur-de-lis")
-        (s/replace "fleur de lys" "fleur-de-lys"))))
-
-(defn translate-tincture [keyword]
-  (case keyword
-    :none "void"
-    (translate keyword)))
-
-(defn translate-line [{:keys [type]}]
-  (when (not= type :straight)
-    (translate type)))
-
-(defn translate-cap-first [keyword]
-  (-> keyword
-      translate
-      upper-case-first))
-
-(defn combine [separator words]
-  (->> words
-       (map (fn [s]
-              (if (string? s)
-                s
-                (str s))))
-       (filter #(> (count %) 0))
-       (s/join separator)))
-
-(defn replace-recursively [data value replacement]
-  (walk/postwalk #(if (= % value)
-                    replacement
-                    %)
-                 data))
-
-(defn id-for-url [id]
-  (-> id
-      (s/split #":" 2)
-      second))
 
 (defn full-url-for-arms [arms-data]
   (let [version (:version arms-data)
@@ -56,7 +10,7 @@
                   version)
         arms-id (-> arms-data
                     :id
-                    id-for-url)]
+                    util/id-for-url)]
     (str (config/get :heraldry-url) (reife/href :view-arms-by-id-and-version {:id arms-id
                                                                               :version version}))))
 
@@ -67,19 +21,7 @@
                   version)
         charge-id (-> charge-data
                       :id
-                      id-for-url)]
+                      util/id-for-url)]
 
     (str (config/get :heraldry-url) (reife/href :view-charge-by-id-and-version {:id charge-id
                                                                                 :version version}))))
-
-(defn matches-word [data word]
-  (cond
-    (keyword? data) (-> data name s/lower-case (s/includes? word))
-    (string? data) (-> data s/lower-case (s/includes? word))
-    (map? data) (some (fn [[k v]]
-                        (or (and (keyword? k)
-                                 (matches-word k word)
-                                     ;; this would be an attribute entry, the value
-                                     ;; must be truthy as well
-                                 v)
-                            (matches-word v word))) data)))

@@ -3,7 +3,6 @@
             [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.semy.core] ;; needed for defmethods
-            [heraldry.frontend.util :as frontend-util]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
             [heraldry.util :as util]))
@@ -133,8 +132,8 @@
       (str
        (if (= field-type :heraldry.field.type/plain)
          (-> (interface/get-raw-data (conj path :tincture) context)
-             frontend-util/translate-tincture
-             frontend-util/upper-case-first)
+             util/translate-tincture
+             util/upper-case-first)
          (get field-options/field-map field-type))
        " field"))))
 
@@ -148,37 +147,37 @@
 
           field-description
           (case field-type
-            :heraldry.field.type/plain (frontend-util/translate-tincture
+            :heraldry.field.type/plain (util/translate-tincture
                                         (interface/get-sanitized-data (conj path :tincture) context))
             (let [line (interface/get-sanitized-data (conj path :line) context)
                   mandatory-part-count (mandatory-part-count path context)
                   num-fields (interface/get-list-size (conj path :fields) context)]
-              (frontend-util/combine
+              (util/combine
                " "
-               [(frontend-util/translate field-type)
-                (frontend-util/translate-line line)
-                (frontend-util/combine " and "
-                                       (->> (range num-fields)
-                                            (map
-                                             (fn [index]
-                                               (let [subfield-path (conj path :fields index)]
-                                                 (cond
-                                                   (< index mandatory-part-count) (interface/blazon subfield-path context)
-                                                   (not= (interface/get-raw-data (conj subfield-path :type) context)
-                                                         :heraldry.field.type/ref) (frontend-util/combine
-                                                                                    " "
-                                                                                    [(when (> num-fields 3)
-                                                                                       (str (part-name field-type index) ":"))
-                                                                                     (interface/blazon subfield-path context)])))))))])))
-          components-description (frontend-util/combine
+               [(util/translate field-type)
+                (util/translate-line line)
+                (util/combine " and "
+                              (->> (range num-fields)
+                                   (map
+                                    (fn [index]
+                                      (let [subfield-path (conj path :fields index)]
+                                        (cond
+                                          (< index mandatory-part-count) (interface/blazon subfield-path context)
+                                          (not= (interface/get-raw-data (conj subfield-path :type) context)
+                                                :heraldry.field.type/ref) (util/combine
+                                                                           " "
+                                                                           [(when (> num-fields 3)
+                                                                              (str (part-name field-type index) ":"))
+                                                                            (interface/blazon subfield-path context)])))))))])))
+          components-description (util/combine
                                   ", "
                                   (map (fn [index]
                                          (interface/blazon (conj path :components index) context))
                                        (range num-components)))
 
-          blazon (-> (frontend-util/combine ", " [field-description
-                                                  components-description])
-                     frontend-util/upper-case-first)]
+          blazon (-> (util/combine ", " [field-description
+                                         components-description])
+                     util/upper-case-first)]
       (if (or root?
               (and (= field-type :heraldry.field.type/plain)
                    (zero? num-components)))

@@ -1,8 +1,8 @@
 (ns heraldry.frontend.ui.element.geometry
-  (:require [heraldry.options :as options]
-            [heraldry.frontend.ui.element.submenu :as submenu]
+  (:require [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.util :as util]
+            [heraldry.options :as options]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :geometry-submenu-link-name

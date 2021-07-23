@@ -2,14 +2,14 @@
   (:require [clojure.set :as set]
             [clojure.string :as s]
             [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.options :as options]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.ui.element.range :as range]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.tincture-select :as tincture-select]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.util :as util]
+            [heraldry.options :as options]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (defn tincture-modifiers-submenu [path]

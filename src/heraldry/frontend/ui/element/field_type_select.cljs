@@ -7,8 +7,8 @@
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.frontend.ui.shared :as shared]
-            [heraldry.frontend.util :as util]
             [heraldry.options :as options]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (defn set-field-type [db path new-type num-fields-x num-fields-y num-base-fields]

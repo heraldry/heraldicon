@@ -4,7 +4,7 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.tincture-select :as tincture-select]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.util :as util]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (rf/reg-event-db :override-field-part-reference

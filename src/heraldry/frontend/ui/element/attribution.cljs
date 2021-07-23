@@ -1,9 +1,9 @@
 (ns heraldry.frontend.ui.element.attribution
-  (:require [heraldry.options :as options]
+  (:require [heraldry.attribution :as attribution]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.util :as util]
-            [heraldry.attribution :as attribution]
+            [heraldry.options :as options]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :attribution-submenu-link-name
@@ -52,4 +52,3 @@
 
 (defmethod interface/form-element :attribution [path]
   [attribution-submenu path])
-

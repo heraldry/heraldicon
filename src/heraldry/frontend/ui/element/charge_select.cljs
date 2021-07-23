@@ -6,7 +6,7 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
-            [heraldry.frontend.util :as util]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (def node-icons
