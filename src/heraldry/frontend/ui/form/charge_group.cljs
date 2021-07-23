@@ -312,8 +312,7 @@
                                              {:icon "far fa-trash-alt"
                                               :disabled? (= num-charges 1)
                                               :tooltip "remove"
-                                              :handler #(state/dispatch-on-event
-                                                         % [:remove-charge-group-charge charge-path])}]})))
+                                              :handler #(state/dispatch-on-event % [:remove-charge-group-charge charge-path])}]})))
                          vec))}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/charge-group [_path]

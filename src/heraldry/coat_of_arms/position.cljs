@@ -30,9 +30,6 @@
    point-choices
    #{:chief :honour :fess :nombril :base}))
 
-(def point-map
-  (util/choices->map point-choices))
-
 (def anchor-point-choices
   [["Top-left" :top-left]
    ["Top" :top]

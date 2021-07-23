@@ -4,9 +4,6 @@
             [heraldry.config :as config]
             [reitit.frontend.easy :as reife]))
 
-(defn lower-case-first [s]
-  (str (s/lower-case (or (first s) "")) (s/join (rest s))))
-
 (defn upper-case-first [s]
   (str (s/upper-case (or (first s) "")) (s/join (rest s))))
 
@@ -40,10 +37,6 @@
                 (str s))))
        (filter #(> (count %) 0))
        (s/join separator)))
-
-(defn contains-in?
-  [m ks]
-  (not= ::absent (get-in m ks ::absent)))
 
 (defn replace-recursively [data value replacement]
   (walk/postwalk #(if (= % value)

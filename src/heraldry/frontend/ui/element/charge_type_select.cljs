@@ -84,20 +84,18 @@
                                        [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
                                      " "
                                      [:a.clickable
-                                      {:on-click #(state/dispatch-on-event
-                                                   %
-                                                   [:update-charge
-                                                    (vec (drop-last path))
-                                                    (merge {:type (->> charge-data
-                                                                       :type
-                                                                       name
-                                                                       (keyword "heraldry.charge.type"))
-                                                            :variant {:id (:id charge-data)
-                                                                      :version (:latest-version charge-data)}}
-                                                           {:attitude nil
-                                                            :facing nil}
-                                                           (select-keys charge-data
-                                                                        [:attitude :facing]))])}
+                                      {:on-click #(state/dispatch-on-event % [:update-charge
+                                                                              (vec (drop-last path))
+                                                                              (merge {:type (->> charge-data
+                                                                                                 :type
+                                                                                                 name
+                                                                                                 (keyword "heraldry.charge.type"))
+                                                                                      :variant {:id (:id charge-data)
+                                                                                                :version (:latest-version charge-data)}}
+                                                                                     {:attitude nil
+                                                                                      :facing nil}
+                                                                                     (select-keys charge-data
+                                                                                                  [:attitude :facing]))])}
                                       (:name charge-data)]
                                      " by "
                                      [:a {:href (attribution/full-url-for-username username)

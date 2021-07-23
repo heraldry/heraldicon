@@ -59,8 +59,7 @@
                (conj {:title "Cottise 1"
                       :handler #(let [cottise-path (conj path :cottising :cottise-1)]
                                   (rf/dispatch-sync [:set cottise-path default/cottise])
-                                  (state/dispatch-on-event
-                                   % [:ui-component-node-select cottise-path {:open? true}]))})
+                                  (state/dispatch-on-event % [:ui-component-node-select cottise-path {:open? true}]))})
 
                (and (:cottise-2 cottising-options)
                     cottise-1?
@@ -68,16 +67,14 @@
                (conj {:title "Cottise 2"
                       :handler #(let [cottise-path (conj path :cottising :cottise-2)]
                                   (rf/dispatch-sync [:set cottise-path default/cottise])
-                                  (state/dispatch-on-event
-                                   % [:ui-component-node-select cottise-path {:open? true}]))})
+                                  (state/dispatch-on-event % [:ui-component-node-select cottise-path {:open? true}]))})
 
                (and (:cottise-opposite-1 cottising-options)
                     (not cottise-opposite-1?))
                (conj {:title "Cottise 1 (opposite)"
                       :handler #(let [cottise-path (conj path :cottising :cottise-opposite-1)]
                                   (rf/dispatch-sync [:set cottise-path default/cottise])
-                                  (state/dispatch-on-event
-                                   % [:ui-component-node-select cottise-path {:open? true}]))})
+                                  (state/dispatch-on-event % [:ui-component-node-select cottise-path {:open? true}]))})
 
                (and (:cottise-opposite-2 cottising-options)
                     cottise-opposite-1?
@@ -85,8 +82,7 @@
                (conj {:title "Cottise 2 (opposite)"
                       :handler #(let [cottise-path (conj path :cottising :cottise-opposite-2)]
                                   (rf/dispatch-sync [:set cottise-path default/cottise])
-                                  (state/dispatch-on-event
-                                   % [:ui-component-node-select cottise-path {:open? true}]))}))]
+                                  (state/dispatch-on-event % [:ui-component-node-select cottise-path {:open? true}]))}))]
     {:title (ordinary/title path)
      :buttons [{:icon "fas fa-plus"
                 :title "Add"
@@ -96,24 +92,20 @@
               cottise-2? (conj {:path (conj path :cottising :cottise-2)
                                 :buttons [{:icon "far fa-trash-alt"
                                            :tooltip "remove"
-                                           :handler #(state/dispatch-on-event
-                                                      % [:remove-cottise (conj path :cottising) :cottise-2])}]})
+                                           :handler #(state/dispatch-on-event % [:remove-cottise (conj path :cottising) :cottise-2])}]})
               cottise-1? (conj {:path (conj path :cottising :cottise-1)
                                 :buttons [{:icon "far fa-trash-alt"
                                            :tooltip "remove"
-                                           :handler #(state/dispatch-on-event
-                                                      % [:remove-cottise (conj path :cottising) :cottise-1])}]})
+                                           :handler #(state/dispatch-on-event % [:remove-cottise (conj path :cottising) :cottise-1])}]})
               cottise-opposite-1? (conj {:path (conj path :cottising :cottise-opposite-1)
                                          :buttons [{:icon "far fa-trash-alt"
                                                     :tooltip "remove"
-                                                    :handler #(state/dispatch-on-event
-                                                               % [:remove-cottise (conj path :cottising) :cottise-opposite-1])}]})
+                                                    :handler #(state/dispatch-on-event % [:remove-cottise (conj path :cottising) :cottise-opposite-1])}]})
 
               cottise-opposite-2? (conj {:path (conj path :cottising :cottise-opposite-2)
                                          :buttons [{:icon "far fa-trash-alt"
                                                     :tooltip "remove"
-                                                    :handler #(state/dispatch-on-event
-                                                               % [:remove-cottise (conj path :cottising) :cottise-opposite-2])}]}))}))
+                                                    :handler #(state/dispatch-on-event % [:remove-cottise (conj path :cottising) :cottise-opposite-2])}]}))}))
 
 (defmethod interface/component-form-data :heraldry.component/ordinary [_path]
   {:form form})

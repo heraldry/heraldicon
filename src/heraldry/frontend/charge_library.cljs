@@ -299,7 +299,7 @@
                      :padding-top "0.5em"
                      :white-space "nowrap"}}
          "Original SVG"])
-      [:div.spacer {:style {:flex 10}}]
+      [:div {:style {:flex 10}}]
       [:button.button
        {:type "button"
         :class (when-not can-copy? "disabled")
