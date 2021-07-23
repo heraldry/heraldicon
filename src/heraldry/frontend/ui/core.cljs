@@ -22,7 +22,7 @@
             [heraldry.frontend.ui.element.range] ;; needed for defmethods
             [heraldry.frontend.ui.element.select] ;; needed for defmethods
             [heraldry.frontend.ui.element.semy-layout] ;; needed for defmethods
-            [heraldry.frontend.ui.element.submenu] ;; needed for defmethods
+            [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.tags] ;; needed for defmethods
             [heraldry.frontend.ui.element.text-field] ;; needed for defmethods
             [heraldry.frontend.ui.element.theme-select] ;; needed for defmethods
@@ -40,10 +40,12 @@
             [heraldry.frontend.ui.form.semy] ;; needed for defmethods
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.frontend.ui.required] ;; needed for side effects
+            [heraldry.interface :as interface]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 ;; subs
+
 
 (rf/reg-sub :component-data
   (fn [db [_ path]]
@@ -80,10 +82,17 @@
     (let [elements (-> (get-in db path)
                        (conj value)
                        vec)
-          element-path (conj path (-> elements count dec))]
+          element-path (conj path (-> elements count dec))
+          added-type (interface/effective-component-type element-path (:type value))]
       (-> db
           (assoc-in path elements)
-          (state/ui-component-node-select element-path :open? true)))))
+          (state/ui-component-node-select element-path :open? true)
+          submenu/ui-submenu-close-all
+          (cond->
+           (#{:heraldry.component/ordinary
+              :heraldry.component/charge} added-type) (submenu/ui-submenu-open (conj element-path :type))
+           (#{:heraldry.component/charge-group} added-type) (submenu/ui-submenu-open element-path)
+           (#{:heraldry.component/collection-element} added-type) (submenu/ui-submenu-open (conj element-path :reference)))))))
 
 (rf/reg-event-db :remove-element
   (fn [db [_ path]]
