@@ -98,7 +98,10 @@
                             ["Primary" :primary]
                             ["Remove" :remove]]
                   :default :keep
-                  :ui {:label "Outline"}}})
+                  :ui {:label "Outline"}}
+   :manual-blazon {:type :text
+                   :default nil
+                   :ui {:label "Manual blazon"}}})
 
 (defn options [charge & {:keys [part-of-semy? part-of-charge-group?]}]
   (let [type (-> charge :type name keyword)]
@@ -143,6 +146,7 @@
                                [:fimbriation]
                                [:tincture]
                                [:outline-mode]]))
+        (assoc :manual-blazon (:manual-blazon default-options))
         (cond->
          (or part-of-semy?
              part-of-charge-group?) (dissoc :origin))

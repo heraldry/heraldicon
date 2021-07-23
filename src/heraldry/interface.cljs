@@ -96,4 +96,7 @@
                               (get-raw-data (conj path :type) context))))
 
 (defn blazon [path context]
-  (blazon-component path context))
+  (let [manual-blazon (get-sanitized-data (conj path :manual-blazon) context)]
+    (if (-> manual-blazon count pos?)
+      manual-blazon
+      (blazon-component path context))))

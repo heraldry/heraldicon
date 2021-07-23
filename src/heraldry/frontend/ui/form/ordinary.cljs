@@ -34,7 +34,8 @@
                  :anchor
                  :geometry
                  :fimbriation
-                 :outline?]]
+                 :outline?
+                 :manual-blazon]]
      ^{:key option} [interface/form-element (conj path option)])])
 
 (defmethod interface/component-node-data :heraldry.component/ordinary [path]

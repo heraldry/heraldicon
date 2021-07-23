@@ -174,7 +174,10 @@
                  :form-type :field-layout}}
    :outline? {:type :boolean
               :default false
-              :ui {:label "Outline"}}})
+              :ui {:label "Outline"}}
+   :manual-blazon {:type :text
+                   :default nil
+                   :ui {:label "Manual blazon"}}})
 
 (defn options [field]
   (when field
@@ -720,6 +723,7 @@
                                                                                    [:bottom-left :bottom-right :angle])})
 
             {})
+          (assoc :manual-blazon (:manual-blazon default-options))
           (update :anchor (fn [anchor]
                             (when anchor
                               (position/adjust-options anchor (-> field :anchor)))))

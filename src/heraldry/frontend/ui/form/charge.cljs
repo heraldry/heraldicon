@@ -11,7 +11,8 @@
                  :geometry
                  :fimbriation
                  :tincture
-                 :outline-mode]]
+                 :outline-mode
+                 :manual-blazon]]
      ^{:key option} [interface/form-element (conj path option)])])
 
 (defmethod interface/component-node-data :heraldry.component/charge [path]

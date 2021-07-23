@@ -88,7 +88,10 @@
               :default false
               :ui {:label "Outline"}}
    :fimbriation fimbriation/default-options
-   :cottising cottising/default-options})
+   :cottising cottising/default-options
+   :manual-blazon {:type :text
+                   :default nil
+                   :ui {:label "Manual blazon"}}})
 
 (defn options [ordinary]
   (when ordinary
@@ -431,6 +434,7 @@
                                                      :default 2
                                                      :ui {:label "Stretch"
                                                           :step 0.01}}}))
+       (assoc :manual-blazon (:manual-blazon default-options))
        (update :line (fn [line]
                        (when line
                          (set-line-defaults line))))
