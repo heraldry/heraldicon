@@ -193,6 +193,7 @@
                             (into {})))]))
 
 (def node-flag-db-path [:ui :component-tree :nodes])
+(def ui-submenu-open?-path [:ui :submenu-open?])
 (def ui-component-node-selected-path [:ui :component-tree :selected-node])
 
 (defn component-node-open-by-default? [path]
@@ -313,6 +314,14 @@
   (-> db
       (update-in ui-component-node-selected-path
                  adjust-component-path-after-order-change elements-path index new-index)
+      (update-in ui-submenu-open?-path
+                 (fn [flags]
+                   (->> flags
+                        (map (fn [[k v]]
+                               [(adjust-component-path-after-order-change
+                                 k elements-path index new-index) v]))
+                        (filter first)
+                        (into {}))))
       (update-in node-flag-db-path (fn [flags]
                                      (->> flags
                                           (keep (fn [[path flag]]
