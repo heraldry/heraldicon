@@ -11,18 +11,22 @@
   "Returns current env vars as a Clojure map."
   (-js->clj+ (.-env js/process)))
 
-(goog-define stage "local")
+(goog-define stage "dev")
 
 (def config-data
   (case stage
-    "local" {;;
-             :heraldry-api-endpoint "https://d52eru9ag9.execute-api.eu-central-1.amazonaws.com/api"
-             ;;:heraldry-api-endpoint "http://localhost:4000/api"
-             :heraldry-url "http://localhost:8081"
-             :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
-                                   :ClientId "2v90eij0l4aluf2amqumqh9gko"
-                                   :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
-             :fleur-de-lis-charge-id "charge:RnHzw8"}
+    "dev" {:heraldry-api-endpoint "http://localhost:4000/api"
+           :heraldry-url "http://localhost:8081"
+           :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
+                                 :ClientId "2v90eij0l4aluf2amqumqh9gko"
+                                 :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
+           :fleur-de-lis-charge-id "charge:RnHzw8"}
+    "staging" {:heraldry-api-endpoint "https://kpos8p1ge4.execute-api.eu-central-1.amazonaws.com/api"
+               :heraldry-url "https://staging.heraldry.digital"
+               :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
+                                     :ClientId "2v90eij0l4aluf2amqumqh9gko"
+                                     :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
+               :fleur-de-lis-charge-id "charge:RnHzw8"}
     "prod" {:heraldry-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/api"
             :heraldry-url "https://heraldry.digital"
             :cognito-pool-config {:UserPoolId "eu-central-1_WXqnJUEOT"
