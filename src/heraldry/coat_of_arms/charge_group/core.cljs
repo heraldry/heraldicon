@@ -1,9 +1,10 @@
 (ns heraldry.coat-of-arms.charge-group.core
   (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
+            [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.frontend.util :as frontend-util]
             [heraldry.interface :as interface]
-            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (defn calculate-strip-slot-positions [path spacing context]
@@ -139,3 +140,22 @@
                                     :slot-spacing slot-spacing
                                     :slot-angle (when rotate-charges?
                                                   angle)}))]))]))
+
+(defmethod interface/blazon-component :heraldry.component/charge-group [path context]
+  (let [{:keys [slot-positions]} (calculate-points path escutcheon/flag context)
+        used-charges (->> (group-by :charge-index slot-positions)
+                          (map (fn [[k v]]
+                                 [k (count v)]))
+                          (filter (fn [[k v]]
+                                    (and k (pos? v))))
+                          (sort-by second))
+        context (assoc-in context [:blazonry :part-of-charge-group?] true)]
+    (str "a charge group of "
+         (frontend-util/combine
+          " and "
+          (map (fn [[charge-index number]]
+                 (str number " "
+                      (interface/blazon (conj path :charges charge-index)
+                                        (cond-> context
+                                          (> number 1) (assoc-in [:blazonry :pluralize?] true)))))
+               used-charges)))))

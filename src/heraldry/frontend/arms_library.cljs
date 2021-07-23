@@ -1,7 +1,6 @@
 (ns heraldry.frontend.arms-library
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
-            [heraldry.coat-of-arms.blazon :as blazon]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.api.request :as api-request]
@@ -13,6 +12,7 @@
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.ui.element.arms-select :as arms-select]
             [heraldry.frontend.user :as user]
+            [heraldry.interface :as interface]
             [heraldry.util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
@@ -69,12 +69,10 @@
       result]]))
 
 (defn blazonry []
-  (let [coat-of-arms-db-path (conj form-db-path :coat-of-arms)
-        coat-of-arms @(rf/subscribe [:get coat-of-arms-db-path])]
-    [:div.blazonry
-     [:span.disclaimer "Blazon (very rudimentary, very beta)"]
-     [:div.blazon
-      (blazon/encode-field (:field coat-of-arms) :root? true)]]))
+  [:div.blazonry
+   [:span.disclaimer "Blazon (very rudimentary, very beta)"]
+   [:div.blazon
+    (interface/blazon (conj form-db-path :coat-of-arms) {})]])
 
 (defn generate-svg-clicked [event]
   (.preventDefault event)

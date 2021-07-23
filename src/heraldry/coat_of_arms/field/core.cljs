@@ -1,9 +1,10 @@
 (ns heraldry.coat-of-arms.field.core
   (:require [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.field.interface :as interface]
+            [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.semy.core] ;; needed for defmethods
             [heraldry.frontend.util :as frontend-util]
+            [heraldry.interface :as interface]
             [heraldry.options :as options]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
@@ -138,7 +139,7 @@
       :else (subvec defaults 0 2))))
 
 (defn part-name [field-type index]
-  (-> field-type interface/part-names (get index) (or (util/to-roman (inc index)))))
+  (-> field-type field-interface/part-names (get index) (or (util/to-roman (inc index)))))
 
 (defn title [path]
   (if @(rf/subscribe [:get-sanitized-value (conj path :counterchanged?)])
@@ -151,3 +152,50 @@
              frontend-util/upper-case-first)
          (get field-options/field-map field-type))
        " field"))))
+
+(defmethod interface/blazon-component :heraldry.component/field [path context]
+  (if (interface/get-sanitized-data (conj path :counterchanged?) context)
+    "counterchanged"
+    (let [root? (get-in context [:blazonry :root?])
+          context (assoc-in context [:blazonry :root?] false)
+          field-type (interface/get-sanitized-data (conj path :type) context)
+          num-components (interface/get-list-size (conj path :components) context)
+
+          field-description
+          (case field-type
+            :heraldry.field.type/plain (frontend-util/translate-tincture
+                                        (interface/get-sanitized-data (conj path :tincture) context))
+            (let [line (interface/get-sanitized-data (conj path :line) context)
+                  mandatory-part-count (mandatory-part-count path)
+                  num-fields (interface/get-list-size (conj path :fields) context)]
+              (frontend-util/combine
+               " "
+               [(frontend-util/translate field-type)
+                (frontend-util/translate-line line)
+                (frontend-util/combine " and "
+                                       (->> (range num-fields)
+                                            (map
+                                             (fn [index]
+                                               (let [subfield-path (conj path :fields index)]
+                                                 (cond
+                                                   (< index mandatory-part-count) (interface/blazon subfield-path context)
+                                                   (not= (interface/get-raw-data (conj subfield-path :type) context)
+                                                         :heraldry.field.type/ref) (frontend-util/combine
+                                                                                    " "
+                                                                                    [(when (> num-fields 3)
+                                                                                       (str (part-name field-type index) ":"))
+                                                                                     (interface/blazon subfield-path context)])))))))])))
+          components-description (frontend-util/combine
+                                  ", "
+                                  (map (fn [index]
+                                         (interface/blazon (conj path :components index) context))
+                                       (range num-components)))
+
+          blazon (-> (frontend-util/combine ", " [field-description
+                                                  components-description])
+                     frontend-util/upper-case-first)]
+      (if (or root?
+              (and (= field-type :heraldry.field.type/plain)
+                   (zero? num-components)))
+        blazon
+        (str "[" blazon "]")))))
