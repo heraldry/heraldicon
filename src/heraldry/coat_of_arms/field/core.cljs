@@ -9,20 +9,6 @@
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
-(defn mandatory-part-count-old [{:keys [type] :as field}]
-  (let [type (-> type name keyword)
-        {:keys [layout]} (options/sanitize field (field-options/options field))]
-    (if (:num-base-fields layout)
-      (:num-base-fields layout)
-      (case type
-        nil 0
-        :tierced-per-pale 3
-        :tierced-per-fess 3
-        :tierced-per-pairle 3
-        :tierced-per-pairle-reversed 3
-        :tierced-per-pile 3
-        2))))
-
 (defn mandatory-part-count [path]
   (let [field-type (-> @(rf/subscribe [:get-value (conj path :type)])
                        name keyword)
