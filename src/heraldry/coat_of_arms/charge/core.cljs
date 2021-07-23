@@ -1,9 +1,8 @@
 (ns heraldry.coat-of-arms.charge.core
   (:require [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.charge.interface :as charge-interface]
-            [heraldry.frontend.charge :as frontend-charge]
-            [heraldry.util :as util]
-            [heraldry.interface :as interface]))
+            [heraldry.interface :as interface]
+            [heraldry.util :as util]))
 
 (defmethod interface/render-component :heraldry.component/charge [path parent-path environment context]
   [charge-interface/render-charge path parent-path environment context])
@@ -34,7 +33,7 @@
                     (update :blazonry dissoc :part-of-charge-group?)
                     (update :blazonry dissoc :pluralize?))
         charge-data (when variant
-                      (frontend-charge/fetch-charge-data variant))
+                      (interface/fetch-charge-data :frontend variant context))
         fixed-tincture (-> charge-data
                            :fixed-tincture
                            (or :none)

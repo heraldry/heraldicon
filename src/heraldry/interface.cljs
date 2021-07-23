@@ -76,6 +76,9 @@
 (defmulti get-counterchange-tinctures (fn [path _context]
                                         (state-source path)))
 
+(defmulti fetch-charge-data (fn [kind _variant]
+                              kind))
+
 (defn render-option [key {:keys [render-options-path] :as context}]
   (get-sanitized-data (conj render-options-path key) context))
 

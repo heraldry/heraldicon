@@ -5,6 +5,7 @@
             [heraldry.frontend.http :as http]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.user :as user]
+            [heraldry.interface :as interface]
             [taoensso.timbre :as log]))
 
 (defn fetch-charges-for-user [user-id]
@@ -65,3 +66,6 @@
       (when (= status :done)
         charge-data))
     (log/error "error fetching charge data, invalid variant:" variant)))
+
+(defmethod interface/fetch-charge-data :frontend [_kind variant]
+  (fetch-charge-data variant))
