@@ -280,8 +280,16 @@
     (ui-component-node-select db path :open? open?)))
 
 (rf/reg-event-db :ui-component-node-select-default
-  (fn [db [_ path]]
-    (assoc-in db ui-component-node-selected-default-path path)))
+  (fn [db [_ path valid-prefixes]]
+    (let [current-selected-node (get-in db ui-component-node-selected-path)
+          valid-path? (some (fn [path]
+                              (= (take (count path) current-selected-node)
+                                 path))
+                            valid-prefixes)]
+      (-> db
+          (assoc-in ui-component-node-selected-default-path path)
+          (cond->
+           (not valid-path?) (assoc-in ui-component-node-selected-path nil))))))
 
 (defn adjust-component-path-after-order-change [path elements-path index new-index]
   (let [elements-path-size (count elements-path)
