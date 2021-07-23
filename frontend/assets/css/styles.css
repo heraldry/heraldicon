@@ -622,6 +622,20 @@ li.nav-menu-item a:hover {
   margin-bottom: 0.5em;
 }
 
+.charge-group-strips > ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.charge-group-strips > ul > li {
+  display: table-row;
+}
+
+.charge-group-strips > ul > li > div {
+  display: table-cell;
+}
+
 .ui-tree {
   padding: 10px;
   /* height: calc(100% - 20px); */

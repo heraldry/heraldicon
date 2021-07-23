@@ -258,7 +258,7 @@
            [:button {:on-click #(state/dispatch-on-event % [:add-charge-group-strip strips-path default/charge-group-strip])}
             [:i.fas.fa-plus] " " type-str]]
 
-          [:div.components
+          [:div.charge-group-strips
            [:ul
             (doall
              (for [idx (range num-strips)]
