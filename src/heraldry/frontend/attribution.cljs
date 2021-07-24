@@ -16,7 +16,10 @@
                    source-license-version]} (interface/get-sanitized-data (conj path :attribution) context)
            title (interface/get-raw-data (conj path :name) context)
            username (interface/get-raw-data (conj path :username) context)
-           url (attribution/full-url path attribution-type context)
+           url (case attribution-type
+                 :arms (attribution/full-url-for-arms path context)
+                 :charge (attribution/full-url-for-charge path context)
+                 :collection (attribution/full-url-for-collection path context))
            license-url (attribution/license-url license license-version)
            license-display-name (attribution/license-display-name license license-version)
            source-license-url (attribution/license-url source-license source-license-version)
