@@ -15,13 +15,10 @@
    {:keys [charge-group
            origin-override
            size-default] :as context} arg function]
-  (let [;; TODO: bring this back
-        ;; this is a bit hacky, but allows
-        ;; overriding the origin point
-        #_(update-in
-           (charge-options/options charge)
-           [:origin :point :choices]
-           conj ["Special" :special])
+  (let [context (-> context
+                    (dissoc :origin-override)
+                    (dissoc :size-default)
+                    (dissoc :charge-group))
         origin (interface/get-sanitized-data (conj path :origin) context)
         anchor (interface/get-sanitized-data (conj path :anchor) context)
         fimbriation (interface/get-sanitized-data (conj path :fimbriation) context)

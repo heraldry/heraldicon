@@ -9,6 +9,7 @@
                                     ;; look in this order to really find the most important two tinctures
                                     (concat (-> data :fields)
                                             [(-> data :field)]
+                                            [(-> data :charge)]
                                             (-> data :components)
                                             (-> data :charges))
                                     (seq data))))
