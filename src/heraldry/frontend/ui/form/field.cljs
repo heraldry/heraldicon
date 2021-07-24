@@ -53,8 +53,11 @@
                  :outline?
                  :manual-blazon]]
      ^{:key option} [interface/form-element (conj path option)])
-   (when (show-tinctures-only?
-          @(rf/subscribe [:get-value (conj path :type)]))
+
+   (when (and
+          (not @(rf/subscribe [:get-value (conj path :counterchanged?)]))
+          (show-tinctures-only?
+           @(rf/subscribe [:get-value (conj path :type)])))
      [:<>
       [:div {:style {:margin-bottom "1em"}}]
       (for [idx (range @(rf/subscribe [:get-list-size (conj path :fields)]))]
