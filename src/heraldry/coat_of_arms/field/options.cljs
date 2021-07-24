@@ -750,7 +750,8 @@
                             (when layout
                               (assoc layout :ui (-> default-options :layout :ui)))))
           (cond->
-           (-> field :counterchanged?) (select-keys [:counterchanged?]))))))
+           (-> field :counterchanged?) (select-keys [:counterchanged?
+                                                     :manual-blazon]))))))
 
 (defmethod interface/component-options :heraldry.options/field [path data]
   (let [root-field? (-> path drop-last last (= :coat-of-arms))
