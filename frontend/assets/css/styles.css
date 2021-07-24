@@ -717,6 +717,10 @@ li.nav-menu-item a:hover {
   z-index: 2;
 }
 
+.ui-submenu h4 {
+  margin: 0;
+}
+
 .ui-setting input[type="checkbox"],
 .ui-setting input[type="radio"] {
   margin-left: 0px;
