@@ -8,7 +8,8 @@
       (-> path last
           (= :arms-form)) :heraldry.options/arms-general
       (-> path last
-          (= :charge-form)) :heraldry.options/charge-general
+          (#{:charge-form
+             :charge-data})) :heraldry.options/charge-general
       (-> path last
           (= :collection-form)) :heraldry.options/collection-general
       (-> path last
