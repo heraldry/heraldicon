@@ -55,55 +55,22 @@
     (set-field-type db path new-type num-fields-x num-fields-y num-base-fields)))
 
 (defn field-type-choice [path key display-name & {:keys [selected?]}]
-  (let [{:keys [result]} (render/coat-of-arms
-                          [:context :coat-of-arms]
-                          100
-                          (-> shared/coa-select-option-context
-                              (assoc :coat-of-arms
-                                     {:escutcheon :rectangle
-                                      :field (if (= key :heraldry.field.type/plain)
-                                               {:type :heraldry.field.type/plain
-                                                :tincture (if selected? :or :azure)}
-                                               {:type key
-                                                :fields (-> (field/default-fields {:type key})
-                                                            (util/replace-recursively :none :argent)
-                                                            (cond->
-                                                             selected? (util/replace-recursively :azure :or)))
-                                                :layout {:num-fields-x (case key
-                                                                         :heraldry.field.type/chequy 4
-                                                                         :heraldry.field.type/lozengy 3
-                                                                         :heraldry.field.type/vairy 2
-                                                                         :heraldry.field.type/potenty 2
-                                                                         :heraldry.field.type/papellony 2
-                                                                         :heraldry.field.type/masonry 2
-                                                                         nil)
-                                                         :num-fields-y (case key
-                                                                         :heraldry.field.type/chequy 5
-                                                                         :heraldry.field.type/lozengy 4
-                                                                         :heraldry.field.type/vairy 3
-                                                                         :heraldry.field.type/potenty 3
-                                                                         :heraldry.field.type/papellony 4
-                                                                         :heraldry.field.type/masonry 4
-                                                                         nil)}})})))]
-    [:div.choice.tooltip {:on-click #(let [;; TODO: this should move into the event handler
-                                           field-path (vec (drop-last path))
-                                           field @(rf/subscribe [:get field-path])
-                                           new-field (assoc field :type key)
-                                           {:keys [num-fields-x
-                                                   num-fields-y
-                                                   num-base-fields]} (:layout (options/sanitize-or-nil
-                                                                               new-field
-                                                                               (field-options/options new-field)))]
-                                       (state/dispatch-on-event % [:set-field-type field-path key num-fields-x num-fields-y num-base-fields]))}
-     [:svg {:style {:width "4em"
-                    :height "4.5em"}
-            :viewBox "0 0 120 200"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g {:transform "translate(10,10)"}
-       result]]
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} display-name]
-      [:i]]]))
+  [:div.choice.tooltip {:on-click #(let [;; TODO: this should move into the event handler
+                                         field-path (vec (drop-last path))
+                                         field @(rf/subscribe [:get field-path])
+                                         new-field (assoc field :type key)
+                                         {:keys [num-fields-x
+                                                 num-fields-y
+                                                 num-base-fields]} (:layout (options/sanitize-or-nil
+                                                                             new-field
+                                                                             (field-options/options new-field)))]
+                                     (state/dispatch-on-event % [:set-field-type field-path key num-fields-x num-fields-y num-base-fields]))}
+   [:img.clickable {:style {:width "4em"
+                            :height "4.5em"}
+                    :src (str "/svg/field-type-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]
+   [:div.bottom
+    [:h3 {:style {:text-align "center"}} display-name]
+    [:i]]])
 
 (defn field-type-select [path]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
