@@ -136,8 +136,11 @@
         part-height (-> unstretched-part-height
                         (* stretch-y))
         middle-x (/ width 2)
-        origin-x (+ (:x top-left)
-                    middle-x)
+        middle-y (/ height 2)
+        shift-x (- middle-x
+                   (* middle-x stretch-x))
+        shift-y (- middle-y
+                   (* middle-y stretch-y))
         pattern-id-prefix (util/id "papellony")
         {pattern-width :width
          pattern-height :height
@@ -149,12 +152,12 @@
         [:pattern {:id (str pattern-id-prefix "-outline")
                    :width pattern-width
                    :height pattern-height
-                   :x (+ (* part-width offset-x)
-                         (:x top-left)
-                         (- middle-x
-                            (* origin-x stretch-x)))
-                   :y (+ (* part-height offset-y)
-                         (:y top-left))
+                   :x (+ (:x top-left)
+                         (* part-width offset-x)
+                         shift-x)
+                   :y (+ (:y top-left)
+                         (* part-height offset-y)
+                         shift-y)
                    :pattern-units "userSpaceOnUse"}
          [:g outline/style
           papellony-outline]])
@@ -163,12 +166,12 @@
         [:pattern {:id (str pattern-id-prefix "-" idx)
                    :width pattern-width
                    :height pattern-height
-                   :x (+ (* part-width offset-x)
-                         (:x top-left)
-                         (- middle-x
-                            (* origin-x stretch-x)))
-                   :y (+ (* part-height offset-y)
-                         (:y top-left))
+                   :x (+ (:x top-left)
+                         (* part-width offset-x)
+                         shift-x)
+                   :y (+ (:y top-left)
+                         (* part-height offset-y)
+                         shift-y)
                    :pattern-units "userSpaceOnUse"}
          [:rect {:x 0
                  :y 0
