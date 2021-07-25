@@ -252,13 +252,12 @@
          ^{:key option} [ui-interface/form-element (conj path option)])
 
        (when strip-type?
-         [:<>
-          [:div {:style {:margin-top "1em"
-                         :margin-bottom "0.5em"}}
+         [:div.ui-setting
+          [:label (str type-str "s ")
            [:button {:on-click #(state/dispatch-on-event % [:add-charge-group-strip strips-path default/charge-group-strip])}
-            [:i.fas.fa-plus] " " type-str]]
+            [:i.fas.fa-plus] " Add"]]
 
-          [:div.charge-group-strips
+          [:div.option.charge-group-strips
            [:ul
             (doall
              (for [idx (range num-strips)]
