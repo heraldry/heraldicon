@@ -16,6 +16,7 @@
   (let [points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
+        rectangular? (interface/get-sanitized-data (conj path :rectangular?) context)
         num-fields-x (interface/get-sanitized-data (conj path :layout :num-fields-x) context)
         num-fields-y (interface/get-sanitized-data (conj path :layout :num-fields-y) context)
         raw-num-fields-y (interface/get-raw-data (conj path :layout :num-fields-y) context)
@@ -80,11 +81,12 @@
        (doall
         (for [[idx shift] (map-indexed
                            vector
-                           [(v/v 0 0)
-                            {:x part-width :y 0}
-                            {:x 0 :y part-height}
-                            {:x part-width :y part-height}
-                            {:x part-width-half :y part-height-half}])]
+                           (cond->
+                            [(v/v 0 0)
+                             {:x part-width :y 0}
+                             {:x 0 :y part-height}
+                             {:x part-width :y part-height}]
+                             (not rectangular?) (conj {:x part-width-half :y part-height-half})))]
           ^{:key idx}
           [charge-interface/render-charge
            charge-path
