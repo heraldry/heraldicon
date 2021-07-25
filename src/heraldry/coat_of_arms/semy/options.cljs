@@ -48,6 +48,9 @@
                        :ui {:label "Rotation"}}
             :ui {:label "Layout"
                  :form-type :semy-layout}}
+   :rectangular? {:type :boolean
+                  :default false
+                  :ui {:label "Rectangular grid"}}
    :manual-blazon {:type :text
                    :default nil
                    :ui {:label "Manual blazon"}}})

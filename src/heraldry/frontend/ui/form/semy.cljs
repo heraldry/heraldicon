@@ -6,6 +6,7 @@
   [:<>
    (for [option [:origin
                  :layout
+                 :rectangular?
                  :manual-blazon]]
      ^{:key option} [interface/form-element (conj path option)])])
 
