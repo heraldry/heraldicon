@@ -1,55 +1,23 @@
 (ns heraldry.frontend.ui.element.theme-select
-  (:require [heraldry.coat-of-arms.render :as render]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
+  (:require [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.ui.shared :as shared]
             [re-frame.core :as rf]))
 
 (defn theme-choice [path key display-name & {:keys [selected?]}]
-  (let [{:keys [result]} (render/coat-of-arms
-                          [:context :coat-of-arms]
-                          80
-                          (-> shared/coa-select-option-context
-                              (assoc-in [:render-options :theme] key)
-                              (assoc :coat-of-arms
-                                     {:escutcheon :rectangle
-                                      :field {:type :heraldry.field.type/bendy-sinister
-                                              :line {:type :straight}
-                                              :layout {:num-base-fields 7
-                                                       :num-fields-y 7}
-                                              :fields [{:type :heraldry.field.type/plain
-                                                        :tincture :argent}
-                                                       {:type :heraldry.field.type/plain
-                                                        :tincture :gules}
-                                                       {:type :heraldry.field.type/plain
-                                                        :tincture :or}
-                                                       {:type :heraldry.field.type/plain
-                                                        :tincture :vert}
-                                                       {:type :heraldry.field.type/plain
-                                                        :tincture :azure}
-                                                       {:type :heraldry.field.type/plain
-                                                        :tincture :purpure}
-                                                       {:type :heraldry.field.type/plain
-                                                        :tincture :sable}
-                                                       {:type :heraldry.field.type/ref
-                                                        :index 0}]}})))]
-    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
-                          :style {:border (if selected?
-                                            "1px solid #000"
-                                            "1px solid transparent")
-                                  :border-radius "5px"}}
-     [:svg {:style {:width "4em"
-                    :height "4.5em"}
-            :viewBox "0 0 100 200"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g {:transform "translate(10,10)"}
-       result]]
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} display-name]
-      [:i]]]))
+  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
+                        :style {:border (if selected?
+                                          "1px solid #000"
+                                          "1px solid transparent")
+                                :border-radius "5px"}}
+   [:img.clickable {:style {:width "4em"
+                            :height "4.5em"}
+                    :src (str "/svg/theme-" (name key) ".svg")}]
+   [:div.bottom
+    [:h3 {:style {:text-align "center"}} display-name]
+    [:i]]])
 
 (defn theme-select [path]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
