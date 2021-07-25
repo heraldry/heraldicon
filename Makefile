@@ -68,7 +68,7 @@ staging-frontend-deploy: staging-frontend-release
 # DEV
 
 dev-local:
-	npx shadow-cljs watch frontend backend test
+	npx shadow-cljs watch frontend backend test manage
 
 dev-test:
 	npx shadow-cljs watch test

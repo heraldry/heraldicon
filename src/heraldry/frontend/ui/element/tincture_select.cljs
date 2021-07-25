@@ -1,33 +1,24 @@
 (ns heraldry.frontend.ui.element.tincture-select
-  (:require [heraldry.coat-of-arms.render :as render]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
+  (:require [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.ui.shared :as shared]
             [heraldry.options :as options]
             [re-frame.core :as rf]))
 
-(defn tincture-choice [key display-name]
-  (let [{:keys [result]} (render/coat-of-arms
-                          [:context :coat-of-arms]
-                          40
-                          (-> shared/coa-select-option-context
-                              (assoc :coat-of-arms
-                                     {:escutcheon :rectangle
-                                      :field {:type :heraldry.field.type/plain
-                                              :tincture key}})))]
-    [:<>
-     [:svg {:style {:width "4em"
-                    :height "4.5em"}
-            :viewBox "0 0 50 100"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g {:transform "translate(5,5)"}
-       result]]
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} display-name]
-      [:i]]]))
+(defn tincture-choice [path key display-name & {:keys [selected?]}]
+  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
+                        :style {:border (if selected?
+                                          "1px solid #000"
+                                          "1px solid transparent")
+                                :border-radius "5px"}}
+   [:img.clickable {:style {:width "4em"
+                            :height "4.5em"}
+                    :src (str "/svg/tincture-" (name key) ".svg")}]
+   [:div.bottom
+    [:h3 {:style {:text-align "center"}} display-name]
+    [:i]]])
 
 (defn tincture-select [path & {:keys [default-option]}]
   (when-let [option (or @(rf/subscribe [:get-relevant-options path])
@@ -49,12 +40,7 @@
              (doall
               (for [[display-name key] group]
                 ^{:key display-name}
-                [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
-                                      :style {:border (if (= key value)
-                                                        "1px solid #000"
-                                                        "1px solid transparent")
-                                              :border-radius "5px"}}
-                 [tincture-choice key display-name]]))]))]
+                [tincture-choice path key display-name :selected? (= key value)]))]))]
         [value-mode-select/value-mode-select path
          :default-option default-option]]])))
 

@@ -1,44 +1,18 @@
 (ns heraldry.frontend.ui.element.line-type-select
   (:require [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.ui.shared :as shared]
-            [heraldry.options :as options]
             [re-frame.core :as rf]))
 
 (defn line-type-choice [path key display-name & {:keys [selected?]}]
-  (let [options (line/options {:type key})
-        {:keys [result]} (render/coat-of-arms
-                          [:context :coat-of-arms]
-                          100
-                          (-> shared/coa-select-option-context
-                              (assoc :coat-of-arms
-                                     {:escutcheon :flag
-                                      :field {:type :heraldry.field.type/per-fess
-                                              :line {:type key
-                                                     :width (case key
-                                                              :enarched nil
-                                                              (* 2 (options/get-value nil (:width options))))
-                                                     :height (case key
-                                                               :enarched 0.25
-                                                               nil)}
-                                              :fields [{:type :heraldry.field.type/plain
-                                                        :tincture :argent}
-                                                       {:type :heraldry.field.type/plain
-                                                        :tincture (if selected? :or :azure)}]}})))]
-    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
-     [:svg {:style {:width "6.5em"
-                    :height "4.5em"}
-            :viewBox "0 0 120 80"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g {:transform "translate(10,10)"}
-       result]]
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} display-name]
-      [:i]]]))
+  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
+   [:img.clickable {:style {:width "7.5em"}
+                    :src (str "/svg/line-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]
+   [:div.bottom
+    [:h3 {:style {:text-align "center"}} display-name]
+    [:i]]])
 
 (defn line-type-select [path]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
@@ -52,7 +26,7 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path "Select Line Type" (get line/line-map value) {:min-width "25em"}
+        [submenu/submenu path "Select Line Type" (get line/line-map value) {:width "24em"}
          (for [[display-name key] choices]
            ^{:key display-name}
            [line-type-choice path key display-name :selected? (= key value)])]

@@ -1,11 +1,9 @@
 (ns heraldry.frontend.ui.element.ordinary-type-select
   (:require [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.ui.shared :as shared]
             [heraldry.options :as options]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
@@ -38,39 +36,13 @@
                                                  (options/sanitize-or-nil % (ordinary-options/options %))))))))
 
 (defn ordinary-type-choice [path key display-name & {:keys [selected?]}]
-  (let [{:keys [result]} (render/coat-of-arms
-                          [:context :coat-of-arms]
-                          100
-                          (-> shared/coa-select-option-context
-                              (assoc :coat-of-arms
-                                     {:escutcheon :rectangle
-                                      :field {:type :heraldry.field.type/plain
-                                              :tincture :argent
-                                              :components [{:type key
-                                                            :line (when (= key :heraldry.ordinary.type/gore)
-                                                                    {:type :enarched
-                                                                     :flipped? true})
-                                                            :origin (case key
-                                                                      :heraldry.ordinary.type/label {:alignment :left}
-                                                                      nil)
-                                                            :geometry (case key
-                                                                        :heraldry.ordinary.type/label {:width 75
-                                                                                                       :size 12
-                                                                                                       :thickness 20}
-                                                                        :heraldry.ordinary.type/pile {:stretch 0.85}
-                                                                        nil)
-                                                            :field {:type :heraldry.field.type/plain
-                                                                    :tincture (if selected? :or :azure)}}]}})))]
-    [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type (vec (drop-last path)) key])}
-     [:svg {:style {:width "4em"
-                    :height "4.5em"}
-            :viewBox "0 0 120 200"
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g {:transform "translate(10,10)"}
-       result]]
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} display-name]
-      [:i]]]))
+  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type (vec (drop-last path)) key])}
+   [:img.clickable {:style {:width "5em"
+                            :height "5.7em"}
+                    :src (str "/svg/ordinary-type-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]
+   [:div.bottom
+    [:h3 {:style {:text-align "center"}} display-name]
+    [:i]]])
 
 (defn ordinary-type-select [path]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
