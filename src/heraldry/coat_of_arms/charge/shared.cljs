@@ -147,8 +147,7 @@
                (v/+ origin-point
                     (v/v max-x max-y))]
               mask-shape]
-        charge-id (util/id "charge")
-        environment (update environment :points dissoc :special)]
+        charge-id (util/id "charge")]
     [:<>
      (when (-> fimbriation :mode #{:double})
        (let [thickness (+ (-> fimbriation
