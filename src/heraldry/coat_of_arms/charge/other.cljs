@@ -242,7 +242,6 @@
                          (v/-)
                          (v// 2)
                          (v/+ origin-point))
-            environment (update environment :points dissoc :special)
             inherit-environment? (interface/get-sanitized-data
                                   (conj path :field :inherit-environment?)
                                   context)
