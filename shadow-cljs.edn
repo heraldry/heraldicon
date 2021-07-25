@@ -44,7 +44,9 @@
           :manage
           {:target :node-script
            :main heraldry.manage/main
-           :output-to "./backend/build/manage/manage.js"}
+           :output-to "./backend/build/manage/manage.js"
+           :compiler-options {:output-feature-set :es6
+                              :warnings {:redef false}}}
 
           :test
           {:target :node-test
