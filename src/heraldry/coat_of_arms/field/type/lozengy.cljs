@@ -42,6 +42,11 @@
         part-height (-> unstretched-part-height
                         (* stretch-y))
         middle-x (/ width 2)
+        middle-y (/ height 2)
+        shift-x (- middle-x
+                   (* middle-x stretch-x))
+        shift-y (- middle-y
+                   (* middle-y stretch-y))
         pattern-id (util/id "lozengy")
         lozenge-shape (svg/make-path ["M" [(/ part-width 2) 0]
                                       "L" [part-width (/ part-height 2)]
@@ -54,24 +59,24 @@
         [:pattern {:id (str pattern-id "-outline")
                    :width part-width
                    :height part-height
-                   :x (+ (* part-width offset-x)
-                         (:x top-left)
-                         (- middle-x
-                            (* middle-x stretch-x)))
-                   :y (+ (* part-height offset-y)
-                         (:y top-left))
+                   :x (+ (:x top-left)
+                         (* part-width offset-x)
+                         shift-x)
+                   :y (+ (:y top-left)
+                         (* part-height offset-y)
+                         shift-y)
                    :pattern-units "userSpaceOnUse"}
          [:g outline/style
           [:path {:d lozenge-shape}]]])
       [:pattern {:id (str pattern-id "-0")
                  :width part-width
                  :height part-height
-                 :x (+ (* part-width offset-x)
-                       (:x top-left)
-                       (- middle-x
-                          (* middle-x stretch-x)))
-                 :y (+ (* part-height offset-y)
-                       (:y top-left))
+                 :x (+ (:x top-left)
+                       (* part-width offset-x)
+                       shift-x)
+                 :y (+ (:y top-left)
+                       (* part-height offset-y)
+                       shift-y)
                  :pattern-units "userSpaceOnUse"}
        [:rect {:x 0
                :y 0
@@ -83,12 +88,12 @@
       [:pattern {:id (str pattern-id "-1")
                  :width part-width
                  :height part-height
-                 :x (+ (* part-width offset-x)
-                       (:x top-left)
-                       (- middle-x
-                          (* middle-x stretch-x)))
-                 :y (+ (* part-height offset-y)
-                       (:y top-left))
+                 :x (+ (:x top-left)
+                       (* part-width offset-x)
+                       shift-x)
+                 :y (+ (:y top-left)
+                       (* part-height offset-y)
+                       shift-y)
                  :pattern-units "userSpaceOnUse"}
        [:rect {:x 0
                :y 0
