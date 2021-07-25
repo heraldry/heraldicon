@@ -43,6 +43,11 @@
         part-height (-> unstretched-part-height
                         (* stretch-y))
         middle-x (/ width 2)
+        middle-y (/ height 2)
+        shift-x (- middle-x
+                   (* middle-x stretch-x))
+        shift-y (- middle-y
+                   (* middle-y stretch-y))
         pattern-id (util/id "semy")
         part-width-half (/ part-width 2)
         part-height-half (/ part-height 2)
@@ -65,12 +70,12 @@
       [:pattern {:id pattern-id
                  :width part-width
                  :height part-height
-                 :x (+ (* part-width offset-x)
-                       (:x top-left)
-                       (- middle-x
-                          (* middle-x stretch-x)))
-                 :y (+ (* part-height offset-y)
-                       (:y top-left))
+                 :x (+ (:x top-left)
+                       (* part-width offset-x)
+                       shift-x)
+                 :y (+ (:y top-left)
+                       (* part-height offset-y)
+                       shift-y)
                  :pattern-units "userSpaceOnUse"}
        (doall
         (for [[idx shift] (map-indexed
