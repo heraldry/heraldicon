@@ -26,6 +26,7 @@
                  :variant
                  :line
                  :opposite-line
+                 :extra-line
                  :escutcheon
                  :num-points
                  :angle
