@@ -160,14 +160,17 @@
                                                :heraldry/field]))
 
 (s/def :heraldry.render-options/escutcheon-override #(or (= % :none)
+                                                         (nil? %)
                                                          (s/valid? :heraldry/escutcheon %)))
 (s/def :heraldry.render-options/mode #{:colours
                                        :hatching})
 (s/def :heraldry.render-options/shiny? boolean?)
 (s/def :heraldry.render-options/outline? boolean?)
 (s/def :heraldry.render-options/squiggly? boolean?)
-(s/def :heraldry.render-options/theme tincture/theme-map)
+(s/def :heraldry.render-options/theme #(or (nil? %)
+                                           (tincture/theme-map %)))
 (s/def :heraldry.render-options/texture #(or (= % :none)
+                                             (nil? %)
                                              (texture/texture-map %)))
 (s/def :heraldry.render-options/texture-displacement? boolean?)
 (s/def :heraldry/render-options (s/keys :opt-un [:heraldry.render-options/mode
