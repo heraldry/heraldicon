@@ -755,9 +755,11 @@
 
 (defmethod interface/component-options :heraldry.options/field [path data]
   (let [root-field? (-> path drop-last last (= :coat-of-arms))
-        subfield? (-> path last int?)]
+        subfield? (-> path last int?)
+        semy-charge? (->> path (take-last 2) (= [:charge :field]))]
     (cond-> (options data)
-      root-field? (->
-                   (dissoc :inherit-environment?)
-                   (dissoc :counterchanged?))
+      (or root-field?
+          semy-charge?) (->
+                         (dissoc :inherit-environment?)
+                         (dissoc :counterchanged?))
       subfield? (dissoc :counterchanged?))))
