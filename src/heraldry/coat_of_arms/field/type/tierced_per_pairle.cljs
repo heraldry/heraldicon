@@ -87,7 +87,6 @@
                                                    :context context
                                                    :environment environment)
         {line-right :line
-         line-right-start :line-start
          line-right-end :line-end} (line/create opposite-line
                                                 origin-point diagonal-right
                                                 :flipped? true
@@ -134,7 +133,7 @@
                 [top-left
                  bottom-right]]
 
-               [["M" (v/+ straight
+               [["M" (v/+ intersection-straight
                           line-straight-reversed-start)
                  (svg/stitch line-straight-reversed)
                  "L" origin-point
@@ -142,7 +141,7 @@
                  (infinity/path :clockwise
                                 side-infinity-points
                                 [(v/+ diagonal-right
-                                      line-right-start)
+                                      line-right-end)
                                  (v/+ straight
                                       line-straight-reversed-start)])
                  "z"]
