@@ -2,7 +2,6 @@
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.options :as field-options]
-            [heraldry.coat-of-arms.semy.core] ;; needed for defmethods
             [heraldry.interface :as interface]
             [heraldry.options :as options]
             [heraldry.util :as util]))

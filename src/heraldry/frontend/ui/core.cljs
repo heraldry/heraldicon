@@ -1,47 +1,47 @@
 (ns heraldry.frontend.ui.core
   (:require [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.arms-reference-select] ;; needed for defmethods
-            [heraldry.frontend.ui.element.attributes] ;; needed for defmethods
-            [heraldry.frontend.ui.element.attribution] ;; needed for defmethods
-            [heraldry.frontend.ui.element.charge-group-preset-select] ;; needed for defmethods
-            [heraldry.frontend.ui.element.charge-group-slot-number] ;; needed for defmethods
-            [heraldry.frontend.ui.element.charge-group-type-select] ;; needed for defmethods
-            [heraldry.frontend.ui.element.charge-type-select] ;; needed for defmethods
-            [heraldry.frontend.ui.element.checkbox] ;; needed for defmethods
-            [heraldry.frontend.ui.element.colours] ;; needed for defmethods
-            [heraldry.frontend.ui.element.escutcheon-select] ;; needed for defmethods
-            [heraldry.frontend.ui.element.field-layout] ;; needed for defmethods
-            [heraldry.frontend.ui.element.field-type-select] ;; needed for defmethods
-            [heraldry.frontend.ui.element.fimbriation] ;; needed for defmethods
-            [heraldry.frontend.ui.element.geometry] ;; needed for defmethods
+            [heraldry.frontend.ui.element.arms-reference-select] ;; needed for side effects
+            [heraldry.frontend.ui.element.attributes] ;; needed for side effects
+            [heraldry.frontend.ui.element.attribution] ;; needed for side effects
+            [heraldry.frontend.ui.element.charge-group-preset-select] ;; needed for side effects
+            [heraldry.frontend.ui.element.charge-group-slot-number] ;; needed for side effects
+            [heraldry.frontend.ui.element.charge-group-type-select] ;; needed for side effects
+            [heraldry.frontend.ui.element.charge-type-select] ;; needed for side effects
+            [heraldry.frontend.ui.element.checkbox] ;; needed for side effects
+            [heraldry.frontend.ui.element.colours] ;; needed for side effects
+            [heraldry.frontend.ui.element.escutcheon-select] ;; needed for side effects
+            [heraldry.frontend.ui.element.field-layout] ;; needed for side effects
+            [heraldry.frontend.ui.element.field-type-select] ;; needed for side effects
+            [heraldry.frontend.ui.element.fimbriation] ;; needed for side effects
+            [heraldry.frontend.ui.element.geometry] ;; needed for side effects
             [heraldry.frontend.ui.element.hover-menu :as hover-menu]
-            [heraldry.frontend.ui.element.line] ;; needed for defmethods
-            [heraldry.frontend.ui.element.line-type-select] ;; needed for defmethods
-            [heraldry.frontend.ui.element.ordinary-type-select] ;; needed for defmethods
-            [heraldry.frontend.ui.element.position] ;; needed for defmethods
-            [heraldry.frontend.ui.element.radio-select] ;; needed for defmethods
-            [heraldry.frontend.ui.element.range] ;; needed for defmethods
-            [heraldry.frontend.ui.element.select] ;; needed for defmethods
-            [heraldry.frontend.ui.element.semy-layout] ;; needed for defmethods
+            [heraldry.frontend.ui.element.line] ;; needed for side effects
+            [heraldry.frontend.ui.element.line-type-select] ;; needed for side effects
+            [heraldry.frontend.ui.element.ordinary-type-select] ;; needed for side effects
+            [heraldry.frontend.ui.element.position] ;; needed for side effects
+            [heraldry.frontend.ui.element.radio-select] ;; needed for side effects
+            [heraldry.frontend.ui.element.range] ;; needed for side effects
+            [heraldry.frontend.ui.element.select] ;; needed for side effects
+            [heraldry.frontend.ui.element.semy-layout] ;; needed for side effects
             [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.element.tags] ;; needed for defmethods
-            [heraldry.frontend.ui.element.text-field] ;; needed for defmethods
-            [heraldry.frontend.ui.element.theme-select] ;; needed for defmethods
-            [heraldry.frontend.ui.element.tincture-modifiers] ;; needed for defmethods
-            [heraldry.frontend.ui.element.tincture-select] ;; needed for defmethods
-            [heraldry.frontend.ui.form.arms-general] ;; needed for defmethods
-            [heraldry.frontend.ui.form.charge] ;; needed for defmethods
-            [heraldry.frontend.ui.form.charge-general] ;; needed for defmethods
-            [heraldry.frontend.ui.form.charge-group] ;; needed for defmethods
-            [heraldry.frontend.ui.form.coat-of-arms] ;; needed for defmethods
-            [heraldry.frontend.ui.form.collection] ;; needed for defmethods
-            [heraldry.frontend.ui.form.collection-element] ;; needed for defmethods
-            [heraldry.frontend.ui.form.collection-general] ;; needed for defmethods
-            [heraldry.frontend.ui.form.cottise] ;; needed for defmethods
-            [heraldry.frontend.ui.form.field] ;; needed for defmethods
-            [heraldry.frontend.ui.form.ordinary] ;; needed for defmethods
-            [heraldry.frontend.ui.form.render-options] ;; needed for defmethods
-            [heraldry.frontend.ui.form.semy] ;; needed for defmethods
+            [heraldry.frontend.ui.element.tags] ;; needed for side effects
+            [heraldry.frontend.ui.element.text-field] ;; needed for side effects
+            [heraldry.frontend.ui.element.theme-select] ;; needed for side effects
+            [heraldry.frontend.ui.element.tincture-modifiers] ;; needed for side effects
+            [heraldry.frontend.ui.element.tincture-select] ;; needed for side effects
+            [heraldry.frontend.ui.form.arms-general] ;; needed for side effects
+            [heraldry.frontend.ui.form.charge] ;; needed for side effects
+            [heraldry.frontend.ui.form.charge-general] ;; needed for side effects
+            [heraldry.frontend.ui.form.charge-group] ;; needed for side effects
+            [heraldry.frontend.ui.form.coat-of-arms] ;; needed for side effects
+            [heraldry.frontend.ui.form.collection] ;; needed for side effects
+            [heraldry.frontend.ui.form.collection-element] ;; needed for side effects
+            [heraldry.frontend.ui.form.collection-general] ;; needed for side effects
+            [heraldry.frontend.ui.form.cottise] ;; needed for side effects
+            [heraldry.frontend.ui.form.field] ;; needed for side effects
+            [heraldry.frontend.ui.form.ordinary] ;; needed for side effects
+            [heraldry.frontend.ui.form.render-options] ;; needed for side effects
+            [heraldry.frontend.ui.form.semy] ;; needed for side effects
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.interface :as interface]
             [heraldry.shared] ;; needed for side effects

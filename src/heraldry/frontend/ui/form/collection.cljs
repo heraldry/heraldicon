@@ -1,6 +1,5 @@
 (ns heraldry.frontend.ui.form.collection
-  (:require [heraldry.collection.options] ;; needed for defmethods
-            [heraldry.frontend.state :as state]
+  (:require [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 

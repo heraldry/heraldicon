@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.charge.options
   (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
-            [heraldry.coat-of-arms.charge.other :as other] ;; needed for defmethods
             [heraldry.coat-of-arms.charge.type.annulet :as annulet]
             [heraldry.coat-of-arms.charge.type.billet :as billet]
             [heraldry.coat-of-arms.charge.type.crescent :as crescent]
