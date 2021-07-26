@@ -67,10 +67,10 @@
         [relative-right relative-left] (chevron/arm-diagonals pall-angle origin-point anchor-point)
         diagonal-left (v/+ origin-point relative-left)
         diagonal-right (v/+ origin-point relative-right)
-        straight (v/+ origin-point (v/* (v/+ relative-left relative-right) -1))
+        direction-three (v/+ origin-point (v/* (v/+ relative-left relative-right) -1))
         intersection-left (v/find-first-intersection-of-ray origin-point diagonal-left environment)
         intersection-right (v/find-first-intersection-of-ray origin-point diagonal-right environment)
-        intersection-straight (v/find-first-intersection-of-ray origin-point straight environment)
+        intersection-three (v/find-first-intersection-of-ray origin-point direction-three environment)
         end-left (-> intersection-left
                      (v/- origin-point)
                      v/abs)
@@ -95,19 +95,19 @@
                                                 :real-end end
                                                 :context context
                                                 :environment environment)
-        {line-straight :line
-         line-straight-start :line-start} (line/create extra-line
-                                                       origin-point intersection-straight
-                                                       :flipped? true
-                                                       :mirrored? true
-                                                       :context context
-                                                       :environment environment)
-        {line-straight-reversed :line
-         line-straight-reversed-start :line-start} (line/create extra-line
-                                                                origin-point intersection-straight
-                                                                :reversed? true
-                                                                :context context
-                                                                :environment environment)
+        {line-three :line
+         line-three-start :line-start} (line/create extra-line
+                                                    origin-point intersection-three
+                                                    :flipped? true
+                                                    :mirrored? true
+                                                    :context context
+                                                    :environment environment)
+        {line-three-reversed :line
+         line-three-reversed-start :line-start} (line/create extra-line
+                                                             origin-point intersection-three
+                                                             :reversed? true
+                                                             :context context
+                                                             :environment environment)
         fork-infinity-points (cond
                                (<= 45 pall-angle 135) [:left :right]
                                (<= 135 pall-angle 225) [:left :left]
@@ -133,17 +133,17 @@
                 [top-left
                  bottom-right]]
 
-               [["M" (v/+ intersection-straight
-                          line-straight-reversed-start)
-                 (svg/stitch line-straight-reversed)
+               [["M" (v/+ intersection-three
+                          line-three-reversed-start)
+                 (svg/stitch line-three-reversed)
                  "L" origin-point
                  (svg/stitch line-right)
                  (infinity/path :clockwise
                                 side-infinity-points
                                 [(v/+ diagonal-right
                                       line-right-end)
-                                 (v/+ straight
-                                      line-straight-reversed-start)])
+                                 (v/+ direction-three
+                                      line-three-reversed-start)])
                  "z"]
                 [top-left
                  bottom-right]]
@@ -152,11 +152,11 @@
                           line-left-start)
                  (svg/stitch line-left)
                  "L" origin-point
-                 (svg/stitch line-straight)
+                 (svg/stitch line-three)
                  (infinity/path :clockwise
                                 (reverse side-infinity-points)
-                                [(v/+ straight
-                                      line-straight-start)
+                                [(v/+ direction-three
+                                      line-three-start)
                                  (v/+ diagonal-left
                                       line-left-start)])
                  "z"]
@@ -167,9 +167,9 @@
       path parts
       [:all
        [(svg/make-path
-         ["M" (v/+ straight
-                   line-straight-reversed-start)
-          (svg/stitch line-straight-reversed)])]
+         ["M" (v/+ direction-three
+                   line-three-reversed-start)
+          (svg/stitch line-three-reversed)])]
        nil]
       environment context]
      (when outline?
@@ -183,4 +183,4 @@
                      (svg/stitch line-right)])}]
         [:path {:d (svg/make-path
                     ["M" origin-point
-                     (svg/stitch line-straight)])}]])]))
+                     (svg/stitch line-three)])}]])]))
