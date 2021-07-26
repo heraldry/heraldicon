@@ -72,20 +72,16 @@
         angle-left (v/normalize-angle (v/angle-to-point origin-point diagonal-left))
         angle-right (v/normalize-angle (v/angle-to-point origin-point diagonal-right))
         joint-angle (v/normalize-angle (- angle-left angle-right))
-        middle-angle (-> chevron-angle
-                         (* Math/PI) (/ 180))
         delta (/ band-width 2 (Math/sin (-> joint-angle
                                             (* Math/PI)
                                             (/ 180)
                                             (/ 2))))
-        offset-lower (v/v (* (Math/cos middle-angle)
-                             delta)
-                          (* (Math/sin middle-angle)
-                             delta))
-        offset-upper (v/v (* (Math/cos middle-angle)
-                             (- delta))
-                          (* (Math/sin middle-angle)
-                             (- delta)))
+        offset-lower (v/rotate
+                      (v/v delta 0)
+                      chevron-angle)
+        offset-upper (v/rotate
+                      (v/v (- delta) 0)
+                      chevron-angle)
         corner-upper (v/+ origin-point offset-upper)
         corner-lower (v/+ origin-point offset-lower)
         left-upper (v/+ diagonal-left offset-upper)
