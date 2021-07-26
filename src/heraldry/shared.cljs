@@ -1,23 +1,26 @@
 (ns heraldry.shared
   (:require [heraldry.attribution :as attribution]
             [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.coat-of-arms.charge-group.core] ;; needed for defmethods
-            [heraldry.coat-of-arms.charge-group.options] ;; needed for defmethods
-            [heraldry.coat-of-arms.charge.core] ;; needed for defmethods
-            [heraldry.coat-of-arms.charge.options] ;; needed for defmethods
-            [heraldry.coat-of-arms.core] ;; needed for defmethods
+            [heraldry.coat-of-arms.charge-group.core] ;; needed for side effects
+            [heraldry.coat-of-arms.charge-group.options] ;; needed for side effects
+            [heraldry.coat-of-arms.charge.core] ;; needed for side effects
+            [heraldry.coat-of-arms.charge.options] ;; needed for side effects
+            [heraldry.coat-of-arms.charge.other] ;; needed for side effects
+            [heraldry.coat-of-arms.core] ;; needed for side effects
             [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.field.options] ;; needed for defmethods
-            [heraldry.coat-of-arms.field.shared] ;; needed for defmethods
-            [heraldry.coat-of-arms.ordinary.core] ;; needed for defmethods
-            [heraldry.coat-of-arms.ordinary.options] ;; needed for defmethods
-            [heraldry.coat-of-arms.semy.core] ;; needed for defmethods
-            [heraldry.coat-of-arms.semy.options] ;; needed for defmethods
+            [heraldry.coat-of-arms.field.options] ;; needed for side effects
+            [heraldry.coat-of-arms.field.shared] ;; needed for side effects
+            [heraldry.coat-of-arms.ordinary.core] ;; needed for side effects
+            [heraldry.coat-of-arms.ordinary.options] ;; needed for side effects
+            [heraldry.coat-of-arms.semy.core] ;; needed for side effects
+            [heraldry.coat-of-arms.semy.options] ;; needed for side effects
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.collection.element] ;; needed for side effects
+            [heraldry.collection.options] ;; needed for side effects
             [heraldry.font :as font]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
-            [heraldry.render-options] ;; needed for defmethods
+            [heraldry.render-options] ;; needed for side effects
             ))
 
 (defmethod interface/get-raw-data :context [path context]
