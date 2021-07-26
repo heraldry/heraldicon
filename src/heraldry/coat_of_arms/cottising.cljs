@@ -30,14 +30,12 @@
    :ui {:form-type :cottising}})
 
 (def default-options
-  {:cottise-1 (-> cottise-default-options
-                  (assoc-in [:ui :label] "Cottise 1"))
-   :cottise-opposite-1 (-> cottise-default-options
-                           (assoc-in [:ui :label] "Cottise opposite 1"))
-   :cottise-2 (-> cottise-default-options
-                  (assoc-in [:ui :label] "Cottise 2"))
-   :cottise-opposite-2 (-> cottise-default-options
-                           (assoc-in [:ui :label] "Cottise opposite 2"))})
+  {:cottise-1 cottise-default-options
+   :cottise-2 cottise-default-options
+   :cottise-opposite-1 cottise-default-options
+   :cottise-opposite-2 cottise-default-options
+   :cottise-extra-1 cottise-default-options
+   :cottise-extra-2 cottise-default-options})
 
 (defn cottise-options [options {:keys [line opposite-line field]}]
   (cond-> options
@@ -56,7 +54,8 @@
     (assoc :field (field-options/options field))))
 
 (defn options [options {:keys [cottise-1 cottise-2
-                               cottise-opposite-1 cottise-opposite-2]}]
+                               cottise-opposite-1 cottise-opposite-2
+                               cottise-extra-1 cottise-extra-2]}]
   (cond-> options
     (and (:cottise-1 options)
          cottise-1)
@@ -72,7 +71,15 @@
 
     (and (:cottise-opposite-2 options)
          cottise-opposite-2)
-    (update :cottise-opposite-2 cottise-options cottise-opposite-2)))
+    (update :cottise-opposite-2 cottise-options cottise-opposite-2)
+
+    (and (:cottise-extra-1 options)
+         cottise-extra-1)
+    (update :cottise-extra-1 cottise-options cottise-extra-1)
+
+    (and (:cottise-extra-2 options)
+         cottise-extra-2)
+    (update :cottise-extra-2 cottise-options cottise-extra-2)))
 
 (defn render-fess-cottise [cottise-1-key cottise-2-key next-cottise-key
                            path environment context & {:keys [offset-y-fn

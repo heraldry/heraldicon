@@ -42,6 +42,7 @@
         unadjusted-origin-point (position/calculate origin environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
+        width (:width environment)
         height (:height environment)
         band-width (-> size
                        ((util/percent-of height)))
@@ -108,8 +109,6 @@
         intersection-right-upper (v/find-first-intersection-of-ray corner-right right-upper environment)
         intersection-left-lower (v/find-first-intersection-of-ray corner-lower left-lower environment)
         intersection-right-lower (v/find-first-intersection-of-ray corner-lower right-lower environment)
-        intersection-left-three (v/find-first-intersection-of-ray corner-left corner-left-end environment)
-        intersection-right-three (v/find-first-intersection-of-ray corner-right corner-right-end environment)
         end-left-upper (-> intersection-left-upper
                            (v/- corner-left)
                            v/abs)
@@ -137,38 +136,33 @@
                        (update-in [:fimbriation :thickness-2] (util/percent-of height)))
         {line-right-first :line
          line-right-first-start :line-start
+         line-right-first-min :line-min
          :as line-right-first-data} (line/create line
                                                  corner-right corner-right-end
                                                  :reversed? true
-                                                 ;; :real-start 0
-                                                 ;; :real-end end
                                                  :context context
                                                  :environment environment)
         {line-right-second :line
          :as line-right-second-data} (line/create line
                                                   corner-right right-upper
-                                                  ;; :real-start 0
-                                                  ;; :real-end end
                                                   :context context
                                                   :environment environment)
         {line-left-first :line
          line-left-first-start :line-start
+         line-left-first-min :line-min
          :as line-left-first-data} (line/create opposite-line
                                                 corner-left left-upper
                                                 :reversed? true
-                                                ;; :real-start 0
-                                                ;; :real-end end
                                                 :context context
                                                 :environment environment)
         {line-left-second :line
          :as line-left-second-data} (line/create opposite-line
                                                  corner-left corner-left-end
-                                                 ;; :real-start 0
-                                                 ;; :real-end end
                                                  :context context
                                                  :environment environment)
         {line-right-lower :line
          line-right-lower-start :line-start
+         line-right-lower-min :line-min
          :as line-right-lower-data} (line/create extra-line
                                                  corner-lower right-lower
                                                  :reversed? true
@@ -201,7 +195,8 @@
                "L" corner-left
                (svg/stitch line-left-second)
                "z"]
-              [top-left bottom-right]]]
+              [top-left bottom-right]]
+        cottise-side-joint-angle (v/normalize-angle (- 180 (/ joint-angle 2)))]
     [:<>
      [field-shared/make-subfield
       (conj path :field) part
@@ -213,38 +208,61 @@
                                  line-left-second-data] left-upper outline? context)
      (line/render extra-line [line-right-lower-data
                               line-left-lower-data] right-lower outline? context)
-     #_[cottising/render-chevron-cottise
-        :cottise-1 :cottise-2 :cottise-1
-        path environment context
-        :distance-fn (fn [distance half-joint-angle-rad]
-                       (-> (- distance)
-                           (/ 100)
-                           (* height)
-                           (+ line-right-upper-min)
-                           (/ (if (zero? half-joint-angle-rad)
-                                0.00001
-                                (Math/sin half-joint-angle-rad)))))
-        :alignment :left
-        :width width
-        :height height
-        :pall-angle pall-angle
-        :joint-angle joint-angle
-        :corner-point corner-upper]
-     #_[cottising/render-chevron-cottise
-        :cottise-opposite-1 :cottise-opposite-2 :cottise-opposite-1
-        path environment context
-        :distance-fn (fn [distance half-joint-angle-rad]
-                       (-> (+ distance)
-                           (/ 100)
-                           (* height)
-                           (- line-right-lower-min)
-                           (/ (if (zero? half-joint-angle-rad)
-                                0.00001
-                                (Math/sin half-joint-angle-rad)))))
-        :alignment :right
-        :width width
-        :height height
-        :pall-angle pall-angle
-        :joint-angle joint-angle
-        :corner-point corner-lower
-        :swap-lines? true]]))
+     [cottising/render-chevron-cottise
+      :cottise-1 :cottise-2 :cottise-opposite-1
+      path environment context
+      :distance-fn (fn [distance half-joint-angle-rad]
+                     (-> (+ distance)
+                         (/ 100)
+                         (* height)
+                         (- line-right-first-min)
+                         (/ (if (zero? half-joint-angle-rad)
+                              0.00001
+                              (Math/sin half-joint-angle-rad)))))
+      :alignment :right
+      :width width
+      :height height
+      :chevron-angle (- pall-angle
+                        180
+                        (- (/ cottise-side-joint-angle 2)))
+      :joint-angle cottise-side-joint-angle
+      :corner-point corner-right
+      :swap-lines? true]
+     [cottising/render-chevron-cottise
+      :cottise-opposite-1 :cottise-opposite-2 :cottise-opposite-1
+      path environment context
+      :distance-fn (fn [distance half-joint-angle-rad]
+                     (-> (+ distance)
+                         (/ 100)
+                         (* height)
+                         (- line-left-first-min)
+                         (/ (if (zero? half-joint-angle-rad)
+                              0.00001
+                              (Math/sin half-joint-angle-rad)))))
+      :alignment :right
+      :width width
+      :height height
+      :chevron-angle (- pall-angle
+                        180
+                        (/ cottise-side-joint-angle 2))
+      :joint-angle cottise-side-joint-angle
+      :corner-point corner-left
+      :swap-lines? true]
+     [cottising/render-chevron-cottise
+      :cottise-extra-1 :cottise-extra-2 :cottise-opposite-1
+      path environment context
+      :distance-fn (fn [distance half-joint-angle-rad]
+                     (-> (+ distance)
+                         (/ 100)
+                         (* height)
+                         (- line-right-lower-min)
+                         (/ (if (zero? half-joint-angle-rad)
+                              0.00001
+                              (Math/sin half-joint-angle-rad)))))
+      :alignment :right
+      :width width
+      :height height
+      :chevron-angle pall-angle
+      :joint-angle joint-angle
+      :corner-point corner-lower
+      :swap-lines? true]]))

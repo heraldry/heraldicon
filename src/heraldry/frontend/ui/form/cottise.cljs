@@ -34,7 +34,9 @@
           :else {:cottise-1 "1"
                  :cottise-2 "2"
                  :cottise-opposite-1 "1 (opposite)"
-                 :cottise-opposite-2 "2 (opposite)"})
+                 :cottise-opposite-2 "2 (opposite)"
+                 :cottise-extra-1 "1 (extra)"
+                 :cottise-extra-2 "2 (extra)"})
         (get cottise-key))))
 
 (defmethod interface/component-node-data :heraldry.component/cottise [path]
