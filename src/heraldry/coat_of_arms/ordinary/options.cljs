@@ -92,7 +92,9 @@
               :default false
               :ui {:label "Outline"}}
    :fimbriation fimbriation/default-options
-   :cottising cottising/default-options
+   :cottising (-> cottising/default-options
+                  (dissoc :cottise-extra-1)
+                  (dissoc :cottise-extra-2))
    :manual-blazon {:type :text
                    :default nil
                    :ui {:label "Manual blazon"}}})
@@ -290,6 +292,7 @@
                               [:extra-line] (-> extra-line-style
                                                 (options/override-if-exists [:offset :min] 0)
                                                 (options/override-if-exists [:base-line] nil))
+                              [:cottising] cottising/default-options
                               [:direction-anchor :point :choices] (util/filter-choices
                                                                    position/anchor-point-choices
                                                                    [:top-left :top :top-right :left :right :bottom-left :bottom :bottom-right :angle])
