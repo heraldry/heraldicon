@@ -95,8 +95,8 @@
                                            :environment environment)
         infinity-points (cond
                           (<= 45 chevron-angle 135) [:right :left]
-                          (<= 225 chevron-angle 315) [:left :right]
                           (<= 135 chevron-angle 225) [:bottom :top]
+                          (<= 225 chevron-angle 315) [:left :right]
                           :else [:top :bottom])
         parts [[["M" (v/+ diagonal-left
                           line-left-start)
