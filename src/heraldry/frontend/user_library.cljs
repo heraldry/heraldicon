@@ -79,6 +79,7 @@
 (defn user-display []
   (let [user-info-data @(rf/subscribe [:get user-info-db-path])
         user-id (:id user-info-data)]
+    (rf/dispatch [:set-title (:username user-info-data)])
     [:div {:style {:display "grid"
                    :grid-gap "10px"
                    :grid-template-columns "[start] 33% [first] auto [second] 25% [end]"
@@ -129,5 +130,6 @@
   [user-select/list-users link-to-user])
 
 (defn view-list-users []
+  (rf/dispatch [:set-title "Users"])
   [:div {:style {:padding "15px"}}
    [list-all-users]])

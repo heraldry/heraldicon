@@ -8,8 +8,9 @@
             [re-frame.core :as rf]
             [taoensso.timbre :as log]))
 
-;; subs
+(def title-path [:ui :title])
 
+;; subs
 
 (rf/reg-sub :get
   (fn [db [_ path]]
@@ -26,6 +27,13 @@
 (rf/reg-sub :get-value
   (fn [[_ path] _]
     (rf/subscribe [:get path]))
+
+  (fn [value [_ _path]]
+    value))
+
+(rf/reg-sub :get-title
+  (fn [_ _]
+    (rf/subscribe [:get title-path]))
 
   (fn [value [_ _path]]
     value))
@@ -93,6 +101,10 @@
 (rf/reg-event-db :set
   (fn [db [_ path value]]
     (assoc-in db path value)))
+
+(rf/reg-event-db :set-title
+  (fn [db [_ value]]
+    (assoc-in db title-path value)))
 
 (rf/reg-event-db :update
   (fn [db [_ path update-fn]]

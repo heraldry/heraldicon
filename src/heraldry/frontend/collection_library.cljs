@@ -279,6 +279,7 @@
        "Save"]]]))
 
 (defn collection-form []
+  (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
@@ -330,6 +331,7 @@
   (state/invalidate-cache list-db-path user-id))
 
 (defn view-list-collection []
+  (rf/dispatch [:set-title "Collections"])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}

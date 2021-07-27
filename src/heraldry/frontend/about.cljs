@@ -1,6 +1,8 @@
-(ns heraldry.frontend.about)
+(ns heraldry.frontend.about
+  (:require [re-frame.core :as rf]))
 
 (defn view []
+  (rf/dispatch [:set-title "About"])
   [:div {:style {:padding "10px"
                  :text-align "justify"
                  :min-width "30em"

@@ -1,4 +1,5 @@
-(ns heraldry.frontend.home)
+(ns heraldry.frontend.home
+  (:require [re-frame.core :as rf]))
 
 (defn release-image [img-src]
   [:a {:href img-src
@@ -8,6 +9,7 @@
           :alt "release update overview"}]])
 
 (defn view []
+  (rf/dispatch [:set-title "Home"])
   [:div {:style {:padding "10px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}

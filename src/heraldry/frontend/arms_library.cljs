@@ -224,6 +224,7 @@
        "Save"]]]))
 
 (defn arms-form []
+  (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
@@ -273,6 +274,7 @@
   [arms-select/list-arms link-to-arms])
 
 (defn view-list-arms []
+  (rf/dispatch [:set-title "Arms"])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
