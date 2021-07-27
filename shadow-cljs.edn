@@ -29,6 +29,7 @@
           :backend
           {:target :node-library
            :exports {:handler heraldry.backend.api.core/handler
+                     :short_url_handler heraldry.backend.short-url/handler
                      :options_handler heraldry.backend.api.core/options-handler
                      :migration_handler heraldry.backend.migration.core/migrate-handler
                      :rollback_handler heraldry.backend.migration.core/rollback-handler
