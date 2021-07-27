@@ -56,7 +56,7 @@
         (rf/dispatch-sync [:set list-db-path nil])
         (state/invalidate-cache list-db-path (:user-id user-data))
         (rf/dispatch-sync [:set-form-message form-db-path (str "Collection saved, new version: " (:version response))])
-        (reife/push-state :edit-collection-by-id {:id (id-for-url collection-id)}))
+        (reife/push-state :view-collection-by-id {:id (id-for-url collection-id)}))
       (catch :default e
         (log/error "save-form error:" e)
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
@@ -346,8 +346,7 @@
    [:div {:style {:padding-top "0.5em"}}
     [list-collections]]])
 
-(defn create-collection [match]
-  (rf/dispatch [:set [:route-match] match])
+(defn create-collection [_match]
   (let [[status _collection-form-data] (state/async-fetch-data
                                         form-db-path
                                         :new
@@ -359,21 +358,6 @@
                                                                 (assoc :escutcheon-outline? true))}))]
     (when (= status :done)
       [collection-form])))
-
-(defn edit-collection [collection-id version]
-  (let [[status _collection-form-data] (state/async-fetch-data
-                                        form-db-path
-                                        [collection-id version]
-                                        #(fetch-collection collection-id version))]
-    (when (= status :done)
-      [collection-form])))
-
-(defn edit-collection-by-id [{:keys [parameters] :as match}]
-  (rf/dispatch [:set [:route-match] match])
-  (let [id (-> parameters :path :id)
-        version (-> parameters :path :version)
-        collection-id (str "collection:" id)]
-    [edit-collection collection-id version]))
 
 (defn view-collection-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
