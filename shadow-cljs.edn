@@ -29,7 +29,6 @@
           :backend
           {:target :node-library
            :exports {:handler heraldry.backend.api.core/handler
-                     :short_url_handler heraldry.backend.short-url/handler
                      :site_handler heraldry.backend.site/handler
                      :options_handler heraldry.backend.api.core/options-handler
                      :migration_handler heraldry.backend.migration.core/migrate-handler
@@ -43,6 +42,17 @@
            :dev {:output-to "./backend/build/dev/backend.js"}
 
            :release {:output-to "./backend/build/prod/backend.js"}}
+
+          :short-url
+          {:target :node-library
+           :exports {:handler heraldry.backend.short-url/handler}
+           :js-options {:js-package-dirs ["./backend/node_modules"]}
+           :compiler-options {:output-feature-set :es6
+                              :warnings {:redef false}}
+
+           :dev {:output-to "./backend/build/dev/short_url.js"}
+
+           :release {:output-to "./backend/build/prod/short_url.js"}}
 
           :manage
           {:target :node-script
