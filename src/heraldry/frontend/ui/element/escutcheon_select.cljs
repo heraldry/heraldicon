@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.element.escutcheon-select
   (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.static :as static]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
@@ -10,7 +11,8 @@
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
    [:img.clickable {:style {:width "4em"
                             :height "5em"}
-                    :src (str "/svg/escutcheon-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]
+                    :src (static/static-url
+                          (str "/svg/escutcheon-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])

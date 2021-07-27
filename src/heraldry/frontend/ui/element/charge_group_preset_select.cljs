@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.element.charge-group-preset-select
   (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.static :as static]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [re-frame.core :as rf]))
 
@@ -27,7 +28,8 @@
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:select-charge-group-preset path group charge-adjustments])}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
-                    :src (str "/svg/charge-group-preset-" (name key) ".svg")}]
+                    :src (static/static-url
+                          (str "/svg/charge-group-preset-" (name key) ".svg"))}]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])

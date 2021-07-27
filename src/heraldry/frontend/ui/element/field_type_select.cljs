@@ -1,14 +1,12 @@
 (ns heraldry.frontend.ui.element.field-type-select
   (:require [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.field.options :as field-options]
-            [heraldry.coat-of-arms.render :as render]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.static :as static]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.ui.shared :as shared]
             [heraldry.options :as options]
-            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (defn set-field-type [db path new-type num-fields-x num-fields-y num-base-fields]
@@ -67,7 +65,8 @@
                                      (state/dispatch-on-event % [:set-field-type field-path key num-fields-x num-fields-y num-base-fields]))}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
-                    :src (str "/svg/field-type-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]
+                    :src (static/static-url
+                          (str "/svg/field-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])

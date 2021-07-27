@@ -1,12 +1,14 @@
 (ns heraldry.frontend.home
-  (:require [re-frame.core :as rf]))
+  (:require [heraldry.frontend.static :as static]
+            [re-frame.core :as rf]))
 
 (defn release-image [img-src]
-  [:a {:href img-src
-       :target "_blank"}
-   [:img {:style {:width "100%"}
-          :src img-src
-          :alt "release update overview"}]])
+  (let [src (static/static-url img-src)]
+    [:a {:href src
+         :target "_blank"}
+     [:img {:style {:width "100%"}
+            :src src
+            :alt "release update overview"}]]))
 
 (defn view []
   (rf/dispatch [:set-title "Home"])

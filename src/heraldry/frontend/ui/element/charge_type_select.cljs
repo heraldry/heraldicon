@@ -2,6 +2,7 @@
   (:require [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.static :as static]
             [heraldry.frontend.ui.element.charge-select :as charge-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
@@ -19,7 +20,8 @@
                                                                                                       :variant nil}])}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
-                    :src (str "/svg/charge-type-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]
+                    :src (static/static-url
+                          (str "/svg/charge-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])
