@@ -324,6 +324,7 @@
       attribution-data]]))
 
 (defn charge-form []
+  (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path
                                                                      example-coa-db-path]])
   [:div {:style {:display "grid"
@@ -382,6 +383,7 @@
       [charge-form])))
 
 (defn view-list-charges []
+  (rf/dispatch [:set-title "Charges"])
   (let [[status charges] (state/async-fetch-data
                           [:all-charges]
                           :all-charges
