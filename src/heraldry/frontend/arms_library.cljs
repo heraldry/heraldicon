@@ -132,7 +132,7 @@
         (invalidate-arms-cache user-id)
         (invalidate-arms-cache :all)
         (rf/dispatch-sync [:set-form-message form-db-path (str "Arms saved, new version: " (:version response))])
-        (reife/push-state :edit-arms-by-id {:id (util/id-for-url arms-id)}))
+        (reife/push-state :view-arms-by-id {:id (util/id-for-url arms-id)}))
       (modal/stop-loading)
       (catch :default e
         (log/error "save form error:" e)
@@ -290,8 +290,7 @@
    [:div {:style {:padding-top "0.5em"}}
     [list-all-arms]]])
 
-(defn create-arms [match]
-  (rf/dispatch [:set [:route-match] match])
+(defn create-arms [_match]
   (let [[status _arms-form-data] (state/async-fetch-data
                                   form-db-path
                                   :new
@@ -300,13 +299,6 @@
                                       :render-options default/render-options}))]
     (when (= status :done)
       [arms-form])))
-
-(defn edit-arms-by-id [{:keys [parameters] :as match}]
-  (rf/dispatch [:set [:route-match] match])
-  (let [id (-> parameters :path :id)
-        version (-> parameters :path :version)
-        arms-id (str "arms:" id)]
-    [arms-display arms-id version :edit? true]))
 
 (defn view-arms-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)

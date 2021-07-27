@@ -229,7 +229,7 @@
           (state/invalidate-cache-without-current form-db-path [charge-id 0])
           (invalidate-charges-cache)
           (rf/dispatch-sync [:set-form-message form-db-path (str "Charge saved, new version: " (:version response))])
-          (reife/push-state :edit-charge-by-id {:id (id-for-url charge-id)}))
+          (reife/push-state :view-charge-by-id {:id (id-for-url charge-id)}))
         (modal/stop-loading)
         (catch :default e
           (log/error "save-form error:" e)
@@ -371,22 +371,13 @@
        (str (-> charge :type name) ": "))
      (:name charge)]))
 
-(defn create-charge [match]
-  (rf/dispatch [:set [:route-match] match])
+(defn create-charge [_match]
   (let [[status _charge-form-data] (state/async-fetch-data
                                     form-db-path
                                     :new
                                     #(go
                                        ;; TODO: make a default charge here?
                                        {}))]
-    (when (= status :done)
-      [charge-form])))
-
-(defn edit-charge [charge-id version]
-  (let [[status _charge-form-data] (state/async-fetch-data
-                                    form-db-path
-                                    [charge-id version]
-                                    #(charge/fetch-charge-for-editing charge-id version))]
     (when (= status :done)
       [charge-form])))
 
@@ -412,13 +403,6 @@
       (if (= status :done)
         [charge-select/component charges link-to-charge invalidate-charges-cache]
         [:div "loading..."])]]))
-
-(defn edit-charge-by-id [{:keys [parameters] :as match}]
-  (rf/dispatch [:set [:route-match] match])
-  (let [id (-> parameters :path :id)
-        version (-> parameters :path :version)
-        charge-id (str "charge:" id)]
-    [edit-charge charge-id version]))
 
 (defn view-charge-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
