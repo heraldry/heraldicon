@@ -16,11 +16,11 @@ PROD_CONFIG = {:closure-defines {heraldry.config/stage "prod" heraldry.config/co
 
 prod-backend-release:
 	rm -rf $(PROD_BACKEND_RELEASE_DIR) 2> /dev/null || true
-	npx shadow-cljs release backend --config-merge '$(PROD_CONFIG)'
+	yarn shadow-cljs release backend --config-merge '$(PROD_CONFIG)'
 
 prod-backend-deploy: check-before-deploy-backend prod-backend-release
 	make setup-sharp-linux
-	cd backend && npx sls deploy --stage prod
+	cd backend && yarn sls deploy --stage prod
 	make setup-sharp-osx
 	cd backend && git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
 	git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
@@ -31,7 +31,7 @@ prod-frontend-release:
 	cp -r frontend/assets/* $(PROD_FRONTEND_RELEASE_DIR)
 	rm -rf $(PROD_FRONTEND_RELEASE_DIR)/js/generated 2> /dev/null || true
 	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(COMMIT)/" $(PROD_FRONTEND_RELEASE_DIR)/index.html
-	npx shadow-cljs release frontend --config-merge '$(PROD_CONFIG)'
+	yarn shadow-cljs release frontend --config-merge '$(PROD_CONFIG)'
 
 prod-frontend-deploy: check-before-deploy-frontend prod-frontend-release
 	aws --profile heraldry-serverless s3 sync --acl public-read $(PROD_FRONTEND_RELEASE_DIR) s3://cdn.heraldry.digital
@@ -47,11 +47,11 @@ STAGING_CONFIG = {:closure-defines {heraldry.config/stage "staging" heraldry.con
 
 staging-backend-release:
 	rm -rf $(STAGING_BACKEND_RELEASE_DIR) 2> /dev/null || true
-	npx shadow-cljs release backend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-to "./backend/build/staging/backend.js"}'
+	yarn shadow-cljs release backend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-to "./backend/build/staging/backend.js"}'
 
 staging-backend-deploy: staging-backend-release
 	make setup-sharp-linux
-	cd backend && npx sls deploy --stage staging
+	cd backend && yarn sls deploy --stage staging
 	make setup-sharp-osx
 
 staging-frontend-release:
@@ -60,7 +60,7 @@ staging-frontend-release:
 	cp -r frontend/assets/* $(STAGING_FRONTEND_RELEASE_DIR)
 	rm -rf $(STAGING_FRONTEND_RELEASE_DIR)/js/generated 2> /dev/null || true
 	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(COMMIT)/" $(STAGING_FRONTEND_RELEASE_DIR)/index.html
-	npx shadow-cljs release frontend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-dir "./frontend/build/staging/js/generated"}'
+	yarn shadow-cljs release frontend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-dir "./frontend/build/staging/js/generated"}'
 
 staging-frontend-deploy: staging-frontend-release
 	aws --profile heraldry-serverless s3 sync --acl public-read $(STAGING_FRONTEND_RELEASE_DIR) s3://cdn.staging.heraldry.digital
@@ -70,10 +70,10 @@ staging-frontend-deploy: staging-frontend-release
 # DEV
 
 dev-local:
-	npx shadow-cljs watch frontend backend test manage
+	yarn shadow-cljs watch frontend backend test manage short-url
 
 dev-test:
-	npx shadow-cljs watch test
+	yarn shadow-cljs watch test
 
 check-debug-print-frontend:
 	! rg println src --glob=!src/**/*test*.cljs
