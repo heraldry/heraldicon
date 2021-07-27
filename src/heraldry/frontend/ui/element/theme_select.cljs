@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.element.theme-select
   (:require [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.static :as static]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
@@ -14,7 +15,7 @@
                                 :border-radius "5px"}}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
-                    :src (str "/svg/theme-" (name key) ".svg")}]
+                    :src (static/static-url (str "/svg/theme-" (name key) ".svg"))}]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])

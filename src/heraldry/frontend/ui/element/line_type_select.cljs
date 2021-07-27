@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.element.line-type-select
   (:require [heraldry.coat-of-arms.line.core :as line]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.static :as static]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
@@ -9,7 +10,8 @@
 (defn line-type-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
    [:img.clickable {:style {:width "7.5em"}
-                    :src (str "/svg/line-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]
+                    :src (static/static-url
+                          (str "/svg/line-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])

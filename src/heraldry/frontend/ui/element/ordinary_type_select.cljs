@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.element.ordinary-type-select
   (:require [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.static :as static]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
@@ -39,7 +40,8 @@
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type (vec (drop-last path)) key])}
    [:img.clickable {:style {:width "5em"
                             :height "5.7em"}
-                    :src (str "/svg/ordinary-type-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]
+                    :src (static/static-url
+                          (str "/svg/ordinary-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
    [:div.bottom
     [:h3 {:style {:text-align "center"}} display-name]
     [:i]]])
