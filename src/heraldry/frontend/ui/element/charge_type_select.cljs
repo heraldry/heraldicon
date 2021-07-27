@@ -49,7 +49,23 @@
             (if (= status :done)
               [charge-select/component
                charges
-               nil
+               (fn [charge-data]
+                 [:a.clickable
+                  {:on-click #(state/dispatch-on-event
+                               %
+                               [:update-charge
+                                (vec (drop-last path))
+                                (merge {:type (->> charge-data
+                                                   :type
+                                                   name
+                                                   (keyword "heraldry.charge.type"))
+                                        :variant {:id (:id charge-data)
+                                                  :version (:latest-version charge-data)}}
+                                       {:attitude nil
+                                        :facing nil}
+                                       (select-keys charge-data
+                                                    [:attitude :facing]))])}
+                  (:name charge-data)])
                #(state/invalidate-cache [:all-charges] :all-charges)]
               [:div "loading..."])])]]])))
 
