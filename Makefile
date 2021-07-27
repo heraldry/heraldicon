@@ -6,11 +6,13 @@ setup-sharp-osx:
 	rm -rf backend/node_modules/sharp > /dev/null || true
 	ln -s ../osx-sharp backend/node_modules/sharp
 
+COMMIT = $(shell git rev-parse --short HEAD)
+
 # PROD
 
 PROD_FRONTEND_RELEASE_DIR = frontend/build/prod
 PROD_BACKEND_RELEASE_DIR = backend/build/prod
-PROD_CONFIG = {:closure-defines {heraldry.config/stage "prod"}}}
+PROD_CONFIG = {:closure-defines {heraldry.config/stage "prod" heraldry.config/commit "$(COMMIT)"}}}
 
 prod-backend-release:
 	rm -rf $(PROD_BACKEND_RELEASE_DIR) 2> /dev/null || true
@@ -28,20 +30,20 @@ prod-frontend-release:
 	mkdir -p $(PROD_FRONTEND_RELEASE_DIR)
 	cp -r frontend/assets/* $(PROD_FRONTEND_RELEASE_DIR)
 	rm -rf $(PROD_FRONTEND_RELEASE_DIR)/js/generated 2> /dev/null || true
-	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(shell git rev-parse --short HEAD)/" $(PROD_FRONTEND_RELEASE_DIR)/index.html
+	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(COMMIT)/" $(PROD_FRONTEND_RELEASE_DIR)/index.html
 	npx shadow-cljs release frontend --config-merge '$(PROD_CONFIG)'
 
 prod-frontend-deploy: check-before-deploy-frontend prod-frontend-release
-	aws --profile heraldry-serverless s3 sync --acl public-read $(PROD_FRONTEND_RELEASE_DIR) s3://heraldry.digital
-	aws --profile heraldry-serverless s3 cp --acl public-read $(PROD_FRONTEND_RELEASE_DIR)/index.html s3://heraldry.digital/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
+	aws --profile heraldry-serverless s3 sync --acl public-read $(PROD_FRONTEND_RELEASE_DIR) s3://cdn.heraldry.digital
+	aws --profile heraldry-serverless s3 cp --acl public-read $(PROD_FRONTEND_RELEASE_DIR)/index.html s3://cdn.heraldry.digital/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
 	git tag $(shell date +"deploy-frontend-%Y-%m-%d_%H-%M-%S")
-	./invalidate-distribution.sh heraldry.digital
+	./invalidate-distribution.sh cdn.heraldry.digital
 
 # STAGING
 
 STAGING_FRONTEND_RELEASE_DIR = frontend/build/staging
 STAGING_BACKEND_RELEASE_DIR = backend/build/staging
-STAGING_CONFIG = {:closure-defines {heraldry.config/stage "staging"}}
+STAGING_CONFIG = {:closure-defines {heraldry.config/stage "staging" heraldry.config/commit "$(COMMIT)"}}
 
 staging-backend-release:
 	rm -rf $(STAGING_BACKEND_RELEASE_DIR) 2> /dev/null || true
@@ -57,13 +59,13 @@ staging-frontend-release:
 	mkdir -p $(STAGING_FRONTEND_RELEASE_DIR)
 	cp -r frontend/assets/* $(STAGING_FRONTEND_RELEASE_DIR)
 	rm -rf $(STAGING_FRONTEND_RELEASE_DIR)/js/generated 2> /dev/null || true
-	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(shell git rev-parse --short HEAD)/" $(STAGING_FRONTEND_RELEASE_DIR)/index.html
+	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(COMMIT)/" $(STAGING_FRONTEND_RELEASE_DIR)/index.html
 	npx shadow-cljs release frontend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-dir "./frontend/build/staging/js/generated"}'
 
 staging-frontend-deploy: staging-frontend-release
-	aws --profile heraldry-serverless s3 sync --acl public-read $(STAGING_FRONTEND_RELEASE_DIR) s3://staging.heraldry.digital
-	aws --profile heraldry-serverless s3 cp --acl public-read $(STAGING_FRONTEND_RELEASE_DIR)/index.html s3://staging.heraldry.digital/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
-	./invalidate-distribution.sh staging.heraldry.digital
+	aws --profile heraldry-serverless s3 sync --acl public-read $(STAGING_FRONTEND_RELEASE_DIR) s3://cdn.staging.heraldry.digital
+	aws --profile heraldry-serverless s3 cp --acl public-read $(STAGING_FRONTEND_RELEASE_DIR)/index.html s3://cdn.staging.heraldry.digital/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
+	./invalidate-distribution.sh cdn.staging.heraldry.digital
 
 # DEV
 

@@ -12,6 +12,7 @@
   (-js->clj+ (.-env js/process)))
 
 (goog-define stage "dev")
+(goog-define commit "unknown")
 
 (def config-data
   (case stage
@@ -20,20 +21,23 @@
            :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                  :ClientId "2v90eij0l4aluf2amqumqh9gko"
                                  :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
-           :fleur-de-lis-charge-id "charge:RnHzw8"}
+           :fleur-de-lis-charge-id "charge:RnHzw8"
+           :static-files-url "http://localhost:8081"}
     "staging" {:heraldry-api-endpoint "https://kpos8p1ge4.execute-api.eu-central-1.amazonaws.com/api"
                :heraldry-url "https://staging.heraldry.digital"
                :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                      :ClientId "2v90eij0l4aluf2amqumqh9gko"
                                      :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
-               :fleur-de-lis-charge-id "charge:RnHzw8"}
+               :fleur-de-lis-charge-id "charge:RnHzw8"
+               :static-files-url "https://cdn.staging.heraldry.digital"}
     "prod" {:heraldry-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/api"
             :heraldry-url "https://heraldry.digital"
             :cognito-pool-config {:UserPoolId "eu-central-1_WXqnJUEOT"
                                   :ClientId "21pvp6cc4l3gptoj4bl3jc9s7r"
                                   :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_WXqnJUEOT/.well-known/jwks.json"}
             :fleur-de-lis-charge-id "charge:ZfqrIl"
-            :bucket-data "data.heraldry.digital"}))
+            :bucket-data "data.heraldry.digital"
+            :static-files-url "https://cdn.heraldry.digital"}))
 
 #_{:clj-kondo/ignore [:redefined-var]}
 (defn get [setting]
