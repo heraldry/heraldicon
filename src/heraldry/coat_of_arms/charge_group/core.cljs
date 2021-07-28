@@ -429,7 +429,7 @@
                                     (and k (pos? v))))
                           (sort-by second))
         context (assoc-in context [:blazonry :part-of-charge-group?] true)]
-    (str "a charge group of "
+    (str "a group of "
          (util/combine
           " and "
           (map (fn [[charge-index number]]
