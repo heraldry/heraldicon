@@ -1,10 +1,10 @@
 (ns heraldry.frontend.ui.element.line-type-select
   (:require [heraldry.coat-of-arms.line.core :as line]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.static :as static]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.static :as static]
             [re-frame.core :as rf]))
 
 (defn line-type-choice [path key display-name & {:keys [selected?]}]

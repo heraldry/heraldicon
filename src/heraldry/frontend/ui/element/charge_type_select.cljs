@@ -2,10 +2,10 @@
   (:require [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.static :as static]
             [heraldry.frontend.ui.element.charge-select :as charge-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.static :as static]
             [re-frame.core :as rf]))
 
 (rf/reg-event-db :update-charge

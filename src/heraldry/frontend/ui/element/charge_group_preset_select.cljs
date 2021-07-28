@@ -1,8 +1,8 @@
 (ns heraldry.frontend.ui.element.charge-group-preset-select
   (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.static :as static]
             [heraldry.frontend.ui.element.submenu :as submenu]
+            [heraldry.static :as static]
             [re-frame.core :as rf]))
 
 (rf/reg-event-db :select-charge-group-preset
