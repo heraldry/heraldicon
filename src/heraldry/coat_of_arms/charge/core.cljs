@@ -19,7 +19,7 @@
                        (when-not (#{:none :to-dexter} facing)
                          (util/translate facing))])))
 
-(defmethod interface/blazon-component :heraldry.component/charge [path context]
+(defmethod interface/blazon-component :heraldry.component/charge [path {:keys [load-charge-data] :as context}]
   (let [charge-type (interface/get-raw-data (conj path :type) context)
         attitude (interface/get-sanitized-data (conj path :attitude) context)
         facing (interface/get-sanitized-data (conj path :facing) context)
@@ -33,7 +33,9 @@
                     (update :blazonry dissoc :part-of-charge-group?)
                     (update :blazonry dissoc :pluralize?))
         charge-data (when variant
-                      (interface/fetch-charge-data :frontend variant context))
+                      (if load-charge-data
+                        (load-charge-data variant)
+                        (interface/fetch-charge-data :frontend variant context)))
         fixed-tincture (-> charge-data
                            :fixed-tincture
                            (or :none)
