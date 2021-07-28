@@ -45,6 +45,7 @@
 (defn get [setting]
   (case setting
     :stage stage
+    :commit commit
     :region (or (:REGION env) "eu-central-1")
     :admins #{"or"}
     (or (some-> setting
