@@ -1,5 +1,6 @@
 (ns heraldry.frontend.arms-library
-  (:require [cljs.core.async :refer [go]]
+  (:require ["copy-to-clipboard" :as copy-to-clipboard]
+            [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.render :as render]
@@ -161,6 +162,13 @@
     (rf/dispatch-sync [:set-form-message form-db-path "Created an unsaved copy."])
     (reife/push-state :create-arms)))
 
+(defn share-button-clicked [_event]
+  (if-let [short-url (util/short-url @(rf/subscribe [:get-value form-db-path]))]
+    (do
+      (copy-to-clipboard short-url)
+      (rf/dispatch [:set-form-message form-db-path "Copied URL for sharing."]))
+    (js/alert "No short URL generated.")))
+
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
@@ -208,6 +216,11 @@
                        :style {:flex 1}}
        "PNG Link"]
       [:div {:style {:flex 10}}]
+      (when (:id arms-data)
+        [:button.button {:style {:flex 1
+                                 :color "#777"}
+                         :on-click share-button-clicked}
+         [:i.fas.fa-share-alt]])
       [:button.button
        {:type "button"
         :class (when-not can-copy? "disabled")
