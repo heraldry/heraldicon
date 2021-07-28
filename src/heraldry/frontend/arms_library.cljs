@@ -163,11 +163,9 @@
     (reife/push-state :create-arms)))
 
 (defn share-button-clicked [_event]
-  (if-let [short-url (util/short-url @(rf/subscribe [:get-value form-db-path]))]
-    (do
-      (copy-to-clipboard short-url)
-      (rf/dispatch [:set-form-message form-db-path "Copied URL for sharing."]))
-    (js/alert "No short URL generated.")))
+  (let [short-url (util/short-url @(rf/subscribe [:get-value form-db-path]))]
+    (copy-to-clipboard short-url)
+    (rf/dispatch [:set-form-message form-db-path "Copied URL for sharing."])))
 
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
