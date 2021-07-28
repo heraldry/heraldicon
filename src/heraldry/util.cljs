@@ -5,6 +5,7 @@
             [clojure.walk :as walk]
             [goog.crypt :as crypt]
             [goog.crypt.base64 :as b64]
+            [heraldry.config :as config]
             [taoensso.timbre :as log]))
 
 (def -current-id
@@ -202,8 +203,9 @@
                             (matches-word v word))) data)))
 
 (defn short-url [arms-data]
-  (let [{:keys [id version]} arms-data]
-    (when (and id version)
-      (if (zero? version)
-        (str "https://coa.to/" (id-for-url id))
-        (str "https://coa.to/" (id-for-url id) "/" version)))))
+  (when (= (config/get :stage) "prod")
+    (let [{:keys [id version]} arms-data]
+      (when (and id version)
+        (if (zero? version)
+          (str "https://coa.to/" (id-for-url id))
+          (str "https://coa.to/" (id-for-url id) "/" version))))))
