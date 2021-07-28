@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.charge.core
-  (:require [heraldry.coat-of-arms.attributes :as attributes]
+  (:require [clojure.string :as s]
+            [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.charge.interface :as charge-interface]
             [heraldry.interface :as interface]
             [heraldry.util :as util]))
@@ -39,12 +40,18 @@
         fixed-tincture (-> charge-data
                            :fixed-tincture
                            (or :none)
-                           (#(when (not= :none %) %)))]
+                           (#(when (not= :none %) %)))
+        charge-name (util/translate charge-type)
+        pluralize? (and pluralize?
+                        (not (#{"fleur-de-lis"} charge-name)))]
     (util/combine " " [(when (and (not part-of-charge-group?)
                                   (not drop-article?))
                          "a")
-                       (str (util/translate charge-type)
-                            (when pluralize? "s"))
+                       (str charge-name
+                            (when pluralize?
+                              (if (s/ends-with? charge-name "s")
+                                "es"
+                                "s")))
                        (when-not (= attitude :none)
                          (util/translate attitude))
                        (when-not (#{:none :to-dexter} facing)
