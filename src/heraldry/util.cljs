@@ -200,3 +200,10 @@
                                      ;; must be truthy as well
                                  v)
                             (matches-word v word))) data)))
+
+(defn short-url [arms-data]
+  (let [{:keys [id version]} arms-data]
+    (when (and id version)
+      (if (zero? version)
+        (str "https://coa.to/" (id-for-url id))
+        (str "https://coa.to/" (id-for-url id) "/" version)))))
