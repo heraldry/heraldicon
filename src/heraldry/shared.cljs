@@ -8,7 +8,7 @@
             [heraldry.coat-of-arms.charge.other] ;; needed for side effects
             [heraldry.coat-of-arms.core] ;; needed for side effects
             [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.coat-of-arms.field.options] ;; needed for side effects
+            [heraldry.coat-of-arms.field.core] ;; needed for side effects
             [heraldry.coat-of-arms.field.shared] ;; needed for side effects
             [heraldry.coat-of-arms.ordinary.core] ;; needed for side effects
             [heraldry.coat-of-arms.ordinary.options] ;; needed for side effects
