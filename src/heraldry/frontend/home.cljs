@@ -1,5 +1,5 @@
 (ns heraldry.frontend.home
-  (:require [heraldry.frontend.static :as static]
+  (:require [heraldry.static :as static]
             [re-frame.core :as rf]))
 
 (defn release-image [img-src]

@@ -1,4 +1,4 @@
-(ns heraldry.frontend.static
+(ns heraldry.static
   (:require [heraldry.config :as config]))
 
 (defn static-url [path]

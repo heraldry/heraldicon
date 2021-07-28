@@ -1,11 +1,11 @@
 (ns heraldry.frontend.ui.element.tincture-select
   (:require [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.static :as static]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.options :as options]
+            [heraldry.static :as static]
             [re-frame.core :as rf]))
 
 (defn tincture-choice [path key display-name & {:keys [selected?]}]
