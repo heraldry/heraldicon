@@ -278,13 +278,13 @@
      (when error-message
        [:div.error-message error-message])
 
-     [:div.buttons {:style {:display "flex"
-                            :gap "10px"}}
+     [:div.buttons {:style {:display "flex"}}
       [:label.button {:for "upload"
                       :disabled (not can-upload?)
                       :style {:display "inline-block"
                               :width "auto"
-                              :flex 1}} "Upload SVG"
+                              :flex "initial"
+                              :margin-right "10px"}} "Upload SVG"
        [:input {:type "file"
                 :accept "image/svg+xml"
                 :id "upload"
@@ -295,15 +295,17 @@
       (when-let [svg-data-url (:svg-data-url charge-data)]
         [:a {:href svg-data-url
              :target "_blank"
-             :style {:flex "1"
+             :style {:flex "initial"
                      :padding-top "0.5em"
-                     :white-space "nowrap"}}
+                     :white-space "nowrap"
+                     :margin-right "10px"}}
          "Original SVG"])
-      [:div {:style {:flex 10}}]
+      [:div {:style {:flex "auto"}}]
       [:button.button
        {:type "button"
         :class (when-not can-copy? "disabled")
-        :style {:flex 1}
+        :style {:flex "initial"
+                :margin-left "10px"}
         :on-click (if can-copy?
                     copy-to-new-clicked
                     #(js/alert "Need to be logged in and arms must be saved."))}
@@ -313,7 +315,9 @@
         :class (when-not can-save? "disabled")
         :on-click (if can-save?
                     save-charge-clicked
-                    #(js/alert "Need to be logged in and own the arms."))}
+                    #(js/alert "Need to be logged in and own the arms."))
+        :style {:flex "initial"
+                :margin-left "10px"}}
        "Save"]]]))
 
 (defn attribution []
