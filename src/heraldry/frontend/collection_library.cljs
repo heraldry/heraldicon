@@ -162,47 +162,26 @@
                           arms-height)
                        (* (inc num-rows)
                           margin))]
-    [:div {:style {:margin-left "10px"
-                   :margin-right "10px"}}
-     [:svg {:id "svg"
-            :style {:width "100%"}
-            :viewBox (str "0 0 " roll-width " " roll-height)
-            :preserveAspectRatio "xMidYMin slice"}
-      [:g
-       [:text {:x (/ roll-width 2)
-               :y 50
-               :text-anchor "middle"
-               :style {:font-family font
-                       :font-size 50}}
-        name]]
-      [:g {:transform "translate(0,60)"}
-       (doall
-        (for [idx (range num-elements)]
-          (let [x (mod idx num-columns)
-                y (quot idx num-columns)]
-            ^{:key idx}
-            [:g {:on-click #(on-arms-click % idx)
-                 :style {:cursor "pointer"}}
-             [render-arms
-              (+ margin
-                 (* x (+ arms-width
-                         margin))
-                 (+ (/ arms-width 2)))
-              (+ margin
-                 (* y (+ arms-height
-                         margin))
-                 (+ (/ arms-height 2)))
-              arms-width
-              (conj form-db-path :collection :elements idx)
-              :font font]])))
-
-       (when allow-adding?
-         (let [x (mod num-elements num-columns)
-               y (quot num-elements num-columns)]
-           ^{:key num-elements}
-           [:g {:on-click #(state/dispatch-on-event % [:add-element (conj form-db-path :collection :elements) {}])
+    [:svg {:id "svg"
+           :style {:width "100%"}
+           :viewBox (str "0 0 " roll-width " " roll-height)
+           :preserveAspectRatio "xMidYMin slice"}
+     [:g
+      [:text {:x (/ roll-width 2)
+              :y 50
+              :text-anchor "middle"
+              :style {:font-family font
+                      :font-size 50}}
+       name]]
+     [:g {:transform "translate(0,60)"}
+      (doall
+       (for [idx (range num-elements)]
+         (let [x (mod idx num-columns)
+               y (quot idx num-columns)]
+           ^{:key idx}
+           [:g {:on-click #(on-arms-click % idx)
                 :style {:cursor "pointer"}}
-            [render-add-arms
+            [render-arms
              (+ margin
                 (* x (+ arms-width
                         margin))
@@ -211,7 +190,26 @@
                 (* y (+ arms-height
                         margin))
                 (+ (/ arms-height 2)))
-             arms-width]]))]]]))
+             arms-width
+             (conj form-db-path :collection :elements idx)
+             :font font]])))
+
+      (when allow-adding?
+        (let [x (mod num-elements num-columns)
+              y (quot num-elements num-columns)]
+          ^{:key num-elements}
+          [:g {:on-click #(state/dispatch-on-event % [:add-element (conj form-db-path :collection :elements) {}])
+               :style {:cursor "pointer"}}
+           [render-add-arms
+            (+ margin
+               (* x (+ arms-width
+                       margin))
+               (+ (/ arms-width 2)))
+            (+ margin
+               (* y (+ arms-height
+                       margin))
+               (+ (/ arms-height 2)))
+            arms-width]]))]]))
 
 (defn render-arms-preview []
   (when-let [selected-element-index (selected-element-index)]
@@ -285,12 +283,12 @@
                  :grid-template-columns "[start] auto [first] minmax(25em, 33%) [second] minmax(10em, 25%) [end]"
                  :grid-template-rows "[top] 100% [bottom]"
                  :grid-template-areas "'left middle right'"
-                 :padding-left "10px"
                  :padding-right "10px"
                  :height "100%"}
          :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
    [:div.no-scrollbar {:style {:grid-area "left"
-                               :overflow-y "scroll"}}
+                               :overflow-y "scroll"
+                               :padding-left "5px"}}
     [render-collection :allow-adding? true]]
    [:div.no-scrollbar {:style {:grid-area "middle"
                                :padding-top "10px"}}
