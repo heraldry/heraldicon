@@ -7,7 +7,8 @@
 
 (defn link-to-arms [path]
   (fn [arms]
-    [:a {:on-click #(rf/dispatch [:set path (select-keys arms [:id :version])])}
+    [:a {:on-click #(rf/dispatch [:set path {:id (:id arms)
+                                             :version 0}])}
      (:name arms)]))
 
 (defn arms-reference-select [path]
