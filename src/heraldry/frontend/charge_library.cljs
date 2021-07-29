@@ -260,11 +260,13 @@
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
-        charge-data @(rf/subscribe [:get-value form-db-path])
+        charge-id @(rf/subscribe [:get-value (conj form-db-path :id)])
+        charge-username @(rf/subscribe [:get-value (conj form-db-path :username)])
+        charge-svg-url @(rf/subscribe [:get-value (conj form-db-path :svg-data-url)])
         user-data (user/data)
         logged-in? (:logged-in? user-data)
-        saved? (:id charge-data)
-        owned-by-me? (= (:username user-data) (:username charge-data))
+        saved? charge-id
+        owned-by-me? (= (:username user-data) charge-username)
         can-copy? (and logged-in?
                        saved?
                        owned-by-me?)
@@ -292,8 +294,8 @@
                 :on-change (when can-upload?
                              upload-file)
                 :style {:display "none"}}]]
-      (when-let [svg-data-url (:svg-data-url charge-data)]
-        [:a {:href svg-data-url
+      (when charge-svg-url
+        [:a {:href charge-svg-url
              :target "_blank"
              :style {:flex "initial"
                      :padding-top "0.5em"
