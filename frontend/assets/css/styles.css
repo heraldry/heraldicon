@@ -757,14 +757,14 @@ li.nav-menu-item a:hover {
 }
 
 .ui-hover-menu .ui-menu {
-  position: absolute;
+  position: fixed;
   display: none;
-  top: 0em;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
   cursor: pointer;
   z-index: 10;
+  transform: translate(0, -1.1em);
 }
 
 .ui-menu-item {
