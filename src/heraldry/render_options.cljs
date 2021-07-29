@@ -13,7 +13,7 @@
   {:escutcheon-override {:type :choice
                          :choices escutcheon/choices
                          :default :none
-                         :ui {:label "Escutcheon Override"
+                         :ui {:label "Escutcheon"
                               :form-type :escutcheon-select}}
 
    :mode {:type :choice
