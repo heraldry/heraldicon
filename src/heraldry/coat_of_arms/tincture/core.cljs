@@ -88,6 +88,13 @@
            ["Proper" :proper]]
           choices))
 
+(defn kind [tincture]
+  (cond
+    (#{:none :mixed} tincture) :mixed
+    (#{:argent :or} tincture) :metal
+    (#{:ermine :ermines :erminois :pean} tincture) :fur
+    :else :colour))
+
 (def fixed-tincture-map
   (util/choices->map fixed-tincture-choices))
 
