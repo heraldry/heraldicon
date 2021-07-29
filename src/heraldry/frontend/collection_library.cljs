@@ -287,7 +287,6 @@
                  :height "100%"}
          :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
    [:div.no-scrollbar {:style {:grid-area "left"
-                               :overflow-y "scroll"
                                :padding-left "5px"}}
     [render-collection :allow-adding? true]]
    [:div.no-scrollbar {:style {:grid-area "middle"
@@ -296,7 +295,6 @@
     [button-row]
     [render-arms-preview]]
    [:div.no-scrollbar {:style {:grid-area "right"
-                               :overflow-y "scroll"
                                :padding-top "5px"}}
     [ui/component-tree [form-db-path
                         (conj form-db-path :render-options)
