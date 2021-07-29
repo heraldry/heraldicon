@@ -84,7 +84,28 @@
        :height bar-width
        :style {:fill "#fff"}}]]))
 
-(defn render-arms [x y size path & {:keys [selected? font font-size]
+(defn selected-element-index []
+  (let [selected-node-path @(rf/subscribe [:collection-library-highlighted-element])
+        index (last selected-node-path)]
+    (when (int? index)
+      (if (< index @(rf/subscribe [:get-list-size (conj form-db-path :collection :elements)]))
+        index
+        ;; index not valid anymore
+        (do
+          (collection-element/highlight-element nil)
+          nil)))))
+
+(defn arms-highlight [path x y width height]
+  (if @(rf/subscribe [:collection-library-highlighted? path])
+    [:rect {:x (- x (/ width 2) 7)
+            :y (- y (/ height 2) 7)
+            :rx 10
+            :width (+ width 14)
+            :height (+ height 14)
+            :fill "#33f8"}]
+    [:<>]))
+
+(defn render-arms [x y size path & {:keys [font font-size]
                                     :or {font-size 12}}]
   (let [data @(rf/subscribe [:get-value path])
         {arms-id :id
@@ -108,13 +129,7 @@
 
         {:keys [width height]} environment]
     [:g
-     (when selected?
-       [:rect {:x (- x (/ width 2) 7)
-               :y (- y (/ height 2) 7)
-               :rx 10
-               :width (+ width 14)
-               :height (+ height 14)
-               :fill "#33f8"}])
+     [arms-highlight path x y width height]
      [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
       result
       [:text {:x (/ width 2)
@@ -127,26 +142,12 @@
 (defn on-arms-click [event index]
   (state/dispatch-on-event event [:ui-component-node-select (conj form-db-path :collection :elements index)]))
 
-(defn selected-element-index []
-  (let [selected-node-path @(rf/subscribe [:collection-library-highlighted-element])
-        index (last selected-node-path)]
-    (when (int? index)
-      (if (< index @(rf/subscribe [:get-list-size (conj form-db-path :collection :elements)]))
-        index
-        ;; index not valid anymore
-        (do
-          (collection-element/highlight-element nil)
-          nil)))))
-
 (defn render-collection [& {:keys [allow-adding?]}]
-  (let [collection-data @(rf/subscribe [:get-value form-db-path])
-        font (-> collection-data :font font/css-string)
-        collection (:collection collection-data)
-        {:keys [num-columns
-                elements]} collection
-        ;; TODO: ugly dependency, should go through the options system to sanitize and provide a default
-        num-columns (or num-columns 6)
-        num-elements (count elements)
+  (let [font (some-> @(rf/subscribe [:get-value (conj form-db-path :font)])
+                     font/css-string)
+        num-columns @(rf/subscribe [:get-sanitized-value (conj form-db-path :collection :num-columns)])
+        num-elements @(rf/subscribe [:get-list-size (conj form-db-path :collection :elements)])
+        name @(rf/subscribe [:get-value (conj form-db-path :name)])
         num-rows (inc (quot num-elements
                             num-columns))
         margin 10
@@ -161,59 +162,56 @@
                           arms-height)
                        (* (inc num-rows)
                           margin))]
-    (if collection-data
-      [:div {:style {:margin-left "10px"
-                     :margin-right "10px"}}
-       [:svg {:id "svg"
-              :style {:width "100%"}
-              :viewBox (str "0 0 " roll-width " " roll-height)
-              :preserveAspectRatio "xMidYMin slice"}
-        [:g
-         [:text {:x (/ roll-width 2)
-                 :y 50
-                 :text-anchor "middle"
-                 :style {:font-family font
-                         :font-size 50}}
-          (:name collection-data)]]
-        [:g {:transform "translate(0,60)"}
-         (doall
-          (for [[idx _arms] (map-indexed vector elements)]
-            (let [x (mod idx num-columns)
-                  y (quot idx num-columns)]
-              ^{:key idx}
-              [:g {:on-click #(on-arms-click % idx)
-                   :style {:cursor "pointer"}}
-               [render-arms
-                (+ margin
-                   (* x (+ arms-width
-                           margin))
-                   (+ (/ arms-width 2)))
-                (+ margin
-                   (* y (+ arms-height
-                           margin))
-                   (+ (/ arms-height 2)))
-                arms-width
-                (conj form-db-path :collection :elements idx)
-                :selected? (= idx (selected-element-index))
-                :font font]])))
+    [:div {:style {:margin-left "10px"
+                   :margin-right "10px"}}
+     [:svg {:id "svg"
+            :style {:width "100%"}
+            :viewBox (str "0 0 " roll-width " " roll-height)
+            :preserveAspectRatio "xMidYMin slice"}
+      [:g
+       [:text {:x (/ roll-width 2)
+               :y 50
+               :text-anchor "middle"
+               :style {:font-family font
+                       :font-size 50}}
+        name]]
+      [:g {:transform "translate(0,60)"}
+       (doall
+        (for [idx (range num-elements)]
+          (let [x (mod idx num-columns)
+                y (quot idx num-columns)]
+            ^{:key idx}
+            [:g {:on-click #(on-arms-click % idx)
+                 :style {:cursor "pointer"}}
+             [render-arms
+              (+ margin
+                 (* x (+ arms-width
+                         margin))
+                 (+ (/ arms-width 2)))
+              (+ margin
+                 (* y (+ arms-height
+                         margin))
+                 (+ (/ arms-height 2)))
+              arms-width
+              (conj form-db-path :collection :elements idx)
+              :font font]])))
 
-         (when allow-adding?
-           (let [x (mod num-elements num-columns)
-                 y (quot num-elements num-columns)]
-             ^{:key num-elements}
-             [:g {:on-click #(state/dispatch-on-event % [:add-element (conj form-db-path :collection :elements) {}])
-                  :style {:cursor "pointer"}}
-              [render-add-arms
-               (+ margin
-                  (* x (+ arms-width
-                          margin))
-                  (+ (/ arms-width 2)))
-               (+ margin
-                  (* y (+ arms-height
-                          margin))
-                  (+ (/ arms-height 2)))
-               arms-width]]))]]]
-      [:div "loading..."])))
+       (when allow-adding?
+         (let [x (mod num-elements num-columns)
+               y (quot num-elements num-columns)]
+           ^{:key num-elements}
+           [:g {:on-click #(state/dispatch-on-event % [:add-element (conj form-db-path :collection :elements) {}])
+                :style {:cursor "pointer"}}
+            [render-add-arms
+             (+ margin
+                (* x (+ arms-width
+                        margin))
+                (+ (/ arms-width 2)))
+             (+ margin
+                (* y (+ arms-height
+                        margin))
+                (+ (/ arms-height 2)))
+             arms-width]]))]]]))
 
 (defn render-arms-preview []
   (when-let [selected-element-index (selected-element-index)]
@@ -224,32 +222,32 @@
                                (state/async-fetch-data
                                 [:arms-references arms-id version]
                                 [arms-id version]
-                                #(arms-select/fetch-arms arms-id version nil)))
-          {:keys [result
-                  environment]} (render/coat-of-arms
-                                 [:context :coat-of-arms]
-                                 100
-                                 (-> shared/coa-select-option-context
-                                     (assoc :root-transform "scale(5,5)")
-                                     (assoc :render-options-path
-                                            (conj form-db-path :render-options))
-                                     (assoc :coat-of-arms
-                                            (if-let [coat-of-arms (:coat-of-arms arms-data)]
-                                              coat-of-arms
-                                              default/coat-of-arms))))
-          {:keys [width height]} environment]
+                                #(arms-select/fetch-arms arms-id version nil)))]
       (when (or (not arms-id)
                 (= status :done))
-        [:<>
-         [:svg {:id "svg"
-                :style {:width "100%"}
-                :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
-                :preserveAspectRatio "xMidYMin meet"}
-          [:g {:transform "translate(10,10)"}
-           result]]
-         (when arms-id
-           [:div.attribution
-            [attribution/for-arms [:context :arms] {:arms arms-data}]])]))))
+        (let [{:keys [result
+                      environment]} (render/coat-of-arms
+                                     [:context :coat-of-arms]
+                                     100
+                                     (-> shared/coa-select-option-context
+                                         (assoc :root-transform "scale(5,5)")
+                                         (assoc :render-options-path
+                                                (conj form-db-path :render-options))
+                                         (assoc :coat-of-arms
+                                                (if-let [coat-of-arms (:coat-of-arms arms-data)]
+                                                  coat-of-arms
+                                                  default/coat-of-arms))))
+              {:keys [width height]} environment]
+          [:<>
+           [:svg {:id "svg"
+                  :style {:width "100%"}
+                  :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
+                  :preserveAspectRatio "xMidYMin meet"}
+            [:g {:transform "translate(10,10)"}
+             result]]
+           (when arms-id
+             [:div.attribution
+              [attribution/for-arms [:context :arms] {:arms arms-data}]])])))))
 
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])

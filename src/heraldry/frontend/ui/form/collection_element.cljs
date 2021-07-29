@@ -8,8 +8,15 @@
   (fn [_ _]
     (rf/subscribe [:get ui-highlighted-element-path]))
 
-  (fn [value [_ _path]]
+  (fn [value _]
     value))
+
+(rf/reg-sub :collection-library-highlighted?
+  (fn [_ _]
+    (rf/subscribe [:get ui-highlighted-element-path]))
+
+  (fn [value [_ path]]
+    (= value path)))
 
 (defn highlight-element [path]
   (rf/dispatch-sync [:set ui-highlighted-element-path path]))
