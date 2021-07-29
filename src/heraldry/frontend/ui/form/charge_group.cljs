@@ -232,61 +232,59 @@
                    nil)
         strips-path (conj path :strips)
         num-strips @(rf/subscribe [:get-list-size strips-path])]
-    [:div {:style {:display "table"
-                   :width "100%"}}
-     [:div {:style {:display "table-row"}}
-      [:div {:style {:display "table-cell"
-                     :vertical-align "top"}}
-       [charge-group-preset-select/charge-group-preset-select path]
-       (for [option [:type
-                     :origin
-                     :spacing
-                     :stretch
-                     :strip-angle
-                     :radius
-                     :arc-angle
-                     :start-angle
-                     :arc-stretch
-                     :rotate-charges?
-                     :slots]]
-         ^{:key option} [ui-interface/form-element (conj path option)])
+    [:<> {:style {:display "table-cell"
+                  :vertical-align "top"}}
+     [charge-group-preset-select/charge-group-preset-select path]
+     (for [option [:origin]]
+       ^{:key option} [ui-interface/form-element (conj path option)])
 
-       (when strip-type?
-         [:div.ui-setting
-          [:label (str type-str "s ")
-           [:button {:on-click #(state/dispatch-on-event % [:add-charge-group-strip strips-path default/charge-group-strip])}
-            [:i.fas.fa-plus] " Add"]]
+     [preview-form path]
 
-          [:div.option.charge-group-strips
-           [:ul
-            (doall
-             (for [idx (range num-strips)]
-               (let [strip-path (conj strips-path idx)]
-                 ^{:key idx}
-                 [:li
-                  [:div.no-select {:style {:padding-right "10px"
-                                           :white-space "nowrap"}}
-                   [:a (if (zero? idx)
-                         {:class "disabled"}
-                         {:on-click #(state/dispatch-on-event % [:move-element strip-path (dec idx)])})
-                    [:i.fas.fa-chevron-up]]
-                   " "
-                   [:a (if (= idx (dec num-strips))
-                         {:class "disabled"}
-                         {:on-click #(state/dispatch-on-event % [:move-element strip-path (inc idx)])})
-                    [:i.fas.fa-chevron-down]]]
-                  [:div
-                   [strip-form strip-path type-str]]
-                  [:div {:style {:padding-left "10px"}}
-                   [:a (if (< num-strips 2)
-                         {:class "disabled"}
-                         {:on-click #(state/dispatch-on-event % [:remove-element strip-path])})
-                    [:i.far.fa-trash-alt]]]])))]]])
+     (for [option [:type
+                   :spacing
+                   :stretch
+                   :strip-angle
+                   :radius
+                   :arc-angle
+                   :start-angle
+                   :arc-stretch
+                   :rotate-charges?
+                   :slots]]
+       ^{:key option} [ui-interface/form-element (conj path option)])
 
-       [ui-interface/form-element (conj path :manual-blazon)]]
-      [:div {:style {:display "table-cell"
-                     :vertical-align "top"}}
-       [preview-form path]]]]))
+     (when strip-type?
+       [:div.ui-setting
+        [:label (str type-str "s ")
+         [:button {:on-click #(state/dispatch-on-event % [:add-charge-group-strip strips-path default/charge-group-strip])}
+          [:i.fas.fa-plus] " Add"]]
+
+        [:div.option.charge-group-strips
+         [:ul
+          (doall
+           (for [idx (range num-strips)]
+             (let [strip-path (conj strips-path idx)]
+               ^{:key idx}
+               [:li
+                [:div.no-select {:style {:padding-right "10px"
+                                         :white-space "nowrap"}}
+                 [:a (if (zero? idx)
+                       {:class "disabled"}
+                       {:on-click #(state/dispatch-on-event % [:move-element strip-path (dec idx)])})
+                  [:i.fas.fa-chevron-up]]
+                 " "
+                 [:a (if (= idx (dec num-strips))
+                       {:class "disabled"}
+                       {:on-click #(state/dispatch-on-event % [:move-element strip-path (inc idx)])})
+                  [:i.fas.fa-chevron-down]]]
+                [:div
+                 [strip-form strip-path type-str]]
+                [:div {:style {:padding-left "10px"}}
+                 [:a (if (< num-strips 2)
+                       {:class "disabled"}
+                       {:on-click #(state/dispatch-on-event % [:remove-element strip-path])})
+                  [:i.far.fa-trash-alt]]]])))]]])
+
+     [ui-interface/form-element (conj path :manual-blazon)]]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/charge-group [path]
   (let [num-charges @(rf/subscribe [:get-list-size (conj path :charges)])]
