@@ -45,12 +45,12 @@
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (rf/dispatch-sync [:clear-form-message form-db-path])
     (try
-      (let [payload @(rf/subscribe [:get form-db-path])
+      (let [payload @(rf/subscribe [:get-value form-db-path])
             user-data (user/data)
             response (<? (api-request/call :save-collection payload user-data))
             collection-id (-> response :collection-id)]
         (rf/dispatch-sync [:set (conj form-db-path :id) collection-id])
-        (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
+        (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get-value form-db-path])])
         (state/invalidate-cache-without-current form-db-path [collection-id nil])
         (state/invalidate-cache-without-current form-db-path [collection-id 0])
         (rf/dispatch-sync [:set list-db-path nil])
@@ -86,7 +86,7 @@
 
 (defn render-arms [x y size path & {:keys [selected? font font-size]
                                     :or {font-size 12}}]
-  (let [data @(rf/subscribe [:get path])
+  (let [data @(rf/subscribe [:get-value path])
         {arms-id :id
          version :version} (:reference data)
         [_status arms-data] (when arms-id
@@ -254,7 +254,7 @@
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
-        collection-data @(rf/subscribe [:get form-db-path])
+        collection-data @(rf/subscribe [:get-value form-db-path])
         user-data (user/data)
         logged-in? (:logged-in? user-data)
         saved? (:id collection-data)

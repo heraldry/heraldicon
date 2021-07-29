@@ -55,7 +55,7 @@
 (defn field-type-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(let [;; TODO: this should move into the event handler
                                          field-path (vec (drop-last path))
-                                         field @(rf/subscribe [:get field-path])
+                                         field @(rf/subscribe [:get-value field-path])
                                          new-field (assoc field :type key)
                                          {:keys [num-fields-x
                                                  num-fields-y

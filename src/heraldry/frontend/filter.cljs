@@ -52,10 +52,10 @@
         filter-tags-path (conj filter-path :filter-tags)
         filter-access-path (conj filter-path :filter-access)
         filter-own-path (conj filter-path :filter-own)
-        filter-string @(rf/subscribe [:get filter-string-path])
-        filter-tags @(rf/subscribe [:get filter-tags-path])
-        filter-access @(rf/subscribe [:get filter-access-path])
-        filter-own @(rf/subscribe [:get filter-own-path])
+        filter-string @(rf/subscribe [:get-value filter-string-path])
+        filter-tags @(rf/subscribe [:get-value filter-tags-path])
+        filter-access @(rf/subscribe [:get-value filter-access-path])
+        filter-own @(rf/subscribe [:get-value filter-own-path])
         filtered-items (filter-items user-data
                                      all-items
                                      filter-keys
