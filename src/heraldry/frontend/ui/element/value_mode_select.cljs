@@ -54,10 +54,13 @@
      (when (seq menu)
        [:div {:style {:display "inline-block"
                       :margin-left "0.5em"
-                      :position "absolute"}}
-        [hover-menu/hover-menu
-         path
-         "Mode"
-         menu
-         [:i.ui-icon {:class "fas fa-cog"}]
-         :disabled? disabled?]])]))
+                      :position "relative"
+                      :width "1em"
+                      :top "-1em"}}
+        [:div {:style {:position "absolute"}}
+         [hover-menu/hover-menu
+          path
+          "Mode"
+          menu
+          [:i.ui-icon {:class "fas fa-cog"}]
+          :disabled? disabled?]]])]))
