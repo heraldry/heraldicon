@@ -239,7 +239,7 @@
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
-                 :grid-template-columns "[start] auto [first] 33% [second] 25% [end]"
+                 :grid-template-columns "[start] auto [first] minmax(33em, 33%) [second] minmax(10em, 25%) [end]"
                  :grid-template-rows "[top] 100% [bottom]"
                  :grid-template-areas "'left middle right'"
                  :padding-left "10px"
