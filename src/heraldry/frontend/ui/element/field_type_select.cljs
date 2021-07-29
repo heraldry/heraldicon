@@ -83,7 +83,7 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path "Select Division" (get field-options/field-map value) {:width "21.5em"}
+        [submenu/submenu path "Select Division" (get field-options/field-map value) {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
            [field-type-choice path key display-name :selected? (= key value)])]

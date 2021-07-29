@@ -32,7 +32,7 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path "Select Tincture" (get tincture/tincture-map value) {:width "22em"}
+        [submenu/submenu path "Select Tincture" (get tincture/tincture-map value) {:style {:width "22em"}}
          (doall
           (for [[group-name & group] choices]
             ^{:key group-name}

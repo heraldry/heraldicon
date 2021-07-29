@@ -33,7 +33,7 @@
   (fn [db [_ path]]
     (assoc-in db (conj state/ui-submenu-open?-path path) false)))
 
-(defn submenu [path title link-name styles & content]
+(defn submenu [path title link-name extra & content]
   (let [submenu-id path
         submenu-open? @(rf/subscribe [:ui-submenu-open? submenu-id])]
     [:div.ui-submenu-setting {:style {:display "inline-block"}
@@ -41,7 +41,7 @@
      [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-open submenu-id])}
       link-name]
      (when submenu-open?
-       [:div.ui-component.ui-submenu {:style styles}
+       [:div.ui-component.ui-submenu extra
         [:div.ui-component-header [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-close submenu-id])}
                                    [:i.far.fa-times-circle]]
          " " title]

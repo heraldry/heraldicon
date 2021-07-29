@@ -28,7 +28,7 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path "Select Line Type" (get line/line-map value) {:width "24em"}
+        [submenu/submenu path "Select Line Type" (get line/line-map value) {:style {:width "24em"}}
          (for [[display-name key] choices]
            ^{:key display-name}
            [line-type-choice path key display-name :selected? (= key value)])]

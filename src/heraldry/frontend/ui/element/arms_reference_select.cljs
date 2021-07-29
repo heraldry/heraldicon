@@ -29,7 +29,7 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path "Select Arms" arms-title {}
+        [submenu/submenu path "Select Arms" arms-title nil
          [arms-select/list-arms (link-to-arms path)]]]])))
 
 (defmethod interface/form-element :arms-reference-select [path]
