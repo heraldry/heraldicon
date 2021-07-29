@@ -32,7 +32,7 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path "Select Colour Theme" (get tincture/theme-map value) {:width "22em"}
+        [submenu/submenu path "Select Colour Theme" (get tincture/theme-map value) {:style {:width "22em"}}
          (for [[group-name & group] choices]
            ^{:key group-name}
            [:<>

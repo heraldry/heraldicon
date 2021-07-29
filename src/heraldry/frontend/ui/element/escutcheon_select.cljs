@@ -29,7 +29,7 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path "Select Escutcheon" (get escutcheon/choice-map value) {:width "17.5em"}
+        [submenu/submenu path "Select Escutcheon" (get escutcheon/choice-map value) {:style {:width "17.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
            [escutcheon-choice path key display-name :selected? (= key value)])]

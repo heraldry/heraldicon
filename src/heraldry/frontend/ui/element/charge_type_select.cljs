@@ -39,7 +39,7 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path "Select Charge" (charge/title charge-path {}) {:width "21.5em"}
+        [submenu/submenu path "Select Charge" (charge/title charge-path {}) {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
            [charge-type-choice path key display-name :selected? (= key value)])

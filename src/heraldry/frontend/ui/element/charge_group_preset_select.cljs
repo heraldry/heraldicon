@@ -38,7 +38,7 @@
   [:div.ui-setting
    [:label "Presets"]
    [:div.option
-    [submenu/submenu path "Select Charge Group Preset" "Select" {:width "22em"}
+    [submenu/submenu path "Select Charge Group Preset" "Select" {:style {:width "22em"}}
      (for [[group-name & group] charge-group/presets]
        ^{:key group-name}
        [:<>
