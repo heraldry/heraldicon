@@ -9,7 +9,7 @@
 (defn mandatory-part-count [path context]
   (let [field-type (-> (interface/get-raw-data (conj path :type) context)
                        name keyword)
-        num-base-fields (interface/get-sanitized-data (conj path :type) context)]
+        num-base-fields (interface/get-sanitized-data (conj path :num-base-fields) context)]
     (if num-base-fields
       num-base-fields
       (case field-type
