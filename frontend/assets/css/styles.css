@@ -171,16 +171,14 @@ label div {
 }
 
 .blazonry {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
   margin-bottom: 1em;
+  margin-top: 5px;
 }
 
 .blazonry .blazon {
   font-size: 1.2em;
   font-style: italic;
-  margin-top: 5px;
+  padding: 0 10px;
 }
 
 .blazonry .disclaimer {

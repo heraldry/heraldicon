@@ -71,7 +71,7 @@
 
 (defn blazonry []
   [:div.blazonry
-   [:span.disclaimer "Blazon (very rudimentary, very beta)"]
+   [:h3 "Blazon" [:span {:style {:font-size "0.75em"}} " (beta, not complete)"]]
    [:div.blazon
     (interface/blazon (conj form-db-path :coat-of-arms) {})]])
 
@@ -252,13 +252,13 @@
          :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
    [:div.no-scrollbar {:style {:grid-area "left"
                                :overflow-y "scroll"}}
-    [render-coat-of-arms]
-    [blazonry]]
+    [render-coat-of-arms]]
    [:div.no-scrollbar {:style {:grid-area "middle"
                                :padding-top "10px"
                                :position "relative"}}
     [ui/selected-component]
     [button-row]
+    [blazonry]
     [attribution]]
    [:div.no-scrollbar {:style {:grid-area "right"
                                :overflow-y "scroll"
