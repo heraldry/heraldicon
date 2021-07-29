@@ -52,9 +52,9 @@
   (util/choices->map anchor-point-choices))
 
 (def alignment-choices
-  [["Left edge" :left]
+  [["Left" :left]
    ["Middle" :middle]
-   ["Right edge" :right]])
+   ["Right" :right]])
 
 (def alignment-map
   (util/choices->map alignment-choices))
