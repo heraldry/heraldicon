@@ -48,7 +48,7 @@
               :transform (str "translate(" spot-width "," spot-height ") scale(" scale "," scale ")")}]]]))
 
 (def void
-  (let [width 22.22222222
+  (let [width 20
         height width
         dx (/ width 2)
         dy (/ height 2)]
