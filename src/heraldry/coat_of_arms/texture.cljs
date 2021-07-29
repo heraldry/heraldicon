@@ -35,11 +35,15 @@
               [key path]))
        (into {})))
 
+(def displacements
+  (->> textures
+       (map (fn [[_display-name key _path displacement]]
+              [key displacement]))
+       (into {})))
+
 (defn displacement [texture]
-  (get (->> textures
-            (map (fn [[_display-name key _path displacement]]
-                   [key displacement]))
-            (into {})) texture))
+  (some->> texture
+           (get displacements)))
 
 (defn full-path [texture]
   (some->> texture

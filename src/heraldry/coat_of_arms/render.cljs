@@ -38,8 +38,6 @@
                         (cond->
                          squiggly? (update :shape svg/squiggly-path)))
         mask-id (util/id "mask")
-        texture (when-not (= texture :none)
-                  texture)
         texture-id (util/id "texture")
         shiny-id (util/id "shiny")
         texture-link (or texture-link (texture/full-path texture))]
