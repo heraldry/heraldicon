@@ -215,7 +215,8 @@
                    (when-not (zero? offset)
                      ", offset"))]
     [:div {:style {:position "relative"}}
-     [submenu/submenu path type-str title {:style {:width "22em"}}
+     [submenu/submenu path type-str title {:style {:width "20em"}
+                                           :class "submenu-strip-form"}
       (for [option [:slots
                     :stretch
                     :offset]]

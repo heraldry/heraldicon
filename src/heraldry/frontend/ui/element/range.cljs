@@ -44,7 +44,8 @@
                                                value)]
                                    (if on-change
                                      (on-change value)
-                                     (rf/dispatch [:set path value])))}]
+                                     (rf/dispatch [:set path value])))
+                     :style {:width "10em"}}]
             [:input {:type "text"
                      :value (if @focused?
                               @tmp-value

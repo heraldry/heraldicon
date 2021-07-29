@@ -33,7 +33,8 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path label link-name {:style {:width "35em"}}
+        [submenu/submenu path label link-name {:style {:width "22em"}
+                                               :class "submenu-position"}
          (for [option [:point
                        :alignment
                        :angle

@@ -700,8 +700,29 @@ li.nav-menu-item a:hover {
 
 .ui-setting > label {
   display: inline-block;
-  width: 13em;
+  width: 10em;
   vertical-align: top;
+}
+
+.submenu-field-layout label,
+.submenu-semy-layout label,
+.submenu-tincture-modifiers label,
+.submenu-fimbriation label,
+.submenu-attribution label {
+  width: 8em;
+}
+
+.submenu-line label {
+  width: 9em;
+}
+
+.submenu-geometry label {
+  width: 5em;
+}
+
+.submenu-position label,
+.submenu-strip-form label {
+  width: 6em;
 }
 
 .ui-setting > label.for-checkbox {

@@ -37,7 +37,8 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path label link-name {:style {:width "30em"}}
+        [submenu/submenu path label link-name {:style {:width "19em"}
+                                               :class "submenu-geometry"}
          (for [option [:width
                        :thickness
                        :size-mode

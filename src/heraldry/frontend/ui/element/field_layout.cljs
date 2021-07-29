@@ -77,7 +77,8 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path label link-name {:style {:width "25em"}}
+        [submenu/submenu path label link-name {:style {:width "22em"}
+                                               :class "submenu-field-layout"}
          (for [option [:num-base-fields
                        :num-fields-x
                        :num-fields-y
