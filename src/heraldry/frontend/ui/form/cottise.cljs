@@ -1,6 +1,5 @@
 (ns heraldry.frontend.ui.form.cottise
-  (:require [heraldry.coat-of-arms.field.core :as field]
-            [heraldry.frontend.ui.interface :as interface]
+  (:require [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
 (defn form [path _]
@@ -40,8 +39,7 @@
         (get cottise-key))))
 
 (defmethod interface/component-node-data :heraldry.component/cottise [path]
-  {:title (str "Cottise " (cottise-name path) ": "
-               (field/title (conj path :field) {}))
+  {:title (str "Cottise " (cottise-name path))
    :nodes [{:path (conj path :field)}]})
 
 (defmethod interface/component-form-data :heraldry.component/cottise [_path]
