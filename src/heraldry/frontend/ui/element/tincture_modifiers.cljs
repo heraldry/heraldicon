@@ -86,7 +86,8 @@
            [:div.option
             (if (empty? supported-tinctures)
               [:span.disabled "not supported by charge"]
-              [submenu/submenu path label link-name {:style {:width "30em"}}
+              [submenu/submenu path label link-name {:style {:width "22em"}
+                                                     :class "submenu-tincture-modifiers"}
                [:div.placeholders
                 (when (get supported-tinctures :shadow)
                   [range/range-input

@@ -33,7 +33,8 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path label link-name {:style {:width "30em"}}
+        [submenu/submenu path label link-name {:style {:width "29em"}
+                                               :class "submenu-attribution"}
          [:<>
           (for [option [:nature
                         :license

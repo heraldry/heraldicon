@@ -36,7 +36,8 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path label link-name {:style {:width "30em"}}
+        [submenu/submenu path label link-name {:style {:width "22em"}
+                                               :class "submenu-semy-layout"}
          (for [option [:num-fields-x
                        :num-fields-y
                        :offset-x
