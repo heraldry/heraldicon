@@ -170,7 +170,8 @@
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
-        arms-data @(rf/subscribe [:get-value form-db-path])
+        arms-id @(rf/subscribe [:get-value (conj form-db-path :id)])
+        arms-username @(rf/subscribe [:get-value (conj form-db-path :username)])
         user-data (user/data)
         logged-in? (:logged-in? user-data)
         unsaved-changes? (not= (-> @(rf/subscribe [:get-value form-db-path])
@@ -179,8 +180,8 @@
                                    (dissoc :render-options)))
         can-export? (and logged-in?
                          (not unsaved-changes?))
-        saved? (:id arms-data)
-        owned-by-me? (= (:username user-data) (:username arms-data))
+        saved? arms-id
+        owned-by-me? (= (:username user-data) arms-username)
         can-copy? (and logged-in?
                        saved?
                        owned-by-me?)
@@ -214,7 +215,7 @@
                        :style {:flex "initial"
                                :margin-right "10px"}}
        "PNG"]
-      (when (:id arms-data)
+      (when arms-id
         [:button.button {:style {:flex "initial"
                                  :color "#777"}
                          :on-click share-button-clicked}

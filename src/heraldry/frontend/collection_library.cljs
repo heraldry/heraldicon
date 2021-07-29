@@ -250,11 +250,12 @@
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
-        collection-data @(rf/subscribe [:get-value form-db-path])
+        collection-id @(rf/subscribe [:get-value (conj form-db-path :id)])
+        collection-username @(rf/subscribe [:get-value (conj form-db-path :username)])
         user-data (user/data)
         logged-in? (:logged-in? user-data)
-        saved? (:id collection-data)
-        owned-by-me? (= (:username user-data) (:username collection-data))
+        saved? collection-id
+        owned-by-me? (= (:username user-data) collection-username)
         can-save? (and logged-in?
                        (or (not saved?)
                            owned-by-me?))]
