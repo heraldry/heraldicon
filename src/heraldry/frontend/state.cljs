@@ -348,7 +348,7 @@
                                           (into {}))))))
 
 (defmethod interface/get-sanitized-data :state [path _context]
-  @(rf/subscribe [:get-sanitized-value path]))
+  @(rf/subscribe [:get-sanitized-data path]))
 
 (defmethod interface/get-raw-data :state [path _context]
   @(rf/subscribe [:get-value path]))

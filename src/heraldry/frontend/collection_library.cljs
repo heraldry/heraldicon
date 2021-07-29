@@ -145,7 +145,7 @@
 (defn render-collection [& {:keys [allow-adding?]}]
   (let [font (some-> @(rf/subscribe [:get-value (conj form-db-path :font)])
                      font/css-string)
-        num-columns @(rf/subscribe [:get-sanitized-value (conj form-db-path :collection :num-columns)])
+        num-columns @(rf/subscribe [:get-sanitized-data (conj form-db-path :collection :num-columns)])
         num-elements @(rf/subscribe [:get-list-size (conj form-db-path :collection :elements)])
         name @(rf/subscribe [:get-value (conj form-db-path :name)])
         num-rows (inc (quot num-elements
