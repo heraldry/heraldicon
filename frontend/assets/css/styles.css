@@ -827,9 +827,10 @@ li.ui-menu-header {
 .tooltip:hover .bottom {
   visibility: visible;
   opacity: 1;
+  white-space: normal;
 }
 
-.tooltip .bottom i {
+.tooltip .bottom > i {
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -839,7 +840,7 @@ li.ui-menu-header {
   overflow: hidden;
 }
 
-.tooltip .bottom i::after {
+.tooltip .bottom > i::after {
   content: "";
   position: absolute;
   width: 12px;

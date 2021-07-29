@@ -114,6 +114,7 @@
                                   (rf/dispatch-sync [:set cottise-path default/cottise])
                                   (state/dispatch-on-event % [:ui-component-node-select cottise-path {:open? true}]))}))]
     {:title (ordinary/title path {})
+     :validation @(rf/subscribe [:validate-ordinary path])
      :buttons [{:icon "fas fa-plus"
                 :title "Add"
                 :disabled? (empty? menu)
