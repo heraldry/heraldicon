@@ -237,15 +237,15 @@
                                                   default/coat-of-arms))))
               {:keys [width height]} environment]
           [:<>
+           (when arms-id
+             [:div.attribution
+              [attribution/for-arms [:context :arms] {:arms arms-data}]])
            [:svg {:id "svg"
                   :style {:width "100%"}
                   :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
                   :preserveAspectRatio "xMidYMin meet"}
             [:g {:transform "translate(10,10)"}
-             result]]
-           (when arms-id
-             [:div.attribution
-              [attribution/for-arms [:context :arms] {:arms arms-data}]])])))))
+             result]]])))))
 
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
