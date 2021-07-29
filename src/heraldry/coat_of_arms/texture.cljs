@@ -1,8 +1,9 @@
 (ns heraldry.coat-of-arms.texture
-  (:require [heraldry.util :as util]))
+  (:require [heraldry.config :as config]
+            [heraldry.util :as util]))
 
 (def textures
-  [["None" :none "" 0]
+  [["None" :none nil 0]
    ["Cloth (rough)" :cloth-rough "/textures/cloth-rough.jpg" 1]
    ["Cloth (smooth)" :cloth-smooth "/textures/cloth-smooth.jpg" 1]
    ["Felt" :felt "/textures/felt.jpg" 1]
@@ -28,14 +29,19 @@
 (def texture-map
   (util/choices->map choices))
 
-(def paths
+(def relative-paths
   (->> textures
        (map (fn [[_display-name key path _displacement]]
               [key path]))
        (into {})))
 
-(def displacements
-  (->> textures
-       (map (fn [[_display-name key _path displacement]]
-              [key displacement]))
-       (into {})))
+(defn displacement [texture]
+  (get (->> textures
+            (map (fn [[_display-name key _path displacement]]
+                   [key displacement]))
+            (into {})) texture))
+
+(defn full-path [texture]
+  (some->> texture
+           (get relative-paths)
+           (str (config/get :static-files-url))))

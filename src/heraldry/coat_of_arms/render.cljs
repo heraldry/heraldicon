@@ -42,7 +42,7 @@
                   texture)
         texture-id (util/id "texture")
         shiny-id (util/id "shiny")
-        use-texture? (or texture-link texture)]
+        texture-link (or texture-link (texture/full-path texture))]
     {:environment environment
      :result [:g {:filter (when escutcheon-shadow?
                             "url(#shadow)")}
@@ -65,9 +65,9 @@
                                   :k2 0
                                   :k3 0
                                   :k4 0}]])
-                (when use-texture?
+                (when texture-link
                   [:filter {:id texture-id}
-                   [:feImage {:href (or texture-link (get texture/paths texture))
+                   [:feImage {:href texture-link
                               :x 0
                               :y 0
                               :width 150
@@ -77,7 +77,7 @@
                    (when texture-displacement?
                      [:feDisplacementMap {:in "SourceGraphic"
                                           :in2 "image"
-                                          :scale (get texture/displacements texture)
+                                          :scale (texture/displacement texture)
                                           :xChannelSelector "R"
                                           :yChannelSelector "R"
                                           :result "displaced"}])
@@ -106,7 +106,7 @@
                [:g {(if svg-export?
                       :mask
                       :clip-path) (str "url(#" mask-id ")")}
-                [:g {:filter (when use-texture? (str "url(#" texture-id ")"))}
+                [:g {:filter (when texture-link (str "url(#" texture-id ")"))}
                  [:g {:filter (when shiny?
                                 (str "url(#" shiny-id ")"))}
                   [:path {:d (:shape environment)
