@@ -266,14 +266,15 @@
      (when error-message
        [:div.error-message error-message])
 
-     [:div.buttons {:style {:display "flex"
-                            :gap "10px"}}
-      [:div {:style {:flex 10}}]
+     [:div.buttons {:style {:display "flex"}}
+      [:div {:style {:flex "auto"}}]
       [:button.button.primary {:type "submit"
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
                                            save-collection-clicked
-                                           #(js/alert "Need to be logged in and own the collection."))}
+                                           #(js/alert "Need to be logged in and own the collection."))
+                               :style {:flex "initial"
+                                       :margin-left "10px"}}
        "Save"]]]))
 
 (defn collection-form []

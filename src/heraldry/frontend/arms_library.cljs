@@ -193,8 +193,7 @@
      (when error-message
        [:div.error-message error-message])
 
-     [:div.buttons {:style {:display "flex"
-                            :gap "10px"}}
+     [:div.buttons {:style {:display "flex"}}
       [:button.button {:type "button"
                        :class (when-not can-export? "disabled")
                        :on-click (if can-export?
@@ -202,8 +201,9 @@
                                    (if (not logged-in?)
                                      #(js/alert "Need to be logged in")
                                      #(js/alert "Save your changes first")))
-                       :style {:flex 1}}
-       "SVG Link"]
+                       :style {:flex "initial"
+                               :margin-right "10px"}}
+       "SVG"]
       [:button.button {:type "button"
                        :class (when-not can-export? "disabled")
                        :on-click (if can-export?
@@ -211,18 +211,21 @@
                                    (if (not logged-in?)
                                      #(js/alert "Need to be logged in")
                                      #(js/alert "Save your changes first")))
-                       :style {:flex 1}}
-       "PNG Link"]
-      [:div {:style {:flex 10}}]
+                       :style {:flex "initial"
+                               :margin-right "10px"}}
+       "PNG"]
       (when (:id arms-data)
-        [:button.button {:style {:flex 1
-                                 :color "#777"}
+        [:button.button {:style {:flex "initial"
+                                 :color "#777"
+                                 :margin-right "10px"}
                          :on-click share-button-clicked}
          [:i.fas.fa-share-alt]])
+      [:div {:style {:flex "auto"}}]
       [:button.button
        {:type "button"
         :class (when-not can-copy? "disabled")
-        :style {:flex 1}
+        :style {:flex "initial"
+                :margin-left "10px"}
         :on-click (if can-copy?
                     copy-to-new-clicked
                     #(js/alert "Need to be logged in and arms must be saved."))}
@@ -231,7 +234,9 @@
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
                                            save-arms-clicked
-                                           #(js/alert "Need to be logged in and own the arms."))}
+                                           #(js/alert "Need to be logged in and own the arms."))
+                               :style {:flex "initial"
+                                       :margin-left "10px"}}
        "Save"]]]))
 
 (defn arms-form []
@@ -239,7 +244,7 @@
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
-                 :grid-template-columns "[start] auto [first] minmax(33em, 33%) [second] minmax(10em, 25%) [end]"
+                 :grid-template-columns "[start] auto [first] minmax(28em, 33%) [second] minmax(10em, 25%) [end]"
                  :grid-template-rows "[top] 100% [bottom]"
                  :grid-template-areas "'left middle right'"
                  :padding-left "10px"
@@ -252,7 +257,9 @@
     [blazonry]]
    [:div.no-scrollbar {:style {:grid-area "middle"
                                :overflow-y "scroll"
-                               :padding-top "10px"}}
+                               :overflow-x "auto"
+                               :padding-top "10px"
+                               :position "relative"}}
     [ui/selected-component]
     [button-row]
     [attribution]]
