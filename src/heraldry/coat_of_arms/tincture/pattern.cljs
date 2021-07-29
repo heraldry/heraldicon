@@ -48,24 +48,28 @@
               :transform (str "translate(" spot-width "," spot-height ") scale(" scale "," scale ")")}]]]))
 
 (def void
-  [:pattern#void {:width 20
-                  :height 20
-                  :pattern-units "userSpaceOnUse"}
-   [:rect {:x 0
-           :y 0
-           :width 20
-           :height 20
-           :fill "#fff"}]
-   [:rect {:x 0
-           :y 0
-           :width 10
-           :height 10
-           :fill "#ddd"}]
-   [:rect {:x 10
-           :y 10
-           :width 10
-           :height 10
-           :fill "#ddd"}]])
+  (let [width 22.22222222
+        height width
+        dx (/ width 2)
+        dy (/ height 2)]
+    [:pattern#void {:width width
+                    :height height
+                    :pattern-units "userSpaceOnUse"}
+     [:rect {:x 0
+             :y 0
+             :width width
+             :height height
+             :fill "#fff"}]
+     [:rect {:x 0
+             :y 0
+             :width dx
+             :height dy
+             :fill "#ddd"}]
+     [:rect {:x dx
+             :y dy
+             :width dx
+             :height dy
+             :fill "#ddd"}]]))
 
 (def selected
   (let [spacing 2
