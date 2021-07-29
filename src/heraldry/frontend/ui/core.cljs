@@ -43,6 +43,7 @@
             [heraldry.frontend.ui.form.render-options] ;; needed for side effects
             [heraldry.frontend.ui.form.semy] ;; needed for side effects
             [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.frontend.validation :as validation] ;; needed for side effects
             [heraldry.interface :as interface]
             [heraldry.shared] ;; needed for side effects
             [heraldry.util :as util]
@@ -131,7 +132,8 @@
                 selected?
                 selectable?
                 nodes
-                buttons]} node-data
+                buttons
+                validation]} node-data
         openable? (-> nodes count pos?)
         title (or node-title title)
         buttons (concat buttons parent-buttons)]
@@ -156,6 +158,9 @@
         [:span.node-icon
          [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
       title
+
+      (validation/render validation)
+
       (when (seq buttons)
         (doall
          (for [[idx {:keys [icon menu handler disabled? tooltip title]}] (map-indexed vector buttons)]
