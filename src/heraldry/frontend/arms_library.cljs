@@ -216,8 +216,7 @@
        "PNG"]
       (when (:id arms-data)
         [:button.button {:style {:flex "initial"
-                                 :color "#777"
-                                 :margin-right "10px"}
+                                 :color "#777"}
                          :on-click share-button-clicked}
          [:i.fas.fa-share-alt]])
       [:div {:style {:flex "auto"}}]
@@ -244,7 +243,7 @@
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
-                 :grid-template-columns "[start] auto [first] minmax(28em, 33%) [second] minmax(10em, 25%) [end]"
+                 :grid-template-columns "[start] auto [first] minmax(26em, 33%) [second] minmax(10em, 25%) [end]"
                  :grid-template-rows "[top] 100% [bottom]"
                  :grid-template-areas "'left middle right'"
                  :padding-left "10px"

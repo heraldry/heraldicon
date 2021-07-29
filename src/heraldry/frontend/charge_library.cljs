@@ -297,9 +297,8 @@
              :target "_blank"
              :style {:flex "initial"
                      :padding-top "0.5em"
-                     :white-space "nowrap"
-                     :margin-right "10px"}}
-         "Original SVG"])
+                     :white-space "nowrap"}}
+         "Original"])
       [:div {:style {:flex "auto"}}]
       [:button.button
        {:type "button"
@@ -333,7 +332,7 @@
                                                                      example-coa-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
-                 :grid-template-columns "[start] auto [first] minmax(33em, 33%) [second] minmax(10em, 25%) [end]"
+                 :grid-template-columns "[start] auto [first] minmax(26em, 33%) [second] minmax(10em, 25%) [end]"
                  :grid-template-rows "[top] 100% [bottom]"
                  :grid-template-areas "'left middle right'"
                  :padding-left "10px"
