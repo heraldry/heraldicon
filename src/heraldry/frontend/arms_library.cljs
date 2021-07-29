@@ -255,8 +255,6 @@
     [render-coat-of-arms]
     [blazonry]]
    [:div.no-scrollbar {:style {:grid-area "middle"
-                               :overflow-y "scroll"
-                               :overflow-x "auto"
                                :padding-top "10px"
                                :position "relative"}}
     [ui/selected-component]

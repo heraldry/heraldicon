@@ -735,7 +735,7 @@ li.nav-menu-item a:hover {
 }
 
 .ui-submenu {
-  position: fixed;
+  position: absolute;
   width: 25em;
   min-height: 3em;
   z-index: 2;
@@ -757,7 +757,7 @@ li.nav-menu-item a:hover {
 }
 
 .ui-hover-menu .ui-menu {
-  position: fixed;
+  position: absolute;
   display: none;
   background-color: #fff;
   border: 1px solid #ddd;

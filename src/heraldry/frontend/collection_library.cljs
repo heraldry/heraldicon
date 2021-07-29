@@ -293,7 +293,6 @@
                                :overflow-y "scroll"}}
     [render-collection :allow-adding? true]]
    [:div.no-scrollbar {:style {:grid-area "middle"
-                               :overflow-y "scroll"
                                :padding-top "10px"}}
     [ui/selected-component]
     [button-row]
