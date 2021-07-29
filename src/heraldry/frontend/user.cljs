@@ -26,7 +26,7 @@
 (declare password-reset-confirmation-modal)
 
 (defn text-field [db-path function]
-  (let [value @(rf/subscribe [:get db-path])
+  (let [value @(rf/subscribe [:get-value db-path])
         error @(rf/subscribe [:get-form-error db-path])]
     [:div {:class (when error "error")}
      (when error
@@ -35,7 +35,7 @@
                :on-change #(let [new-value (-> % .-target .-value)]
                              (rf/dispatch-sync [:set db-path new-value])))]))
 (defn data []
-  @(rf/subscribe [:get user-db-path]))
+  @(rf/subscribe [:get-value user-db-path]))
 
 (defn read-session-data []
   (let [session-id (get-item local-storage local-storage-session-id-name)
@@ -71,7 +71,7 @@
 
 (defn login-clicked [db-path]
   (modal/start-loading)
-  (let [{:keys [username password]} @(rf/subscribe [:get db-path])]
+  (let [{:keys [username password]} @(rf/subscribe [:get-value db-path])]
     (rf/dispatch-sync [:clear-form-errors db-path])
     (cognito/login username
                    password
@@ -95,7 +95,7 @@
                                                (change-temporary-password-modal)
                                                (modal/stop-loading)))))
 (defn forgotten-password-clicked [db-path]
-  (let [{:keys [username]} @(rf/subscribe [:get db-path])]
+  (let [{:keys [username]} @(rf/subscribe [:get-value db-path])]
     (rf/dispatch-sync [:clear-form-errors db-path])
     (if (-> username
             count
@@ -167,7 +167,7 @@
        "Login"]]]))
 
 (defn sign-up-clicked [db-path]
-  (let [{:keys [username email password password-again]} @(rf/subscribe [:get db-path])]
+  (let [{:keys [username email password password-again]} @(rf/subscribe [:get-value db-path])]
     (rf/dispatch-sync [:clear-form-errors])
     (if (not= password password-again)
       (rf/dispatch [:set-form-error (conj db-path :password-again) "Passwords don't match."])
@@ -259,7 +259,7 @@
        "Register"]]]))
 
 (defn confirm-clicked [db-path]
-  (let [{:keys [code]} @(rf/subscribe [:get db-path])
+  (let [{:keys [code]} @(rf/subscribe [:get-value db-path])
         user-data (data)
         user (:user user-data)]
     (rf/dispatch-sync [:clear-form-errors db-path])
@@ -324,7 +324,7 @@
         user (:user user-data)
         user-attributes (:user-attributes user-data)
         {:keys [new-password
-                new-password-again]} @(rf/subscribe [:get db-path])]
+                new-password-again]} @(rf/subscribe [:get-value db-path])]
     (rf/dispatch-sync [:clear-form-errors])
     (if (not= new-password new-password-again)
       (rf/dispatch [:set-form-error (conj db-path :new-password-again) "Passwords don't match."])
@@ -395,7 +395,7 @@
 (defn reset-password-clicked [db-path]
   (let [{:keys [code
                 new-password
-                new-password-again]} @(rf/subscribe [:get db-path])
+                new-password-again]} @(rf/subscribe [:get-value db-path])
         user-data (data)
         user (:user user-data)]
     (rf/dispatch-sync [:clear-form-errors db-path])

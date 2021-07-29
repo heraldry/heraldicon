@@ -149,7 +149,7 @@
                                                       edn-data)))
                      edn-data (-> edn-data
                                   (assoc-in [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")")))]
-                 (let [existing-colours @(rf/subscribe [:get (conj db-path :colours)])
+                 (let [existing-colours @(rf/subscribe [:get-value (conj db-path :colours)])
                        new-colours (merge colours
                                           (select-keys existing-colours
                                                        (set/intersection
@@ -169,7 +169,7 @@
 
 (defn preview []
   (let [{:keys [data]
-         :as form-data} @(rf/subscribe [:get form-db-path])
+         :as form-data} @(rf/subscribe [:get-value form-db-path])
         {:keys [edn-data]} data
         prepared-charge-data (-> form-data
                                  (assoc :data edn-data)
@@ -215,7 +215,7 @@
 (defn save-charge-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
-  (let [payload @(rf/subscribe [:get form-db-path])
+  (let [payload @(rf/subscribe [:get-value form-db-path])
         user-data (user/data)]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (rf/dispatch-sync [:clear-form-message form-db-path])
@@ -239,7 +239,7 @@
 (defn copy-to-new-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
-  (let [charge-data @(rf/subscribe [:get form-db-path])]
+  (let [charge-data @(rf/subscribe [:get-value form-db-path])]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (state/set-async-fetch-data
      form-db-path
@@ -260,7 +260,7 @@
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
-        charge-data @(rf/subscribe [:get form-db-path])
+        charge-data @(rf/subscribe [:get-value form-db-path])
         user-data (user/data)
         logged-in? (:logged-in? user-data)
         saved? (:id charge-data)

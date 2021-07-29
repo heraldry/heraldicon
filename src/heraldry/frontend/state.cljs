@@ -154,9 +154,9 @@
 
 ;; TODO: this should be redone and also live elsewhere probably
 (defn async-fetch-data [db-path query-id async-function]
-  (let [current-query @(rf/subscribe [:get [:async-fetch-data db-path :current]])
-        query @(rf/subscribe [:get [:async-fetch-data db-path :queries query-id]])
-        current-data @(rf/subscribe [:get db-path])]
+  (let [current-query @(rf/subscribe [:get-value [:async-fetch-data db-path :current]])
+        query @(rf/subscribe [:get-value [:async-fetch-data db-path :queries query-id]])
+        current-data @(rf/subscribe [:get-value db-path])]
     (cond
       (not= current-query query-id) (do
                                       (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
@@ -188,7 +188,7 @@
 
 (defn invalidate-cache [db-path query-id]
   (invalidate-cache-without-current db-path query-id)
-  (let [current-query @(rf/subscribe [:get [:async-fetch-data db-path :current]])]
+  (let [current-query @(rf/subscribe [:get-value [:async-fetch-data db-path :current]])]
     (when (= current-query query-id)
       (rf/dispatch-sync [:set [:async-fetch-data db-path :current] nil])
       (rf/dispatch-sync [:set db-path nil]))))
@@ -229,7 +229,7 @@
 (rf/reg-sub :ui-component-node-selected-path
   (fn [_ _]
     [(rf/subscribe [:get ui-component-node-selected-path])
-     (rf/subscribe [:get @(rf/subscribe [:get ui-component-node-selected-path])])
+     (rf/subscribe [:get-value @(rf/subscribe [:get-value ui-component-node-selected-path])])
      (rf/subscribe [:get ui-component-node-selected-default-path])])
 
   (fn [[selected-node-path data default] [_ _path]]

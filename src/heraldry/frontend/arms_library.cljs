@@ -81,9 +81,9 @@
   (modal/start-loading)
   (go
     (try
-      (let [payload (select-keys @(rf/subscribe [:get form-db-path]) [:id
-                                                                      :version
-                                                                      :render-options])
+      (let [payload (select-keys @(rf/subscribe [:get-value form-db-path]) [:id
+                                                                            :version
+                                                                            :render-options])
             user-data (user/data)
             response (<? (api-request/call :generate-svg-arms payload user-data))]
         (js/window.open (:svg-url response))
@@ -98,9 +98,9 @@
   (modal/start-loading)
   (go
     (try
-      (let [payload (select-keys @(rf/subscribe [:get form-db-path]) [:id
-                                                                      :version
-                                                                      :render-options])
+      (let [payload (select-keys @(rf/subscribe [:get-value form-db-path]) [:id
+                                                                            :version
+                                                                            :render-options])
             user-data (user/data)
             response (<? (api-request/call :generate-png-arms payload user-data))]
         (js/window.open (:png-url response))
@@ -120,13 +120,13 @@
     (rf/dispatch-sync [:clear-form-message form-db-path])
     (try
       (modal/start-loading)
-      (let [payload @(rf/subscribe [:get form-db-path])
+      (let [payload @(rf/subscribe [:get-value form-db-path])
             user-data (user/data)
             user-id (:user-id user-data)
             response (<? (api-request/call :save-arms payload user-data))
             arms-id (-> response :arms-id)]
         (rf/dispatch-sync [:set (conj form-db-path :id) arms-id])
-        (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
+        (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get-value form-db-path])])
         (state/invalidate-cache-without-current form-db-path [arms-id nil])
         (state/invalidate-cache-without-current form-db-path [arms-id 0])
         (rf/dispatch-sync [:set arms-select/list-db-path nil])
@@ -143,7 +143,7 @@
 (defn copy-to-new-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
-  (let [arms-data @(rf/subscribe [:get form-db-path])]
+  (let [arms-data @(rf/subscribe [:get-value form-db-path])]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (rf/dispatch-sync [:set saved-data-db-path nil])
     (state/set-async-fetch-data
@@ -170,12 +170,12 @@
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
-        arms-data @(rf/subscribe [:get form-db-path])
+        arms-data @(rf/subscribe [:get-value form-db-path])
         user-data (user/data)
         logged-in? (:logged-in? user-data)
-        unsaved-changes? (not= (-> @(rf/subscribe [:get form-db-path])
+        unsaved-changes? (not= (-> @(rf/subscribe [:get-value form-db-path])
                                    (dissoc :render-options))
-                               (-> @(rf/subscribe [:get saved-data-db-path])
+                               (-> @(rf/subscribe [:get-value saved-data-db-path])
                                    (dissoc :render-options)))
         can-export? (and logged-in?
                          (not unsaved-changes?))
