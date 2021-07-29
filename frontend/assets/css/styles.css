@@ -714,11 +714,11 @@ li.nav-menu-item a:hover {
 }
 
 .ui-submenu {
-  position: absolute;
-  left: -10em;
+  position: fixed;
   width: 25em;
   min-height: 3em;
   z-index: 2;
+  transform: translate(-7em, 0);
 }
 
 .ui-submenu h4 {
