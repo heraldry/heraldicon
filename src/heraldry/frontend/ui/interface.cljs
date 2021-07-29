@@ -59,7 +59,7 @@
   (fn [[relevant-options relative-path] [_ _path]]
     (get-in relevant-options relative-path)))
 
-(rf/reg-sub :get-sanitized-value
+(rf/reg-sub :get-sanitized-data
   (fn [[_ path] _]
     [(rf/subscribe [:get-value path])
      (rf/subscribe [:get-relevant-options path])])

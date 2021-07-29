@@ -206,8 +206,8 @@
 
 (defn strip-form [path type-str]
   (let [num-slots @(rf/subscribe [:get-list-size (conj path :slots)])
-        stretch @(rf/subscribe [:get-sanitized-value (conj path :stretch)])
-        offset @(rf/subscribe [:get-sanitized-value (conj path :offset)])
+        stretch @(rf/subscribe [:get-sanitized-data (conj path :stretch)])
+        offset @(rf/subscribe [:get-sanitized-data (conj path :offset)])
         title (str num-slots
                    " slot" (when (not= num-slots 1) "s")
                    (when-not (= stretch 1)
