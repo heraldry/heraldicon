@@ -28,7 +28,15 @@
                                 (on-change new-checked?)
                                 (rf/dispatch [:set path new-checked?])))}]
        [:label.for-checkbox {:for component-id} label]
-       [value-mode-select/value-mode-select path :disabled? disabled?]])))
+       [value-mode-select/value-mode-select path :disabled? disabled?]
+       (when-let [tooltip (:tooltip ui)]
+         [:div.tooltip.info {:style {:display "inline-block"
+                                     :margin-left "0.2em"
+                                     :vertical-align "top"}}
+          [:i.fas.fa-question-circle]
+          [:div.bottom
+           [:h3 {:style {:text-align "center"}} tooltip]
+           [:i]]])])))
 
 (defmethod interface/form-element :checkbox [path]
   [checkbox path])

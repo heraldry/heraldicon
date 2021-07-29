@@ -24,7 +24,8 @@
 (defn form [path _]
   [:<>
    (for [option [:name
-                 :reference]]
+                 :reference
+                 :pin-reference?]]
      ^{:key option} [interface/form-element (conj path option)])])
 
 (defmethod interface/component-node-data :heraldry.component/collection-element [path]
