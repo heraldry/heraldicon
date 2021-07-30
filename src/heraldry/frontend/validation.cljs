@@ -24,22 +24,36 @@
 
 (rf/reg-sub :field-tinctures-for-validation
   (fn [[_ path] _]
-    [(rf/subscribe [:get-sanitized-data (conj path :tincture)])
+    [(rf/subscribe [:get-sanitized-data (conj path :type)])
+     (rf/subscribe [:get-sanitized-data (conj path :tincture)])
+     (rf/subscribe [:get-sanitized-data (conj path :fields 0 :type)])
      (rf/subscribe [:get-sanitized-data (conj path :fields 0 :tincture)])
+     (rf/subscribe [:get-sanitized-data (conj path :fields 1 :type)])
      (rf/subscribe [:get-sanitized-data (conj path :fields 1 :tincture)])])
 
-  (fn [[tincture
+  (fn [[field-type
+        tincture
+        subfield-1-type
         subfield-1-tincture
+        subfield-2-type
         subfield-2-tincture] [_ _path]]
-    (cond-> #{}
-      tincture (conj tincture)
-      subfield-1-tincture (conj subfield-1-tincture)
-      subfield-2-tincture (conj subfield-2-tincture)
-         ;; at least one of the subfields is not a plain field, but we'll stop here, only
-         ;; report that there's more with the magical :mixed tincture
-      (and (not tincture)
-           (or (not subfield-1-tincture)
-               (not subfield-2-tincture))) (conj :mixed))))
+    (let [field-type (some-> field-type name keyword)
+          subfield-1-type (some-> subfield-1-type name keyword)
+          subfield-2-type (some-> subfield-2-type name keyword)]
+      (when field-type
+        (cond-> #{}
+          (= field-type :plain) (conj tincture)
+          (and (not= field-type :plain)
+               (= subfield-1-type :plain)
+               subfield-1-tincture) (conj subfield-1-tincture)
+          (and (not= field-type :plain)
+               (= subfield-2-type :plain)
+               subfield-2-tincture) (conj subfield-2-tincture)
+          ;; at least one of the subfields is not a plain field, but we'll stop here, only
+          ;; report that there's more with the magical :mixed tincture
+          (and (= field-type :plain)
+               (or (not= subfield-1-type :plain)
+                   (not= subfield-2-type :plain))) (conj :mixed))))))
 
 (rf/reg-sub :fimbriation-tinctures-for-validation
   (fn [[_ path] _]
