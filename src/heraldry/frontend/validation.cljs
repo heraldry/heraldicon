@@ -1,5 +1,6 @@
 (ns heraldry.frontend.validation
-  (:require [heraldry.coat-of-arms.tincture.core :as tincture]
+  (:require [clojure.string :as s]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.interface :as interface]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
@@ -265,6 +266,67 @@
         (and (#{:bendy :bendy-sinister} field-type)
              (odd? num-fields-y)) (conj {:level :warning
                                          :message "Bendy should have an even number of fields, for an odd number use bends."})))))
+
+(rf/reg-sub :validate-attribution
+  (fn [[_ path] _]
+    [(rf/subscribe [:get-sanitized-data (conj path :nature)])
+     (rf/subscribe [:get-sanitized-data (conj path :source-license)])
+     (rf/subscribe [:get-sanitized-data (conj path :source-name)])
+     (rf/subscribe [:get-sanitized-data (conj path :source-link)])
+     (rf/subscribe [:get-sanitized-data (conj path :source-creator-name)])
+     (rf/subscribe [:get-sanitized-data (conj path :source-creator-link)])])
+
+  (fn [[nature & source-fields] [_ _path]]
+    (when (and (= nature :derivative)
+               (seq (filter (fn [value]
+                              (if (keyword? value)
+                                (= value :none)
+                                (-> value (or "") s/trim count zero?))) source-fields)))
+      [{:level :error
+        :message "All source fields required for derivative work."}])))
+
+(rf/reg-sub :validate-is-public
+  (fn [[_ path] _]
+    [(rf/subscribe [:get-sanitized-data (conj path :is-public)])
+     (rf/subscribe [:get-sanitized-data (conj path :attribution :license)])])
+
+  (fn [[is-public license] [_ _path]]
+    (when (and is-public (= license :none))
+      [{:level :error
+        :message "License required for public objects."}])))
+
+(rf/reg-sub :validate-arms-general
+  (fn [[_ path] _]
+    [(rf/subscribe [:validate-is-public path])
+     (rf/subscribe [:validate-attribution (conj path :attribution)])])
+
+  (fn [[is-public
+        attribution] [_ _path]]
+    (concat
+     is-public
+     attribution)))
+
+(rf/reg-sub :validate-charge-general
+  (fn [[_ path] _]
+    [(rf/subscribe [:validate-is-public path])
+     (rf/subscribe [:validate-attribution (conj path :attribution)])])
+
+  (fn [[is-public
+        attribution] [_ _path]]
+    (concat
+     is-public
+     attribution)))
+
+(rf/reg-sub :validate-collection-general
+  (fn [[_ path] _]
+    [(rf/subscribe [:validate-is-public path])
+     (rf/subscribe [:validate-attribution (conj path :attribution)])])
+
+  (fn [[is-public
+        attribution] [_ _path]]
+    (concat
+     is-public
+     attribution)))
 
 (defn render-icon [level]
   [:i.fas.fa-exclamation-triangle {:style {:color (validation-color level)}}])
