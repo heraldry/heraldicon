@@ -221,6 +221,32 @@
   (fn [main-validation [_ _path]]
     (sort-validations (second main-validation))))
 
+(rf/reg-sub :validate-cottise
+  (fn [[_ path] _]
+    (let [field-path (conj path :field)
+          parent-field-path (-> path
+                                (->> (drop-last 2))
+                                vec
+                                (conj :field))]
+      [(rf/subscribe [:validate-tinctures field-path parent-field-path (conj path :fimbriation)])
+       (rf/subscribe [:validate-tinctures field-path parent-field-path (conj path :line :fimbriation)])
+       (rf/subscribe [:validate-tinctures field-path parent-field-path (conj path :opposite-line :fimbriation)])]))
+
+  (fn [[main-validation & other-validations] [_ _path]]
+    (let [fimbriated? (some (comp :fimbriated? first) other-validations)
+          ;; if any of the line validations had fimbriations, then use all of them, because
+          ;; each need to be validated on their own then, the main one doesn't matter anymore;
+          ;; if on other other hand none of the line ones had fimbriation, then only the main
+          ;; check is relevant
+          validations (->> (if fimbriated?
+                             other-validations
+                             [main-validation])
+                           (map second))]
+      (->> validations
+           (apply concat)
+           (filter identity)
+           sort-validations))))
+
 (defn render-icon [level]
   [:i.fas.fa-exclamation-triangle {:style {:color (validation-color level)}}])
 

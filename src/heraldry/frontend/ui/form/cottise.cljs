@@ -40,6 +40,7 @@
 
 (defmethod interface/component-node-data :heraldry.component/cottise [path]
   {:title (str "Cottise " (cottise-name path))
+   :validation @(rf/subscribe [:validate-cottise path])
    :nodes [{:path (conj path :field)}]})
 
 (defmethod interface/component-form-data :heraldry.component/cottise [_path]
