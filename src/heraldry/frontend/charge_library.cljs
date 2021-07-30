@@ -354,12 +354,14 @@
                         (conj example-coa-db-path :coat-of-arms :field :components 0)]]]])
 
 (defn charge-display [charge-id version]
-  (let [[status _] (state/async-fetch-data
-                    form-db-path
-                    [charge-id version]
-                    #(charge/fetch-charge-for-editing charge-id version))]
+  (let [[status charge-data] (state/async-fetch-data
+                              form-db-path
+                              [charge-id version]
+                              #(charge/fetch-charge-for-editing charge-id version))]
     (when (= status :done)
-      [charge-form])))
+      (if charge-data
+        [charge-form]
+        [:div "Not found"]))))
 
 (defn link-to-charge [charge & {:keys [type-prefix?]}]
   (let [charge-id (-> charge

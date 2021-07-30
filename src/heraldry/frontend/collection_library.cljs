@@ -344,17 +344,19 @@
     [list-collections]]])
 
 (defn create-collection [_match]
-  (let [[status _collection-form-data] (state/async-fetch-data
-                                        form-db-path
-                                        :new
-                                        #(go
-                                           {:num-columns 6
-                                            :elements []
-                                            :render-options (-> default/render-options
-                                                                (dissoc :escutcheon-shadow?)
-                                                                (assoc :escutcheon-outline? true))}))]
+  (let [[status collection-data] (state/async-fetch-data
+                                  form-db-path
+                                  :new
+                                  #(go
+                                     {:num-columns 6
+                                      :elements []
+                                      :render-options (-> default/render-options
+                                                          (dissoc :escutcheon-shadow?)
+                                                          (assoc :escutcheon-outline? true))}))]
     (when (= status :done)
-      [collection-form])))
+      (if collection-data
+        [collection-form]
+        [:div "Not found"]))))
 
 (defn view-collection-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
