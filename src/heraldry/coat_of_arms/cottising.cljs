@@ -39,46 +39,37 @@
 
 (defn cottise-options [options {:keys [line opposite-line field]}]
   (cond-> options
-    (and (:line options)
-         line)
+    (:line options)
     (assoc :line (-> (line/options line)
                      (assoc :ui (-> cottise-default-options :line :ui))))
 
-    (and (:opposite-line options)
-         opposite-line)
+    (:opposite-line options)
     (assoc :opposite-line (-> (line/options opposite-line)
                               (assoc :ui (-> cottise-default-options :opposite-line :ui))))
 
-    (and (:field options)
-         field)
+    (:field options)
     (assoc :field (field-options/options field))))
 
 (defn options [options {:keys [cottise-1 cottise-2
                                cottise-opposite-1 cottise-opposite-2
                                cottise-extra-1 cottise-extra-2]}]
   (cond-> options
-    (and (:cottise-1 options)
-         cottise-1)
+    (:cottise-1 options)
     (update :cottise-1 cottise-options cottise-1)
 
-    (and (:cottise-2 options)
-         cottise-2)
+    (:cottise-2 options)
     (update :cottise-2 cottise-options cottise-2)
 
-    (and (:cottise-opposite-1 options)
-         cottise-opposite-1)
+    (:cottise-opposite-1 options)
     (update :cottise-opposite-1 cottise-options cottise-opposite-1)
 
-    (and (:cottise-opposite-2 options)
-         cottise-opposite-2)
+    (:cottise-opposite-2 options)
     (update :cottise-opposite-2 cottise-options cottise-opposite-2)
 
-    (and (:cottise-extra-1 options)
-         cottise-extra-1)
+    (:cottise-extra-1 options)
     (update :cottise-extra-1 cottise-options cottise-extra-1)
 
-    (and (:cottise-extra-2 options)
-         cottise-extra-2)
+    (:cottise-extra-2 options)
     (update :cottise-extra-2 cottise-options cottise-extra-2)))
 
 (defn render-fess-cottise [cottise-1-key cottise-2-key next-cottise-key
