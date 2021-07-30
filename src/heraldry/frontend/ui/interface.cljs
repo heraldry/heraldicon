@@ -43,7 +43,7 @@
   (fn [data [_ path]]
     (interface/component-options path data)))
 
-(rf/reg-sub :get-relevant-options
+(rf/reg-sub :raw-get-relevant-options
   (fn [_ [_ path]]
     ;; TODO: can this be done by feeding the subscriptions in again?
     ;; probably is more efficient, but the previous attempt didn't refresh the
@@ -56,6 +56,12 @@
                    (when-let [relevant-options (get-in options relative-path)]
                      relevant-options))))
          first)))
+
+(rf/reg-sub :get-relevant-options
+  (fn [[_ path] _]
+    (rf/subscribe [:raw-get-relevant-options path]))
+  (fn [relevant-options [_ _path]]
+    relevant-options))
 
 (rf/reg-sub :get-sanitized-data
   (fn [[_ path] _]
