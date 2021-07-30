@@ -2,6 +2,7 @@
   (:require [clojure.string :as s]
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.charge.interface :as charge-interface]
+            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
@@ -68,4 +69,5 @@
                                                       (util/translate t)]))))
                              (-> attributes/tincture-modifier-map
                                  keys
-                                 sort)))])))
+                                 sort)))
+                       (fimbriation/blazon path context)])))
