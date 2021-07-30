@@ -19,6 +19,28 @@
     [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll "
      "group some features and new development and post an update here, so it is easy to stay informed."]]
 
+   [:h3 "2021-07-30 - UI rewrite, validation system, social media sharing"]
+   [:div.release-row
+    [:div.info
+     [:p "Changes and new features:"]
+     [:ul
+      [:li "UI rewrite"
+       [:ul
+        [:li "the nested components are gone, as they were confusing, hard to navigate, and caused annoying scrolling issues"]
+        [:li "separate navigation tree and form for selected components"]
+        [:li "big speed improvements, a lot of the UI interactions now take 1-5ms, where previously 100-200ms were commonplace"]
+        [:li "the layout works a bit better on mobile devices in landscape more, but the target environment still is Chrome on a desktop"]
+        [:li "the cogs next to options allow an easy jump back to the default value or in some cases the value inherited from other components"]
+        [:li "sliders now have a text field next to it to update values with specific values"]]]
+
+      [:li "a validation system to warn about components that might break rule of tincture and potentially other issues"]
+      [:li "improved blazonry, it now makes more of an attempt of reporting the used charges in charge groups, and it includes fimbriation"]
+      [:li "SVG/PNG exports now contain a short URL to reference the arms on heraldry.digital"]
+      [:li "pall ordinaries now can be added, with different fimbriation for each line and arbitrary issuing from anywhere"]]]
+
+    [:div
+     (release-image "/img/2021-07-30-release-update.png")]]
+
    [:h3 "2021-06-12 - Charge groups, public arms, collections, users"]
    [:div.release-row
     [:div.info
