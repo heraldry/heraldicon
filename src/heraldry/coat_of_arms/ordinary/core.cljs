@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.ordinary.core
-  (:require [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+  (:require [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
+            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
@@ -11,7 +12,9 @@
         line (interface/get-sanitized-data (conj path :line) context)
         rest (util/combine " " [(util/translate ordinary-type)
                                 (util/translate-line line)
-                                (interface/blazon (conj path :field) context)])
+                                (interface/blazon (conj path :field) context)
+                                (fimbriation/blazon path context
+                                                    :include-lines? true)])
         article (if (re-matches #"(?i)^[aeiouh].*" rest)
                   "an"
                   "a")]

@@ -3,7 +3,8 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.options :as options]
-            [heraldry.util :as util]))
+            [heraldry.util :as util]
+            [heraldry.interface :as interface]))
 
 (def type-choices
   [["None" :none]
@@ -186,3 +187,20 @@
         context
         :corner corner
         :fill? false]))])
+
+(defn blazon-fimbriation [{:keys [tincture-1 tincture-2]}]
+  (if tincture-2
+    (str "fimbriated " (util/translate-tincture tincture-2)
+         " and " (util/translate-tincture tincture-1))
+    (when tincture-1
+      (str "fimbriated " (util/translate-tincture tincture-1)))))
+
+(defn blazon [path context & {:keys [include-lines?]}]
+  (->> (concat
+        [(blazon-fimbriation (interface/get-sanitized-data (conj path :fimbriation) context))]
+        (when include-lines?
+          [(blazon-fimbriation (interface/get-sanitized-data (conj path :line :fimbriation) context))
+           (blazon-fimbriation (interface/get-sanitized-data (conj path :opposite-line :fimbriation) context))
+           (blazon-fimbriation (interface/get-sanitized-data (conj path :extra-line :fimbriation) context))]))
+       distinct
+       (util/combine ", ")))
