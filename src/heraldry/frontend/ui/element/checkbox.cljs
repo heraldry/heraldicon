@@ -21,8 +21,8 @@
       [:div.ui-setting {:style style}
        [:input {:type "checkbox"
                 :id component-id
-                :checked checked?
-                :disabled disabled?
+                :checked (or checked? false)
+                :disabled (or disabled? false)
                 :on-change #(let [new-checked? (-> % .-target .-checked)]
                               (if on-change
                                 (on-change new-checked?)
