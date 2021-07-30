@@ -64,13 +64,13 @@
    :tags {:ui {:form-type :tags}}})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-collection.[thing].options namespaces
-(defmethod interface/component-options :heraldry.options/collection-general [_path _data]
+(defmethod interface/component-options :heraldry.options/collection-general [_path data]
   {:name {:type :text
           :default ""
           :ui {:label "Name"}}
    :is-public {:type :boolean
                :ui {:label "Make public"}}
-   :attribution attribution/default-options
+   :attribution (attribution/options (:attribution data))
    :tags {:ui {:form-type :tags}}
    :font font/default-options})
 
