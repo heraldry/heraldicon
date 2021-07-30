@@ -98,6 +98,7 @@
                                                                     (conj
                                                                      @(rf/subscribe [:get-value (conj path :index)])))))
                              (field/title path {}))])
+     :validation @(rf/subscribe [:validate-field path])
      :buttons (if ref?
                 [{:icon "fas fa-sliders-h"
                   :title "Change"

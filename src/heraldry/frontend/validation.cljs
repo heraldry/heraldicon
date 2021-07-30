@@ -247,6 +247,25 @@
            (filter identity)
            sort-validations))))
 
+(rf/reg-sub :validate-field
+  (fn [[_ path] _]
+    [(rf/subscribe [:get-value (conj path :type)])
+     (rf/subscribe [:get-sanitized-data (conj path :layout :num-fields-x)])
+     (rf/subscribe [:get-sanitized-data (conj path :layout :num-fields-y)])])
+
+  (fn [[field-type num-fields-x num-fields-y] [_ _path]]
+    (let [field-type (-> field-type name keyword)]
+      (cond-> []
+        (and (= field-type :paly)
+             (odd? num-fields-x)) (conj {:level :warning
+                                         :message "Paly should have an even number of fields, for an odd number use pales."})
+        (and (= field-type :barry)
+             (odd? num-fields-y)) (conj {:level :warning
+                                         :message "Barry should have an even number of fields, for an odd number use bars."})
+        (and (#{:bendy :bendy-sinister} field-type)
+             (odd? num-fields-y)) (conj {:level :warning
+                                         :message "Bendy should have an even number of fields, for an odd number use bends."})))))
+
 (defn render-icon [level]
   [:i.fas.fa-exclamation-triangle {:style {:color (validation-color level)}}])
 
