@@ -99,6 +99,10 @@
                               ;; TODO: need the raw value here for type
                               (get-raw-data (conj path :type) context))))
 
+(defmethod blazon-component nil [path _context]
+  (log/warn "blazon: unknown component" path)
+  nil)
+
 (defn blazon [path context]
   (let [manual-blazon (get-sanitized-data (conj path :manual-blazon) context)]
     (if (-> manual-blazon count pos?)
