@@ -266,12 +266,14 @@
                         (conj form-db-path :coat-of-arms)]]]])
 
 (defn arms-display [arms-id version]
-  (let [[status _] (state/async-fetch-data
-                    form-db-path
-                    [arms-id version]
-                    #(arms-select/fetch-arms arms-id version saved-data-db-path))]
+  (let [[status arms-data] (state/async-fetch-data
+                            form-db-path
+                            [arms-id version]
+                            #(arms-select/fetch-arms arms-id version saved-data-db-path))]
     (when (= status :done)
-      [arms-form])))
+      (if arms-data
+        [arms-form]
+        [:div "Not found"]))))
 
 (defn link-to-arms [arms]
   (let [arms-id (-> arms
