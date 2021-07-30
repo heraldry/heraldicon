@@ -81,17 +81,17 @@
       (= #{:metal}
          parent-kinds
          own-kinds) {:level :warning
-                     :message (str (if fimbriated?
-                                     "Fimbriated"
-                                     "Field") " metal (" (list-tinctures own-tinctures)
+                     :message (str "Metal " (if fimbriated?
+                                              "fimbriation"
+                                              "field") " (" (list-tinctures own-tinctures)
                                    ") on metal field (" (list-tinctures parent-tinctures)
                                    ") breaks rule of tincture.")}
       (= #{:colour}
          parent-kinds
          own-kinds) {:level :warning
-                     :message (str (if fimbriated?
-                                     "Fimbriated"
-                                     "Field") " colour (" (list-tinctures own-tinctures)
+                     :message (str "Colour " (if fimbriated?
+                                               "fimbriation"
+                                               "field") " (" (list-tinctures own-tinctures)
                                    ") on colour field (" (list-tinctures parent-tinctures)
                                    ") breaks rule of tincture.")})))
 
