@@ -23,12 +23,25 @@
     {:name :about
      :view about/view}]
 
+   ["/about"
+    {:name :about-without-slash
+     :view about/view}]
+
    ["/collections/"
     {:name :collections
      :view collection-library/view-list-collection}]
 
+   ["/collections"
+    {:name :collections-without-slash
+     :view collection-library/view-list-collection}]
+
    ["/collections/new"
     {:name :create-collection
+     :view collection-library/create-collection
+     :conflicting true}]
+
+   ["/collections/new/"
+    {:name :create-collection-with-slash
      :view collection-library/create-collection
      :conflicting true}]
 
@@ -51,12 +64,28 @@
      :view collection-library/view-collection-by-id
      :conflicting true}]
 
+   ["/collections/:id/:version/"
+    {:name :view-collection-by-id-and-version-with-slash
+     :parameters {:path {:id string?
+                         :version number?}}
+     :view collection-library/view-collection-by-id
+     :conflicting true}]
+
    ["/arms/"
     {:name :arms
      :view arms-library/view-list-arms}]
 
+   ["/arms"
+    {:name :arms-without-slash
+     :view arms-library/view-list-arms}]
+
    ["/arms/new"
     {:name :create-arms
+     :view arms-library/create-arms
+     :conflicting true}]
+
+   ["/arms/new/"
+    {:name :create-arms-with-slash
      :view arms-library/create-arms
      :conflicting true}]
 
@@ -79,12 +108,28 @@
      :view arms-library/view-arms-by-id
      :conflicting true}]
 
+   ["/arms/:id/:version/"
+    {:name :view-arms-by-id-and-version-with-slash
+     :parameters {:path {:id string?
+                         :version number?}}
+     :view arms-library/view-arms-by-id
+     :conflicting true}]
+
    ["/charges/"
     {:name :charges
      :view charge-library/view-list-charges}]
 
+   ["/charges"
+    {:name :charges-without-slash
+     :view charge-library/view-list-charges}]
+
    ["/charges/new"
     {:name :create-charge
+     :view charge-library/create-charge
+     :conflicting true}]
+
+   ["/charges/new/"
+    {:name :create-charge-with-slash
      :view charge-library/create-charge
      :conflicting true}]
 
@@ -107,15 +152,27 @@
      :view charge-library/view-charge-by-id
      :conflicting true}]
 
-   ["/users/:username"
-    {:name :view-user
-     :parameters {:path {:username string?}}
-     :view user-library/view-user-by-username
+   ["/charges/:id/:version/"
+    {:name :view-charge-by-id-and-version-with-slash
+     :parameters {:path {:id string?
+                         :version number?}}
+     :view charge-library/view-charge-by-id
      :conflicting true}]
 
    ["/users/"
     {:name :users
      :view user-library/view-list-users
+     :conflicting true}]
+
+   ["/users"
+    {:name :users-without-slash
+     :view user-library/view-list-users
+     :conflicting true}]
+
+   ["/users/:username"
+    {:name :view-user
+     :parameters {:path {:username string?}}
+     :view user-library/view-user-by-username
      :conflicting true}]
 
    ["/users/:username/"
@@ -126,6 +183,10 @@
 
    ["/account/"
     {:name :account
+     :view account/view}]
+
+   ["/account"
+    {:name :account-without-slash
      :view account/view}]])
 
 (def router
