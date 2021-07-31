@@ -62,3 +62,15 @@
    :squiggly? false
    :escutcheon-shadow? true
    :ui {:selectable-fields? true}})
+
+(def helm
+  {:type :heraldry.component/helm})
+
+(def helmet
+  {:type :heraldry.component/helmet})
+
+(def torse
+  {:type :heraldry.component/torse})
+
+(def crest
+  {:type :heraldry.component/crest})

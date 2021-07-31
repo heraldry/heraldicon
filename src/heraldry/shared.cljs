@@ -18,6 +18,7 @@
             [heraldry.collection.element] ;; needed for side effects
             [heraldry.collection.options] ;; needed for side effects
             [heraldry.font :as font]
+            [heraldry.helm] ;; needed for side effects
             [heraldry.helms] ;; needed for side effects
             [heraldry.interface :as interface]
             [heraldry.options :as options]
