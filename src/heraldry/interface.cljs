@@ -63,7 +63,7 @@
                               (get-raw-data (conj path :type) context))))
 
 (defmethod render-component nil [path parent-path _environment _context]
-  (log/warn :not-implemented path parent-path)
+  (log/warn :not-implemented "render-component" path parent-path)
   [:<>])
 
 (defmulti blazon-component (fn [path context]
