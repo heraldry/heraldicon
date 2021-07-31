@@ -21,6 +21,7 @@
     (-> path last (= :collection)) :heraldry.component/collection
     (->> path drop-last (take-last 2) (= [:collection :elements])) :heraldry.component/collection-element
     (-> path last (= :render-options)) :heraldry.component/render-options
+    (-> path last (= :helms)) :heraldry.component/helms
     (-> path last (= :coat-of-arms)) :heraldry.component/coat-of-arms
     (and (-> path last keyword?)
          (-> path last name (s/starts-with? "cottise"))) :heraldry.component/cottise
