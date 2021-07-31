@@ -61,5 +61,5 @@
                         (when origin
                           (position/adjust-options origin (-> data :origin)))))))
 
-(defmethod interface/component-options :heraldry.options/semy [_path data]
+(defmethod interface/component-options :heraldry.component/semy [_path data]
   (options data))

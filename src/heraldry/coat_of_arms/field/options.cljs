@@ -750,7 +750,7 @@
            (-> field :counterchanged?) (select-keys [:counterchanged?
                                                      :manual-blazon]))))))
 
-(defmethod interface/component-options :heraldry.options/field [path data]
+(defmethod interface/component-options :heraldry.component/field [path data]
   (let [root-field? (-> path drop-last last (= :coat-of-arms))
         subfield? (-> path last int?)
         semy-charge? (->> path (take-last 2) (= [:charge :field]))]

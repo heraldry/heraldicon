@@ -521,5 +521,5 @@
              (cond-> options
                (:cottising options) (update :cottising cottising/options (:cottising ordinary))))))))
 
-(defmethod interface/component-options :heraldry.options/ordinary [_path data]
+(defmethod interface/component-options :heraldry.component/ordinary [_path data]
   (options data))
