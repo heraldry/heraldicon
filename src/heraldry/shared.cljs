@@ -54,7 +54,7 @@
     (options/sanitize-value-or-data data options)))
 
 ;; TODO: might not be the right place for it, others live in the coat-of-arms.[thing].options namespaces
-(defmethod interface/component-options :heraldry.options/arms-general [_path data]
+(defmethod interface/component-options :heraldry.component/arms-general [_path data]
   {:name {:type :text
           :default ""
           :ui {:label "Name"}}
@@ -64,7 +64,7 @@
    :tags {:ui {:form-type :tags}}})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-collection.[thing].options namespaces
-(defmethod interface/component-options :heraldry.options/collection-general [_path data]
+(defmethod interface/component-options :heraldry.component/collection-general [_path data]
   {:name {:type :text
           :default ""
           :ui {:label "Name"}}
@@ -75,7 +75,7 @@
    :font font/default-options})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-charge.[thing].options namespaces
-(defmethod interface/component-options :heraldry.options/charge-general [_path data]
+(defmethod interface/component-options :heraldry.component/charge-general [_path data]
   {:name {:type :text
           :default ""
           :ui {:label "Name"}}
