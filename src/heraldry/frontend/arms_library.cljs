@@ -263,6 +263,7 @@
                                :padding-top "5px"}}
     [ui/component-tree [form-db-path
                         (conj form-db-path :render-options)
+                        (conj form-db-path :helms)
                         (conj form-db-path :coat-of-arms)]]]])
 
 (defn arms-display [arms-id version]

@@ -39,6 +39,7 @@
             [heraldry.frontend.ui.form.collection-general] ;; needed for side effects
             [heraldry.frontend.ui.form.cottise] ;; needed for side effects
             [heraldry.frontend.ui.form.field] ;; needed for side effects
+            [heraldry.frontend.ui.form.helms] ;; needed for side effects
             [heraldry.frontend.ui.form.ordinary] ;; needed for side effects
             [heraldry.frontend.ui.form.render-options] ;; needed for side effects
             [heraldry.frontend.ui.form.semy] ;; needed for side effects
