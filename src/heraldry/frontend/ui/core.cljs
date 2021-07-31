@@ -39,6 +39,7 @@
             [heraldry.frontend.ui.form.collection-general] ;; needed for side effects
             [heraldry.frontend.ui.form.cottise] ;; needed for side effects
             [heraldry.frontend.ui.form.field] ;; needed for side effects
+            [heraldry.frontend.ui.form.helm] ;; needed for side effects
             [heraldry.frontend.ui.form.helms] ;; needed for side effects
             [heraldry.frontend.ui.form.ordinary] ;; needed for side effects
             [heraldry.frontend.ui.form.render-options] ;; needed for side effects
@@ -149,7 +150,9 @@
                       (rf/dispatch [:ui-component-node-toggle path]))
                     (when selectable?
                       (rf/dispatch [:ui-component-node-select path]))
-                    (.stopPropagation %))}
+                    (.stopPropagation %))
+       :style {:color (when-not selectable?
+                        "#000")}}
       (if openable?
         [:span.node-icon.clickable
          {:on-click #(state/dispatch-on-event % [:ui-component-node-toggle path])}
