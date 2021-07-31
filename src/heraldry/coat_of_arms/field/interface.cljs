@@ -12,5 +12,5 @@
                              field-type))))
 
 (defmethod render-field nil [path _environment context]
-  (log/warn :not-implemented path context)
+  (log/warn :not-implemented "render-field" path context)
   [:<>])

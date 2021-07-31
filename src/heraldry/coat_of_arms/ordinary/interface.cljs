@@ -10,5 +10,5 @@
                                 ordinary-type))))
 
 (defmethod render-ordinary nil [path _parent-path _environment context]
-  (log/warn :not-implemented path context)
+  (log/warn :not-implemented "render-ordinary" path context)
   [:<>])
