@@ -118,3 +118,50 @@
                          outline?)
                  [:g outline/style
                   [:path {:d (:shape environment)}]])]]}))
+
+(defn helm [path environment context]
+  (let [components-path (conj path :components)
+        num-components (interface/get-list-size components-path context)]
+    [:<>
+     (doall
+      (for [idx (range num-components)]
+        ^{:key idx}
+        [interface/render-component
+         (conj components-path idx)
+         path environment
+         context]))]))
+
+(defn helms [path width {:keys
+                         [root-transform] :as context}]
+  (let [elements-path (conj path :elements)
+        num-helms (interface/get-list-size elements-path context)]
+    (if (zero? num-helms)
+      {:width 0
+       :height 0
+       :result nil}
+      (let [gap-part-fn (fn [n] (+ 2 (* 2 (- n 1))))
+            gap-part (gap-part-fn num-helms)
+            helm-width (/ (* gap-part width)
+                          (+ (* (+ gap-part 1)
+                                num-helms)
+                             1))
+            helm-height (* 2 helm-width)
+            total-height helm-height
+            gap (/ helm-width gap-part)
+            helm-width-with-gap (+ helm-width gap)]
+        {:width width
+         :height total-height
+         :result [:g {:transform root-transform}
+                  (doall
+                   (for [idx (range num-helms)]
+                     (let [helm-environment (environment/create
+                                             nil
+                                             {:bounding-box [(+ (* idx helm-width-with-gap)
+                                                                gap)
+                                                             (+ (* idx helm-width-with-gap)
+                                                                gap
+                                                                helm-width)
+                                                             (- helm-height)
+                                                             0]})]
+                       ^{:key idx}
+                       [helm (conj elements-path idx) helm-environment context])))]}))))

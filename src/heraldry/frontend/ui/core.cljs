@@ -128,78 +128,83 @@
 
 
 (defn component-node [path & {:keys [title parent-buttons]}]
-  (let [node-data @(rf/subscribe [:component-node path])
-        node-title (:title node-data)
-        {:keys [open?
-                selected?
-                selectable?
-                nodes
-                buttons
-                validation]} node-data
-        openable? (-> nodes count pos?)
-        title (or node-title title)
-        buttons (concat buttons parent-buttons)]
-    [:<>
-     [:div.node-name.clickable.no-select
-      {:class (when selected?
-                "selected")
-       :on-click #(do
-                    (when (or (not open?)
-                              (not selectable?)
-                              selected?)
-                      (rf/dispatch [:ui-component-node-toggle path]))
-                    (when selectable?
-                      (rf/dispatch [:ui-component-node-select path]))
-                    (.stopPropagation %))
-       :style {:color (when-not selectable?
-                        "#000")}}
-      (if openable?
-        [:span.node-icon.clickable
-         {:on-click #(state/dispatch-on-event % [:ui-component-node-toggle path])}
-         [:i.fa.ui-icon {:class (if open?
-                                  "fa-angle-down"
-                                  "fa-angle-right")}]]
-        [:span.node-icon
-         [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
-      title
+  (if (= path :spacer)
+    [:div {:style {:height "1em"}}]
+    (let [node-data @(rf/subscribe [:component-node path])
+          node-title (:title node-data)
+          {:keys [open?
+                  selected?
+                  selectable?
+                  nodes
+                  buttons
+                  annotation
+                  validation]} node-data
+          openable? (-> nodes count pos?)
+          title (or node-title title)
+          buttons (concat buttons parent-buttons)]
+      [:<>
+       [:div.node-name.clickable.no-select
+        {:class (when selected?
+                  "selected")
+         :on-click #(do
+                      (when (or (not open?)
+                                (not selectable?)
+                                selected?)
+                        (rf/dispatch [:ui-component-node-toggle path]))
+                      (when selectable?
+                        (rf/dispatch [:ui-component-node-select path]))
+                      (.stopPropagation %))
+         :style {:color (when-not selectable?
+                          "#000")}}
+        (if openable?
+          [:span.node-icon.clickable
+           {:on-click #(state/dispatch-on-event % [:ui-component-node-toggle path])}
+           [:i.fa.ui-icon {:class (if open?
+                                    "fa-angle-down"
+                                    "fa-angle-right")}]]
+          [:span.node-icon
+           [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
+        title
 
-      (validation/render validation)
+        annotation
 
-      (when (seq buttons)
-        (doall
-         (for [[idx {:keys [icon menu handler disabled? tooltip title]}] (map-indexed vector buttons)]
-           (if menu
-             ^{:key idx}
-             [hover-menu/hover-menu
-              (conj path idx)
-              title
-              menu
-              [:i.ui-icon {:class icon
-                           :style {:margin-left "0.5em"
-                                   :font-size "0.8em"
-                                   :color (if disabled?
-                                            "#ccc"
-                                            "#777")
-                                   :cursor (when disabled? "not-allowed")}}]
-              :disabled? disabled?
-              :require-click? true]
-             ^{:key icon} [:span.node-icon
-                           {:class (when disabled? "disabled")
-                            :on-click (when-not disabled? handler)
-                            :title tooltip}
-                           [:i.ui-icon {:class icon
-                                        :style {:margin-left "0.5em"
-                                                :font-size "0.8em"
-                                                :color (if disabled?
-                                                         "#ccc"
-                                                         "#777")
-                                                :cursor (when disabled? "not-allowed")}}]]))))]
-     (when open?
-       [:ul
-        (for [{node-path :path
-               title :title
-               buttons :buttons} nodes]
-          ^{:key node-path} [:li [component-node node-path :title title :parent-buttons buttons]])])]))
+        (validation/render validation)
+
+        (when (seq buttons)
+          (doall
+           (for [[idx {:keys [icon menu handler disabled? tooltip title]}] (map-indexed vector buttons)]
+             (if menu
+               ^{:key idx}
+               [hover-menu/hover-menu
+                (conj path idx)
+                title
+                menu
+                [:i.ui-icon {:class icon
+                             :style {:margin-left "0.5em"
+                                     :font-size "0.8em"
+                                     :color (if disabled?
+                                              "#ccc"
+                                              "#777")
+                                     :cursor (when disabled? "not-allowed")}}]
+                :disabled? disabled?
+                :require-click? true]
+               ^{:key icon} [:span.node-icon
+                             {:class (when disabled? "disabled")
+                              :on-click (when-not disabled? handler)
+                              :title tooltip}
+                             [:i.ui-icon {:class icon
+                                          :style {:margin-left "0.5em"
+                                                  :font-size "0.8em"
+                                                  :color (if disabled?
+                                                           "#ccc"
+                                                           "#777")
+                                                  :cursor (when disabled? "not-allowed")}}]]))))]
+       (when open?
+         [:ul
+          (for [{node-path :path
+                 title :title
+                 buttons :buttons} nodes]
+            ^{:key node-path} [:li [component-node node-path :title title :parent-buttons buttons]])])])))
 
 (defn component-tree [paths]
   [:div.ui-tree

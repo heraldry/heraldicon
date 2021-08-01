@@ -1,9 +1,9 @@
 (ns heraldry.coat-of-arms.tincture.core
-  (:require [heraldry.coat-of-arms.hatching :as hatching]
+  (:require [clojure.string :as s]
+            [heraldry.coat-of-arms.hatching :as hatching]
             [heraldry.coat-of-arms.tincture.pattern :as pattern]
             [heraldry.coat-of-arms.tincture.theme :as theme]
             [heraldry.interface :as interface]
-            [heraldry.options :as options]
             [heraldry.util :as util]))
 
 (def themes
@@ -78,7 +78,11 @@
    ["Stain"
     ["Sanguine" :sanguine]
     ["Murrey" :murrey]
-    ["Tenné" :tenne]]])
+    ["Tenné" :tenne]]
+   ["Helmet"
+    ["Light" :helmet-light]
+    ["Medium" :helmet-medium]
+    ["Dark" :helmet-dark]]])
 
 (def tincture-map
   (util/choices->map choices))
@@ -93,6 +97,9 @@
     (#{:none :mixed} tincture) :mixed
     (#{:argent :or} tincture) :metal
     (#{:ermine :ermines :erminois :pean} tincture) :fur
+    (-> tincture
+        name
+        (s/starts-with? "helmet")) :special
     :else :colour))
 
 (def fixed-tincture-map
@@ -122,6 +129,11 @@
    :erminois erminois
    :pean pean})
 
+(def special
+  {:helmet-light "#d8d8d8"
+   :helmet-medium "#989898"
+   :helmet-dark "#585858"})
+
 (defn pick [tincture {:keys [tincture-mapping] :as context}]
   (let [mode (interface/render-option :mode context)
         theme (interface/render-option :theme context)
@@ -134,7 +146,7 @@
                           (hatching/get-for tincture)
                           "#888")
       :else (or (lookup-colour tincture theme)
-                (get furs tincture)
+                (get special tincture)
                 "url(#void)"))))
 
 (defn patterns [theme]

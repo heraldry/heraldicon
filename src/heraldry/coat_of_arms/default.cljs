@@ -68,7 +68,12 @@
    :function :heraldry.charge.function/helmet
    :variant {:id (config/get :helmet-charge-id)
              :version 0}
-   :field field
+   :origin {:point :bottom
+            :offset-x -10
+            :offset-y 20}
+   :geometry {:size 100}
+   :field (-> field
+              (assoc :tincture :helmet-medium))
    :tincture {:shadow 1
               :highlight 1}})
 
@@ -77,9 +82,15 @@
    :function :heraldry.charge.function/torse
    :variant {:id (config/get :torse-charge-id)
              :version 0}
-   :field field
+   :origin {:point :fess
+            :offset-x 5
+            :offset-y -1}
+   :geometry {:size 60}
+   :field (-> field
+              (assoc :tincture :azure))
    :tincture {:shadow 1
-              :highlight 1}})
+              :highlight 1
+              :secondary :or}})
 
 (def crest-charge
   {:type :heraldry.charge.type/roundel

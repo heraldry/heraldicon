@@ -39,6 +39,7 @@
   (let [{:keys [helmet?
                 torse?]} @(rf/subscribe [:get-helm-status path])
         components-path (conj path :components)
+        num-helms @(rf/subscribe [:get-list-size (-> path drop-last vec)])
         num-components @(rf/subscribe [:get-list-size components-path])
         add-menu (cond-> []
                    (not helmet?) (conj {:title "Helmet"
@@ -51,7 +52,8 @@
                                :handler #(state/dispatch-on-event
                                           % [:add-element components-path default/crest-charge])}))]
 
-    {:title "Helm"
+    {:title (str (when (> num-helms 1)
+                   (str (inc (last path)) ". ")) "Helm")
      :buttons (when (seq add-menu)
                 [{:icon "fas fa-plus"
                   :title "Add"
