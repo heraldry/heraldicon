@@ -63,14 +63,31 @@
    :escutcheon-shadow? true
    :ui {:selectable-fields? true}})
 
-(def helm
-  {:type :heraldry.component/helm})
-
 (def helmet
-  {:type :heraldry.component/helmet})
+  {:type :heraldry.charge.type/helmet
+   :function :heraldry.charge.function/helmet
+   :variant {:id (config/get :helmet-charge-id)
+             :version 0}
+   :field field
+   :tincture {:shadow 1
+              :highlight 1}})
 
 (def torse
-  {:type :heraldry.component/torse})
+  {:type :heraldry.charge.type/torse
+   :function :heraldry.charge.function/torse
+   :variant {:id (config/get :torse-charge-id)
+             :version 0}
+   :field field
+   :tincture {:shadow 1
+              :highlight 1}})
 
-(def crest
-  {:type :heraldry.component/crest})
+(def crest-charge
+  {:type :heraldry.charge.type/roundel
+   :function :heraldry.charge.function/crest-charge
+   :field field
+   :tincture {:shadow 1
+              :highlight 1}})
+
+(def helm
+  {:type :heraldry.component/helm
+   :components [helmet]})

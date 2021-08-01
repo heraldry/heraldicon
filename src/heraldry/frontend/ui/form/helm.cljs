@@ -7,12 +7,21 @@
 
 (rf/reg-sub :get-helm-status
   (fn [[_ path] _]
-    (rf/subscribe [:get path]))
+    (rf/subscribe [:get (conj path :components)]))
 
-  (fn [data [_ _path]]
-    {:helmet? (:helmet data)
-     :torse? (:torse data)
-     :crest? (:crest data)}))
+  (fn [components [_ _path]]
+    {:helmet? (->> components
+                   (filter (fn [component]
+                             (-> component
+                                 :function
+                                 (= :heraldry.charge.function/helmet))))
+                   seq)
+     :torse? (->> components
+                  (filter (fn [component]
+                            (-> component
+                                :function
+                                (= :heraldry.charge.function/torse))))
+                  seq)}))
 
 (rf/reg-event-db :add-helm-part
   (fn [db [_ path value]]
@@ -28,25 +37,42 @@
 
 (defmethod ui-interface/component-node-data :heraldry.component/helm [path]
   (let [{:keys [helmet?
-                torse?
-                crest?]} @(rf/subscribe [:get-helm-status path])
+                torse?]} @(rf/subscribe [:get-helm-status path])
+        components-path (conj path :components)
+        num-components @(rf/subscribe [:get-list-size components-path])
         add-menu (cond-> []
-                   (not helmet?) {:title "Helmet"
-                                  :handler #(state/dispatch-on-event
-                                             % [:add-helm-part (conj path :helmet) default/helmet])}
-                   (not torse?) {:title "Torse"
-                                 :handler #(state/dispatch-on-event
-                                            % [:add-helm-part (conj path :torse) default/torse])}
-                   (not crest?) {:title "Crest"
-                                 :handler #(state/dispatch-on-event
-                                            % [:add-helm-part (conj path :crest) default/crest])})]
+                   (not helmet?) (conj {:title "Helmet"
+                                        :handler #(state/dispatch-on-event
+                                                   % [:add-element components-path default/helmet])})
+                   (not torse?) (conj {:title "Torse"
+                                       :handler #(state/dispatch-on-event
+                                                  % [:add-element components-path default/torse])})
+                   true (conj {:title "Crest charge"
+                               :handler #(state/dispatch-on-event
+                                          % [:add-element components-path default/crest-charge])}))]
 
     {:title "Helm"
      :buttons (when (seq add-menu)
                 [{:icon "fas fa-plus"
                   :title "Add"
                   :menu add-menu}])
-     :nodes []}))
+     :nodes (->> (range num-components)
+                 reverse
+                 (map (fn [idx]
+                        (let [component-path (conj components-path idx)]
+                          {:path component-path
+                           :buttons [{:icon "fas fa-chevron-down"
+                                      :disabled? (zero? idx)
+                                      :tooltip "move down"
+                                      :handler #(state/dispatch-on-event % [:move-element component-path (dec idx)])}
+                                     {:icon "fas fa-chevron-up"
+                                      :disabled? (= idx (dec num-components))
+                                      :tooltip "move up"
+                                      :handler #(state/dispatch-on-event % [:move-element component-path (inc idx)])}
+                                     {:icon "far fa-trash-alt"
+                                      :tooltip "remove"
+                                      :handler #(state/dispatch-on-event % [:remove-element component-path])}]})))
+                 vec)}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/helm [_path]
   {:form form})
