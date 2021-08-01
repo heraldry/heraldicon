@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.render
+(ns heraldry.render
   (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.field.shared :as field-shared]
