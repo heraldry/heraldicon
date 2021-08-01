@@ -52,22 +52,39 @@
      [charge-attribution]]))
 
 (defn render-coat-of-arms []
-  (let [coat-of-arms-path (conj form-db-path :coat-of-arms)
-        {:keys [result
-                environment]} (render/coat-of-arms
-                               coat-of-arms-path
-                               100
-                               (merge
-                                context/default
-                                {:render-options-path (conj form-db-path :render-options)
-                                 :root-transform "scale(5,5)"}))
-        {:keys [width height]} environment]
+  (let [root-scale 5
+        context (merge
+                 context/default
+                 {:render-options-path (conj form-db-path :render-options)
+                  :root-transform (str "scale(" root-scale "," root-scale ")")})
+        {coat-of-arms :result
+         environment :environment} (render/coat-of-arms
+                                    (conj form-db-path :coat-of-arms)
+                                    100
+                                    context)
+        {helms :result
+         helms-height :height} (render/helms
+                                (conj form-db-path :helms)
+                                100
+                                context)
+        {:keys [width height]} environment
+        width (* root-scale width)
+        height (* root-scale height)
+        helms-height (* root-scale helms-height)
+        scale (/ height
+                 (+ height helms-height))]
     [:svg {:id "svg"
            :style {:width "100%"}
-           :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
+           :viewBox (str "0 0 " (-> width (+ 20)) " " (-> height (+ 20) (+ 20)))
            :preserveAspectRatio "xMidYMin meet"}
      [:g {:transform "translate(10,10)"}
-      result]]))
+      [:g {:transform (str "translate(" (* (- 1 scale) (/ width 2)) ","
+                           (* (- 1 scale) height)
+                           ")"
+                           "scale(" scale ", " scale ")")
+           :style {:transition "transform 0.5s"}}
+       coat-of-arms
+       helms]]]))
 
 (defn blazonry []
   [:div.blazonry
@@ -263,7 +280,9 @@
                                :padding-top "5px"}}
     [ui/component-tree [form-db-path
                         (conj form-db-path :render-options)
+                        :spacer
                         (conj form-db-path :helms)
+                        :spacer
                         (conj form-db-path :coat-of-arms)]]]])
 
 (defn arms-display [arms-id version]

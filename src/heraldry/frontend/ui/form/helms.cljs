@@ -12,18 +12,24 @@
 (defmethod ui-interface/component-node-data :heraldry.component/helms [path]
   (let [helms-path (conj path :elements)
         num-helms @(rf/subscribe [:get-list-size helms-path])]
-    {:title "Helms and crests"
+    {:title "Helms/crests"
+     :annotation [:div.tooltip.info {:style {:display "inline-block"
+                                             :margin-left "0.2em"}}
+                  [:sup {:style {:color "#d40"}}
+                   "alpha"]
+                  [:div.bottom
+                   [:p "This feature is incomplete and likely going to change, so use with caution. :)"]]]
      :buttons [{:icon "fas fa-plus"
                 :handler #(state/dispatch-on-event % [:add-element helms-path default/helm])}]
      :nodes (->> (range num-helms)
                  (map (fn [idx]
                         (let [helm-path (conj helms-path idx)]
                           {:path helm-path
-                           :buttons [{:icon "fas fa-chevron-down"
+                           :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
                                       :tooltip "move down"
                                       :handler #(state/dispatch-on-event % [:move-element helm-path (dec idx)])}
-                                     {:icon "fas fa-chevron-up"
+                                     {:icon "fas fa-chevron-down"
                                       :disabled? (= idx (dec num-helms))
                                       :tooltip "move up"
                                       :handler #(state/dispatch-on-event % [:move-element helm-path (inc idx)])}
