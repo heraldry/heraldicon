@@ -117,8 +117,8 @@
       (conj path :field) part
       :all
       environment context]
-     (line/render line [line-one-data] first-bottom outline? context)
-     (line/render opposite-line [line-reversed-data] second-top outline? context)
+     [ line/render line [line-one-data] first-bottom outline? context ]
+     [ line/render opposite-line [line-reversed-data] second-top outline? context ]
      [cottising/render-pale-cottise
       :cottise-1 :cottise-2 :cottise-1
       path environment cottise-context

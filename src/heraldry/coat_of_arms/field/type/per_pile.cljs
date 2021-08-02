@@ -157,5 +157,6 @@
       path parts
       [:all nil nil]
       environment context]
-     (line/render line [line-left-data
-                        line-right-data] left-point outline? context)]))
+     [line/render line [line-left-data
+                        line-right-data] left-point outline? context]]))
+

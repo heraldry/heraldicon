@@ -73,4 +73,4 @@
       path parts
       [:all nil]
       environment context]
-     (line/render line [line-one-data] left outline? context)]))
+     [ line/render line [line-one-data] left outline? context ]]))

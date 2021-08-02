@@ -80,7 +80,7 @@
       (conj path :field) part
       :all
       environment context]
-     (line/render line [line-reversed-data] row-right outline? context)
+     [ line/render line [line-reversed-data] row-right outline? context ]
      [cottising/render-fess-cottise
       :cottise-1 :cottise-2 :cottise-opposite-1
       path environment cottise-context
