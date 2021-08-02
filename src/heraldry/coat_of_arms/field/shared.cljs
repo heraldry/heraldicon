@@ -47,7 +47,7 @@
                             (not (contains? new-mapping t2)) (assoc t2 t1)))))))
     context))
 
-(defn add-components [path environment context]
+(defn render-components [path environment context]
   [:<>
    (doall
     (for [idx (range (interface/get-list-size (conj path :components) context))
@@ -69,7 +69,7 @@
                       (add-tinctures-to-mapping counterchange-tinctures))]
       [:<>
        [render-fn parent-field-path parent-field-environment context]
-       [add-components path environment context]])
+       [render-components path environment context]])
     [:<>]))
 
 (defn render [path environment
@@ -93,7 +93,7 @@
                       :cursor "pointer"})
             :transform transform}
         [ui-interface/render-field path environment context]
-        [add-components path environment
+        [render-components path environment
          (-> context
              (assoc :parent-field-path path)
              (assoc :parent-field-environment environment))]]
