@@ -131,4 +131,4 @@
       (conj path :field) part
       :all
       environment context]
-     (line/render line lines (first points) outline? context)]))
+     [ line/render line lines (first points) outline? context ]]))

@@ -153,8 +153,8 @@
           (assoc :transform (when (not use-parent-environment?)
                               (str "translate(" (v/->str ordinary-top-left) ")"
                                    "rotate(" angle ")"))))]
-     (line/render line [line-one-data] first-start outline? context)
-     (line/render opposite-line [line-reversed-data] second-end outline? context)
+     [ line/render line [line-one-data] first-start outline? context ]
+     [ line/render opposite-line [line-reversed-data] second-end outline? context ]
      [cottising/render-bend-cottise
       :cottise-1 :cottise-2 :cottise-1
       path environment cottise-context

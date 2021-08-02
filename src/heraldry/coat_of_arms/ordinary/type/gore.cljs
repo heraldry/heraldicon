@@ -86,4 +86,4 @@
       (conj path :field) part
       :all
       environment context]
-     (line/render line [line-diagonal-data line-down-data] diagonal-top outline? context)]))
+     [ line/render line [line-diagonal-data line-down-data] diagonal-top outline? context ]]))

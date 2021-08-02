@@ -209,14 +209,14 @@
       (conj path :field) part
       :all
       environment context]
-     (line/render line [line-top-left-upper-data
-                        line-top-right-upper-data] top-left-upper outline? context)
-     (line/render line [line-top-right-lower-data
-                        line-bottom-right-upper-data] top-right-lower outline? context)
-     (line/render line [line-bottom-right-lower-data
-                        line-bottom-left-lower-data] bottom-right-lower outline? context)
-     (line/render line [line-bottom-left-upper-data
-                        line-top-left-lower-data] bottom-left-upper outline? context)
+     [line/render line [line-top-left-upper-data
+                        line-top-right-upper-data] top-left-upper outline? context]
+     [line/render line [line-top-right-lower-data
+                        line-bottom-right-upper-data] top-right-lower outline? context]
+     [line/render line [line-bottom-right-lower-data
+                        line-bottom-left-lower-data] bottom-right-lower outline? context]
+     [line/render line [line-bottom-left-upper-data
+                        line-top-left-lower-data] bottom-left-upper outline? context]
      [:<>
       (for [[chevron-angle
              corner-point
@@ -243,3 +243,4 @@
          :joint-angle (* 2 half-joint-angle)
          :corner-point corner-point
          :swap-lines? true])]]))
+

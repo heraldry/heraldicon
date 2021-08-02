@@ -169,10 +169,10 @@
       (conj path :field) part
       :all
       environment context]
-     (line/render line [line-left-upper-data
-                        line-right-upper-data] left-upper outline? context)
-     (line/render opposite-line [line-right-lower-data
-                                 line-left-lower-data] right-lower outline? context)
+     [line/render line [line-left-upper-data
+                        line-right-upper-data] left-upper outline? context]
+     [line/render opposite-line [line-right-lower-data
+                                 line-left-lower-data] right-lower outline? context]
      [cottising/render-chevron-cottise
       :cottise-1 :cottise-2 :cottise-1
       path environment context
@@ -208,3 +208,4 @@
       :joint-angle joint-angle
       :corner-point corner-lower
       :swap-lines? true]]))
+

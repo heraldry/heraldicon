@@ -77,7 +77,7 @@
       (conj path :field) part
       :all
       environment context]
-     (line/render line [line-one-data] row-left outline? context)
+     [ line/render line [line-one-data] row-left outline? context ]
      [cottising/render-fess-cottise
       :cottise-1 :cottise-2 :cottise-1
       path environment cottise-context

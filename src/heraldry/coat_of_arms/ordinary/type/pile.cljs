@@ -102,8 +102,8 @@
       (conj path :field) part
       :all
       environment context]
-     (line/render line [line-left-data
-                        line-right-data] left-point outline? context)
+     [line/render line [line-left-data
+                        line-right-data] left-point outline? context]
      [cottising/render-chevron-cottise
       :cottise-1 :cottise-2 :cottise-1
       path environment context
@@ -121,3 +121,4 @@
       :chevron-angle pile-angle
       :joint-angle joint-angle
       :corner-point point]]))
+

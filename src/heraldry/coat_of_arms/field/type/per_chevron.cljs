@@ -129,5 +129,6 @@
       path parts
       [:all nil]
       environment context]
-     (line/render line [line-left-data
-                        line-right-data] diagonal-left outline? context)]))
+     [line/render line [line-left-data
+                        line-right-data] diagonal-left outline? context]]))
+

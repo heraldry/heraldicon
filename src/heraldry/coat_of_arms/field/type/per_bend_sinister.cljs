@@ -97,4 +97,4 @@
       path parts
       [:all nil]
       environment context]
-     (line/render line [line-one-data] diagonal-start outline? context)]))
+     [ line/render line [line-one-data] diagonal-start outline? context ]]))
