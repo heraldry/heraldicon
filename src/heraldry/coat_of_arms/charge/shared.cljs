@@ -162,7 +162,7 @@
              charge-shape
              mask-shape
              (+ thickness outline/stroke-width)
-             outline/color context
+             (outline/color context) context
              :corner (-> fimbriation :corner)])
           [fimbriation/dilate-and-fill-path
            charge-shape
@@ -183,7 +183,7 @@
              charge-shape
              mask-shape
              (+ thickness outline/stroke-width)
-             outline/color context
+             (outline/color context) context
              :corner (-> fimbriation :corner)])
           [fimbriation/dilate-and-fill-path
            charge-shape
@@ -200,7 +200,7 @@
        :all
        environment context]
       (when outline?
-        [:g outline/style
+        [:g (outline/style context)
          [:path {:d charge-shape}]
          (when mask-shape
            [:path {:d mask-shape}])])]]))

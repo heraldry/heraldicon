@@ -66,7 +66,7 @@
                          (* part-height offset-y)
                          shift-y)
                    :pattern-units "userSpaceOnUse"}
-         [:g outline/style
+         [:g (outline/style context)
           [:path {:d lozenge-shape}]]])
       [:pattern {:id (str pattern-id "-0")
                  :width part-width

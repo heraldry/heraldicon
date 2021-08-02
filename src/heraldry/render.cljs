@@ -116,7 +116,7 @@
                        (assoc :root-escutcheon escutcheon))]]]]
                (when (or escutcheon-outline?
                          outline?)
-                 [:g outline/style
+                 [:g (outline/style context)
                   [:path {:d (:shape environment)}]])]]}))
 
 (defn helm [path environment context]

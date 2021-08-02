@@ -173,7 +173,7 @@
        nil]
       environment context]
      (when outline?
-       [:g outline/style
+       [:g (outline/style context)
         [:path {:d (svg/make-path
                     ["M" (v/+ diagonal-left
                               line-left-start)

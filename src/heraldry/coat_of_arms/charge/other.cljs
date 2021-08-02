@@ -228,7 +228,7 @@
                                  (cond
                                    replacement (tincture/pick replacement context)
                                    (= kind :keep) colour
-                                   :else "#000000"))))
+                                   :else (outline/color context)))))
             shift (-> (v/v positional-charge-width positional-charge-height)
                       (v// 2)
                       (v/-))
@@ -355,7 +355,7 @@
                    [fimbriation/dilate-and-fill
                     adjusted-charge-without-shading
                     (+ thickness outline/stroke-width)
-                    outline/color context
+                    (outline/color context) context
                     :transform reverse-transform
                     :corner (-> fimbriation :corner)])
                  [fimbriation/dilate-and-fill
@@ -376,7 +376,7 @@
                    [fimbriation/dilate-and-fill
                     adjusted-charge-without-shading
                     (+ thickness outline/stroke-width)
-                    outline/color context
+                    (outline/color context) context
                     :transform reverse-transform
                     :corner (-> fimbriation :corner)])
                  [fimbriation/dilate-and-fill
@@ -428,3 +428,4 @@
                           :fill "#ffffff"
                           :style {:opacity (:highlight tincture)}}]])])])])
       [:<>])))
+

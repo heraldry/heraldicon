@@ -655,5 +655,6 @@
      (when (and outline?
                 (not (and (= alignment :even)
                           (#{:single :double} mode))))
-       [:g outline/style
+       [:g (outline/style context)
         [:path {:d line-path}]])]))
+

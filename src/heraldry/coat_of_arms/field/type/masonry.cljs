@@ -117,7 +117,7 @@
                          (* part-height offset-y)
                          shift-y)
                    :pattern-units "userSpaceOnUse"}
-         [:g outline/style
+         [:g (outline/style context)
           masonry-outline]])
       (doall
        (for [idx (range 2)]

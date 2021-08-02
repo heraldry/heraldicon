@@ -60,7 +60,7 @@
                          (* part-height offset-y)
                          shift-y)
                    :pattern-units "userSpaceOnUse"}
-         [:g outline/style
+         [:g (outline/style context)
           [:path {:d (str "M 0,0 h " part-width)}]
           [:path {:d (str "M 0,0 v " part-height)}]
           [:path {:d (str "M 0," part-height " h " part-width)}]
