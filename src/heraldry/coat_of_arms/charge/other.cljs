@@ -415,7 +415,7 @@
                           :y -500
                           :width 1100
                           :height 1100
-                          :fill "#000000"
+                          :fill "#001040"
                           :style {:opacity (:shadow tincture)}}]])
 
                (when render-highlight?
@@ -425,7 +425,7 @@
                           :y -500
                           :width 1100
                           :height 1100
-                          :fill "#ffffff"
+                          :fill "#ffffe8"
                           :style {:opacity (:highlight tincture)}}]])])])])
       [:<>])))
 
