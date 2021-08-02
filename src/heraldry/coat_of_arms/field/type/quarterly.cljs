@@ -165,7 +165,7 @@
                      vec)
         outline-extra 50
         outlines (when outline?
-                   [:g outline/style
+                   [:g (outline/style context)
                     (for [i (range 1 num-fields-x)]
                       (let [x1 (+ x0 (* i part-width))]
                         ^{:key [:x i]}

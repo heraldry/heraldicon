@@ -172,7 +172,7 @@
       nil
       (+ thickness
          outline/stroke-width)
-      outline/color
+      (outline/color context)
       context
       :corner corner
       :fill? false])
@@ -204,3 +204,4 @@
            (blazon-fimbriation (interface/get-sanitized-data (conj path :extra-line :fimbriation) context))]))
        distinct
        (util/combine ", ")))
+

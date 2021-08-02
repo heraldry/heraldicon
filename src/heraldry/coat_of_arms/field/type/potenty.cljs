@@ -303,7 +303,7 @@
                          (* part-height offset-y)
                          shift-y)
                    :pattern-units "userSpaceOnUse"}
-         [:g outline/style
+         [:g (outline/style context)
           potent-outline]])
       (doall
        (for [idx (range 2)]

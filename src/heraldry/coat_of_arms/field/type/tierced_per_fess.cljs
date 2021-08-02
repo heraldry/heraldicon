@@ -125,7 +125,7 @@
        nil]
       environment context]
      (when outline?
-       [:g outline/style
+       [:g (outline/style context)
         [:path {:d (svg/make-path
                     ["M" (v/+ first-left
                               line-one-start)
