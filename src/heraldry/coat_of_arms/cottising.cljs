@@ -256,3 +256,7 @@
                         :direction-anchor {:point :angle
                                            :angle [:force (- chevron-angle 90)]}
                         :outline? outline?}))]))))
+
+(defmethod interface/component-options :heraldry.component/cottise [_path _data]
+  nil)
+
