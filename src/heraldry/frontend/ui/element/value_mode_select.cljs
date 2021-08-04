@@ -16,8 +16,10 @@
         {:keys [inherited
                 default
                 type
-                choices]} (or @(rf/subscribe [:get-relevant-options path])
-                              default-option)
+                choices
+                ui]} (or @(rf/subscribe [:get-relevant-options path])
+                         default-option)
+        {:keys [additional-values]} ui
         display-fn (or display-fn
                        (when (= type :choice)
                          (util/choices->map choices))
@@ -42,12 +44,23 @@
                                            :icon (if (some? current-value)
                                                    "far fa-square"
                                                    "far fa-check-square")
-                                           :handler (handler-for-value nil)}))
+                                           :handler (handler-for-value nil)})
+               (seq additional-values) (-> (concat (map (fn [[display-value value]]
+                                                          {:title (str display-value " (" (display-fn value) ")")
+                                                           :icon (if (= current-value value)
+                                                                   "far fa-check-square"
+                                                                   "far fa-square")
+                                                           :handler (handler-for-value value)})
+                                                        additional-values))
+                                           vec))
+        manual-icon (if (and (some? current-value)
+                             (not (seq (filter (fn [[_ value]]
+                                                 (= current-value value)) additional-values))))
+                      "far fa-check-square"
+                      "far fa-square")
         menu (cond-> menu
                (seq menu) (conj {:title "Manual"
-                                 :icon (if (some? current-value)
-                                         "far fa-check-square"
-                                         "far fa-square")
+                                 :icon manual-icon
                                  :handler (handler-for-value effective-value)}))]
 
     [:<>
@@ -61,3 +74,4 @@
          menu
          [:i.ui-icon {:class "fas fa-cog"}]
          :disabled? disabled?]])]))
+

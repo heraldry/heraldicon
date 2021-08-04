@@ -58,7 +58,12 @@
                :ui {:label "Squiggly lines (can be slow)"}}
 
    :preview-original? {:type :boolean
-                       :ui {:label "Preview original (don't replace colours)"}}})
+                       :ui {:label "Preview original (don't replace colours)"}}
+   :coat-of-arms-angle {:type :range
+                        :default 0
+                        :ui {:label "Shield angle"
+                             :additional-values [["Typical" 45]]
+                             :step 5}}})
 
 (defn options [render-options]
   (when render-options
