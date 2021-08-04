@@ -12,7 +12,8 @@
                  :escutcheon-shadow?
                  :escutcheon-outline?
                  :outline?
-                 :squiggly?]]
+                 :squiggly?
+                 :coat-of-arms-angle]]
      ^{:key option} [interface/form-element (conj path option)])])
 
 (defmethod interface/component-node-data :heraldry.component/render-options [_path]
@@ -20,3 +21,4 @@
 
 (defmethod interface/component-form-data :heraldry.component/render-options [_path]
   {:form form})
+
