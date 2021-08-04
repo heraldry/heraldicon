@@ -23,9 +23,9 @@
     (-> path last (= :render-options)) :heraldry.component/render-options
     (-> path last (= :helms)) :heraldry.component/helms
     (-> path last (= :coat-of-arms)) :heraldry.component/coat-of-arms
+    (keyword? raw-type) (type->component-type raw-type)
     (and (-> path last keyword?)
          (-> path last name (s/starts-with? "cottise"))) :heraldry.component/cottise
-    (keyword? raw-type) (type->component-type raw-type)
     :else nil))
 
 (defn state-source [path]
@@ -82,3 +82,4 @@
     (if (-> manual-blazon count pos?)
       manual-blazon
       (blazon-component path context))))
+
