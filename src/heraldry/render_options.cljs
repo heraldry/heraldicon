@@ -10,11 +10,11 @@
    ["Hatching" :hatching]])
 
 (def default-options
-  {:escutcheon-override {:type :choice
-                         :choices escutcheon/choices
-                         :default :none
-                         :ui {:label "Escutcheon"
-                              :form-type :escutcheon-select}}
+  {:escutcheon {:type :choice
+                :choices (drop 1 escutcheon/choices)
+                :default :heater
+                :ui {:label "Escutcheon"
+                     :form-type :escutcheon-select}}
 
    :mode {:type :choice
           :choices mode-choices
@@ -67,5 +67,11 @@
         (= texture :none) (dissoc :texture-displacement?)
         (not= mode :colours) (dissoc :theme)))))
 
-(defmethod interface/component-options :heraldry.component/render-options [_path data]
-  (options data))
+(defmethod interface/component-options :heraldry.component/render-options [path data]
+  (cond-> (options data)
+    (= path [:collection-form :render-options]) (assoc :escutcheon {:type :choice
+                                                                    :choices escutcheon/choices
+                                                                    :default :none
+                                                                    :ui {:label "Escutcheon"
+                                                                         :form-type :escutcheon-select}})))
+

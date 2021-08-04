@@ -156,12 +156,11 @@
                               :opt-un [:heraldry.semy/layout]))
 
 (s/def :heraldry/coat-of-arms (s/keys :req-un [:heraldry/spec-version
-                                               :heraldry/escutcheon
                                                :heraldry/field]))
 
-(s/def :heraldry.render-options/escutcheon-override #(or (= % :none)
-                                                         (nil? %)
-                                                         (s/valid? :heraldry/escutcheon %)))
+(s/def :heraldry.render-options/escutcheon #(or (= % :none)
+                                                (nil? %)
+                                                (s/valid? :heraldry/escutcheon %)))
 (s/def :heraldry.render-options/mode #{:colours
                                        :hatching})
 (s/def :heraldry.render-options/shiny? boolean?)
@@ -180,4 +179,5 @@
                                                  :heraldry.render-options/theme
                                                  :heraldry.render-options/texture
                                                  :heraldry.render-options/texture-displacement?
-                                                 :heraldry.render-options/escutcheon-override]))
+                                                 :heraldry.render-options/escutcheon]))
+

@@ -53,7 +53,6 @@
 
 (def coat-of-arms
   {:spec-version 1
-   :escutcheon :heater
    :field field})
 
 (def render-options
@@ -102,3 +101,4 @@
 (def helm
   {:type :heraldry.component/helm
    :components [helmet]})
+

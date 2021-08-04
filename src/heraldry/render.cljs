@@ -19,7 +19,7 @@
                       root-transform
                       texture-link] :as context}]
   (let [mode (interface/render-option :mode context)
-        escutcheon-override (interface/render-option :escutcheon-override context)
+        escutcheon (interface/render-option :escutcheon context)
         escutcheon-shadow? (when-not svg-export?
                              (interface/render-option :escutcheon-shadow? context))
         escutcheon-outline? (interface/render-option :escutcheon-outline? context)
@@ -29,10 +29,6 @@
         theme (interface/render-option :theme context)
         texture (interface/render-option :texture context)
         texture-displacement? (interface/render-option :texture-displacement? context)
-        escutcheon (interface/get-sanitized-data (conj path :escutcheon) context)
-        escutcheon (if (not= escutcheon-override :none)
-                     escutcheon-override
-                     escutcheon)
         shield (escutcheon/field escutcheon)
         environment (-> (environment/transform-to-width shield width)
                         (cond->
@@ -165,3 +161,4 @@
                                                              0]})]
                        ^{:key idx}
                        [helm (conj elements-path idx) helm-environment context])))]}))))
+

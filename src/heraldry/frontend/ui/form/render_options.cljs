@@ -3,7 +3,7 @@
 
 (defn form [path _]
   [:<>
-   (for [option [:escutcheon-override
+   (for [option [:escutcheon
                  :mode
                  :theme
                  :texture

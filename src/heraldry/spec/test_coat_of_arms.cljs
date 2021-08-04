@@ -169,13 +169,11 @@
 
     :heraldry/coat-of-arms {:spec-version 1
                             :type :coat-of-arms
-                            :escutcheon :heater
                             :field {:type :heraldry.field.type/plain
                                     :tincture :azure}}
 
     :heraldry/coat-of-arms {:spec-version 1
                             :type :coat-of-arms
-                            :escutcheon :polish
                             :field {:type :per-pale
                                     :line {:type :invected
                                            :eccentricity 1.3
@@ -193,20 +191,9 @@
 
     :heraldry/coat-of-arms {}
 
-    :heraldry/coat-of-arms {:spec-version 1
-                            :escutcheon :heater}
+    :heraldry/coat-of-arms {:spec-version 1}
 
-    :heraldry/coat-of-arms {:spec-version 1
-                            :field {:type :heraldry.field.type/plain
-                                    :tincture :azure}}
-
-    :heraldry/coat-of-arms {:spec-version 1
-                            :escutcheon :does-not-exist
-                            :field {:type :heraldry.field.type/plain
-                                    :tincture :azure}}
-
-    :heraldry/coat-of-arms {:escutcheon :heater
-                            :field {:type :heraldry.field.type/plain
+    :heraldry/coat-of-arms {:field {:type :heraldry.field.type/plain
                                     :tincture :azure}}))
 
 (deftest valid-render-options
@@ -220,7 +207,7 @@
 
     :heraldry/render-options {:squiggly true}
 
-    :heraldry/render-options {:escutcheon-override :heater}))
+    :heraldry/render-options {:escutcheon :heater}))
 
 (deftest invalid-render-options
   (are [spec form] (not (s/valid? spec form))
@@ -231,4 +218,5 @@
 
     :heraldry/render-options {:squiggly? "foo"}
 
-    :heraldry/render-options {:escutcheon-override :does-not-exist}))
+    :heraldry/render-options {:escutcheon :does-not-exist}))
+
