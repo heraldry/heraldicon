@@ -5,10 +5,6 @@
             [heraldry.interface :as interface]
             [heraldry.options :as options]))
 
-(def mode-choices
-  [["Colours" :colours]
-   ["Hatching" :hatching]])
-
 (def default-options
   {:escutcheon {:type :choice
                 :choices (drop 1 escutcheon/choices)
@@ -17,7 +13,8 @@
                      :form-type :escutcheon-select}}
 
    :mode {:type :choice
-          :choices mode-choices
+          :choices [["Colours" :colours]
+                    ["Hatching" :hatching]]
           :default :colours
           :ui {:label "Mode"
                :form-type :radio-select}}
