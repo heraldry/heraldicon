@@ -64,7 +64,12 @@
                              :additional-values [["Half" 22.5]
                                                  ["2/3rds" 30]
                                                  ["Full" 45]]
-                             :step 1}}})
+                             :step 1}}
+   :scope {:type :choice
+           :choices [["Everything (Helms, etc.)" :achievement]
+                     ["Coat of Arms" :coat-of-arms]]
+           :default :achievement
+           :ui {:label "Scope"}}})
 
 (defn options [render-options]
   (when render-options

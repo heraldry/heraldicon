@@ -167,6 +167,7 @@
   (let [root-scale 5
         context (assoc context :root-transform (str "scale(" root-scale "," root-scale ")"))
         coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
+        scope (interface/render-option :scope context)
         coa-angle-rad (-> coat-of-arms-angle
                           (* Math/PI)
                           (/ 180))
@@ -181,10 +182,14 @@
          coat-of-arms-height :height} environment
         {helms :result
          helms-width :width
-         helms-height :height} (helms
-                                (conj path :helms)
-                                100
-                                context)
+         helms-height :height} (if (= scope :coat-of-arms)
+                                 {:width 0
+                                  :height 0
+                                  :result nil}
+                                 (helms
+                                  (conj path :helms)
+                                  100
+                                  context))
         coat-of-arms-width (* root-scale coat-of-arms-width)
         coat-of-arms-height (* root-scale coat-of-arms-height)
         helms-width (* root-scale helms-width)

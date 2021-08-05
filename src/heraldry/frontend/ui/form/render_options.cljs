@@ -3,7 +3,8 @@
 
 (defn form [path _]
   [:<>
-   (for [option [:escutcheon
+   (for [option [:scope
+                 :escutcheon
                  :mode
                  :theme
                  :texture
