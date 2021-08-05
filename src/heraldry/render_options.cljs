@@ -61,9 +61,13 @@
                        :ui {:label "Preview original (don't replace colours)"}}
    :coat-of-arms-angle {:type :range
                         :default 0
+                        :min 0
+                        :max 45
                         :ui {:label "Shield angle"
-                             :additional-values [["Typical" 45]]
-                             :step 5}}})
+                             :additional-values [["Full" 45]
+                                                 ["2/3rds" 30]
+                                                 ["Half" 22.5]]
+                             :step 1}}})
 
 (defn options [render-options]
   (when render-options

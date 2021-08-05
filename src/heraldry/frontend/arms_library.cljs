@@ -52,39 +52,11 @@
      [charge-attribution]]))
 
 (defn render-coat-of-arms []
-  (let [root-scale 5
-        context (merge
-                 context/default
-                 {:render-options-path (conj form-db-path :render-options)
-                  :root-transform (str "scale(" root-scale "," root-scale ")")})
-        {coat-of-arms :result
-         environment :environment} (render/coat-of-arms
-                                    (conj form-db-path :coat-of-arms)
-                                    100
-                                    context)
-        {helms :result
-         helms-height :height} (render/helms
-                                (conj form-db-path :helms)
-                                100
-                                context)
-        {:keys [width height]} environment
-        width (* root-scale width)
-        height (* root-scale height)
-        helms-height (* root-scale helms-height)
-        scale (/ height
-                 (+ height helms-height))]
-    [:svg {:id "svg"
-           :style {:width "100%"}
-           :viewBox (str "0 0 " (-> width (+ 20)) " " (-> height (+ 20) (+ 20)))
-           :preserveAspectRatio "xMidYMin meet"}
-     [:g {:transform "translate(10,10)"}
-      [:g {:transform (str "translate(" (* (- 1 scale) (/ width 2)) ","
-                           (* (- 1 scale) height)
-                           ")"
-                           "scale(" scale ", " scale ")")
-           :style {:transition "transform 0.5s"}}
-       coat-of-arms
-       helms]]]))
+  [render/achievement
+   form-db-path
+   (assoc
+    context/default
+    :render-options-path (conj form-db-path :render-options))])
 
 (defn blazonry []
   [:div.blazonry
@@ -342,3 +314,4 @@
         version (-> parameters :path :version)
         arms-id (str "arms:" id)]
     [arms-display arms-id version]))
+
