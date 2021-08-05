@@ -163,7 +163,8 @@
                        ^{:key idx}
                        [helm (conj elements-path idx) helm-environment context])))]}))))
 
-(defn achievement [path context]
+(defn achievement [path {:keys [short-url
+                                svg-export?] :as context}]
   (let [root-scale 5
         context (assoc context :root-transform (str "scale(" root-scale "," root-scale ")"))
         coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
@@ -212,17 +213,31 @@
         total-width effective-width
         total-height (+ effective-height helms-height)
         target-width 500
-        target-height (min
-                       (-> target-width
-                           (/ total-width)
-                           (* total-height))
-                       (* 1.5 target-width))
+        target-height (-> target-width
+                          (/ total-width)
+                          (* total-height))
+        target-height (if svg-export?
+                        target-height
+                        (min target-height
+                             (* 1.5 target-width)))
         scale (min (/ target-width total-width)
-                   (/ target-height total-height))]
-    [:svg {:style {:width "100%"}
-           :viewBox (str "0 0 " (-> target-width (+ 20)) " " (-> target-height (+ 20) (+ 20)))
-           :preserveAspectRatio "xMidYMin meet"}
-     [:g {:transform "translate(10,10)"}
+                   (/ target-height total-height))
+        margin 10
+        font-size 20
+        document-width (-> target-width (+ (* 2 margin)))
+        document-height (-> target-height (+ (* 2 margin)) (+ 20)
+                            (cond-> short-url
+                              (+ font-size margin)))]
+    [:svg (merge
+           {:viewBox (str "0 0 " document-width " " document-height)}
+           (if svg-export?
+             {:xmlns "http://www.w3.org/2000/svg"
+              :version "1.1"
+              :width document-width
+              :height document-height}
+             {:style {:width "100%"}
+              :preserveAspectRatio "xMidYMin meet"}))
+     [:g {:transform (str "translate(" margin "," margin ")")}
       [:g {:transform (str
                        "translate(" (/ target-width 2) "," (/ target-height 2) ")"
                        "scale(" scale "," scale ")"
@@ -248,5 +263,14 @@
           coat-of-arms]
          [:g {:transform (when rotated?
                            (str "translate(" (/ coat-of-arms-width 2) "," 0 ")"))}
-          helms]]]]]]))
+          helms]]]]]
+     (when short-url
+       [:text {:x margin
+               :y (- document-height
+                     margin)
+               :text-align "start"
+               :fill "#888"
+               :style {:font-family "DejaVuSans"
+                       :font-size font-size}}
+        short-url])]))
 
