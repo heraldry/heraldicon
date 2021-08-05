@@ -145,7 +145,9 @@
             total-height helm-height
             gap (/ helm-width gap-part)
             helm-width-with-gap (+ helm-width gap)]
-        {:width width
+        (js/console.log :helm-data helm-width helm-height)
+        {:width (- width
+                   (* 2 gap))
          :height total-height
          :result [:g {:transform root-transform}
                   (doall
@@ -161,4 +163,84 @@
                                                              0]})]
                        ^{:key idx}
                        [helm (conj elements-path idx) helm-environment context])))]}))))
+
+(defn achievement [path context]
+  (let [root-scale 5
+        context (assoc context :root-transform (str "scale(" root-scale "," root-scale ")"))
+        coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
+        coa-angle-rad (-> coat-of-arms-angle
+                          (* Math/PI)
+                          (/ 180))
+        coa-angle-counter-rad (- (/ Math/PI 2)
+                                 coa-angle-rad)
+        {coat-of-arms :result
+         environment :environment} (coat-of-arms
+                                    (conj path :coat-of-arms)
+                                    100
+                                    context)
+        {coat-of-arms-width :width
+         coat-of-arms-height :height} environment
+        {helms :result
+         helms-width :width
+         helms-height :height} (helms
+                                (conj path :helms)
+                                100
+                                context)
+        coat-of-arms-width (* root-scale coat-of-arms-width)
+        coat-of-arms-height (* root-scale coat-of-arms-height)
+        helms-width (* root-scale helms-width)
+        helms-height (* root-scale helms-height)
+        rotated-width-left (max
+                            (* coat-of-arms-width (Math/cos coa-angle-rad))
+                            (/ helms-width 2))
+        rotated-width-right (max
+                             (* coat-of-arms-height (Math/cos coa-angle-counter-rad))
+                             (/ helms-width 2))
+        rotated-height (+ (* coat-of-arms-width (Math/sin coa-angle-rad))
+                          (* coat-of-arms-height (Math/sin coa-angle-counter-rad)))
+        rotated? (pos? coat-of-arms-angle)
+        effective-width (if rotated?
+                          (+ rotated-width-left rotated-width-right)
+                          coat-of-arms-width)
+        effective-height (if rotated?
+                           rotated-height
+                           coat-of-arms-height)
+        total-width effective-width
+        total-height (+ effective-height helms-height)
+        height-scale (/ effective-height total-height)]
+    (js/console.log :hw helms-width helms-height)
+    (js/console.log :dims coat-of-arms-width coat-of-arms-height)
+    (js/console.log :effective effective-width effective-height)
+    (js/console.log :tot total-width total-height)
+    (js/console.log :height-scale height-scale)
+    [:svg {:id "svg"
+           :style {:width "100%"
+                   :transition "viewBox 5s"}
+           :viewBox (str "0 0 " (-> total-width (+ 20)) " " (-> total-height (+ 20) (+ 20)))
+           :preserveAspectRatio "xMidYMin meet"}
+     [:rect {:x 10
+             :y 10
+             :width total-width
+             :height total-height
+             :style {:fill "none"
+                     :stroke "#000"}}]
+     [:g {:transform "translate(10,10)"}
+      [:g {:transform (str "translate(" (* (- 1 height-scale) (/ coat-of-arms-width 2)) ","
+                           (* (- 1 height-scale) effective-height)
+                           ")"
+                           "scale(" height-scale ", " height-scale ")")
+           :style {:transition "transform 0.5s"}}
+       [:g {:transform (when rotated?
+                         (str "translate(" (- rotated-width-left
+                                              coat-of-arms-width) "," 0 ")"))
+            :style {:transition "transform 0.5s"}}
+        [:g {:transform (when rotated?
+                          (str "translate(" coat-of-arms-width "," 0 ")"
+                               "rotate(" (- coat-of-arms-angle) ")"
+                               "translate(" (- coat-of-arms-width) "," 0 ")"))
+             :style {:transition "transform 0.5s"}}
+         coat-of-arms]
+        [:g {:transform (when rotated?
+                          (str "translate(" (/ coat-of-arms-width 2) "," 0 ")"))}
+         helms]]]]]))
 
