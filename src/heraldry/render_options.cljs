@@ -64,9 +64,9 @@
                         :min 0
                         :max 45
                         :ui {:label "Shield angle"
-                             :additional-values [["Full" 45]
+                             :additional-values [["Half" 22.5]
                                                  ["2/3rds" 30]
-                                                 ["Half" 22.5]]
+                                                 ["Full" 45]]
                              :step 1}}})
 
 (defn options [render-options]

@@ -145,7 +145,6 @@
             total-height helm-height
             gap (/ helm-width gap-part)
             helm-width-with-gap (+ helm-width gap)]
-        (js/console.log :helm-data helm-width helm-height)
         {:width (- width
                    (* 2 gap))
          :height total-height
@@ -207,40 +206,42 @@
                            coat-of-arms-height)
         total-width effective-width
         total-height (+ effective-height helms-height)
-        height-scale (/ effective-height total-height)]
-    (js/console.log :hw helms-width helms-height)
-    (js/console.log :dims coat-of-arms-width coat-of-arms-height)
-    (js/console.log :effective effective-width effective-height)
-    (js/console.log :tot total-width total-height)
-    (js/console.log :height-scale height-scale)
-    [:svg {:id "svg"
-           :style {:width "100%"
-                   :transition "viewBox 5s"}
-           :viewBox (str "0 0 " (-> total-width (+ 20)) " " (-> total-height (+ 20) (+ 20)))
+        target-width 500
+        target-height (min
+                       (-> target-width
+                           (/ total-width)
+                           (* total-height))
+                       (* 1.5 target-width))
+        scale (min (/ target-width total-width)
+                   (/ target-height total-height))]
+    [:svg {:style {:width "100%"}
+           :viewBox (str "0 0 " (-> target-width (+ 20)) " " (-> target-height (+ 20) (+ 20)))
            :preserveAspectRatio "xMidYMin meet"}
-     [:rect {:x 10
-             :y 10
-             :width total-width
-             :height total-height
-             :style {:fill "none"
-                     :stroke "#000"}}]
      [:g {:transform "translate(10,10)"}
-      [:g {:transform (str "translate(" (* (- 1 height-scale) (/ coat-of-arms-width 2)) ","
-                           (* (- 1 height-scale) effective-height)
-                           ")"
-                           "scale(" height-scale ", " height-scale ")")
+      [:g {:transform (str
+                       "translate(" (/ target-width 2) "," (/ target-height 2) ")"
+                       "scale(" scale "," scale ")"
+                       "translate(" (- (/ total-width 2)) "," (- (/ total-height 2)) ")")
            :style {:transition "transform 0.5s"}}
-       [:g {:transform (when rotated?
-                         (str "translate(" (- rotated-width-left
-                                              coat-of-arms-width) "," 0 ")"))
+       #_[:rect {:x 0
+                 :y 0
+                 :width total-width
+                 :height total-height
+                 :style {:fill "none"
+                         :stroke "#000"}}]
+       [:g {:transform (str "translate(" 0 "," helms-height ")")
             :style {:transition "transform 0.5s"}}
         [:g {:transform (when rotated?
-                          (str "translate(" coat-of-arms-width "," 0 ")"
-                               "rotate(" (- coat-of-arms-angle) ")"
-                               "translate(" (- coat-of-arms-width) "," 0 ")"))
+                          (str "translate(" (- rotated-width-left
+                                               coat-of-arms-width) "," 0 ")"))
              :style {:transition "transform 0.5s"}}
-         coat-of-arms]
-        [:g {:transform (when rotated?
-                          (str "translate(" (/ coat-of-arms-width 2) "," 0 ")"))}
-         helms]]]]]))
+         [:g {:transform (when rotated?
+                           (str "translate(" coat-of-arms-width "," 0 ")"
+                                "rotate(" (- coat-of-arms-angle) ")"
+                                "translate(" (- coat-of-arms-width) "," 0 ")"))
+              :style {:transition "transform 0.5s"}}
+          coat-of-arms]
+         [:g {:transform (when rotated?
+                           (str "translate(" (/ coat-of-arms-width 2) "," 0 ")"))}
+          helms]]]]]]))
 
