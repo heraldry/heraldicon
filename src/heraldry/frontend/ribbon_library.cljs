@@ -148,7 +148,7 @@
        "Save"]]]))
 
 (defn attribution []
-  (let [attribution-data nil #_(attribution/for-ribbon form-db-path {})]
+  (let [attribution-data (attribution/for-ribbon form-db-path {})]
     [:div.attribution
      [:h3 "Attribution"]
      [:div {:style {:padding-left "1em"}}
