@@ -21,6 +21,7 @@
                     (dissoc :charge-group))
         origin (interface/get-sanitized-data (conj path :origin) context)
         anchor (interface/get-sanitized-data (conj path :anchor) context)
+        vertical-mask (interface/get-sanitized-data (conj path :vertical-mask) context)
         fimbriation (interface/get-sanitized-data (conj path :fimbriation) context)
         size (if (and size-default
                       (not (interface/get-raw-data (conj path :geometry :size) context)))
@@ -147,60 +148,87 @@
                (v/+ origin-point
                     (v/v max-x max-y))]
               mask-shape]
-        charge-id (util/id "charge")]
+        charge-id (util/id "charge")
+        vertical-mask? (not (zero? vertical-mask))
+        vertical-mask-id (util/id "mask")]
     [:<>
-     (when (-> fimbriation :mode #{:double})
-       (let [thickness (+ (-> fimbriation
-                              :thickness-1
-                              ((util/percent-of charge-width)))
-                          (-> fimbriation
-                              :thickness-2
-                              ((util/percent-of charge-width))))]
-         [:<>
-          (when outline?
-            [fimbriation/dilate-and-fill-path
-             charge-shape
-             mask-shape
-             (+ thickness outline/stroke-width)
-             (outline/color context) context
-             :corner (-> fimbriation :corner)])
-          [fimbriation/dilate-and-fill-path
-           charge-shape
-           mask-shape
-           (cond-> thickness
-             outline? (- outline/stroke-width))
-           (-> fimbriation
-               :tincture-2
-               (tincture/pick context)) context
-           :corner (-> fimbriation :corner)]]))
-     (when (-> fimbriation :mode #{:single :double})
-       (let [thickness (-> fimbriation
-                           :thickness-1
-                           ((util/percent-of charge-width)))]
-         [:<>
-          (when outline?
-            [fimbriation/dilate-and-fill-path
-             charge-shape
-             mask-shape
-             (+ thickness outline/stroke-width)
-             (outline/color context) context
-             :corner (-> fimbriation :corner)])
-          [fimbriation/dilate-and-fill-path
-           charge-shape
-           mask-shape
-           (cond-> thickness
-             outline? (- outline/stroke-width))
-           (-> fimbriation
-               :tincture-1
-               (tincture/pick context)) context
-           :corner (-> fimbriation :corner)]]))
-     [:g {:id charge-id}
-      [field-shared/make-subfield
-       (conj path :field) part
-       :all
-       environment context]
-      (when outline?
-        [:g (outline/style context)
-         [:path {:d charge-shape}]
-         (when mask-shape
-           [:path {:d mask-shape}])])]]))
+     (when vertical-mask?
+       (let [total-width (- max-x min-x)
+             total-height (- max-y min-y)
+             mask-height ((util/percent-of total-height) (Math/abs vertical-mask))]
+         [:defs
+          [:mask {:id vertical-mask-id}
+           [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")")}
+            [:rect {:x (- min-x 10)
+                    :y (- min-y 10)
+                    :width (+ total-width 20)
+                    :height (+ total-height 10)
+                    :style {:fill "#ffffff"}}]
+            [:rect {:x (- min-x 10)
+                    :y (if (pos? vertical-mask)
+                         (-> min-y
+                             (+ total-height)
+                             (- mask-height))
+                         (-> min-y
+                             (- 10)))
+                    :width (+ total-width 20)
+                    :height (+ mask-height 10)
+                    :style {:fill "#000000"}}]]]]))
+     [:g (when vertical-mask?
+           {:mask (str "url(#" vertical-mask-id ")")})
+      (when (-> fimbriation :mode #{:double})
+        (let [thickness (+ (-> fimbriation
+                               :thickness-1
+                               ((util/percent-of charge-width)))
+                           (-> fimbriation
+                               :thickness-2
+                               ((util/percent-of charge-width))))]
+          [:<>
+           (when outline?
+             [fimbriation/dilate-and-fill-path
+              charge-shape
+              mask-shape
+              (+ thickness outline/stroke-width)
+              (outline/color context) context
+              :corner (-> fimbriation :corner)])
+           [fimbriation/dilate-and-fill-path
+            charge-shape
+            mask-shape
+            (cond-> thickness
+              outline? (- outline/stroke-width))
+            (-> fimbriation
+                :tincture-2
+                (tincture/pick context)) context
+            :corner (-> fimbriation :corner)]]))
+      (when (-> fimbriation :mode #{:single :double})
+        (let [thickness (-> fimbriation
+                            :thickness-1
+                            ((util/percent-of charge-width)))]
+          [:<>
+           (when outline?
+             [fimbriation/dilate-and-fill-path
+              charge-shape
+              mask-shape
+              (+ thickness outline/stroke-width)
+              (outline/color context) context
+              :corner (-> fimbriation :corner)])
+           [fimbriation/dilate-and-fill-path
+            charge-shape
+            mask-shape
+            (cond-> thickness
+              outline? (- outline/stroke-width))
+            (-> fimbriation
+                :tincture-1
+                (tincture/pick context)) context
+            :corner (-> fimbriation :corner)]]))
+      [:g {:id charge-id}
+       [field-shared/make-subfield
+        (conj path :field) part
+        :all
+        environment context]
+       (when outline?
+         [:g (outline/style context)
+          [:path {:d charge-shape}]
+          (when mask-shape
+            [:path {:d mask-shape}])])]]]))
+

@@ -100,7 +100,13 @@
                   :ui {:label "Outline"}}
    :manual-blazon {:type :text
                    :default nil
-                   :ui {:label "Manual blazon"}}})
+                   :ui {:label "Manual blazon"}}
+   :vertical-mask {:type :range
+                   :default 0
+                   :min -100
+                   :max 100
+                   :ui {:label "Vertical mask"
+                        :step 1}}})
 
 (defn options [charge & {:keys [part-of-semy? part-of-charge-group?]}]
   (let [type (-> charge :type name keyword)]
@@ -112,7 +118,8 @@
                                               [:geometry]
                                               [:escutcheon]
                                               [:fimbriation]
-                                              [:outline-mode]]
+                                              [:outline-mode]
+                                              [:vertical-mask]]
                                              {[:geometry :size :default] 30})
           (#{:roundel
              :annulet
@@ -126,7 +133,8 @@
                                            [:anchor]
                                            [:geometry]
                                            [:fimbriation]
-                                           [:outline-mode]]
+                                           [:outline-mode]
+                                           [:vertical-mask]]
                                           {[:geometry :reversed?] nil
                                            [:geometry :mirrored?] nil})
           (= type :crescent) (options/pick default-options
@@ -135,7 +143,8 @@
                                             [:anchor]
                                             [:geometry]
                                             [:fimbriation]
-                                            [:outline-mode]]
+                                            [:outline-mode]
+                                            [:vertical-mask]]
                                            {[:geometry :mirrored?] nil})
           :else (options/pick default-options
                               [[:type]
@@ -144,7 +153,8 @@
                                [:geometry]
                                [:fimbriation]
                                [:tincture]
-                               [:outline-mode]]))
+                               [:outline-mode]
+                               [:vertical-mask]]))
         (assoc :manual-blazon (:manual-blazon default-options))
         (cond->
          (or part-of-semy?
@@ -164,3 +174,4 @@
 
 (defmethod interface/component-options :heraldry.component/charge [_path data]
   (options data))
+
