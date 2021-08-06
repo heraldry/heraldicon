@@ -6,6 +6,7 @@
             [heraldry.frontend.charge-library :as charge-library]
             [heraldry.frontend.collection-library :as collection-library]
             [heraldry.frontend.home :as home]
+            [heraldry.frontend.ribbon-library :as ribbon-library]
             [heraldry.frontend.user-library :as user-library]
             [reagent.core :as rc]
             [reitit.coercion.spec :as rss]
@@ -159,6 +160,50 @@
      :view charge-library/view-charge-by-id
      :conflicting true}]
 
+   ["/ribbons/"
+    {:name :ribbons
+     :view ribbon-library/view-list-ribbons}]
+
+   ["/ribbons"
+    {:name :ribbons-without-slash
+     :view ribbon-library/view-list-ribbons}]
+
+   ["/ribbons/new"
+    {:name :create-ribbon
+     :view ribbon-library/create-ribbon
+     :conflicting true}]
+
+   ["/ribbons/new/"
+    {:name :create-ribbon-with-slash
+     :view ribbon-library/create-ribbon
+     :conflicting true}]
+
+   ["/ribbons/:id"
+    {:name :view-ribbon-by-id
+     :parameters {:path {:id string?}}
+     :view ribbon-library/view-ribbon-by-id
+     :conflicting true}]
+
+   ["/ribbons/:id/"
+    {:name :view-ribbon-by-id-with-slash
+     :parameters {:path {:id string?}}
+     :view ribbon-library/view-ribbon-by-id
+     :conflicting true}]
+
+   ["/ribbons/:id/:version"
+    {:name :view-ribbon-by-id-and-version
+     :parameters {:path {:id string?
+                         :version number?}}
+     :view ribbon-library/view-ribbon-by-id
+     :conflicting true}]
+
+   ["/ribbons/:id/:version/"
+    {:name :view-ribbon-by-id-and-version-with-slash
+     :parameters {:path {:id string?
+                         :version number?}}
+     :view ribbon-library/view-ribbon-by-id
+     :conflicting true}]
+
    ["/users/"
     {:name :users
      :view user-library/view-list-users
@@ -243,3 +288,4 @@
    (fn [m] (reset! current-match m))
    ;; set to false to enable HistoryAPI
    {:use-fragment false}))
+
