@@ -13,6 +13,7 @@
                  :fimbriation
                  :tincture
                  :outline-mode
+                 :vertical-mask
                  :manual-blazon]]
      ^{:key option} [interface/form-element (conj path option)])])
 
@@ -25,3 +26,4 @@
 
 (defmethod interface/component-form-data :heraldry.component/charge [_path]
   {:form form})
+

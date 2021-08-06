@@ -94,6 +94,7 @@
                         (dissoc :charge-group))
             origin (interface/get-sanitized-data (conj path :origin) context)
             anchor (interface/get-sanitized-data (conj path :anchor) context)
+            vertical-mask (interface/get-sanitized-data (conj path :vertical-mask) context)
             fimbriation (interface/get-sanitized-data (conj path :fimbriation) context)
             size (if (and size-default
                           (not (interface/get-raw-data (conj path :geometry :size) context)))
@@ -263,169 +264,195 @@
                                                                clip-size)])
                                  :override-environment (when (or inherit-environment?
                                                                  counterchanged?)
-                                                         environment)})]
+                                                         environment)})
+            vertical-mask? (not (zero? vertical-mask))
+            vertical-mask-id (util/id "mask")]
         [:<>
-         [:defs
-          (when render-shadow?
-            [:mask {:id shadow-mask-id}
+         (when vertical-mask?
+           (let [total-width (- max-x min-x)
+                 total-height (- max-y min-y)
+                 mask-height ((util/percent-of total-height) (Math/abs vertical-mask))]
              [:defs
-              [:mask {:id shadow-helper-mask-id}
+              [:mask {:id vertical-mask-id}
+               [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")")}
+                [:rect {:x (- min-x 10)
+                        :y (- min-y 10)
+                        :width (+ total-width 20)
+                        :height (+ total-height 10)
+                        :style {:fill "#ffffff"}}]
+                [:rect {:x (- min-x 10)
+                        :y (if (pos? vertical-mask)
+                             (-> min-y
+                                 (+ total-height)
+                                 (- mask-height))
+                             (-> min-y
+                                 (- 10)))
+                        :width (+ total-width 20)
+                        :height (+ mask-height 10)
+                        :style {:fill "#000000"}}]]]]))
+         [:g (when vertical-mask?
+               {:mask (str "url(#" vertical-mask-id ")")})
+          [:defs
+           (when render-shadow?
+             [:mask {:id shadow-mask-id}
+              [:defs
+               [:mask {:id shadow-helper-mask-id}
+                (->
+                 adjusted-charge-without-shading
+                 (replace-colours
+                  (fn [colour]
+                    (if (s/starts-with? colour "url")
+                      "none"
+                      (let [colour-lower (svg/normalize-colour colour)
+                            kind (get placeholder-colours colour-lower)]
+                        (case kind
+                          :outline "#000000"
+                          :shadow "none"
+                          :highlight "none"
+                          "#ffffff")))))
+                 svg/make-unique-ids)]]
+              [:g {:mask (str "url(#" shadow-helper-mask-id ")")}
                (->
-                adjusted-charge-without-shading
+                adjusted-charge
                 (replace-colours
                  (fn [colour]
                    (if (s/starts-with? colour "url")
-                     "none"
+                     colour
                      (let [colour-lower (svg/normalize-colour colour)
                            kind (get placeholder-colours colour-lower)]
                        (case kind
-                         :outline "#000000"
-                         :shadow "none"
+                         :shadow "#ffffff"
                          :highlight "none"
-                         "#ffffff")))))
-                svg/make-unique-ids)]]
-             [:g {:mask (str "url(#" shadow-helper-mask-id ")")}
-              (->
-               adjusted-charge
-               (replace-colours
-                (fn [colour]
-                  (if (s/starts-with? colour "url")
-                    colour
-                    (let [colour-lower (svg/normalize-colour colour)
-                          kind (get placeholder-colours colour-lower)]
-                      (case kind
-                        :shadow "#ffffff"
-                        :highlight "none"
-                        "#000000")))))
-               svg/make-unique-ids)]])
-          (when render-highlight?
-            [:mask {:id highlight-mask-id}
-             [:defs
-              [:mask {:id highlight-helper-mask-id}
+                         "#000000")))))
+                svg/make-unique-ids)]])
+           (when render-highlight?
+             [:mask {:id highlight-mask-id}
+              [:defs
+               [:mask {:id highlight-helper-mask-id}
+                (->
+                 adjusted-charge-without-shading
+                 (replace-colours
+                  (fn [colour]
+                    (if (s/starts-with? colour "url")
+                      "none"
+                      (let [colour-lower (svg/normalize-colour colour)
+                            kind (get placeholder-colours colour-lower)]
+                        (case kind
+                          :outline "#000000"
+                          :shadow "none"
+                          :highlight "none"
+                          "#ffffff")))))
+                 svg/make-unique-ids)]]
+              [:g {:mask (str "url(#" highlight-helper-mask-id ")")}
                (->
-                adjusted-charge-without-shading
+                adjusted-charge
                 (replace-colours
                  (fn [colour]
                    (if (s/starts-with? colour "url")
-                     "none"
+                     colour
                      (let [colour-lower (svg/normalize-colour colour)
                            kind (get placeholder-colours colour-lower)]
                        (case kind
-                         :outline "#000000"
                          :shadow "none"
-                         :highlight "none"
-                         "#ffffff")))))
-                svg/make-unique-ids)]]
-             [:g {:mask (str "url(#" highlight-helper-mask-id ")")}
-              (->
-               adjusted-charge
-               (replace-colours
-                (fn [colour]
-                  (if (s/starts-with? colour "url")
-                    colour
-                    (let [colour-lower (svg/normalize-colour colour)
-                          kind (get placeholder-colours colour-lower)]
-                      (case kind
-                        :shadow "none"
-                        :highlight "#ffffff"
-                        "#000000")))))
-               svg/make-unique-ids)]])
-          [:mask {:id mask-id}
-           (svg/make-unique-ids mask)]
-          [:mask {:id mask-inverted-id}
-           (svg/make-unique-ids mask-inverted)]]
-         (let [transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
-                              "rotate(" angle ")"
-                              "scale(" scale-x "," scale-y ")"
-                              "translate(" (-> shift :x) "," (-> shift :y) ")")
-               reverse-transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ")"
-                                      "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
-                                      "rotate(" (- angle) ")"
-                                      "translate(" (- (:x origin-point)) "," (- (:y origin-point)) ")")]
-           [:g {:transform transform}
-            (when (-> fimbriation :mode #{:double})
-              (let [thickness (+ (-> fimbriation
-                                     :thickness-1
-                                     ((util/percent-of positional-charge-width)))
-                                 (-> fimbriation
-                                     :thickness-2
-                                     ((util/percent-of positional-charge-width))))]
-                [:<>
-                 (when outline?
-                   [fimbriation/dilate-and-fill
-                    adjusted-charge-without-shading
-                    (+ thickness outline/stroke-width)
-                    (outline/color context) context
-                    :transform reverse-transform
-                    :corner (-> fimbriation :corner)])
-                 [fimbriation/dilate-and-fill
-                  adjusted-charge-without-shading
-                  (cond-> thickness
-                    outline? (- outline/stroke-width))
-                  (-> fimbriation
-                      :tincture-2
-                      (tincture/pick context)) context
-                  :transform reverse-transform
-                  :corner (-> fimbriation :corner)]]))
-            (when (-> fimbriation :mode #{:single :double})
-              (let [thickness (-> fimbriation
-                                  :thickness-1
-                                  ((util/percent-of positional-charge-width)))]
-                [:<>
-                 (when outline?
-                   [fimbriation/dilate-and-fill
-                    adjusted-charge-without-shading
-                    (+ thickness outline/stroke-width)
-                    (outline/color context) context
-                    :transform reverse-transform
-                    :corner (-> fimbriation :corner)])
-                 [fimbriation/dilate-and-fill
-                  adjusted-charge-without-shading
-                  (cond-> thickness
-                    outline? (- outline/stroke-width))
-                  (-> fimbriation
-                      :tincture-1
-                      (tincture/pick context)) context
-                  :transform reverse-transform
-                  :corner (-> fimbriation :corner)]]))
+                         :highlight "#ffffff"
+                         "#000000")))))
+                svg/make-unique-ids)]])
+           [:mask {:id mask-id}
+            (svg/make-unique-ids mask)]
+           [:mask {:id mask-inverted-id}
+            (svg/make-unique-ids mask-inverted)]]
+          (let [transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
+                               "rotate(" angle ")"
+                               "scale(" scale-x "," scale-y ")"
+                               "translate(" (-> shift :x) "," (-> shift :y) ")")
+                reverse-transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ")"
+                                       "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
+                                       "rotate(" (- angle) ")"
+                                       "translate(" (- (:x origin-point)) "," (- (:y origin-point)) ")")]
+            [:g {:transform transform}
+             (when (-> fimbriation :mode #{:double})
+               (let [thickness (+ (-> fimbriation
+                                      :thickness-1
+                                      ((util/percent-of positional-charge-width)))
+                                  (-> fimbriation
+                                      :thickness-2
+                                      ((util/percent-of positional-charge-width))))]
+                 [:<>
+                  (when outline?
+                    [fimbriation/dilate-and-fill
+                     adjusted-charge-without-shading
+                     (+ thickness outline/stroke-width)
+                     (outline/color context) context
+                     :transform reverse-transform
+                     :corner (-> fimbriation :corner)])
+                  [fimbriation/dilate-and-fill
+                   adjusted-charge-without-shading
+                   (cond-> thickness
+                     outline? (- outline/stroke-width))
+                   (-> fimbriation
+                       :tincture-2
+                       (tincture/pick context)) context
+                   :transform reverse-transform
+                   :corner (-> fimbriation :corner)]]))
+             (when (-> fimbriation :mode #{:single :double})
+               (let [thickness (-> fimbriation
+                                   :thickness-1
+                                   ((util/percent-of positional-charge-width)))]
+                 [:<>
+                  (when outline?
+                    [fimbriation/dilate-and-fill
+                     adjusted-charge-without-shading
+                     (+ thickness outline/stroke-width)
+                     (outline/color context) context
+                     :transform reverse-transform
+                     :corner (-> fimbriation :corner)])
+                  [fimbriation/dilate-and-fill
+                   adjusted-charge-without-shading
+                   (cond-> thickness
+                     outline? (- outline/stroke-width))
+                   (-> fimbriation
+                       :tincture-1
+                       (tincture/pick context)) context
+                   :transform reverse-transform
+                   :corner (-> fimbriation :corner)]]))
 
-            (if render-options-preview-original?
-              unadjusted-charge
-              [:g
-               [metadata/attribution
-                [:context :charge-data]
-                :charge {:charge-data full-charge-data}]
-               (when render-field?
-                 [:g {:mask (str "url(#" mask-inverted-id ")")}
-                  [:g {:transform reverse-transform}
-                   [field-shared/render (conj path :field) charge-environment context]]])
-               [:g {:mask (str "url(#" mask-id ")")
-                    ;; TODO: select component
-                    :on-click nil #_(when fn-select-component
-                                      (fn [event]
-                                        (fn-select-component (-> context
-                                                                 :db-path
-                                                                 (conj :field)))
-                                        (.stopPropagation event)))}
-                (svg/make-unique-ids coloured-charge)]
-               (when render-shadow?
-                 [:g {:mask (str "url(#" shadow-mask-id ")")}
-                  [:rect {:transform reverse-transform
-                          :x -500
-                          :y -500
-                          :width 1100
-                          :height 1100
-                          :fill "#001040"
-                          :style {:opacity (:shadow tincture)}}]])
+             (if render-options-preview-original?
+               unadjusted-charge
+               [:g
+                [metadata/attribution
+                 [:context :charge-data]
+                 :charge {:charge-data full-charge-data}]
+                (when render-field?
+                  [:g {:mask (str "url(#" mask-inverted-id ")")}
+                   [:g {:transform reverse-transform}
+                    [field-shared/render (conj path :field) charge-environment context]]])
+                [:g {:mask (str "url(#" mask-id ")")
+                     ;; TODO: select component
+                     :on-click nil #_(when fn-select-component
+                                       (fn [event]
+                                         (fn-select-component (-> context
+                                                                  :db-path
+                                                                  (conj :field)))
+                                         (.stopPropagation event)))}
+                 (svg/make-unique-ids coloured-charge)]
+                (when render-shadow?
+                  [:g {:mask (str "url(#" shadow-mask-id ")")}
+                   [:rect {:transform reverse-transform
+                           :x -500
+                           :y -500
+                           :width 1100
+                           :height 1100
+                           :fill "#001040"
+                           :style {:opacity (:shadow tincture)}}]])
 
-               (when render-highlight?
-                 [:g {:mask (str "url(#" highlight-mask-id ")")}
-                  [:rect {:transform reverse-transform
-                          :x -500
-                          :y -500
-                          :width 1100
-                          :height 1100
-                          :fill "#ffffe8"
-                          :style {:opacity (:highlight tincture)}}]])])])])
+                (when render-highlight?
+                  [:g {:mask (str "url(#" highlight-mask-id ")")}
+                   [:rect {:transform reverse-transform
+                           :x -500
+                           :y -500
+                           :width 1100
+                           :height 1100
+                           :fill "#ffffe8"
+                           :style {:opacity (:highlight tincture)}}]])])])]])
       [:<>])))
 
