@@ -225,20 +225,39 @@
     :bounding-box [0 15 0 10]
     :points {:fess {:x 7.5 :y 5}}}))
 
+(def
+  ^{:display-name "Wedge"}
+  wedge
+  ;; sqrt(3) / 2 * 6 + 2 ~ 7.196152422706632
+  (let [height 7.196152422706632
+        hole-x 1
+        hole-y 0.75]
+    (environment/create
+     (str "m 0,0"
+          "h 2"
+          "a " hole-x " " hole-y " 0 0 0 " hole-x "," hole-y
+          "a 8 8 0 0 1 -3," (- height hole-y)
+          "a 8 8 0 0 1 -3," (- (- height hole-y))
+          "a " hole-x " " hole-y " 0 0 0 " hole-x "," (- hole-y)
+          "z")
+     {:context :root
+      :bounding-box [-3 3 0 7.196152422706632]})))
+
 (def escutcheons
   [#'heater
    #'square-french
    #'square-iberian
    #'square-czech
-   #'french-modern
+   #'wedge
+   #'swiss
+   #'renaissance
+   #'polish
+   #'polish-19th-century
    #'lozenge
    #'roundel
    #'oval
-   #'renaissance
-   #'swiss
+   #'french-modern
    #'english
-   #'polish
-   #'polish-19th-century
    #'rectangle
    #'flag])
 
