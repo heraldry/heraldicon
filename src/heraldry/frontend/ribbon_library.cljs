@@ -1,16 +1,17 @@
 (ns heraldry.frontend.ribbon-library
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
+            [heraldry.coat-of-arms.catmullrom :as catmullrom]
+            [heraldry.coat-of-arms.default :as default]
+            [heraldry.coat-of-arms.filter :as filter]
+            [heraldry.coat-of-arms.vector :as v]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
-            #_[heraldry.frontend.ribbon :as ribbon]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
-            #_[heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
-            [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.user :as user]
-            [heraldry.render :as render]
+            [heraldry.interface :as interface]
             [heraldry.util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
@@ -25,33 +26,255 @@
 (def example-coa-db-path
   [:example-coa])
 
+(rf/reg-event-db :ribbon-edit-remove-point
+  (fn [db [_ path]]
+    (let [points-path (-> path drop-last vec)
+          idx (last path)]
+      (update-in db points-path
+                 (fn [path]
+                   (-> (concat (take idx path)
+                               (drop (inc idx) path))
+                       vec))))))
+
+(rf/reg-event-db :ribbon-edit-toggle-show-points
+  (fn [db _]
+    (update-in db [:ui :ribbon-edit :show-points?] not)))
+
+(rf/reg-event-db :ribbon-edit-add-point
+  (fn [db [_ path]]
+    (let [points-path (-> path drop-last vec)
+          idx (last path)]
+      (update-in db points-path
+                 (fn [path]
+                   (let [point1 (or (get path idx) {:x 0 :y 0})
+                         point2 (or (get path (inc idx)) (v/+ point1
+                                                              {:x 50 :y 50}))
+                         new-point {:x (-> (:x point1)
+                                           (+ (:x point2))
+                                           (/ 2))
+                                    :y (-> (:y point1)
+                                           (+ (:y point2))
+                                           (/ 2))}]
+                     (-> (concat (take (inc idx) path)
+                                 [new-point]
+                                 (drop (inc idx) path))
+                         vec)))))))
+
+(rf/reg-sub :ribbon-edit-point-deletable?
+  (fn [[_ path] _]
+    (let [points-path (-> path drop-last vec)]
+      (rf/subscribe [:get-list-size points-path])))
+
+  (fn [num-points [_ _path]]
+    (> num-points 2)))
+
+(rf/reg-sub :ribbon-edit-key-modifiers
+  (fn [db _]
+    (get-in db [:ui :ribbon-edit :key-modifiers])))
+
+(rf/reg-event-db :ribbon-edit-set-key-modifiers
+  (fn [db [_ key-modifiers]]
+    (assoc-in db [:ui :ribbon-edit :key-modifiers] key-modifiers)))
+
+(rf/reg-sub :selected-point
+  (fn [db _]
+    (get-in db [:ui :ribbon-edit :selected-point])))
+
+(rf/reg-sub :ribbon-edit-selected-point
+  (fn [_ _]
+    (rf/subscribe [:get [:ui :ribbon-edit :selected-point :path]]))
+
+  (fn [selected-point-path _]
+    selected-point-path))
+
+(rf/reg-sub :ribbon-edit-point-selected?
+  (fn [[_ _path] _]
+    (rf/subscribe [:get [:ui :ribbon-edit :selected-point :path]]))
+
+  (fn [selected-point-path [_ path]]
+    (= selected-point-path path)))
+
+(rf/reg-sub :ribbon-edit-show-points?
+  (fn [_ _]
+    (rf/subscribe [:get [:ui :ribbon-edit :show-points?]]))
+
+  (fn [show-points? _]
+    show-points?))
+
+(rf/reg-sub :ribbon-edit-mode
+  (fn [_ _]
+    [(rf/subscribe [:ribbon-edit-show-points?])
+     (rf/subscribe [:ribbon-edit-key-modifiers])])
+
+  (fn [[show-points? {:keys [shift? alt?]}] _]
+    (if show-points?
+      (cond
+        shift? :add
+        alt? :remove
+        :else :edit)
+      :none)))
+
+(rf/reg-event-db :ribbon-edit-select-point
+  (fn [db [_ path pos]]
+    (if path
+      (let [current-pos (get-in db path)
+            dx (- (:x pos) (:x current-pos))
+            dy (- (:y pos) (:y current-pos))]
+        (assoc-in db [:ui :ribbon-edit :selected-point] {:path path
+                                                         :dx dx
+                                                         :dy dy}))
+      (assoc-in db [:ui :ribbon-edit :selected-point] nil))))
+
+(rf/reg-event-db :ribbon-edit-point-move-selected
+  (fn [db [_ pos]]
+    (let [{:keys [dx dy
+                  path]} (get-in db [:ui :ribbon-edit :selected-point])]
+      (if path
+        (-> db
+            (assoc-in (conj path :x) (-> pos :x (- dx)))
+            (assoc-in (conj path :y) (-> pos :y (- dy))))
+        db))))
+
+(defn key-down-handler [event]
+  (let [shift? (.-shiftKey event)
+        alt? (.-altKey event)
+        code (.-code event)]
+    (when (= code "KeyE")
+      (rf/dispatch [:ribbon-edit-toggle-show-points]))
+    (rf/dispatch [:ribbon-edit-set-key-modifiers {:alt? alt?
+                                                  :shift? shift?}])))
+
+(defn key-up-handler [event]
+  (let [shift? (.-shiftKey event)
+        alt? (.-altKey event)]
+    (rf/dispatch [:ribbon-edit-set-key-modifiers {:alt? alt?
+                                                  :shift? shift?}])))
+
+(defonce event-listener
+  (do
+    (js/window.removeEventListener "keydown" key-down-handler)
+    (js/window.addEventListener "keydown" key-down-handler)
+    (js/window.removeEventListener "keyup" key-up-handler)
+    (js/window.addEventListener "keyup" key-up-handler)))
+
+
 ;; views
 
+
+(def preview-svg-id
+  "ribbon-preview")
+
+(defn map-to-svg-space [x y]
+  (let [svg (js/document.getElementById preview-svg-id)
+        ctm (.getScreenCTM svg)]
+    [(-> x
+         (- (.-e ctm))
+         (/ (.-a ctm)))
+     (-> y
+         (- (.-f ctm))
+         (/ (.-d ctm)))]))
+
+(defn path-point [path]
+  (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])]
+    (if (= edit-mode :none)
+      [:<>]
+      (let [size 7
+            width (* size 1.1)
+            height (* size 0.2)
+            {:keys [x y]} (interface/get-raw-data path {})
+            deletable? @(rf/subscribe [:ribbon-edit-point-deletable? path])
+            route-path-point-click-fn (case edit-mode
+                                        :add #(rf/dispatch [:ribbon-edit-add-point %])
+                                        :remove (when deletable?
+                                                  #(rf/dispatch [:ribbon-edit-remove-point %]))
+                                        nil)
+            route-path-point-mouse-down-fn (when (= edit-mode :edit)
+                                             (fn [pos]
+                                               (rf/dispatch [:ribbon-edit-select-point path pos])))
+            selected? @(rf/subscribe [:ribbon-edit-point-selected? path])]
+        [:g
+         {:transform (str "translate(" x "," y ")")
+          :on-mouse-down (when route-path-point-mouse-down-fn
+                           (fn [event]
+                             (let [mx (.-clientX event)
+                                   my (.-clientY event)
+                                   [sx sy] (map-to-svg-space mx my)]
+                               (route-path-point-mouse-down-fn {:x sx :y sy}))))
+          :on-click (when route-path-point-click-fn
+                      #(route-path-point-click-fn path))
+          :style {:cursor "pointer"}}
+         [:circle {:style {:fill (if selected?
+                                   "#2c2"
+                                   "#fff")
+                           :stroke "#000"}
+                   :r size}]
+         (case edit-mode
+           :add [:g
+                 [:rect {:x (/ width -2)
+                         :y (/ height -2)
+                         :width width
+                         :height height
+                         :style {:fill "#000"}}]
+                 [:rect {:x (/ height -2)
+                         :y (/ width -2)
+                         :width height
+                         :height width
+                         :style {:fill "#000"}}]]
+           :remove (when deletable?
+                     [:g
+                      [:rect {:x (/ width -2)
+                              :y (/ height -2)
+                              :width width
+                              :height height
+                              :style {:fill "#000"}}]])
+           nil)]))))
+
+(defn render-ribbon []
+  (let [points-path (conj form-db-path :ribbon :points)
+        points (interface/get-raw-data points-path {})
+        curve (catmullrom/catmullrom points)]
+    [:path {:d (catmullrom/curve->svg-path-relative curve)
+            :style {:stroke-width 3
+                    :stroke "#000000"
+                    :stroke-linecap "round"
+                    :fill "none"}}]))
+
 (defn preview []
-  (let [{:keys [data]
-         :as form-data} @(rf/subscribe [:get-value form-db-path])
-        {:keys [edn-data]} data
-        prepared-ribbon-data (-> form-data
-                                 (assoc :data edn-data)
-                                 (update :username #(or % (:username (user/data)))))
-        coat-of-arms @(rf/subscribe [:get-value (conj example-coa-db-path :coat-of-arms)])
-        {:keys [result
-                environment]} (render/coat-of-arms
-                               [:context :coat-of-arms]
-                               100
-                               (-> shared/coa-select-option-context
-                                   (assoc :root-transform "scale(5,5)")
-                                   (assoc :render-options-path
-                                          (conj example-coa-db-path :render-options))
-                                   (assoc :coat-of-arms
-                                          (-> coat-of-arms
-                                              (assoc-in [:field :components 0 :data] prepared-ribbon-data)))))
-        {:keys [width height]} environment]
-    [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
+  (let [[width height] [500 600]
+        points-path (conj form-db-path :ribbon :points)
+        num-points (interface/get-list-size points-path {})
+        edit-mode @(rf/subscribe [:ribbon-edit-mode])
+        route-path-point-mouse-up-fn (when (= edit-mode :edit)
+                                       #(rf/dispatch [:ribbon-edit-select-point nil]))
+        route-path-point-move-fn (when (and (= edit-mode :edit)
+                                            @(rf/subscribe [:ribbon-edit-selected-point]))
+                                   (fn [pos]
+                                     (rf/dispatch [:ribbon-edit-point-move-selected pos])))]
+    [:svg {:id preview-svg-id
+           :viewBox (str "0 0 " (-> width (+ 20)) " " (-> height (+ 20)))
            :preserveAspectRatio "xMidYMid meet"
-           :style {:width "100%"}}
+           :style {:width "100%"}
+           :on-mouse-up route-path-point-mouse-up-fn
+           :on-mouse-move (when route-path-point-move-fn
+                            (fn [event]
+                              (let [mx (.-clientX event)
+                                    my (.-clientY event)
+                                    [sx sy] (map-to-svg-space mx my)]
+                                (route-path-point-move-fn {:x sx :y sy}))))}
+     [:defs
+      filter/shadow]
      [:g {:transform "translate(10,10)"}
-      result]]))
+      [:rect {:x 0
+              :y 0
+              :width width
+              :height height
+              :fill "#f6f6f6"
+              :filter "url(#shadow)"}]
+      [:g {:transform (str "translate(" (/ width 2) "," (/ height 2) ")")}
+       [render-ribbon]
+       (doall
+        (for [idx (range num-points)]
+          ^{:key idx} [path-point (conj points-path idx)]))]]]))
 
 (defn invalidate-ribbons-cache []
   (let [user-data (user/data)
@@ -208,8 +431,7 @@
                                     form-db-path
                                     :new
                                     #(go
-                                       ;; TODO: make a default ribbon here?
-                                       {}))]
+                                       default/ribbon))]
     (when (= status :done)
       [ribbon-form])))
 

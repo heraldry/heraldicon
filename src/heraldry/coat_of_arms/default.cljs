@@ -1,6 +1,7 @@
 
 (ns heraldry.coat-of-arms.default
-  (:require [heraldry.config :as config]))
+  (:require [heraldry.config :as config]
+            [heraldry.coat-of-arms.vector :as v]))
 
 (def line
   {:type :straight})
@@ -101,4 +102,8 @@
 (def helm
   {:type :heraldry.component/helm
    :components [helmet]})
+
+(def ribbon
+  {:ribbon {:thickness nil
+            :points [(v/v -150 0) (v/v 150 0)]}})
 
