@@ -23,7 +23,7 @@
             [heraldry.interface :as interface]
             [heraldry.options :as options]
             [heraldry.render-options] ;; needed for side effects
-            ))
+            [heraldry.ribbon :as ribbon]))
 
 (defmethod interface/get-raw-data :context [path context]
   (get-in context (drop 1 path)))
@@ -101,3 +101,15 @@
                     :choices tincture/fixed-tincture-choices
                     :default :none
                     :ui {:label "Fixed tincture"}}})
+
+;; TODO: might not be the right place for it, others live in the coat-of-charge.[thing].options namespaces
+(defmethod interface/component-options :heraldry.component/ribbon-general [_path data]
+  {:name {:type :text
+          :default ""
+          :ui {:label "Name"}}
+   :is-public {:type :boolean
+               :ui {:label "Make public"}}
+   :attribution (attribution/options (:attribution data))
+   :ribbon (ribbon/options (:ribbon data))
+   :tags {:ui {:form-type :tags}}})
+

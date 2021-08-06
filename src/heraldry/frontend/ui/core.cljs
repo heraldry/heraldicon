@@ -43,6 +43,7 @@
             [heraldry.frontend.ui.form.helms] ;; needed for side effects
             [heraldry.frontend.ui.form.ordinary] ;; needed for side effects
             [heraldry.frontend.ui.form.render-options] ;; needed for side effects
+            [heraldry.frontend.ui.form.ribbon-general] ;; needed for side effects
             [heraldry.frontend.ui.form.semy] ;; needed for side effects
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.frontend.validation :as validation] ;; needed for side effects
@@ -227,3 +228,4 @@
 (defn selected-component []
   (let [selected-component-path @(rf/subscribe [:ui-component-node-selected-path])]
     [component-form selected-component-path]))
+

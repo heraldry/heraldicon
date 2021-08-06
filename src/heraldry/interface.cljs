@@ -22,6 +22,7 @@
     (->> path drop-last (take-last 2) (= [:collection :elements])) :heraldry.component/collection-element
     (-> path last (= :render-options)) :heraldry.component/render-options
     (-> path last (= :helms)) :heraldry.component/helms
+    (-> path last (= :ribbon-form)) :heraldry.component/ribbon-general
     (-> path last (= :coat-of-arms)) :heraldry.component/coat-of-arms
     (keyword? raw-type) (type->component-type raw-type)
     (and (-> path last keyword?)
