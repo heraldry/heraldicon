@@ -17,6 +17,7 @@
       [route/nav-link {:to :collections} "Collections"]
       [route/nav-link {:to :arms} "Arms"]
       [route/nav-link {:to :charges} "Charges"]
+      [route/nav-link {:to :ribbons} "Ribbons"]
       [route/nav-link {:to :users} "Users"]
       [route/nav-link {:to :about} "About"]
       [:span {:style {:width "5em"}}]
@@ -37,3 +38,4 @@
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
                              :on-click #(user/sign-up-modal)} "Register"]]])]]))
+
