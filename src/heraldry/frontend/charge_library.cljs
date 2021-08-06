@@ -329,7 +329,9 @@
       attribution-data]]))
 
 (defn charge-form []
-  (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
+  (if @(rf/subscribe [:get-value (conj form-db-path :id)])
+    (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
+    (rf/dispatch [:set-title "Create Charge"]))
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path
                                                                      example-coa-db-path]])
   [:div {:style {:display "grid"
@@ -414,3 +416,4 @@
         version (-> parameters :path :version)
         charge-id (str "charge:" id)]
     [charge-display charge-id version]))
+
