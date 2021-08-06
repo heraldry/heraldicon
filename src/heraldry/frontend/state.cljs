@@ -66,9 +66,9 @@
 
 (rf/reg-event-db :initialize-db
   (fn [db [_]]
-    (merge {:example-coa {:render-options default/render-options
-                          :coat-of-arms {:escutcheon :rectangle
-                                         :field {:type :heraldry.field.type/plain
+    (merge {:example-coa {:render-options (assoc default/render-options
+                                                 :escutcheon :rectangle)
+                          :coat-of-arms {:field {:type :heraldry.field.type/plain
                                                  :tincture :argent
                                                  :components [{:type :heraldry.charge.type/preview
                                                                :preview? true
@@ -358,3 +358,4 @@
 
 (defmethod interface/get-counterchange-tinctures :state [path context]
   @(rf/subscribe [:get-counterchange-tinctures path context]))
+
