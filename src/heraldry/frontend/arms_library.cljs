@@ -229,7 +229,9 @@
        "Save"]]]))
 
 (defn arms-form []
-  (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
+  (if @(rf/subscribe [:get-value (conj form-db-path :id)])
+    (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
+    (rf/dispatch [:set-title "Create Arms"]))
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
