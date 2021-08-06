@@ -342,6 +342,17 @@
      is-public
      attribution)))
 
+(rf/reg-sub :validate-ribbon-general
+  (fn [[_ path] _]
+    [(rf/subscribe [:validate-is-public path])
+     (rf/subscribe [:validate-attribution (conj path :attribution)])])
+
+  (fn [[is-public
+        attribution] [_ _path]]
+    (concat
+     is-public
+     attribution)))
+
 (defn render-icon [level]
   [:i.fas.fa-exclamation-triangle {:style {:color (validation-color level)}}])
 
@@ -362,3 +373,4 @@
                   [render-icon level]]
              message]))]]])
     [:<>]))
+
