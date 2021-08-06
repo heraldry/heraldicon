@@ -19,7 +19,8 @@
            url (case attribution-type
                  :arms (attribution/full-url-for-arms path context)
                  :charge (attribution/full-url-for-charge path context)
-                 :collection (attribution/full-url-for-collection path context))
+                 :collection (attribution/full-url-for-collection path context)
+                 :ribbon (attribution/full-url-for-ribbon path context))
            license-url (attribution/license-url license license-version)
            license-display-name (attribution/license-display-name license license-version)
            source-license-url (attribution/license-url source-license source-license-version)
@@ -69,3 +70,7 @@
             title (:name collection)
             url (util/full-url-for-collection collection)]
         [general title url username attribution])))
+
+(defn for-ribbon [path context]
+  [general path :ribbon context])
+
