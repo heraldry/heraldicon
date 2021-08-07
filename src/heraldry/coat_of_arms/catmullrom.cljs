@@ -29,6 +29,9 @@
 (defn svg-move-to [[x y]]
   (str "M" x "," y))
 
+(defn svg-line-to [{:keys [x y]}]
+  (str " l" x "," y " "))
+
 (defn svg-curve-to-relative [[[px py] [cp1x cp1y] [cp2x cp2y] [p2x p2y]]]
   (str "c" (string/join "," (flatten [[(- cp1x px) (- cp1y py)] [(- cp2x px) (- cp2y py)] [(- p2x px) (- p2y py)]]))))
 
