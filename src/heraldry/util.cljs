@@ -72,6 +72,11 @@
   (pprint value)
   value)
 
+(defn spy->> [msg value]
+  (log/debug "spy:" msg)
+  (pprint value)
+  value)
+
 (defn deep-merge-with [f & maps]
   (apply
    (fn m [& maps]
@@ -210,3 +215,4 @@
           (str "https://coa.to/" (id-for-url id))
           (str "https://coa.to/" (id-for-url id) "/" version))))
     "https://dev"))
+
