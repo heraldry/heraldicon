@@ -8,6 +8,7 @@
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.modal :as modal]
+            [heraldry.frontend.ribbon :as ribbon]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.user :as user]
@@ -461,10 +462,10 @@
                         (conj example-coa-db-path :coat-of-arms :field :components 0)]]]])
 
 (defn ribbon-display [ribbon-id version]
-  (let [[status ribbon-data] nil #_(state/async-fetch-data
-                                    form-db-path
-                                    [ribbon-id version]
-                                    #(ribbon/fetch-ribbon-for-editing ribbon-id version))]
+  (let [[status ribbon-data] (state/async-fetch-data
+                              form-db-path
+                              [ribbon-id version]
+                              #(ribbon/fetch-ribbon-for-editing ribbon-id version))]
     (when (= status :done)
       (if ribbon-data
         [ribbon-form]
@@ -493,10 +494,10 @@
 
 (defn view-list-ribbons []
   (rf/dispatch [:set-title "Ribbons"])
-  (let [[status ribbons] nil #_(state/async-fetch-data
-                                [:all-ribbons]
-                                :all-ribbons
-                                ribbon/fetch-ribbons)]
+  (let [[status ribbons] (state/async-fetch-data
+                          [:all-ribbons]
+                          :all-ribbons
+                          ribbon/fetch-ribbons)]
     [:div {:style {:padding "15px"}}
      [:div {:style {:text-align "justify"
                     :max-width "40em"}}
