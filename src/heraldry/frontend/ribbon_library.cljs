@@ -232,7 +232,14 @@
 (defn render-ribbon []
   (let [points-path (conj form-db-path :ribbon :points)
         points (interface/get-raw-data points-path {})
-        curve (catmullrom/catmullrom points)]
+        curve (catmullrom/catmullrom points)
+        tangents (-> (keep-indexed
+                      (fn [idx leg]
+                        (let [ts (catmullrom/calculate-tangent-points leg [0 1])]
+                          (when (seq ts)
+                            [idx ts])))
+                      curve))]
+    (js/console.log :tan tangents)
     [:path {:d (catmullrom/curve->svg-path-relative curve)
             :style {:stroke-width 3
                     :stroke "#000000"

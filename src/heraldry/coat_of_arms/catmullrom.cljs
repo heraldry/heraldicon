@@ -54,41 +54,77 @@
 (defn close-to-zero? [value]
   (-> value
       Math/abs
-      (< 0.0000001)))
+      (< 0.000000000001)))
 
-(defn calculate-tangent-points [bezier-points x]
-  ;; x is the desired slope of the tangent
-  ;; WolframAlpha:
-  ;; solve(derive(3*(1-t)^2*t*c1 + 3*(1-t)*t^2*c2+t^3*p2, t) = x, t)
-  (let [;; only care about the y-components here
-        [p1 c1 c2 p2] (map second bezier-points)
-        ;; shift them such that p1 = 0, the translation not changing the solutions
-        c1 (- c1 p1)
-        c2 (- c2 p1)
-        p2 (- p2 p1)
-        determinant1 (* 3 (+ p2 (* 3 (- c1 c2))))]
-    (if (close-to-zero? determinant1)
-      ;; the two "usual" solutions are out, check for a third one
-      (let [determinant2 (* 2 (- (* 3 c2) (* 2 p2)))]
-        (if (close-to-zero? determinant2)
-          ;; no solutions in that case
-          []
-          ;; one possible solution, if it is in the range
-          [(/ (- 3 c2 p2 x) determinant2)]))
-      (let [determinant2 (-> 0
-                             (+ (* 9 c1 c1))
-                             (+ (* 9 c2 c2))
-                             (+ (* 3 p2 x))
-                             (- (* 9 c1 (+ c2 p2 (- x))))
-                             (- (* 9 c2 x)))]
-        (if (neg? determinant2)
-          ;; no real solutions
-          []
-          ;; otherwise two possible solutions
-          [(+ (- (Math/sqrt determinant2))
-              (* 6 c1)
-              (* -3 c2))
-           (+ (Math/sqrt determinant2)
-              (* 6 c1)
-              (* -3 c2))])))))
+(defn square [x]
+  (* x x))
+
+(defn calculate-tangent-points [[[p1x p1y] [c1x c1y] [c2x c2y] [p2x p2y]] [u v]]
+  (let [;; shift them such that p1 = 0, the translation does not change the solutions
+        [c d] [(- c1x p1x) (- c1y p1y)]
+        [e f] [(- c2x p1x) (- c2y p1y)]
+        [g h] [(- p2x p1x) (- p2y p1y)]
+        determinant1 (-> (* h u)
+                         (- (* g v))
+                         (+ (* 3 v (- e c)))
+                         (+ (* 3 u (- d f))))
+        determinant4 (- (* 3 (- f d)) h)
+        determinant5 (- (* 3 (- e c)) g)
+        determinant6 (- (* f g u v)
+                        (* e h u v))
+        top-term (+ (* 3 e v) (* -3 f u) (* -1 g v) (* h u))
+        bottom-term (* 2 (+ (* 3 e v) (* -3 f u) (* -2 g v) (* 2 h u)))]
+    (->> [(when-not (close-to-zero? determinant1)
+            ;; solutions here:
+            ;; t1 = (-1/2 sqrt((4 c v - 4 d u - 2 e v + 2 f u)^2 - 4 (d u - c v) (-3 c v + 3 d u + 3 e v - 3 f u - g v + h u)) - 2 c v + 2 d u + e v - f u)/(-3 c v + 3 d u + 3 e v - 3 f u - g v + h u) and -3 c v + 3 d u + 3 e v - 3 f u - g v + h u!=0
+            ;; t2 = ( 1/2 sqrt((4 c v - 4 d u - 2 e v + 2 f u)^2 - 4 (d u - c v) (-3 c v + 3 d u + 3 e v - 3 f u - g v + h u)) - 2 c v + 2 d u + e v - f u)/(-3 c v + 3 d u + 3 e v - 3 f u - g v + h u) and -3 c v + 3 d u + 3 e v - 3 f u - g v + h u!=0
+            (let [determinant2 (-> 0
+                                   (+ (* 2 v (- (* 2 c) e))
+                                      (* 2 u (- f (* 2 d))))
+                                   square
+                                   (- (* 4 (- (* d u) (* c v)) determinant1)))]
+              (when-not (neg? determinant2)
+                (let [det-sqr (Math/sqrt determinant2)]
+                  [(-> det-sqr
+                       (/ -2)
+                       (+ (* v (- e (* 2 c))))
+                       (+ (* u (- (* 2 d) f)))
+                       (/ determinant1))
+                   (-> det-sqr
+                       (/ 2)
+                       (+ (* v (- e (* 2 c))))
+                       (+ (* u (- (* 2 d) f)))
+                       (/ determinant1))]))))
+          (when (and (not (zero? v))
+                     (close-to-zero? determinant1))
+            ;; solutions here:
+            ;; t3 = (3 e v - 3 f u - g v + h u)/(2 (3 e v - 3 f u - 2 g v + 2 h u)) and v!=0 and c = (3 d u + 3 e v - 3 f u - g v + h u)/(3 v) and -u (-9 d e v + 9 d f u + 6 d g v - 6 d h u + 9 e f v - 3 e h v - 9 f^2 u - 6 f g v + 9 f h u + 2 g h v - 2 h^2 u)!=0
+            ;; simplified determinant (via Maple):
+            ;; 9*((-f + (2*h)/3)*u + v*(e - (2*g)/3))*u*(d - f + h/3)
+            ;; t4 = (-3 e v + 3 f u + g v - h u)/(2 (-3 e v + 3 f u + 2 g v - 2 h u)) and d = 1/3 (3 f - h) and c = 1/3 (3 e - g) and -3 e v + 3 f u + 2 g v - 2 h u!=0 and f g u v - e h u v!=0
+            ;; same value, actually, but with different conditions
+            (let [determinant3 (* 9
+                                  u
+                                  (+ (* (- (* h (/ 2 3)) f) u)
+                                     (* (- e (* g (/ 2 3))) v))
+                                  (+ d (- f) + (/ h 3)))]
+              (when (or (and (not (close-to-zero? determinant3))
+                             (not (close-to-zero? bottom-term)))
+                        (and (close-to-zero? determinant4)
+                             (close-to-zero? determinant5)
+                             (not (close-to-zero? determinant6))
+                             (not (close-to-zero? bottom-term))))
+                [(/ top-term
+                    bottom-term)])))
+          (when (and (close-to-zero? u)
+                     (not (close-to-zero? v))
+                     (close-to-zero? determinant5))
+            (let [divisor (* 2 (- (* 3 e) (* 2 g)))]
+              (when-not (close-to-zero? divisor)
+                [(/ (- (* 3 e) g)
+                    divisor)])))]
+         (apply concat)
+         (filter (fn [t]
+                   (and t
+                        (<= 0 t 1)))))))
 
