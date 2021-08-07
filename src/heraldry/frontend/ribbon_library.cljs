@@ -15,7 +15,8 @@
             [heraldry.util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [heraldry.util :as util]))
 
 (def form-db-path
   [:ribbon-form])
@@ -229,22 +230,70 @@
                               :style {:fill "#000"}}]])
            nil)]))))
 
+(defn curve-segments [full-curve
+                      last-index end-t
+                      index ts]
+  (assert (-> ts count (<= 2)) "curve-segments only supports 2 tangent points per segment")
+  (let [full-curve (vec full-curve)
+        first-leg (cond-> (get full-curve last-index)
+                    end-t (->
+                           (catmullrom/split-bezier end-t)
+                           :curve2))]
+
+    (if (empty? ts)
+      [(-> (concat [first-leg]
+                   (subvec full-curve (inc last-index) (inc index)))
+           vec)]
+      (let [[t1 t2] ts
+            first-split (-> full-curve
+                            (get index)
+                            (catmullrom/split-bezier t1))]
+        (cond-> [(-> (concat [first-leg]
+                             (subvec full-curve (inc last-index) index)
+                             [(:curve1 first-split)])
+                     vec)]
+          t2 (conj [(-> (:curve2 first-split)
+                        (catmullrom/split-bezier (/ (- t2 t1)
+                                                    (- 1 t1)))
+                        :curve1)]))))))
+
+(defn split-curve [full-curve tangent-points]
+  (if (empty? tangent-points)
+    [full-curve]
+    (->> (concat [[0 nil]]
+                 tangent-points
+                 [[(-> full-curve count dec) nil]])
+         (partition 2 1)
+         (mapcat (fn [[[last-index last-ts]
+                       [index ts]]]
+                   (curve-segments full-curve
+                                   last-index (last last-ts)
+                                   index ts)))
+         vec)))
+
 (defn render-ribbon []
   (let [points-path (conj form-db-path :ribbon :points)
         points (interface/get-raw-data points-path {})
         curve (catmullrom/catmullrom points)
-        tangents (-> (keep-indexed
-                      (fn [idx leg]
-                        (let [ts (catmullrom/calculate-tangent-points leg [0 1])]
-                          (when (seq ts)
-                            [idx ts])))
-                      curve))]
-    (js/console.log :tan tangents)
-    [:path {:d (catmullrom/curve->svg-path-relative curve)
-            :style {:stroke-width 3
-                    :stroke "#000000"
-                    :stroke-linecap "round"
-                    :fill "none"}}]))
+        tangent-points (-> (keep-indexed
+                            (fn [idx leg]
+                              (let [ts (catmullrom/calculate-tangent-points leg [0 1])]
+                                (when (seq ts)
+                                  [idx ts])))
+                            curve))
+        curves (split-curve curve tangent-points)]
+    [:<>
+     (doall
+      (for [[idx partial-curve] (map-indexed vector curves)]
+        (do
+          ^{:key idx}
+          [:path {:d (catmullrom/curve->svg-path-relative partial-curve)
+                  :style {:stroke-width 3
+                          :stroke (if (even? idx)
+                                    "#ff8888"
+                                    "#88ff88")
+                          :stroke-linecap "round"
+                          :fill "none"}}])))]))
 
 (defn preview []
   (let [[width height] [500 600]

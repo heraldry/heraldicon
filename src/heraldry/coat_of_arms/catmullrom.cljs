@@ -126,27 +126,35 @@
          (apply concat)
          (filter (fn [t]
                    (and t
-                        (<= 0 t 1)))))))
+                        (<= 0 t 1))))
+         sort)))
 
-(defn split-bezier [points t]
+(defn split-bezier [[p1 c1 c2 p2] t]
   (let [n 3
         tr (- 1 t)]
     (loop [j 1
-           matrix [points]]
+           matrix {[0 0] p1
+                   [0 1] c1
+                   [0 2] c2
+                   [0 3] p2}]
       (if (> j n)
         {:curve1 [(get matrix [0 0])
-                  (get matrix [0 1])
-                  (get matrix [0 2])
-                  (get matrix [0 3])]
+                  (get matrix [1 0])
+                  (get matrix [2 0])
+                  (get matrix [3 0])]
          :curve2 [(get matrix [3 0])
                   (get matrix [2 1])
                   (get matrix [1 2])
                   (get matrix [0 3])]}
-        (let [last-row (last matrix)
-              next-row (map (fn [i]
-                              (+ (* tr (get last-row i))
-                                 (* t (get last-row (inc i)))))
-                            (range (- (inc n) j)))]
+        (let [new-points (map (fn [i]
+                                [[j i] (let [p1 (matrix [(dec j) i])
+                                             p2 (matrix [(dec j) (inc i)])]
+                                         (->> (range 2)
+                                              (map (fn [comp]
+                                                     (+ (* tr (p1 comp))
+                                                        (* t (p2 comp)))))
+                                              vec))])
+                              (range (- (inc n) j)))]
           (recur (inc j)
-                 (conj matrix next-row)))))))
+                 (into matrix new-points)))))))
 
