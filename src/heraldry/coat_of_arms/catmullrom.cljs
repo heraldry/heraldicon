@@ -128,3 +128,25 @@
                    (and t
                         (<= 0 t 1)))))))
 
+(defn split-bezier [points t]
+  (let [n 3
+        tr (- 1 t)]
+    (loop [j 1
+           matrix [points]]
+      (if (> j n)
+        {:curve1 [(get matrix [0 0])
+                  (get matrix [0 1])
+                  (get matrix [0 2])
+                  (get matrix [0 3])]
+         :curve2 [(get matrix [3 0])
+                  (get matrix [2 1])
+                  (get matrix [1 2])
+                  (get matrix [0 3])]}
+        (let [last-row (last matrix)
+              next-row (map (fn [i]
+                              (+ (* tr (get last-row i))
+                                 (* t (get last-row (inc i)))))
+                            (range (- (inc n) j)))]
+          (recur (inc j)
+                 (conj matrix next-row)))))))
+
