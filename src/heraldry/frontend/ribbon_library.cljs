@@ -150,7 +150,7 @@
     (rf/dispatch [:ribbon-edit-set-key-modifiers {:alt? alt?
                                                   :shift? shift?}])))
 
-(defonce event-listener
+(def event-listener
   (do
     (js/window.removeEventListener "keydown" key-down-handler)
     (js/window.addEventListener "keydown" key-down-handler)
