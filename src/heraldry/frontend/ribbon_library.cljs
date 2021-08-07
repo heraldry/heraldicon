@@ -1,9 +1,11 @@
 (ns heraldry.frontend.ribbon-library
   (:require [cljs.core.async :refer [go]]
+            [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.filter :as filter]
+            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
@@ -13,11 +15,10 @@
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.user :as user]
             [heraldry.interface :as interface]
-            [heraldry.util :refer [id-for-url]]
+            [heraldry.util :as util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
-            [taoensso.timbre :as log]
-            [heraldry.util :as util]))
+            [taoensso.timbre :as log]))
 
 (def form-db-path
   [:ribbon-form])
@@ -272,13 +273,14 @@
                                    index ts)))
          vec)))
 
-(defn render-ribbon []
+(defn render-ribbon [thickness]
   (let [points-path (conj form-db-path :ribbon :points)
         points (interface/get-raw-data points-path {})
         curve (catmullrom/catmullrom points)
+        edge-vector (v/* (v/v 0 1) thickness)
         tangent-points (-> (keep-indexed
                             (fn [idx leg]
-                              (let [ts (catmullrom/calculate-tangent-points leg [0 1])]
+                              (let [ts (catmullrom/calculate-tangent-points leg ((juxt :x :y) edge-vector))]
                                 (when (seq ts)
                                   [idx ts])))
                             curve))
@@ -286,20 +288,32 @@
     [:<>
      (doall
       (for [[idx partial-curve] (map-indexed vector curves)]
-        (do
+        (let [top-edge (catmullrom/curve->svg-path-relative partial-curve)
+              full-path (str top-edge
+                             (catmullrom/svg-line-to edge-vector)
+                             (-> top-edge
+                                 svg/reverse-path
+                                 :path
+                                 (s/replace "M0 0" ""))
+                             (catmullrom/svg-line-to (v/* edge-vector -1)))]
           ^{:key idx}
-          [:path {:d (catmullrom/curve->svg-path-relative partial-curve)
-                  :style {:stroke-width 3
-                          :stroke (if (even? idx)
-                                    "#ff8888"
-                                    "#88ff88")
-                          :stroke-linecap "round"
-                          :fill "none"}}])))]))
+          [:<>
+           [:path {:d full-path
+                   :style {:stroke-width 3
+                           :stroke (if (odd? idx)
+                                     "#ff8888"
+                                     "#88ff88")
+                           :stroke-linecap "round"
+                           :fill (if (odd? idx)
+                                   "#888888"
+                                   "#dddddd")}}]])))]))
 
 (defn preview []
   (let [[width height] [500 600]
         points-path (conj form-db-path :ribbon :points)
         num-points (interface/get-list-size points-path {})
+        thickness (interface/get-sanitized-data (conj form-db-path :ribbon :thickness) {})
+        thickness ((util/percent-of 300) thickness)
         edit-mode @(rf/subscribe [:ribbon-edit-mode])
         route-path-point-mouse-up-fn (when (= edit-mode :edit)
                                        #(rf/dispatch [:ribbon-edit-select-point nil]))
@@ -328,7 +342,7 @@
               :fill "#f6f6f6"
               :filter "url(#shadow)"}]
       [:g {:transform (str "translate(" (/ width 2) "," (/ height 2) ")")}
-       [render-ribbon]
+       [render-ribbon thickness]
        (doall
         (for [idx (range num-points)]
           ^{:key idx} [path-point (conj points-path idx)]))]]]))
