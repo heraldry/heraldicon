@@ -148,6 +148,7 @@
   (let [shift? (.-shiftKey event)
         alt? (.-altKey event)
         code (.-code event)]
+    (js/console.log :key code)
     (when (= code "KeyE")
       (rf/dispatch [:ribbon-edit-toggle-show-points]))
     (rf/dispatch [:ribbon-edit-set-key-modifiers {:alt? alt?
