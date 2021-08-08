@@ -44,26 +44,35 @@
     (update-in db [:ui :ribbon-edit :show-points?] not)))
 
 (rf/reg-event-db :ribbon-edit-add-point
-  (fn [db [_ path]]
-    (let [points-path (-> path drop-last vec)
-          idx (last path)]
-      (update-in db points-path
-                 (fn [points]
-                   (let [curve (vec (catmullrom/catmullrom points))
-                         new-point (if (< idx (dec (count points)))
-                                     (-> curve
-                                         (get idx)
-                                         (catmullrom/interpolate-point-cubic 0.5))
-                                     (-> (v/+ (last points)
-                                              {:x 50 :y 10})
-                                         (update :x max -200)
-                                         (update :x min 200)
-                                         (update :y max -200)
-                                         (update :y min 200)))]
-                     (-> (concat (take (inc idx) points)
-                                 [new-point]
-                                 (drop (inc idx) points))
-                         vec)))))))
+  (fn [db [_ path idx new-point]]
+    (update-in db path
+               (fn [points]
+                 (-> (concat (take (inc idx) points)
+                             [new-point]
+                             (drop (inc idx) points))
+                     vec)))))
+
+(rf/reg-sub :ribbon-edit-addable-points
+  (fn [[_ path] _]
+    (rf/subscribe [:get path]))
+
+  (fn [points [_ _path]]
+    (concat [[-1 (-> (v/- (first points)
+                          {:x 50 :y 10})
+                     (update :x max -200)
+                     (update :x min 200)
+                     (update :y max -200)
+                     (update :y min 200))]]
+            (-> points
+                catmullrom/catmullrom
+                (->> (map-indexed (fn [idx leg]
+                                    [idx (catmullrom/interpolate-point-cubic leg 0.5)]))))
+            [[(dec (count points)) (-> (v/+ (last points)
+                                            {:x 50 :y 10})
+                                       (update :x max -200)
+                                       (update :x min 200)
+                                       (update :y max -200)
+                                       (update :y min 200))]])))
 
 (rf/reg-sub :ribbon-edit-point-deletable?
   (fn [[_ path] _]
@@ -194,7 +203,6 @@
             {:keys [x y]} (interface/get-raw-data path {})
             deletable? @(rf/subscribe [:ribbon-edit-point-deletable? path])
             route-path-point-click-fn (case edit-mode
-                                        :add #(rf/dispatch [:ribbon-edit-add-point %])
                                         :remove (when deletable?
                                                   #(rf/dispatch [:ribbon-edit-remove-point %]))
                                         nil)
@@ -219,17 +227,6 @@
                            :stroke "#000"}
                    :r size}]
          (case edit-mode
-           :add [:g
-                 [:rect {:x (/ width -2)
-                         :y (/ height -2)
-                         :width width
-                         :height height
-                         :style {:fill "#000"}}]
-                 [:rect {:x (/ height -2)
-                         :y (/ width -2)
-                         :width height
-                         :height width
-                         :style {:fill "#000"}}]]
            :remove (when deletable?
                      [:g
                       [:rect {:x (/ width -2)
@@ -238,6 +235,30 @@
                               :height height
                               :style {:fill "#000"}}]])
            nil)]))))
+
+(defn add-point [path idx {:keys [x y] :as point}]
+  (let [size 7
+        width (* size 1.1)
+        height (* size 0.2)]
+    [:g
+     {:transform (str "translate(" x "," y ")")
+      :on-click #(rf/dispatch [:ribbon-edit-add-point path idx point])
+      :style {:cursor "pointer"
+              :opacity 0.5}}
+     [:circle {:style {:fill "#fff"
+                       :stroke "#000"}
+               :r size}]
+     [:g
+      [:rect {:x (/ width -2)
+              :y (/ height -2)
+              :width width
+              :height height
+              :style {:fill "#000"}}]
+      [:rect {:x (/ height -2)
+              :y (/ width -2)
+              :width height
+              :height width
+              :style {:fill "#000"}}]]]))
 
 (defn curve-segments [full-curve
                       last-index end-t
@@ -354,7 +375,11 @@
        [render-ribbon thickness]
        (doall
         (for [idx (range num-points)]
-          ^{:key idx} [path-point (conj points-path idx)]))]]]))
+          ^{:key idx} [path-point (conj points-path idx)]))
+       (when (= edit-mode :add)
+         (doall
+          (for [[idx point] @(rf/subscribe [:ribbon-edit-addable-points points-path])]
+            ^{:key idx} [add-point points-path idx point])))]]]))
 
 (defn invalidate-ribbons-cache []
   (let [user-data (user/data)
