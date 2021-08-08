@@ -237,21 +237,23 @@
                       index ts]
   (assert (-> ts count (<= 2)) "curve-segments only supports 2 tangent points per segment")
   (let [full-curve (vec full-curve)
-        first-leg (cond-> (get full-curve last-index)
-                    end-t (->
-                           (catmullrom/split-bezier end-t)
-                           :curve2))]
-
+        first-leg (when-not (= last-index index 0)
+                    (cond-> (get full-curve last-index)
+                      end-t (->
+                             (catmullrom/split-bezier end-t)
+                             :curve2)))]
     (if (empty? ts)
-      [(-> (concat [first-leg]
+      [(-> (concat (when first-leg [first-leg])
                    (subvec full-curve (inc last-index) (inc index)))
            vec)]
       (let [[t1 t2] ts
             first-split (-> full-curve
                             (get index)
                             (catmullrom/split-bezier t1))]
-        (cond-> [(-> (concat [first-leg]
-                             (subvec full-curve (inc last-index) index)
+        (cond-> [(-> (concat (when first-leg [first-leg])
+                             (when (> index
+                                      (inc last-index))
+                               (subvec full-curve (inc last-index) index))
                              [(:curve1 first-split)])
                      vec)]
           t2 (conj [(-> (:curve2 first-split)
