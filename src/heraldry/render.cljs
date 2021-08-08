@@ -170,6 +170,7 @@
         coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
         scope (interface/render-option :scope context)
         coa-angle-rad (-> coat-of-arms-angle
+                          Math/abs
                           (* Math/PI)
                           (/ 180))
         coa-angle-counter-rad (- (/ Math/PI 2)
@@ -196,14 +197,21 @@
         helms-width (* root-scale helms-width)
         helms-height (* root-scale helms-height)
         rotated-width-left (max
-                            (* coat-of-arms-width (Math/cos coa-angle-rad))
+                            (if (neg? coat-of-arms-angle)
+                              (* coat-of-arms-height (Math/cos coa-angle-counter-rad))
+                              (* coat-of-arms-width (Math/cos coa-angle-rad)))
                             (/ helms-width 2))
         rotated-width-right (max
-                             (* coat-of-arms-height (Math/cos coa-angle-counter-rad))
+                             (if (neg? coat-of-arms-angle)
+                               (* coat-of-arms-width (Math/cos coa-angle-rad))
+                               (* coat-of-arms-height (Math/cos coa-angle-counter-rad)))
                              (/ helms-width 2))
-        rotated-height (+ (* coat-of-arms-width (Math/sin coa-angle-rad))
-                          (* coat-of-arms-height (Math/sin coa-angle-counter-rad)))
-        rotated? (pos? coat-of-arms-angle)
+        rotated-height (if (neg? coat-of-arms-angle)
+                         (+ (* coat-of-arms-height (Math/sin coa-angle-rad))
+                            (* coat-of-arms-width (Math/sin coa-angle-counter-rad)))
+                         (+ (* coat-of-arms-width (Math/sin coa-angle-rad))
+                            (* coat-of-arms-height (Math/sin coa-angle-counter-rad))))
+        rotated? (not (zero? coat-of-arms-angle))
         effective-width (if rotated?
                           (+ rotated-width-left rotated-width-right)
                           coat-of-arms-width)
@@ -251,18 +259,24 @@
                          :stroke "#000"}}]
        [:g {:transform (str "translate(" 0 "," helms-height ")")
             :style {:transition "transform 0.5s"}}
-        [:g {:transform (when rotated?
-                          (str "translate(" (- rotated-width-left
-                                               coat-of-arms-width) "," 0 ")"))
+        [:g {:transform (cond
+                          (neg? coat-of-arms-angle) (str "translate(" rotated-width-left "," 0 ")")
+                          (pos? coat-of-arms-angle) (str "translate(" (- rotated-width-left
+                                                                         coat-of-arms-width) "," 0 ")")
+                          :else nil)
              :style {:transition "transform 0.5s"}}
-         [:g {:transform (when rotated?
-                           (str "translate(" coat-of-arms-width "," 0 ")"
-                                "rotate(" (- coat-of-arms-angle) ")"
-                                "translate(" (- coat-of-arms-width) "," 0 ")"))
+         [:g {:transform (cond
+                           (neg? coat-of-arms-angle) (str "rotate(" (- coat-of-arms-angle) ")")
+                           (pos? coat-of-arms-angle) (str "translate(" coat-of-arms-width "," 0 ")"
+                                                          "rotate(" (- coat-of-arms-angle) ")"
+                                                          "translate(" (- coat-of-arms-width) "," 0 ")")
+                           :else nil)
               :style {:transition "transform 0.5s"}}
           coat-of-arms]
-         [:g {:transform (when rotated?
-                           (str "translate(" (/ coat-of-arms-width 2) "," 0 ")"))}
+         [:g {:transform (cond
+                           (neg? coat-of-arms-angle) (str "translate(" (- (/ coat-of-arms-width 2)) "," 0 ")")
+                           (pos? coat-of-arms-angle) (str "translate(" (/ coat-of-arms-width 2) "," 0 ")")
+                           :else nil)}
           helms]]]]]
      (when short-url
        [:text {:x margin
