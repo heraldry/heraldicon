@@ -209,7 +209,8 @@
 (def ui-component-node-selected-default-path [:ui :component-tree :selected-node-default])
 
 (defn component-node-open-by-default? [path]
-  (or (->> path (take-last 1) #{[:coat-of-arms]})
+  (or (->> path (take-last 1) #{[:coat-of-arms]
+                                [:helms]})
       (->> path (take-last 2) #{[:coat-of-arms :field]
                                 [:collection-form :collection]})
       (->> path (take-last 5) #{[:example-coa :coat-of-arms :field :components 0]})))
