@@ -10,11 +10,12 @@
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.modal :as modal]
-            [heraldry.frontend.ribbon :as ribbon]
+            [heraldry.frontend.ribbon :as ribbon-frontend]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.user :as user]
             [heraldry.interface :as interface]
+            [heraldry.ribbon :as ribbon]
             [heraldry.util :as util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
@@ -157,7 +158,7 @@
   (let [shift? (.-shiftKey event)
         alt? (.-altKey event)
         code (.-code event)]
-    (js/console.log :key code)
+    (js/console.log :key code (= code "KeyE"))
     (when (= code "KeyE")
       (rf/dispatch [:ribbon-edit-toggle-show-points]))
     (rf/dispatch [:ribbon-edit-set-key-modifiers {:alt? alt?
@@ -260,61 +261,11 @@
               :height width
               :style {:fill "#000"}}]]]))
 
-(defn curve-segments [full-curve
-                      last-index end-t
-                      index ts]
-  (assert (-> ts count (<= 2)) "curve-segments only supports 2 tangent points per segment")
-  (let [full-curve (vec full-curve)
-        first-leg (when-not (= last-index index 0)
-                    (cond-> (get full-curve last-index)
-                      end-t (->
-                             (catmullrom/split-bezier end-t)
-                             :curve2)))]
-    (if (empty? ts)
-      [(-> (concat (when first-leg [first-leg])
-                   (subvec full-curve (inc last-index) (inc index)))
-           vec)]
-      (let [[t1 t2] ts
-            first-split (-> full-curve
-                            (get index)
-                            (catmullrom/split-bezier t1))]
-        (cond-> [(-> (concat (when first-leg [first-leg])
-                             (when (> index
-                                      (inc last-index))
-                               (subvec full-curve (inc last-index) index))
-                             [(:curve1 first-split)])
-                     vec)]
-          t2 (conj [(-> (:curve2 first-split)
-                        (catmullrom/split-bezier (/ (- t2 t1)
-                                                    (- 1 t1)))
-                        :curve1)]))))))
-
-(defn split-curve [full-curve tangent-points]
-  (if (empty? tangent-points)
-    [full-curve]
-    (->> (concat [[0 nil]]
-                 tangent-points
-                 [[(-> full-curve count dec) nil]])
-         (partition 2 1)
-         (mapcat (fn [[[last-index last-ts]
-                       [index ts]]]
-                   (curve-segments full-curve
-                                   last-index (last last-ts)
-                                   index ts)))
-         vec)))
-
-(defn render-ribbon [thickness]
-  (let [points-path (conj form-db-path :ribbon :points)
-        points (interface/get-raw-data points-path {})
-        curve (catmullrom/catmullrom points)
+(defn render-ribbon [points-path thickness]
+  (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])
         edge-vector (v/* (v/v 0 1) thickness)
-        tangent-points (-> (keep-indexed
-                            (fn [idx leg]
-                              (let [ts (catmullrom/calculate-tangent-points leg ((juxt :x :y) edge-vector))]
-                                (when (seq ts)
-                                  [idx ts])))
-                            curve))
-        curves (split-curve curve tangent-points)]
+        points (interface/get-raw-data points-path {})
+        {:keys [curve curves]} (ribbon/generate-curves points)]
     [:<>
      (doall
       (for [[idx partial-curve] (map-indexed vector curves)]
@@ -336,7 +287,14 @@
                            :stroke-linecap "round"
                            :fill (if (odd? idx)
                                    "#888888"
-                                   "#dddddd")}}]])))]))
+                                   "#dddddd")}}]])))
+     (when-not (= edit-mode :none)
+       [:path {:d (catmullrom/curve->svg-path-relative curve)
+               :style {:stroke-width 3
+                       :stroke "#aaaaaa"
+                       :stroke-dasharray "4,8"
+                       :stroke-linecap "round"
+                       :fill "none"}}])]))
 
 (defn preview []
   (let [[width height] [500 600]
@@ -372,7 +330,7 @@
               :fill "#f6f6f6"
               :filter "url(#shadow)"}]
       [:g {:transform (str "translate(" (/ width 2) "," (/ height 2) ")")}
-       [render-ribbon thickness]
+       [render-ribbon points-path thickness]
        (doall
         (for [idx (range num-points)]
           ^{:key idx} [path-point (conj points-path idx)]))
@@ -513,7 +471,7 @@
   (let [[status ribbon-data] (state/async-fetch-data
                               form-db-path
                               [ribbon-id version]
-                              #(ribbon/fetch-ribbon-for-editing ribbon-id version))]
+                              #(ribbon-frontend/fetch-ribbon-for-editing ribbon-id version))]
     (when (= status :done)
       (if ribbon-data
         [ribbon-form]
@@ -545,7 +503,7 @@
   (let [[status ribbons] (state/async-fetch-data
                           [:all-ribbons]
                           :all-ribbons
-                          ribbon/fetch-ribbons)]
+                          ribbon-frontend/fetch-ribbons)]
     [:div {:style {:padding "15px"}}
      [:div {:style {:text-align "justify"
                     :max-width "40em"}}
