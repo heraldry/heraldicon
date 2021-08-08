@@ -48,19 +48,21 @@
     (let [points-path (-> path drop-last vec)
           idx (last path)]
       (update-in db points-path
-                 (fn [path]
-                   (let [point1 (or (get path idx) {:x 0 :y 0})
-                         point2 (or (get path (inc idx)) (v/+ point1
-                                                              {:x 50 :y 50}))
-                         new-point {:x (-> (:x point1)
-                                           (+ (:x point2))
-                                           (/ 2))
-                                    :y (-> (:y point1)
-                                           (+ (:y point2))
-                                           (/ 2))}]
-                     (-> (concat (take (inc idx) path)
+                 (fn [points]
+                   (let [curve (vec (catmullrom/catmullrom points))
+                         new-point (if (< idx (dec (count points)))
+                                     (-> curve
+                                         (get idx)
+                                         (catmullrom/interpolate-point-cubic 0.5))
+                                     (-> (v/+ (last points)
+                                              {:x 50 :y 10})
+                                         (update :x max -200)
+                                         (update :x min 200)
+                                         (update :y max -200)
+                                         (update :y min 200)))]
+                     (-> (concat (take (inc idx) points)
                                  [new-point]
-                                 (drop (inc idx) path))
+                                 (drop (inc idx) points))
                          vec)))))))
 
 (rf/reg-sub :ribbon-edit-point-deletable?
@@ -134,8 +136,12 @@
                   path]} (get-in db [:ui :ribbon-edit :selected-point])]
       (if path
         (-> db
-            (assoc-in (conj path :x) (-> pos :x (- dx)))
-            (assoc-in (conj path :y) (-> pos :y (- dy))))
+            (assoc-in (conj path :x) (-> pos :x (- dx)
+                                         (max -200)
+                                         (min 200)))
+            (assoc-in (conj path :y) (-> pos :y (- dy)
+                                         (max -200)
+                                         (min 200))))
         db))))
 
 (defn key-down-handler [event]
