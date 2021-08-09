@@ -17,13 +17,13 @@ ajv@^6.12.3:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-amazon-cognito-identity-js@^4.6.0:
-  version "4.6.3"
-  resolved "https://registry.yarnpkg.com/amazon-cognito-identity-js/-/amazon-cognito-identity-js-4.6.3.tgz#889410379a5fc5e883edc95f4ce233cc628e354c"
-  integrity sha512-MPVJfirbdmSGo7l4h7Kbn3ms1eJXT5Xq8ly+mCPPi8yAxaxdg7ouMUUNTqtDykoZxIdDLF/P6F3Zbg3dlGKOWg==
+amazon-cognito-identity-js@^5.0.6:
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/amazon-cognito-identity-js/-/amazon-cognito-identity-js-5.0.6.tgz#be7ed4aff610f4bc2b702b0db7d031dd90bbf259"
+  integrity sha512-iJIDOdJsC3YcAB+JuHuaMQ5uEkPo229+vNh0G80ehSNbfARJeFrv53ImXIJtykW4KfzSvLksyQEsEEijI4Z1ww==
   dependencies:
     buffer "4.9.2"
-    crypto-js "^4.0.0"
+    crypto-js "^4.1.1"
     fast-base64-decode "^1.0.0"
     isomorphic-unfetch "^3.0.0"
     js-cookie "^2.2.1"
@@ -377,7 +377,7 @@ crypto-browserify@^3.11.0, crypto-browserify@^3.12.0:
     randombytes "^2.0.0"
     randomfill "^1.0.3"
 
-crypto-js@^4.0.0:
+crypto-js@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.1.1.tgz#9e485bcf03521041bd85844786b83fb7619736cf"
   integrity sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==
