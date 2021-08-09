@@ -211,10 +211,10 @@ cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-clj-kondo@^2021.6.1:
-  version "2021.6.1"
-  resolved "https://registry.yarnpkg.com/clj-kondo/-/clj-kondo-2021.6.1.tgz#8ae3f96f3b369273f1f1a0a8cf738854a43f8f3f"
-  integrity sha512-Pbl+Js57BOv2DTiiSZHySfWduwaxEx3EvnApsd3a0tG4j1IF9d8DGvxRDn7xHDwreif19IUIRieDA4UkttGn8Q==
+clj-kondo@^2021.8.6:
+  version "2021.8.6"
+  resolved "https://registry.yarnpkg.com/clj-kondo/-/clj-kondo-2021.8.6.tgz#e2426f0f37e1bf3edf422e293c33ab9c897c77b8"
+  integrity sha512-L8OI0uxkRGY6wmRSrs9wr2M+5MlLDslJ9ulRwgEYBCVt6Dd7lK+8xTJyxdDPswmAux5+S8gu0Gw9wMew3qUwdw==
   dependencies:
     binwrap "^0.2.2"
     request "^2.88.0"
