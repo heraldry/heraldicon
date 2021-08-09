@@ -104,3 +104,6 @@ prod-short-url-release:
 
 prod-short-url-deploy: prod-short-url-release
 	cd backend && yarn sls deploy --config serverless-short-url.yml --stage prod
+
+check-outdated:
+	clojure -Sdeps '{:deps {olical/depot {:mvn/version "RELEASE"}}}' -M -m depot.outdated.main
