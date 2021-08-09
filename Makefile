@@ -10,7 +10,7 @@ COMMIT = $(shell git rev-parse --short HEAD)
 
 # PROD
 
-PROD_FRONTEND_RELEASE_DIR = frontend/build/prod
+PROD_FRONTEND_RELEASE_DIR = build/prod
 PROD_BACKEND_RELEASE_DIR = backend/build/prod
 PROD_CONFIG = {:closure-defines {heraldry.config/stage "prod" heraldry.config/commit "$(COMMIT)"}}}
 
@@ -28,7 +28,7 @@ prod-backend-deploy: check-before-deploy-backend prod-backend-release
 prod-frontend-release:
 	rm -rf $(PROD_FRONTEND_RELEASE_DIR) 2> /dev/null || true
 	mkdir -p $(PROD_FRONTEND_RELEASE_DIR)
-	cp -r frontend/assets/* $(PROD_FRONTEND_RELEASE_DIR)
+	cp -r assets/* $(PROD_FRONTEND_RELEASE_DIR)
 	rm -rf $(PROD_FRONTEND_RELEASE_DIR)/js/generated 2> /dev/null || true
 	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(COMMIT)/" $(PROD_FRONTEND_RELEASE_DIR)/index.html
 	yarn shadow-cljs release frontend --config-merge '$(PROD_CONFIG)'
@@ -41,7 +41,7 @@ prod-frontend-deploy: check-before-deploy-frontend prod-frontend-release
 
 # STAGING
 
-STAGING_FRONTEND_RELEASE_DIR = frontend/build/staging
+STAGING_FRONTEND_RELEASE_DIR = build/staging
 STAGING_BACKEND_RELEASE_DIR = backend/build/staging
 STAGING_CONFIG = {:closure-defines {heraldry.config/stage "staging" heraldry.config/commit "$(COMMIT)"}}
 
@@ -57,10 +57,10 @@ staging-backend-deploy: staging-backend-release
 staging-frontend-release:
 	rm -rf $(STAGING_FRONTEND_RELEASE_DIR) 2> /dev/null || true
 	mkdir -p $(STAGING_FRONTEND_RELEASE_DIR)
-	cp -r frontend/assets/* $(STAGING_FRONTEND_RELEASE_DIR)
+	cp -r assets/* $(STAGING_FRONTEND_RELEASE_DIR)
 	rm -rf $(STAGING_FRONTEND_RELEASE_DIR)/js/generated 2> /dev/null || true
 	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(COMMIT)/" $(STAGING_FRONTEND_RELEASE_DIR)/index.html
-	yarn shadow-cljs release frontend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-dir "./frontend/build/staging/js/generated"}'
+	yarn shadow-cljs release frontend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-dir "./build/staging/js/generated"}'
 
 staging-frontend-deploy: staging-frontend-release
 	aws --profile heraldry-serverless s3 sync --acl public-read $(STAGING_FRONTEND_RELEASE_DIR) s3://cdn.staging.heraldry.digital
@@ -95,7 +95,7 @@ check-before-deploy-backend: check-debug-print-frontend check-dirty-frontend che
 
 # short-url
 
-PROD_SHORT_URL_RELEASE_DIR = frontend/build/prod
+PROD_SHORT_URL_RELEASE_DIR = build/prod
 PROD_SHORT_URL_CONFIG = {:closure-defines {heraldry.config/stage "prod" heraldry.config/commit "$(COMMIT)"}}}
 
 prod-short-url-release:

@@ -7,10 +7,10 @@
  :builds {:frontend
           {:target :browser
            :asset-path "/js/generated"
-           :js-options {:js-package-dirs ["./frontend/node_modules"]}
+           :js-options {:js-package-dirs ["./node_modules"]}
            :devtools {:before-load heraldry.frontend.main/stop
                       :after-load heraldry.frontend.main/start
-                      :http-root "./frontend/assets"
+                      :http-root "./assets"
                       :http-port 8081
                       :preloads [devtools.preload
                                  day8.re-frame-10x.preload]}
@@ -20,11 +20,11 @@
            :modules {:main {:init-fn heraldry.frontend.main/init
                             :preloads [heraldry.frontend.preload]}}
 
-           :dev {:output-dir "./frontend/build/dev/generated"
+           :dev {:output-dir "./build/dev/generated"
                  :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
                                                       day8.re-frame.tracing.trace-enabled? true}}}
 
-           :release {:output-dir "./frontend/build/prod/js/generated"}}
+           :release {:output-dir "./build/prod/js/generated"}}
 
           :backend
           {:target :node-library
@@ -67,3 +67,4 @@
            :compiler-options {:warnings {:redef false}}
            :ns-regexp "test"
            :autorun true}}}
+
