@@ -2,7 +2,7 @@
          "backend/src"]
 
  :deps {binaryage/devtools {:mvn/version "1.0.3"}
-        borkdude/sci {:mvn/version "0.2.4"}
+        borkdude/sci {:mvn/version "0.2.6"}
         cljs-http/cljs-http {:mvn/version "0.1.46"}
         com.andrewmcveigh/cljs-time {:mvn/version "0.5.2"}
         com.taoensso/timbre {:mvn/version "5.1.2"}
@@ -18,3 +18,4 @@
         thheller/shadow-cljs {:mvn/version "2.12.7"}
         zprint/zprint {:mvn/version "1.1.1"}
         com.taoensso/tufte {:mvn/version "2.2.0"}}}
+
