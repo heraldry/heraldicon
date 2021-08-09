@@ -13,7 +13,6 @@
     "events": "^3.3.0",
     "path-browserify": "^1.0.1",
     "path-intersection": "^2.2.1",
-    "process": "^0.11.10",
     "random": "^3.0.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
