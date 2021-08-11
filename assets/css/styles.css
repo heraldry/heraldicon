@@ -719,7 +719,8 @@ li.nav-menu-item a:hover {
 }
 
 .submenu-position label,
-.submenu-strip-form label {
+.submenu-strip-form label,
+.submenu-segment-form label {
   width: 6em;
 }
 

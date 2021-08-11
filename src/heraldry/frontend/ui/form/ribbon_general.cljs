@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.ribbon-general
   (:require [heraldry.frontend.ui.element.select :as select]
+            [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.ribbon :as ribbon]
             [re-frame.core :as rf]))
@@ -71,6 +72,23 @@
                                    :z-index (flow-fn flow-mode reverse-idx)})) curves))
          [])))))
 
+(defn segment-form [path type-str]
+  (let [segment-type @(rf/subscribe [:get-sanitized-data (conj path :type)])
+        idx (last path)
+        z-index @(rf/subscribe [:get-sanitized-data (conj path :z-index)])
+        title (str (inc idx) ". "
+                   (case segment-type
+                     :heraldry.ribbon.segment/foreground "Foreground"
+                     :heraldry.ribbon.segment/background "Background")
+                   ", position " z-index)]
+
+    [:div {:style {:position "relative"}}
+     [submenu/submenu path type-str title {:style {:width "23em"}
+                                           :class "submenu-segment-form"}
+      (for [option [:type
+                    :z-index]]
+        ^{:key option} [ui-interface/form-element (conj path option)])]]))
+
 (defn form [path _]
   [:<>
    (for [option [:name
@@ -88,7 +106,9 @@
          flow-mode-value (or @(rf/subscribe [:get-value flow-path])
                              flow-mode-default)
          start-mode-value (or @(rf/subscribe [:get-value start-path])
-                              start-mode-default)]
+                              start-mode-default)
+         segments-path (conj path :ribbon :segments)
+         num-segments @(rf/subscribe [:get-list-size segments-path])]
      [:<>
       [select/raw-select
        layers-path
@@ -118,7 +138,15 @@
                                          layer-mode-value
                                          flow-mode-value
                                          start-mode-value])}
-       "Apply presets"]])])
+       "Apply presets"]
+
+      [:div.option.ribbon-segments
+       [:ul
+        (doall
+         (for [idx (range num-segments)]
+           (let [segment-path (conj segments-path idx)]
+             ^{:key idx}
+             [segment-form segment-path])))]]])])
 
 (defmethod ui-interface/component-node-data :heraldry.component/ribbon-general [path]
   {:title "General"
