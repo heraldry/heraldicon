@@ -294,10 +294,8 @@
           ^{:key idx}
           [:<>
            [:path {:d full-path
-                   :style {:stroke-width 3
-                           :stroke (if foreground?
-                                     "#88ff88"
-                                     "#ff8888")
+                   :style {:stroke-width 1
+                           :stroke "#000000"
                            :stroke-linecap "round"
                            :fill (if foreground?
                                    "#dddddd"
