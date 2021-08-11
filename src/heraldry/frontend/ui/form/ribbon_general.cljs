@@ -1,11 +1,36 @@
 (ns heraldry.frontend.ui.form.ribbon-general
-  (:require [heraldry.frontend.ui.interface :as ui-interface]
+  (:require [heraldry.frontend.ui.element.select :as select]
+            [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.ribbon :as ribbon]
             [re-frame.core :as rf]))
 
 (rf/reg-event-db :ribbon-edit-annotate-segments
-  (fn [db [_ path]]
-    (let [points (get-in db path)]
-      db)))
+  (fn [db [_ path mode]]
+    (let [segments-path (conj path :segments)
+          points (get-in db (conj path :points))
+          {:keys [curves]} (ribbon/generate-curves points)]
+      (assoc-in
+       db segments-path
+       (case mode
+         :bottom-to-top (vec (map-indexed
+                              (fn [idx _curve]
+                                {:type (if (even? idx)
+                                         :heraldry.ribbon.segment/foreground
+                                         :heraldry.ribbon.segment/background)
+                                 :index idx
+                                 :z-index idx}) curves))
+         :top-to-bottom (vec (map-indexed
+                              (fn [idx _curve]
+                                (let [reverse-idx (-> curves
+                                                      count
+                                                      dec
+                                                      (- idx))]
+                                  {:type (if (even? reverse-idx)
+                                           :heraldry.ribbon.segment/foreground
+                                           :heraldry.ribbon.segment/background)
+                                   :index idx
+                                   :z-index reverse-idx})) curves))
+         [])))))
 
 (defn form [path _]
   [:<>
@@ -20,8 +45,16 @@
      ^{:key option} [ui-interface/form-element (conj path :ribbon option)])
 
    [:<>
-    [:button {:on-click #(rf/dispatch [:ribbon-edit-annotate-segments path])}
-     "center defaults"]]])
+    [select/raw-select
+     nil
+     :none
+     "Presets"
+     [["--- Reset ---" :none]
+      ["Bottom-to-top" :bottom-to-top]
+      ["Top-to-bottom" :top-to-bottom]
+      ["Center-to-ends" :center-to-ends]
+      ["Alternating" :alternating]]
+     :on-change #(rf/dispatch [:ribbon-edit-annotate-segments (conj path :ribbon) %])]]])
 
 (defmethod ui-interface/component-node-data :heraldry.component/ribbon-general [path]
   {:title "General"
