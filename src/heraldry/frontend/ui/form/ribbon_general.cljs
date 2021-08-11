@@ -12,14 +12,14 @@
       (assoc-in
        db segments-path
        (case mode
-         :bottom-to-top (vec (map-indexed
+         :back-to-front (vec (map-indexed
                               (fn [idx _curve]
                                 {:type (if (even? idx)
                                          :heraldry.ribbon.segment/foreground
                                          :heraldry.ribbon.segment/background)
                                  :index idx
                                  :z-index idx}) curves))
-         :top-to-bottom (vec (map-indexed
+         :front-to-back (vec (map-indexed
                               (fn [idx _curve]
                                 (let [reverse-idx (-> curves
                                                       count
@@ -50,9 +50,9 @@
      :none
      "Presets"
      [["--- Reset ---" :none]
-      ["Bottom-to-top" :bottom-to-top]
-      ["Top-to-bottom" :top-to-bottom]
-      ["Center-to-ends" :center-to-ends]
+      ["Back to front" :back-to-front]
+      ["Front to back" :front-to-back]
+      ["Center to back" :center-to-ends]
       ["Alternating" :alternating]]
      :on-change #(rf/dispatch [:ribbon-edit-annotate-segments (conj path :ribbon) %])]]])
 
