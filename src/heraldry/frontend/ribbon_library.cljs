@@ -261,14 +261,23 @@
               :height width
               :style {:fill "#000"}}]]]))
 
-(defn render-ribbon [points-path thickness]
+(defn render-ribbon [path thickness]
   (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])
         edge-vector (v/* (v/v 0 1) thickness)
+        points-path (conj path :points)
+        segments-path (conj path :segments)
         points (interface/get-raw-data points-path {})
+        segments (interface/get-raw-data segments-path {})
         {:keys [curve curves]} (ribbon/generate-curves points)]
     [:<>
      (doall
-      (for [[idx partial-curve] (map-indexed vector curves)]
+      (for [[idx partial-curve] (->> curves
+                                     (map-indexed vector)
+                                     (sort-by (fn [[idx _]]
+                                                (-> segments
+                                                    (get idx)
+                                                    :z-index
+                                                    (or 1000)))))]
         (let [top-edge (catmullrom/curve->svg-path-relative partial-curve)
               full-path (str top-edge
                              (catmullrom/svg-line-to edge-vector)
@@ -276,18 +285,23 @@
                                  svg/reverse-path
                                  :path
                                  (s/replace "M0 0" ""))
-                             (catmullrom/svg-line-to (v/* edge-vector -1)))]
+                             (catmullrom/svg-line-to (v/* edge-vector -1)))
+              foreground? (-> segments
+                              (get idx)
+                              :type
+                              (or :heraldry.ribbon.segment/foreground)
+                              (= :heraldry.ribbon.segment/foreground))]
           ^{:key idx}
           [:<>
            [:path {:d full-path
                    :style {:stroke-width 3
-                           :stroke (if (odd? idx)
-                                     "#ff8888"
-                                     "#88ff88")
+                           :stroke (if foreground?
+                                     "#88ff88"
+                                     "#ff8888")
                            :stroke-linecap "round"
-                           :fill (if (odd? idx)
-                                   "#888888"
-                                   "#dddddd")}}]])))
+                           :fill (if foreground?
+                                   "#dddddd"
+                                   "#888888")}}]])))
      (when-not (= edit-mode :none)
        [:path {:d (catmullrom/curve->svg-path-relative curve)
                :style {:stroke-width 3
@@ -330,7 +344,7 @@
               :fill "#f6f6f6"
               :filter "url(#shadow)"}]
       [:g {:transform (str "translate(" (/ width 2) "," (/ height 2) ")")}
-       [render-ribbon points-path thickness]
+       [render-ribbon (conj form-db-path :ribbon) thickness]
        (doall
         (for [idx (range num-points)]
           ^{:key idx} [path-point (conj points-path idx)]))
