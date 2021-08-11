@@ -72,6 +72,24 @@
                                    :z-index (flow-fn flow-mode reverse-idx)})) curves))
          [])))))
 
+(rf/reg-event-db :ribbon-edit-invert-segments
+  (fn [db [_ path]]
+    (let [segments-path (conj path :segments)]
+
+      (update-in
+       db segments-path
+       (fn [segments]
+         (let [max-z-index (->> segments
+                                (map :z-index)
+                                (apply max))]
+           (->> segments
+                (map (fn [segment]
+                       (-> segment
+                           (update :type {:heraldry.ribbon.segment/foreground :heraldry.ribbon.segment/background
+                                          :heraldry.ribbon.segment/background :heraldry.ribbon.segment/foreground})
+                           (update :z-index #(- max-z-index %)))))
+                vec)))))))
+
 (defn segment-form [path type-str]
   (let [segment-type @(rf/subscribe [:get-sanitized-data (conj path :type)])
         idx (last path)
@@ -133,12 +151,16 @@
        [["Foreground" :foreground]
         ["Background" :background]]]
 
-      [:button {:on-click #(rf/dispatch [:ribbon-edit-annotate-segments
-                                         (conj path :ribbon)
-                                         layer-mode-value
-                                         flow-mode-value
-                                         start-mode-value])}
-       "Apply presets"]
+      [:div
+       [:button {:on-click #(rf/dispatch [:ribbon-edit-annotate-segments
+                                          (conj path :ribbon)
+                                          layer-mode-value
+                                          flow-mode-value
+                                          start-mode-value])}
+        "Apply presets"]
+       [:button {:on-click #(rf/dispatch [:ribbon-edit-invert-segments
+                                          (conj path :ribbon)])}
+        "Invert"]]
 
       [:div.option.ribbon-segments
        [:ul
