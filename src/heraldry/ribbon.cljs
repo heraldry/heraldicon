@@ -70,3 +70,18 @@
     {:curve curve
      :curves curves}))
 
+(def segment-options
+  {:type {:type :choice
+          :choices [["Foreground" :heraldry.ribbon.segment/foreground]
+                    ["Background" :heraldry.ribbon.segment/background]]
+          :ui {:label "Type"
+               :form-type :radio-select}}
+   :z-index {:type :range
+             :min 0
+             :max 100
+             :integer? true
+             :ui {:label "Position"}}})
+
+(defmethod interface/component-options :heraldry.component/ribbon-segment [_path _data]
+  segment-options)
+

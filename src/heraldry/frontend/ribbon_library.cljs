@@ -274,10 +274,11 @@
       (for [[idx partial-curve] (->> curves
                                      (map-indexed vector)
                                      (sort-by (fn [[idx _]]
-                                                (-> segments
-                                                    (get idx)
-                                                    :z-index
-                                                    (or 1000)))))]
+                                                [(-> segments
+                                                     (get idx)
+                                                     :z-index
+                                                     (or 1000))
+                                                 idx])))]
         (let [top-edge (catmullrom/curve->svg-path-relative partial-curve)
               full-path (str top-edge
                              (catmullrom/svg-line-to edge-vector)
@@ -286,11 +287,9 @@
                                  :path
                                  (s/replace "M0 0" ""))
                              (catmullrom/svg-line-to (v/* edge-vector -1)))
-              foreground? (-> segments
-                              (get idx)
-                              :type
-                              (or :heraldry.ribbon.segment/foreground)
-                              (= :heraldry.ribbon.segment/foreground))]
+              segment-type (interface/get-sanitized-data
+                            (conj segments-path idx :type) {})
+              foreground? (= segment-type :heraldry.ribbon.segment/foreground)]
           ^{:key idx}
           [:<>
            [:path {:d full-path
