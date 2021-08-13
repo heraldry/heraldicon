@@ -15,7 +15,7 @@
   [:ui :ribbon-presets :start])
 
 (def layer-mode-default
-  :back-to-front)
+  :middle-outwards)
 
 (def flow-mode-default
   :stacked)
@@ -57,7 +57,11 @@
   (fn [db [_ path layer-mode flow-mode start-mode]]
     (let [segments-path (conj path :segments)
           points (get-in db (conj path :points))
-          {:keys [curves]} (ribbon/generate-curves points)]
+          {:keys [curves]} (ribbon/generate-curves points)
+          num-curves (count curves)
+          even-max-num-curves (if (even? num-curves)
+                                num-curves
+                                (inc num-curves))]
       (assoc-in
        db segments-path
        (case layer-mode
@@ -68,13 +72,24 @@
                                  :z-index (flow-fn flow-mode idx)}) curves))
          :front-to-back (vec (map-indexed
                               (fn [idx _curve]
-                                (let [reverse-idx (-> curves
-                                                      count
+                                (let [reverse-idx (-> num-curves
                                                       dec
                                                       (- idx))]
                                   {:type (type-fn start-mode reverse-idx)
                                    :index idx
                                    :z-index (flow-fn flow-mode reverse-idx)})) curves))
+         :middle-outwards (vec (map-indexed
+                                (fn [idx _curve]
+                                  (let [effective-type-idx (-> num-curves
+                                                               (quot 2)
+                                                               (- idx)
+                                                               Math/abs)
+                                        effective-flow-idx (cond-> effective-type-idx
+                                                             (#{:stacked
+                                                                :nebuly} flow-mode :stacked) (->> (- even-max-num-curves)))]
+                                    {:type (type-fn start-mode effective-type-idx)
+                                     :index idx
+                                     :z-index (flow-fn flow-mode effective-flow-idx)})) curves))
          [])))))
 
 (rf/reg-event-db :ribbon-edit-invert-segments
@@ -148,9 +163,9 @@
        layers-path
        layer-mode-value
        "Layering presets"
-       [["Back to front" :back-to-front]
-        ["Front to back" :front-to-back]
-        ["Center to back" :center-to-ends]]]
+       [["Middle outwards" :middle-outwards]
+        ["Back to front" :back-to-front]
+        ["Front to back" :front-to-back]]]
 
       [select/raw-select
        flow-path
