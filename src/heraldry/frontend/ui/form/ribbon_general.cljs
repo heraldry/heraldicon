@@ -27,12 +27,17 @@
   (case mode
     :stacked n
 
-    :alternating (let [mod2 (mod n 2)]
-                   (cond
-                     (= mod2 1) (+ n 1)
-                     (and (zero? mod2)
-                          (not (zero? n))) (- n 1)
-                     :else n))
+    :spiral-clockwise (let [mod2 (mod n 2)]
+                        (cond
+                          (= mod2 1) (+ n 1)
+                          (and (zero? mod2)
+                               (not (zero? n))) (- n 1)
+                          :else n))
+
+    :spiral-counter-clockwise (let [mod2 (mod n 2)]
+                                (cond
+                                  (= mod2 1) (- n 1)
+                                  (zero? mod2) (+ n 1)))
 
     :nebuly (let [mod4 (mod n 4)]
               (cond
@@ -141,7 +146,8 @@
        flow-mode-value
        "Flow presets"
        [["Stacked" :stacked]
-        ["Alternating" :alternating]
+        ["Spiral clockwise" :spiral-clockwise]
+        ["Spiral counter-clockwise" :spiral-counter-clockwise]
         ["Nebuly" :nebuly]]]
 
       [select/raw-select
