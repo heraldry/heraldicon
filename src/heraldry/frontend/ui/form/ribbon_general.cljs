@@ -162,7 +162,8 @@
      ^{:key option} [ui-interface/form-element (conj path option)])
 
    (for [option [:thickness
-                 :edge-angle]]
+                 :edge-angle
+                 :end-split]]
      ^{:key option} [ui-interface/form-element (conj path :ribbon option)])
 
    [:div {:style {:font-size "1.3em"

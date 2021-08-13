@@ -15,7 +15,13 @@
                 :min -90
                 :max 90
                 :ui {:label "Edge angle"
-                     :step 1}}})
+                     :step 1}}
+   :end-split {:type :range
+               :default 0
+               :min 0
+               :max 80
+               :ui {:label "End split"
+                    :step 1}}})
 
 (defn options [data]
   default-options)

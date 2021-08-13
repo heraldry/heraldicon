@@ -20,6 +20,8 @@
             [heraldry.util :as util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
+            [svg-path-parse :as svg-path-parse]
+            [svg-path-reverse :as svg-path-reverse]
             [taoensso.timbre :as log]))
 
 (def form-db-path
@@ -276,13 +278,15 @@
               :height width
               :style {:fill "#000"}}]]]))
 
-(defn project-bottom-edge [top-curve start-edge-vector end-edge-vector]
-  (let [original-start (apply v/v (ffirst top-curve))
-        original-end (apply v/v (last (last top-curve)))
-        new-start (v/+ original-start start-edge-vector)
-        new-end (v/+ original-end end-edge-vector)
-        original-dir (v/- original-start original-end)
-        new-dir (v/- new-start new-end)
+(defn project-path-to [curve new-start new-end & {:keys [reverse?]}]
+  (let [original-start (apply v/v (ffirst curve))
+        original-end (apply v/v (last (last curve)))
+        original-dir (if reverse?
+                       (v/- original-start original-end)
+                       (v/- original-end original-start))
+        new-dir (if reverse?
+                  (v/- new-start new-end)
+                  (v/- new-end new-start))
         original-angle (-> (Math/atan2 (:y original-dir)
                                        (:x original-dir))
                            (* 180)
@@ -301,19 +305,49 @@
                 0
                 (- new-angle
                    original-angle))]
-    (-> top-curve
+    (-> curve
         catmullrom/curve->svg-path-relative
-        svg/reverse-path
-        :path
+        (cond->
+         reverse? (->
+                   svg/reverse-path
+                   :path)
+         (not reverse?) (->
+                         svg/reverse-path
+                         :path
+                         svg/reverse-path
+                         :path))
         svgpath
         (.scale scale scale)
         (.rotate angle)
         .toString
         (s/replace "M0 0" ""))))
 
+(defn project-bottom-edge [top-curve start-edge-vector end-edge-vector]
+  (let [original-start (apply v/v (ffirst top-curve))
+        original-end (apply v/v (last (last top-curve)))
+        new-start (v/+ original-start start-edge-vector)
+        new-end (v/+ original-end end-edge-vector)]
+    (project-path-to top-curve new-start new-end :reverse? true)))
+
+(defn split-end [kind curve percentage edge-vector]
+  (let [{:keys [curve1 curve2]} (catmullrom/split-curve-at curve (cond-> (/ percentage 100)
+                                                                   (= kind :end) (->> (- 1))))
+        split-point (-> (apply v/v (ffirst curve2))
+                        (v/+ (v// edge-vector 2)))]
+    (case kind
+      :start (let [start-point (apply v/v (ffirst curve))
+                   end-point (v/+ start-point edge-vector)]
+               [(project-path-to curve1 end-point split-point)
+                (project-path-to curve1 start-point split-point :reverse? true)])
+      :end (let [start-point (apply v/v (last (last curve2)))
+                 end-point (v/+ start-point edge-vector)]
+             [(project-path-to curve2 split-point start-point :reverse? true)
+              (project-path-to curve2 split-point end-point)]))))
+
 (defn render-ribbon [path thickness]
   (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])
         edge-angle (interface/get-sanitized-data (conj path :edge-angle) {})
+        end-split (interface/get-sanitized-data (conj path :end-split) {})
         points-path (conj path :points)
         segments-path (conj path :segments)
         points (interface/get-raw-data points-path {})
@@ -325,7 +359,8 @@
                                         (when @(rf/subscribe [:get-value [:ui :submenu-open? (conj segments-path idx)]])
                                           idx)))
                                 first)
-        font-size (* 0.6 thickness)]
+        font-size (* 0.6 thickness)
+        num-segments (count segments)]
     [:<>
      (doall
       (for [[idx partial-curve] (->> curves
@@ -340,10 +375,32 @@
               [first-edge-vector second-edge-vector] (get edge-vectors idx)
               first-edge-vector (v/* first-edge-vector thickness)
               second-edge-vector (v/* second-edge-vector thickness)
-              full-path (str top-edge
-                             (catmullrom/svg-line-to second-edge-vector)
-                             (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                             (catmullrom/svg-line-to (v/* first-edge-vector -1)))
+              full-path (cond
+                          (or (zero? end-split)
+                              (< 0 idx (dec num-segments))) (str top-edge
+                                                                 (catmullrom/svg-line-to second-edge-vector)
+                                                                 (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                                 (catmullrom/svg-line-to (v/* first-edge-vector -1)))
+                          (and (pos? end-split)
+                               (zero? idx)) (str top-edge
+                                                 (catmullrom/svg-line-to second-edge-vector)
+                                                 (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                 (util/combine " "
+                                                               (split-end
+                                                                :start
+                                                                partial-curve
+                                                                end-split
+                                                                first-edge-vector)))
+                          (and (pos? end-split)
+                               (= idx (dec num-segments))) (str top-edge
+                                                                (util/combine " "
+                                                                              (split-end
+                                                                               :end
+                                                                               partial-curve
+                                                                               end-split
+                                                                               second-edge-vector))
+                                                                (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                                (catmullrom/svg-line-to (v/* first-edge-vector -1))))
               segment-type (interface/get-sanitized-data
                             (conj segments-path idx :type) {})
               foreground? (#{:heraldry.ribbon.segment/foreground

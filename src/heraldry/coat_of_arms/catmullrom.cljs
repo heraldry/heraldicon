@@ -47,9 +47,12 @@
   (Math/sqrt (+ (square (- x0 x1))
                 (square (- y0 y1)))))
 
+(defn bezier-length [[[x1 y1] _ _ [x2 y2]]]
+  (distance {:x x1 :y y1} {:x x2 :y y2}))
+
 (defn curve->length [path]
   (->> path
-       (map (fn [[[x1 y1] _ _ [x2 y2]]] (distance {:x x1 :y y1} {:x x2 :y y2})))
+       (map bezier-length)
        (apply +)))
 
 (defn interpolate-point-cubic [[p1 cp1 cp2 p2] t]
@@ -169,4 +172,32 @@
                               (range (- (inc n) j)))]
           (recur (inc j)
                  (into matrix new-points)))))))
+
+(defn split-curve-at [curve t]
+  (let [total-length (curve->length curve)
+        num-curves (count curve)
+        absolute-t (* t total-length)
+        [split-index
+         rest-t
+         _] (->> curve
+                 (map bezier-length)
+                 (map-indexed vector)
+                 (reduce
+                  (fn [[_ _ traversed] [index leg-length]]
+                    (let [next-traversed (+ traversed leg-length)]
+                      (if (> absolute-t next-traversed)
+                        [index 1 next-traversed]
+                        (reduced [index
+                                  (/ (- absolute-t traversed) leg-length)
+                                  absolute-t]))))
+                  [0 0 0]))
+        rest-split (split-bezier (get curve split-index) rest-t)]
+    {:curve1 (vec (concat (if (pos? split-index)
+                            (subvec curve 0 split-index)
+                            [])
+                          [(:curve1 rest-split)]))
+     :curve2 (vec (concat [(:curve2 rest-split)]
+                          (if (< split-index (dec num-curves))
+                            (subvec curve (inc split-index))
+                            [])))}))
 
