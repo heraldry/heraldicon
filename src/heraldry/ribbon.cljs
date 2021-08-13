@@ -74,12 +74,18 @@
         num-legs (count curve)
         tangent-points (-> (keep-indexed
                             (fn [idx leg]
-                              (let [leg-edge-angle (-> (* 2 edge-angle)
+                              (let [base-edge-vector (if false
+                                                       (v/v 0 1)
+                                                       (-> (apply v/v (last leg))
+                                                           (v/- (apply v/v (first leg)))
+                                                           v/orthogonal
+                                                           v/normal))
+                                    leg-edge-angle (-> (* 2 edge-angle)
                                                        (/ (max 1
                                                                (dec num-legs)))
                                                        (* idx)
                                                        (- edge-angle))
-                                    edge-vector (-> (v/v 0 1)
+                                    edge-vector (-> base-edge-vector
                                                     (v/rotate (- leg-edge-angle)))
                                     ts (catmullrom/calculate-tangent-points leg ((juxt :x :y) edge-vector))]
                                 (when (seq ts)
