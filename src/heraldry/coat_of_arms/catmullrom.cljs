@@ -40,6 +40,18 @@
     (string/join "" (concat [(svg-move-to start)]
                             (map svg-curve-to-relative curve)))))
 
+(defn square [x]
+  (* x x))
+
+(defn distance [{x0 :x y0 :y} {x1 :x y1 :y}]
+  (Math/sqrt (+ (square (- x0 x1))
+                (square (- y0 y1)))))
+
+(defn curve->length [path]
+  (->> path
+       (map (fn [[[x1 y1] _ _ [x2 y2]]] (distance {:x x1 :y y1} {:x x2 :y y2})))
+       (apply +)))
+
 (defn interpolate-point-cubic [[p1 cp1 cp2 p2] t]
   (let [t2 (* t t)
         t3 (* t2 t)
@@ -58,9 +70,6 @@
   (-> value
       Math/abs
       (< 0.000000000001)))
-
-(defn square [x]
-  (* x x))
 
 (defn calculate-tangent-points [[[p1x p1y] [c1x c1y] [c2x c2y] [p2x p2y]] [u v]]
   (let [;; shift them such that p1 = 0, the translation does not change the solutions

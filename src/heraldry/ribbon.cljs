@@ -72,7 +72,8 @@
 
 (def segment-options
   {:type {:type :choice
-          :choices [["Foreground" :heraldry.ribbon.segment/foreground]
+          :choices [["Foreground (Text)" :heraldry.ribbon.segment/foreground-with-text]
+                    ["Foreground" :heraldry.ribbon.segment/foreground]
                     ["Background" :heraldry.ribbon.segment/background]]
           :ui {:label "Type"
                :form-type :radio-select}}
