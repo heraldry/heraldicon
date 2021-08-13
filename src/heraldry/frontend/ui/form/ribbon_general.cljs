@@ -57,6 +57,14 @@
   (fn [db [_ path layer-mode flow-mode start-mode]]
     (let [segments-path (conj path :segments)
           points (get-in db (conj path :points))
+          starts-right? (> (-> points first :x)
+                           (-> points last :x))
+          layer-mode (cond
+                       (and (= layer-mode :left-to-right)
+                            starts-right?) :right-to-left
+                       (and (= layer-mode :right-to-left)
+                            starts-right?) :left-to-right
+                       :else layer-mode)
           {:keys [curves]} (ribbon/generate-curves points)
           num-curves (count curves)
           even-max-num-curves (if (even? num-curves)
@@ -65,12 +73,12 @@
       (assoc-in
        db segments-path
        (case layer-mode
-         :back-to-front (vec (map-indexed
+         :left-to-right (vec (map-indexed
                               (fn [idx _curve]
                                 {:type (type-fn start-mode idx)
                                  :index idx
                                  :z-index (flow-fn flow-mode idx)}) curves))
-         :front-to-back (vec (map-indexed
+         :right-to-left (vec (map-indexed
                               (fn [idx _curve]
                                 (let [reverse-idx (-> num-curves
                                                       dec
@@ -164,8 +172,8 @@
        layer-mode-value
        "Layering presets"
        [["Middle outwards" :middle-outwards]
-        ["Back to front" :back-to-front]
-        ["Front to back" :front-to-back]]]
+        ["Left to right" :left-to-right]
+        ["Right to left" :right-to-left]]]
 
       [select/raw-select
        flow-path
