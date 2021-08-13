@@ -268,7 +268,13 @@
         segments-path (conj path :segments)
         points (interface/get-raw-data points-path {})
         segments (interface/get-raw-data segments-path {})
-        {:keys [curve curves]} (ribbon/generate-curves points)]
+        {:keys [curve curves]} (ribbon/generate-curves points)
+        selected-curve-idx (->> (count curves)
+                                range
+                                (keep (fn [idx]
+                                        (when @(rf/subscribe [:get-value [:ui :submenu-open? (conj segments-path idx)]])
+                                          idx)))
+                                first)]
     [:<>
      (doall
       (for [[idx partial-curve] (->> curves
@@ -305,13 +311,20 @@
                        :stroke "#aaaaaa"
                        :stroke-dasharray "4,8"
                        :stroke-linecap "round"
+                       :fill "none"}}])
+     (when selected-curve-idx
+       [:path {:d (catmullrom/curve->svg-path-relative (get curves selected-curve-idx))
+               :style {:stroke-width 3
+                       :stroke "#6688ff"
+                       :stroke-linecap "round"
                        :fill "none"}}])]))
 
 (defn preview []
   (let [[width height] [500 600]
-        points-path (conj form-db-path :ribbon :points)
+        ribbon-path (conj form-db-path :ribbon)
+        points-path (conj ribbon-path :points)
         num-points (interface/get-list-size points-path {})
-        thickness (interface/get-sanitized-data (conj form-db-path :ribbon :thickness) {})
+        thickness (interface/get-sanitized-data (conj ribbon-path :thickness) {})
         thickness ((util/percent-of 300) thickness)
         edit-mode @(rf/subscribe [:ribbon-edit-mode])
         route-path-point-mouse-up-fn (when (= edit-mode :edit)
@@ -341,7 +354,7 @@
               :fill "#f6f6f6"
               :filter "url(#shadow)"}]
       [:g {:transform (str "translate(" (/ width 2) "," (/ height 2) ")")}
-       [render-ribbon (conj form-db-path :ribbon) thickness]
+       [render-ribbon ribbon-path thickness]
        (doall
         (for [idx (range num-points)]
           ^{:key idx} [path-point (conj points-path idx)]))
