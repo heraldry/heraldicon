@@ -74,6 +74,8 @@
         num-legs (count curve)
         tangent-points (-> (keep-indexed
                             (fn [idx leg]
+                              ;; TODO: probably better to calculate the angle based
+                              ;; on the average x-value of the leg
                               (let [base-edge-vector (v/v 0 1)
                                     leg-edge-angle (-> (* 2 edge-angle)
                                                        (/ (max 1
