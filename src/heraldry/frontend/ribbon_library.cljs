@@ -274,7 +274,8 @@
                                 (keep (fn [idx]
                                         (when @(rf/subscribe [:get-value [:ui :submenu-open? (conj segments-path idx)]])
                                           idx)))
-                                first)]
+                                first)
+        font-size (* 0.6 thickness)]
     [:<>
      (doall
       (for [[idx partial-curve] (->> curves
@@ -296,7 +297,8 @@
               segment-type (interface/get-sanitized-data
                             (conj segments-path idx :type) {})
               foreground? (#{:heraldry.ribbon.segment/foreground
-                             :heraldry.ribbon.segment/foreground-with-text} segment-type)]
+                             :heraldry.ribbon.segment/foreground-with-text} segment-type)
+              text? (= segment-type :heraldry.ribbon.segment/foreground-with-text)]
           ^{:key idx}
           [:<>
            [:path {:d full-path
@@ -305,7 +307,25 @@
                            :stroke-linecap "round"
                            :fill (if foreground?
                                    "#dddddd"
-                                   "#888888")}}]])))
+                                   "#888888")}}]
+           (when text?
+             (let [path-id (util/id "path")
+                   text-offset (v/* edge-vector 0.6)]
+               [:text {:transform (str "translate(" (:x text-offset) "," (:y text-offset) ")")
+                       :fill "#666666"
+                       :text-anchor "middle"
+                       :style {:font-family "DejaVu"
+                               :font-size font-size}}
+                [:defs
+                 [:path {:id path-id
+                         :d top-edge}]]
+                [:textPath {:href (str "#" path-id)
+                            :alignment-baseline "middle"
+                            :method "align"
+                            :lengthAdjust "spacing"
+                            :letter-spacing 5
+                            :startOffset "50%"}
+                 "LOREM IPSUM"]]))])))
      (when-not (= edit-mode :none)
        [:path {:d (catmullrom/curve->svg-path-relative curve)
                :style {:stroke-width 3
