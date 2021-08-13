@@ -68,7 +68,10 @@
                        (and (= layer-mode :right-to-left)
                             starts-right?) :left-to-right
                        :else layer-mode)
-          {:keys [curves curve]} (ribbon/generate-curves points)
+          ;; TODO: duplicating the default value for :edge-angle here, not using options
+          edge-angle (or (get-in db (conj path :edge-angle))
+                         0)
+          {:keys [curves curve]} (ribbon/generate-curves points edge-angle)
           num-curves (count curves)
           even-max-num-curves (if (even? num-curves)
                                 num-curves
@@ -158,7 +161,8 @@
                  :tags]]
      ^{:key option} [ui-interface/form-element (conj path option)])
 
-   (for [option [:thickness]]
+   (for [option [:thickness
+                 :edge-angle]]
      ^{:key option} [ui-interface/form-element (conj path :ribbon option)])
 
    [:div {:style {:font-size "1.3em"

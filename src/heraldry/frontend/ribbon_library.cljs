@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ribbon-library
-  (:require [cljs.core.async :refer [go]]
+  (:require ["svgpath" :as svgpath]
+            [cljs.core.async :refer [go]]
             [clojure.string :as s]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.catmullrom :as catmullrom]
@@ -275,14 +276,49 @@
               :height width
               :style {:fill "#000"}}]]]))
 
+(defn project-bottom-edge [top-curve start-edge-vector end-edge-vector]
+  (let [original-start (apply v/v (ffirst top-curve))
+        original-end (apply v/v (last (last top-curve)))
+        new-start (v/+ original-start start-edge-vector)
+        new-end (v/+ original-end end-edge-vector)
+        original-dir (v/- original-start original-end)
+        new-dir (v/- new-start new-end)
+        original-angle (-> (Math/atan2 (:y original-dir)
+                                       (:x original-dir))
+                           (* 180)
+                           (/ Math/PI))
+        new-angle (-> (Math/atan2 (:y new-dir)
+                                  (:x new-dir))
+                      (* 180)
+                      (/ Math/PI))
+        dist-original (v/abs original-dir)
+        dist-new (v/abs new-dir)
+        scale (if (catmullrom/close-to-zero? dist-original)
+                1
+                (/ dist-new
+                   dist-original))
+        angle (if (catmullrom/close-to-zero? dist-original)
+                0
+                (- new-angle
+                   original-angle))]
+    (-> top-curve
+        catmullrom/curve->svg-path-relative
+        svg/reverse-path
+        :path
+        svgpath
+        (.scale scale scale)
+        (.rotate angle)
+        .toString
+        (s/replace "M0 0" ""))))
+
 (defn render-ribbon [path thickness]
   (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])
-        edge-vector (v/* (v/v 0 1) thickness)
+        edge-angle (interface/get-sanitized-data (conj path :edge-angle) {})
         points-path (conj path :points)
         segments-path (conj path :segments)
         points (interface/get-raw-data points-path {})
         segments (interface/get-raw-data segments-path {})
-        {:keys [curve curves]} (ribbon/generate-curves points)
+        {:keys [curve curves edge-vectors]} (ribbon/generate-curves points edge-angle)
         selected-curve-idx (->> (count curves)
                                 range
                                 (keep (fn [idx]
@@ -301,13 +337,13 @@
                                                      (or 1000))
                                                  idx])))]
         (let [top-edge (catmullrom/curve->svg-path-relative partial-curve)
+              [first-edge-vector second-edge-vector] (get edge-vectors idx)
+              first-edge-vector (v/* first-edge-vector thickness)
+              second-edge-vector (v/* second-edge-vector thickness)
               full-path (str top-edge
-                             (catmullrom/svg-line-to edge-vector)
-                             (-> top-edge
-                                 svg/reverse-path
-                                 :path
-                                 (s/replace "M0 0" ""))
-                             (catmullrom/svg-line-to (v/* edge-vector -1)))
+                             (catmullrom/svg-line-to second-edge-vector)
+                             (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                             (catmullrom/svg-line-to (v/* first-edge-vector -1)))
               segment-type (interface/get-sanitized-data
                             (conj segments-path idx :type) {})
               foreground? (#{:heraldry.ribbon.segment/foreground
@@ -324,7 +360,7 @@
                                    "#888888")}}]
            (when text?
              (let [path-id (util/id "path")
-                   text-offset (v/* edge-vector 0.6)]
+                   text-offset (v/* first-edge-vector 0.6)]
                [:text.no-select {:transform (str "translate(" (:x text-offset) "," (:y text-offset) ")")
                                  :fill "#666666"
                                  :text-anchor "middle"
