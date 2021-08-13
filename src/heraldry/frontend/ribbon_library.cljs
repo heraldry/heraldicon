@@ -30,6 +30,24 @@
 (def example-coa-db-path
   [:example-coa])
 
+(def preview-width
+  500)
+
+(def preview-height
+  600)
+
+(def ribbon-min-x
+  (- (/ preview-width 2)))
+
+(def ribbon-max-x
+  (/ preview-width 2))
+
+(def ribbon-min-y
+  (- (/ preview-height 2)))
+
+(def ribbon-max-y
+  (/ preview-height 2))
+
 (rf/reg-event-db :ribbon-edit-remove-point
   (fn [db [_ path]]
     (let [points-path (-> path drop-last vec)
@@ -53,27 +71,27 @@
                              (drop (inc idx) points))
                      vec)))))
 
+(defn clamp-point [p]
+  (-> p
+      (update :x max ribbon-min-x)
+      (update :x min ribbon-max-x)
+      (update :y max ribbon-min-y)
+      (update :y min ribbon-max-y)))
+
 (rf/reg-sub :ribbon-edit-addable-points
   (fn [[_ path] _]
     (rf/subscribe [:get path]))
 
   (fn [points [_ _path]]
-    (concat [[-1 (-> (v/- (first points)
-                          {:x 50 :y 10})
-                     (update :x max -200)
-                     (update :x min 200)
-                     (update :y max -200)
-                     (update :y min 200))]]
+    (concat [[-1 (clamp-point (v/- (first points)
+                                   {:x 50 :y 10}))]]
+
             (-> points
                 catmullrom/catmullrom
                 (->> (map-indexed (fn [idx leg]
                                     [idx (catmullrom/interpolate-point-cubic leg 0.5)]))))
-            [[(dec (count points)) (-> (v/+ (last points)
-                                            {:x 50 :y 10})
-                                       (update :x max -200)
-                                       (update :x min 200)
-                                       (update :y max -200)
-                                       (update :y min 200))]])))
+            [[(dec (count points)) (clamp-point (v/+ (last points)
+                                                     {:x 50 :y 10}))]])))
 
 (rf/reg-sub :ribbon-edit-point-deletable?
   (fn [[_ path] _]
@@ -146,12 +164,8 @@
                   path]} (get-in db [:ui :ribbon-edit :selected-point])]
       (if path
         (-> db
-            (assoc-in (conj path :x) (-> pos :x (- dx)
-                                         (max -200)
-                                         (min 200)))
-            (assoc-in (conj path :y) (-> pos :y (- dy)
-                                         (max -200)
-                                         (min 200))))
+            (assoc-in path (clamp-point
+                            (v/- pos (v/v dx dy)))))
         db))))
 
 (defn key-down-handler [event]
@@ -311,11 +325,11 @@
            (when text?
              (let [path-id (util/id "path")
                    text-offset (v/* edge-vector 0.6)]
-               [:text {:transform (str "translate(" (:x text-offset) "," (:y text-offset) ")")
-                       :fill "#666666"
-                       :text-anchor "middle"
-                       :style {:font-family "DejaVu"
-                               :font-size font-size}}
+               [:text.no-select {:transform (str "translate(" (:x text-offset) "," (:y text-offset) ")")
+                                 :fill "#666666"
+                                 :text-anchor "middle"
+                                 :style {:font-family "DejaVu"
+                                         :font-size font-size}}
                 [:defs
                  [:path {:id path-id
                          :d top-edge}]]
@@ -341,7 +355,7 @@
                        :fill "none"}}])]))
 
 (defn preview []
-  (let [[width height] [500 600]
+  (let [[width height] [preview-width preview-height]
         ribbon-path (conj form-db-path :ribbon)
         points-path (conj ribbon-path :points)
         num-points (interface/get-list-size points-path {})
