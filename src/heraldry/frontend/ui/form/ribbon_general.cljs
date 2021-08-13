@@ -103,7 +103,7 @@
                    (case segment-type
                      :heraldry.ribbon.segment/foreground "Foreground"
                      :heraldry.ribbon.segment/background "Background")
-                   ", position " z-index)]
+                   ", layer " z-index)]
 
     [:div {:style {:position "relative"}}
      [submenu/submenu path type-str title {:style {:width "23em"}

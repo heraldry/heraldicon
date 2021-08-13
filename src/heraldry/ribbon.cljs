@@ -80,7 +80,7 @@
              :min 0
              :max 100
              :integer? true
-             :ui {:label "Position"}}})
+             :ui {:label "Layer"}}})
 
 (defmethod interface/component-options :heraldry.component/ribbon-segment [_path _data]
   segment-options)
