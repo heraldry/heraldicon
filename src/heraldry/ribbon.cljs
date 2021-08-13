@@ -74,12 +74,7 @@
         num-legs (count curve)
         tangent-points (-> (keep-indexed
                             (fn [idx leg]
-                              (let [base-edge-vector (if false
-                                                       (v/v 0 1)
-                                                       (-> (apply v/v (last leg))
-                                                           (v/- (apply v/v (first leg)))
-                                                           v/orthogonal
-                                                           v/normal))
+                              (let [base-edge-vector (v/v 0 1)
                                     leg-edge-angle (-> (* 2 edge-angle)
                                                        (/ (max 1
                                                                (dec num-legs)))
