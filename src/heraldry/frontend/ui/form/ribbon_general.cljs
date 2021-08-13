@@ -124,6 +124,17 @@
    (for [option [:thickness]]
      ^{:key option} [ui-interface/form-element (conj path :ribbon option)])
 
+   [:div {:style {:font-size "1.3em"
+                  :margin-top "0.5em"
+                  :margin-bottom "0.5em"}} "Topology"
+    [:div.tooltip.info {:style {:display "inline-block"
+                                :margin-left "0.2em"
+                                :vertical-align "top"}}
+     [:i.fas.fa-question-circle]
+     [:div.bottom {:style {:width "20em"}}
+      [:p "The ribbon curve can be interpreted in many ways, depending on what is fore-/background and which segments overlap which."]
+      [:p "The Presets can be used to setup the segments for some typical effects, the segments can then be fine-tuned."]]]]
+
    (let [layer-mode-value (or @(rf/subscribe [:get-value layers-path])
                               layer-mode-default)
          flow-mode-value (or @(rf/subscribe [:get-value flow-path])
@@ -168,7 +179,15 @@
                                           (conj path :ribbon)])}
         "Invert"]]
 
-      [:div.option.ribbon-segments
+      [:div.option.ribbon-segments {:style {:margin-top "0.5em"}}
+       [:div {:style {:font-size "1.3em"}} "Segments"
+        [:div.tooltip.info {:style {:display "inline-block"
+                                    :margin-left "0.2em"
+                                    :vertical-align "top"}}
+         [:i.fas.fa-question-circle]
+         [:div.bottom {:style {:width "20em"}}
+          [:p "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number."]
+          [:p "Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."]]]]
        [:ul
         (doall
          (for [idx (range num-segments)]
