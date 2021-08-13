@@ -12,7 +12,7 @@
                     :step 0.1}}
    :edge-angle {:type :range
                 :default 0
-                :min 0
+                :min -90
                 :max 90
                 :ui {:label "Edge angle"
                      :step 1}}})
