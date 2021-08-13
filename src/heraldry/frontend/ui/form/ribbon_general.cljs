@@ -137,13 +137,13 @@
         z-index @(rf/subscribe [:get-sanitized-data (conj path :z-index)])
         title (str (inc idx) ". "
                    (case segment-type
+                     :heraldry.ribbon.segment/foreground-with-text "Text"
                      :heraldry.ribbon.segment/foreground "Foreground"
-                     :heraldry.ribbon.segment/foreground-with-text "Foreground (Text)"
                      :heraldry.ribbon.segment/background "Background")
                    ", layer " z-index)]
 
     [:div {:style {:position "relative"}}
-     [submenu/submenu path type-str title {:style {:width "23em"}
+     [submenu/submenu path type-str title {:style {:width "28em"}
                                            :class "submenu-segment-form"}
       (for [option [:type
                     :z-index]]
