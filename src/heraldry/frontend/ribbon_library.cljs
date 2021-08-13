@@ -295,7 +295,8 @@
                              (catmullrom/svg-line-to (v/* edge-vector -1)))
               segment-type (interface/get-sanitized-data
                             (conj segments-path idx :type) {})
-              foreground? (= segment-type :heraldry.ribbon.segment/foreground)]
+              foreground? (#{:heraldry.ribbon.segment/foreground
+                             :heraldry.ribbon.segment/foreground-with-text} segment-type)]
           ^{:key idx}
           [:<>
            [:path {:d full-path

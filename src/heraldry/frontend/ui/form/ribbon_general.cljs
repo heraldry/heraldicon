@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.ribbon-general
-  (:require [heraldry.frontend.ui.element.select :as select]
+  (:require [heraldry.coat-of-arms.catmullrom :as catmullrom]
+            [heraldry.frontend.ui.element.select :as select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.ribbon :as ribbon]
@@ -46,11 +47,13 @@
                      (not (zero? n))) (- n 2)
                 :else n))))
 
-(defn type-fn [mode n]
+(defn type-fn [mode n segment-length]
   (if (case mode
         :foreground (even? n)
         :background (odd? n))
-    :heraldry.ribbon.segment/foreground
+    (if (>= segment-length 0.1)
+      :heraldry.ribbon.segment/foreground-with-text
+      :heraldry.ribbon.segment/foreground)
     :heraldry.ribbon.segment/background))
 
 (rf/reg-event-db :ribbon-edit-annotate-segments
@@ -65,29 +68,36 @@
                        (and (= layer-mode :right-to-left)
                             starts-right?) :left-to-right
                        :else layer-mode)
-          {:keys [curves]} (ribbon/generate-curves points)
+          {:keys [curves curve]} (ribbon/generate-curves points)
           num-curves (count curves)
           even-max-num-curves (if (even? num-curves)
                                 num-curves
-                                (inc num-curves))]
+                                (inc num-curves))
+          total-length (catmullrom/curve->length curve)]
       (assoc-in
        db segments-path
        (case layer-mode
          :left-to-right (vec (map-indexed
-                              (fn [idx _curve]
-                                {:type (type-fn start-mode idx)
+                              (fn [idx curve]
+                                {:type (type-fn start-mode idx
+                                                (/ (catmullrom/curve->length curve)
+                                                   total-length))
                                  :index idx
                                  :z-index (flow-fn flow-mode idx)}) curves))
+
          :right-to-left (vec (map-indexed
-                              (fn [idx _curve]
+                              (fn [idx curve]
                                 (let [reverse-idx (-> num-curves
                                                       dec
                                                       (- idx))]
-                                  {:type (type-fn start-mode reverse-idx)
+                                  {:type (type-fn start-mode reverse-idx
+                                                  (/ (catmullrom/curve->length curve)
+                                                     total-length))
                                    :index idx
                                    :z-index (flow-fn flow-mode reverse-idx)})) curves))
+
          :middle-outwards (vec (map-indexed
-                                (fn [idx _curve]
+                                (fn [idx curve]
                                   (let [effective-type-idx (-> num-curves
                                                                (quot 2)
                                                                (- idx)
@@ -95,7 +105,9 @@
                                         effective-flow-idx (cond-> effective-type-idx
                                                              (#{:stacked
                                                                 :nebuly} flow-mode :stacked) (->> (- even-max-num-curves)))]
-                                    {:type (type-fn start-mode effective-type-idx)
+                                    {:type (type-fn start-mode effective-type-idx
+                                                    (/ (catmullrom/curve->length curve)
+                                                       total-length))
                                      :index idx
                                      :z-index (flow-fn flow-mode effective-flow-idx)})) curves))
          [])))))
@@ -114,6 +126,7 @@
                 (map (fn [segment]
                        (-> segment
                            (update :type {:heraldry.ribbon.segment/foreground :heraldry.ribbon.segment/background
+                                          :heraldry.ribbon.segment/foreground-with-text :heraldry.ribbon.segment/background
                                           :heraldry.ribbon.segment/background :heraldry.ribbon.segment/foreground})
                            (update :z-index #(- max-z-index %)))))
                 vec)))))))
@@ -125,6 +138,7 @@
         title (str (inc idx) ". "
                    (case segment-type
                      :heraldry.ribbon.segment/foreground "Foreground"
+                     :heraldry.ribbon.segment/foreground-with-text "Foreground (Text)"
                      :heraldry.ribbon.segment/background "Background")
                    ", layer " z-index)]
 
