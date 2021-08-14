@@ -359,7 +359,6 @@
                                         (when @(rf/subscribe [:get-value [:ui :submenu-open? (conj segments-path idx)]])
                                           idx)))
                                 first)
-        font-size (* 0.6 thickness)
         num-segments (count segments)]
     [:<>
      (doall
@@ -401,8 +400,8 @@
                                                                                second-edge-vector))
                                                                 (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
                                                                 (catmullrom/svg-line-to (v/* first-edge-vector -1))))
-              segment-type (interface/get-sanitized-data
-                            (conj segments-path idx :type) {})
+              segment-path (conj segments-path idx)
+              segment-type (interface/get-raw-data (conj segment-path :type) {})
               foreground? (#{:heraldry.ribbon.segment/foreground
                              :heraldry.ribbon.segment/foreground-with-text} segment-type)
               text? (= segment-type :heraldry.ribbon.segment/foreground-with-text)]
@@ -417,7 +416,13 @@
                                    "#888888")}}]
            (when text?
              (let [path-id (util/id "path")
-                   text-offset (v/* first-edge-vector 0.6)]
+                   spacing (interface/get-sanitized-data (conj segment-path :spacing) {})
+                   offset-x (interface/get-sanitized-data (conj segment-path :offset-x) {})
+                   offset-y (interface/get-sanitized-data (conj segment-path :offset-y) {})
+                   font-scale (interface/get-sanitized-data (conj segment-path :font-scale) {})
+                   font-size (* font-scale thickness)
+                   spacing (* spacing font-size)
+                   text-offset (v/* first-edge-vector (- 0.6 offset-y))]
                [:text.no-select {:transform (str "translate(" (:x text-offset) "," (:y text-offset) ")")
                                  :fill "#666666"
                                  :text-anchor "middle"
@@ -430,8 +435,8 @@
                             :alignment-baseline "middle"
                             :method "align"
                             :lengthAdjust "spacing"
-                            :letter-spacing 5
-                            :startOffset "50%"}
+                            :letter-spacing spacing
+                            :startOffset (str (+ 50 (* offset-x 100)) "%")}
                  "LOREM IPSUM"]]))])))
      (when-not (= edit-mode :none)
        [:path {:d (catmullrom/curve->svg-path-relative curve)

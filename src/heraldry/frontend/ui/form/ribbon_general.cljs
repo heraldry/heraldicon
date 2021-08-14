@@ -135,7 +135,7 @@
                 vec)))))))
 
 (defn segment-form [path type-str]
-  (let [segment-type @(rf/subscribe [:get-sanitized-data (conj path :type)])
+  (let [segment-type @(rf/subscribe [:get-value (conj path :type)])
         idx (last path)
         z-index @(rf/subscribe [:get-sanitized-data (conj path :z-index)])
         title (str (inc idx) ". "
@@ -149,7 +149,11 @@
      [submenu/submenu path type-str title {:style {:width "28em"}
                                            :class "submenu-segment-form"}
       (for [option [:type
-                    :z-index]]
+                    :z-index
+                    :font-scale
+                    :spacing
+                    :offset-x
+                    :offset-y]]
         ^{:key option} [ui-interface/form-element (conj path option)])]]))
 
 (defn form [path _]
