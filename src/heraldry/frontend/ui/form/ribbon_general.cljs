@@ -77,7 +77,13 @@
           even-max-num-curves (if (even? num-curves)
                                 num-curves
                                 (inc num-curves))
-          total-length (catmullrom/curve->length curve)]
+          total-length (catmullrom/curve->length curve)
+          previous-texts (->> (get-in db segments-path)
+                              (keep (fn [{segment-type :type
+                                          text :text}]
+                                      (when (= segment-type :heraldry.ribbon.segment/foreground-with-text)
+                                        text)))
+                              vec)]
       (-> db
           (assoc-in
            segments-path
@@ -118,14 +124,29 @@
              []))
           (update-in segments-path
                      (fn [segments]
-                       (->> segments
-                            (map (fn [segment]
-                                   (if
-                                    (-> segment :type
-                                        (= :heraldry.ribbon.segment/foreground-with-text))
-                                     (assoc segment :text "LOREM IPSUM")
-                                     (dissoc segment :text))))
-                            vec)))))))
+                       (let [new-segments (->> segments
+                                               (map (fn [segment]
+                                                      (if
+                                                       (-> segment :type
+                                                           (= :heraldry.ribbon.segment/foreground-with-text))
+                                                        (assoc segment :text "LOREM IPSUM")
+                                                        (dissoc segment :text))))
+                                               vec)
+                             text-segments (->> segments
+                                                (map :type)
+                                                (keep-indexed
+                                                 (fn [idx segment-type]
+                                                   (when (= segment-type :heraldry.ribbon.segment/foreground-with-text)
+                                                     idx)))
+                                                vec)]
+                         (loop [segments new-segments
+                                [previous-text-idx & rest] (range (count previous-texts))]
+                           (if (or (not previous-text-idx)
+                                   (>= previous-text-idx (count text-segments)))
+                             segments
+                             (recur (update segments (get text-segments previous-text-idx)
+                                            assoc :text (get previous-texts previous-text-idx))
+                                    rest))))))))))
 
 (rf/reg-event-db :ribbon-edit-invert-segments
   (fn [db [_ path]]
