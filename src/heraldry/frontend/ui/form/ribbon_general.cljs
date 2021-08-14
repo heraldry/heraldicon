@@ -129,7 +129,7 @@
                                                       (if
                                                        (-> segment :type
                                                            (= :heraldry.ribbon.segment/foreground-with-text))
-                                                        (assoc segment :text "LOREM IPSUM")
+                                                        (assoc segment :text "* LOREM IPSUM *")
                                                         (dissoc segment :text))))
                                                vec)
                              text-segments (->> segments
