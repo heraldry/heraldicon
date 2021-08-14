@@ -20,7 +20,11 @@
                   [:div.bottom
                    [:p "This feature is incomplete and likely going to change, so use with caution. :)"]]]
      :buttons [{:icon "fas fa-plus"
-                :handler #(state/dispatch-on-event % [:add-element mottos-path default/motto])}]
+                :title "Add"
+                :menu [{:title "Motto"
+                        :handler #(state/dispatch-on-event % [:add-element mottos-path default/motto])}
+                       {:title "Slogan"
+                        :handler #(state/dispatch-on-event % [:add-element mottos-path default/slogan])}]}]
      :nodes (->> (range num-mottos)
                  (map (fn [idx]
                         (let [motto-path (conj mottos-path idx)]

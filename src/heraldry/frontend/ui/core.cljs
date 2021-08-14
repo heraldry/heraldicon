@@ -21,6 +21,7 @@
             [heraldry.frontend.ui.element.position] ;; needed for side effects
             [heraldry.frontend.ui.element.radio-select] ;; needed for side effects
             [heraldry.frontend.ui.element.range] ;; needed for side effects
+            [heraldry.frontend.ui.element.ribbon-reference-select] ;; needed for side effects
             [heraldry.frontend.ui.element.select] ;; needed for side effects
             [heraldry.frontend.ui.element.semy-layout] ;; needed for side effects
             [heraldry.frontend.ui.element.submenu :as submenu]

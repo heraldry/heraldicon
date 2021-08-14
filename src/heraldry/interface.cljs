@@ -11,6 +11,7 @@
       (s/starts-with? ts ":heraldry.charge-group") :heraldry.component/charge-group
       (s/starts-with? ts ":heraldry.charge") :heraldry.component/charge
       (s/starts-with? ts ":heraldry.ribbon.segment") :heraldry.component/ribbon-segment
+      (s/starts-with? ts ":heraldry.motto") :heraldry.component/motto
       :else nil)))
 
 (defn effective-component-type [path raw-type]

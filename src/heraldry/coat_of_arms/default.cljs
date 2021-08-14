@@ -108,5 +108,8 @@
             :points [(v/v -150 0) (v/v 150 0)]}})
 
 (def motto
-  {:type :heraldry.component/motto})
+  {:type :heraldry.motto.type/motto})
+
+(def slogan
+  {:type :heraldry.motto.type/slogan})
 
