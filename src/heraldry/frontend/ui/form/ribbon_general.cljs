@@ -2,6 +2,7 @@
   (:require [heraldry.coat-of-arms.catmullrom :as catmullrom]
             [heraldry.frontend.ui.element.select :as select]
             [heraldry.frontend.ui.element.submenu :as submenu]
+            [heraldry.frontend.ui.element.text-field :as text-field]
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.ribbon :as ribbon]
             [re-frame.core :as rf]))
@@ -77,43 +78,54 @@
                                 num-curves
                                 (inc num-curves))
           total-length (catmullrom/curve->length curve)]
-      (assoc-in
-       db segments-path
-       (case layer-mode
-         :left-to-right (vec (map-indexed
-                              (fn [idx curve]
-                                {:type (type-fn start-mode idx
-                                                (/ (catmullrom/curve->length curve)
-                                                   total-length))
-                                 :index idx
-                                 :z-index (flow-fn flow-mode idx)}) curves))
-
-         :right-to-left (vec (map-indexed
-                              (fn [idx curve]
-                                (let [reverse-idx (-> num-curves
-                                                      dec
-                                                      (- idx))]
-                                  {:type (type-fn start-mode reverse-idx
-                                                  (/ (catmullrom/curve->length curve)
-                                                     total-length))
-                                   :index idx
-                                   :z-index (flow-fn flow-mode reverse-idx)})) curves))
-
-         :middle-outwards (vec (map-indexed
-                                (fn [idx curve]
-                                  (let [effective-type-idx (-> num-curves
-                                                               (quot 2)
-                                                               (- idx)
-                                                               Math/abs)
-                                        effective-flow-idx (cond-> effective-type-idx
-                                                             (#{:stacked
-                                                                :nebuly} flow-mode :stacked) (->> (- even-max-num-curves)))]
-                                    {:type (type-fn start-mode effective-type-idx
+      (-> db
+          (assoc-in
+           segments-path
+           (case layer-mode
+             :left-to-right (vec (map-indexed
+                                  (fn [idx curve]
+                                    {:type (type-fn start-mode idx
                                                     (/ (catmullrom/curve->length curve)
                                                        total-length))
                                      :index idx
-                                     :z-index (flow-fn flow-mode effective-flow-idx)})) curves))
-         [])))))
+                                     :z-index (flow-fn flow-mode idx)}) curves))
+
+             :right-to-left (vec (map-indexed
+                                  (fn [idx curve]
+                                    (let [reverse-idx (-> num-curves
+                                                          dec
+                                                          (- idx))]
+                                      {:type (type-fn start-mode reverse-idx
+                                                      (/ (catmullrom/curve->length curve)
+                                                         total-length))
+                                       :index idx
+                                       :z-index (flow-fn flow-mode reverse-idx)})) curves))
+
+             :middle-outwards (vec (map-indexed
+                                    (fn [idx curve]
+                                      (let [effective-type-idx (-> num-curves
+                                                                   (quot 2)
+                                                                   (- idx)
+                                                                   Math/abs)
+                                            effective-flow-idx (cond-> effective-type-idx
+                                                                 (#{:stacked
+                                                                    :nebuly} flow-mode :stacked) (->> (- even-max-num-curves)))]
+                                        {:type (type-fn start-mode effective-type-idx
+                                                        (/ (catmullrom/curve->length curve)
+                                                           total-length))
+                                         :index idx
+                                         :z-index (flow-fn flow-mode effective-flow-idx)})) curves))
+             []))
+          (update-in segments-path
+                     (fn [segments]
+                       (->> segments
+                            (map (fn [segment]
+                                   (if
+                                    (-> segment :type
+                                        (= :heraldry.ribbon.segment/foreground-with-text))
+                                     (assoc segment :text "LOREM IPSUM")
+                                     (dissoc segment :text))))
+                            vec)))))))
 
 (rf/reg-event-db :ribbon-edit-invert-segments
   (fn [db [_ path]]
@@ -155,7 +167,10 @@
                     :spacing
                     :offset-x
                     :offset-y]]
-        ^{:key option} [ui-interface/form-element (conj path option)])]]))
+        ^{:key option} [ui-interface/form-element (conj path option)])]
+     [text-field/text-field (conj path :text)
+      :style {:display "inline-block"
+              :margin-left "2em"}]]))
 
 (defn form [path _]
   [:<>

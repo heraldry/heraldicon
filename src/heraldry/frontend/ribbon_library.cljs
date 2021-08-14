@@ -404,7 +404,13 @@
               segment-type (interface/get-raw-data (conj segment-path :type) {})
               foreground? (#{:heraldry.ribbon.segment/foreground
                              :heraldry.ribbon.segment/foreground-with-text} segment-type)
-              text? (= segment-type :heraldry.ribbon.segment/foreground-with-text)]
+              text (some-> (interface/get-sanitized-data (conj segment-path :text) {})
+                           (s/replace #"[*]" "⬪"))
+              text? (and (= segment-type :heraldry.ribbon.segment/foreground-with-text)
+                         (some-> text
+                                 s/trim
+                                 count
+                                 pos?))]
           ^{:key idx}
           [:<>
            [:path {:d full-path
@@ -439,7 +445,7 @@
                             :lengthAdjust "spacing"
                             :letter-spacing spacing
                             :startOffset (str (+ 50 (* offset-x 100)) "%")}
-                 "LOREM IPSUM"]]))])))
+                 text]]))])))
      (when-not (= edit-mode :none)
        [:path {:d (catmullrom/curve->svg-path-relative curve)
                :style {:stroke-width 3
