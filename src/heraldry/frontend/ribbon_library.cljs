@@ -208,11 +208,14 @@
          (- (.-f ctm))
          (/ (.-d ctm)))]))
 
+(def path-point-size
+  5)
+
 (defn path-point [path]
   (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])]
     (if (= edit-mode :none)
       [:<>]
-      (let [size 7
+      (let [size path-point-size
             width (* size 1.1)
             height (* size 0.2)
             {:keys [x y]} (interface/get-raw-data path {})
@@ -252,7 +255,7 @@
            nil)]))))
 
 (defn add-point [path idx {:keys [x y] :as point}]
-  (let [size 7
+  (let [size path-point-size
         width (* size 1.1)
         height (* size 0.2)]
     [:g
