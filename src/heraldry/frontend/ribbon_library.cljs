@@ -170,11 +170,7 @@
 
 (defn key-down-handler [event]
   (let [shift? (.-shiftKey event)
-        alt? (.-altKey event)
-        code (.-code event)]
-    (js/console.log :key code (= code "KeyE"))
-    (when (= code "KeyE")
-      (rf/dispatch [:ribbon-edit-toggle-show-points]))
+        alt? (.-altKey event)]
     (rf/dispatch [:ribbon-edit-set-key-modifiers {:alt? alt?
                                                   :shift? shift?}])))
 
@@ -605,6 +601,19 @@
      [:div {:style {:padding-left "1em"}}
       attribution-data]]))
 
+(defn edit-controls []
+  (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])]
+    [:div.no-select {:style {:position "absolute"
+                             :left "20px"
+                             :top "20px"}}
+     [:button {:on-click #(rf/dispatch [:ribbon-edit-toggle-show-points])
+               :style (when-not (= edit-mode :none)
+                        {:color "#ffffff"
+                         :background-color "#ff8020"})}
+      "Edit"]
+     (when-not (= edit-mode :none)
+       " Shift - add point, Alt - remove points")]))
+
 (defn ribbon-form []
   (if @(rf/subscribe [:get-value (conj form-db-path :id)])
     (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
@@ -618,8 +627,11 @@
                  :padding-right "10px"
                  :height "100%"}
          :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
-   [:div.no-scrollbar {:style {:grid-area "left"}}
-    [preview]]
+   [:div.no-scrollbar {:style {:grid-area "left"
+                               :position "relative"}}
+    [preview]
+    [edit-controls]]
+
    [:div.no-scrollbar {:style {:grid-area "middle"
                                :padding-top "10px"}}
     [ui/selected-component]
