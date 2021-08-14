@@ -145,6 +145,8 @@
              :max 2
              :ui {:label "Spacing"
                   :step 0.01}}
+   :text {:type :text
+          :default ""}
    :font (-> font/default-options
              (assoc :default :baskerville-berthold))})
 
@@ -158,7 +160,8 @@
                                                                    [:font-scale]
                                                                    [:spacing]
                                                                    [:offset-x]
-                                                                   [:offset-y]])
+                                                                   [:offset-y]
+                                                                   [:text]])
       (options/pick default-segment-options
                     [[:type]
                      [:z-index]]))))
