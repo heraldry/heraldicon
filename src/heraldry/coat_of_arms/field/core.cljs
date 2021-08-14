@@ -180,3 +180,4 @@
                    (zero? num-components)))
         blazon
         (str "[" blazon "]")))))
+
