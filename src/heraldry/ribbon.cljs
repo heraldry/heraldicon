@@ -1,7 +1,8 @@
 (ns heraldry.ribbon
   (:require [heraldry.coat-of-arms.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.interface :as interface]))
+            [heraldry.interface :as interface]
+            [heraldry.options :as options]))
 
 (def default-options
   {:thickness {:type :range
@@ -107,7 +108,7 @@
                         (map (comp vec (partial drop 1)))
                         vec)}))
 
-(def segment-options
+(def default-segment-options
   {:type {:type :choice
           :choices [["Text" :heraldry.ribbon.segment/foreground-with-text]
                     ["Foreground" :heraldry.ribbon.segment/foreground]
@@ -118,8 +119,46 @@
              :min 0
              :max 100
              :integer? true
-             :ui {:label "Layer"}}})
+             :ui {:label "Layer"}}
+   :offset-x {:type :range
+              :default 0
+              :min -0.5
+              :max 0.5
+              :ui {:label "Offset x"
+                   :step 0.01}}
+   :offset-y {:type :range
+              :default 0
+              :min -0.5
+              :max 0.5
+              :ui {:label "Offset y"
+                   :step 0.01}}
+   :font-scale {:type :range
+                :default 0.8
+                :min 0.01
+                :max 1
+                :ui {:label "Font scale"
+                     :step 0.01}}
+   :spacing {:type :range
+             :default 0.25
+             :min -0.5
+             :max 2
+             :ui {:label "Spacing"
+                  :step 0.01}}})
 
-(defmethod interface/component-options :heraldry.component/ribbon-segment [_path _data]
-  segment-options)
+(defn segment-options [data]
+  (when-let [segment-type (:type data)]
+    (case segment-type
+      :heraldry.ribbon.segment/foreground-with-text (options/pick default-segment-options
+                                                                  [[:type]
+                                                                   [:z-index]
+                                                                   [:font-scale]
+                                                                   [:spacing]
+                                                                   [:offset-x]
+                                                                   [:offset-y]])
+      (options/pick default-segment-options
+                    [[:type]
+                     [:z-index]]))))
+
+(defmethod interface/component-options :heraldry.component/ribbon-segment [_path data]
+  (segment-options data))
 
