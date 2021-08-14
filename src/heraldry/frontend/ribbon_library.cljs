@@ -30,9 +30,6 @@
 (def list-db-path
   [:ribbon-list])
 
-(def example-ribbon-db-path
-  [:ribbon-example])
-
 (def preview-width
   500)
 
@@ -609,8 +606,7 @@
   (if @(rf/subscribe [:get-value (conj form-db-path :id)])
     (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
     (rf/dispatch [:set-title "Create Ribbon"]))
-  (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path
-                                                                     example-ribbon-db-path]])
+  (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
                  :grid-template-columns "[start] auto [first] minmax(26em, 33%) [second] minmax(10em, 25%) [end]"
@@ -628,8 +624,7 @@
     [attribution]]
    [:div.no-scrollbar {:style {:grid-area "right"
                                :padding-top "5px"}}
-    [ui/component-tree [form-db-path
-                        (conj example-ribbon-db-path :render-options)]]]])
+    [ui/component-tree [form-db-path]]]])
 
 (defn ribbon-display [ribbon-id version]
   (let [[status ribbon-data] (state/async-fetch-data
