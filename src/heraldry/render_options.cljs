@@ -72,11 +72,10 @@
            :ui {:label "Scope"}}})
 
 (defn options [render-options]
-  (when render-options
-    (let [{:keys [mode texture]} (options/sanitize render-options default-options)]
-      (cond-> default-options
-        (= texture :none) (dissoc :texture-displacement?)
-        (not= mode :colours) (dissoc :theme)))))
+  (let [{:keys [mode texture]} (options/sanitize render-options default-options)]
+    (cond-> default-options
+      (= texture :none) (dissoc :texture-displacement?)
+      (not= mode :colours) (dissoc :theme))))
 
 (defmethod interface/component-options :heraldry.component/render-options [path data]
   (cond-> (options data)
