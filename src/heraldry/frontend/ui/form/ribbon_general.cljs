@@ -191,7 +191,8 @@
         ^{:key option} [ui-interface/form-element (conj path option)])]
      [text-field/text-field (conj path :text)
       :style {:display "inline-block"
-              :margin-left "2em"}]]))
+              :position "absolute"
+              :left "13em"}]]))
 
 (defn form [path _]
   [:<>
