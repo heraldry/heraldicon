@@ -4,7 +4,9 @@
 (def default :prince-valiant)
 
 (def choices
-  [["Black Chancery" :black-chancery]
+  [["DejaVuSans" :deja-vu-sans]
+   ["DejaVuSerif" :deja-vu-serif]
+   ["Black Chancery" :black-chancery]
    ["Cardinal" :cardinal]
    ["Carolinga" :carolinga]
    ["Lohengrin" :lohengrin]
@@ -22,3 +24,4 @@
    :choices choices
    :default default
    :ui {:label "Font"}})
+

@@ -54,6 +54,20 @@
   src: url("../font/prince-valiant/PrinceValiant.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "DejaVuSans";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/deja-vu/DejaVuSans.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DejaVuSerif";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/deja-vu/DejaVuSerif.ttf") format("truetype");
+}
+
 body {
   font-family: "SiteDefault", sans-serif;
 }
