@@ -257,6 +257,8 @@
                         :spacer
                         (conj form-db-path :helms)
                         :spacer
+                        (conj form-db-path :mottos)
+                        :spacer
                         (conj form-db-path :coat-of-arms)]]]])
 
 (defn arms-display [arms-id version]
