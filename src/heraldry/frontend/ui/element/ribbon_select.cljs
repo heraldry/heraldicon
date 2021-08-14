@@ -31,11 +31,11 @@
     (try
       (let [user-data (user/data)]
         (-> (api-request/call
-             :fetch-ribbon-all
+             :fetch-ribbons
              {}
              user-data)
             <?
-            :ribbon))
+            :ribbons))
       (catch :default e
         (log/error "fetch ribbon list error:" e)))))
 
@@ -48,7 +48,7 @@
              {:user-id user-id}
              user-data)
             <?
-            :ribbon))
+            :ribbons))
       (catch :default e
         (log/error "fetch ribbon list by user error:" e)))))
 
