@@ -68,6 +68,34 @@
   src: url("../font/deja-vu/DejaVuSerif.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "KJV1611";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/kjv1611/KJV1611.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Garamond";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/garamond/Garamond Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Cloister";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/cloister/CloisterBlack.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Baskerville Berthold";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/baskerville/BaskervilleBE-Regular.otf") format("opentype");
+}
+
 body {
   font-family: "SiteDefault", sans-serif;
 }

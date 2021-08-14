@@ -145,7 +145,8 @@
              :max 2
              :ui {:label "Spacing"
                   :step 0.01}}
-   :font font/default-options})
+   :font (-> font/default-options
+             (assoc :default :baskerville-berthold))})
 
 (defn segment-options [data]
   (when-let [segment-type (:type data)]
