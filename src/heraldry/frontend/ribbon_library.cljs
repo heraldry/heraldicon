@@ -14,14 +14,13 @@
             [heraldry.frontend.ribbon :as ribbon-frontend]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
+            [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
             [heraldry.frontend.user :as user]
             [heraldry.interface :as interface]
             [heraldry.ribbon :as ribbon]
             [heraldry.util :as util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
-            [svg-path-parse :as svg-path-parse]
-            [svg-path-reverse :as svg-path-reverse]
             [taoensso.timbre :as log]))
 
 (def form-db-path
@@ -675,10 +674,9 @@
                     (reife/push-state :create-ribbon))}
       "Create"]
      [:div {:style {:padding-top "0.5em"}}
-      "TBD"
-      #_(if (= status :done)
-          [ribbon-select/component ribbons link-to-ribbon invalidate-ribbons-cache]
-          [:div "loading..."])]]))
+      (if (= status :done)
+        [ribbon-select/component ribbons link-to-ribbon invalidate-ribbons-cache]
+        [:div "loading..."])]]))
 
 (defn view-ribbon-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
