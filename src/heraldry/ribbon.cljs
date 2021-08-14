@@ -1,6 +1,7 @@
 (ns heraldry.ribbon
   (:require [heraldry.coat-of-arms.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.font :as font]
             [heraldry.interface :as interface]
             [heraldry.options :as options]))
 
@@ -143,7 +144,8 @@
              :min -0.5
              :max 2
              :ui {:label "Spacing"
-                  :step 0.01}}})
+                  :step 0.01}}
+   :font font/default-options})
 
 (defn segment-options [data]
   (when-let [segment-type (:type data)]
@@ -151,6 +153,7 @@
       :heraldry.ribbon.segment/foreground-with-text (options/pick default-segment-options
                                                                   [[:type]
                                                                    [:z-index]
+                                                                   [:font]
                                                                    [:font-scale]
                                                                    [:spacing]
                                                                    [:offset-x]

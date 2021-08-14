@@ -150,6 +150,7 @@
                                            :class "submenu-segment-form"}
       (for [option [:type
                     :z-index
+                    :font
                     :font-scale
                     :spacing
                     :offset-x

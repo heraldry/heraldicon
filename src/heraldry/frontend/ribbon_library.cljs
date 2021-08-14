@@ -8,6 +8,7 @@
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
+            [heraldry.font :as font]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.modal :as modal]
@@ -418,6 +419,8 @@
                    spacing (interface/get-sanitized-data (conj segment-path :spacing) {})
                    offset-x (interface/get-sanitized-data (conj segment-path :offset-x) {})
                    offset-y (interface/get-sanitized-data (conj segment-path :offset-y) {})
+                   font (some-> (interface/get-sanitized-data (conj segment-path :font) {})
+                                font/css-string)
                    font-scale (interface/get-sanitized-data (conj segment-path :font-scale) {})
                    font-size (* font-scale thickness)
                    spacing (* spacing font-size)
@@ -425,7 +428,7 @@
                [:text.no-select {:transform (str "translate(" (:x text-offset) "," (:y text-offset) ")")
                                  :fill "#666666"
                                  :text-anchor "middle"
-                                 :style {:font-family "DejaVu"
+                                 :style {:font-family font
                                          :font-size font-size}}
                 [:defs
                  [:path {:id path-id
