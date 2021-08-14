@@ -355,7 +355,8 @@
                                         (when @(rf/subscribe [:get-value [:ui :submenu-open? (conj segments-path idx)]])
                                           idx)))
                                 first)
-        num-segments (count segments)]
+        num-segments (count segments)
+        num-curves (count curves)]
     [:<>
      (doall
       (for [[idx partial-curve] (->> curves
@@ -372,10 +373,10 @@
               second-edge-vector (v/* second-edge-vector thickness)
               full-path (cond
                           (or (zero? end-split)
-                              (< 0 idx (dec num-segments))) (str top-edge
-                                                                 (catmullrom/svg-line-to second-edge-vector)
-                                                                 (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                                 (catmullrom/svg-line-to (v/* first-edge-vector -1)))
+                              (< 0 idx (dec num-curves))) (str top-edge
+                                                               (catmullrom/svg-line-to second-edge-vector)
+                                                               (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                               (catmullrom/svg-line-to (v/* first-edge-vector -1)))
                           (and (pos? end-split)
                                (zero? idx)) (str top-edge
                                                  (catmullrom/svg-line-to second-edge-vector)
@@ -387,15 +388,15 @@
                                                                 end-split
                                                                 first-edge-vector)))
                           (and (pos? end-split)
-                               (= idx (dec num-segments))) (str top-edge
-                                                                (util/combine " "
-                                                                              (split-end
-                                                                               :end
-                                                                               partial-curve
-                                                                               end-split
-                                                                               second-edge-vector))
-                                                                (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                                (catmullrom/svg-line-to (v/* first-edge-vector -1))))
+                               (= idx (dec num-curves))) (str top-edge
+                                                              (util/combine " "
+                                                                            (split-end
+                                                                             :end
+                                                                             partial-curve
+                                                                             end-split
+                                                                             second-edge-vector))
+                                                              (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                              (catmullrom/svg-line-to (v/* first-edge-vector -1))))
               segment-path (conj segments-path idx)
               segment-type (interface/get-raw-data (conj segment-path :type) {})
               foreground? (#{:heraldry.ribbon.segment/foreground
