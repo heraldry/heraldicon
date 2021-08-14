@@ -140,7 +140,7 @@
                 :ui {:label "Font scale"
                      :step 0.01}}
    :spacing {:type :range
-             :default 0.25
+             :default 0.1
              :min -0.5
              :max 2
              :ui {:label "Spacing"
