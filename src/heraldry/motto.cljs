@@ -10,6 +10,10 @@
                     ["Slogan" :heraldry.motto.type/slogan]]
           :ui {:label "Type"}}
    :origin (-> position/default-options
+               (assoc-in [:point :choices] [["Top" :top]
+                                            ["Bottom" :bottom]])
+               (assoc-in [:point :default] :bottom)
+               (dissoc :alignment)
                (assoc-in [:ui :label] "Origin"))
    :geometry (-> geometry/default-options
                  (select-keys [:size :ui])
@@ -21,11 +25,14 @@
    :ribbon ribbon/default-options})
 
 (defn options [data]
-  (let [ribbon-variant? (:ribbon-variant data)]
+  (let [ribbon-variant? (:ribbon-variant data)
+        motto-type (:type data)]
     (-> default-options
         (cond->
          ribbon-variant? (update :ribbon ribbon/options (:ribbon data))
-         (not ribbon-variant?) (dissoc :ribbon)))))
+         (not ribbon-variant?) (dissoc :ribbon)
+         (= motto-type :heraldry.motto.type/slogan) (assoc-in [:origin :point :default] :top))
+        (update :origin position/adjust-options))))
 
 (defmethod interface/component-options :heraldry.component/motto [_path data]
   (options data))
