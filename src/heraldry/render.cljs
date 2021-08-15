@@ -168,7 +168,8 @@
                        ^{:key idx}
                        [helm (conj elements-path idx) helm-environment context])))]}))))
 
-(defn ribbon [path context]
+(defn ribbon [path context & {:keys [outline-thickness]
+                              :or {outline-thickness 1}}]
   (let [thickness (interface/get-sanitized-data (conj path :thickness) context)
         edge-angle (interface/get-sanitized-data (conj path :edge-angle) context)
         end-split (interface/get-sanitized-data (conj path :end-split) context)
@@ -232,7 +233,7 @@
           ^{:key idx}
           [:<>
            [:path {:d full-path
-                   :style {:stroke-width 1
+                   :style {:stroke-width outline-thickness
                            :stroke "#000000"
                            :stroke-linecap "round"
                            :fill (if foreground?
@@ -265,8 +266,34 @@
                             :startOffset (str (+ 50 (* offset-x 100)) "%")}
                  text]]))])))]))
 
-(defn motto [path environment context]
-  [ribbon path context])
+(defn motto [path {:keys [width height] :as environment} context]
+  (let [ribbon-path (conj path :ribbon)
+        points (interface/get-raw-data (conj ribbon-path :points) context)]
+    (if points
+      (let [origin-point (interface/get-sanitized-data (conj path :origin :point) context)
+            offset-x (interface/get-sanitized-data (conj path :origin :offset-x) context)
+            offset-y (interface/get-sanitized-data (conj path :origin :offset-y) context)
+            size (interface/get-sanitized-data (conj path :geometry :size) context)
+            position (-> (-> environment :points (get origin-point))
+                         (v/+ (v/v ((util/percent-of width) offset-x)
+                                   (- ((util/percent-of width) offset-y)))))
+            [min-x max-x
+             min-y max-y] (svg/min-max-x-y points)
+            ribbon-width (- max-x min-x)
+            shift (v/v (- (/ ribbon-width -2) min-x)
+                       (case origin-point
+                         :top (- max-y)
+                         :bottom (- min-y)))
+            target-width ((util/percent-of width) size)
+            scale (/ target-width ribbon-width)
+            outline-thickness (/ 1 scale)
+            ;; TODO: this is a hack and needs to match root-transform, should resolve this somehow
+            outline-thickness (/ outline-thickness 5)]
+        [:g {:transform (str "translate(" (:x position) "," (:y position) ")"
+                             "scale(" scale "," scale ")"
+                             "translate(" (:x shift) "," (:y shift) ")")}
+         [ribbon ribbon-path context :outline-thickness outline-thickness]])
+      [:<>])))
 
 (defn mottos [path width min-y max-y {:keys
                                       [root-transform] :as context}]
@@ -278,11 +305,11 @@
                                            width
                                            min-y
                                            max-y]})]
-    [:g {:transform root-transform}
-     (doall
-      (for [idx (range num-mottos)]
-        ^{:key idx}
-        [motto (conj elements-path idx) motto-environment context]))]))
+    {:result [:g {:transform root-transform}
+              (doall
+               (for [idx (range num-mottos)]
+                 ^{:key idx}
+                 [motto (conj elements-path idx) motto-environment context]))]}))
 
 (defn achievement [path {:keys [short-url
                                 svg-export?] :as context}]
@@ -325,7 +352,6 @@
                                    (- helms-height)
                                    coat-of-arms-height
                                    context))
-
         coat-of-arms-width (* root-scale coat-of-arms-width)
         coat-of-arms-height (* root-scale coat-of-arms-height)
         helms-width (* root-scale helms-width)
@@ -411,8 +437,8 @@
                            (neg? coat-of-arms-angle) (str "translate(" (- (/ coat-of-arms-width 2)) "," 0 ")")
                            (pos? coat-of-arms-angle) (str "translate(" (/ coat-of-arms-width 2) "," 0 ")")
                            :else nil)}
-          helms
-          mottos]]]]]
+          helms]
+         mottos]]]]
      (when short-url
        [:text {:x margin
                :y (- document-height

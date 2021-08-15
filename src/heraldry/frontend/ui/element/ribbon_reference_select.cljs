@@ -7,15 +7,17 @@
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
-(rf/reg-event-db :set-ribbon-segments
-  (fn [db [_ path segments]]
-    (-> db
-        (update-in path (fn [previous-segments]
-                          (ribbon-general/restore-previous-text-segments
-                           segments
-                           previous-segments
-                           [:text
-                            :font]))))))
+(rf/reg-event-db :set-ribbon-data
+  (fn [db [_ path ribbon-data]]
+    (let [previous-segments (get-in db (conj path :segments))]
+      (-> db
+          (assoc-in path ribbon-data)
+          (update-in (conj path :segments) (fn [segments]
+                                             (ribbon-general/restore-previous-text-segments
+                                              segments
+                                              previous-segments
+                                              [:text
+                                               :font])))))))
 
 (rf/reg-event-db :set-ribbon-reference
   (fn [db [_ path ribbon]]
@@ -26,9 +28,9 @@
           ;; here and again via the unrelated the async + cache mechanism when the reference is used
           _ (go-catch
              (let [ribbon-data (<? (ribbon-select/fetch-ribbon ribbon-id ribbon-version nil))]
-               (rf/dispatch [:set-ribbon-segments
-                             (conj parent-path :ribbon :segments)
-                             (-> ribbon-data :ribbon :segments)])))]
+               (rf/dispatch [:set-ribbon-data
+                             (conj parent-path :ribbon)
+                             (-> ribbon-data :ribbon)])))]
       (-> db
           (assoc-in path {:id ribbon-id
                           :version ribbon-version})))))
