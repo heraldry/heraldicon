@@ -22,14 +22,14 @@
                         default
                         min)]
           [:div.ui-setting
-           [:label {:for component-id} label]
-           (when tooltip
-             [:div.tooltip.info {:style {:display "inline-block"
-                                         :margin-left "0.2em"}}
-              [:i.fas.fa-question-circle]
-              [:div.bottom
-               [:h3 {:style {:text-align "center"}} tooltip]
-               [:i]]])
+           [:label {:for component-id} label
+            (when tooltip
+              [:div.tooltip.info {:style {:display "inline-block"
+                                          :margin-left "0.2em"}}
+               [:i.fas.fa-question-circle]
+               [:div.bottom
+                [:h3 {:style {:text-align "center"}} tooltip]
+                [:i]]])]
            [:div.option
             [:input {:type "range"
                      :id component-id
@@ -70,3 +70,4 @@
 
 (defmethod interface/form-element :range [path]
   [range-input path])
+

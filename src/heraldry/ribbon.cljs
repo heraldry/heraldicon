@@ -20,7 +20,8 @@
                 :min -90
                 :max 90
                 :ui {:label "Edge angle"
-                     :step 1}}
+                     :step 1
+                     :tooltip "This currently can cause glitches at some angles for some curves due to some numerical issues, set it carefully."}}
    :end-split {:type :range
                :default 0
                :min 0
