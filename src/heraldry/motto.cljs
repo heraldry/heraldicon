@@ -13,6 +13,10 @@
                (assoc-in [:point :choices] [["Top" :top]
                                             ["Bottom" :bottom]])
                (assoc-in [:point :default] :bottom)
+               (assoc-in [:offset-x :min] -100)
+               (assoc-in [:offset-x :max] 100)
+               (assoc-in [:offset-y :min] -100)
+               (assoc-in [:offset-y :max] 100)
                (dissoc :alignment)
                (assoc-in [:ui :label] "Origin"))
    :geometry (-> geometry/default-options
