@@ -7,11 +7,12 @@
                    :height "200%"}
    [:feOffset {:result "offsetOut"
                :in "SourceAlpha"
-               :dx "1"
-               :dy "1"}]
+               :dx "0.2"
+               :dy "0.2"}]
    [:feGaussianBlur {:result "blurOut"
                      :in "offsetOut"
-                     :std-deviation "5"}]
+                     :std-deviation "1"}]
    [:feBlend {:in "SourceGraphic"
               :in2 "blurOut"
               :mode "normal"}]])
+
