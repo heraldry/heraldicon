@@ -340,8 +340,9 @@
              [(project-path-to curve2 split-point start-point :reverse? true)
               (project-path-to curve2 split-point end-point)]))))
 
-(defn render-ribbon [path thickness]
+(defn render-ribbon [path]
   (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])
+        thickness (interface/get-sanitized-data (conj path :thickness) {})
         edge-angle (interface/get-sanitized-data (conj path :edge-angle) {})
         end-split (interface/get-sanitized-data (conj path :end-split) {})
         points-path (conj path :points)
@@ -461,8 +462,6 @@
         ribbon-path (conj form-db-path :ribbon)
         points-path (conj ribbon-path :points)
         num-points (interface/get-list-size points-path {})
-        thickness (interface/get-sanitized-data (conj ribbon-path :thickness) {})
-        thickness ((util/percent-of 300) thickness)
         edit-mode @(rf/subscribe [:ribbon-edit-mode])
         route-path-point-mouse-up-fn (when (= edit-mode :edit)
                                        #(rf/dispatch [:ribbon-edit-select-point nil]))
@@ -491,7 +490,7 @@
               :fill "#f6f6f6"
               :filter "url(#shadow)"}]
       [:g {:transform (str "translate(" (/ width 2) "," (/ height 2) ")")}
-       [render-ribbon ribbon-path thickness]
+       [render-ribbon ribbon-path]
        (doall
         (for [idx (range num-points)]
           ^{:key idx} [path-point (conj points-path idx)]))

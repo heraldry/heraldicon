@@ -7,9 +7,9 @@
 
 (def default-options
   {:thickness {:type :range
-               :default 10
+               :default 30
                :min 5
-               :max 30
+               :max 150
                :ui {:label "Thickness"
                     :step 0.1}}
    :edge-angle {:type :range
