@@ -355,7 +355,6 @@
                                         (when @(rf/subscribe [:get-value [:ui :submenu-open? (conj segments-path idx)]])
                                           idx)))
                                 first)
-        num-segments (count segments)
         num-curves (count curves)]
     [:<>
      (doall
