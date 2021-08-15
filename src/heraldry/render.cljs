@@ -230,13 +230,11 @@
           ^{:key idx}
           [:<>
            [:path {:d full-path
-                   :style {:stroke-width outline-thickness
-                           :stroke "#000000"
-                           :stroke-linecap "round"
-                           :stroke-linejoin "round"
-                           :fill (if foreground?
-                                   "#dddddd"
-                                   "#888888")}}]
+                   :style (merge (outline/style context)
+                                 {:stroke-width outline-thickness
+                                  :fill (if foreground?
+                                          "#dddddd"
+                                          "#888888")})}]
            (when text?
              (let [path-id (util/id "path")
                    spacing (interface/get-sanitized-data (conj segment-path :spacing) context)
