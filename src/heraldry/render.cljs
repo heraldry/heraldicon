@@ -233,6 +233,7 @@
                    :style {:stroke-width outline-thickness
                            :stroke "#000000"
                            :stroke-linecap "round"
+                           :stroke-linejoin "round"
                            :fill (if foreground?
                                    "#dddddd"
                                    "#888888")}}]
