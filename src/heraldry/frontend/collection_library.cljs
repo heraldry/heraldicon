@@ -234,7 +234,6 @@
                                      [:context :coat-of-arms]
                                      100
                                      (-> shared/coa-select-option-context
-                                         (assoc :root-transform "scale(5,5)")
                                          (assoc :render-options-path [:context :render-options])
                                          (assoc :render-options (-> arms-data
                                                                     :render-options

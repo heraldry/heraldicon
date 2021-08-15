@@ -21,7 +21,6 @@
                     {:keys
                      [svg-export?
                       metadata-path
-                      root-transform
                       texture-link] :as context}]
   (let [mode (interface/render-option :mode context)
         escutcheon (interface/render-option :escutcheon context)
@@ -45,80 +44,79 @@
     {:environment environment
      :result [:g {:filter (when escutcheon-shadow?
                             "url(#shadow)")}
-              [:g {:transform root-transform}
-               (when metadata-path
-                 [metadata/attribution metadata-path :arms context])
-               [:defs
-                (when shiny?
-                  [:filter {:id shiny-id}
-                   [:feDiffuseLighting {:in "SourceGraphic"
-                                        :result "light"
-                                        :lighting-color "white"}
-                    [:fePointLight {:x 75
-                                    :y 20
-                                    :z 20}]]
-                   [:feComposite {:in "SourceGraphic"
-                                  :in2 "light"
-                                  :operator "arithmetic"
-                                  :k1 1
-                                  :k2 0
-                                  :k3 0
-                                  :k4 0}]])
-                (when texture-link
-                  [:filter {:id texture-id}
-                   [:feImage {:href texture-link
-                              :x 0
-                              :y 0
-                              :width 150
-                              :height 150
-                              :preserveAspectRatio "none"
-                              :result "image"}]
-                   (when texture-displacement?
-                     [:feDisplacementMap {:in "SourceGraphic"
-                                          :in2 "image"
-                                          :scale (texture/displacement texture)
-                                          :xChannelSelector "R"
-                                          :yChannelSelector "R"
-                                          :result "displaced"}])
-                   [:feComposite {:in (if texture-displacement?
-                                        "displaced"
-                                        "SourceGraphic")
-                                  :in2 "image"
-                                  :operator "arithmetic"
-                                  :k1 1
-                                  :k2 0
-                                  :k3 0
-                                  :k4 0}]])
-                (when-not svg-export?
-                  filter/shadow)
-                [tincture/patterns theme]
-                (when (= mode :hatching)
-                  hatching/patterns)]
-               [:defs
-                [(if svg-export?
-                   :mask
-                   :clipPath)
-                 {:id mask-id}
+              (when metadata-path
+                [metadata/attribution metadata-path :arms context])
+              [:defs
+               (when shiny?
+                 [:filter {:id shiny-id}
+                  [:feDiffuseLighting {:in "SourceGraphic"
+                                       :result "light"
+                                       :lighting-color "white"}
+                   [:fePointLight {:x 75
+                                   :y 20
+                                   :z 20}]]
+                  [:feComposite {:in "SourceGraphic"
+                                 :in2 "light"
+                                 :operator "arithmetic"
+                                 :k1 1
+                                 :k2 0
+                                 :k3 0
+                                 :k4 0}]])
+               (when texture-link
+                 [:filter {:id texture-id}
+                  [:feImage {:href texture-link
+                             :x 0
+                             :y 0
+                             :width 150
+                             :height 150
+                             :preserveAspectRatio "none"
+                             :result "image"}]
+                  (when texture-displacement?
+                    [:feDisplacementMap {:in "SourceGraphic"
+                                         :in2 "image"
+                                         :scale (texture/displacement texture)
+                                         :xChannelSelector "R"
+                                         :yChannelSelector "R"
+                                         :result "displaced"}])
+                  [:feComposite {:in (if texture-displacement?
+                                       "displaced"
+                                       "SourceGraphic")
+                                 :in2 "image"
+                                 :operator "arithmetic"
+                                 :k1 1
+                                 :k2 0
+                                 :k3 0
+                                 :k4 0}]])
+               (when-not svg-export?
+                 filter/shadow)
+               [tincture/patterns theme]
+               (when (= mode :hatching)
+                 hatching/patterns)]
+              [:defs
+               [(if svg-export?
+                  :mask
+                  :clipPath)
+                {:id mask-id}
+                [:path {:d (:shape environment)
+                        :fill "#fff"
+                        :stroke "none"}]]]
+              [:g {(if svg-export?
+                     :mask
+                     :clip-path) (str "url(#" mask-id ")")}
+               [:g {:filter (when texture-link (str "url(#" texture-id ")"))}
+                [:g {:filter (when shiny?
+                               (str "url(#" shiny-id ")"))}
                  [:path {:d (:shape environment)
-                         :fill "#fff"
-                         :stroke "none"}]]]
-               [:g {(if svg-export?
-                      :mask
-                      :clip-path) (str "url(#" mask-id ")")}
-                [:g {:filter (when texture-link (str "url(#" texture-id ")"))}
-                 [:g {:filter (when shiny?
-                                (str "url(#" shiny-id ")"))}
-                  [:path {:d (:shape environment)
-                          :fill "#f0f0f0"}]
-                  [field-shared/render (conj path :field)
-                   environment
-                   (-> context
-                       (dissoc :metadata-path)
-                       (assoc :root-escutcheon escutcheon))]]]]
-               (when (or escutcheon-outline?
-                         outline?)
-                 [:g (outline/style context)
-                  [:path {:d (:shape environment)}]])]]}))
+                         :fill "#f0f0f0"}]
+                 [field-shared/render (conj path :field)
+                  environment
+                  (-> context
+                      (dissoc :metadata-path)
+                      (assoc :root-escutcheon escutcheon))]]]]
+              (when (or escutcheon-outline?
+                        outline?)
+                [:g (outline/style context)
+                 [:path {:d (:shape environment)}]])]}))
 
 (defn helm [path environment context]
   (let [components-path (conj path :components)
@@ -132,8 +130,7 @@
          path environment
          context]))]))
 
-(defn helms [path width {:keys
-                         [root-transform] :as context}]
+(defn helms [path width context]
   (let [elements-path (conj path :elements)
         num-helms (interface/get-list-size elements-path context)]
     (if (zero? num-helms)
@@ -153,7 +150,7 @@
         {:width (- width
                    (* 2 gap))
          :height total-height
-         :result [:g {:transform root-transform}
+         :result [:g
                   (doall
                    (for [idx (range num-helms)]
                      (let [helm-environment (environment/create
@@ -286,17 +283,14 @@
                          :bottom (- min-y)))
             target-width ((util/percent-of width) size)
             scale (/ target-width ribbon-width)
-            outline-thickness (/ 1 scale)
-            ;; TODO: this is a hack and needs to match root-transform, should resolve this somehow
-            outline-thickness (/ outline-thickness 5)]
+            outline-thickness (/ 1 scale)]
         [:g {:transform (str "translate(" (:x position) "," (:y position) ")"
                              "scale(" scale "," scale ")"
                              "translate(" (:x shift) "," (:y shift) ")")}
          [ribbon ribbon-path context :outline-thickness outline-thickness]])
       [:<>])))
 
-(defn mottos [path width min-y max-y {:keys
-                                      [root-transform] :as context}]
+(defn mottos [path width min-y max-y context]
   (let [elements-path (conj path :elements)
         num-mottos (interface/get-list-size elements-path context)
         motto-environment (environment/create
@@ -305,7 +299,7 @@
                                            width
                                            min-y
                                            max-y]})]
-    {:result [:g {:transform root-transform}
+    {:result [:g
               (doall
                (for [idx (range num-mottos)]
                  ^{:key idx}
@@ -313,9 +307,7 @@
 
 (defn achievement [path {:keys [short-url
                                 svg-export?] :as context}]
-  (let [root-scale 5
-        context (assoc context :root-transform (str "scale(" root-scale "," root-scale ")"))
-        coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
+  (let [coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
         scope (interface/render-option :scope context)
         coa-angle-rad (-> coat-of-arms-angle
                           Math/abs
@@ -352,10 +344,6 @@
                                    (- helms-height)
                                    coat-of-arms-height
                                    context))
-        coat-of-arms-width (* root-scale coat-of-arms-width)
-        coat-of-arms-height (* root-scale coat-of-arms-height)
-        helms-width (* root-scale helms-width)
-        helms-height (* root-scale helms-height)
         rotated-width-left (max
                             (if (neg? coat-of-arms-angle)
                               (* coat-of-arms-height (Math/cos coa-angle-counter-rad))
