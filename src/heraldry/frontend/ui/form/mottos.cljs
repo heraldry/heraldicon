@@ -12,7 +12,7 @@
 (defmethod ui-interface/component-node-data :heraldry.component/mottos [path]
   (let [mottos-path (conj path :elements)
         num-mottos @(rf/subscribe [:get-list-size mottos-path])]
-    {:title "Mottos/slogans"
+    {:title "Mottos and slogans"
      :annotation [:div.tooltip.info {:style {:display "inline-block"
                                              :margin-left "0.2em"}}
                   [:sup {:style {:color "#d40"}}

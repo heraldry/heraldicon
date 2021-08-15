@@ -12,7 +12,7 @@
 (defmethod ui-interface/component-node-data :heraldry.component/helms [path]
   (let [helms-path (conj path :elements)
         num-helms @(rf/subscribe [:get-list-size helms-path])]
-    {:title "Helms/crests"
+    {:title "Helms and crests"
      :annotation [:div.tooltip.info {:style {:display "inline-block"
                                              :margin-left "0.2em"}}
                   [:sup {:style {:color "#d40"}}
@@ -39,3 +39,4 @@
 
 (defmethod ui-interface/component-form-data :heraldry.component/helms [_path]
   {:form form})
+
