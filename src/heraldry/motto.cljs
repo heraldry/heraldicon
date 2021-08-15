@@ -1,7 +1,8 @@
 (ns heraldry.motto
   (:require [heraldry.coat-of-arms.geometry :as geometry]
             [heraldry.coat-of-arms.position :as position]
-            [heraldry.interface :as interface]))
+            [heraldry.interface :as interface]
+            [heraldry.ribbon :as ribbon]))
 
 (def default-options
   {:type {:type :choice
@@ -16,10 +17,15 @@
                  (assoc-in [:size :max] 200)
                  (assoc-in [:size :default] 100))
    :ribbon-variant {:ui {:label "Ribbon"
-                         :form-type :ribbon-reference-select}}})
+                         :form-type :ribbon-reference-select}}
+   :ribbon ribbon/default-options})
 
 (defn options [data]
-  default-options)
+  (let [ribbon-variant? (:ribbon-variant data)]
+    (-> default-options
+        (cond->
+         ribbon-variant? (update :ribbon ribbon/options (:ribbon data))
+         (not ribbon-variant?) (dissoc :ribbon)))))
 
 (defmethod interface/component-options :heraldry.component/motto [_path data]
   (options data))
