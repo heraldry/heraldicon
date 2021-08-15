@@ -13,7 +13,9 @@
         (update-in path (fn [previous-segments]
                           (ribbon-general/restore-previous-text-segments
                            segments
-                           previous-segments))))))
+                           previous-segments
+                           [:text
+                            :font]))))))
 
 (rf/reg-event-db :set-ribbon-reference
   (fn [db [_ path ribbon]]

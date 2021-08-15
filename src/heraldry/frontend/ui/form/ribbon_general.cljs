@@ -57,18 +57,13 @@
       :heraldry.ribbon.segment/foreground)
     :heraldry.ribbon.segment/background))
 
-(defn restore-previous-text-segments [segments previous-segments]
+(defn restore-previous-text-segments [segments previous-segments keys]
   (let [previous-text-segments (->> previous-segments
                                     (keep (fn [segment]
                                             (when (-> segment
                                                       :type
                                                       (= :heraldry.ribbon.segment/foreground-with-text))
-                                              (select-keys segment [:offset-x
-                                                                    :offset-y
-                                                                    :font-scale
-                                                                    :spacing
-                                                                    :text
-                                                                    :font]))))
+                                              (select-keys segment keys))))
                                     vec)
         text-segments (->> segments
                            (map :type)
@@ -155,7 +150,15 @@
                                                         (assoc segment :text "* LOREM IPSUM *")
                                                         (dissoc segment :text))))
                                                vec)]
-                         (restore-previous-text-segments new-segments (get-in db segments-path)))))))))
+                         (restore-previous-text-segments
+                          new-segments
+                          (get-in db segments-path)
+                          [:offset-x
+                           :offset-y
+                           :font-scale
+                           :spacing
+                           :text
+                           :font]))))))))
 
 (rf/reg-event-db :ribbon-edit-invert-segments
   (fn [db [_ path]]
