@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.motto
-  (:require [heraldry.frontend.ui.interface :as ui-interface]
+  (:require [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
+            [heraldry.frontend.ui.interface :as ui-interface]
             [re-frame.core :as rf]))
 
 (defn form [path _]
@@ -8,7 +9,13 @@
                  :origin
                  :geometry
                  :ribbon-variant]]
-     ^{:key option} [ui-interface/form-element (conj path option)])])
+     ^{:key option} [ui-interface/form-element (conj path option)])
+
+   (when @(rf/subscribe [:get-value (conj path :ribbon-variant)])
+     (let [ribbon-path (conj path :ribbon)]
+       [:<>
+        [ribbon-general/ribbon-form ribbon-path]
+        [ribbon-general/ribbon-segments-form ribbon-path]]))])
 
 (defmethod ui-interface/component-node-data :heraldry.component/motto [path]
   (let [num-mottos @(rf/subscribe [:get-list-size (-> path drop-last vec)])

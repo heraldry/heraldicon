@@ -1,14 +1,39 @@
 (ns heraldry.frontend.ui.element.ribbon-reference-select
-  (:require [heraldry.frontend.state :as state]
+  (:require [com.wsscode.common.async-cljs :refer [<? go-catch]]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
+            [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
             [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
+(rf/reg-event-db :set-ribbon-segments
+  (fn [db [_ path segments]]
+    (-> db
+        (update-in path (fn [previous-segments]
+                          (ribbon-general/restore-previous-text-segments
+                           segments
+                           previous-segments))))))
+
+(rf/reg-event-db :set-ribbon-reference
+  (fn [db [_ path ribbon]]
+    (let [{ribbon-id :id
+           ribbon-version :version} ribbon
+          parent-path (-> path drop-last vec)
+          ;; TODO: this is a hacky way to do it, and it also means the API call is done twice,
+          ;; here and again via the unrelated the async + cache mechanism when the reference is used
+          _ (go-catch
+             (let [ribbon-data (<? (ribbon-select/fetch-ribbon ribbon-id ribbon-version nil))]
+               (rf/dispatch [:set-ribbon-segments
+                             (conj parent-path :ribbon :segments)
+                             (-> ribbon-data :ribbon :segments)])))]
+      (-> db
+          (assoc-in path {:id ribbon-id
+                          :version ribbon-version})))))
+
 (defn link-to-ribbon [path]
   (fn [ribbon]
-    [:a {:on-click #(rf/dispatch [:set path {:id (:id ribbon)
-                                             :version 0}])}
+    [:a {:on-click #(rf/dispatch [:set-ribbon-reference path ribbon])}
      (:name ribbon)]))
 
 (defn ribbon-reference-select [path]
