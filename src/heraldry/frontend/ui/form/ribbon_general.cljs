@@ -57,6 +57,35 @@
       :heraldry.ribbon.segment/foreground)
     :heraldry.ribbon.segment/background))
 
+(defn restore-previous-text-segments [segments previous-segments]
+  (let [previous-text-segments (->> previous-segments
+                                    (keep (fn [segment]
+                                            (when (-> segment
+                                                      :type
+                                                      (= :heraldry.ribbon.segment/foreground-with-text))
+                                              (select-keys segment [:offset-x
+                                                                    :offset-y
+                                                                    :font-scale
+                                                                    :spacing
+                                                                    :text
+                                                                    :font]))))
+                                    vec)
+        text-segments (->> segments
+                           (map :type)
+                           (keep-indexed
+                            (fn [idx segment-type]
+                              (when (= segment-type :heraldry.ribbon.segment/foreground-with-text)
+                                idx)))
+                           vec)]
+    (loop [segments segments
+           [previous-text-idx & rest] (range (count previous-text-segments))]
+      (if (or (not previous-text-idx)
+              (>= previous-text-idx (count text-segments)))
+        segments
+        (recur (update segments (get text-segments previous-text-idx)
+                       merge (get previous-text-segments previous-text-idx))
+               rest)))))
+
 (rf/reg-event-db :ribbon-edit-annotate-segments
   (fn [db [_ path layer-mode flow-mode start-mode]]
     (let [segments-path (conj path :segments)
@@ -77,13 +106,7 @@
           even-max-num-curves (if (even? num-curves)
                                 num-curves
                                 (inc num-curves))
-          total-length (catmullrom/curve->length curve)
-          previous-texts (->> (get-in db segments-path)
-                              (keep (fn [{segment-type :type
-                                          text :text}]
-                                      (when (= segment-type :heraldry.ribbon.segment/foreground-with-text)
-                                        text)))
-                              vec)]
+          total-length (catmullrom/curve->length curve)]
       (-> db
           (assoc-in
            segments-path
@@ -131,22 +154,8 @@
                                                            (= :heraldry.ribbon.segment/foreground-with-text))
                                                         (assoc segment :text "* LOREM IPSUM *")
                                                         (dissoc segment :text))))
-                                               vec)
-                             text-segments (->> segments
-                                                (map :type)
-                                                (keep-indexed
-                                                 (fn [idx segment-type]
-                                                   (when (= segment-type :heraldry.ribbon.segment/foreground-with-text)
-                                                     idx)))
-                                                vec)]
-                         (loop [segments new-segments
-                                [previous-text-idx & rest] (range (count previous-texts))]
-                           (if (or (not previous-text-idx)
-                                   (>= previous-text-idx (count text-segments)))
-                             segments
-                             (recur (update segments (get text-segments previous-text-idx)
-                                            assoc :text (get previous-texts previous-text-idx))
-                                    rest))))))))))
+                                               vec)]
+                         (restore-previous-text-segments new-segments (get-in db segments-path)))))))))
 
 (rf/reg-event-db :ribbon-edit-invert-segments
   (fn [db [_ path]]
@@ -194,6 +203,33 @@
               :position "absolute"
               :left "13em"}]]))
 
+(defn ribbon-form [path]
+  [:<>
+   (for [option [:thickness
+                 :edge-angle
+                 :end-split]]
+     ^{:key option} [ui-interface/form-element (conj path option)])])
+
+(defn ribbon-segments-form [path & {:keys [tooltip]}]
+  (let [segments-path (conj path :segments)
+        num-segments @(rf/subscribe [:get-list-size segments-path])]
+    [:div.option.ribbon-segments {:style {:margin-top "0.5em"}}
+     [:div {:style {:font-size "1.3em"}} "Segments"
+      (when tooltip
+        [:div.tooltip.info {:style {:display "inline-block"
+                                    :margin-left "0.2em"
+                                    :vertical-align "top"}}
+         [:i.fas.fa-question-circle]
+         [:div.bottom {:style {:width "20em"}}
+          tooltip]])]
+
+     [:ul
+      (doall
+       (for [idx (range num-segments)]
+         (let [segment-path (conj segments-path idx)]
+           ^{:key idx}
+           [segment-form segment-path])))]]))
+
 (defn form [path _]
   [:<>
    (for [option [:name
@@ -203,10 +239,7 @@
                  :tags]]
      ^{:key option} [ui-interface/form-element (conj path option)])
 
-   (for [option [:thickness
-                 :edge-angle
-                 :end-split]]
-     ^{:key option} [ui-interface/form-element (conj path :ribbon option)])
+   [ribbon-form (conj path :ribbon)]
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
@@ -224,9 +257,7 @@
          flow-mode-value (or @(rf/subscribe [:get-value flow-path])
                              flow-mode-default)
          start-mode-value (or @(rf/subscribe [:get-value start-path])
-                              start-mode-default)
-         segments-path (conj path :ribbon :segments)
-         num-segments @(rf/subscribe [:get-list-size segments-path])]
+                              start-mode-default)]
      [:<>
       [select/raw-select
        layers-path
@@ -263,21 +294,11 @@
                                           (conj path :ribbon)])}
         "Invert"]]
 
-      [:div.option.ribbon-segments {:style {:margin-top "0.5em"}}
-       [:div {:style {:font-size "1.3em"}} "Segments"
-        [:div.tooltip.info {:style {:display "inline-block"
-                                    :margin-left "0.2em"
-                                    :vertical-align "top"}}
-         [:i.fas.fa-question-circle]
-         [:div.bottom {:style {:width "20em"}}
-          [:p "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number."]
-          [:p "Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."]]]]
-       [:ul
-        (doall
-         (for [idx (range num-segments)]
-           (let [segment-path (conj segments-path idx)]
-             ^{:key idx}
-             [segment-form segment-path])))]]])])
+      [ribbon-segments-form
+       (conj path :ribbon)
+       :tooltip [:<>
+                 [:p "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number."]
+                 [:p "Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."]]]])])
 
 (defmethod ui-interface/component-node-data :heraldry.component/ribbon-general [path]
   {:title "General"
