@@ -1,5 +1,7 @@
 (ns heraldry.render
-  (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
+  (:require [clojure.string :as s]
+            [heraldry.coat-of-arms.catmullrom :as catmullrom]
+            [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.filter :as filter]
@@ -9,7 +11,10 @@
             [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.font :as font]
             [heraldry.interface :as interface]
+            [heraldry.ribbon :as ribbon]
             [heraldry.util :as util]))
 
 (defn coat-of-arms [path width
@@ -163,6 +168,122 @@
                        ^{:key idx}
                        [helm (conj elements-path idx) helm-environment context])))]}))))
 
+(defn ribbon [path context]
+  (let [thickness (interface/get-sanitized-data (conj path :thickness) context)
+        edge-angle (interface/get-sanitized-data (conj path :edge-angle) context)
+        end-split (interface/get-sanitized-data (conj path :end-split) context)
+        points-path (conj path :points)
+        segments-path (conj path :segments)
+        points (interface/get-raw-data points-path context)
+        segments (interface/get-raw-data segments-path context)
+        {:keys [curves edge-vectors]} (ribbon/generate-curves points edge-angle)
+        num-curves (count curves)]
+    [:<>
+     (doall
+      (for [[idx partial-curve] (->> curves
+                                     (map-indexed vector)
+                                     (sort-by (fn [[idx _]]
+                                                [(-> segments
+                                                     (get idx)
+                                                     :z-index
+                                                     (or 1000))
+                                                 idx])))]
+        (let [top-edge (catmullrom/curve->svg-path-relative partial-curve)
+              [first-edge-vector second-edge-vector] (get edge-vectors idx)
+              first-edge-vector (v/* first-edge-vector thickness)
+              second-edge-vector (v/* second-edge-vector thickness)
+              full-path (cond
+                          (or (zero? end-split)
+                              (< 0 idx (dec num-curves))) (str top-edge
+                                                               (catmullrom/svg-line-to second-edge-vector)
+                                                               (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                               (catmullrom/svg-line-to (v/* first-edge-vector -1)))
+                          (and (pos? end-split)
+                               (zero? idx)) (str top-edge
+                                                 (catmullrom/svg-line-to second-edge-vector)
+                                                 (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                 (util/combine " "
+                                                               (ribbon/split-end
+                                                                :start
+                                                                partial-curve
+                                                                end-split
+                                                                first-edge-vector)))
+                          (and (pos? end-split)
+                               (= idx (dec num-curves))) (str top-edge
+                                                              (util/combine " "
+                                                                            (ribbon/split-end
+                                                                             :end
+                                                                             partial-curve
+                                                                             end-split
+                                                                             second-edge-vector))
+                                                              (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                              (catmullrom/svg-line-to (v/* first-edge-vector -1))))
+              segment-path (conj segments-path idx)
+              segment-type (interface/get-raw-data (conj segment-path :type) context)
+              foreground? (#{:heraldry.ribbon.segment/foreground
+                             :heraldry.ribbon.segment/foreground-with-text} segment-type)
+              text (some-> (interface/get-sanitized-data (conj segment-path :text) context)
+                           (s/replace #"[*]" "⬪"))
+              text? (and (= segment-type :heraldry.ribbon.segment/foreground-with-text)
+                         (some-> text
+                                 s/trim
+                                 count
+                                 pos?))]
+          ^{:key idx}
+          [:<>
+           [:path {:d full-path
+                   :style {:stroke-width 1
+                           :stroke "#000000"
+                           :stroke-linecap "round"
+                           :fill (if foreground?
+                                   "#dddddd"
+                                   "#888888")}}]
+           (when text?
+             (let [path-id (util/id "path")
+                   spacing (interface/get-sanitized-data (conj segment-path :spacing) context)
+                   offset-x (interface/get-sanitized-data (conj segment-path :offset-x) context)
+                   offset-y (interface/get-sanitized-data (conj segment-path :offset-y) context)
+                   font (some-> (interface/get-sanitized-data (conj segment-path :font) context)
+                                font/css-string)
+                   font-scale (interface/get-sanitized-data (conj segment-path :font-scale) context)
+                   font-size (* font-scale thickness)
+                   spacing (* spacing font-size)
+                   text-offset (v/* first-edge-vector (- 0.6 offset-y))]
+               [:text.no-select {:transform (str "translate(" (:x text-offset) "," (:y text-offset) ")")
+                                 :fill "#666666"
+                                 :text-anchor "middle"
+                                 :style {:font-family font
+                                         :font-size font-size}}
+                [:defs
+                 [:path {:id path-id
+                         :d top-edge}]]
+                [:textPath {:href (str "#" path-id)
+                            :alignment-baseline "middle"
+                            :method "align"
+                            :lengthAdjust "spacing"
+                            :letter-spacing spacing
+                            :startOffset (str (+ 50 (* offset-x 100)) "%")}
+                 text]]))])))]))
+
+(defn motto [path environment context]
+  [ribbon path context])
+
+(defn mottos [path width min-y max-y {:keys
+                                      [root-transform] :as context}]
+  (let [elements-path (conj path :elements)
+        num-mottos (interface/get-list-size elements-path context)
+        motto-environment (environment/create
+                           nil
+                           {:bounding-box [0
+                                           width
+                                           min-y
+                                           max-y]})]
+    [:g {:transform root-transform}
+     (doall
+      (for [idx (range num-mottos)]
+        ^{:key idx}
+        [motto (conj elements-path idx) motto-environment context]))]))
+
 (defn achievement [path {:keys [short-url
                                 svg-export?] :as context}]
   (let [root-scale 5
@@ -192,6 +313,19 @@
                                   (conj path :helms)
                                   100
                                   context))
+        {mottos :result
+         mottos-width :width
+         mottos-height :height} (if (= scope :coat-of-arms)
+                                  {:width 0
+                                   :height 0
+                                   :result nil}
+                                  (mottos
+                                   (conj path :mottos)
+                                   100
+                                   (- helms-height)
+                                   coat-of-arms-height
+                                   context))
+
         coat-of-arms-width (* root-scale coat-of-arms-width)
         coat-of-arms-height (* root-scale coat-of-arms-height)
         helms-width (* root-scale helms-width)
@@ -277,7 +411,8 @@
                            (neg? coat-of-arms-angle) (str "translate(" (- (/ coat-of-arms-width 2)) "," 0 ")")
                            (pos? coat-of-arms-angle) (str "translate(" (/ coat-of-arms-width 2) "," 0 ")")
                            :else nil)}
-          helms]]]]]
+          helms
+          mottos]]]]]
      (when short-url
        [:text {:x margin
                :y (- document-height

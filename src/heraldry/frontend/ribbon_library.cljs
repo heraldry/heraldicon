@@ -1,14 +1,10 @@
 (ns heraldry.frontend.ribbon-library
-  (:require ["svgpath" :as svgpath]
-            [cljs.core.async :refer [go]]
-            [clojure.string :as s]
+  (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.filter :as filter]
-            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.font :as font]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.modal :as modal]
@@ -22,7 +18,8 @@
             [heraldry.util :as util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [heraldry.render :as render]))
 
 (def form-db-path
   [:ribbon-form])
@@ -274,175 +271,20 @@
               :height width
               :style {:fill "#000"}}]]]))
 
-(defn project-path-to [curve new-start new-end & {:keys [reverse?]}]
-  (let [original-start (apply v/v (ffirst curve))
-        original-end (apply v/v (last (last curve)))
-        original-dir (if reverse?
-                       (v/- original-start original-end)
-                       (v/- original-end original-start))
-        new-dir (if reverse?
-                  (v/- new-start new-end)
-                  (v/- new-end new-start))
-        original-angle (-> (Math/atan2 (:y original-dir)
-                                       (:x original-dir))
-                           (* 180)
-                           (/ Math/PI))
-        new-angle (-> (Math/atan2 (:y new-dir)
-                                  (:x new-dir))
-                      (* 180)
-                      (/ Math/PI))
-        dist-original (v/abs original-dir)
-        dist-new (v/abs new-dir)
-        scale (if (catmullrom/close-to-zero? dist-original)
-                1
-                (/ dist-new
-                   dist-original))
-        angle (if (catmullrom/close-to-zero? dist-original)
-                0
-                (- new-angle
-                   original-angle))]
-    (-> curve
-        catmullrom/curve->svg-path-relative
-        (cond->
-         reverse? (->
-                   svg/reverse-path
-                   :path)
-         (not reverse?) (->
-                         svg/reverse-path
-                         :path
-                         svg/reverse-path
-                         :path))
-        svgpath
-        (.scale scale scale)
-        (.rotate angle)
-        .toString
-        (s/replace "M0 0" ""))))
-
-(defn project-bottom-edge [top-curve start-edge-vector end-edge-vector]
-  (let [original-start (apply v/v (ffirst top-curve))
-        original-end (apply v/v (last (last top-curve)))
-        new-start (v/+ original-start start-edge-vector)
-        new-end (v/+ original-end end-edge-vector)]
-    (project-path-to top-curve new-start new-end :reverse? true)))
-
-(defn split-end [kind curve percentage edge-vector]
-  (let [{:keys [curve1 curve2]} (catmullrom/split-curve-at curve (cond-> (/ percentage 100)
-                                                                   (= kind :end) (->> (- 1))))
-        split-point (-> (apply v/v (ffirst curve2))
-                        (v/+ (v// edge-vector 2)))]
-    (case kind
-      :start (let [start-point (apply v/v (ffirst curve))
-                   end-point (v/+ start-point edge-vector)]
-               [(project-path-to curve1 end-point split-point)
-                (project-path-to curve1 start-point split-point :reverse? true)])
-      :end (let [start-point (apply v/v (last (last curve2)))
-                 end-point (v/+ start-point edge-vector)]
-             [(project-path-to curve2 split-point start-point :reverse? true)
-              (project-path-to curve2 split-point end-point)]))))
-
-(defn render-ribbon [path]
+(defn render-edit-overlay [path]
   (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])
-        thickness (interface/get-sanitized-data (conj path :thickness) {})
         edge-angle (interface/get-sanitized-data (conj path :edge-angle) {})
-        end-split (interface/get-sanitized-data (conj path :end-split) {})
         points-path (conj path :points)
         segments-path (conj path :segments)
         points (interface/get-raw-data points-path {})
-        segments (interface/get-raw-data segments-path {})
-        {:keys [curve curves edge-vectors]} (ribbon/generate-curves points edge-angle)
+        {:keys [curve curves]} (ribbon/generate-curves points edge-angle)
         selected-curve-idx (->> (count curves)
                                 range
                                 (keep (fn [idx]
                                         (when @(rf/subscribe [:get-value [:ui :submenu-open? (conj segments-path idx)]])
                                           idx)))
-                                first)
-        num-curves (count curves)]
+                                first)]
     [:<>
-     (doall
-      (for [[idx partial-curve] (->> curves
-                                     (map-indexed vector)
-                                     (sort-by (fn [[idx _]]
-                                                [(-> segments
-                                                     (get idx)
-                                                     :z-index
-                                                     (or 1000))
-                                                 idx])))]
-        (let [top-edge (catmullrom/curve->svg-path-relative partial-curve)
-              [first-edge-vector second-edge-vector] (get edge-vectors idx)
-              first-edge-vector (v/* first-edge-vector thickness)
-              second-edge-vector (v/* second-edge-vector thickness)
-              full-path (cond
-                          (or (zero? end-split)
-                              (< 0 idx (dec num-curves))) (str top-edge
-                                                               (catmullrom/svg-line-to second-edge-vector)
-                                                               (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                               (catmullrom/svg-line-to (v/* first-edge-vector -1)))
-                          (and (pos? end-split)
-                               (zero? idx)) (str top-edge
-                                                 (catmullrom/svg-line-to second-edge-vector)
-                                                 (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                 (util/combine " "
-                                                               (split-end
-                                                                :start
-                                                                partial-curve
-                                                                end-split
-                                                                first-edge-vector)))
-                          (and (pos? end-split)
-                               (= idx (dec num-curves))) (str top-edge
-                                                              (util/combine " "
-                                                                            (split-end
-                                                                             :end
-                                                                             partial-curve
-                                                                             end-split
-                                                                             second-edge-vector))
-                                                              (project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                              (catmullrom/svg-line-to (v/* first-edge-vector -1))))
-              segment-path (conj segments-path idx)
-              segment-type (interface/get-raw-data (conj segment-path :type) {})
-              foreground? (#{:heraldry.ribbon.segment/foreground
-                             :heraldry.ribbon.segment/foreground-with-text} segment-type)
-              text (some-> (interface/get-sanitized-data (conj segment-path :text) {})
-                           (s/replace #"[*]" "⬪"))
-              text? (and (= segment-type :heraldry.ribbon.segment/foreground-with-text)
-                         (some-> text
-                                 s/trim
-                                 count
-                                 pos?))]
-          ^{:key idx}
-          [:<>
-           [:path {:d full-path
-                   :style {:stroke-width 1
-                           :stroke "#000000"
-                           :stroke-linecap "round"
-                           :fill (if foreground?
-                                   "#dddddd"
-                                   "#888888")}}]
-           (when text?
-             (let [path-id (util/id "path")
-                   spacing (interface/get-sanitized-data (conj segment-path :spacing) {})
-                   offset-x (interface/get-sanitized-data (conj segment-path :offset-x) {})
-                   offset-y (interface/get-sanitized-data (conj segment-path :offset-y) {})
-                   font (some-> (interface/get-sanitized-data (conj segment-path :font) {})
-                                font/css-string)
-                   font-scale (interface/get-sanitized-data (conj segment-path :font-scale) {})
-                   font-size (* font-scale thickness)
-                   spacing (* spacing font-size)
-                   text-offset (v/* first-edge-vector (- 0.6 offset-y))]
-               [:text.no-select {:transform (str "translate(" (:x text-offset) "," (:y text-offset) ")")
-                                 :fill "#666666"
-                                 :text-anchor "middle"
-                                 :style {:font-family font
-                                         :font-size font-size}}
-                [:defs
-                 [:path {:id path-id
-                         :d top-edge}]]
-                [:textPath {:href (str "#" path-id)
-                            :alignment-baseline "middle"
-                            :method "align"
-                            :lengthAdjust "spacing"
-                            :letter-spacing spacing
-                            :startOffset (str (+ 50 (* offset-x 100)) "%")}
-                 text]]))])))
      (when-not (= edit-mode :none)
        [:path {:d (catmullrom/curve->svg-path-relative curve)
                :style {:stroke-width 3
@@ -490,7 +332,8 @@
               :fill "#f6f6f6"
               :filter "url(#shadow)"}]
       [:g {:transform (str "translate(" (/ width 2) "," (/ height 2) ")")}
-       [render-ribbon ribbon-path]
+       [render/ribbon ribbon-path {}]
+       [render-edit-overlay ribbon-path]
        (doall
         (for [idx (range num-points)]
           ^{:key idx} [path-point (conj points-path idx)]))
