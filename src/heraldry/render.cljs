@@ -289,10 +289,21 @@
             target-width ((util/percent-of width) size)
             scale (/ target-width ribbon-width)
             outline-thickness (/ 0.25 scale)]
-        [:g {:transform (str "translate(" (:x position) "," (:y position) ")"
-                             "scale(" scale "," scale ")"
-                             "translate(" (:x shift) "," (:y shift) ")")}
-         [ribbon ribbon-path context :outline-thickness outline-thickness]])
+        {:result [:g {:transform (str "translate(" (:x position) "," (:y position) ")"
+                                      "scale(" scale "," scale ")"
+                                      "translate(" (:x shift) "," (:y shift) ")")}
+                  [ribbon ribbon-path context :outline-thickness outline-thickness]]
+         :bounding-box (let [top-left (-> (v/v min-x min-y)
+                                          (v/+ shift)
+                                          (v/* scale)
+                                          (v/+ position))
+                             bottom-right (-> (v/v max-x max-y)
+                                              (v/+ shift)
+                                              (v/* scale)
+                                              (v/+ position))]
+
+                         [(:x top-left) (:x bottom-right)
+                          (:y top-left) (:y bottom-right)])})
       [:<>])))
 
 (defn mottos [path width min-y max-y context]
@@ -303,12 +314,28 @@
                            {:bounding-box [0
                                            width
                                            min-y
-                                           max-y]})]
+                                           max-y]})
+        mottos-data (vec
+                     (for [idx (range num-mottos)]
+                       (let [{:keys [result
+                                     bounding-box]} (motto (conj elements-path idx) motto-environment context)]
+                         [idx result bounding-box])))
+        combined-bounding-box (reduce (fn [[min-x max-x min-y max-y]
+                                           [new-min-x new-max-x new-min-y new-max-y]]
+                                        [(min min-x new-min-x)
+                                         (max max-x new-max-x)
+                                         (min min-y new-min-y)
+                                         (max max-y new-max-y)])
+                                      (-> mottos-data
+                                          first
+                                          last)
+                                      (rest mottos-data))]
     {:result [:g
               (doall
-               (for [idx (range num-mottos)]
+               (for [[idx result _] mottos-data]
                  ^{:key idx}
-                 [motto (conj elements-path idx) motto-environment context]))]}))
+                 [:<> result]))]
+     :bounding-box combined-bounding-box}))
 
 (defn achievement [path {:keys [short-url
                                 svg-export?] :as context}]
@@ -338,17 +365,17 @@
                                   100
                                   context))
         {mottos :result
-         mottos-width :width
-         mottos-height :height} (if (= scope :coat-of-arms)
-                                  {:width 0
-                                   :height 0
-                                   :result nil}
-                                  (mottos
-                                   (conj path :mottos)
-                                   100
-                                   (- helms-height)
-                                   coat-of-arms-height
-                                   context))
+         mottos-bounding-box :bounding-box} (if (= scope :coat-of-arms)
+                                              {:width 0
+                                               :height 0
+                                               :result nil}
+                                              (mottos
+                                               (conj path :mottos)
+                                               100
+                                               (- helms-height)
+                                               coat-of-arms-height
+                                               context))
+        _ (js/console.log :bb mottos-bounding-box)
         rotated-width-left (max
                             (if (neg? coat-of-arms-angle)
                               (* coat-of-arms-height (Math/cos coa-angle-counter-rad))
