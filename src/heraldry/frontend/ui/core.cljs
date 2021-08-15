@@ -96,7 +96,8 @@
            (#{:heraldry.component/ordinary
               :heraldry.component/charge} added-type) (submenu/ui-submenu-open (conj element-path :type))
            (#{:heraldry.component/charge-group} added-type) (submenu/ui-submenu-open element-path)
-           (#{:heraldry.component/collection-element} added-type) (submenu/ui-submenu-open (conj element-path :reference)))))))
+           (#{:heraldry.component/collection-element} added-type) (submenu/ui-submenu-open (conj element-path :reference))
+           (#{:heraldry.component/motto} added-type) (submenu/ui-submenu-open (conj element-path :ribbon-variant)))))))
 
 (rf/reg-event-db :remove-element
   (fn [db [_ path]]
