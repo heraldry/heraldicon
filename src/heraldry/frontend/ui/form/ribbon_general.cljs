@@ -261,6 +261,9 @@
       [:p "The ribbon curve can be interpreted in many ways, depending on what is fore-/background and which segments overlap which."]
       [:p "The Presets can be used to setup the segments for some typical effects, the segments can then be fine-tuned."]]]]
 
+   [:p {:style {:color "#f86"}}
+    "Apply a preset after you edited the ribbon curve and changed the number of segments."]
+
    (let [layer-mode-value (or @(rf/subscribe [:get-value layers-path])
                               layer-mode-default)
          flow-mode-value (or @(rf/subscribe [:get-value flow-path])
