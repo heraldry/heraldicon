@@ -190,7 +190,8 @@
            :preserveAspectRatio "xMidYMid meet"
            :style {:width "100%"}}
      [:g {:transform "translate(10,10)"}
-      result]]))
+      [:g {:transform "scale(5,5)"}
+       result]]]))
 
 (defn upload-file [event]
   (modal/start-loading)
