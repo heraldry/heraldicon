@@ -72,7 +72,7 @@
 
 (defn split-curve [full-curve tangent-points min-edge-vector max-edge-vector]
   (if (empty? tangent-points)
-    [full-curve]
+    [[full-curve min-edge-vector max-edge-vector]]
     (->> (concat [[0 nil min-edge-vector]]
                  tangent-points
                  [[(-> full-curve count dec) nil max-edge-vector]])
