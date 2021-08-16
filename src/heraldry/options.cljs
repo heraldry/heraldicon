@@ -8,9 +8,9 @@
   (if (and (vector? value)
            (-> value first (= :force)))
     (second value)
-    (let [value (or value
-                    (:inherited options)
-                    (:default options))]
+    (let [value (first (keep identity [value
+                                       (:inherited options)
+                                       (:default options)]))]
       (case (:type options)
         :boolean (boolean value)
         :choice (let [choices (util/choices->map (:choices options))]
@@ -117,3 +117,4 @@
        (not= (get sanitized-data key)
              (or (-> options (get key) :inherited)
                  (-> options (get key) :default)))))
+
