@@ -288,7 +288,7 @@
                          :bottom (- min-y)))
             target-width ((util/percent-of width) size)
             scale (/ target-width ribbon-width)
-            outline-thickness (/ 0.25 scale)]
+            outline-thickness (/ 1 scale)]
         {:result [:g {:transform (str "translate(" (:x position) "," (:y position) ")"
                                       "scale(" scale "," scale ")"
                                       "translate(" (:x shift) "," (:y shift) ")")}
@@ -304,32 +304,25 @@
 
                          [(:x top-left) (:x bottom-right)
                           (:y top-left) (:y bottom-right)])})
-      [:<>])))
+      {:result nil
+       :bounding-box nil})))
 
-(defn mottos [path width min-y max-y context]
+(defn mottos [path width height context]
   (let [elements-path (conj path :elements)
         num-mottos (interface/get-list-size elements-path context)
         motto-environment (environment/create
                            nil
                            {:bounding-box [0
                                            width
-                                           min-y
-                                           max-y]})
+                                           0
+                                           height]})
         mottos-data (vec
                      (for [idx (range num-mottos)]
                        (let [{:keys [result
                                      bounding-box]} (motto (conj elements-path idx) motto-environment context)]
                          [idx result bounding-box])))
-        combined-bounding-box (reduce (fn [[min-x max-x min-y max-y]
-                                           [new-min-x new-max-x new-min-y new-max-y]]
-                                        [(min min-x new-min-x)
-                                         (max max-x new-max-x)
-                                         (min min-y new-min-y)
-                                         (max max-y new-max-y)])
-                                      (-> mottos-data
-                                          first
-                                          last)
-                                      (rest mottos-data))]
+        combined-bounding-box (svg/combine-bounding-boxes
+                               (keep last mottos-data))]
     {:result [:g
               (doall
                (for [[idx result _] mottos-data]
@@ -337,16 +330,37 @@
                  [:<> result]))]
      :bounding-box combined-bounding-box}))
 
+(defn transform-bounding-box [[min-x max-x min-y max-y] target-width & {:keys [max-aspect-ratio]}]
+  (let [total-width (- max-x min-x)
+        total-height (- max-y min-y)
+        target-height (-> target-width
+                          (/ total-width)
+                          (* total-height))
+        target-height (if max-aspect-ratio
+                        (min target-height
+                             (* max-aspect-ratio target-width))
+                        target-height)
+        scale (min (/ target-width total-width)
+                   (/ target-height total-height))]
+    {:target-width target-width
+     :target-height target-height
+     :transform (str
+                 "translate(" (/ target-width 2) "," (/ target-height 2) ")"
+                 "scale(" scale "," scale ")"
+                 "translate("
+                 (- 0 (/ total-width 2) min-x) ","
+                 (- 0 (/ total-height 2) min-y) ")")}))
+
 (defn achievement [path {:keys [short-url
                                 svg-export?] :as context}]
   (let [coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
         scope (interface/render-option :scope context)
-        coa-angle-rad (-> coat-of-arms-angle
-                          Math/abs
-                          (* Math/PI)
-                          (/ 180))
-        coa-angle-counter-rad (- (/ Math/PI 2)
-                                 coa-angle-rad)
+        coa-angle-rad-abs (-> coat-of-arms-angle
+                              Math/abs
+                              (* Math/PI)
+                              (/ 180))
+        coa-angle-counter-rad-abs (- (/ Math/PI 2)
+                                     coa-angle-rad-abs)
         {coat-of-arms :result
          environment :environment} (coat-of-arms
                                     (conj path :coat-of-arms)
@@ -354,7 +368,7 @@
                                     context)
         {coat-of-arms-width :width
          coat-of-arms-height :height} environment
-        {helms :result
+        {helms-result :result
          helms-width :width
          helms-height :height} (if (= scope :coat-of-arms)
                                  {:width 0
@@ -364,56 +378,68 @@
                                   (conj path :helms)
                                   100
                                   context))
-        {mottos :result
+
+        short-arm (* coat-of-arms-width (Math/cos coa-angle-rad-abs))
+        long-arm (* coat-of-arms-height (Math/cos coa-angle-counter-rad-abs))
+        [rotated-min-x
+         rotated-max-x] (if (neg? coat-of-arms-angle)
+                          [(- long-arm)
+                           short-arm]
+                          [(- coat-of-arms-width short-arm)
+                           (+ coat-of-arms-width long-arm)])
+        rotated-height (+ (* coat-of-arms-width (Math/sin coa-angle-rad-abs))
+                          (* coat-of-arms-height (Math/sin coa-angle-counter-rad-abs)))
+        rotated? (not (zero? coat-of-arms-angle))
+        helm-position (cond
+                        (neg? coat-of-arms-angle) (v/v (- (/ coat-of-arms-width 2)) 0)
+                        (pos? coat-of-arms-angle) (v/v (/ coat-of-arms-width 2) 0)
+                        :else (v/v 0 0))
+        helms-bounding-box (svg/min-max-x-y [(-> helm-position
+                                                 (v/+ (v/v (/ coat-of-arms-width 2) 0))
+                                                 (v/+ (v/v (- (/ helms-width 2))
+                                                           (- helms-height))))
+                                             (-> helm-position
+                                                 (v/+ (v/v (/ coat-of-arms-width 2) 0))
+                                                 (v/+ (v/v (/ helms-width 2)
+                                                           0)))])
+        coat-of-arms-bounding-box (if rotated?
+                                    [rotated-min-x rotated-max-x
+                                     0 rotated-height]
+                                    [0 coat-of-arms-width
+                                     0 coat-of-arms-height])
+        coa-and-helms-bounding-box (svg/combine-bounding-boxes
+                                    (cond-> [coat-of-arms-bounding-box]
+                                      helms-result (conj helms-bounding-box)))
+        target-width 500
+        {coa-and-helms-width :target-width
+         coa-and-helms-height :target-height
+         coa-and-helms-transform :transform} (transform-bounding-box
+                                              coa-and-helms-bounding-box
+                                              target-width)
+        {mottos-result :result
          mottos-bounding-box :bounding-box} (if (= scope :coat-of-arms)
-                                              {:width 0
-                                               :height 0
+                                              {:bounding-box [0 0 0 0]
                                                :result nil}
                                               (mottos
                                                (conj path :mottos)
-                                               100
-                                               (- helms-height)
-                                               coat-of-arms-height
+                                               coa-and-helms-width
+                                               coa-and-helms-height
                                                context))
-        _ (js/console.log :bb mottos-bounding-box)
-        rotated-width-left (max
-                            (if (neg? coat-of-arms-angle)
-                              (* coat-of-arms-height (Math/cos coa-angle-counter-rad))
-                              (* coat-of-arms-width (Math/cos coa-angle-rad)))
-                            (/ helms-width 2))
-        rotated-width-right (max
-                             (if (neg? coat-of-arms-angle)
-                               (* coat-of-arms-width (Math/cos coa-angle-rad))
-                               (* coat-of-arms-height (Math/cos coa-angle-counter-rad)))
-                             (/ helms-width 2))
-        rotated-height (if (neg? coat-of-arms-angle)
-                         (+ (* coat-of-arms-height (Math/sin coa-angle-rad))
-                            (* coat-of-arms-width (Math/sin coa-angle-counter-rad)))
-                         (+ (* coat-of-arms-width (Math/sin coa-angle-rad))
-                            (* coat-of-arms-height (Math/sin coa-angle-counter-rad))))
-        rotated? (not (zero? coat-of-arms-angle))
-        effective-width (if rotated?
-                          (+ rotated-width-left rotated-width-right)
-                          coat-of-arms-width)
-        effective-height (if rotated?
-                           rotated-height
-                           coat-of-arms-height)
-        total-width effective-width
-        total-height (+ effective-height helms-height)
-        target-width 500
-        target-height (-> target-width
-                          (/ total-width)
-                          (* total-height))
-        target-height (if svg-export?
-                        target-height
-                        (min target-height
-                             (* 1.5 target-width)))
-        scale (min (/ target-width total-width)
-                   (/ target-height total-height))
+
+        achievement-bounding-box (svg/combine-bounding-boxes
+                                  (cond-> [[0 coa-and-helms-width
+                                            0 coa-and-helms-height]]
+                                    mottos-result (conj mottos-bounding-box)))
+        {achievement-width :target-width
+         achievement-height :target-height
+         achievement-transform :transform} (transform-bounding-box
+                                            achievement-bounding-box
+                                            target-width
+                                            :max-aspect-ratio 1.5)
         margin 10
         font-size 20
-        document-width (-> target-width (+ (* 2 margin)))
-        document-height (-> target-height (+ (* 2 margin)) (+ 20)
+        document-width (-> achievement-width (+ (* 2 margin)))
+        document-height (-> achievement-height (+ (* 2 margin)) (+ 20)
                             (cond-> short-url
                               (+ font-size margin)))]
     [:svg (merge
@@ -426,39 +452,27 @@
              {:style {:width "100%"}
               :preserveAspectRatio "xMidYMin meet"}))
      [:g {:transform (str "translate(" margin "," margin ")")}
-      [:g {:transform (str
-                       "translate(" (/ target-width 2) "," (/ target-height 2) ")"
-                       "scale(" scale "," scale ")"
-                       "translate(" (- (/ total-width 2)) "," (- (/ total-height 2)) ")")
+      [:g {:transform achievement-transform
            :style {:transition "transform 0.5s"}}
-       #_[:rect {:x 0
-                 :y 0
-                 :width total-width
-                 :height total-height
-                 :style {:fill "none"
-                         :stroke "#000"}}]
-       [:g {:transform (str "translate(" 0 "," helms-height ")")
+       [:g {:transform coa-and-helms-transform
             :style {:transition "transform 0.5s"}}
         [:g {:transform (cond
-                          (neg? coat-of-arms-angle) (str "translate(" rotated-width-left "," 0 ")")
-                          (pos? coat-of-arms-angle) (str "translate(" (- rotated-width-left
-                                                                         coat-of-arms-width) "," 0 ")")
+                          (neg? coat-of-arms-angle) (str "rotate(" (- coat-of-arms-angle) ")")
+                          (pos? coat-of-arms-angle) (str "translate(" coat-of-arms-width "," 0 ")"
+                                                         "rotate(" (- coat-of-arms-angle) ")"
+                                                         "translate(" (- coat-of-arms-width) "," 0 ")")
                           :else nil)
              :style {:transition "transform 0.5s"}}
-         [:g {:transform (cond
-                           (neg? coat-of-arms-angle) (str "rotate(" (- coat-of-arms-angle) ")")
-                           (pos? coat-of-arms-angle) (str "translate(" coat-of-arms-width "," 0 ")"
-                                                          "rotate(" (- coat-of-arms-angle) ")"
-                                                          "translate(" (- coat-of-arms-width) "," 0 ")")
-                           :else nil)
-              :style {:transition "transform 0.5s"}}
-          coat-of-arms]
-         [:g {:transform (cond
-                           (neg? coat-of-arms-angle) (str "translate(" (- (/ coat-of-arms-width 2)) "," 0 ")")
-                           (pos? coat-of-arms-angle) (str "translate(" (/ coat-of-arms-width 2) "," 0 ")")
-                           :else nil)}
-          helms]
-         mottos]]]]
+         coat-of-arms]
+        (when helms-result
+          [:g {:transform (str "translate(" (:x helm-position) "," (:y helm-position) ")")
+               :style {:transition "transform 0.5s"}}
+           helms-result])]
+
+       (when mottos-result
+         [:g
+          mottos-result])]]
+
      (when short-url
        [:text {:x margin
                :y (- document-height
