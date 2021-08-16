@@ -170,6 +170,8 @@
   (let [thickness (interface/get-sanitized-data (conj path :thickness) context)
         edge-angle (interface/get-sanitized-data (conj path :edge-angle) context)
         end-split (interface/get-sanitized-data (conj path :end-split) context)
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (conj path :outline?) context))
         points-path (conj path :points)
         segments-path (conj path :segments)
         points (interface/get-raw-data points-path context)
@@ -230,9 +232,11 @@
           ^{:key idx}
           [:<>
            [:path {:d full-path
-                   :style (merge (outline/style context)
-                                 {:stroke-width outline-thickness
-                                  :fill (if foreground?
+                   :style (merge (when outline?
+                                   (outline/style context))
+                                 (when outline?
+                                   {:stroke-width outline-thickness})
+                                 {:fill (if foreground?
                                           "#dddddd"
                                           "#888888")})}]
            (when text?
