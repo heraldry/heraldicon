@@ -210,7 +210,8 @@
   [:<>
    (for [option [:thickness
                  :edge-angle
-                 :end-split]]
+                 :end-split
+                 :outline?]]
      ^{:key option} [ui-interface/form-element (conj path option)])])
 
 (defn ribbon-segments-form [path & {:keys [tooltip]}]

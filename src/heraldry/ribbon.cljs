@@ -27,7 +27,10 @@
                :min 0
                :max 80
                :ui {:label "End split"
-                    :step 1}}})
+                    :step 1}}
+   :outline? {:type :boolean
+              :default true
+              :ui {:label "Outline"}}})
 
 (defn options [data]
   default-options)
