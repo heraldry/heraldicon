@@ -161,17 +161,17 @@
 (s/def :heraldry.render-options/escutcheon #(or (= % :none)
                                                 (nil? %)
                                                 (s/valid? :heraldry/escutcheon %)))
-(s/def :heraldry.render-options/mode #{:colours
-                                       :hatching})
-(s/def :heraldry.render-options/shiny? boolean?)
-(s/def :heraldry.render-options/outline? boolean?)
-(s/def :heraldry.render-options/squiggly? boolean?)
+(s/def :heraldry.render-options/mode (s/nilable #{:colours
+                                                  :hatching}))
+(s/def :heraldry.render-options/shiny? (s/nilable boolean?))
+(s/def :heraldry.render-options/outline? (s/nilable boolean?))
+(s/def :heraldry.render-options/squiggly? (s/nilable boolean?))
 (s/def :heraldry.render-options/theme #(or (nil? %)
                                            (tincture/theme-map %)))
 (s/def :heraldry.render-options/texture #(or (= % :none)
                                              (nil? %)
                                              (texture/texture-map %)))
-(s/def :heraldry.render-options/texture-displacement? boolean?)
+(s/def :heraldry.render-options/texture-displacement? (s/nilable boolean?))
 (s/def :heraldry/render-options (s/keys :opt-un [:heraldry.render-options/mode
                                                  :heraldry.render-options/shiny?
                                                  :heraldry.render-options/outline?
