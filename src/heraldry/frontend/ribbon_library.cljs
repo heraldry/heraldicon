@@ -45,6 +45,10 @@
 (def ribbon-max-y
   (/ preview-height 2))
 
+(def render-context
+  {:render-options default/render-options
+   :render-options-path [:context :render-options]})
+
 (rf/reg-event-db :ribbon-edit-remove-point
   (fn [db [_ path]]
     (let [points-path (-> path drop-last vec)
@@ -332,7 +336,7 @@
               :fill "#f6f6f6"
               :filter "url(#shadow)"}]
       [:g {:transform (str "translate(" (/ width 2) "," (/ height 2) ")")}
-       [render/ribbon ribbon-path {}]
+       [render/ribbon ribbon-path render-context]
        [render-edit-overlay ribbon-path]
        (doall
         (for [idx (range num-points)]
