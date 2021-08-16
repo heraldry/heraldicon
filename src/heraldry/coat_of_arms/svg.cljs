@@ -56,6 +56,18 @@
 (defn bounding-box [points]
   (min-max-x-y points))
 
+(defn combine-bounding-boxes [[[first-min-x first-max-x
+                                first-min-y first-max-y] & rest]]
+  (reduce (fn [[min-x max-x min-y max-y]
+               [next-min-x next-max-x next-min-y next-max-y]]
+            [(min min-x next-min-x)
+             (max max-x next-max-x)
+             (min min-y next-min-y)
+             (max max-y next-max-y)])
+          [first-min-x first-max-x
+           first-min-y first-max-y]
+          rest))
+
 (defn center [d]
   (let [path (new-path d)
         points (points path 50)
@@ -408,3 +420,4 @@
                     (into {}))]
     (-> data
         (replace-id-references id-map))))
+
