@@ -61,10 +61,12 @@
         creator-url (attribution/full-url-for-username username)
         url (case attribution-type
               :arms (attribution/full-url-for-arms path context)
-              :charge (attribution/full-url-for-charge path context))]
+              :charge (attribution/full-url-for-charge path context)
+              :ribbon (attribution/full-url-for-ribbon path context))]
     [actual-attribution
      (interface/get-raw-data (conj path :name) context)
      username
      creator-url
      url
      (interface/get-sanitized-data (conj path :attribution) context)]))
+
