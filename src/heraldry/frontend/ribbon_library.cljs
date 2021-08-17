@@ -14,12 +14,12 @@
             [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
             [heraldry.frontend.user :as user]
             [heraldry.interface :as interface]
+            [heraldry.render :as render]
             [heraldry.ribbon :as ribbon]
             [heraldry.util :as util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
-            [taoensso.timbre :as log]
-            [heraldry.render :as render]))
+            [taoensso.timbre :as log]))
 
 (def form-db-path
   [:ribbon-form])
