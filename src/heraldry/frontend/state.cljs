@@ -61,6 +61,21 @@
          (map :variant)
          set)))
 
+(rf/reg-sub :used-ribbons
+  (fn [[_ path] _]
+    (rf/subscribe [:get path]))
+
+  (fn [data [_ _path]]
+    (->> data
+         (tree-seq #(or (map? %)
+                        (vector? %)
+                        (seq? %)) seq)
+         (filter #(and (map? %)
+                       (some-> % :type namespace (= "heraldry.motto.type"))
+                       (-> % :ribbon-variant)))
+         (map :ribbon-variant)
+         set)))
+
 ;; events
 
 
