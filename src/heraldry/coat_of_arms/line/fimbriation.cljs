@@ -2,9 +2,9 @@
   (:require [clojure.walk :as walk]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.interface :as interface]
             [heraldry.options :as options]
-            [heraldry.util :as util]
-            [heraldry.interface :as interface]))
+            [heraldry.util :as util]))
 
 (def type-choices
   [["None" :none]
