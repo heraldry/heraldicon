@@ -47,7 +47,6 @@
                 :choices tincture/choices
                 :default :none
                 :ui {:label "Tincture"
-                     :step 0.01
                      :form-type :tincture-select}}
    :thickness-2 {:type :range
                  :min 1
@@ -59,7 +58,6 @@
                 :choices tincture/choices
                 :default :none
                 :ui {:label "Tincture 2"
-                     :step 0.01
                      :form-type :tincture-select}}
    :ui {:label "Fimbriation"
         :form-type :fimbriation}})
