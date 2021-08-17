@@ -8,6 +8,7 @@
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.modal :as modal]
+            [heraldry.frontend.ribbon :as ribbon]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.ui.element.arms-select :as arms-select]
@@ -28,7 +29,7 @@
 ;; views
 
 (defn charge-attribution []
-  (let [used-charges @(rf/subscribe [:used-charge-variants (conj form-db-path :coat-of-arms)])
+  (let [used-charges @(rf/subscribe [:used-charge-variants form-db-path])
         charges-data (->> used-charges
                           (map charge/fetch-charge-data))]
     (when (-> charges-data first :id)
@@ -43,13 +44,30 @@
               [:context :charge-data]
               {:charge-data charge}])))]])))
 
+(defn ribbon-attribution []
+  (let [used-ribbons @(rf/subscribe [:used-ribbons form-db-path])
+        ribbons-data (->> used-ribbons
+                          (map ribbon/fetch-ribbon-data))]
+    (when (-> ribbons-data first :id)
+      [:<>
+       [:h3 "Ribbons"]
+       [:ul
+        (doall
+         (for [ribbon ribbons-data]
+           (when-let [ribbon-id (:id ribbon)]
+             ^{:key ribbon-id}
+             [attribution/for-ribbon
+              [:context :ribbon-data]
+              {:ribbon-data ribbon}])))]])))
+
 (defn attribution []
   (let [attribution-data (attribution/for-arms form-db-path {})]
     [:div.attribution
      [:h3 "Attribution"]
      [:div {:style {:padding-left "1em"}}
       attribution-data]
-     [charge-attribution]]))
+     [charge-attribution]
+     [ribbon-attribution]]))
 
 (defn render-coat-of-arms []
   [render/achievement
