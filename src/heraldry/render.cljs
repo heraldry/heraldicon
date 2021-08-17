@@ -165,8 +165,12 @@
                        ^{:key idx}
                        [helm (conj elements-path idx) helm-environment context])))]}))))
 
-(defn ribbon [path context & {:keys [outline-thickness]
-                              :or {outline-thickness 1}}]
+(defn ribbon [path
+              tincture-foreground
+              tincture-background
+              tincture-text
+              context & {:keys [outline-thickness]
+                         :or {outline-thickness 1}}]
   (let [thickness (interface/get-sanitized-data (conj path :thickness) context)
         edge-angle (interface/get-sanitized-data (conj path :edge-angle) context)
         end-split (interface/get-sanitized-data (conj path :end-split) context)
@@ -177,7 +181,13 @@
         points (interface/get-raw-data points-path context)
         segments (interface/get-raw-data segments-path context)
         {:keys [curves edge-vectors]} (ribbon/generate-curves points edge-angle)
-        num-curves (count curves)]
+        num-curves (count curves)
+        foreground-colour (tincture/pick tincture-foreground context)
+        background-colour (if (= tincture-background :none)
+                            (svg/darken-colour foreground-colour)
+
+                            (tincture/pick tincture-background context))
+        text-colour (tincture/pick tincture-text context)]
     [:<>
      (doall
       (for [[idx partial-curve] (->> curves
@@ -237,8 +247,8 @@
                                  (when outline?
                                    {:stroke-width outline-thickness})
                                  {:fill (if foreground?
-                                          "#dddddd"
-                                          "#888888")})}]
+                                          foreground-colour
+                                          background-colour)})}]
            (when text?
              (let [path-id (util/id "path")
                    spacing (interface/get-sanitized-data (conj segment-path :spacing) context)
@@ -251,7 +261,7 @@
                    spacing (* spacing font-size)
                    text-offset (v/* first-edge-vector (- 0.6 offset-y))]
                [:text.no-select {:transform (str "translate(" (:x text-offset) "," (:y text-offset) ")")
-                                 :fill "#666666"
+                                 :fill text-colour
                                  :text-anchor "middle"
                                  :style {:font-family font
                                          :font-size font-size}}
@@ -271,6 +281,9 @@
         points (interface/get-raw-data (conj ribbon-path :points) context)]
     (if points
       (let [origin-point (interface/get-sanitized-data (conj path :origin :point) context)
+            tincture-foreground (interface/get-sanitized-data (conj path :tincture-foreground) context)
+            tincture-background (interface/get-sanitized-data (conj path :tincture-background) context)
+            tincture-text (interface/get-sanitized-data (conj path :tincture-text) context)
             offset-x (interface/get-sanitized-data (conj path :origin :offset-x) context)
             offset-y (interface/get-sanitized-data (conj path :origin :offset-y) context)
             size (interface/get-sanitized-data (conj path :geometry :size) context)
@@ -296,7 +309,12 @@
         {:result [:g {:transform (str "translate(" (:x position) "," (:y position) ")"
                                       "scale(" scale "," scale ")"
                                       "translate(" (:x shift) "," (:y shift) ")")}
-                  [ribbon ribbon-path context :outline-thickness outline-thickness]]
+                  [ribbon
+                   ribbon-path
+                   tincture-foreground
+                   tincture-background
+                   tincture-text
+                   context :outline-thickness outline-thickness]]
          :bounding-box (let [top-left (-> (v/v min-x min-y)
                                           (v/+ shift)
                                           (v/* scale)
