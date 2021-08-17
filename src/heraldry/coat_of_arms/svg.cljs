@@ -283,6 +283,19 @@
       (-convert-rgb colour)
       colour))
 
+(defn darken-colour [colour]
+  (let [[_ r1 r2 g1 g2 b1 b2] (normalize-colour colour)
+        r (js/parseInt (str r1 r2) 16)
+        g (js/parseInt (str g1 g2) 16)
+        b (js/parseInt (str b1 b2) 16)
+        new-r (quot r 2)
+        new-g (quot g 2)
+        new-b (quot b 2)]
+    (str "#"
+         (-to-hex-2 new-r)
+         (-to-hex-2 new-g)
+         (-to-hex-2 new-b))))
+
 (defn jiggle [[previous
                {:keys [x y] :as current}
                _]]

@@ -7,9 +7,23 @@
   [:<>
    (for [option [:type
                  :origin
-                 :geometry
-                 :ribbon-variant]]
+                 :geometry]]
      ^{:key option} [ui-interface/form-element (conj path option)])
+
+   [:div {:style {:font-size "1.3em"
+                  :margin-top "0.5em"
+                  :margin-bottom "0.5em"}} "Tincture"]
+
+   (for [option [:tincture-foreground
+                 :tincture-background
+                 :tincture-text]]
+     ^{:key option} [ui-interface/form-element (conj path option)])
+
+   [:div {:style {:font-size "1.3em"
+                  :margin-top "0.5em"
+                  :margin-bottom "0.5em"}} "Ribbon"]
+
+   [ui-interface/form-element (conj path :ribbon-variant)]
 
    (when @(rf/subscribe [:get-value (conj path :ribbon-variant)])
      (let [ribbon-path (conj path :ribbon)]

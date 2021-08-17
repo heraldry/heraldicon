@@ -1,11 +1,11 @@
 (ns heraldry.frontend.ui.element.tincture-select
-  (:require [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.state :as state]
+  (:require [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.options :as options]
             [heraldry.static :as static]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (defn tincture-choice [path key display-name & {:keys [selected?]}]
@@ -27,12 +27,13 @@
     (let [current-value @(rf/subscribe [:get-value path])
           {:keys [ui choices]} option
           value (options/get-value current-value option)
+          tincture-map (util/choices->map choices)
           label (or (:label ui) "Tincture")]
       [:div.ui-setting
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path "Select Tincture" (get tincture/tincture-map value) {:style {:width "22em"}}
+        [submenu/submenu path "Select Tincture" (get tincture-map value) {:style {:width "22em"}}
          (doall
           (for [[group-name & group] choices]
             ^{:key group-name}
@@ -47,3 +48,4 @@
 
 (defmethod interface/form-element :tincture-select [path]
   [tincture-select path])
+
