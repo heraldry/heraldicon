@@ -1,11 +1,9 @@
 .shadow-cljs
 .DS_Store
 
-release
 /**/generated/
 /**/node_modules/
 backend
 
 .cpcache
-
-/frontend/build
+build
