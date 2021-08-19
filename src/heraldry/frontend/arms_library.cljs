@@ -336,4 +336,3 @@
         version (-> parameters :path :version)
         arms-id (str "arms:" id)]
     [arms-display arms-id version]))
-

@@ -86,4 +86,3 @@
     (if (-> manual-blazon count pos?)
       manual-blazon
       (blazon-component path context))))
-

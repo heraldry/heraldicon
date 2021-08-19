@@ -231,4 +231,3 @@
           [:path {:d charge-shape}]
           (when mask-shape
             [:path {:d mask-shape}])])]]]))
-

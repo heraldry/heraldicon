@@ -266,4 +266,3 @@
       :joint-angle joint-angle
       :corner-point corner-lower
       :swap-lines? true]]))
-

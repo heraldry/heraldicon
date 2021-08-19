@@ -157,4 +157,3 @@
                                         (cond-> context
                                           (> number 1) (assoc-in [:blazonry :pluralize?] true)))))
                used-charges)))))
-

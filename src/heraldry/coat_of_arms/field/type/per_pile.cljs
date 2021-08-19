@@ -159,4 +159,3 @@
       environment context]
      [line/render line [line-left-data
                         line-right-data] left-point outline? context]]))
-

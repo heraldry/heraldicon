@@ -28,4 +28,3 @@
    :choices choices
    :default default
    :ui {:label "Font"}})
-

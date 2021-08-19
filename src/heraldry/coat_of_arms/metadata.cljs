@@ -69,4 +69,3 @@
      creator-url
      url
      (interface/get-sanitized-data (conj path :attribution) context)]))
-

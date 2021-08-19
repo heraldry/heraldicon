@@ -174,4 +174,3 @@
 
 (defmethod interface/component-options :heraldry.component/charge [_path data]
   (options data))
-

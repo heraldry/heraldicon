@@ -374,4 +374,3 @@
         version (-> parameters :path :version)
         collection-id (str "collection:" id)]
     [collection-display collection-id version]))
-

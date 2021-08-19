@@ -200,4 +200,3 @@
                           (if (< split-index (dec num-curves))
                             (subvec curve (inc split-index))
                             [])))}))
-

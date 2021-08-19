@@ -215,4 +215,3 @@
           (str "https://coa.to/" (id-for-url id))
           (str "https://coa.to/" (id-for-url id) "/" version))))
     "https://dev"))
-

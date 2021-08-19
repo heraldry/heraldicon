@@ -14,4 +14,3 @@
 
 (defmethod interface/blazon-component :heraldry.component/coat-of-arms [path context]
   (interface/blazon (conj path :field) (assoc-in context [:blazonry :root?] true)))
-

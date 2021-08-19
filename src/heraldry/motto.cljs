@@ -70,4 +70,3 @@
 
 (defmethod interface/component-options :heraldry.component/motto [_path data]
   (options data))
-

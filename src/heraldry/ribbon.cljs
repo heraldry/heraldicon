@@ -241,4 +241,3 @@
                  end-point (v/+ start-point edge-vector)]
              [(project-path-to curve2 split-point start-point :reverse? true)
               (project-path-to curve2 split-point end-point)]))))
-

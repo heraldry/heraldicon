@@ -143,4 +143,3 @@
                          (- distance)))
       :alignment :left
       :swap-lines? true]]))
-

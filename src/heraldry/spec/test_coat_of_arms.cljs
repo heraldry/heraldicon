@@ -219,4 +219,3 @@
     :heraldry/render-options {:squiggly? "foo"}
 
     :heraldry/render-options {:escutcheon :does-not-exist}))
-

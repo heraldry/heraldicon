@@ -504,4 +504,3 @@
                :style {:font-family "DejaVuSans"
                        :font-size font-size}}
         short-url])]))
-

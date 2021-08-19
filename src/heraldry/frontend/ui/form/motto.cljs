@@ -41,4 +41,3 @@
 
 (defmethod ui-interface/component-form-data :heraldry.component/motto [_path]
   {:form form})
-

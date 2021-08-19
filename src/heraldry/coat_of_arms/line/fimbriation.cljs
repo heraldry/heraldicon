@@ -202,4 +202,3 @@
            (blazon-fimbriation (interface/get-sanitized-data (conj path :extra-line :fimbriation) context))]))
        distinct
        (util/combine ", ")))
-

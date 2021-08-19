@@ -259,4 +259,3 @@
 
 (defmethod interface/component-options :heraldry.component/cottise [_path _data]
   nil)
-

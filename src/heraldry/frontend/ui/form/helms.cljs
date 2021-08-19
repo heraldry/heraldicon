@@ -39,4 +39,3 @@
 
 (defmethod ui-interface/component-form-data :heraldry.component/helms [_path]
   {:form form})
-

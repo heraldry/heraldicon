@@ -114,4 +114,3 @@
    :attribution (attribution/options (:attribution data))
    :ribbon (ribbon/options (:ribbon data))
    :tags {:ui {:form-type :tags}}})
-

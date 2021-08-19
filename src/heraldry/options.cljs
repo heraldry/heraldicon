@@ -117,4 +117,3 @@
        (not= (get sanitized-data key)
              (or (-> options (get key) :inherited)
                  (-> options (get key) :default)))))
-

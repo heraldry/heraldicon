@@ -38,4 +38,3 @@
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
                              :on-click #(user/sign-up-modal)} "Register"]]])]]))
-

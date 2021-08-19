@@ -547,4 +547,3 @@
         version (-> parameters :path :version)
         ribbon-id (str "ribbon:" id)]
     [ribbon-display ribbon-id version]))
-

@@ -232,4 +232,3 @@
 (defn selected-component []
   (let [selected-component-path @(rf/subscribe [:ui-component-node-selected-path])]
     [component-form selected-component-path]))
-

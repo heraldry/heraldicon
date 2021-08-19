@@ -63,4 +63,3 @@
 
 (defmethod interface/form-element :ribbon-reference-select [path]
   [ribbon-reference-select path])
-

@@ -16,4 +16,3 @@
    :fill "none"
    :stroke-linecap "round"
    :stroke-linejoin "round"})
-

@@ -318,4 +318,3 @@
 
 (defmethod ui-interface/component-form-data :heraldry.component/ribbon-general [_path]
   {:form form})
-

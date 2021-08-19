@@ -180,4 +180,3 @@
                                                  :heraldry.render-options/texture
                                                  :heraldry.render-options/texture-displacement?
                                                  :heraldry.render-options/escutcheon]))
-

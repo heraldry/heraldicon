@@ -9,4 +9,3 @@
 
 (defmethod interface/component-options :heraldry.component/mottos [_path data]
   (options data))
-

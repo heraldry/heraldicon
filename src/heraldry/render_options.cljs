@@ -84,4 +84,3 @@
                                                                     :default :none
                                                                     :ui {:label "Escutcheon"
                                                                          :form-type :escutcheon-select}})))
-
