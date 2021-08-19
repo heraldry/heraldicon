@@ -22,4 +22,3 @@
 
 (defmethod interface/component-form-data :heraldry.component/render-options [_path]
   {:form form})
-

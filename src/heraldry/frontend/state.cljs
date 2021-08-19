@@ -375,4 +375,3 @@
 
 (defmethod interface/get-counterchange-tinctures :state [path context]
   @(rf/subscribe [:get-counterchange-tinctures path context]))
-

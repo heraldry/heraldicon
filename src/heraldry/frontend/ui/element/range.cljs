@@ -70,4 +70,3 @@
 
 (defmethod interface/form-element :range [path]
   [range-input path])
-

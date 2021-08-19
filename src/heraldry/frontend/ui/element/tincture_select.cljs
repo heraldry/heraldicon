@@ -48,4 +48,3 @@
 
 (defmethod interface/form-element :tincture-select [path]
   [tincture-select path])
-

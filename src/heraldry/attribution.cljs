@@ -174,4 +174,3 @@
 
 (defn full-url-for-username [username]
   (str (config/get :heraldry-url) "/users/" username))
-

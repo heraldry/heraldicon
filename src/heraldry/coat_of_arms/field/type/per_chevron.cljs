@@ -131,4 +131,3 @@
       environment context]
      [line/render line [line-left-data
                         line-right-data] diagonal-left outline? context]]))
-

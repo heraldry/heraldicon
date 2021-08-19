@@ -114,4 +114,3 @@
 
 (def slogan
   {:type :heraldry.motto.type/slogan})
-

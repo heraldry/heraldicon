@@ -58,4 +58,3 @@
       (when (= status :done)
         ribbon-data))
     (log/error "error fetching ribbon data, invalid variant:" variant)))
-

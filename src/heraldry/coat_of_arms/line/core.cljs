@@ -657,4 +657,3 @@
                           (#{:single :double} mode))))
        [:g (outline/style context)
         [:path {:d line-path}]])]))
-

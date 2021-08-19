@@ -288,4 +288,3 @@
    (fn [m] (reset! current-match m))
    ;; set to false to enable HistoryAPI
    {:use-fragment false}))
-

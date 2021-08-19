@@ -93,4 +93,3 @@
        link-to-ribbon
        #(invalidate-ribbon-cache :all)]
       [:div "loading..."])))
-

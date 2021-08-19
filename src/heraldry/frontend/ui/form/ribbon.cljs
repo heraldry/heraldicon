@@ -26,4 +26,3 @@
 
 (defmethod interface/component-form-data :heraldry.component/charge [_path]
   {:form form})
-

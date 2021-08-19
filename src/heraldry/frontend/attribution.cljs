@@ -73,4 +73,3 @@
 
 (defn for-ribbon [path context]
   [general path :ribbon context])
-

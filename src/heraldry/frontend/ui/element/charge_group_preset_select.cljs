@@ -326,4 +326,3 @@
         (for [[display-name key charge-group charge-adjustments] group]
           ^{:key display-name}
           [charge-group-preset-choice path key charge-group charge-adjustments display-name])])]]])
-

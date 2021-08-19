@@ -243,4 +243,3 @@
          :joint-angle (* 2 half-joint-angle)
          :corner-point corner-point
          :swap-lines? true])]]))
-

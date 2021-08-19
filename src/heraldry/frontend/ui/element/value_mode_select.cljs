@@ -74,4 +74,3 @@
          menu
          [:i.ui-icon {:class "fas fa-cog"}]
          :disabled? disabled?]])]))
-

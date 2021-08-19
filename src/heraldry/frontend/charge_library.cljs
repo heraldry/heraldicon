@@ -416,4 +416,3 @@
         version (-> parameters :path :version)
         charge-id (str "charge:" id)]
     [charge-display charge-id version]))
-
