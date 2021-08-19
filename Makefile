@@ -1,11 +1,3 @@
-setup-sharp-linux:
-	rm -rf backend/node_modules/sharp 2> /dev/null || true
-	cp -r backend/linux-sharp/ backend/node_modules/sharp
-
-setup-sharp-osx:
-	rm -rf backend/node_modules/sharp > /dev/null || true
-	ln -s ../osx-sharp backend/node_modules/sharp
-
 COMMIT = $(shell git rev-parse --short HEAD)
 
 # PROD
@@ -19,9 +11,7 @@ prod-backend-release:
 	yarn shadow-cljs release backend --config-merge '$(PROD_CONFIG)'
 
 prod-backend-deploy: check-before-deploy-backend prod-backend-release
-	make setup-sharp-linux
 	cd backend && yarn sls deploy --stage prod
-	make setup-sharp-osx
 	cd backend && git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
 	git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
 
@@ -50,9 +40,7 @@ staging-backend-release:
 	yarn shadow-cljs release backend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-to "./backend/build/staging/backend.js"}'
 
 staging-backend-deploy: staging-backend-release
-	make setup-sharp-linux
 	cd backend && yarn sls deploy --stage staging
-	make setup-sharp-osx
 
 staging-frontend-release:
 	rm -rf $(STAGING_FRONTEND_RELEASE_DIR) 2> /dev/null || true
