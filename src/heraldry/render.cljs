@@ -209,6 +209,23 @@
                                                                (catmullrom/svg-line-to second-edge-vector)
                                                                (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
                                                                (catmullrom/svg-line-to (v/* first-edge-vector -1)))
+                          ;; special case of only one segment with end-split > 0
+                          (and (pos? end-split)
+                               (zero? idx)
+                               (= idx (dec num-curves))) (str top-edge
+                                                              (util/combine " "
+                                                                            (ribbon/split-end
+                                                                             :end
+                                                                             partial-curve
+                                                                             (/ end-split 2)
+                                                                             second-edge-vector))
+                                                              (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                              (util/combine " "
+                                                                            (ribbon/split-end
+                                                                             :start
+                                                                             partial-curve
+                                                                             (/ end-split 2)
+                                                                             first-edge-vector)))
                           (and (pos? end-split)
                                (zero? idx)) (str top-edge
                                                  (catmullrom/svg-line-to second-edge-vector)

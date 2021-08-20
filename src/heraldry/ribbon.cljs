@@ -228,7 +228,8 @@
     (project-path-to top-curve new-start new-end :reverse? true)))
 
 (defn split-end [kind curve percentage edge-vector]
-  (let [{:keys [curve1 curve2]} (catmullrom/split-curve-at curve (cond-> (/ percentage 100)
+  (let [curve (vec curve)
+        {:keys [curve1 curve2]} (catmullrom/split-curve-at curve (cond-> (/ percentage 100)
                                                                    (= kind :end) (->> (- 1))))
         split-point (-> (apply v/v (ffirst curve2))
                         (v/+ (v// edge-vector 2)))]
