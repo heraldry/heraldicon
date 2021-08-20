@@ -277,15 +277,21 @@
                    font-scale (interface/get-sanitized-data (conj segment-path :font-scale) context)
                    font-size (* font-scale thickness)
                    spacing (* spacing font-size)
-                   text-offset (v/* first-edge-vector (- 0.6 offset-y))]
-               [:text.no-select {:transform (str "translate(" (:x text-offset) "," (:y text-offset) ")")
-                                 :fill text-colour
+                   text-path-start (v/+ (apply v/v (ffirst partial-curve))
+                                        (v/* first-edge-vector (- 0.6 offset-y)))
+                   text-path-end (v/+ (apply v/v (last (last partial-curve)))
+                                      (v/* second-edge-vector (- 0.6 offset-y)))
+                   text-path (ribbon/project-path-to
+                              partial-curve
+                              text-path-start
+                              text-path-end)]
+               [:text.no-select {:fill text-colour
                                  :text-anchor "middle"
                                  :style {:font-family font
                                          :font-size font-size}}
                 [:defs
                  [:path {:id path-id
-                         :d top-edge}]]
+                         :d (str "M " (:x text-path-start) "," (:y text-path-start) text-path)}]]
                 [:textPath {:href (str "#" path-id)
                             :alignment-baseline "middle"
                             :method "align"
