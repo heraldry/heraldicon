@@ -1,5 +1,6 @@
 (ns heraldry.render
   (:require [clojure.string :as s]
+            [heraldry.backend.output :as output]
             [heraldry.coat-of-arms.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.environment :as environment]
@@ -373,9 +374,29 @@
                  (- 0 (/ total-width 2) min-x) ","
                  (- 0 (/ total-height 2) min-y) ")")}))
 
+(defn get-used-fonts [path context]
+  (let [mottos-elements-path (conj path :mottos :elements)
+        num-mottos (interface/get-list-size mottos-elements-path context)]
+    (->> (for [i (range num-mottos)
+               j (range (interface/get-list-size (conj
+                                                  mottos-elements-path
+                                                  i
+                                                  :ribbon
+                                                  :segments) context))]
+           (interface/get-sanitized-data (conj
+                                          mottos-elements-path
+                                          i
+                                          :ribbon
+                                          :segments
+                                          j
+                                          :font) context))
+         (filter identity)
+         (into #{}))))
+
 (defn achievement [path {:keys [short-url
                                 svg-export?] :as context}]
-  (let [coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
+  (let [short-url-font :deja-vu-sans
+        coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
         scope (interface/render-option :scope context)
         coa-angle-rad-abs (-> coat-of-arms-angle
                               Math/abs
@@ -441,12 +462,16 @@
         {mottos-result :result
          mottos-bounding-box :bounding-box} (if (= scope :coat-of-arms)
                                               {:bounding-box [0 0 0 0]
-                                               :result nil}
+                                               :result nil
+                                               :used-fonts #{}}
                                               (mottos
                                                (conj path :mottos)
                                                coa-and-helms-width
                                                coa-and-helms-height
                                                context))
+
+        used-fonts (cond-> (get-used-fonts path context)
+                     short-url (conj short-url-font))
 
         achievement-bounding-box (svg/combine-bounding-boxes
                                   (cond-> [[0 coa-and-helms-width
@@ -473,6 +498,8 @@
               :height document-height}
              {:style {:width "100%"}
               :preserveAspectRatio "xMidYMin meet"}))
+     (when svg-export?
+       [output/embed-fonts used-fonts])
      [:g {:transform (str "translate(" margin "," margin ")")}
       [:g {:transform achievement-transform
            :style {:transition "transform 0.5s"}}
@@ -501,6 +528,6 @@
                      margin)
                :text-align "start"
                :fill "#888"
-               :style {:font-family "DejaVuSans"
+               :style {:font-family (font/css-string short-url-font)
                        :font-size font-size}}
         short-url])]))

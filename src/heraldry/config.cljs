@@ -24,7 +24,8 @@
            :fleur-de-lis-charge-id "charge:RnHzw8"
            :torse-charge-id "charge:6A691Q"
            :helmet-charge-id "charge:Af7tBN"
-           :static-files-url "http://localhost:8081"}
+           :static-files-url "http://localhost:8081"
+           :base-font-dir "/Users/oliver/dev/armory/assets/font"}
 
     "staging" {:heraldry-api-endpoint "https://ru73nh6ozg.execute-api.eu-central-1.amazonaws.com/api"
                :heraldry-url "https://staging.heraldry.digital"
@@ -34,7 +35,8 @@
                :fleur-de-lis-charge-id "charge:RnHzw8"
                :torse-charge-id "charge:6A691Q"
                :helmet-charge-id "charge:Af7tBN"
-               :static-files-url "https://cdn.staging.heraldry.digital"}
+               :static-files-url "https://cdn.staging.heraldry.digital"
+               :base-font-dir "./assets/font"}
 
     "prod" {:heraldry-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/api"
             :heraldry-url "https://heraldry.digital"
@@ -45,7 +47,8 @@
             :torse-charge-id "charge:8vwlZ2"
             :helmet-charge-id "charge:hlsnvP"
             :bucket-data "data.heraldry.digital"
-            :static-files-url "https://cdn.heraldry.digital"}))
+            :static-files-url "https://cdn.heraldry.digital"
+            :base-font-dir "./assets/font"}))
 
 #_{:clj-kondo/ignore [:redefined-var]}
 (defn get [setting]
