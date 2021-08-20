@@ -69,7 +69,7 @@
    :variant {:id (config/get :helmet-charge-id)
              :version 0}
    :origin {:point :bottom
-            :offset-x -10
+            :offset-x 0
             :offset-y 20}
    :geometry {:size 100}
    :field (-> field
@@ -83,7 +83,7 @@
    :variant {:id (config/get :torse-charge-id)
              :version 0}
    :origin {:point :fess
-            :offset-x 5
+            :offset-x 15
             :offset-y -1}
    :geometry {:size 60}
    :field (-> field
