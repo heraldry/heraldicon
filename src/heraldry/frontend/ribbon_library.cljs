@@ -303,6 +303,17 @@
                        :stroke-linecap "round"
                        :fill "none"}}])]))
 
+(defn grid-lines [width height dx dy]
+  [:g {:style {:stroke "#bbbbbb"
+               :stroke-width 0.2
+               :fill "none"}}
+   (for [x (range 0 (inc width) dx)]
+     ^{:key x}
+     [:path {:d (str "M " x ",0 v" height)}])
+   (for [y (range 0 (inc height) dy)]
+     ^{:key y}
+     [:path {:d (str "M 0," y " h" width)}])])
+
 (defn preview []
   (let [[width height] [preview-width preview-height]
         ribbon-path (conj form-db-path :ribbon)
@@ -335,6 +346,9 @@
               :height height
               :fill "#f6f6f6"
               :filter "url(#shadow)"}]
+      (when-not (= edit-mode :none)
+        [grid-lines width height 20 20])
+
       [:g {:transform (str "translate(" (/ width 2) "," (/ height 2) ")")}
        [render/ribbon ribbon-path :argent :none :helmet-dark render-context]
        [render-edit-overlay ribbon-path]
