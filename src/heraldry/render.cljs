@@ -340,14 +340,14 @@
                                            height]})
         mottos-data (vec
                      (for [idx (range num-mottos)]
-                       (let [{:keys [result
-                                     bounding-box]} (motto (conj elements-path idx) motto-environment context)]
-                         [idx result bounding-box])))
-        combined-bounding-box (svg/combine-bounding-boxes
-                               (keep last mottos-data))]
+                       (-> (motto (conj elements-path idx) motto-environment context)
+                           (assoc :idx idx))))
+        combined-bounding-box (->> mottos-data
+                                   (keep :bounding-box)
+                                   svg/combine-bounding-boxes)]
     {:result [:g
               (doall
-               (for [[idx result _] mottos-data]
+               (for [{:keys [idx result]} mottos-data]
                  ^{:key idx}
                  [:<> result]))]
      :bounding-box combined-bounding-box}))
