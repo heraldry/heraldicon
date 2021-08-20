@@ -453,7 +453,7 @@
         coa-and-helms-bounding-box (svg/combine-bounding-boxes
                                     (cond-> [coat-of-arms-bounding-box]
                                       helms-result (conj helms-bounding-box)))
-        target-width 500
+        target-width 1000
         {coa-and-helms-width :target-width
          coa-and-helms-height :target-height
          coa-and-helms-transform :transform} (transform-bounding-box
