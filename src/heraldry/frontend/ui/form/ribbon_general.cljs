@@ -235,9 +235,7 @@
            [segment-form segment-path])))]
 
      [:p {:style {:color "#f86"}}
-      "The PNG export currently doesn't support text on the ribbons. Hopefully this will change in the future, in the meantime best export an SVG and convert it locally or take a screenshot."]
-     [:p {:style {:color "#f86"}}
-      "The SVG export doesn't include the fonts, you'll need to install those locally."]]))
+      "The SVG export embeds the fonts, but some programs might not display them correctly. At least Chrome should display it."]]))
 
 (defn form [path _]
   [:<>
