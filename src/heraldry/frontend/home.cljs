@@ -19,6 +19,39 @@
     [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll "
      "group some features and new development and post an update here, so it is easy to stay informed."]]
 
+   [:h3 "2021-08-20 - helms/crests, mottos/slogans, ribbon editor + library"]
+   [:div.release-row
+    [:div.info
+     [:p "Changes and new features:"]
+     [:ul
+      [:li "Helms/crests"
+       [:ul
+        [:li "helmets, torses, crests or any combination of them can now be added"]
+        [:li "multiple helms are supported next to each other, they auto resize"]
+        [:li "for the helmets three new tinctures were introduced: light, medium, dark, but a helmet is just a charge, so it has a normal field that allows any other modifications of a field"]]]
+
+      [:li "Ribbons and mottos/slogans"
+       [:ul
+        [:li "a ribbon library can now be used to (hopefully easily) create dynamic ribbons to be used with mottos and slogans"]
+        [:li "ribbons try to be reusable for many cases, things like thickness, size, the split of the ribbon's ends, various text properties for its segments can be changed in the arms where they are used"]
+        [:li "mottos/slogans can live below/above the escutcheon (or overlap it) and be tinctured (foreground, background, text)"]]]
+
+      [:li "the escutcheon can now be rotated freely from -45° to 45°, helms will settle at the respective top corner"]
+      [:li "the SVG/PNG export is improved, now using a headless Chromium in the backend to generate pretty much the same as the preview on the page"]
+      [:li "the PNG export yields a higher resolution"]
+      [:li "charges can be masked vertically (top or bottom) to be able to make demi-charges that are issuant from behind torses or ordinaries or other charges, as can be seen in the examples in the crest and the lion behind a thin fess"]]
+
+     [:p "Known issues:"]
+     [:ul
+      [:li "helms and mottos are labeled 'alpha', because they are bound to change still, positioning might change in the future"]
+      [:li "the ribbon editor definitely needs more work to be more user friendly or have better explanation"]
+      [:li "the default position for helmet/torse/crest is somewhat sensible only for the default helmet and torse right now, for others it needs to be tweaked manually, this should improve in the future"]
+      [:li "similarly slogans are positioned rather high above the escutcheon to make room for helm crests, even if there aren't any; again this should be smarter in the future"]
+      [:li "fonts are embedded in exported SVGs, some editors/viewers won't display them correctly due to the different way some SVG markup is interpreted, Chrome should work"]]]
+
+    [:div
+     (release-image "/img/2021-08-20-release-update.png")]]
+
    [:h3 "2021-07-30 - UI rewrite, validation system, social media sharing"]
    [:div.release-row
     [:div.info
