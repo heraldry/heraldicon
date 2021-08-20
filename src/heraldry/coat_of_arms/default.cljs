@@ -107,7 +107,7 @@
   {:ribbon {:thickness nil
             :points [(v/v -150 -20) (v/v -75 0) (v/v 0 5) (v/v 75 0) (v/v 150 -20)]
             :segments [{:type :heraldry.ribbon.segment/foreground-with-text
-                        :text "* LOREM IPSUM *"}]}})
+                        :text "LOREM IPSUM"}]}})
 
 (def motto
   {:type :heraldry.motto.type/motto})
