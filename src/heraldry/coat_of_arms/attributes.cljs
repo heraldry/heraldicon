@@ -99,6 +99,9 @@
     ["Leaved" :leaved]
     ["Seeded" :seeded]
     ["Slipped" :slipped]]
+   ["Helmet"
+    ["Barred" :barred]
+    ["Trimmed" :trimmed]]
    ["Other"
     ["Caparisoned" :caparisoned]
     ["Collared" :collared]
