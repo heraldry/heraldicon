@@ -4,7 +4,7 @@
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.vector.core :as v]
             [heraldry.interface :as interface]
             [heraldry.svg :as svg]
             [heraldry.util :as util]))

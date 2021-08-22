@@ -7,7 +7,7 @@
             [clojure.walk :as walk]
             [heraldry.coat-of-arms.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.random :as random]
-            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.vector.core :as v]
             [heraldry.util :as util]))
 
 (defn clean-path [d]

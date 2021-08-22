@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.shared.pile
   (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.vector.core :as v]
             [heraldry.util :as util]))
 
 (defn diagonals [origin-point point-point size]

@@ -6,7 +6,7 @@
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.shared.saltire :as saltire]
-            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.vector.core :as v]
             [heraldry.interface :as interface]
             [heraldry.svg :as svg]
             [heraldry.util :as util]))

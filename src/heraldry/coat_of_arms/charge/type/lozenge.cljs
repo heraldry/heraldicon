@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.charge.type.lozenge
   (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
             [heraldry.coat-of-arms.charge.shared :as charge-shared]
-            [heraldry.coat-of-arms.vector :as v]))
+            [heraldry.vector.core :as v]))
 
 (def charge-type :heraldry.charge.type/lozenge)
 

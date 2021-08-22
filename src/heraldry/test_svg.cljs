@@ -1,7 +1,7 @@
 (ns heraldry.test-svg
   (:require [cljs.test :refer-macros [deftest are]]
             [heraldry.svg :as svg]
-            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.vector.core :as v]
             [taoensso.timbre :as log]))
 
 (deftest reverse-path
