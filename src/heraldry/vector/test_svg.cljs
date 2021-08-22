@@ -1,4 +1,4 @@
-(ns heraldry.test-svg
+(ns heraldry.vector.test-svg
   (:require [cljs.test :refer-macros [deftest are]]
             [heraldry.vector.svg :as svg]
             [heraldry.vector.core :as v]
