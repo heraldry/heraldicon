@@ -6,7 +6,7 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.vector.core :as v]
             [heraldry.interface :as interface]
-            [heraldry.svg :as svg]))
+            [heraldry.vector.svg :as svg]))
 
 (def field-type :heraldry.field.type/per-bend-sinister)
 

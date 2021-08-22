@@ -6,7 +6,7 @@
             [heraldry.coat-of-arms.shared.pile :as pile]
             [heraldry.vector.core :as v]
             [heraldry.interface :as interface]
-            [heraldry.svg :as svg]
+            [heraldry.vector.svg :as svg]
             [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/per-pile)

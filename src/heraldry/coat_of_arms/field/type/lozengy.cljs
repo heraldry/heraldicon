@@ -3,7 +3,7 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.interface :as interface]
-            [heraldry.svg :as svg]
+            [heraldry.vector.svg :as svg]
             [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/lozengy)

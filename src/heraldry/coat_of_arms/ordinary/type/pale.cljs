@@ -7,7 +7,7 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.vector.core :as v]
             [heraldry.interface :as interface]
-            [heraldry.svg :as svg]
+            [heraldry.vector.svg :as svg]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/pale)

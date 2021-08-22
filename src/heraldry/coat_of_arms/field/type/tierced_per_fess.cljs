@@ -7,7 +7,7 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.vector.core :as v]
             [heraldry.interface :as interface]
-            [heraldry.svg :as svg]))
+            [heraldry.vector.svg :as svg]))
 
 (def field-type :heraldry.field.type/tierced-per-fess)
 

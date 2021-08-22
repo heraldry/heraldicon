@@ -5,7 +5,7 @@
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.vector.core :as v]
             [heraldry.interface :as interface]
-            [heraldry.svg :as svg]))
+            [heraldry.vector.svg :as svg]))
 
 (def charge-type :heraldry.charge.type/escutcheon)
 
