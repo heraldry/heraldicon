@@ -19,7 +19,6 @@
             [heraldry.collection.options] ;; needed for side effects
             [heraldry.font :as font]
             [heraldry.helm] ;; needed for side effects
-            [heraldry.helms] ;; needed for side effects
             [heraldry.interface :as interface]
             [heraldry.motto] ;; needed for side effects
             [heraldry.mottos] ;; needed for side effects
