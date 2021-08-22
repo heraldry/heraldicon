@@ -4,9 +4,9 @@
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.interface :as interface]))
+            [heraldry.interface :as interface]
+            [heraldry.svg :as svg]))
 
 (def field-type :heraldry.field.type/per-bend)
 
@@ -96,4 +96,4 @@
       path parts
       [:all nil]
       environment context]
-     [ line/render line [line-one-data] diagonal-start outline? context ]]))
+     [line/render line [line-one-data] diagonal-start outline? context]]))

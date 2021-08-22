@@ -2,11 +2,11 @@
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
             [heraldry.coat-of-arms.catmullrom :as catmullrom]
-            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.font :as font]
             [heraldry.interface :as interface]
-            [heraldry.options :as options]))
+            [heraldry.options :as options]
+            [heraldry.svg :as svg]))
 
 (def default-options
   {:thickness {:type :range

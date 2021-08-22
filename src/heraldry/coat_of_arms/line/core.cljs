@@ -26,11 +26,11 @@
             [heraldry.coat-of-arms.line.type.wavy :as wavy]
             [heraldry.coat-of-arms.line.type.wolf-toothed :as wolf-toothed]
             [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
+            [heraldry.svg :as svg]
             [heraldry.util :as util]))
 
 (defn line-base [{:keys [base-line]} {line-min :min

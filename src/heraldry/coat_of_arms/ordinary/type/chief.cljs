@@ -1,13 +1,13 @@
 (ns heraldry.coat-of-arms.ordinary.type.chief
-  (:require [heraldry.coat-of-arms.field.shared :as field-shared]
+  (:require [heraldry.coat-of-arms.cottising :as cottising]
+            [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.util :as util]
-            [heraldry.coat-of-arms.cottising :as cottising]))
+            [heraldry.svg :as svg]
+            [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/chief)
 
@@ -80,7 +80,7 @@
       (conj path :field) part
       :all
       environment context]
-     [ line/render line [line-reversed-data] row-right outline? context ]
+     [line/render line [line-reversed-data] row-right outline? context]
      [cottising/render-fess-cottise
       :cottise-1 :cottise-2 :cottise-opposite-1
       path environment cottise-context

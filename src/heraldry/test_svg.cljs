@@ -1,6 +1,6 @@
-(ns heraldry.coat-of-arms.test-svg
+(ns heraldry.test-svg
   (:require [cljs.test :refer-macros [deftest are]]
-            [heraldry.coat-of-arms.svg :as svg]
+            [heraldry.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [taoensso.timbre :as log]))
 

@@ -4,9 +4,9 @@
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.interface :as interface]
+            [heraldry.svg :as svg]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/bend)
@@ -153,8 +153,8 @@
           (assoc :transform (when (not use-parent-environment?)
                               (str "translate(" (v/->str ordinary-top-left) ")"
                                    "rotate(" angle ")"))))]
-     [ line/render line [line-one-data] first-start outline? context ]
-     [ line/render opposite-line [line-reversed-data] second-end outline? context ]
+     [line/render line [line-one-data] first-start outline? context]
+     [line/render opposite-line [line-reversed-data] second-end outline? context]
      [cottising/render-bend-cottise
       :cottise-1 :cottise-2 :cottise-1
       path environment cottise-context

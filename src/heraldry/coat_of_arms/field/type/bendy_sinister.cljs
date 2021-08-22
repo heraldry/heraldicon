@@ -4,7 +4,6 @@
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.field.type.barry :as barry]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.interface :as interface]
             [heraldry.interface :as interface]))
 
 (def field-type :heraldry.field.type/bendy-sinister)

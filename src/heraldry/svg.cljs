@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.svg
+(ns heraldry.svg
   (:require ["svg-path-parse" :as svg-path-parse]
             ["svg-path-properties" :as svg-path-properties]
             ["svg-path-reverse" :as svg-path-reverse]

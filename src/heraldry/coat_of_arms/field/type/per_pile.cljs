@@ -4,9 +4,9 @@
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.shared.pile :as pile]
-            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.interface :as interface]
+            [heraldry.svg :as svg]
             [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/per-pile)
