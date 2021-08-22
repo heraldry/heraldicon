@@ -19,7 +19,7 @@
                   (-> (v/v (- (* 1.5 anchor1-height)) 0)
                       (v/rotate (- (- 90 angle)))
                       (v/dot (v/v -1 1))
-                      (v/+ (v/v length middle-height))))
+                      (v/add (v/v length middle-height))))
         end (v/v length middle-height)
         vf (if flipped?
              (v/v 1 -1)

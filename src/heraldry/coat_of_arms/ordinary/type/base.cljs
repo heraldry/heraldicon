@@ -56,15 +56,15 @@
                                          row-left row-right
                                          :context context
                                          :environment environment)
-        part [["M" (v/+ row-left
-                        line-one-start)
+        part [["M" (v/add row-left
+                          line-one-start)
                (svg/stitch line-one)
                (infinity/path :clockwise
                               [:right :left]
-                              [(v/+ row-right
-                                    line-one-start)
-                               (v/+ row-left
-                                    line-one-start)])
+                              [(v/add row-right
+                                      line-one-start)
+                               (v/add row-left
+                                      line-one-start)])
                "z"]
               [row-left bottom-right]]
         cottise-context (merge

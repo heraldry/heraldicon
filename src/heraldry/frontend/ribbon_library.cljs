@@ -84,15 +84,15 @@
     (rf/subscribe [:get path]))
 
   (fn [points [_ _path]]
-    (concat [[-1 (clamp-point (v/- (first points)
-                                   {:x 50 :y 10}))]]
+    (concat [[-1 (clamp-point (v/sub (first points)
+                                     {:x 50 :y 10}))]]
 
             (-> points
                 catmullrom/catmullrom
                 (->> (map-indexed (fn [idx leg]
                                     [idx (catmullrom/interpolate-point-cubic leg 0.5)]))))
-            [[(dec (count points)) (clamp-point (v/+ (last points)
-                                                     {:x 50 :y 10}))]])))
+            [[(dec (count points)) (clamp-point (v/add (last points)
+                                                       {:x 50 :y 10}))]])))
 
 (rf/reg-sub :ribbon-edit-point-deletable?
   (fn [[_ path] _]
@@ -166,7 +166,7 @@
       (if path
         (-> db
             (assoc-in path (clamp-point
-                            (v/- pos (v/v dx dy)))))
+                            (v/sub pos (v/v dx dy)))))
         db))))
 
 (defn key-down-handler [event]

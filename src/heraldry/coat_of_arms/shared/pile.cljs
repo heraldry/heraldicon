@@ -5,23 +5,23 @@
 
 (defn diagonals [origin-point point-point size]
   (let [direction (-> point-point
-                      (v/- origin-point)
+                      (v/sub origin-point)
                       v/normal)
         direction-orthogonal (v/orthogonal direction)
-        left-point (v/+ origin-point
-                        (v/* direction-orthogonal (/ size 2)))
-        right-point (v/- origin-point
-                         (v/* direction-orthogonal (/ size 2)))]
+        left-point (v/add origin-point
+                        (v/mul direction-orthogonal (/ size 2)))
+        right-point (v/sub origin-point
+                         (v/mul direction-orthogonal (/ size 2)))]
     {:left (-> left-point
-               (v/- point-point)
+               (v/sub point-point)
                v/normal
-               (v/* 200)
-               (v/+ point-point))
+               (v/mul 200)
+               (v/add point-point))
      :right (-> right-point
-                (v/- point-point)
+                (v/sub point-point)
                 v/normal
-                (v/* 200)
-                (v/+ point-point))}))
+                (v/mul 200)
+                (v/add point-point))}))
 
 (defn calculate-angle [target-beta edge-length stretch]
   (let [tan-beta (-> target-beta
@@ -61,7 +61,7 @@
                                   real-origin real-anchor environment)
                                  last)
                        real-anchor)
-        direction-vector (v/- target-point real-origin)
+        direction-vector (v/sub target-point real-origin)
         direction-length (v/abs direction-vector)
         {:keys [angle x
                 length
@@ -80,15 +80,15 @@
                 :left (- angle)
                 angle)
         calculated-origin (-> real-origin
-                              (v/- target-point)
-                              (v/* (/ length direction-length))
+                              (v/sub target-point)
+                              (v/mul (/ length direction-length))
                               (v/rotate angle)
-                              (v/+ target-point))
+                              (v/add target-point))
         calculated-point (-> real-origin
-                             (v/- target-point)
-                             (v/* (/ (- length part-length) direction-length))
+                             (v/sub target-point)
+                             (v/mul (/ (- length part-length) direction-length))
                              (v/rotate angle)
-                             (v/+ target-point))]
+                             (v/add target-point))]
     {:origin calculated-origin
      :point calculated-point
      :thickness (* x 2)}))
@@ -112,13 +112,13 @@
                                   real-origin real-anchor environment)
                                  last)
                        real-anchor)
-        direction-vector (v/- target-point real-origin)
+        direction-vector (v/sub target-point real-origin)
         direction-length (v/abs direction-vector)
-        direction (v// direction-vector direction-length)
+        direction (v/div direction-vector direction-length)
         length (or stretch 1)
         point (-> direction
-                  (v/* (* direction-length length))
-                  (v/+ real-origin))]
+                  (v/mul (* direction-length length))
+                  (v/add real-origin))]
     {:origin real-origin
      :point point
      :thickness thickness}))

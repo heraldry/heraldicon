@@ -107,7 +107,7 @@
                    (* (Math/abs scale-x) stretch))
         charge-top-left (or charge-top-left
                             (-> (v/v charge-width charge-height)
-                                (v// -2)))
+                                (v/div -2)))
         charge-shape (-> shape
                          svg/make-path
                          (->
@@ -136,17 +136,17 @@
                                           (.toString)))
                          (svg/translate (:x origin-point) (:y origin-point))))
         [min-x max-x min-y max-y] (svg/rotated-bounding-box charge-top-left
-                                                            (v/+ charge-top-left
-                                                                 (v/v charge-width
-                                                                      charge-height))
+                                                            (v/add charge-top-left
+                                                                   (v/v charge-width
+                                                                        charge-height))
                                                             angle
                                                             :middle (v/v 0 0)
                                                             :scale (v/v scale-x scale-y))
         part [charge-shape
-              [(v/+ origin-point
-                    (v/v min-x min-y))
-               (v/+ origin-point
-                    (v/v max-x max-y))]
+              [(v/add origin-point
+                      (v/v min-x min-y))
+               (v/add origin-point
+                      (v/v max-x max-y))]
               mask-shape]
         charge-id (util/id "charge")
         vertical-mask? (not (zero? vertical-mask))

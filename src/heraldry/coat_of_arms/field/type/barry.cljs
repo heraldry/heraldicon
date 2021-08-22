@@ -39,7 +39,7 @@
          line-right-start :line-start
          line-right-end :line-end} (line/create line
                                                 top-left
-                                                (v/+ top-left (v/v width 0))
+                                                (v/add top-left (v/v width 0))
                                                 :real-start 0
                                                 :real-end width
                                                 :context context
@@ -48,7 +48,7 @@
          line-left-start :line-start
          line-left-end :line-end} (line/create line
                                                top-left
-                                               (v/+ top-left (v/v width 0))
+                                               (v/add top-left (v/v width 0))
                                                :flipped? true
                                                :mirrored? true
                                                :reversed? true
@@ -72,64 +72,64 @@
                                                  "v" 2000
                                                  "h" -2000
                                                  "z"]
-                               (zero? i) ["M" (v/+ line-two-left
-                                                   line-right-start)
+                               (zero? i) ["M" (v/add line-two-left
+                                                     line-right-start)
                                           (svg/stitch line-right)
                                           (infinity/path :counter-clockwise
                                                          [:right :left]
-                                                         [(v/+ line-two-right
-                                                               line-right-end)
-                                                          (v/+ line-two-left
-                                                               line-right-start)])
+                                                         [(v/add line-two-right
+                                                                 line-right-end)
+                                                          (v/add line-two-left
+                                                                 line-right-start)])
                                           "z"]
-                               (even? i) (concat ["M" (v/+ line-one-right
-                                                           line-left-start)
+                               (even? i) (concat ["M" (v/add line-one-right
+                                                             line-left-start)
                                                   (svg/stitch line-left)]
                                                  (cond
                                                    last-part? [(infinity/path :counter-clockwise
                                                                               [:left :right]
-                                                                              [(v/+ line-one-left
-                                                                                    line-left-end)
-                                                                               (v/+ line-one-right
-                                                                                    line-left-start)])
+                                                                              [(v/add line-one-left
+                                                                                      line-left-end)
+                                                                               (v/add line-one-right
+                                                                                      line-left-start)])
                                                                "z"]
                                                    :else [(infinity/path :counter-clockwise
                                                                          [:left :left]
-                                                                         [(v/+ line-one-left
-                                                                               line-left-end)
-                                                                          (v/+ line-two-left
-                                                                               line-right-start)])
+                                                                         [(v/add line-one-left
+                                                                                 line-left-end)
+                                                                          (v/add line-two-left
+                                                                                 line-right-start)])
                                                           (svg/stitch line-right)
                                                           (infinity/path :counter-clockwise
                                                                          [:right :right]
-                                                                         [(v/+ line-two-right
-                                                                               line-right-end)
-                                                                          (v/+ line-one-right
-                                                                               line-left-start)])]))
-                               :else (concat ["M" (v/+ line-one-left
-                                                       line-right-start)
+                                                                         [(v/add line-two-right
+                                                                                 line-right-end)
+                                                                          (v/add line-one-right
+                                                                                 line-left-start)])]))
+                               :else (concat ["M" (v/add line-one-left
+                                                         line-right-start)
                                               (svg/stitch line-right)]
                                              (cond
                                                last-part? [(infinity/path :clockwise
                                                                           [:right :left]
-                                                                          [(v/+ line-one-right
-                                                                                line-right-end)
-                                                                           (v/+ line-one-left
-                                                                                line-right-start)])
+                                                                          [(v/add line-one-right
+                                                                                  line-right-end)
+                                                                           (v/add line-one-left
+                                                                                  line-right-start)])
                                                            "z"]
                                                :else [(infinity/path :clockwise
                                                                      [:right :right]
-                                                                     [(v/+ line-one-right
-                                                                           line-right-end)
-                                                                      (v/+ line-two-right
-                                                                           line-left-start)])
+                                                                     [(v/add line-one-right
+                                                                             line-right-end)
+                                                                      (v/add line-two-right
+                                                                             line-left-start)])
                                                       (svg/stitch line-left)
                                                       (infinity/path :clockwise
                                                                      [:left :left]
-                                                                     [(v/+ line-two-left
-                                                                           line-left-end)
-                                                                      (v/+ line-one-left
-                                                                           line-right-start)])
+                                                                     [(v/add line-two-left
+                                                                             line-left-end)
+                                                                      (v/add line-one-left
+                                                                             line-right-start)])
                                                       "z"])))
                              [line-one-left line-two-right]])))
                    vec)
@@ -142,11 +142,11 @@
                                 line-two-left (v/v x1 y2)
                                 line-two-right (v/v x2 y2)]
                             (if (even? i)
-                              (svg/make-path ["M" (v/+ line-two-left
-                                                       line-right-start)
+                              (svg/make-path ["M" (v/add line-two-left
+                                                         line-right-start)
                                               (svg/stitch line-right)])
-                              (svg/make-path ["M" (v/+ line-two-right
-                                                       line-left-start)
+                              (svg/make-path ["M" (v/add line-two-right
+                                                         line-left-start)
                                               (svg/stitch line-left)])))))
                    vec)
         overlap (-> edges

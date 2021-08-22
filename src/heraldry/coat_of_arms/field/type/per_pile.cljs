@@ -65,10 +65,10 @@
         intersection-right (-> (v/environment-intersections point right-point environment)
                                last)
         end-left (-> intersection-left
-                     (v/- point)
+                     (v/sub point)
                      v/abs)
         end-right (-> intersection-right
-                      (v/- point)
+                      (v/sub point)
                       v/abs)
         end (max end-left end-right)
         line (-> line
@@ -93,8 +93,8 @@
                                            :real-end end
                                            :context context
                                            :environment environment)
-        parts [[["M" (v/+ point
-                          line-right-start)
+        parts [[["M" (v/add point
+                            line-right-start)
                  (svg/stitch line-right)
                  (infinity/path
                   :counter-clockwise
@@ -108,18 +108,18 @@
                        :bottom
                        :bottom-right} (:point origin)) [:bottom :top]
                     :else [:top :bottom])
-                  [(v/+ point
-                        line-right-end)
-                   (v/+ point
-                        line-right-start)])
+                  [(v/add point
+                          line-right-end)
+                   (v/add point
+                          line-right-start)])
                  "z"]
                                              ;; TODO: these fields inherit the whole parent
                                              ;; environment points, but it can probably be reduced
                 [top-left top-right
                  bottom-left bottom-right]]
 
-               [["M" (v/+ left-point
-                          line-left-start)
+               [["M" (v/add left-point
+                            line-left-start)
                  (svg/stitch line-left)
                  (svg/stitch line-right)
                  "z"]
@@ -128,8 +128,8 @@
                 [top-left top-right
                  bottom-left bottom-right]]
 
-               [["M" (v/+ left-point
-                          line-left-start)
+               [["M" (v/add left-point
+                            line-left-start)
                  (svg/stitch line-left)
                  (infinity/path
                   :counter-clockwise
@@ -143,10 +143,10 @@
                        :bottom
                        :bottom-right} (:point origin)) [:top :bottom]
                     :else [:bottom :top])
-                  [(v/+ left-point
-                        line-left-end)
-                   (v/+ left-point
-                        line-left-start)])
+                  [(v/add left-point
+                          line-left-end)
+                   (v/add left-point
+                          line-left-start)])
                  "z"]
                                              ;; TODO: these fields inherit the whole parent
                                              ;; environment points, but it can probably be reduced

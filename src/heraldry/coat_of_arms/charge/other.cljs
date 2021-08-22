@@ -231,8 +231,8 @@
                                    (= kind :keep) colour
                                    :else (outline/color context)))))
             shift (-> (v/v positional-charge-width positional-charge-height)
-                      (v// 2)
-                      (v/-))
+                      (v/div 2)
+                      (v/sub))
             [min-x max-x min-y max-y] (svg/rotated-bounding-box
                                        shift
                                        (v/dot shift (v/v -1 -1))
@@ -240,9 +240,9 @@
                                        :scale (v/v scale-x scale-y))
             clip-size (v/v (- max-x min-x) (- max-y min-y))
             position (-> clip-size
-                         (v/-)
-                         (v// 2)
-                         (v/+ origin-point))
+                         (v/sub)
+                         (v/div 2)
+                         (v/add origin-point))
             inherit-environment? (interface/get-sanitized-data
                                   (conj path :field :inherit-environment?)
                                   context)
@@ -260,8 +260,8 @@
                                  :parent-environment environment
                                  :context [:charge]
                                  :bounding-box (svg/bounding-box
-                                                [position (v/+ position
-                                                               clip-size)])
+                                                [position (v/add position
+                                                                 clip-size)])
                                  :override-environment (when (or inherit-environment?
                                                                  counterchanged?)
                                                          environment)})

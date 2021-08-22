@@ -67,8 +67,8 @@
         origin-point (v/line-intersection origin-point anchor-point
                                           mirrored-origin mirrored-anchor)
         [relative-left relative-right] (chevron/arm-diagonals chevron-angle origin-point anchor-point)
-        diagonal-left (v/+ origin-point relative-left)
-        diagonal-right (v/+ origin-point relative-right)
+        diagonal-left (v/add origin-point relative-left)
+        diagonal-right (v/add origin-point relative-right)
         angle-left (v/normalize-angle (v/angle-to-point origin-point diagonal-left))
         angle-right (v/normalize-angle (v/angle-to-point origin-point diagonal-right))
         joint-angle (v/normalize-angle (- angle-left angle-right))
@@ -82,27 +82,27 @@
         offset-upper (v/rotate
                       (v/v (- delta) 0)
                       chevron-angle)
-        corner-upper (v/+ origin-point offset-upper)
-        corner-lower (v/+ origin-point offset-lower)
-        left-upper (v/+ diagonal-left offset-upper)
-        left-lower (v/+ diagonal-left offset-lower)
-        right-upper (v/+ diagonal-right offset-upper)
-        right-lower (v/+ diagonal-right offset-lower)
+        corner-upper (v/add origin-point offset-upper)
+        corner-lower (v/add origin-point offset-lower)
+        left-upper (v/add diagonal-left offset-upper)
+        left-lower (v/add diagonal-left offset-lower)
+        right-upper (v/add diagonal-right offset-upper)
+        right-lower (v/add diagonal-right offset-lower)
         intersection-left-upper (v/find-first-intersection-of-ray corner-upper left-upper environment)
         intersection-right-upper (v/find-first-intersection-of-ray corner-upper right-upper environment)
         intersection-left-lower (v/find-first-intersection-of-ray corner-lower left-lower environment)
         intersection-right-lower (v/find-first-intersection-of-ray corner-lower right-lower environment)
         end-left-upper (-> intersection-left-upper
-                           (v/- corner-upper)
+                           (v/sub corner-upper)
                            v/abs)
         end-right-upper (-> intersection-right-upper
-                            (v/- corner-upper)
+                            (v/sub corner-upper)
                             v/abs)
         end-left-lower (-> intersection-left-lower
-                           (v/- corner-lower)
+                           (v/sub corner-lower)
                            v/abs)
         end-right-lower (-> intersection-right-lower
-                            (v/- corner-lower)
+                            (v/sub corner-lower)
                             v/abs)
         end (max end-left-upper
                  end-right-upper
@@ -150,17 +150,17 @@
                                                 :real-end end
                                                 :context context
                                                 :environment environment)
-        part [["M" (v/+ corner-upper
-                        line-right-upper-start)
+        part [["M" (v/add corner-upper
+                          line-right-upper-start)
                (svg/stitch line-right-upper)
-               "L" (v/+ right-lower
-                        line-right-lower-start)
+               "L" (v/add right-lower
+                          line-right-lower-start)
                (svg/stitch line-right-lower)
-               "L" (v/+ corner-lower
-                        line-left-lower-start)
+               "L" (v/add corner-lower
+                          line-left-lower-start)
                (svg/stitch line-left-lower)
-               "L" (v/+ left-upper
-                        line-left-upper-start)
+               "L" (v/add left-upper
+                          line-left-upper-start)
                (svg/stitch line-left-upper)
                "z"]
               [top-left bottom-right]]]

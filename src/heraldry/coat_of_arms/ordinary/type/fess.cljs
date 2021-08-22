@@ -88,22 +88,22 @@
                                               :real-end real-end
                                               :context context
                                               :environment environment)
-        part [["M" (v/+ first-left
-                        line-one-start)
+        part [["M" (v/add first-left
+                          line-one-start)
                (svg/stitch line-one)
                (infinity/path :clockwise
                               [:right :right]
-                              [(v/+ first-right
-                                    line-one-start)
-                               (v/+ second-right
-                                    line-reversed-start)])
+                              [(v/add first-right
+                                      line-one-start)
+                               (v/add second-right
+                                      line-reversed-start)])
                (svg/stitch line-reversed)
                (infinity/path :clockwise
                               [:left :left]
-                              [(v/+ second-left
-                                    line-reversed-start)
-                               (v/+ first-left
-                                    line-one-start)])
+                              [(v/add second-left
+                                      line-reversed-start)
+                               (v/add first-left
+                                      line-one-start)])
                "z"]
               [first-right
                second-left]]

@@ -438,8 +438,8 @@
                                   svg/reverse-path)
         line-start (:line-start line-data)
         line-end (-> line-start
-                     (v/+ line-reversed-start)
-                     (v/- base-end))
+                     (v/add line-reversed-start)
+                     (v/sub base-end))
         line-path (if reversed?
                     (-> line-reversed
                         svgpath
@@ -468,7 +468,7 @@
                    (.rotate angle)
                    .toString))
         (assoc :line-start (when line-start (v/rotate line-start angle)))
-        (assoc :line-end (when line-end (v/rotate (v/+ base-end line-end) angle)))
+        (assoc :line-end (when line-end (v/rotate (v/add base-end line-end) angle)))
         (assoc :up (v/rotate (v/v 0 -50) angle))
         (assoc :down (v/rotate (v/v 0 50) angle)))))
 
@@ -492,7 +492,7 @@
     (let [[from to] (if reversed?
                       [to from]
                       [from to])
-          direction (v/- to from)
+          direction (v/sub to from)
           length (v/abs direction)
           intersections (v/find-intersections from to environment)
           [start-t end-t] (get-intersections-before-and-after 0.5 intersections)
@@ -507,7 +507,7 @@
   (let [[from to] (if reversed?
                     [to from]
                     [from to])
-        direction (v/- to from)
+        direction (v/sub to from)
         length (v/abs direction)
         [real-start real-end] (find-real-start-and-end from to line-options)
         angle (v/angle-to-point from to)]
@@ -525,15 +525,15 @@
                          :up up
                          down)]
                 {:start-offset dv
-                 :end-offset (v/+ line-end dv)})))
+                 :end-offset (v/add line-end dv)})))
 
        (reduce (fn [current {:keys [start-offset end-offset]}]
                  (if (empty? current)
-                   [{:start (v/+ start start-offset)
-                     :end (v/+ start end-offset)}]
+                   [{:start (v/add start start-offset)
+                     :end (v/add start end-offset)}]
                    (let [{previous-end :end} (last current)]
-                     (conj current {:start (v/+ previous-end start-offset)
-                                    :end (v/+ previous-end end-offset)})))) [])
+                     (conj current {:start (v/add previous-end start-offset)
+                                    :end (v/add previous-end end-offset)})))) [])
        (partition 2 1)
        (map (fn [[{start1 :start end1 :end}
                   {start2 :start end2 :end}]]
@@ -542,7 +542,7 @@
 (defn render [line line-datas start outline? context]
   (let [{:keys [fimbriation]} line
         line-start (-> line-datas first :line-start)
-        base-path ["M" (v/+ start line-start)
+        base-path ["M" (v/add start line-start)
                    (for [{line-path-snippet :line} line-datas]
                      (svg/stitch line-path-snippet))]
         line-path (svg/make-path base-path)
@@ -561,7 +561,7 @@
                                   [thickness-1 thickness-2
                                    tincture-1 tincture-2])
         mask-shape-top (when (#{:even :outside} alignment)
-                         (let [mask-points (-> [(v/+ start line-start (-> line-datas first :up))]
+                         (let [mask-points (-> [(v/add start line-start (-> line-datas first :up))]
                                                (into (mask-intersection-points start line-datas :up)))]
                            (svg/make-path [base-path
                                            "l" (-> line-datas last :up)
@@ -569,7 +569,7 @@
                                              ["L" mask-point])
                                            "z"])))
         mask-shape-bottom (when (#{:even :inside} alignment)
-                            (let [mask-points (-> [(v/+ start line-start (-> line-datas first :down))]
+                            (let [mask-points (-> [(v/add start line-start (-> line-datas first :down))]
                                                   (into (mask-intersection-points start line-datas :down)))]
                               (svg/make-path [base-path
                                               "l" (-> line-datas last :down)

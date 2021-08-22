@@ -59,15 +59,15 @@
                                               :real-end real-end
                                               :context context
                                               :environment environment)
-        part [["M" (v/+ row-right
-                        line-reversed-start)
+        part [["M" (v/add row-right
+                          line-reversed-start)
                (svg/stitch line-reversed)
                (infinity/path :clockwise
                               [:left :right]
-                              [(v/+ row-left
-                                    line-reversed-start)
-                               (v/+ row-right
-                                    line-reversed-start)])
+                              [(v/add row-left
+                                      line-reversed-start)
+                               (v/add row-right
+                                      line-reversed-start)])
                "z"]
               [top-left row-right]]
         cottise-context (merge

@@ -65,15 +65,15 @@
         origin-point (v/line-intersection origin-point anchor-point
                                           mirrored-origin mirrored-anchor)
         [relative-left relative-right] (chevron/arm-diagonals chevron-angle origin-point anchor-point)
-        diagonal-left (v/+ origin-point relative-left)
-        diagonal-right (v/+ origin-point relative-right)
+        diagonal-left (v/add origin-point relative-left)
+        diagonal-right (v/add origin-point relative-right)
         intersection-left (v/find-first-intersection-of-ray origin-point diagonal-left environment)
         intersection-right (v/find-first-intersection-of-ray origin-point diagonal-right environment)
         end-left (-> intersection-left
-                     (v/- origin-point)
+                     (v/sub origin-point)
                      v/abs)
         end-right (-> intersection-right
-                      (v/- origin-point)
+                      (v/sub origin-point)
                       v/abs)
         end (max end-left end-right)
         {line-left :line
@@ -98,30 +98,30 @@
                           (<= 135 chevron-angle 225) [:bottom :top]
                           (<= 225 chevron-angle 315) [:left :right]
                           :else [:top :bottom])
-        parts [[["M" (v/+ diagonal-left
-                          line-left-start)
+        parts [[["M" (v/add diagonal-left
+                            line-left-start)
                  (svg/stitch line-left)
                  (svg/stitch line-right)
                  (infinity/path :counter-clockwise
                                 infinity-points
-                                [(v/+ diagonal-right
-                                      line-right-end)
-                                 (v/+ diagonal-left
-                                      line-left-start)])
+                                [(v/add diagonal-right
+                                        line-right-end)
+                                 (v/add diagonal-left
+                                        line-left-start)])
                  "z"]
                 [top-left top-right
                  bottom-left bottom-right]]
 
-               [["M" (v/+ diagonal-left
-                          line-left-start)
+               [["M" (v/add diagonal-left
+                            line-left-start)
                  (svg/stitch line-left)
                  (svg/stitch line-right)
                  (infinity/path :clockwise
                                 infinity-points
-                                [(v/+ diagonal-right
-                                      line-right-end)
-                                 (v/+ diagonal-left
-                                      line-left-start)])
+                                [(v/add diagonal-right
+                                        line-right-end)
+                                 (v/add diagonal-left
+                                        line-left-start)])
                  "z"]
                 [top-left bottom-right]]]]
     [:<>

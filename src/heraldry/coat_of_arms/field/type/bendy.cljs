@@ -33,13 +33,13 @@
                                      nil)
         center-point (v/line-intersection origin-point anchor-point
                                           top bottom)
-        direction (v/- anchor-point origin-point)
+        direction (v/sub anchor-point origin-point)
         direction (v/v (-> direction :x Math/abs)
                        (-> direction :y Math/abs))
         direction-orthogonal (v/orthogonal direction)
         angle (v/angle-to-point (v/v 0 0) direction)
-        required-half-width (v/distance-point-to-line top-left center-point (v/+ center-point direction-orthogonal))
-        required-half-height (v/distance-point-to-line top-right center-point (v/+ center-point direction))
+        required-half-width (v/distance-point-to-line top-left center-point (v/add center-point direction-orthogonal))
+        required-half-height (v/distance-point-to-line top-right center-point (v/add center-point direction))
         [parts overlap outlines] (barry/barry-parts
                                   path
                                   (v/v (- required-half-width) (- required-half-height))

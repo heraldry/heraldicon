@@ -60,7 +60,7 @@
 (defn transform-to-width [environment target-width]
   (let [width (:width environment)
         top-left (get-in environment [:points :top-left])
-        offset (v/- top-left)
+        offset (v/sub top-left)
         scale-factor (/ target-width width)]
     (-> environment
         (assoc-in [:shape] (-> (:shape environment)
@@ -73,5 +73,5 @@
         (update-in [:points] merge (into {}
                                          (map (fn [[key value]]
                                                 [key (-> value
-                                                         (v/+ offset)
-                                                         (v/* scale-factor))]) (:points environment)))))))
+                                                         (v/add offset)
+                                                         (v/mul scale-factor))]) (:points environment)))))))

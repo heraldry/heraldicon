@@ -23,7 +23,7 @@
                                       root-escutcheon
                                       escutcheon)) width)
              env-fess (-> env :points :fess)
-             offset (v/* env-fess -1)]
+             offset (v/mul env-fess -1)]
          {:shape (svg/translate (:shape env)
                                 (:x offset)
                                 (:y offset))

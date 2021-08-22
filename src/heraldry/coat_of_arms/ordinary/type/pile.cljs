@@ -61,13 +61,13 @@
                               last)
         intersection-right (-> (v/environment-intersections point right-point environment)
                                last)
-        joint-angle (v/angle-between-vectors (v/- intersection-left point)
-                                             (v/- intersection-right point))
+        joint-angle (v/angle-between-vectors (v/sub intersection-left point)
+                                             (v/sub intersection-right point))
         end-left (-> intersection-left
-                     (v/- point)
+                     (v/sub point)
                      v/abs)
         end-right (-> intersection-right
-                      (v/- point)
+                      (v/sub point)
                       v/abs)
         end (max end-left end-right)
         line (-> line
@@ -90,8 +90,8 @@
                                            :real-end end
                                            :context context
                                            :environment environment)
-        part [["M" (v/+ left-point
-                        line-left-start)
+        part [["M" (v/add left-point
+                          line-left-start)
                (svg/stitch line-left)
                (svg/stitch line-right)
                "z"]
