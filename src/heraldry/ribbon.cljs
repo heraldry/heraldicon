@@ -1,7 +1,7 @@
 (ns heraldry.ribbon
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
-            [heraldry.coat-of-arms.catmullrom :as catmullrom]
+            [heraldry.vector.catmullrom :as catmullrom]
             [heraldry.vector.core :as v]
             [heraldry.font :as font]
             [heraldry.interface :as interface]

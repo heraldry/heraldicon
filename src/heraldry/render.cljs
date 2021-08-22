@@ -1,7 +1,7 @@
 (ns heraldry.render
   (:require [clojure.string :as s]
             [heraldry.backend.output :as output]
-            [heraldry.coat-of-arms.catmullrom :as catmullrom]
+            [heraldry.vector.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.field.shared :as field-shared]

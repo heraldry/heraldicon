@@ -5,7 +5,7 @@
             ["svgpath" :as svgpath]
             [clojure.string :as s]
             [clojure.walk :as walk]
-            [heraldry.coat-of-arms.catmullrom :as catmullrom]
+            [heraldry.vector.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.random :as random]
             [heraldry.vector.core :as v]
             [heraldry.util :as util]))
