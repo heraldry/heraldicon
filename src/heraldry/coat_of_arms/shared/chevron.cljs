@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.shared.chevron
-  (:require [heraldry.coat-of-arms.vector :as v]))
+  (:require [heraldry.vector.core :as v]))
 
 (defn arm-diagonals [chevron-angle origin-point anchor-point]
   (let [direction (-> (v/- anchor-point origin-point)

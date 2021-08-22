@@ -4,7 +4,7 @@
             [heraldry.coat-of-arms.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.filter :as filter]
-            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.vector.core :as v]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.modal :as modal]

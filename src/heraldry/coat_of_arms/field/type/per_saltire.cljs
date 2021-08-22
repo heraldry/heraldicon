@@ -6,7 +6,7 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.shared.saltire :as saltire]
-            [heraldry.coat-of-arms.vector :as v]
+            [heraldry.vector.core :as v]
             [heraldry.interface :as interface]
             [heraldry.svg :as svg]))
 

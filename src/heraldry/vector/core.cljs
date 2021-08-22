@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.vector
+(ns heraldry.vector.core
   (:require ["path-intersection" :as -path-intersection]))
 
 (def path-intersection
