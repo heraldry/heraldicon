@@ -21,7 +21,6 @@
             [heraldry.helm] ;; needed for side effects
             [heraldry.interface :as interface]
             [heraldry.motto] ;; needed for side effects
-            [heraldry.mottos] ;; needed for side effects
             [heraldry.options :as options]
             [heraldry.render-options] ;; needed for side effects
             [heraldry.ribbon :as ribbon]))

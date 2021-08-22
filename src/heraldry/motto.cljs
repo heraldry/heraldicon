@@ -13,7 +13,7 @@
       (->> (keep-indexed #(when-not (= %1 2) %2)))
       vec))
 
-(def default-options
+(def default-motto-options
   {:type {:type :choice
           :choices [["Motto" :heraldry.motto.type/motto]
                     ["Slogan" :heraldry.motto.type/slogan]]
@@ -58,10 +58,10 @@
                    :ui {:label "Text"
                         :form-type :tincture-select}}})
 
-(defn options [data]
+(defn motto-options [data]
   (let [ribbon-variant? (:ribbon-variant data)
         motto-type (:type data)]
-    (-> default-options
+    (-> default-motto-options
         (cond->
          ribbon-variant? (update :ribbon ribbon/options (:ribbon data))
          (not ribbon-variant?) (dissoc :ribbon)
@@ -69,4 +69,13 @@
         (update :origin position/adjust-options))))
 
 (defmethod interface/component-options :heraldry.component/motto [_path data]
-  (options data))
+  (motto-options data))
+
+(def default-mottos-options
+  {})
+
+(defn mottos-options [data]
+  default-mottos-options)
+
+(defmethod interface/component-options :heraldry.component/mottos [_path data]
+  (mottos-options data))
