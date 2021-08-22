@@ -9,13 +9,13 @@
             [heraldry.coat-of-arms.hatching :as hatching]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.font :as font]
             [heraldry.interface :as interface]
             [heraldry.ribbon :as ribbon]
+            [heraldry.svg :as svg]
             [heraldry.util :as util]))
 
 (defn coat-of-arms [path width

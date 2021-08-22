@@ -3,9 +3,9 @@
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
-            [heraldry.interface :as interface]))
+            [heraldry.interface :as interface]
+            [heraldry.svg :as svg]))
 
 (def field-type :heraldry.field.type/quarterly)
 

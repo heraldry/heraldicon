@@ -4,9 +4,9 @@
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.coat-of-arms.svg :as svg]
             [heraldry.coat-of-arms.vector :as v]
             [heraldry.interface :as interface]
+            [heraldry.svg :as svg]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/base)
@@ -77,7 +77,7 @@
       (conj path :field) part
       :all
       environment context]
-     [ line/render line [line-one-data] row-left outline? context ]
+     [line/render line [line-one-data] row-left outline? context]
      [cottising/render-fess-cottise
       :cottise-1 :cottise-2 :cottise-1
       path environment cottise-context
