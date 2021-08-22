@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.filter)
+(ns heraldry.vector.filter)
 
 (def shadow
   [:filter#shadow {:x "-20%"

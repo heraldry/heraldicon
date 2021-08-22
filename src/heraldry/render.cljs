@@ -5,7 +5,7 @@
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.field.shared :as field-shared]
-            [heraldry.coat-of-arms.filter :as filter]
+            [heraldry.vector.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.outline :as outline]
