@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.catmullrom
+(ns heraldry.vector.catmullrom
   (:require [clojure.string :as string]))
 
 ;; catmullrom

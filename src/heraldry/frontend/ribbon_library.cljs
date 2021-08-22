@@ -1,7 +1,7 @@
 (ns heraldry.frontend.ribbon-library
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
-            [heraldry.coat-of-arms.catmullrom :as catmullrom]
+            [heraldry.vector.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.filter :as filter]
             [heraldry.vector.core :as v]
