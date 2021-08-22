@@ -11,85 +11,79 @@
 (def zero
   (v 0 0))
 
-#_{:clj-kondo/ignore [:redefined-var]}
-(defn + [& args]
-  {:x (apply cljs.core/+ (map :x args))
-   :y (apply cljs.core/+ (map :y args))})
+(defn add [& args]
+  {:x (apply + (map :x args))
+   :y (apply + (map :y args))})
 
-#_{:clj-kondo/ignore [:redefined-var]}
-(defn - [& args]
-  {:x (apply cljs.core/- (map :x args))
-   :y (apply cljs.core/- (map :y args))})
+(defn sub [& args]
+  {:x (apply - (map :x args))
+   :y (apply - (map :y args))})
 
-#_{:clj-kondo/ignore [:redefined-var]}
-(defn * [{x :x y :y} f]
-  {:x (cljs.core/* x f)
-   :y (cljs.core/* y f)})
+(defn mul [{x :x y :y} f]
+  {:x (* x f)
+   :y (* y f)})
 
-#_{:clj-kondo/ignore [:redefined-var]}
-(defn / [{x :x y :y} f]
-  {:x (cljs.core// x f)
-   :y (cljs.core// y f)})
+(defn div [{x :x y :y} f]
+  {:x (/ x f)
+   :y (/ y f)})
 
 (defn dot [{x1 :x y1 :y} {x2 :x y2 :y}]
-  {:x (cljs.core/* x1 x2)
-   :y (cljs.core/* y1 y2)})
+  {:x (* x1 x2)
+   :y (* y1 y2)})
 
 (defn abs [{x :x y :y}]
-  (Math/sqrt (cljs.core/+
-              (cljs.core/* x x)
-              (cljs.core/* y y))))
+  (Math/sqrt (+
+              (* x x)
+              (* y y))))
 
 (defn normal [v]
   (let [d (abs v)]
     (if (> d 0)
-      (/ v d)
+      (div v d)
       v)))
 
 (defn avg [v1 v2]
   (-> v1
-      (+ v2)
-      (/ 2)))
+      (add v2)
+      (div 2)))
 
 (defn project [{from-x :x from-y :y} {to-x :x to-y :y} x]
   {:x x
    :y (-> to-y
-          (cljs.core/- from-y)
-          (cljs.core// (cljs.core/- to-x from-x))
-          (cljs.core/* (cljs.core/- x from-x))
-          (cljs.core/+ from-y))})
+          (- from-y)
+          (/ (- to-x from-x))
+          (* (- x from-x))
+          (+ from-y))})
 
 (defn extend [from to l]
-  (let [diff (- to from)
+  (let [diff (sub to from)
         distance (abs diff)
-        direction (/ diff distance)]
+        direction (div diff distance)]
     (-> direction
-        (* l)
-        (+ from))))
+        (mul l)
+        (add from))))
 
 (defn rotate [{:keys [x y]} angle]
   (let [rad (-> angle
-                (clojure.core/* Math/PI)
-                (clojure.core// 180))]
-    (v (clojure.core/- (clojure.core/* x (Math/cos rad))
-                       (clojure.core/* y (Math/sin rad)))
-       (clojure.core/+ (clojure.core/* x (Math/sin rad))
-                       (clojure.core/* y (Math/cos rad))))))
+                (* Math/PI)
+                (/ 180))]
+    (v (- (* x (Math/cos rad))
+          (* y (Math/sin rad)))
+       (+ (* x (Math/sin rad))
+          (* y (Math/cos rad))))))
 
 (defn distance-point-to-line [{x0 :x y0 :y} {x1 :x y1 :y :as p1} {x2 :x y2 :y :as p2}]
-  (cljs.core// (Math/abs (cljs.core/- (cljs.core/* (cljs.core/- x2 x1)
-                                                   (cljs.core/- y1 y0))
-                                      (cljs.core/* (cljs.core/- x1 x0)
-                                                   (cljs.core/- y2 y1))))
-               (abs (- p1 p2))))
+  (/ (Math/abs (- (* (- x2 x1)
+                     (- y1 y0))
+                  (* (- x1 x0)
+                     (- y2 y1))))
+     (abs (sub p1 p2))))
 
 (defn line-intersection [{x1 :x y1 :y}
                          {x2 :x y2 :y :as end1}
                          {x3 :x y3 :y :as start2}
                          {x4 :x y4 :y}]
-  (let [- cljs.core/-
-        * cljs.core/*
-        D (- (* (- x1 x2)
+  (let [D (- (* (- x1 x2)
                 (- y3 y4))
              (* (- y1 y2)
                 (- x3 x4)))]
@@ -97,28 +91,24 @@
       ;; not expected, but if D = 0, then the lines are parallel,
       ;; in that case just take the middle of end1 and start2
       (-> end1
-          (+ start2)
-          (/ 2))
-      (/ (v (-> (* (- (* x1 y2)
-                      (* y1 x2))
-                   (- x3 x4))
-                (- (* (- x1 x2)
-                      (- (* x3 y4)
-                         (* y3 x4)))))
-            (-> (* (- (* x1 y2)
-                      (* y1 x2))
-                   (- y3 y4))
-                (- (* (- y1 y2)
-                      (- (* x3 y4)
-                         (* y3 x4))))))
-         D))))
+          (add start2)
+          (div 2))
+      (div (v (-> (* (- (* x1 y2)
+                        (* y1 x2))
+                     (- x3 x4))
+                  (- (* (- x1 x2)
+                        (- (* x3 y4)
+                           (* y3 x4)))))
+              (-> (* (- (* x1 y2)
+                        (* y1 x2))
+                     (- y3 y4))
+                  (- (* (- y1 y2)
+                        (- (* x3 y4)
+                           (* y3 x4))))))
+           D))))
 
 (defn tangent-point [{cx :x cy :y} r {px :x py :y}]
-  (let [+ cljs.core/+
-        - cljs.core/-
-        * cljs.core/*
-        / cljs.core//
-        dx (- px cx)
+  (let [dx (- px cx)
         dy (- py cy)
         r2 (* r r)
         dx2 (* dx dx)
@@ -138,11 +128,7 @@
 (defn outer-tangent-between-circles [{x0 :x y0 :y} r0
                                      {x1 :x y1 :y} r1
                                      edge]
-  (let [+ cljs.core/+
-        - cljs.core/-
-        * cljs.core/*
-        / cljs.core//
-        dir-factor (if (= edge :left)
+  (let [dir-factor (if (= edge :left)
                      1
                      -1)
         dx (- x1 x0)
@@ -162,11 +148,7 @@
 (defn inner-tangent-between-circles [{x0 :x y0 :y} r0
                                      {x1 :x y1 :y} r1
                                      edge]
-  (let [+ cljs.core/+
-        - cljs.core/-
-        * cljs.core/*
-        / cljs.core//
-        dir-factor (if (= edge :left)
+  (let [dir-factor (if (= edge :left)
                      1
                      -1)
         dx (- x1 x0)
@@ -184,7 +166,7 @@
         (+ y1 (* dir-factor r1 (Math/cos alpha))))]))
 
 (defn orthogonal [{:keys [x y]}]
-  (v y (cljs.core/- x)))
+  (v y (- x)))
 
 (defn ->str [{:keys [x y]}]
   (str x "," y))
@@ -211,8 +193,8 @@
 
 (defn close-to-edge? [point shape]
   (let [radius 0.0001
-        left (- point (v radius 0))
-        right (+ point (v radius 0))
+        left (sub point (v radius 0))
+        right (add point (v radius 0))
         neighbourhood (str "M" (->str left)
                            "A" radius " " radius " 0 0 0 " (->str right)
                            "A" radius " " radius " 0 0 1 " (->str left))
@@ -259,11 +241,11 @@
          (sort-by :t1))))
 
 (defn find-first-intersection-of-ray [origin anchor environment]
-  (let [direction-vector (- anchor origin)
+  (let [direction-vector (sub anchor origin)
         line-end (-> direction-vector
                      normal
-                     (* 1000)
-                     (+ origin))
+                     (mul 1000)
+                     (add origin))
         intersections (find-intersections origin line-end environment)
         origin-inside? (inside-environment? origin environment)
         select-fn (if origin-inside?
@@ -275,32 +257,32 @@
         (select-keys [:x :y]))))
 
 (defn angle-to-point [p1 p2]
-  (let [d (- p2 p1)
+  (let [d (sub p2 p1)
         angle-rad (Math/atan2 (:y d) (:x d))]
     (-> angle-rad
-        (cljs.core// Math/PI)
-        (cljs.core/* 180))))
+        (/ Math/PI)
+        (* 180))))
 
 (defn normalize-angle [angle]
   (loop [angle angle]
     (cond
-      (neg? angle) (recur (cljs.core/+ angle 360))
-      (>= angle 360) (recur (cljs.core/- angle 360))
+      (neg? angle) (recur (+ angle 360))
+      (>= angle 360) (recur (- angle 360))
       :else angle)))
 
 (defn angle-between-vectors [v1 v2]
   (let [a1 (angle-to-point (v 0 0) v1)
         a2 (angle-to-point (v 0 0) v2)
-        angle (-> (cljs.core/- a1 a2)
+        angle (-> (- a1 a2)
                   normalize-angle)]
     (if (> angle 180)
-      (cljs.core/- angle 180)
+      (- angle 180)
       angle)))
 
 (defn environment-intersections [from to environment]
-  (let [direction (normal (- to from))
+  (let [direction (normal (sub to from))
         intersections (find-intersections
-                       (- from (* direction 1000))
-                       (+ to (* direction 1000))
+                       (sub from (mul direction 1000))
+                       (add to (mul direction 1000))
                        environment)]
     [(first intersections) (last intersections)]))

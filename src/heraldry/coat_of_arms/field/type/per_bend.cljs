@@ -31,15 +31,15 @@
                                      anchor
                                      0
                                      nil)
-        direction (v/- anchor-point origin-point)
+        direction (v/sub anchor-point origin-point)
         direction (v/normal (v/v (-> direction :x Math/abs)
                                  (-> direction :y Math/abs)))
         initial-diagonal-start (-> direction
-                                   (v/* -1000)
-                                   (v/+ origin-point))
+                                   (v/mul -1000)
+                                   (v/add origin-point))
         initial-diagonal-end (-> direction
-                                 (v/* 1000)
-                                 (v/+ origin-point))
+                                 (v/mul 1000)
+                                 (v/add origin-point))
         [real-diagonal-start
          real-diagonal-end] (v/environment-intersections
                              initial-diagonal-start
@@ -54,9 +54,9 @@
                                   inc
                                   (* effective-width))
         extra-dir (-> direction
-                      (v/* required-extra-length))
-        diagonal-start (v/- real-diagonal-start extra-dir)
-        diagonal-end (v/+ real-diagonal-end extra-dir)
+                      (v/mul required-extra-length))
+        diagonal-start (v/sub real-diagonal-start extra-dir)
+        diagonal-end (v/add real-diagonal-end extra-dir)
         {line-one :line
          line-one-start :line-start
          line-one-end :line-end
@@ -64,29 +64,29 @@
                                          diagonal-start diagonal-end
                                          :context context
                                          :environment environment)
-        parts [[["M" (v/+ diagonal-start
-                          line-one-start)
+        parts [[["M" (v/add diagonal-start
+                            line-one-start)
                  (svg/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:right :top]
-                                [(v/+ diagonal-end
-                                      line-one-end)
-                                 (v/+ diagonal-start
-                                      line-one-start)])
+                                [(v/add diagonal-end
+                                        line-one-end)
+                                 (v/add diagonal-start
+                                        line-one-start)])
                  "z"]
                 [real-diagonal-start
                  top-right
                  real-diagonal-end]]
 
-               [["M" (v/+ diagonal-start
-                          line-one-start)
+               [["M" (v/add diagonal-start
+                            line-one-start)
                  (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:right :top]
-                                [(v/+ diagonal-end
-                                      line-one-end)
-                                 (v/+ diagonal-start
-                                      line-one-start)])
+                                [(v/add diagonal-end
+                                        line-one-end)
+                                 (v/add diagonal-start
+                                        line-one-start)])
                  "z"]
                 [real-diagonal-start
                  real-diagonal-end

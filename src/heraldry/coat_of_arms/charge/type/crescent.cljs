@@ -31,9 +31,9 @@
            horn-point-2 (v/v (- horn-point-x) horn-point-y)]
        {:shape ["m" horn-point-1
                 ["a" radius radius
-                 0 1 1 (v/- horn-point-2 horn-point-1)]
+                 0 1 1 (v/sub horn-point-2 horn-point-1)]
                 ["a" inner-radius inner-radius
-                 0 1 0 (v/- horn-point-1 horn-point-2)]
+                 0 1 0 (v/sub horn-point-1 horn-point-2)]
                 "z"]
         :charge-width width
         :charge-height width}))))

@@ -14,7 +14,7 @@
 
 (defn relative-points [points]
   (reduce (fn [result point]
-            (conj result (v/+ (last result) point))) [(first points)] (rest points)))
+            (conj result (v/add (last result) point))) [(first points)] (rest points)))
 
 (defn draw-label [variant origin-point num-points width band-height point-width point-height eccentricity
                   line environment context]
@@ -75,7 +75,7 @@
                            (line/create line
                                         p1 p2
                                         :real-start 0
-                                        :real-end (v/abs (v/- p2 p1))
+                                        :real-end (v/abs (v/sub p2 p1))
                                         :context context
                                         :environment environment))))]
     {:points points
@@ -85,7 +85,7 @@
      :lines lines
      :shape (-> ["M" (-> points
                          first
-                         (v/+ (-> lines first :line-start)))]
+                         (v/add (-> lines first :line-start)))]
                 (into (map (comp svg/stitch :line) lines))
                 (conj "z"))}))
 
@@ -108,8 +108,8 @@
         band-height (-> thickness
                         ((util/percent-of (:width environment))))
         origin-point (case (:alignment origin)
-                       :left (v/+ origin-point (v/v 0 (/ band-height 2)))
-                       :right (v/- origin-point (v/v 0 (/ band-height 2)))
+                       :left (v/add origin-point (v/v 0 (/ band-height 2)))
+                       :right (v/sub origin-point (v/v 0 (/ band-height 2)))
                        origin-point)
         point-width (-> size
                         ((util/percent-of (:width environment))))

@@ -56,28 +56,28 @@
         intersection-fess-bottom-left (v/find-first-intersection-of-ray corner-bottom-left fess-bottom-left environment)
         intersection-fess-bottom-right (v/find-first-intersection-of-ray corner-bottom-right fess-bottom-right environment)
         end-pale-top-left (-> intersection-pale-top-left
-                              (v/- corner-top-left)
+                              (v/sub corner-top-left)
                               v/abs)
         end-pale-top-right (-> intersection-pale-top-right
-                               (v/- corner-top-right)
+                               (v/sub corner-top-right)
                                v/abs)
         end-pale-bottom-left (-> intersection-pale-bottom-left
-                                 (v/- corner-bottom-left)
+                                 (v/sub corner-bottom-left)
                                  v/abs)
         end-pale-bottom-right (-> intersection-pale-bottom-right
-                                  (v/- corner-bottom-right)
+                                  (v/sub corner-bottom-right)
                                   v/abs)
         end-fess-top-left (-> intersection-fess-top-left
-                              (v/- corner-top-left)
+                              (v/sub corner-top-left)
                               v/abs)
         end-fess-top-right (-> intersection-fess-top-right
-                               (v/- corner-top-right)
+                               (v/sub corner-top-right)
                                v/abs)
         end-fess-bottom-left (-> intersection-fess-bottom-left
-                                 (v/- corner-bottom-left)
+                                 (v/sub corner-bottom-left)
                                  v/abs)
         end-fess-bottom-right (-> intersection-fess-bottom-right
-                                  (v/- corner-bottom-right)
+                                  (v/sub corner-bottom-right)
                                   v/abs)
         end (max end-pale-top-left
                  end-pale-top-right
@@ -159,45 +159,45 @@
                                                    :real-end end
                                                    :context context
                                                    :environment environment)
-        part [["M" (v/+ corner-top-left
-                        line-pale-top-left-start)
+        part [["M" (v/add corner-top-left
+                          line-pale-top-left-start)
                (svg/stitch line-pale-top-left)
                (infinity/path :clockwise
                               [:top :top]
-                              [(v/+ pale-top-left
-                                    line-pale-top-left-start)
-                               (v/+ pale-top-right
-                                    line-pale-top-right-start)])
+                              [(v/add pale-top-left
+                                      line-pale-top-left-start)
+                               (v/add pale-top-right
+                                      line-pale-top-right-start)])
                (svg/stitch line-pale-top-right)
-               "L" (v/+ corner-top-right
-                        line-fess-top-right-start)
+               "L" (v/add corner-top-right
+                          line-fess-top-right-start)
                (svg/stitch line-fess-top-right)
                (infinity/path :clockwise
                               [:right :right]
-                              [(v/+ fess-top-right
-                                    line-fess-top-right-start)
-                               (v/+ fess-bottom-right
-                                    line-fess-bottom-right-start)])
+                              [(v/add fess-top-right
+                                      line-fess-top-right-start)
+                               (v/add fess-bottom-right
+                                      line-fess-bottom-right-start)])
                (svg/stitch line-fess-bottom-right)
-               "L" (v/+ corner-bottom-right
-                        line-pale-bottom-right-start)
+               "L" (v/add corner-bottom-right
+                          line-pale-bottom-right-start)
                (svg/stitch line-pale-bottom-right)
                (infinity/path :clockwise
                               [:bottom :bottom]
-                              [(v/+ pale-bottom-right
-                                    line-pale-bottom-right-start)
-                               (v/+ pale-bottom-left
-                                    line-pale-bottom-left-start)])
+                              [(v/add pale-bottom-right
+                                      line-pale-bottom-right-start)
+                               (v/add pale-bottom-left
+                                      line-pale-bottom-left-start)])
                (svg/stitch line-pale-bottom-left)
-               "L" (v/+ corner-bottom-left
-                        line-fess-bottom-left-start)
+               "L" (v/add corner-bottom-left
+                          line-fess-bottom-left-start)
                (svg/stitch line-fess-bottom-left)
                (infinity/path :clockwise
                               [:left :left]
-                              [(v/+ fess-bottom-left
-                                    line-fess-bottom-left-start)
-                               (v/+ fess-top-left
-                                    line-fess-top-left-start)])
+                              [(v/add fess-bottom-left
+                                      line-fess-bottom-left-start)
+                               (v/add fess-top-left
+                                      line-fess-top-left-start)])
                (svg/stitch line-fess-top-left)
                "z"]]]
     [:<>

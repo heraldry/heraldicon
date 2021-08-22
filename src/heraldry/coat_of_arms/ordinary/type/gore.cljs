@@ -9,9 +9,9 @@
             [heraldry.vector.svg :as svg]))
 
 (defn arm-diagonal [origin-point anchor-point]
-  (-> (v/- anchor-point origin-point)
+  (-> (v/sub anchor-point origin-point)
       v/normal
-      (v/* 200)))
+      (v/mul 200)))
 
 (def ordinary-type :heraldry.ordinary.type/gore)
 
@@ -40,7 +40,7 @@
                                      -90)
         bottom (:bottom points)
         relative-arm (arm-diagonal origin-point anchor-point)
-        diagonal-top (v/+ origin-point relative-arm)
+        diagonal-top (v/add origin-point relative-arm)
         [_ intersection-top] (v/environment-intersections origin-point diagonal-top environment)
         flipped? (not left?)
         {line-diagonal :line
@@ -48,7 +48,7 @@
          :as line-diagonal-data} (line/create line
                                               origin-point diagonal-top
                                               :real-start 0
-                                              :real-end (-> (v/- intersection-top origin-point)
+                                              :real-end (-> (v/sub intersection-top origin-point)
                                                             v/abs)
                                               :flipped? flipped?
                                               :reversed? true
@@ -60,12 +60,12 @@
                                           origin-point bottom
                                           :flipped? flipped?
                                           :real-start 0
-                                          :real-end (-> (v/- bottom origin-point)
+                                          :real-end (-> (v/sub bottom origin-point)
                                                         v/abs)
                                           :context context
                                           :environment environment)
-        part [["M" (v/+ diagonal-top
-                        line-diagonal-start)
+        part [["M" (v/add diagonal-top
+                          line-diagonal-start)
                (svg/stitch line-diagonal)
                "L" origin-point
                (svg/stitch line-down)
@@ -73,10 +73,10 @@
                                 :clockwise
                                 :counter-clockwise)
                               [:bottom :top]
-                              [(v/+ bottom
-                                    line-down-end)
-                               (v/+ diagonal-top
-                                    line-diagonal-start)])
+                              [(v/add bottom
+                                      line-down-end)
+                               (v/add diagonal-top
+                                      line-diagonal-start)])
                "z"]
               [intersection-top
                origin-point

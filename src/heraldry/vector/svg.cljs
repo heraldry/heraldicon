@@ -41,11 +41,11 @@
 
 (defn avg-x-y [[p & rest]]
   (let [[s n] (reduce (fn [[s n] p]
-                        [(v/+ s p)
+                        [(v/add s p)
                          (inc n)])
                       [p 1]
                       rest)]
-    (v// s n)))
+    (v/div s n)))
 
 (defn bounding-box-from-path [d]
   (let [path (new-path d)
@@ -88,22 +88,22 @@
                    (v/avg p1 p2))
         scale (or scale
                   (v/v 1 1))
-        points [(v/+ middle
-                     (v/rotate (v/dot (v/- (v/v x1 y1)
-                                           middle)
-                                      scale) rotation))
-                (v/+ middle
-                     (v/rotate (v/dot (v/- (v/v x2 y1)
-                                           middle)
-                                      scale) rotation))
-                (v/+ middle
-                     (v/rotate (v/dot (v/- (v/v x1 y2)
-                                           middle)
-                                      scale) rotation))
-                (v/+ middle
-                     (v/rotate (v/dot (v/- (v/v x2 y2)
-                                           middle)
-                                      scale) rotation))]]
+        points [(v/add middle
+                       (v/rotate (v/dot (v/sub (v/v x1 y1)
+                                               middle)
+                                        scale) rotation))
+                (v/add middle
+                       (v/rotate (v/dot (v/sub (v/v x2 y1)
+                                               middle)
+                                        scale) rotation))
+                (v/add middle
+                       (v/rotate (v/dot (v/sub (v/v x1 y2)
+                                               middle)
+                                        scale) rotation))
+                (v/add middle
+                       (v/rotate (v/dot (v/sub (v/v x2 y2)
+                                               middle)
+                                        scale) rotation))]]
     (bounding-box points)))
 
 (def html-colours
@@ -300,7 +300,7 @@
                {:keys [x y] :as current}
                _]]
   (let [dist (-> current
-                 (v/- previous)
+                 (v/sub previous)
                  (v/abs))
         jiggle-radius (/ dist 4)
         dx (- (* (random/float) jiggle-radius)

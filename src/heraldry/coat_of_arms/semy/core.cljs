@@ -9,7 +9,7 @@
       (update :points (fn [points]
                         (->> points
                              (map (fn [[k v]]
-                                    [k (v/+ v point)]))
+                                    [k (v/add v point)]))
                              (into {}))))))
 
 (defmethod interface/render-component :heraldry.component/semy [path parent-path environment context]

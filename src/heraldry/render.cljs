@@ -201,14 +201,14 @@
                                                  idx])))]
         (let [top-edge (catmullrom/curve->svg-path-relative partial-curve)
               [first-edge-vector second-edge-vector] (get edge-vectors idx)
-              first-edge-vector (v/* first-edge-vector thickness)
-              second-edge-vector (v/* second-edge-vector thickness)
+              first-edge-vector (v/mul first-edge-vector thickness)
+              second-edge-vector (v/mul second-edge-vector thickness)
               full-path (cond
                           (or (zero? end-split)
                               (< 0 idx (dec num-curves))) (str top-edge
                                                                (catmullrom/svg-line-to second-edge-vector)
                                                                (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                               (catmullrom/svg-line-to (v/* first-edge-vector -1)))
+                                                               (catmullrom/svg-line-to (v/mul first-edge-vector -1)))
                           ;; special case of only one segment with end-split > 0
                           (and (pos? end-split)
                                (zero? idx)
@@ -245,7 +245,7 @@
                                                                              end-split
                                                                              second-edge-vector))
                                                               (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                              (catmullrom/svg-line-to (v/* first-edge-vector -1))))
+                                                              (catmullrom/svg-line-to (v/mul first-edge-vector -1))))
               segment-path (conj segments-path idx)
               segment-type (interface/get-raw-data (conj segment-path :type) context)
               foreground? (#{:heraldry.ribbon.segment/foreground
@@ -277,10 +277,10 @@
                    font-scale (interface/get-sanitized-data (conj segment-path :font-scale) context)
                    font-size (* font-scale thickness)
                    spacing (* spacing font-size)
-                   text-path-start (v/+ (apply v/v (ffirst partial-curve))
-                                        (v/* first-edge-vector (- 0.6 offset-y)))
-                   text-path-end (v/+ (apply v/v (last (last partial-curve)))
-                                      (v/* second-edge-vector (- 0.6 offset-y)))
+                   text-path-start (v/add (apply v/v (ffirst partial-curve))
+                                          (v/mul first-edge-vector (- 0.6 offset-y)))
+                   text-path-end (v/add (apply v/v (last (last partial-curve)))
+                                        (v/mul second-edge-vector (- 0.6 offset-y)))
                    text-path (ribbon/project-path-to
                               partial-curve
                               text-path-start
@@ -313,15 +313,15 @@
             size (interface/get-sanitized-data (conj path :geometry :size) context)
             thickness (interface/get-sanitized-data (conj ribbon-path :thickness) context)
             position (-> (-> environment :points (get origin-point))
-                         (v/+ (v/v ((util/percent-of width) offset-x)
-                                   (- ((util/percent-of width) offset-y)))))
+                         (v/add (v/v ((util/percent-of width) offset-x)
+                                     (- ((util/percent-of width) offset-y)))))
             ;; TODO: not ideal, need the thickness here and need to know that the edge-vector (here
             ;; assumed to be (0 thickness) as a max) needs to be added to every point for the correct
             ;; height; could perhaps be a subscription or the ribbon function can provide it?
             ;; but then can't use the ribbon function as reagent component
             [min-x max-x
              min-y max-y] (svg/min-max-x-y (concat points
-                                                   (map (partial v/+ (v/v 0 thickness)) points)))
+                                                   (map (partial v/add (v/v 0 thickness)) points)))
             ribbon-width (- max-x min-x)
             shift (v/v (- (/ ribbon-width -2) min-x)
                        (case origin-point
@@ -340,13 +340,13 @@
                    tincture-text
                    context :outline-thickness outline-thickness]]
          :bounding-box (let [top-left (-> (v/v min-x min-y)
-                                          (v/+ shift)
-                                          (v/* scale)
-                                          (v/+ position))
+                                          (v/add shift)
+                                          (v/mul scale)
+                                          (v/add position))
                              bottom-right (-> (v/v max-x max-y)
-                                              (v/+ shift)
-                                              (v/* scale)
-                                              (v/+ position))]
+                                              (v/add shift)
+                                              (v/mul scale)
+                                              (v/add position))]
 
                          [(:x top-left) (:x bottom-right)
                           (:y top-left) (:y bottom-right)])})
@@ -461,13 +461,13 @@
                         (pos? coat-of-arms-angle) (v/v (/ coat-of-arms-width 2) 0)
                         :else (v/v 0 0))
         helms-bounding-box (svg/min-max-x-y [(-> helm-position
-                                                 (v/+ (v/v (/ coat-of-arms-width 2) 0))
-                                                 (v/+ (v/v (- (/ helms-width 2))
-                                                           (- helms-height))))
+                                                 (v/add (v/v (/ coat-of-arms-width 2) 0))
+                                                 (v/add (v/v (- (/ helms-width 2))
+                                                             (- helms-height))))
                                              (-> helm-position
-                                                 (v/+ (v/v (/ coat-of-arms-width 2) 0))
-                                                 (v/+ (v/v (/ helms-width 2)
-                                                           0)))])
+                                                 (v/add (v/v (/ coat-of-arms-width 2) 0))
+                                                 (v/add (v/v (/ helms-width 2)
+                                                             0)))])
         coat-of-arms-bounding-box (if rotated?
                                     [rotated-min-x rotated-max-x
                                      0 rotated-height]

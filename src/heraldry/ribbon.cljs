@@ -180,11 +180,11 @@
   (let [original-start (apply v/v (ffirst curve))
         original-end (apply v/v (last (last curve)))
         original-dir (if reverse?
-                       (v/- original-start original-end)
-                       (v/- original-end original-start))
+                       (v/sub original-start original-end)
+                       (v/sub original-end original-start))
         new-dir (if reverse?
-                  (v/- new-start new-end)
-                  (v/- new-end new-start))
+                  (v/sub new-start new-end)
+                  (v/sub new-end new-start))
         original-angle (-> (Math/atan2 (:y original-dir)
                                        (:x original-dir))
                            (* 180)
@@ -223,8 +223,8 @@
 (defn project-bottom-edge [top-curve start-edge-vector end-edge-vector]
   (let [original-start (apply v/v (ffirst top-curve))
         original-end (apply v/v (last (last top-curve)))
-        new-start (v/+ original-start start-edge-vector)
-        new-end (v/+ original-end end-edge-vector)]
+        new-start (v/add original-start start-edge-vector)
+        new-end (v/add original-end end-edge-vector)]
     (project-path-to top-curve new-start new-end :reverse? true)))
 
 (defn split-end [kind curve percentage edge-vector]
@@ -232,13 +232,13 @@
         {:keys [curve1 curve2]} (catmullrom/split-curve-at curve (cond-> (/ percentage 100)
                                                                    (= kind :end) (->> (- 1))))
         split-point (-> (apply v/v (ffirst curve2))
-                        (v/+ (v// edge-vector 2)))]
+                        (v/add (v/div edge-vector 2)))]
     (case kind
       :start (let [start-point (apply v/v (ffirst curve))
-                   end-point (v/+ start-point edge-vector)]
+                   end-point (v/add start-point edge-vector)]
                [(project-path-to curve1 end-point split-point)
                 (project-path-to curve1 start-point split-point :reverse? true)])
       :end (let [start-point (apply v/v (last (last curve2)))
-                 end-point (v/+ start-point edge-vector)]
+                 end-point (v/add start-point edge-vector)]
              [(project-path-to curve2 split-point start-point :reverse? true)
               (project-path-to curve2 split-point end-point)]))))

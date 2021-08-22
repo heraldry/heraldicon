@@ -43,7 +43,7 @@
         center-point (or override-center-point
                          (v/line-intersection origin-point anchor-point
                                               top bottom))
-        direction (v/- anchor-point origin-point)
+        direction (v/sub anchor-point origin-point)
         direction (-> (v/v (-> direction :x Math/abs)
                            (-> direction :y Math/abs))
                       v/normal)
@@ -55,25 +55,25 @@
                              override-middle-real-end]
                             (v/environment-intersections
                              origin-point
-                             (v/+ origin-point direction)
+                             (v/add origin-point direction)
                              environment))
-        band-length (-> (v/- middle-real-start center-point)
+        band-length (-> (v/sub middle-real-start center-point)
                         v/abs
                         (* 2))
         middle-start (-> direction
-                         (v/* -30)
-                         (v/+ middle-real-start))
+                         (v/mul -30)
+                         (v/add middle-real-start))
         middle-end (-> direction
-                       (v/* 30)
-                       (v/+ middle-real-end))
+                       (v/mul 30)
+                       (v/add middle-real-end))
         width-offset (-> direction-orthogonal
-                         (v/* band-height)
-                         (v// 2))
-        ordinary-top-left (v/+ middle-real-start width-offset)
-        first-start (v/+ middle-start width-offset)
-        first-end (v/+ middle-end width-offset)
-        second-start (v/- middle-start width-offset)
-        second-end (v/- middle-end width-offset)
+                         (v/mul band-height)
+                         (v/div 2))
+        ordinary-top-left (v/add middle-real-start width-offset)
+        first-start (v/add middle-start width-offset)
+        first-end (v/add middle-end width-offset)
+        second-start (v/sub middle-start width-offset)
+        second-end (v/sub middle-end width-offset)
         [first-real-start
          first-real-end] (v/environment-intersections
                           first-start
@@ -85,14 +85,14 @@
                            second-end
                            environment)
         real-start (or override-real-start
-                       (min (-> (v/- first-real-start first-start)
+                       (min (-> (v/sub first-real-start first-start)
                                 (v/abs))
-                            (-> (v/- second-real-start second-start)
+                            (-> (v/sub second-real-start second-start)
                                 (v/abs))))
         real-end (or override-real-end
-                     (max (-> (v/- first-real-start first-start)
+                     (max (-> (v/sub first-real-start first-start)
                               (v/abs))
-                          (-> (v/- second-real-end second-start)
+                          (-> (v/sub second-real-end second-start)
                               (v/abs))))
         angle (v/angle-to-point middle-start middle-end)
         line (-> line
@@ -126,14 +126,14 @@
         inherit-environment? (interface/get-sanitized-data (conj path :field :inherit-environment?) context)
         use-parent-environment? (or counterchanged?
                                     inherit-environment?)
-        part [["M" (v/+ first-start
-                        line-one-start)
+        part [["M" (v/add first-start
+                          line-one-start)
                (svg/stitch line-one)
-               "L" (v/+ second-end
-                        line-reversed-start)
+               "L" (v/add second-end
+                          line-reversed-start)
                (svg/stitch line-reversed)
-               "L" (v/+ first-start
-                        line-one-start)
+               "L" (v/add first-start
+                          line-one-start)
                "z"]
               (if use-parent-environment?
                 [first-real-start first-real-end
@@ -172,9 +172,9 @@
       :direction-orthogonal direction-orthogonal
       :center-point center-point
       :middle-real-start-fn (fn [point-offset]
-                              (v/+ middle-real-start point-offset))
+                              (v/add middle-real-start point-offset))
       :middle-real-end-fn (fn [point-offset]
-                            (v/+ middle-real-end point-offset))]
+                            (v/add middle-real-end point-offset))]
      [cottising/render-bend-cottise
       :cottise-opposite-1 :cottise-opposite-2 :cottise-opposite-1
       path environment cottise-context
@@ -192,7 +192,7 @@
       :direction-orthogonal direction-orthogonal
       :center-point center-point
       :middle-real-start-fn (fn [point-offset]
-                              (v/- middle-real-start point-offset))
+                              (v/sub middle-real-start point-offset))
       :middle-real-end-fn (fn [point-offset]
-                            (v/- middle-real-end point-offset))
+                            (v/sub middle-real-end point-offset))
       :swap-lines? true]]))

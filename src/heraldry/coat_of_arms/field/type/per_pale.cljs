@@ -34,8 +34,8 @@
                                   Math/ceil
                                   inc
                                   (* effective-width))
-        top (v/- real-top (v/v 0 required-extra-length))
-        bottom (v/+ real-bottom (v/v 0 required-extra-length))
+        top (v/sub real-top (v/v 0 required-extra-length))
+        bottom (v/add real-bottom (v/v 0 required-extra-length))
         {line-one :line
          line-one-start :line-start
          line-one-end :line-end
@@ -45,28 +45,28 @@
                                          :context context
                                          :environment environment)
 
-        parts [[["M" (v/+ top
-                          line-one-start)
+        parts [[["M" (v/add top
+                            line-one-start)
                  (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:bottom :top]
-                                [(v/+ bottom
-                                      line-one-end)
-                                 (v/+ top
-                                      line-one-start)])
+                                [(v/add bottom
+                                        line-one-end)
+                                 (v/add top
+                                        line-one-start)])
                  "z"]
                 [top-left
                  real-bottom]]
 
-               [["M" (v/+ top
-                          line-one-start)
+               [["M" (v/add top
+                            line-one-start)
                  (svg/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:bottom :top]
-                                [(v/+ bottom
-                                      line-one-end)
-                                 (v/+ top
-                                      line-one-start)])
+                                [(v/add bottom
+                                        line-one-end)
+                                 (v/add top
+                                        line-one-start)])
                  "z"]
                 [real-top
                  bottom-right]]]]

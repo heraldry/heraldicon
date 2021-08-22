@@ -96,7 +96,7 @@
         distance (if (<= num-slots 1)
                    50
                    (-> (v/v radius 0)
-                       (v/- (v/rotate (v/v radius 0) angle-step))
+                       (v/sub (v/rotate (v/v radius 0) angle-step))
                        v/abs))]
     {:slot-positions (->> slots
                           (map-indexed (fn [slot-index charge-index]
@@ -134,7 +134,7 @@
          [charge-interface/render-charge charge-path parent-path
           environment
           (-> context
-              (assoc :origin-override (v/+ origin-point point))
+              (assoc :origin-override (v/add origin-point point))
               (assoc :charge-group {:charge-group-path path
                                     :slot-spacing slot-spacing
                                     :slot-angle (when rotate-charges?

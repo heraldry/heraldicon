@@ -132,7 +132,7 @@
     (let [angle-rad (-> angle
                         (+ base-angle)
                         (* Math/PI) (/ 180))]
-      (v/+ origin (v/* (v/v (Math/cos angle-rad)
+      (v/add origin (v/mul (v/v (Math/cos angle-rad)
                             (Math/sin angle-rad))
                        200)))
     (calculate anchor environment)))

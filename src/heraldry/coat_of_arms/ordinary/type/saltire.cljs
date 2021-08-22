@@ -42,10 +42,10 @@
                                      nil)
         [relative-top-left relative-top-right
          relative-bottom-left relative-bottom-right] (saltire/arm-diagonals origin-point anchor-point)
-        diagonal-top-left (v/+ origin-point relative-top-left)
-        diagonal-top-right (v/+ origin-point relative-top-right)
-        diagonal-bottom-left (v/+ origin-point relative-bottom-left)
-        diagonal-bottom-right (v/+ origin-point relative-bottom-right)
+        diagonal-top-left (v/add origin-point relative-top-left)
+        diagonal-top-right (v/add origin-point relative-top-right)
+        diagonal-bottom-left (v/add origin-point relative-bottom-left)
+        diagonal-bottom-right (v/add origin-point relative-bottom-right)
         angle-bottom-right (v/angle-to-point origin-point diagonal-bottom-right)
         angle (-> angle-bottom-right (* Math/PI) (/ 180))
         dx (/ band-width 2 (Math/sin angle))
@@ -54,18 +54,18 @@
         offset-bottom (v/v 0 dy)
         offset-left (v/v (- dx) 0)
         offset-right (v/v dx 0)
-        corner-top (v/+ origin-point offset-top)
-        corner-bottom (v/+ origin-point offset-bottom)
-        corner-left (v/+ origin-point offset-left)
-        corner-right (v/+ origin-point offset-right)
-        top-left-upper (v/+ diagonal-top-left offset-top)
-        top-left-lower (v/+ diagonal-top-left offset-bottom)
-        top-right-upper (v/+ diagonal-top-right offset-top)
-        top-right-lower (v/+ diagonal-top-right offset-bottom)
-        bottom-left-upper (v/+ diagonal-bottom-left offset-top)
-        bottom-left-lower (v/+ diagonal-bottom-left offset-bottom)
-        bottom-right-upper (v/+ diagonal-bottom-right offset-top)
-        bottom-right-lower (v/+ diagonal-bottom-right offset-bottom)
+        corner-top (v/add origin-point offset-top)
+        corner-bottom (v/add origin-point offset-bottom)
+        corner-left (v/add origin-point offset-left)
+        corner-right (v/add origin-point offset-right)
+        top-left-upper (v/add diagonal-top-left offset-top)
+        top-left-lower (v/add diagonal-top-left offset-bottom)
+        top-right-upper (v/add diagonal-top-right offset-top)
+        top-right-lower (v/add diagonal-top-right offset-bottom)
+        bottom-left-upper (v/add diagonal-bottom-left offset-top)
+        bottom-left-lower (v/add diagonal-bottom-left offset-bottom)
+        bottom-right-upper (v/add diagonal-bottom-right offset-top)
+        bottom-right-lower (v/add diagonal-bottom-right offset-bottom)
         intersection-top-left-upper (v/find-first-intersection-of-ray corner-top top-left-upper environment)
         intersection-top-right-upper (v/find-first-intersection-of-ray corner-top top-right-upper environment)
         intersection-top-left-lower (v/find-first-intersection-of-ray corner-left top-left-lower environment)
@@ -75,28 +75,28 @@
         intersection-bottom-left-lower (v/find-first-intersection-of-ray corner-bottom bottom-left-lower environment)
         intersection-bottom-right-lower (v/find-first-intersection-of-ray corner-bottom bottom-right-lower environment)
         end-top-left-upper (-> intersection-top-left-upper
-                               (v/- corner-top)
+                               (v/sub corner-top)
                                v/abs)
         end-top-right-upper (-> intersection-top-right-upper
-                                (v/- corner-top)
+                                (v/sub corner-top)
                                 v/abs)
         end-top-left-lower (-> intersection-top-left-lower
-                               (v/- corner-left)
+                               (v/sub corner-left)
                                v/abs)
         end-top-right-lower (-> intersection-top-right-lower
-                                (v/- corner-right)
+                                (v/sub corner-right)
                                 v/abs)
         end-bottom-left-upper (-> intersection-bottom-left-upper
-                                  (v/- corner-left)
+                                  (v/sub corner-left)
                                   v/abs)
         end-bottom-right-upper (-> intersection-bottom-right-upper
-                                   (v/- corner-right)
+                                   (v/sub corner-right)
                                    v/abs)
         end-bottom-left-lower (-> intersection-bottom-left-lower
-                                  (v/- corner-bottom)
+                                  (v/sub corner-bottom)
                                   v/abs)
         end-bottom-right-lower (-> intersection-bottom-right-lower
-                                   (v/- corner-bottom)
+                                   (v/sub corner-bottom)
                                    v/abs)
         end (max end-top-left-upper
                  end-top-right-upper
@@ -178,29 +178,29 @@
                                                        :real-end end
                                                        :context context
                                                        :environment environment)
-        part [["M" (v/+ corner-left
-                        line-top-left-lower-start)
+        part [["M" (v/add corner-left
+                          line-top-left-lower-start)
                (svg/stitch line-top-left-lower)
-               "L" (v/+ top-left-upper
-                        line-top-left-upper-start)
+               "L" (v/add top-left-upper
+                          line-top-left-upper-start)
                (svg/stitch line-top-left-upper)
-               "L" (v/+ corner-top
-                        line-top-right-upper-start)
+               "L" (v/add corner-top
+                          line-top-right-upper-start)
                (svg/stitch line-top-right-upper)
-               "L" (v/+ top-right-lower
-                        line-top-right-lower-start)
+               "L" (v/add top-right-lower
+                          line-top-right-lower-start)
                (svg/stitch line-top-right-lower)
-               "L" (v/+ corner-right
-                        line-bottom-right-upper-start)
+               "L" (v/add corner-right
+                          line-bottom-right-upper-start)
                (svg/stitch line-bottom-right-upper)
-               "L" (v/+ bottom-right-lower
-                        line-bottom-right-lower-start)
+               "L" (v/add bottom-right-lower
+                          line-bottom-right-lower-start)
                (svg/stitch line-bottom-right-lower)
-               "L" (v/+ corner-bottom
-                        line-bottom-left-lower-start)
+               "L" (v/add corner-bottom
+                          line-bottom-left-lower-start)
                (svg/stitch line-bottom-left-lower)
-               "L" (v/+ bottom-left-upper
-                        line-bottom-left-upper-start)
+               "L" (v/add bottom-left-upper
+                          line-bottom-left-upper-start)
                (svg/stitch line-bottom-left-upper)
                "z"]
               [top bottom left right]]]

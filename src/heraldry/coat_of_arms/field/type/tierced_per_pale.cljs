@@ -71,49 +71,49 @@
                                                        :real-end real-end
                                                        :context context
                                                        :environment environment)
-        parts [[["M" (v/+ first-top
-                          line-one-start)
+        parts [[["M" (v/add first-top
+                            line-one-start)
                  (svg/stitch line-one)
                  (infinity/path :clockwise
                                 [:bottom :top]
-                                [(v/+ first-bottom
-                                      line-one-start)
-                                 (v/+ first-top
-                                      line-one-start)])
+                                [(v/add first-bottom
+                                        line-one-start)
+                                 (v/add first-top
+                                        line-one-start)])
                  "z"]
                 [top-left
                  first-bottom]]
 
-               [["M" (v/+ second-bottom
-                          line-reversed-start)
+               [["M" (v/add second-bottom
+                            line-reversed-start)
                  (svg/stitch line-reversed)
                  (infinity/path :counter-clockwise
                                 [:top :top]
-                                [(v/+ second-top
-                                      line-reversed-start)
-                                 (v/+ first-top
-                                      line-one-start)])
+                                [(v/add second-top
+                                        line-reversed-start)
+                                 (v/add first-top
+                                        line-one-start)])
                  (svg/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:bottom :bottom]
-                                [(v/+ first-top
-                                      line-one-start)
-                                 (v/+ second-bottom
-                                      line-reversed-start)
+                                [(v/add first-top
+                                        line-one-start)
+                                 (v/add second-bottom
+                                        line-reversed-start)
                                  first-bottom second-bottom])
                  "z"]
                 [first-top
                  second-bottom]]
 
-               [["M" (v/+ second-bottom
-                          line-reversed-start)
+               [["M" (v/add second-bottom
+                            line-reversed-start)
                  (svg/stitch line-reversed)
                  (infinity/path :clockwise
                                 [:top :bottom]
-                                [(v/+ second-top
-                                      line-reversed-start)
-                                 (v/+ second-bottom
-                                      line-reversed-start)])
+                                [(v/add second-top
+                                        line-reversed-start)
+                                 (v/add second-bottom
+                                        line-reversed-start)])
                  "z"]
                 [second-top
                  bottom-right]]]]
@@ -122,18 +122,18 @@
       path parts
       [:all
        [(svg/make-path
-         ["M" (v/+ second-bottom
-                   line-reversed-start)
+         ["M" (v/add second-bottom
+                     line-reversed-start)
           (svg/stitch line-reversed)])]
        nil]
       environment context]
      (when outline?
        [:g (outline/style context)
         [:path {:d (svg/make-path
-                    ["M" (v/+ first-top
-                              line-one-start)
+                    ["M" (v/add first-top
+                                line-one-start)
                      (svg/stitch line-one)])}]
         [:path {:d (svg/make-path
-                    ["M" (v/+ second-bottom
-                              line-reversed-start)
+                    ["M" (v/add second-bottom
+                                line-reversed-start)
                      (svg/stitch line-reversed)])}]])]))

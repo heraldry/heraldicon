@@ -163,9 +163,9 @@
             thickness (interface/get-sanitized-data (conj cottise-path :thickness) context)
             distance (interface/get-sanitized-data (conj cottise-path :distance) context)
             effective-distance (distance-fn distance thickness)
-            point-offset (v/* direction-orthogonal effective-distance)
-            new-center-point (v/+ center-point point-offset)
-            fess-offset (v/- new-center-point (-> environment :points :fess))
+            point-offset (v/mul direction-orthogonal effective-distance)
+            new-center-point (v/add center-point point-offset)
+            fess-offset (v/sub new-center-point (-> environment :points :fess))
             outline? (interface/get-sanitized-data (conj cottise-path :outline?) context)]
         [ordinary-interface/render-ordinary
          [:context :cottise]
@@ -225,8 +225,8 @@
             effective-distance (distance-fn distance half-joint-angle-rad)
             point-offset (-> (v/v effective-distance 0)
                              (v/rotate chevron-angle)
-                             (v/+ corner-point))
-            fess-offset (v/- point-offset (-> environment :points :fess))
+                             (v/add corner-point))
+            fess-offset (v/sub point-offset (-> environment :points :fess))
             outline? (interface/get-sanitized-data (conj cottise-path :outline?) context)]
         [ordinary-interface/render-ordinary
          [:context :cottise]
