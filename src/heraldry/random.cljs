@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.random
+(ns heraldry.random
   (:require ["random" :as random-lib]
             ["seedrandom" :as seedrandom]))
 
