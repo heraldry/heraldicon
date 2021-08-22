@@ -6,7 +6,7 @@
             [clojure.string :as s]
             [clojure.walk :as walk]
             [heraldry.vector.catmullrom :as catmullrom]
-            [heraldry.coat-of-arms.random :as random]
+            [heraldry.random :as random]
             [heraldry.vector.core :as v]
             [heraldry.util :as util]))
 
