@@ -2,7 +2,7 @@
   (:require [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.field.interface :as ui-interface]
             [heraldry.interface :as interface]
-            [heraldry.svg :as svg]
+            [heraldry.vector.svg :as svg]
             [heraldry.util :as util]))
 
 (def overlap-stroke-width 0.1)

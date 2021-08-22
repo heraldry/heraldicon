@@ -8,7 +8,7 @@
             [heraldry.coat-of-arms.shared.saltire :as saltire]
             [heraldry.vector.core :as v]
             [heraldry.interface :as interface]
-            [heraldry.svg :as svg]))
+            [heraldry.vector.svg :as svg]))
 
 (def field-type :heraldry.field.type/per-saltire)
 

@@ -11,7 +11,7 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.vector.core :as v]
             [heraldry.interface :as interface]
-            [heraldry.svg :as svg]
+            [heraldry.vector.svg :as svg]
             [heraldry.util :as util]))
 
 (defn remove-outlines [data placeholder-colours]

@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.field.environment
   (:require ["svgpath" :as svgpath]
             [heraldry.vector.core :as v]
-            [heraldry.svg :as svg]))
+            [heraldry.vector.svg :as svg]))
 
 (defn create [shape {:keys [bounding-box context] :as meta}]
   (let [override-environment (:override-environment meta)

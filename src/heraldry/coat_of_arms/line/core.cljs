@@ -30,7 +30,7 @@
             [heraldry.vector.core :as v]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
-            [heraldry.svg :as svg]
+            [heraldry.vector.svg :as svg]
             [heraldry.util :as util]))
 
 (defn line-base [{:keys [base-line]} {line-min :min
