@@ -47,10 +47,18 @@
       (add v2)
       (div 2)))
 
+(defn to-rad [angle]
+  (-> angle
+      (* Math/PI)
+      (/ 180)))
+
+(defn to-deg [angle]
+  (-> angle
+      (/ Math/PI)
+      (* 180)))
+
 (defn rotate [{:keys [x y]} angle]
-  (let [rad (-> angle
-                (* Math/PI)
-                (/ 180))]
+  (let [rad (to-rad angle)]
     (v (- (* x (Math/cos rad))
           (* y (Math/sin rad)))
        (+ (* x (Math/sin rad))
@@ -243,9 +251,7 @@
 (defn angle-to-point [p1 p2]
   (let [d (sub p2 p1)
         angle-rad (Math/atan2 (:y d) (:x d))]
-    (-> angle-rad
-        (/ Math/PI)
-        (* 180))))
+    (to-deg angle-rad)))
 
 (defn normalize-angle [angle]
   (loop [angle angle]
