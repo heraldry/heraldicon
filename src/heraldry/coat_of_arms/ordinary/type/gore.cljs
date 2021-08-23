@@ -4,9 +4,9 @@
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.vector.core :as v]
+            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.vector.svg :as svg]))
+            [heraldry.math.svg :as svg]))
 
 (defn arm-diagonal [origin-point anchor-point]
   (-> (v/sub anchor-point origin-point)

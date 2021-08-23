@@ -7,9 +7,9 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.shared.chevron :as chevron]
-            [heraldry.vector.core :as v]
+            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.vector.svg :as svg]))
+            [heraldry.math.svg :as svg]))
 
 (def field-type :heraldry.field.type/tierced-per-pairle)
 

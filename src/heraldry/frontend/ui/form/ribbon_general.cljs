@@ -1,5 +1,5 @@
 (ns heraldry.frontend.ui.form.ribbon-general
-  (:require [heraldry.vector.catmullrom :as catmullrom]
+  (:require [heraldry.math.catmullrom :as catmullrom]
             [heraldry.frontend.ui.element.select :as select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.text-field :as text-field]

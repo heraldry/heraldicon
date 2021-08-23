@@ -6,9 +6,9 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.shared.saltire :as saltire]
-            [heraldry.vector.core :as v]
+            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.vector.svg :as svg]))
+            [heraldry.math.svg :as svg]))
 
 (def field-type :heraldry.field.type/gyronny)
 

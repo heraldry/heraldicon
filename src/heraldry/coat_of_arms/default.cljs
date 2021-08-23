@@ -1,7 +1,7 @@
 
 (ns heraldry.coat-of-arms.default
   (:require [heraldry.config :as config]
-            [heraldry.vector.core :as v]))
+            [heraldry.math.vector :as v]))
 
 (def line
   {:type :straight})

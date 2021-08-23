@@ -1,21 +1,21 @@
 (ns heraldry.render
   (:require [clojure.string :as s]
             [heraldry.backend.output :as output]
-            [heraldry.vector.catmullrom :as catmullrom]
+            [heraldry.math.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.field.shared :as field-shared]
-            [heraldry.vector.filter :as filter]
+            [heraldry.math.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.vector.core :as v]
+            [heraldry.math.vector :as v]
             [heraldry.font :as font]
             [heraldry.interface :as interface]
             [heraldry.ribbon :as ribbon]
-            [heraldry.vector.svg :as svg]
+            [heraldry.math.svg :as svg]
             [heraldry.util :as util]))
 
 (defn coat-of-arms [path width

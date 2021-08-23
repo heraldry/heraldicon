@@ -6,9 +6,9 @@
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.shared.chevron :as chevron]
-            [heraldry.vector.core :as v]
+            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.vector.svg :as svg]
+            [heraldry.math.svg :as svg]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/pall)

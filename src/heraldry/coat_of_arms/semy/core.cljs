@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.semy.core
   (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
-            [heraldry.vector.core :as v]
+            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
             [heraldry.util :as util]))
 

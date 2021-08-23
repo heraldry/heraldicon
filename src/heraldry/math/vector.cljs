@@ -1,4 +1,4 @@
-(ns heraldry.vector.core
+(ns heraldry.math.vector
   (:require ["path-intersection" :as -path-intersection]))
 
 (def path-intersection
@@ -46,22 +46,6 @@
   (-> v1
       (add v2)
       (div 2)))
-
-(defn project [{from-x :x from-y :y} {to-x :x to-y :y} x]
-  {:x x
-   :y (-> to-y
-          (- from-y)
-          (/ (- to-x from-x))
-          (* (- x from-x))
-          (+ from-y))})
-
-(defn extend [from to l]
-  (let [diff (sub to from)
-        distance (abs diff)
-        direction (div diff distance)]
-    (-> direction
-        (mul l)
-        (add from))))
 
 (defn rotate [{:keys [x y]} angle]
   (let [rad (-> angle
