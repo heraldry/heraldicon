@@ -8,7 +8,8 @@
             [heraldry.coat-of-arms.shared.saltire :as saltire]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]))
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]))
 
 (def field-type :heraldry.field.type/gyronny)
 
@@ -151,9 +152,9 @@
                                               :environment environment)
         parts [[["M" (v/add point-top
                             line-top-start)
-                 (svg/stitch line-top)
+                 (path/stitch line-top)
                  "L" origin-point
-                 (svg/stitch line-top-left)
+                 (path/stitch line-top-left)
                  (infinity/path :clockwise
                                 [:left :top]
                                 [point-top-left
@@ -166,9 +167,9 @@
 
                [["M" (v/add point-top
                             line-top-start)
-                 (svg/stitch line-top)
+                 (path/stitch line-top)
                  "L" origin-point
-                 (svg/stitch line-top-right)
+                 (path/stitch line-top-right)
                  (infinity/path :counter-clockwise
                                 [:right :top]
                                 [point-top-right
@@ -181,9 +182,9 @@
 
                [["M" (v/add point-left
                             line-left-start)
-                 (svg/stitch line-left)
+                 (path/stitch line-left)
                  "L" origin-point
-                 (svg/stitch line-top-left)
+                 (path/stitch line-top-left)
                  (infinity/path :counter-clockwise
                                 [:left :left]
                                 [point-top-left
@@ -196,9 +197,9 @@
 
                [["M" (v/add point-right
                             line-right-start)
-                 (svg/stitch line-right)
+                 (path/stitch line-right)
                  "L" origin-point
-                 (svg/stitch line-top-right)
+                 (path/stitch line-top-right)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [point-top-right
@@ -211,9 +212,9 @@
 
                [["M" (v/add point-left
                             line-left-start)
-                 (svg/stitch line-left)
+                 (path/stitch line-left)
                  "L" origin-point
-                 (svg/stitch line-bottom-left)
+                 (path/stitch line-bottom-left)
                  (infinity/path :clockwise
                                 [:left :left]
                                 [point-bottom-left
@@ -226,9 +227,9 @@
 
                [["M" (v/add point-right
                             line-right-start)
-                 (svg/stitch line-right)
+                 (path/stitch line-right)
                  "L" origin-point
-                 (svg/stitch line-bottom-right)
+                 (path/stitch line-bottom-right)
                  (infinity/path :counter-clockwise
                                 [:right :right]
                                 [point-bottom-right
@@ -241,9 +242,9 @@
 
                [["M" (v/add point-bottom
                             line-bottom-start)
-                 (svg/stitch line-bottom)
+                 (path/stitch line-bottom)
                  "L" origin-point
-                 (svg/stitch line-bottom-left)
+                 (path/stitch line-bottom-left)
                  (infinity/path :counter-clockwise
                                 [:left :bottom]
                                 [point-bottom-left
@@ -256,9 +257,9 @@
 
                [["M" (v/add point-bottom
                             line-bottom-start)
-                 (svg/stitch line-bottom)
+                 (path/stitch line-bottom)
                  "L" origin-point
-                 (svg/stitch line-bottom-right)
+                 (path/stitch line-bottom-right)
                  (infinity/path :clockwise
                                 [:right :bottom]
                                 [point-bottom-right
@@ -272,56 +273,56 @@
      [shared/make-subfields
       path parts
       [:all
-       [(svg/make-path
+       [(path/make-path
          ["M" origin-point
-          (svg/stitch line-top-right)])]
-       [(svg/make-path
+          (path/stitch line-top-right)])]
+       [(path/make-path
          ["M" (v/add point-left
                      line-left-start)
-          (svg/stitch line-left)])]
-       [(svg/make-path
+          (path/stitch line-left)])]
+       [(path/make-path
          ["M" (v/add point-right
                      line-right-start)
-          (svg/stitch line-right)])]
-       [(svg/make-path
+          (path/stitch line-right)])]
+       [(path/make-path
          ["M" origin-point
-          (svg/stitch line-bottom-left)])]
-       [(svg/make-path
+          (path/stitch line-bottom-left)])]
+       [(path/make-path
          ["M" origin-point
-          (svg/stitch line-bottom-right)])]
-       [(svg/make-path
+          (path/stitch line-bottom-right)])]
+       [(path/make-path
          ["M" (v/add point-bottom
                      line-bottom-start)
-          (svg/stitch line-bottom)])]
+          (path/stitch line-bottom)])]
        nil]
       environment context]
      (when outline?
        [:g (outline/style context)
-        [:path {:d (svg/make-path
+        [:path {:d (path/make-path
                     ["M" origin-point
-                     (svg/stitch line-top-left)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-top-left)])}]
+        [:path {:d (path/make-path
                     ["M" (v/add point-top
                                 line-top-start)
-                     (svg/stitch line-top)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-top)])}]
+        [:path {:d (path/make-path
                     ["M" origin-point
-                     (svg/stitch line-top-right)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-top-right)])}]
+        [:path {:d (path/make-path
                     ["M" (v/add point-right
                                 line-right-start)
-                     (svg/stitch line-right)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-right)])}]
+        [:path {:d (path/make-path
                     ["M" origin-point
-                     (svg/stitch line-bottom-right)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-bottom-right)])}]
+        [:path {:d (path/make-path
                     ["M" (v/add point-bottom
                                 line-bottom-start)
-                     (svg/stitch line-bottom)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-bottom)])}]
+        [:path {:d (path/make-path
                     ["M" origin-point
-                     (svg/stitch line-bottom-left)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-bottom-left)])}]
+        [:path {:d (path/make-path
                     ["M" (v/add point-left
                                 line-left-start)
-                     (svg/stitch line-left)])}]])]))
+                     (path/stitch line-left)])}]])]))

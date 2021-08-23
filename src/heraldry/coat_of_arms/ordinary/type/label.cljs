@@ -5,7 +5,8 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.core :as svg]
+            [heraldry.math.svg.path :as path]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/label)
@@ -86,7 +87,7 @@
      :shape (-> ["M" (-> points
                          first
                          (v/add (-> lines first :line-start)))]
-                (into (map (comp svg/stitch :line) lines))
+                (into (map (comp path/stitch :line) lines))
                 (conj "z"))}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type

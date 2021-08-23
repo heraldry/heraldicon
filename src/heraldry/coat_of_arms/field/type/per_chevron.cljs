@@ -8,7 +8,8 @@
             [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]))
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]))
 
 (def field-type :heraldry.field.type/per-chevron)
 
@@ -100,8 +101,8 @@
                           :else [:top :bottom])
         parts [[["M" (v/add diagonal-left
                             line-left-start)
-                 (svg/stitch line-left)
-                 (svg/stitch line-right)
+                 (path/stitch line-left)
+                 (path/stitch line-right)
                  (infinity/path :counter-clockwise
                                 infinity-points
                                 [(v/add diagonal-right
@@ -114,8 +115,8 @@
 
                [["M" (v/add diagonal-left
                             line-left-start)
-                 (svg/stitch line-left)
-                 (svg/stitch line-right)
+                 (path/stitch line-left)
+                 (path/stitch line-right)
                  (infinity/path :clockwise
                                 infinity-points
                                 [(v/add diagonal-right

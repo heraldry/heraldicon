@@ -12,7 +12,8 @@
             [heraldry.colour :as colour]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]
             [heraldry.util :as util]))
 
 (defn remove-outlines [data placeholder-colours]
@@ -251,12 +252,12 @@
                              (conj path :field :counterchanged?)
                              context)
             charge-environment (environment/create
-                                (svg/make-path ["M" position
-                                                "l" (v/v (:x clip-size) 0)
-                                                "l" (v/v 0 (:y clip-size))
-                                                "l" (v/v (- (:x clip-size)) 0)
-                                                "l" (v/v 0 (- (:y clip-size)))
-                                                "z"])
+                                (path/make-path ["M" position
+                                                 "l" (v/v (:x clip-size) 0)
+                                                 "l" (v/v 0 (:y clip-size))
+                                                 "l" (v/v (- (:x clip-size)) 0)
+                                                 "l" (v/v 0 (- (:y clip-size)))
+                                                 "z"])
                                 {:parent path
                                  :parent-environment environment
                                  :context [:charge]

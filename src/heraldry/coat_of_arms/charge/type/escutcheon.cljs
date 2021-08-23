@@ -3,9 +3,9 @@
             [heraldry.coat-of-arms.charge.shared :as charge-shared]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.environment :as environment]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]))
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/escutcheon)
 
@@ -24,9 +24,9 @@
                                       escutcheon)) width)
              env-fess (-> env :points :fess)
              offset (v/mul env-fess -1)]
-         {:shape (svg/translate (:shape env)
-                                (:x offset)
-                                (:y offset))
+         {:shape (path/translate (:shape env)
+                                 (:x offset)
+                                 (:y offset))
           :charge-top-left offset
           :charge-width (:width env)
           :charge-height (:height env)})))))

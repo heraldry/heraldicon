@@ -7,7 +7,8 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]))
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]))
 
 (def field-type :heraldry.field.type/tierced-per-pale)
 
@@ -73,7 +74,7 @@
                                                        :environment environment)
         parts [[["M" (v/add first-top
                             line-one-start)
-                 (svg/stitch line-one)
+                 (path/stitch line-one)
                  (infinity/path :clockwise
                                 [:bottom :top]
                                 [(v/add first-bottom
@@ -86,14 +87,14 @@
 
                [["M" (v/add second-bottom
                             line-reversed-start)
-                 (svg/stitch line-reversed)
+                 (path/stitch line-reversed)
                  (infinity/path :counter-clockwise
                                 [:top :top]
                                 [(v/add second-top
                                         line-reversed-start)
                                  (v/add first-top
                                         line-one-start)])
-                 (svg/stitch line-one)
+                 (path/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:bottom :bottom]
                                 [(v/add first-top
@@ -107,7 +108,7 @@
 
                [["M" (v/add second-bottom
                             line-reversed-start)
-                 (svg/stitch line-reversed)
+                 (path/stitch line-reversed)
                  (infinity/path :clockwise
                                 [:top :bottom]
                                 [(v/add second-top
@@ -121,19 +122,19 @@
      [shared/make-subfields
       path parts
       [:all
-       [(svg/make-path
+       [(path/make-path
          ["M" (v/add second-bottom
                      line-reversed-start)
-          (svg/stitch line-reversed)])]
+          (path/stitch line-reversed)])]
        nil]
       environment context]
      (when outline?
        [:g (outline/style context)
-        [:path {:d (svg/make-path
+        [:path {:d (path/make-path
                     ["M" (v/add first-top
                                 line-one-start)
-                     (svg/stitch line-one)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-one)])}]
+        [:path {:d (path/make-path
                     ["M" (v/add second-bottom
                                 line-reversed-start)
-                     (svg/stitch line-reversed)])}]])]))
+                     (path/stitch line-reversed)])}]])]))

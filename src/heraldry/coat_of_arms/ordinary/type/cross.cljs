@@ -7,7 +7,8 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.core :as svg]
+            [heraldry.math.svg.path :as path]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/cross)
@@ -161,44 +162,44 @@
                                                    :environment environment)
         part [["M" (v/add corner-top-left
                           line-pale-top-left-start)
-               (svg/stitch line-pale-top-left)
+               (path/stitch line-pale-top-left)
                (infinity/path :clockwise
                               [:top :top]
                               [(v/add pale-top-left
                                       line-pale-top-left-start)
                                (v/add pale-top-right
                                       line-pale-top-right-start)])
-               (svg/stitch line-pale-top-right)
+               (path/stitch line-pale-top-right)
                "L" (v/add corner-top-right
                           line-fess-top-right-start)
-               (svg/stitch line-fess-top-right)
+               (path/stitch line-fess-top-right)
                (infinity/path :clockwise
                               [:right :right]
                               [(v/add fess-top-right
                                       line-fess-top-right-start)
                                (v/add fess-bottom-right
                                       line-fess-bottom-right-start)])
-               (svg/stitch line-fess-bottom-right)
+               (path/stitch line-fess-bottom-right)
                "L" (v/add corner-bottom-right
                           line-pale-bottom-right-start)
-               (svg/stitch line-pale-bottom-right)
+               (path/stitch line-pale-bottom-right)
                (infinity/path :clockwise
                               [:bottom :bottom]
                               [(v/add pale-bottom-right
                                       line-pale-bottom-right-start)
                                (v/add pale-bottom-left
                                       line-pale-bottom-left-start)])
-               (svg/stitch line-pale-bottom-left)
+               (path/stitch line-pale-bottom-left)
                "L" (v/add corner-bottom-left
                           line-fess-bottom-left-start)
-               (svg/stitch line-fess-bottom-left)
+               (path/stitch line-fess-bottom-left)
                (infinity/path :clockwise
                               [:left :left]
                               [(v/add fess-bottom-left
                                       line-fess-bottom-left-start)
                                (v/add fess-top-left
                                       line-fess-top-left-start)])
-               (svg/stitch line-fess-top-left)
+               (path/stitch line-fess-top-left)
                "z"]]]
     [:<>
      [field-shared/make-subfield

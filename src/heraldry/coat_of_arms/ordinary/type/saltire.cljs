@@ -8,7 +8,8 @@
             [heraldry.coat-of-arms.shared.saltire :as saltire]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.core :as svg]
+            [heraldry.math.svg.path :as path]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/saltire)
@@ -180,28 +181,28 @@
                                                        :environment environment)
         part [["M" (v/add corner-left
                           line-top-left-lower-start)
-               (svg/stitch line-top-left-lower)
+               (path/stitch line-top-left-lower)
                "L" (v/add top-left-upper
                           line-top-left-upper-start)
-               (svg/stitch line-top-left-upper)
+               (path/stitch line-top-left-upper)
                "L" (v/add corner-top
                           line-top-right-upper-start)
-               (svg/stitch line-top-right-upper)
+               (path/stitch line-top-right-upper)
                "L" (v/add top-right-lower
                           line-top-right-lower-start)
-               (svg/stitch line-top-right-lower)
+               (path/stitch line-top-right-lower)
                "L" (v/add corner-right
                           line-bottom-right-upper-start)
-               (svg/stitch line-bottom-right-upper)
+               (path/stitch line-bottom-right-upper)
                "L" (v/add bottom-right-lower
                           line-bottom-right-lower-start)
-               (svg/stitch line-bottom-right-lower)
+               (path/stitch line-bottom-right-lower)
                "L" (v/add corner-bottom
                           line-bottom-left-lower-start)
-               (svg/stitch line-bottom-left-lower)
+               (path/stitch line-bottom-left-lower)
                "L" (v/add bottom-left-upper
                           line-bottom-left-upper-start)
-               (svg/stitch line-bottom-left-upper)
+               (path/stitch line-bottom-left-upper)
                "z"]
               [top bottom left right]]]
     [:<>

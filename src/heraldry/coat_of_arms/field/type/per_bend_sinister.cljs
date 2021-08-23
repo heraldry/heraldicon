@@ -6,7 +6,8 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]))
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]))
 
 (def field-type :heraldry.field.type/per-bend-sinister)
 
@@ -67,7 +68,7 @@
                                          :environment environment)
         parts [[["M" (v/add diagonal-start
                             line-one-start)
-                 (svg/stitch line-one)
+                 (path/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:top :left]
                                 [(v/add diagonal-end
@@ -81,7 +82,7 @@
 
                [["M" (v/add diagonal-start
                             line-one-start)
-                 (svg/stitch line-one)
+                 (path/stitch line-one)
                  (infinity/path :clockwise
                                 [:top :left]
                                 [(v/add diagonal-end

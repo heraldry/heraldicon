@@ -6,7 +6,8 @@
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/chief)
@@ -61,7 +62,7 @@
                                               :environment environment)
         part [["M" (v/add row-right
                           line-reversed-start)
-               (svg/stitch line-reversed)
+               (path/stitch line-reversed)
                (infinity/path :clockwise
                               [:left :right]
                               [(v/add row-left

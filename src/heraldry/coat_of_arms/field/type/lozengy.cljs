@@ -3,7 +3,7 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.path :as path]
             [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/lozengy)
@@ -48,11 +48,11 @@
         shift-y (- middle-y
                    (* middle-y stretch-y))
         pattern-id (util/id "lozengy")
-        lozenge-shape (svg/make-path ["M" [(/ part-width 2) 0]
-                                      "L" [part-width (/ part-height 2)]
-                                      "L" [(/ part-width 2) part-height]
-                                      "L" [0 (/ part-height 2)]
-                                      "z"])]
+        lozenge-shape (path/make-path ["M" [(/ part-width 2) 0]
+                                       "L" [part-width (/ part-height 2)]
+                                       "L" [(/ part-width 2) part-height]
+                                       "L" [0 (/ part-height 2)]
+                                       "z"])]
     [:g
      [:defs
       (when outline?

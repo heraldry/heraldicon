@@ -7,7 +7,8 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/fess)
@@ -90,14 +91,14 @@
                                               :environment environment)
         part [["M" (v/add first-left
                           line-one-start)
-               (svg/stitch line-one)
+               (path/stitch line-one)
                (infinity/path :clockwise
                               [:right :right]
                               [(v/add first-right
                                       line-one-start)
                                (v/add second-right
                                       line-reversed-start)])
-               (svg/stitch line-reversed)
+               (path/stitch line-reversed)
                (infinity/path :clockwise
                               [:left :left]
                               [(v/add second-left

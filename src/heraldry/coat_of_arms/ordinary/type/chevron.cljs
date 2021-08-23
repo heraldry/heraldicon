@@ -8,7 +8,8 @@
             [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.core :as svg]
+            [heraldry.math.svg.path :as path]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/chevron)
@@ -152,16 +153,16 @@
                                                 :environment environment)
         part [["M" (v/add corner-upper
                           line-right-upper-start)
-               (svg/stitch line-right-upper)
+               (path/stitch line-right-upper)
                "L" (v/add right-lower
                           line-right-lower-start)
-               (svg/stitch line-right-lower)
+               (path/stitch line-right-lower)
                "L" (v/add corner-lower
                           line-left-lower-start)
-               (svg/stitch line-left-lower)
+               (path/stitch line-left-lower)
                "L" (v/add left-upper
                           line-left-upper-start)
-               (svg/stitch line-left-upper)
+               (path/stitch line-left-upper)
                "z"]
               [top-left bottom-right]]]
     [:<>

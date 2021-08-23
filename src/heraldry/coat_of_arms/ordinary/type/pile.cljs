@@ -6,7 +6,8 @@
             [heraldry.coat-of-arms.shared.pile :as pile]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.core :as svg]
+            [heraldry.math.svg.path :as path]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/pile)
@@ -92,8 +93,8 @@
                                            :environment environment)
         part [["M" (v/add left-point
                           line-left-start)
-               (svg/stitch line-left)
-               (svg/stitch line-right)
+               (path/stitch line-left)
+               (path/stitch line-right)
                "z"]
               [top-left top-right
                bottom-left bottom-right]]]

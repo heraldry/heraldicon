@@ -16,7 +16,7 @@
             [heraldry.frontend.ui.shared :as shared]
             [heraldry.frontend.user :as user]
             [heraldry.render :as render]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.core :as svg]
             [heraldry.util :refer [id-for-url]]
             [hickory.core :as hickory]
             [re-frame.core :as rf]

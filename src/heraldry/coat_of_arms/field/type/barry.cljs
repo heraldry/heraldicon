@@ -6,7 +6,8 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]))
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]))
 
 (def field-type :heraldry.field.type/barry)
 
@@ -74,7 +75,7 @@
                                                  "z"]
                                (zero? i) ["M" (v/add line-two-left
                                                      line-right-start)
-                                          (svg/stitch line-right)
+                                          (path/stitch line-right)
                                           (infinity/path :counter-clockwise
                                                          [:right :left]
                                                          [(v/add line-two-right
@@ -84,7 +85,7 @@
                                           "z"]
                                (even? i) (concat ["M" (v/add line-one-right
                                                              line-left-start)
-                                                  (svg/stitch line-left)]
+                                                  (path/stitch line-left)]
                                                  (cond
                                                    last-part? [(infinity/path :counter-clockwise
                                                                               [:left :right]
@@ -99,7 +100,7 @@
                                                                                  line-left-end)
                                                                           (v/add line-two-left
                                                                                  line-right-start)])
-                                                          (svg/stitch line-right)
+                                                          (path/stitch line-right)
                                                           (infinity/path :counter-clockwise
                                                                          [:right :right]
                                                                          [(v/add line-two-right
@@ -108,7 +109,7 @@
                                                                                  line-left-start)])]))
                                :else (concat ["M" (v/add line-one-left
                                                          line-right-start)
-                                              (svg/stitch line-right)]
+                                              (path/stitch line-right)]
                                              (cond
                                                last-part? [(infinity/path :clockwise
                                                                           [:right :left]
@@ -123,7 +124,7 @@
                                                                              line-right-end)
                                                                       (v/add line-two-right
                                                                              line-left-start)])
-                                                      (svg/stitch line-left)
+                                                      (path/stitch line-left)
                                                       (infinity/path :clockwise
                                                                      [:left :left]
                                                                      [(v/add line-two-left
@@ -142,12 +143,12 @@
                                 line-two-left (v/v x1 y2)
                                 line-two-right (v/v x2 y2)]
                             (if (even? i)
-                              (svg/make-path ["M" (v/add line-two-left
-                                                         line-right-start)
-                                              (svg/stitch line-right)])
-                              (svg/make-path ["M" (v/add line-two-right
-                                                         line-left-start)
-                                              (svg/stitch line-left)])))))
+                              (path/make-path ["M" (v/add line-two-left
+                                                          line-right-start)
+                                               (path/stitch line-right)])
+                              (path/make-path ["M" (v/add line-two-right
+                                                          line-left-start)
+                                               (path/stitch line-left)])))))
                    vec)
         overlap (-> edges
                     (->> (map vector))

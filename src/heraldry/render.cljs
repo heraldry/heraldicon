@@ -16,7 +16,7 @@
             [heraldry.font :as font]
             [heraldry.interface :as interface]
             [heraldry.ribbon :as ribbon]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.core :as svg]
             [heraldry.util :as util]))
 
 (defn coat-of-arms [path width

@@ -8,7 +8,8 @@
             [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.core :as svg]
+            [heraldry.math.svg.path :as path]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/pall)
@@ -180,20 +181,20 @@
                                                 :environment environment)
         part [["M" (v/add corner-right-end
                           line-right-first-start)
-               (svg/stitch line-right-first)
+               (path/stitch line-right-first)
                "L" corner-right
-               (svg/stitch line-right-second)
+               (path/stitch line-right-second)
                "L" (v/add right-lower
                           line-right-lower-start)
-               (svg/stitch line-right-lower)
+               (path/stitch line-right-lower)
                "L" (v/add corner-lower
                           line-left-lower-start)
-               (svg/stitch line-left-lower)
+               (path/stitch line-left-lower)
                "L" (v/add left-upper
                           line-left-first-start)
-               (svg/stitch line-left-first)
+               (path/stitch line-left-first)
                "L" corner-left
-               (svg/stitch line-left-second)
+               (path/stitch line-left-second)
                "z"]
               [top-left bottom-right]]
         cottise-side-joint-angle (v/normalize-angle (- 180 (/ joint-angle 2)))]
