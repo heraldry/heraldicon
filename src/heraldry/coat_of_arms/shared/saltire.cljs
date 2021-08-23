@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.shared.saltire
-  (:require [heraldry.vector.core :as v]))
+  (:require [heraldry.math.vector :as v]))
 
 (defn arm-diagonals [origin-point anchor-point]
   (let [direction (-> (v/sub anchor-point origin-point)

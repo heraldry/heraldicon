@@ -1,12 +1,12 @@
 (ns heraldry.ribbon
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
-            [heraldry.vector.catmullrom :as catmullrom]
-            [heraldry.vector.core :as v]
+            [heraldry.math.catmullrom :as catmullrom]
+            [heraldry.math.vector :as v]
             [heraldry.font :as font]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
-            [heraldry.vector.svg :as svg]))
+            [heraldry.math.svg :as svg]))
 
 (def default-options
   {:thickness {:type :range

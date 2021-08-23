@@ -1,13 +1,13 @@
-(ns heraldry.vector.svg
+(ns heraldry.math.svg
   (:require ["svg-path-parse" :as svg-path-parse]
             ["svg-path-properties" :as svg-path-properties]
             ["svg-path-reverse" :as svg-path-reverse]
             ["svgpath" :as svgpath]
             [clojure.string :as s]
             [clojure.walk :as walk]
-            [heraldry.vector.catmullrom :as catmullrom]
+            [heraldry.math.catmullrom :as catmullrom]
             [heraldry.random :as random]
-            [heraldry.vector.core :as v]
+            [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
 (defn clean-path [d]

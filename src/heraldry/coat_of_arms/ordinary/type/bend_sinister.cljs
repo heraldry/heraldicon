@@ -4,9 +4,9 @@
             [heraldry.coat-of-arms.field.shared :as field-shared]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.vector.core :as v]
+            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.vector.svg :as svg]
+            [heraldry.math.svg :as svg]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/bend-sinister)

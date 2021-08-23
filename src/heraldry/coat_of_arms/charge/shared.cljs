@@ -5,9 +5,9 @@
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.vector.core :as v]
+            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.vector.svg :as svg]
+            [heraldry.math.svg :as svg]
             [heraldry.util :as util]))
 
 (defn make-charge

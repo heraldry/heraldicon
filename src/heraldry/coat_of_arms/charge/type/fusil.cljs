@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.charge.type.fusil
   (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
             [heraldry.coat-of-arms.charge.shared :as charge-shared]
-            [heraldry.vector.core :as v]))
+            [heraldry.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/fusil)
 

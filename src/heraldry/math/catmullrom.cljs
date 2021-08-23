@@ -1,4 +1,4 @@
-(ns heraldry.vector.catmullrom
+(ns heraldry.math.catmullrom
   (:require [clojure.string :as string]))
 
 ;; catmullrom

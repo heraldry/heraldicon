@@ -3,9 +3,9 @@
             [heraldry.coat-of-arms.charge.shared :as charge-shared]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.environment :as environment]
-            [heraldry.vector.core :as v]
+            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.vector.svg :as svg]))
+            [heraldry.math.svg :as svg]))
 
 (def charge-type :heraldry.charge.type/escutcheon)
 

@@ -1,5 +1,5 @@
 (ns heraldry.coat-of-arms.position
-  (:require [heraldry.vector.core :as v]
+  (:require [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
 (def point-choices
