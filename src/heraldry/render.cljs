@@ -11,6 +11,7 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.colour :as colour]
             [heraldry.math.vector :as v]
             [heraldry.font :as font]
             [heraldry.interface :as interface]
@@ -185,8 +186,7 @@
         num-curves (count curves)
         foreground-colour (tincture/pick tincture-foreground context)
         background-colour (if (= tincture-background :none)
-                            (svg/darken-colour foreground-colour)
-
+                            (colour/darken foreground-colour)
                             (tincture/pick tincture-background context))
         text-colour (tincture/pick tincture-text context)]
     [:<>

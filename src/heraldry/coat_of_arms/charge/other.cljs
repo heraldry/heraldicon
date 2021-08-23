@@ -9,6 +9,7 @@
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.colour :as colour]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
             [heraldry.math.svg :as svg]
@@ -18,7 +19,7 @@
   (walk/postwalk #(if (and (vector? %)
                            (->> % first (get #{:stroke :fill :stop-color}))
                            (or (-> % second (s/starts-with? "url"))
-                               (->> % second svg/normalize-colour (get placeholder-colours) (= :outline))))
+                               (->> % second colour/normalize (get placeholder-colours) (= :outline))))
                     [(first %) "none"]
                     %)
                  data))
@@ -27,7 +28,7 @@
   (walk/postwalk #(if (and (vector? %)
                            (->> % first (get #{:stroke :fill :stop-color}))
                            (or (-> % second (s/starts-with? "url"))
-                               (->> % second svg/normalize-colour (get placeholder-colours) #{:shadow :highlight})))
+                               (->> % second colour/normalize (get placeholder-colours) #{:shadow :highlight})))
                     [(first %) "none"]
                     %)
                  data))
@@ -56,7 +57,7 @@
               (fn [colour]
                 (if (s/starts-with? colour "url")
                   "none"
-                  (let [colour-lower (svg/normalize-colour colour)
+                  (let [colour-lower (colour/normalize colour)
                         kind (get placeholder-colours colour-lower)
                         replacement (get-replacement kind provided-placeholder-colours)]
                     (if (or (= kind :keep)
@@ -70,7 +71,7 @@
                        (fn [colour]
                          (if (s/starts-with? colour "url")
                            "none"
-                           (let [colour-lower (svg/normalize-colour colour)
+                           (let [colour-lower (colour/normalize colour)
                                  kind (get placeholder-colours colour-lower)
                                  replacement (get-replacement kind provided-placeholder-colours)]
                              (if (or (= kind :keep)
@@ -223,7 +224,7 @@
             coloured-charge (replace-colours
                              adjusted-charge-without-shading
                              (fn [colour]
-                               (let [colour-lower (svg/normalize-colour colour)
+                               (let [colour-lower (colour/normalize colour)
                                      kind (get placeholder-colours colour-lower)
                                      replacement (get-replacement kind tincture)]
                                  (cond
@@ -303,7 +304,7 @@
                   (fn [colour]
                     (if (s/starts-with? colour "url")
                       "none"
-                      (let [colour-lower (svg/normalize-colour colour)
+                      (let [colour-lower (colour/normalize colour)
                             kind (get placeholder-colours colour-lower)]
                         (case kind
                           :outline "#000000"
@@ -318,7 +319,7 @@
                  (fn [colour]
                    (if (s/starts-with? colour "url")
                      colour
-                     (let [colour-lower (svg/normalize-colour colour)
+                     (let [colour-lower (colour/normalize colour)
                            kind (get placeholder-colours colour-lower)]
                        (case kind
                          :shadow "#ffffff"
@@ -335,7 +336,7 @@
                   (fn [colour]
                     (if (s/starts-with? colour "url")
                       "none"
-                      (let [colour-lower (svg/normalize-colour colour)
+                      (let [colour-lower (colour/normalize colour)
                             kind (get placeholder-colours colour-lower)]
                         (case kind
                           :outline "#000000"
@@ -350,7 +351,7 @@
                  (fn [colour]
                    (if (s/starts-with? colour "url")
                      colour
-                     (let [colour-lower (svg/normalize-colour colour)
+                     (let [colour-lower (colour/normalize colour)
                            kind (get placeholder-colours colour-lower)]
                        (case kind
                          :shadow "none"
