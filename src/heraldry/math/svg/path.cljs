@@ -56,3 +56,8 @@
 
 (defn bezier-to-relative [[p1 cp1 cp2 p2]]
   (str "c" (v/->str (v/sub cp1 p1)) "," (v/->str (v/sub cp2 p1)) "," (v/->str (v/sub p2 p1))))
+
+(defn curve-to-relative [curve]
+  (let [start (first (first curve))]
+    (s/join "" (concat [(move-to start)]
+                       (map bezier-to-relative curve)))))

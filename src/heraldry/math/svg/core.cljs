@@ -3,6 +3,7 @@
             [clojure.string :as s]
             [clojure.walk :as walk]
             [heraldry.math.catmullrom :as catmullrom]
+            [heraldry.math.svg.path :as path]
             [heraldry.math.vector :as v]
             [heraldry.random :as random]
             [heraldry.util :as util]))
@@ -119,7 +120,7 @@
                             (map jiggle (partition 3 1 points))
                             [(last points)]))
         curve (catmullrom/catmullrom points)
-        new-path (catmullrom/curve->svg-path-relative curve)]
+        new-path (path/curve-to-relative curve)]
     new-path))
 
 (def squiggly-path

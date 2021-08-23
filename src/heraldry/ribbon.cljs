@@ -6,6 +6,7 @@
             [heraldry.math.bezier :as bezier]
             [heraldry.math.catmullrom :as catmullrom]
             [heraldry.math.core :as math]
+            [heraldry.math.curve :as curve]
             [heraldry.math.svg.path :as path]
             [heraldry.math.vector :as v]
             [heraldry.options :as options]))
@@ -206,7 +207,7 @@
                 (- new-angle
                    original-angle))]
     (-> curve
-        catmullrom/curve->svg-path-relative
+        path/curve-to-relative
         (cond->
          reverse? (->
                    path/reverse-path
@@ -231,8 +232,8 @@
 
 (defn split-end [kind curve percentage edge-vector]
   (let [curve (vec curve)
-        {:keys [curve1 curve2]} (catmullrom/split-curve-at curve (cond-> (/ percentage 100)
-                                                                   (= kind :end) (->> (- 1))))
+        {:keys [curve1 curve2]} (curve/split-curve-at curve (cond-> (/ percentage 100)
+                                                              (= kind :end) (->> (- 1))))
         split-point (-> (ffirst curve2)
                         (v/add (v/div edge-vector 2)))]
     (case kind
