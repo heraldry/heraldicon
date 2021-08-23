@@ -19,13 +19,13 @@
   {:x (apply - (map :x args))
    :y (apply - (map :y args))})
 
-(defn mul [{x :x y :y} f]
-  {:x (* x f)
-   :y (* y f)})
+(defn mul [{x :x y :y} f & args]
+  {:x (apply * (concat [x f] args))
+   :y (apply * (concat [y f] args))})
 
-(defn div [{x :x y :y} f]
-  {:x (/ x f)
-   :y (/ y f)})
+(defn div [{x :x y :y} f & args]
+  {:x (apply / (concat [x f] args))
+   :y (apply / (concat [y f] args))})
 
 (defn dot [{x1 :x y1 :y} {x2 :x y2 :y}]
   {:x (* x1 x2)
