@@ -1,22 +1,23 @@
 (ns heraldry.render
   (:require [clojure.string :as s]
             [heraldry.backend.output :as output]
-            [heraldry.math.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.field.shared :as field-shared]
-            [heraldry.math.filter :as filter]
             [heraldry.coat-of-arms.hatching :as hatching]
             [heraldry.coat-of-arms.metadata :as metadata]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.colour :as colour]
-            [heraldry.math.vector :as v]
             [heraldry.font :as font]
             [heraldry.interface :as interface]
-            [heraldry.ribbon :as ribbon]
+            [heraldry.math.catmullrom :as catmullrom]
+            [heraldry.math.filter :as filter]
             [heraldry.math.svg.core :as svg]
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.vector :as v]
+            [heraldry.ribbon :as ribbon]
             [heraldry.util :as util]))
 
 (defn coat-of-arms [path width
@@ -206,9 +207,9 @@
               full-path (cond
                           (or (zero? end-split)
                               (< 0 idx (dec num-curves))) (str top-edge
-                                                               (catmullrom/svg-line-to second-edge-vector)
+                                                               (path/line-to second-edge-vector)
                                                                (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                               (catmullrom/svg-line-to (v/mul first-edge-vector -1)))
+                                                               (path/line-to (v/mul first-edge-vector -1)))
                           ;; special case of only one segment with end-split > 0
                           (and (pos? end-split)
                                (zero? idx)
@@ -228,7 +229,7 @@
                                                                              first-edge-vector)))
                           (and (pos? end-split)
                                (zero? idx)) (str top-edge
-                                                 (catmullrom/svg-line-to second-edge-vector)
+                                                 (path/line-to second-edge-vector)
                                                  (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
                                                  (util/combine " "
                                                                (ribbon/split-end
@@ -245,7 +246,7 @@
                                                                              end-split
                                                                              second-edge-vector))
                                                               (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                              (catmullrom/svg-line-to (v/mul first-edge-vector -1))))
+                                                              (path/line-to (v/mul first-edge-vector -1))))
               segment-path (conj segments-path idx)
               segment-type (interface/get-raw-data (conj segment-path :type) context)
               foreground? (#{:heraldry.ribbon.segment/foreground
