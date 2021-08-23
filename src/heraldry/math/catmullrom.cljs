@@ -1,6 +1,7 @@
 (ns heraldry.math.catmullrom
   (:require [clojure.string :as string]
             [heraldry.math.bezier :as bezier]
+            [heraldry.math.svg.path :as path]
             [heraldry.math.vector :as v]))
 
 (defn smooth-point [main-fn p0 p1 p2 tension]
@@ -23,19 +24,10 @@
 
 ;; svg
 
-(defn svg-move-to [p]
-  (str "M" (v/->str p)))
-
-(defn svg-line-to [p]
-  (str " l" (v/->str p) " "))
-
-(defn svg-curve-to-relative [[p1 cp1 cp2 p2]]
-  (str "c" (v/->str (v/sub cp1 p1)) "," (v/->str (v/sub cp2 p1)) "," (v/->str (v/sub p2 p1))))
-
 (defn curve->svg-path-relative [curve]
   (let [start (first (first curve))]
-    (string/join "" (concat [(svg-move-to start)]
-                            (map svg-curve-to-relative curve)))))
+    (string/join "" (concat [(path/move-to start)]
+                            (map path/bezier-to-relative curve)))))
 
 (defn curve->length [path]
   (->> path
