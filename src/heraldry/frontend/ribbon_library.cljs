@@ -19,7 +19,8 @@
             [heraldry.util :as util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [heraldry.math.bezier :as bezier]))
 
 (def form-db-path
   [:ribbon-form])
@@ -90,7 +91,7 @@
             (-> points
                 catmullrom/catmullrom
                 (->> (map-indexed (fn [idx leg]
-                                    [idx (catmullrom/interpolate-point-cubic leg 0.5)]))))
+                                    [idx (bezier/interpolate-point leg 0.5)]))))
             [[(dec (count points)) (clamp-point (v/add (last points)
                                                        {:x 50 :y 10}))]])))
 

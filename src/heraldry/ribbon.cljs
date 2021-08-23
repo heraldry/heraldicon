@@ -1,7 +1,9 @@
 (ns heraldry.ribbon
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
+            [heraldry.math.bezier :as bezier]
             [heraldry.math.catmullrom :as catmullrom]
+            [heraldry.math.core :as math]
             [heraldry.math.vector :as v]
             [heraldry.font :as font]
             [heraldry.interface :as interface]
@@ -43,8 +45,8 @@
         first-leg (when-not (= last-index index 0)
                     (cond-> (get full-curve last-index)
                       end-t (->
-                             (catmullrom/split-bezier end-t)
-                             :curve2)))]
+                             (bezier/split end-t)
+                             :bezier2)))]
     (if (empty? ts)
       [[(-> (concat (when first-leg [first-leg])
                     (subvec full-curve (inc last-index) (inc index)))
@@ -54,19 +56,19 @@
       (let [[t1 t2] ts
             first-split (-> full-curve
                             (get index)
-                            (catmullrom/split-bezier t1))]
+                            (bezier/split t1))]
         (cond-> [[(-> (concat (when first-leg [first-leg])
                               (when (> index
                                        (inc last-index))
                                 (subvec full-curve (inc last-index) index))
-                              [(:curve1 first-split)])
+                              [(:bezier1 first-split)])
                       vec)
                   last-edge-vector
                   edge-vector]]
-          t2 (conj [[(-> (:curve2 first-split)
-                         (catmullrom/split-bezier (/ (- t2 t1)
-                                                     (- 1 t1)))
-                         :curve1)]
+          t2 (conj [[(-> (:bezier2 first-split)
+                         (bezier/split (/ (- t2 t1)
+                                          (- 1 t1)))
+                         :bezier1)]
                     edge-vector
                     edge-vector]))))))
 
@@ -99,7 +101,7 @@
                                                        (- edge-angle))
                                     edge-vector (-> base-edge-vector
                                                     (v/rotate (- leg-edge-angle)))
-                                    ts (catmullrom/calculate-tangent-points leg edge-vector)]
+                                    ts (bezier/calculate-tangent-points leg edge-vector)]
                                 (when (seq ts)
                                   [idx ts edge-vector])))
                             curve))
@@ -195,11 +197,11 @@
                       (/ Math/PI))
         dist-original (v/abs original-dir)
         dist-new (v/abs new-dir)
-        scale (if (catmullrom/close-to-zero? dist-original)
+        scale (if (math/close-to-zero? dist-original)
                 1
                 (/ dist-new
                    dist-original))
-        angle (if (catmullrom/close-to-zero? dist-original)
+        angle (if (math/close-to-zero? dist-original)
                 0
                 (- new-angle
                    original-angle))]
