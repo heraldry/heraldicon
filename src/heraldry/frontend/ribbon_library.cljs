@@ -1,10 +1,7 @@
 (ns heraldry.frontend.ribbon-library
   (:require [cljs.core.async :refer [go]]
             [com.wsscode.common.async-cljs :refer [<?]]
-            [heraldry.math.catmullrom :as catmullrom]
             [heraldry.coat-of-arms.default :as default]
-            [heraldry.math.filter :as filter]
-            [heraldry.math.vector :as v]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.modal :as modal]
@@ -14,13 +11,17 @@
             [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
             [heraldry.frontend.user :as user]
             [heraldry.interface :as interface]
+            [heraldry.math.bezier :as bezier]
+            [heraldry.math.catmullrom :as catmullrom]
+            [heraldry.math.filter :as filter]
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.vector :as v]
             [heraldry.render :as render]
             [heraldry.ribbon :as ribbon]
             [heraldry.util :as util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
-            [taoensso.timbre :as log]
-            [heraldry.math.bezier :as bezier]))
+            [taoensso.timbre :as log]))
 
 (def form-db-path
   [:ribbon-form])
@@ -291,14 +292,14 @@
                                 first)]
     [:<>
      (when-not (= edit-mode :none)
-       [:path {:d (catmullrom/curve->svg-path-relative curve)
+       [:path {:d (path/curve-to-relative curve)
                :style {:stroke-width 3
                        :stroke "#aaaaaa"
                        :stroke-dasharray "4,8"
                        :stroke-linecap "round"
                        :fill "none"}}])
      (when selected-curve-idx
-       [:path {:d (catmullrom/curve->svg-path-relative (get curves selected-curve-idx))
+       [:path {:d (path/curve-to-relative (get curves selected-curve-idx))
                :style {:stroke-width 3
                        :stroke "#6688ff"
                        :stroke-linecap "round"

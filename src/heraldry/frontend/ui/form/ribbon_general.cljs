@@ -1,9 +1,9 @@
 (ns heraldry.frontend.ui.form.ribbon-general
-  (:require [heraldry.math.catmullrom :as catmullrom]
-            [heraldry.frontend.ui.element.select :as select]
+  (:require [heraldry.frontend.ui.element.select :as select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.text-field :as text-field]
             [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.math.curve :as curve]
             [heraldry.ribbon :as ribbon]
             [re-frame.core :as rf]))
 
@@ -101,7 +101,7 @@
           even-max-num-curves (if (even? num-curves)
                                 num-curves
                                 (inc num-curves))
-          total-length (catmullrom/curve->length curve)]
+          total-length (curve/length curve)]
       (-> db
           (assoc-in
            segments-path
@@ -109,7 +109,7 @@
              :left-to-right (vec (map-indexed
                                   (fn [idx curve]
                                     {:type (type-fn start-mode idx
-                                                    (/ (catmullrom/curve->length curve)
+                                                    (/ (curve/length curve)
                                                        total-length))
                                      :index idx
                                      :z-index (flow-fn flow-mode idx)}) curves))
@@ -120,7 +120,7 @@
                                                           dec
                                                           (- idx))]
                                       {:type (type-fn start-mode reverse-idx
-                                                      (/ (catmullrom/curve->length curve)
+                                                      (/ (curve/length curve)
                                                          total-length))
                                        :index idx
                                        :z-index (flow-fn flow-mode reverse-idx)})) curves))
@@ -135,7 +135,7 @@
                                                                  (#{:stacked
                                                                     :nebuly} flow-mode :stacked) (->> (- even-max-num-curves)))]
                                         {:type (type-fn start-mode effective-type-idx
-                                                        (/ (catmullrom/curve->length curve)
+                                                        (/ (curve/length curve)
                                                            total-length))
                                          :index idx
                                          :z-index (flow-fn flow-mode effective-flow-idx)})) curves))

@@ -200,7 +200,7 @@
                                                      :z-index
                                                      (or 1000))
                                                  idx])))]
-        (let [top-edge (catmullrom/curve->svg-path-relative partial-curve)
+        (let [top-edge (path/curve-to-relative partial-curve)
               [first-edge-vector second-edge-vector] (get edge-vectors idx)
               first-edge-vector (v/mul first-edge-vector thickness)
               second-edge-vector (v/mul second-edge-vector thickness)
