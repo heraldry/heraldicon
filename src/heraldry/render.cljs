@@ -277,9 +277,9 @@
                    font-scale (interface/get-sanitized-data (conj segment-path :font-scale) context)
                    font-size (* font-scale thickness)
                    spacing (* spacing font-size)
-                   text-path-start (v/add (apply v/v (ffirst partial-curve))
+                   text-path-start (v/add (ffirst partial-curve)
                                           (v/mul first-edge-vector (- 0.6 offset-y)))
-                   text-path-end (v/add (apply v/v (last (last partial-curve)))
+                   text-path-end (v/add (last (last partial-curve))
                                         (v/mul second-edge-vector (- 0.6 offset-y)))
                    text-path (ribbon/project-path-to
                               partial-curve

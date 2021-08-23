@@ -4,37 +4,33 @@
 
 ;; catmullrom
 
-(defn smooth-component [dir v0 v1 v2 tension]
-  (dir v1 (* tension (/ (- v2 v0) 6))))
-
-(defn smooth-point [dir p0 p1 p2 tension]
-  (->> (range 2)
-       (map (fn [i] (smooth-component dir (p0 i) (p1 i) (p2 i) tension)))
-       (vec)))
+(defn smooth-point [main-fn p0 p1 p2 tension]
+  (main-fn p1
+           (v/mul (v/sub p2 p0)
+                  (/ tension 6))))
 
 (defn calculate-cubic-bezier-curve
   [tension [p0 p1 p2 p3]]
-  (let [cp1 (smooth-point + p0 p1 p2 tension)
-        cp2 (smooth-point - p1 p2 p3 tension)]
+  (let [cp1 (smooth-point v/add p0 p1 p2 tension)
+        cp2 (smooth-point v/sub p1 p2 p3 tension)]
     [p1 cp1 cp2 p2]))
 
 (defn catmullrom
   [points & {:keys [tension] :or {tension 1}}]
   (->> (concat [(first points)] points [(last points)])
-       (map (juxt :x :y))
        (partition 4 1)
        (map (partial calculate-cubic-bezier-curve tension))))
 
 ;; svg
 
-(defn svg-move-to [[x y]]
-  (str "M" x "," y))
+(defn svg-move-to [p]
+  (str "M" (v/->str p)))
 
-(defn svg-line-to [{:keys [x y]}]
-  (str " l" x "," y " "))
+(defn svg-line-to [p]
+  (str " l" (v/->str p) " "))
 
-(defn svg-curve-to-relative [[[px py] [cp1x cp1y] [cp2x cp2y] [p2x p2y]]]
-  (str "c" (string/join "," (flatten [[(- cp1x px) (- cp1y py)] [(- cp2x px) (- cp2y py)] [(- p2x px) (- p2y py)]]))))
+(defn svg-curve-to-relative [[p1 cp1 cp2 p2]]
+  (str "c" (v/->str (v/sub cp1 p1)) "," (v/->str (v/sub cp2 p1)) "," (v/->str (v/sub p2 p1))))
 
 (defn curve->svg-path-relative [curve]
   (let [start (first (first curve))]
@@ -44,10 +40,8 @@
 (defn square [x]
   (* x x))
 
-(defn bezier-length [[[x1 y1] _ _ [x2 y2]]]
-  (-> (v/v x1 y1)
-      (v/sub (v/v x2 y2))
-      v/abs))
+(defn bezier-length [[p1 _ _ p2]]
+  (v/abs (v/sub p1 p2)))
 
 (defn curve->length [path]
   (->> path
@@ -60,24 +54,26 @@
         tr (- 1 t)
         tr2 (* tr tr)
         tr3 (* tr2 tr)]
-    (->> (range 2)
-         (map (fn [i] (+ (* tr3 (p1 i))
-                         (* 3 tr2 t (cp1 i))
-                         (* 3 tr t2 (cp2 i))
-                         (* t3 (p2 i)))))
-         (map vector [:x :y])
-         (into {}))))
+    (v/add (v/mul p1 tr3)
+           (v/mul cp1 3 tr2 t)
+           (v/mul cp2 3 tr t2)
+           (v/mul p2 t3))))
 
 (defn close-to-zero? [value]
   (-> value
       Math/abs
       (< 0.000000000001)))
 
-(defn calculate-tangent-points [[[p1x p1y] [c1x c1y] [c2x c2y] [p2x p2y]] [u v]]
+(defn calculate-tangent-points [[p1 cp1 cp2 p2] slope]
   (let [;; shift them such that p1 = 0, the translation does not change the solutions
-        [c d] [(- c1x p1x) (- c1y p1y)]
-        [e f] [(- c2x p1x) (- c2y p1y)]
-        [g h] [(- p2x p1x) (- p2y p1y)]
+        {c :x
+         d :y} (v/sub cp1 p1)
+        {e :x
+         f :y} (v/sub cp2 p1)
+        {g :x
+         h :y} (v/sub p2 p1)
+        {u :x
+         v :y} slope
         determinant1 (-> (* h u)
                          (- (* g v))
                          (+ (* 3 v (- e c)))
@@ -163,11 +159,8 @@
         (let [new-points (map (fn [i]
                                 [[j i] (let [p1 (matrix [(dec j) i])
                                              p2 (matrix [(dec j) (inc i)])]
-                                         (->> (range 2)
-                                              (map (fn [comp]
-                                                     (+ (* tr (p1 comp))
-                                                        (* t (p2 comp)))))
-                                              vec))])
+                                         (v/add (v/mul p1 tr)
+                                                (v/mul p2 t)))])
                               (range (- (inc n) j)))]
           (recur (inc j)
                  (into matrix new-points)))))))
