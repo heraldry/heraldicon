@@ -46,7 +46,7 @@
                                   (v/v (- required-half-width) (- required-half-height))
                                   (v/v required-half-width required-half-height)
                                   line outline? context environment)]
-    [:g {:transform (str "translate(" (:x center-point) "," (:y center-point) ")"
+    [:g {:transform (str "translate(" (v/->str center-point) ")"
                          "rotate(" angle ")")}
      [shared/make-subfields
       path parts

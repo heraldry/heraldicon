@@ -79,7 +79,7 @@
     (string? v) v
     (and (map? v)
          (:x v)
-         (:y v)) (str (:x v) "," (:y v))
+         (:y v)) (v/->str v)
     (sequential? v) (s/join " " (map make-path v))
     :else (str v)))
 
