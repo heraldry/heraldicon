@@ -3,9 +3,6 @@
             [heraldry.math.bezier :as bezier]
             [heraldry.math.vector :as v]))
 
-;; catmullrom
-
-
 (defn smooth-point [main-fn p0 p1 p2 tension]
   (main-fn p1
            (v/mul (v/sub p2 p0)

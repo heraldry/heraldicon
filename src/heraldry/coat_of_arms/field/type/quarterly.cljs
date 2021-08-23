@@ -3,9 +3,9 @@
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]))
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/quarterly)
 
@@ -159,9 +159,9 @@
                              x2 (+ x1 part-width)
                              y1 (+ y0 (* j part-height))
                              y2 (+ y1 part-height)]
-                         [(svg/make-path ["M" [x2 y1]
-                                          "L" [x2 y2]
-                                          "L" [x1 y2]])]))
+                         [(path/make-path ["M" [x2 y1]
+                                           "L" [x2 y2]
+                                           "L" [x1 y2]])]))
                      vec)
         outline-extra 50
         outlines (when outline?
@@ -169,13 +169,13 @@
                     (for [i (range 1 num-fields-x)]
                       (let [x1 (+ x0 (* i part-width))]
                         ^{:key [:x i]}
-                        [:path {:d (svg/make-path ["M" [x1 (- y0 outline-extra)]
-                                                   "L" [x1 (+ y0 required-height outline-extra)]])}]))
+                        [:path {:d (path/make-path ["M" [x1 (- y0 outline-extra)]
+                                                    "L" [x1 (+ y0 required-height outline-extra)]])}]))
                     (for [j (range 1 num-fields-y)]
                       (let [y1 (+ y0 (* j part-height))]
                         ^{:key [:y j]}
-                        [:path {:d (svg/make-path ["M" [(- x0 outline-extra) y1]
-                                                   "L" [(+ x0 required-width outline-extra) y1]])}]))])]
+                        [:path {:d (path/make-path ["M" [(- x0 outline-extra) y1]
+                                                    "L" [(+ x0 required-width outline-extra) y1]])}]))])]
     [:<>
      [shared/make-subfields
       path parts

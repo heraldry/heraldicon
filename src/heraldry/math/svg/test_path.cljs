@@ -1,13 +1,13 @@
-(ns heraldry.math.test-svg
+(ns heraldry.math.svg.test-path
   (:require [cljs.test :refer-macros [deftest are]]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.path :as path]
             [heraldry.math.vector :as v]
             [taoensso.timbre :as log]))
 
 (deftest reverse-path
-  (are [path start reversed-path] (let [result (svg/reverse-path path)
+  (are [path start reversed-path] (let [result (path/reverse-path path)
                                         expected {:start start
-                                                  :path (svg/normalize-path-relative reversed-path)}]
+                                                  :path (path/normalize-path-relative reversed-path)}]
                                     (when (not= result expected)
                                       (log/debug "\nexp:" expected "\ngot:" result))
                                     (= result expected))

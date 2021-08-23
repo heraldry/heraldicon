@@ -1,13 +1,10 @@
-(ns heraldry.math.svg
-  (:require ["svg-path-parse" :as svg-path-parse]
-            ["svg-path-properties" :as svg-path-properties]
-            ["svg-path-reverse" :as svg-path-reverse]
-            ["svgpath" :as svgpath]
+(ns heraldry.math.svg.core
+  (:require ["svg-path-properties" :as svg-path-properties]
             [clojure.string :as s]
             [clojure.walk :as walk]
             [heraldry.math.catmullrom :as catmullrom]
-            [heraldry.random :as random]
             [heraldry.math.vector :as v]
+            [heraldry.random :as random]
             [heraldry.util :as util]))
 
 (defn clean-path [d]
@@ -74,15 +71,6 @@
         center (avg-x-y points)]
     center))
 
-(defn make-path [v]
-  (cond
-    (string? v) v
-    (and (map? v)
-         (:x v)
-         (:y v)) (v/->str v)
-    (sequential? v) (s/join " " (map make-path v))
-    :else (str v)))
-
 (defn rotated-bounding-box [{x1 :x y1 :y :as p1} {x2 :x y2 :y :as p2} rotation & {:keys [middle scale]}]
   (let [middle (or middle
                    (v/avg p1 p2))
@@ -145,17 +133,6 @@
                                      v))))
                  data))
 
-(defn translate [path dx dy]
-  (-> path
-      svgpath
-      (.translate dx dy)
-      .toString))
-
-(defn stitch [path]
-  ;; TODO: this can be improved, it already broke some things and caused unexpected behaviour,
-  ;; because the 'e' was not part of the pattern
-  (s/replace path #"^M[ ]*[0-9.e-]+[, -] *[0-9.e-]+" ""))
-
 (defn split-style-value [value]
   (-> value
       (s/split #";")
@@ -175,29 +152,6 @@
                     [:style (split-style-value (second %))]
                     %)
                  data))
-
-(defn reverse-path [path]
-  (-> path
-      svg-path-reverse/reverse
-      svg-path-parse/pathParse
-      .relNormalize
-      (js->clj :keywordize-keys true)
-      (as-> path
-            (let [[move & rest] (:segments path)
-                  [x y] (:args move)
-                  adjusted-path (assoc path :segments (into [{:type "M" :args [0 0]}] rest))]
-              {:start (v/v x y)
-               :path (-> adjusted-path
-                         clj->js
-                         svg-path-parse/serializePath)}))))
-
-(defn normalize-path-relative [path]
-  (-> path
-      svg-path-reverse/reverse
-      svg-path-reverse/reverse
-      svg-path-parse/pathParse
-      .relNormalize
-      svg-path-parse/serializePath))
 
 (defn fix-attribute-and-tag-names [data]
   (walk/postwalk

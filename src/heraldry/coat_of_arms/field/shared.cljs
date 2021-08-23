@@ -2,7 +2,8 @@
   (:require [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.field.interface :as ui-interface]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.core :as svg]
+            [heraldry.math.svg.path :as path]
             [heraldry.util :as util]))
 
 (def overlap-stroke-width 0.1)
@@ -118,7 +119,7 @@
                              (conj part-path :counterchanged?)
                              context)
             env (environment/create
-                 (svg/make-path shape-path)
+                 (path/make-path shape-path)
                  {:parent field-path
                   :parent-environment parent-environment
                   :bounding-box (svg/bounding-box bounding-box)

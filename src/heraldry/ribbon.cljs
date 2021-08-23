@@ -1,14 +1,14 @@
 (ns heraldry.ribbon
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
+            [heraldry.font :as font]
+            [heraldry.interface :as interface]
             [heraldry.math.bezier :as bezier]
             [heraldry.math.catmullrom :as catmullrom]
             [heraldry.math.core :as math]
+            [heraldry.math.svg.path :as path]
             [heraldry.math.vector :as v]
-            [heraldry.font :as font]
-            [heraldry.interface :as interface]
-            [heraldry.options :as options]
-            [heraldry.math.svg :as svg]))
+            [heraldry.options :as options]))
 
 (def default-options
   {:thickness {:type :range
@@ -209,12 +209,12 @@
         catmullrom/curve->svg-path-relative
         (cond->
          reverse? (->
-                   svg/reverse-path
+                   path/reverse-path
                    :path)
          (not reverse?) (->
-                         svg/reverse-path
+                         path/reverse-path
                          :path
-                         svg/reverse-path
+                         path/reverse-path
                          :path))
         svgpath
         (.scale scale scale)

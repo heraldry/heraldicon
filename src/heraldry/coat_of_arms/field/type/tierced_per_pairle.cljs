@@ -9,7 +9,8 @@
             [heraldry.coat-of-arms.shared.chevron :as chevron]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]))
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]))
 
 (def field-type :heraldry.field.type/tierced-per-pairle)
 
@@ -120,9 +121,9 @@
                                :else [:right :left])
         parts [[["M" (v/add diagonal-left
                             line-left-start)
-                 (svg/stitch line-left)
+                 (path/stitch line-left)
                  "L" origin-point
-                 (svg/stitch line-right)
+                 (path/stitch line-right)
                  (infinity/path :counter-clockwise
                                 fork-infinity-points
                                 [(v/add diagonal-right
@@ -135,9 +136,9 @@
 
                [["M" (v/add intersection-three
                             line-three-reversed-start)
-                 (svg/stitch line-three-reversed)
+                 (path/stitch line-three-reversed)
                  "L" origin-point
-                 (svg/stitch line-right)
+                 (path/stitch line-right)
                  (infinity/path :clockwise
                                 side-infinity-points
                                 [(v/add diagonal-right
@@ -150,9 +151,9 @@
 
                [["M" (v/add diagonal-left
                             line-left-start)
-                 (svg/stitch line-left)
+                 (path/stitch line-left)
                  "L" origin-point
-                 (svg/stitch line-three)
+                 (path/stitch line-three)
                  (infinity/path :clockwise
                                 (reverse side-infinity-points)
                                 [(v/add direction-three
@@ -166,21 +167,21 @@
      [shared/make-subfields
       path parts
       [:all
-       [(svg/make-path
+       [(path/make-path
          ["M" (v/add direction-three
                      line-three-reversed-start)
-          (svg/stitch line-three-reversed)])]
+          (path/stitch line-three-reversed)])]
        nil]
       environment context]
      (when outline?
        [:g (outline/style context)
-        [:path {:d (svg/make-path
+        [:path {:d (path/make-path
                     ["M" (v/add diagonal-left
                                 line-left-start)
-                     (svg/stitch line-left)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-left)])}]
+        [:path {:d (path/make-path
                     ["M" origin-point
-                     (svg/stitch line-right)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-right)])}]
+        [:path {:d (path/make-path
                     ["M" origin-point
-                     (svg/stitch line-three)])}]])]))
+                     (path/stitch line-three)])}]])]))

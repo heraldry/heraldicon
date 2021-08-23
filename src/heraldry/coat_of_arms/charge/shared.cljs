@@ -7,7 +7,8 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]
             [heraldry.util :as util]))
 
 (defn make-charge
@@ -109,7 +110,7 @@
                             (-> (v/v charge-width charge-height)
                                 (v/div -2)))
         charge-shape (-> shape
-                         svg/make-path
+                         path/make-path
                          (->
                           (svgpath)
                           (.scale scale-x scale-y)
@@ -120,10 +121,10 @@
                                           (svgpath)
                                           (.rotate angle)
                                           (.toString)))
-                         (svg/translate (:x origin-point) (:y origin-point)))
+                         (path/translate (:x origin-point) (:y origin-point)))
         mask-shape (when mask
                      (-> mask
-                         svg/make-path
+                         path/make-path
                          (->
                           (svgpath)
                           (.scale scale-x scale-y)
@@ -134,7 +135,7 @@
                                           (svgpath)
                                           (.rotate angle)
                                           (.toString)))
-                         (svg/translate (:x origin-point) (:y origin-point))))
+                         (path/translate (:x origin-point) (:y origin-point))))
         [min-x max-x min-y max-y] (svg/rotated-bounding-box charge-top-left
                                                             (v/add charge-top-left
                                                                    (v/v charge-width

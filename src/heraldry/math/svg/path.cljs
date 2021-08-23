@@ -1,0 +1,49 @@
+(ns heraldry.math.svg.path
+  (:require ["svg-path-parse" :as svg-path-parse]
+            ["svg-path-reverse" :as svg-path-reverse]
+            ["svgpath" :as svgpath]
+            [clojure.string :as s]
+            [heraldry.math.vector :as v]))
+
+(defn stitch [path]
+  ;; TODO: this can be improved, it already broke some things and caused unexpected behaviour,
+  ;; because the 'e' was not part of the pattern
+  (s/replace path #"^M[ ]*[0-9.e-]+[, -] *[0-9.e-]+" ""))
+
+(defn make-path [v]
+  (cond
+    (string? v) v
+    (and (map? v)
+         (:x v)
+         (:y v)) (v/->str v)
+    (sequential? v) (s/join " " (map make-path v))
+    :else (str v)))
+
+(defn translate [path dx dy]
+  (-> path
+      svgpath
+      (.translate dx dy)
+      .toString))
+
+(defn reverse-path [path]
+  (-> path
+      svg-path-reverse/reverse
+      svg-path-parse/pathParse
+      .relNormalize
+      (js->clj :keywordize-keys true)
+      (as-> path
+            (let [[move & rest] (:segments path)
+                  [x y] (:args move)
+                  adjusted-path (assoc path :segments (into [{:type "M" :args [0 0]}] rest))]
+              {:start (v/v x y)
+               :path (-> adjusted-path
+                         clj->js
+                         svg-path-parse/serializePath)}))))
+
+(defn normalize-path-relative [path]
+  (-> path
+      svg-path-reverse/reverse
+      svg-path-reverse/reverse
+      svg-path-parse/pathParse
+      .relNormalize
+      svg-path-parse/serializePath))

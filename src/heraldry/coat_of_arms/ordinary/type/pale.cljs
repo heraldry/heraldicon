@@ -7,7 +7,8 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.core :as svg]
+            [heraldry.math.svg.path :as path]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/pale)
@@ -90,14 +91,14 @@
                                               :environment environment)
         part [["M" (v/add first-bottom
                           line-one-start)
-               (svg/stitch line-one)
+               (path/stitch line-one)
                (infinity/path :clockwise
                               [:top :top]
                               [(v/add first-top
                                       line-one-start)
                                (v/add second-top
                                       line-reversed-start)])
-               (svg/stitch line-reversed)
+               (path/stitch line-reversed)
                (infinity/path :clockwise
                               [:bottom :bottom]
                               [(v/add second-bottom

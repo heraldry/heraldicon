@@ -6,7 +6,8 @@
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/bend)
@@ -128,10 +129,10 @@
                                     inherit-environment?)
         part [["M" (v/add first-start
                           line-one-start)
-               (svg/stitch line-one)
+               (path/stitch line-one)
                "L" (v/add second-end
                           line-reversed-start)
-               (svg/stitch line-reversed)
+               (path/stitch line-reversed)
                "L" (v/add first-start
                           line-one-start)
                "z"]

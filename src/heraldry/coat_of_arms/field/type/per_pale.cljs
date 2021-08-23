@@ -6,7 +6,8 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]))
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]))
 
 (def field-type :heraldry.field.type/per-pale)
 
@@ -47,7 +48,7 @@
 
         parts [[["M" (v/add top
                             line-one-start)
-                 (svg/stitch line-one)
+                 (path/stitch line-one)
                  (infinity/path :clockwise
                                 [:bottom :top]
                                 [(v/add bottom
@@ -60,7 +61,7 @@
 
                [["M" (v/add top
                             line-one-start)
-                 (svg/stitch line-one)
+                 (path/stitch line-one)
                  (infinity/path :counter-clockwise
                                 [:bottom :top]
                                 [(v/add bottom

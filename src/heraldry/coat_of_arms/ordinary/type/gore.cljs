@@ -6,7 +6,8 @@
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]))
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]))
 
 (defn arm-diagonal [origin-point anchor-point]
   (-> (v/sub anchor-point origin-point)
@@ -66,9 +67,9 @@
                                           :environment environment)
         part [["M" (v/add diagonal-top
                           line-diagonal-start)
-               (svg/stitch line-diagonal)
+               (path/stitch line-diagonal)
                "L" origin-point
-               (svg/stitch line-down)
+               (path/stitch line-down)
                (infinity/path (if left?
                                 :clockwise
                                 :counter-clockwise)

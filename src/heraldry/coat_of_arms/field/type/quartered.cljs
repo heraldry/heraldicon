@@ -7,7 +7,8 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]))
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]))
 
 (def field-type :heraldry.field.type/quartered)
 
@@ -95,9 +96,9 @@
                                                    :environment environment)
         parts [[["M" (v/add point-top
                             line-top-start)
-                 (svg/stitch line-top)
+                 (path/stitch line-top)
                  "L" origin-point
-                 (svg/stitch line-left)
+                 (path/stitch line-left)
                  (infinity/path :clockwise
                                 [:left :top]
                                 [(v/add point-left
@@ -109,9 +110,9 @@
 
                [["M" (v/add point-top
                             line-top-start)
-                 (svg/stitch line-top)
+                 (path/stitch line-top)
                  "L" origin-point
-                 (svg/stitch line-right)
+                 (path/stitch line-right)
                  (infinity/path :counter-clockwise
                                 [:right :top]
                                 [(v/add point-right
@@ -123,9 +124,9 @@
 
                [["M" (v/add point-bottom
                             line-bottom-start)
-                 (svg/stitch line-bottom)
+                 (path/stitch line-bottom)
                  "L" origin-point
-                 (svg/stitch line-left)
+                 (path/stitch line-left)
                  (infinity/path :counter-clockwise
                                 [:left :bottom]
                                 [(v/add point-left
@@ -137,9 +138,9 @@
 
                [["M" (v/add point-bottom
                             line-bottom-start)
-                 (svg/stitch line-bottom)
+                 (path/stitch line-bottom)
                  "L" origin-point
-                 (svg/stitch line-right)
+                 (path/stitch line-right)
                  (infinity/path :clockwise
                                 [:right :bottom]
                                 [(v/add point-right
@@ -152,28 +153,28 @@
      [shared/make-subfields
       path parts
       [:all
-       [(svg/make-path
+       [(path/make-path
          ["M" origin-point
-          (svg/stitch line-right)])]
-       [(svg/make-path
+          (path/stitch line-right)])]
+       [(path/make-path
          ["M" (v/add point-bottom
                      line-bottom-start)
-          (svg/stitch line-bottom)])]
+          (path/stitch line-bottom)])]
        nil]
       environment context]
      (when outline?
        [:g (outline/style context)
-        [:path {:d (svg/make-path
+        [:path {:d (path/make-path
                     ["M" (v/add point-top
                                 line-top-start)
-                     (svg/stitch line-top)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-top)])}]
+        [:path {:d (path/make-path
                     ["M" origin-point
-                     (svg/stitch line-right)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-right)])}]
+        [:path {:d (path/make-path
                     ["M" (v/add point-bottom
                                 line-bottom-start)
-                     (svg/stitch line-bottom)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-bottom)])}]
+        [:path {:d (path/make-path
                     ["M" origin-point
-                     (svg/stitch line-left)])}]])]))
+                     (path/stitch line-left)])}]])]))

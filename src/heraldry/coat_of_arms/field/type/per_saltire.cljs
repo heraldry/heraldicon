@@ -8,7 +8,8 @@
             [heraldry.coat-of-arms.shared.saltire :as saltire]
             [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg :as svg]))
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.core :as svg]))
 
 (def field-type :heraldry.field.type/per-saltire)
 
@@ -89,9 +90,9 @@
         ;; the resulting environments won't be very well centered
         parts [[["M" (v/add diagonal-top-left
                             line-top-left-start)
-                 (svg/stitch line-top-left)
+                 (path/stitch line-top-left)
                  "L" origin-point
-                 (svg/stitch line-top-right)
+                 (path/stitch line-top-right)
                  (infinity/path :counter-clockwise
                                 [:right :left]
                                 [(v/add diagonal-top-right
@@ -105,9 +106,9 @@
 
                [["M" (v/add diagonal-top-left
                             line-top-left-start)
-                 (svg/stitch line-top-left)
+                 (path/stitch line-top-left)
                  "L" origin-point
-                 (svg/stitch line-bottom-left)
+                 (path/stitch line-bottom-left)
                  (infinity/path :clockwise
                                 [:left :left]
                                 [(v/add diagonal-bottom-left
@@ -121,9 +122,9 @@
 
                [["M" (v/add diagonal-bottom-right
                             line-bottom-right-start)
-                 (svg/stitch line-bottom-right)
+                 (path/stitch line-bottom-right)
                  "L" origin-point
-                 (svg/stitch line-top-right)
+                 (path/stitch line-top-right)
                  (infinity/path :clockwise
                                 [:right :right]
                                 [(v/add diagonal-top-right
@@ -137,9 +138,9 @@
 
                [["M" (v/add diagonal-bottom-right
                             line-bottom-right-start)
-                 (svg/stitch line-bottom-right)
+                 (path/stitch line-bottom-right)
                  "L" origin-point
-                 (svg/stitch line-bottom-left)
+                 (path/stitch line-bottom-left)
                  (infinity/path :counter-clockwise
                                 [:left :right]
                                 [(v/add diagonal-bottom-left
@@ -155,31 +156,31 @@
      [shared/make-subfields
       path parts
       [:all
-       [(svg/make-path
+       [(path/make-path
          ["M" (v/add origin-point
                      line-bottom-left-start)
-          (svg/stitch line-bottom-left)])]
-       [(svg/make-path
+          (path/stitch line-bottom-left)])]
+       [(path/make-path
          ["M" (v/add diagonal-bottom-right
                      line-bottom-right-start)
-          (svg/stitch line-bottom-right)])]
+          (path/stitch line-bottom-right)])]
        nil]
       environment context]
      (when outline?
        [:g (outline/style context)
-        [:path {:d (svg/make-path
+        [:path {:d (path/make-path
                     ["M" (v/add diagonal-top-left
                                 line-top-left-start)
-                     (svg/stitch line-top-left)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-top-left)])}]
+        [:path {:d (path/make-path
                     ["M" (v/add origin-point
                                 line-top-right-start)
-                     (svg/stitch line-top-right)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-top-right)])}]
+        [:path {:d (path/make-path
                     ["M" (v/add diagonal-bottom-right
                                 line-bottom-right-start)
-                     (svg/stitch line-bottom-right)])}]
-        [:path {:d (svg/make-path
+                     (path/stitch line-bottom-right)])}]
+        [:path {:d (path/make-path
                     ["M" (v/add origin-point
                                 line-bottom-left-start)
-                     (svg/stitch line-bottom-left)])}]])]))
+                     (path/stitch line-bottom-left)])}]])]))

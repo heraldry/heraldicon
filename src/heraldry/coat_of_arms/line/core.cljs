@@ -27,10 +27,11 @@
             [heraldry.coat-of-arms.line.type.wolf-toothed :as wolf-toothed]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
+            [heraldry.math.svg.core :as svg]
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.vector :as v]
             [heraldry.options :as options]
-            [heraldry.math.svg :as svg]
             [heraldry.util :as util]))
 
 (defn line-base [{:keys [base-line]} {line-min :min
@@ -66,8 +67,8 @@
         line-pattern (if effective-mirrored?
                        [(-> line-pattern
                             (->> (into ["M" 0 0]))
-                            svg/make-path
-                            svg/reverse-path
+                            path/make-path
+                            path/reverse-path
                             :path
                             svgpath
                             (.scale -1 1)
@@ -432,10 +433,10 @@
         line-path (-> line-data
                       :line
                       (->> (into ["M" 0 0]))
-                      svg/make-path)
+                      path/make-path)
         {line-reversed-start :start
          line-reversed :path} (-> line-path
-                                  svg/reverse-path)
+                                  path/reverse-path)
         line-start (:line-start line-data)
         line-end (-> line-start
                      (v/add line-reversed-start)
@@ -544,8 +545,8 @@
         line-start (-> line-datas first :line-start)
         base-path ["M" (v/add start line-start)
                    (for [{line-path-snippet :line} line-datas]
-                     (svg/stitch line-path-snippet))]
-        line-path (svg/make-path base-path)
+                     (path/stitch line-path-snippet))]
+        line-path (path/make-path base-path)
         {:keys [mode
                 alignment
                 thickness-1
@@ -563,19 +564,19 @@
         mask-shape-top (when (#{:even :outside} alignment)
                          (let [mask-points (-> [(v/add start line-start (-> line-datas first :up))]
                                                (into (mask-intersection-points start line-datas :up)))]
-                           (svg/make-path [base-path
-                                           "l" (-> line-datas last :up)
-                                           (for [mask-point (reverse mask-points)]
-                                             ["L" mask-point])
-                                           "z"])))
+                           (path/make-path [base-path
+                                            "l" (-> line-datas last :up)
+                                            (for [mask-point (reverse mask-points)]
+                                              ["L" mask-point])
+                                            "z"])))
         mask-shape-bottom (when (#{:even :inside} alignment)
                             (let [mask-points (-> [(v/add start line-start (-> line-datas first :down))]
                                                   (into (mask-intersection-points start line-datas :down)))]
-                              (svg/make-path [base-path
-                                              "l" (-> line-datas last :down)
-                                              (for [mask-point (reverse mask-points)]
-                                                ["L" mask-point])
-                                              "z"])))
+                              (path/make-path [base-path
+                                               "l" (-> line-datas last :down)
+                                               (for [mask-point (reverse mask-points)]
+                                                 ["L" mask-point])
+                                               "z"])))
         combined-thickness (+ thickness-1 thickness-2)
         mask-id-top (when mask-shape-top
                       (util/id "mask-line-top"))
