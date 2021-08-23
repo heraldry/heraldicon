@@ -291,7 +291,7 @@
                                          :font-size font-size}}
                 [:defs
                  [:path {:id path-id
-                         :d (str "M " (:x text-path-start) "," (:y text-path-start) text-path)}]]
+                         :d (str "M " (v/->str text-path-start) " " text-path)}]]
                 [:textPath {:href (str "#" path-id)
                             :alignment-baseline "middle"
                             :method "align"
@@ -330,9 +330,9 @@
             target-width ((util/percent-of width) size)
             scale (/ target-width ribbon-width)
             outline-thickness (/ 1 scale)]
-        {:result [:g {:transform (str "translate(" (:x position) "," (:y position) ")"
+        {:result [:g {:transform (str "translate(" (v/->str position) ")"
                                       "scale(" scale "," scale ")"
-                                      "translate(" (:x shift) "," (:y shift) ")")}
+                                      "translate(" (v/->str shift) ")")}
                   [ribbon
                    ribbon-path
                    tincture-foreground
@@ -537,7 +537,7 @@
              :style {:transition "transform 0.5s"}}
          coat-of-arms]
         (when helms-result
-          [:g {:transform (str "translate(" (:x helm-position) "," (:y helm-position) ")")
+          [:g {:transform (str "translate(" (v/->str helm-position) ")")
                :style {:transition "transform 0.5s"}}
            helms-result])]
 

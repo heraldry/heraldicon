@@ -158,7 +158,7 @@
              mask-height ((util/percent-of total-height) (Math/abs vertical-mask))]
          [:defs
           [:mask {:id vertical-mask-id}
-           [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")")}
+           [:g {:transform (str "translate(" (v/->str origin-point) ")")}
             [:rect {:x (- min-x 10)
                     :y (- min-y 10)
                     :width (+ total-width 20)

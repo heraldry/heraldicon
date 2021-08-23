@@ -8,6 +8,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.interface :as interface]
+            [heraldry.math.vector :as v]
             [re-frame.core :as rf]))
 
 (rf/reg-event-db :cycle-charge-index
@@ -184,7 +185,7 @@
                              (->> (get preview-tinctures))
                              (tincture/pick context)))]
              ^{:key idx}
-             [:g {:transform (str "translate(" (:x point) "," (:y point) ")")
+             [:g {:transform (str "translate(" (v/->str point) ")")
                   :on-click #(state/dispatch-on-event % [:cycle-charge-index slot-path num-charges])
                   :style {:cursor "pointer"}}
               [:circle {:r dot-size

@@ -275,7 +275,7 @@
                  mask-height ((util/percent-of total-height) (Math/abs vertical-mask))]
              [:defs
               [:mask {:id vertical-mask-id}
-               [:g {:transform (str "translate(" (:x origin-point) "," (:y origin-point) ")")}
+               [:g {:transform (str "translate(" (v/->str origin-point) ")")}
                 [:rect {:x (- min-x 10)
                         :y (- min-y 10)
                         :width (+ total-width 20)
@@ -362,14 +362,14 @@
             (svg/make-unique-ids mask)]
            [:mask {:id mask-inverted-id}
             (svg/make-unique-ids mask-inverted)]]
-          (let [transform (str "translate(" (:x origin-point) "," (:y origin-point) ")"
+          (let [transform (str "translate(" (v/->str origin-point) ")"
                                "rotate(" angle ")"
                                "scale(" scale-x "," scale-y ")"
-                               "translate(" (-> shift :x) "," (-> shift :y) ")")
-                reverse-transform (str "translate(" (-> shift :x -) "," (-> shift :y -) ")"
+                               "translate(" (v/->str shift) ")")
+                reverse-transform (str "translate(" (-> shift (v/mul -1) v/->str) ")"
                                        "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
                                        "rotate(" (- angle) ")"
-                                       "translate(" (- (:x origin-point)) "," (- (:y origin-point)) ")")]
+                                       "translate(" (-> origin-point (v/mul -1) v/->str) ")")]
             [:g {:transform transform}
              (when (-> fimbriation :mode #{:double})
                (let [thickness (+ (-> fimbriation
