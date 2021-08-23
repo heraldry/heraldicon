@@ -1,5 +1,6 @@
 (ns heraldry.math.catmullrom
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [heraldry.math.vector :as v]))
 
 ;; catmullrom
 
@@ -43,12 +44,10 @@
 (defn square [x]
   (* x x))
 
-(defn distance [{x0 :x y0 :y} {x1 :x y1 :y}]
-  (Math/sqrt (+ (square (- x0 x1))
-                (square (- y0 y1)))))
-
 (defn bezier-length [[[x1 y1] _ _ [x2 y2]]]
-  (distance {:x x1 :y y1} {:x x2 :y y2}))
+  (-> (v/v x1 y1)
+      (v/sub (v/v x2 y2))
+      v/abs))
 
 (defn curve->length [path]
   (->> path
