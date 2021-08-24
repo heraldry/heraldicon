@@ -6,7 +6,7 @@
        (map bezier/length)
        (apply +)))
 
-(defn split-curve-at [curve t]
+(defn split [curve t]
   (let [total-length (length curve)
         num-curves (count curve)
         absolute-t (* t total-length)
