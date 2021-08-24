@@ -1,12 +1,12 @@
 (ns heraldry.coat-of-arms.field.environment
   (:require ["svgpath" :as svgpath]
             [heraldry.math.vector :as v]
-            [heraldry.math.svg.core :as svg]))
+            [heraldry.math.bounding-box :as bounding-box]))
 
 (defn create [shape {:keys [bounding-box context] :as meta}]
   (let [override-environment (:override-environment meta)
         [min-x max-x min-y max-y] (or bounding-box
-                                      (svg/bounding-box-from-path shape))
+                                      (bounding-box/bounding-box-from-path shape))
         top-left (v/v min-x min-y)
         top-right (v/v max-x min-y)
         bottom-left (v/v min-x max-y)

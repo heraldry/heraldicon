@@ -10,10 +10,11 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.colour :as colour]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg.path :as path]
+            [heraldry.math.bounding-box :as bounding-box]
             [heraldry.math.svg.core :as svg]
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
 (defn remove-outlines [data placeholder-colours]
@@ -235,7 +236,7 @@
             shift (-> (v/v positional-charge-width positional-charge-height)
                       (v/div 2)
                       (v/sub))
-            [min-x max-x min-y max-y] (svg/rotated-bounding-box
+            [min-x max-x min-y max-y] (bounding-box/rotate
                                        shift
                                        (v/dot shift (v/v -1 -1))
                                        angle
@@ -261,7 +262,7 @@
                                 {:parent path
                                  :parent-environment environment
                                  :context [:charge]
-                                 :bounding-box (svg/bounding-box
+                                 :bounding-box (bounding-box/bounding-box
                                                 [position (v/add position
                                                                  clip-size)])
                                  :override-environment (when (or inherit-environment?

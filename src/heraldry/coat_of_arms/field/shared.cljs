@@ -2,7 +2,7 @@
   (:require [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.field.interface :as ui-interface]
             [heraldry.interface :as interface]
-            [heraldry.math.svg.core :as svg]
+            [heraldry.math.bounding-box :as bounding-box]
             [heraldry.math.svg.path :as path]
             [heraldry.util :as util]))
 
@@ -107,7 +107,7 @@
                        {:keys [svg-export?] :as context}]
   [:<>
    (doall
-    (for [[idx [part-path [shape-path bounding-box & extra] overlap-paths]]
+    (for [[idx [part-path [shape-path bounding-box-points & extra] overlap-paths]]
           (->> (map vector paths parts mask-overlaps)
                (map-indexed vector))]
       (let [clip-path-id (util/id (str "clip-" idx))
@@ -122,7 +122,7 @@
                  (path/make-path shape-path)
                  {:parent field-path
                   :parent-environment parent-environment
-                  :bounding-box (svg/bounding-box bounding-box)
+                  :bounding-box (bounding-box/bounding-box bounding-box-points)
                   :override-environment (when (or inherit-environment?
                                                   counterchanged?)
                                           parent-environment)
