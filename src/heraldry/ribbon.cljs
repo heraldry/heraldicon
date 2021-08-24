@@ -232,8 +232,8 @@
 
 (defn split-end [kind curve percentage edge-vector]
   (let [curve (vec curve)
-        {:keys [curve1 curve2]} (curve/split-curve-at curve (cond-> (/ percentage 100)
-                                                              (= kind :end) (->> (- 1))))
+        {:keys [curve1 curve2]} (curve/split curve (cond-> (/ percentage 100)
+                                                     (= kind :end) (->> (- 1))))
         split-point (-> (ffirst curve2)
                         (v/add (v/div edge-vector 2)))]
     (case kind
