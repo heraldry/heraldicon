@@ -6,10 +6,10 @@
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.shared.chevron :as chevron]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg.core :as svg]
+            [heraldry.math.core :as math]
             [heraldry.math.svg.path :as path]
+            [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/pall)
@@ -54,7 +54,7 @@
                                                direction-anchor
                                                0
                                                90)
-        pall-angle (v/normalize-angle
+        pall-angle (math/normalize-angle
                     (v/angle-to-point direction-origin-point
                                       direction-anchor-point))
         {origin-point :real-origin
@@ -71,9 +71,9 @@
         [relative-left relative-right] (chevron/arm-diagonals pall-angle origin-point anchor-point)
         diagonal-left (v/add origin-point relative-left)
         diagonal-right (v/add origin-point relative-right)
-        angle-left (v/normalize-angle (v/angle-to-point origin-point diagonal-left))
-        angle-right (v/normalize-angle (v/angle-to-point origin-point diagonal-right))
-        joint-angle (v/normalize-angle (- angle-left angle-right))
+        angle-left (math/normalize-angle (v/angle-to-point origin-point diagonal-left))
+        angle-right (math/normalize-angle (v/angle-to-point origin-point diagonal-right))
+        joint-angle (math/normalize-angle (- angle-left angle-right))
         delta (/ band-width 2 (Math/sin (-> joint-angle
                                             (* Math/PI)
                                             (/ 180)
@@ -197,7 +197,7 @@
                (path/stitch line-left-second)
                "z"]
               [top-left bottom-right]]
-        cottise-side-joint-angle (v/normalize-angle (- 180 (/ joint-angle 2)))]
+        cottise-side-joint-angle (math/normalize-angle (- 180 (/ joint-angle 2)))]
     [:<>
      [field-shared/make-subfield
       (conj path :field) part
