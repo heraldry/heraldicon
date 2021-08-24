@@ -5,10 +5,11 @@
             [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg.path :as path]
             [heraldry.math.svg.core :as svg]
+            [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.squiggly :as squiggly]
+            [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
 (defn make-charge
@@ -116,7 +117,7 @@
                           (.scale scale-x scale-y)
                           (.toString))
                          (cond->
-                          squiggly? svg/squiggly-path
+                          squiggly? squiggly/squiggly-path
                           (not= angle 0) (->
                                           (svgpath)
                                           (.rotate angle)
@@ -130,7 +131,7 @@
                           (.scale scale-x scale-y)
                           (.toString))
                          (cond->
-                          squiggly? svg/squiggly-path
+                          squiggly? squiggly/squiggly-path
                           (not= angle 0) (->
                                           (svgpath)
                                           (.rotate angle)

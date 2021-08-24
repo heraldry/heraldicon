@@ -1,5 +1,6 @@
 (ns heraldry.math.svg.path
   (:require ["svg-path-parse" :as svg-path-parse]
+            ["svg-path-properties" :as svg-path-properties]
             ["svg-path-reverse" :as svg-path-reverse]
             ["svgpath" :as svgpath]
             [clojure.string :as s]
@@ -61,3 +62,23 @@
   (let [start (first (first curve))]
     (s/join "" (concat [(move-to start)]
                        (map bezier-to-relative curve)))))
+
+(defn points [^js/Object path n]
+  (let [length (.getTotalLength path)
+        n (if (= n :length)
+            (-> length
+                Math/floor
+                inc)
+            n)]
+    (mapv (fn [i]
+            (let [x (-> length (* i) (/ (dec n)))
+                  p (.getPointAtLength path x)]
+              (v/v (.-x p) (.-y p)))) (range n))))
+
+(defn clean-path [d]
+  (s/replace d #"l *0 *[, ] *0" ""))
+
+(defn new-path [d]
+  (->> d
+       clean-path
+       (new svg-path-properties/svgPathProperties)))

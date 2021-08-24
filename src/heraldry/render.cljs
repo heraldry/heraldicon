@@ -12,10 +12,10 @@
             [heraldry.colour :as colour]
             [heraldry.font :as font]
             [heraldry.interface :as interface]
-            [heraldry.math.catmullrom :as catmullrom]
             [heraldry.math.filter :as filter]
             [heraldry.math.svg.core :as svg]
             [heraldry.math.svg.path :as path]
+            [heraldry.math.svg.squiggly :as squiggly]
             [heraldry.math.vector :as v]
             [heraldry.ribbon :as ribbon]
             [heraldry.util :as util]))
@@ -39,7 +39,7 @@
         shield (escutcheon/field escutcheon)
         environment (-> (environment/transform-to-width shield width)
                         (cond->
-                         squiggly? (update :shape svg/squiggly-path)))
+                         squiggly? (update :shape squiggly/squiggly-path)))
         mask-id (util/id "mask")
         texture-id (util/id "texture")
         shiny-id (util/id "shiny")

@@ -1,32 +1,9 @@
 (ns heraldry.math.svg.core
-  (:require ["svg-path-properties" :as svg-path-properties]
-            [clojure.string :as s]
+  (:require [clojure.string :as s]
             [clojure.walk :as walk]
-            [heraldry.math.catmullrom :as catmullrom]
             [heraldry.math.svg.path :as path]
             [heraldry.math.vector :as v]
-            [heraldry.random :as random]
             [heraldry.util :as util]))
-
-(defn clean-path [d]
-  (s/replace d #"l *0 *[, ] *0" ""))
-
-(defn new-path [d]
-  (->> d
-       clean-path
-       (new svg-path-properties/svgPathProperties)))
-
-(defn points [^js/Object path n]
-  (let [length (.getTotalLength path)
-        n (if (= n :length)
-            (-> length
-                Math/floor
-                inc)
-            n)]
-    (mapv (fn [i]
-            (let [x (-> length (* i) (/ (dec n)))
-                  p (.getPointAtLength path x)]
-              (v/v (.-x p) (.-y p)))) (range n))))
 
 (defn min-max-x-y [[{x :x y :y} & rest]]
   (reduce (fn [[min-x max-x min-y max-y] {x :x y :y}]
@@ -46,8 +23,8 @@
     (v/div s n)))
 
 (defn bounding-box-from-path [d]
-  (let [path (new-path d)
-        points (points path 50)
+  (let [path (path/new-path d)
+        points (path/points path 50)
         box (min-max-x-y points)]
     box))
 
@@ -65,12 +42,6 @@
           [first-min-x first-max-x
            first-min-y first-max-y]
           rest))
-
-(defn center [d]
-  (let [path (new-path d)
-        points (points path 50)
-        center (avg-x-y points)]
-    center))
 
 (defn rotated-bounding-box [{x1 :x y1 :y :as p1} {x2 :x y2 :y :as p2} rotation & {:keys [middle scale]}]
   (let [middle (or middle
@@ -94,45 +65,6 @@
                                                middle)
                                         scale) rotation))]]
     (bounding-box points)))
-
-(defn jiggle [[previous
-               {:keys [x y] :as current}
-               _]]
-  (let [dist (-> current
-                 (v/sub previous)
-                 (v/abs))
-        jiggle-radius (/ dist 4)
-        dx (- (* (random/float) jiggle-radius)
-              jiggle-radius)
-        dy (- (* (random/float) jiggle-radius)
-              jiggle-radius)]
-    {:x (+ x dx)
-     :y (+ y dy)}))
-
-(defn -squiggly-path [path & {:keys [seed]}]
-  (random/seed (if seed
-                 [seed path]
-                 path))
-  (let [points (-> path
-                   new-path
-                   (points :length))
-        points (vec (concat [(first points)]
-                            (map jiggle (partition 3 1 points))
-                            [(last points)]))
-        curve (catmullrom/catmullrom points)
-        new-path (path/curve-to-relative curve)]
-    new-path))
-
-(def squiggly-path
-  (memoize -squiggly-path))
-
-(defn squiggly-paths [data]
-  (walk/postwalk #(cond-> %
-                    (vector? %) ((fn [v]
-                                   (if (= (first v) :d)
-                                     [:d (squiggly-path (second v))]
-                                     v))))
-                 data))
 
 (defn split-style-value [value]
   (-> value
