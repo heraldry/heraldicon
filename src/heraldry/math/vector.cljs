@@ -1,5 +1,6 @@
 (ns heraldry.math.vector
-  (:require ["path-intersection" :as -path-intersection]))
+  (:require ["path-intersection" :as -path-intersection]
+            [heraldry.math.core :as math]))
 
 (def path-intersection
   (memoize -path-intersection))
@@ -47,18 +48,8 @@
       (add v2)
       (div 2)))
 
-(defn to-rad [angle]
-  (-> angle
-      (* Math/PI)
-      (/ 180)))
-
-(defn to-deg [angle]
-  (-> angle
-      (/ Math/PI)
-      (* 180)))
-
 (defn rotate [{:keys [x y]} angle]
-  (let [rad (to-rad angle)]
+  (let [rad (math/to-rad angle)]
     (v (- (* x (Math/cos rad))
           (* y (Math/sin rad)))
        (+ (* x (Math/sin rad))
@@ -251,20 +242,13 @@
 (defn angle-to-point [p1 p2]
   (let [d (sub p2 p1)
         angle-rad (Math/atan2 (:y d) (:x d))]
-    (to-deg angle-rad)))
-
-(defn normalize-angle [angle]
-  (loop [angle angle]
-    (cond
-      (neg? angle) (recur (+ angle 360))
-      (>= angle 360) (recur (- angle 360))
-      :else angle)))
+    (math/to-deg angle-rad)))
 
 (defn angle-between-vectors [v1 v2]
   (let [a1 (angle-to-point (v 0 0) v1)
         a2 (angle-to-point (v 0 0) v2)
         angle (-> (- a1 a2)
-                  normalize-angle)]
+                  math/normalize-angle)]
     (if (> angle 180)
       (- angle 180)
       angle)))

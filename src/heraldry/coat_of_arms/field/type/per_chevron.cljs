@@ -6,10 +6,10 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.shared.chevron :as chevron]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
+            [heraldry.math.core :as math]
             [heraldry.math.svg.path :as path]
-            [heraldry.math.svg.core :as svg]))
+            [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/per-chevron)
 
@@ -51,7 +51,7 @@
                                                direction-anchor
                                                0
                                                90)
-        chevron-angle (v/normalize-angle
+        chevron-angle (math/normalize-angle
                        (v/angle-to-point direction-origin-point
                                          direction-anchor-point))
         {origin-point :real-origin

@@ -7,10 +7,10 @@
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.shared.chevron :as chevron]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
+            [heraldry.math.core :as math]
             [heraldry.math.svg.path :as path]
-            [heraldry.math.svg.core :as svg]))
+            [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/tierced-per-pairle)
 
@@ -49,7 +49,7 @@
                                                direction-anchor
                                                0
                                                -90)
-        pall-angle (v/normalize-angle
+        pall-angle (math/normalize-angle
                     (v/angle-to-point direction-origin-point
                                       direction-anchor-point))
         {origin-point :real-origin
