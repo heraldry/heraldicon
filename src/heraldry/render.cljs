@@ -12,6 +12,7 @@
             [heraldry.colour :as colour]
             [heraldry.font :as font]
             [heraldry.interface :as interface]
+            [heraldry.math.bounding-box :as bounding-box]
             [heraldry.math.filter :as filter]
             [heraldry.math.svg.core :as svg]
             [heraldry.math.svg.path :as path]
@@ -321,8 +322,8 @@
             ;; height; could perhaps be a subscription or the ribbon function can provide it?
             ;; but then can't use the ribbon function as reagent component
             [min-x max-x
-             min-y max-y] (svg/min-max-x-y (concat points
-                                                   (map (partial v/add (v/v 0 thickness)) points)))
+             min-y max-y] (bounding-box/min-max-x-y (concat points
+                                                            (map (partial v/add (v/v 0 thickness)) points)))
             ribbon-width (- max-x min-x)
             shift (v/v (- (/ ribbon-width -2) min-x)
                        (case origin-point
@@ -369,7 +370,7 @@
                            (assoc :idx idx))))
         combined-bounding-box (->> mottos-data
                                    (keep :bounding-box)
-                                   svg/combine-bounding-boxes)]
+                                   bounding-box/combine)]
     {:result [:g
               (doall
                (for [{:keys [idx result]} mottos-data]
@@ -461,20 +462,20 @@
                         (neg? coat-of-arms-angle) (v/v (- (/ coat-of-arms-width 2)) 0)
                         (pos? coat-of-arms-angle) (v/v (/ coat-of-arms-width 2) 0)
                         :else (v/v 0 0))
-        helms-bounding-box (svg/min-max-x-y [(-> helm-position
-                                                 (v/add (v/v (/ coat-of-arms-width 2) 0))
-                                                 (v/add (v/v (- (/ helms-width 2))
-                                                             (- helms-height))))
-                                             (-> helm-position
-                                                 (v/add (v/v (/ coat-of-arms-width 2) 0))
-                                                 (v/add (v/v (/ helms-width 2)
-                                                             0)))])
+        helms-bounding-box (bounding-box/min-max-x-y [(-> helm-position
+                                                          (v/add (v/v (/ coat-of-arms-width 2) 0))
+                                                          (v/add (v/v (- (/ helms-width 2))
+                                                                      (- helms-height))))
+                                                      (-> helm-position
+                                                          (v/add (v/v (/ coat-of-arms-width 2) 0))
+                                                          (v/add (v/v (/ helms-width 2)
+                                                                      0)))])
         coat-of-arms-bounding-box (if rotated?
                                     [rotated-min-x rotated-max-x
                                      0 rotated-height]
                                     [0 coat-of-arms-width
                                      0 coat-of-arms-height])
-        coa-and-helms-bounding-box (svg/combine-bounding-boxes
+        coa-and-helms-bounding-box (bounding-box/combine
                                     (cond-> [coat-of-arms-bounding-box]
                                       helms-result (conj helms-bounding-box)))
         target-width 1000
@@ -497,7 +498,7 @@
         used-fonts (cond-> (get-used-fonts path context)
                      short-url (conj short-url-font))
 
-        achievement-bounding-box (svg/combine-bounding-boxes
+        achievement-bounding-box (bounding-box/combine
                                   (cond-> [[0 coa-and-helms-width
                                             0 coa-and-helms-height]]
                                     mottos-result (conj mottos-bounding-box)))
