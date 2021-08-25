@@ -1,6 +1,6 @@
 #+TITLE: Coat of Arms Generator
 
-TL;DR: https://heraldry.digital and [[./features.org][features]]
+TL;DR: https://heraldry.digital
 
 ** About
 I've started to learn about heraldry. There are many resources online, but I
