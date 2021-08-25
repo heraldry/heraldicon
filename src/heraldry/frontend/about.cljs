@@ -62,4 +62,4 @@
    [:ul
     [:li [:a {:href "https://github.com/or" :target "_blank"} "github:or"]]
     [:li [:a {:href "https://www.reddit.com/r/heraldry/" :target "_blank"} "reddit/heraldry"] ", where my username is " [:b "tierced"]]
-    [:li [:a {:href "https://discord.gg/QFrsdMkbbj" :target "_blank"} "discord:heraldry"] ", which is operated by the heraldry subreddit, there my username is " [:b "or#5915"]]]])
+    [:li [:a {:href "https://discord.gg/QFrsdMkbbj" :target "_blank"} "discord:heraldry"] ", which has a #development channel and is operated by the heraldry subreddit, there my username is " [:b "or#5915"]]]])
