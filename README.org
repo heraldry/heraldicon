@@ -59,16 +59,8 @@ representations.
 I'm still working on this, so if you see any work that isn't properly
 attributed, then please let me know!
 
-Currently the original files (so far only Wikimedia Commons) are stored in
-~assets/charges/orginals~, albeit with changed filenames and in a directory
-structure. They get optimized and converted to EDN, which drops their metadata.
-I'll look into including this metadata whenever I implement an SVG export, but
-for the web interface this is more efficient and I believe the link to the
-originals should be sufficient as attribution and indication of the changes
-made.
-
-The Lions were taken from https://commons.wikimedia.org/wiki/User:Sodacan, the
-wolves from https://commons.wikimedia.org/wiki/User:Lokal_Profil and
-https://commons.wikimedia.org/wiki/File:Armoiries_d%27Elvange.svg.
+Any arms, collection, charge, ribbon made public on the site must get a license
+from the creator, and it'll be attributed in SVGs and when viewing the thing or
+its derivatives on the site.
 
 See the [[./LICENSE][LICENSE]] file for this repository's own licensing info.
