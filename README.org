@@ -1,4 +1,4 @@
-#+TITLE: Coat of Arms Generator
+#+TITLE: Heraldry
 
 TL;DR: https://heraldry.digital
 
