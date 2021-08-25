@@ -253,7 +253,7 @@
                   :style {:width "100%"}
                   :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
                   :preserveAspectRatio "xMidYMin meet"}
-            [:g {:transform "translate(10,10)"}
+            [:g {:transform "translate(10,10) scale(5,5)"}
              result]]])))))
 
 (defn button-row []
