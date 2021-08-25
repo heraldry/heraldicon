@@ -7,16 +7,6 @@ I've started to learn about heraldry. There are many resources online, but I
 didn't find a lot of software to create coats of arms. And the software I found
 felt limited and hard to use.
 
-** Alternatives
-The best editor I found was on [[https://drawshield.net/][DrawShield]], which also is an amazing resource on
-heraldry in general. It was the starting point for a lot of reading.
-In particular it has a blazonry parser and SVG renderer, which is very
-impressive. But it is server-side, making working with it rather slow and as a
-beginner I found it difficult to understand the various parts of it.
-
-I wanted to write a responsive client-side interface that immediately shows the
-changes.
-
 ** Goals
 - Implement a system to create and render data that describes coats of
   arms and ultimately entire heraldic achievements.
@@ -64,3 +54,12 @@ from the creator, and it'll be attributed in SVGs and when viewing the thing or
 its derivatives on the site.
 
 See the [[./LICENSE][LICENSE]] file for this repository's own licensing info.
+
+** Alternatives
+[[https://drawshield.net/][DrawShield]] was the best editor I found before I started. It also is an amazing
+resource on heraldry in general. It has an impressive blazonry parser and SVG
+renderer, but it is server-side, making working with it rather slow and as a
+beginner I found it difficult to understand the various parts of it.
+
+[[https://azgaar.github.io/Armoria/][Armoria]] is another awesome site, with a different focus. It probably is a
+simpler alternative for a lot of use cases.
