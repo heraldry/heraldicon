@@ -208,6 +208,7 @@
      [:div.buttons {:style {:display "flex"}}
       [:button.button {:type "button"
                        :class (when-not can-export? "disabled")
+                       :title (when-not can-export? "Arms need to be public and saved for exporting.")
                        :on-click (if can-export?
                                    generate-svg-clicked
                                    (if (not logged-in?)
@@ -218,6 +219,7 @@
        "SVG"]
       [:button.button {:type "button"
                        :class (when-not can-export? "disabled")
+                       :title (when-not can-export? "Arms need to be public and saved for exporting.")
                        :on-click (if can-export?
                                    generate-png-clicked
                                    (if (not logged-in?)
