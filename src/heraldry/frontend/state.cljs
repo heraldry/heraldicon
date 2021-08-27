@@ -341,6 +341,11 @@
                                                           path-rest))
           :else path)))))
 
+(defn change-selected-component-if-removed [db fallback-path]
+  (if (get-in db (get-in db ui-component-node-selected-path))
+    db
+    (assoc-in db ui-component-node-selected-path fallback-path)))
+
 (defn element-order-changed [db elements-path index new-index]
   (-> db
       (update-in ui-component-node-selected-path
