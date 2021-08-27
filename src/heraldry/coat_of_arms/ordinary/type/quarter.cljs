@@ -9,11 +9,6 @@
             [heraldry.math.svg.path :as path]
             [heraldry.math.vector :as v]))
 
-(defn arm-diagonal [origin-point anchor-point]
-  (-> (v/sub anchor-point origin-point)
-      v/normal
-      (v/mul 200)))
-
 (def ordinary-type :heraldry.ordinary.type/quarter)
 
 (defmethod ordinary-interface/display-name ordinary-type [_] "Quarter / Canton")
