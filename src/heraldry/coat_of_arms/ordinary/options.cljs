@@ -16,6 +16,7 @@
             [heraldry.coat-of-arms.ordinary.type.pale :as pale]
             [heraldry.coat-of-arms.ordinary.type.pall :as pall]
             [heraldry.coat-of-arms.ordinary.type.pile :as pile]
+            [heraldry.coat-of-arms.ordinary.type.quarter :as quarter]
             [heraldry.coat-of-arms.ordinary.type.saltire :as saltire]
             [heraldry.coat-of-arms.position :as position]
             [heraldry.interface :as interface]
@@ -35,7 +36,8 @@
    pall/ordinary-type
    pile/ordinary-type
    gore/ordinary-type
-   label/ordinary-type])
+   label/ordinary-type
+   quarter/ordinary-type])
 
 (def choices
   (->> ordinaries
@@ -491,7 +493,36 @@
                                                      :max 10
                                                      :default 2
                                                      :ui {:label "Stretch"
-                                                          :step 0.01}}}))
+                                                          :step 0.01}}})
+         :quarter (options/pick default-options
+                                [[:type]
+                                 [:origin]
+                                 [:line]
+                                 [:opposite-line]
+                                 [:geometry]
+                                 [:variant]
+                                 [:outline?]
+                                 [:cottising]]
+                                {[:line] (-> line-style
+                                             (options/override-if-exists [:offset :min] 0)
+                                             (options/override-if-exists [:base-line] nil))
+                                 [:opposite-line] (-> opposite-line-style
+                                                      (options/override-if-exists [:offset :min] 0)
+                                                      (options/override-if-exists [:base-line] nil))
+                                 [:origin :point :default] :fess
+                                 [:origin :alignment] nil
+                                 [:geometry :size :min] 10
+                                 [:geometry :size :max] 150
+                                 [:geometry :size :default] 100
+                                 [:variant :choices] [["Dexter-chief" :dexter-chief]
+                                                      ["Sinister-chief" :sinister-chief]
+                                                      ["Dexter-base" :dexter-base]
+                                                      ["Sinister-base" :sinister-base]]
+                                 [:variant :ui :form-type] :select
+                                 [:cottising] (-> default-options
+                                                  :cottising
+                                                  (dissoc :cottise-opposite-1)
+                                                  (dissoc :cottise-opposite-2))}))
        (assoc :manual-blazon (:manual-blazon default-options))
        (update :line (fn [line]
                        (when line
