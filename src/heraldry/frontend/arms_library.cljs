@@ -179,6 +179,7 @@
         form-message @(rf/subscribe [:get-form-message form-db-path])
         arms-id @(rf/subscribe [:get-value (conj form-db-path :id)])
         arms-username @(rf/subscribe [:get-value (conj form-db-path :username)])
+        is-public @(rf/subscribe [:get-value (conj form-db-path :is-public)])
         user-data (user/data)
         logged-in? (:logged-in? user-data)
         unsaved-changes? (not= (-> @(rf/subscribe [:get-value form-db-path])
@@ -194,7 +195,10 @@
                        owned-by-me?)
         can-save? (and logged-in?
                        (or (not saved?)
-                           owned-by-me?))]
+                           owned-by-me?))
+        can-share? (and is-public
+                        saved?
+                        (not unsaved-changes?))]
     [:<>
      (when form-message
        [:div.success-message form-message])
@@ -225,6 +229,8 @@
       (when arms-id
         [:button.button {:style {:flex "initial"
                                  :color "#777"}
+                         :class (when-not can-share? "disabled")
+                         :title (when-not can-share? "Arms need to be public and saved for sharing.")
                          :on-click share-button-clicked}
          [:i.fas.fa-share-alt]])
       [:div {:style {:flex "auto"}}]
