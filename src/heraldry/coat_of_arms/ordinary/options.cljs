@@ -16,6 +16,7 @@
             [heraldry.coat-of-arms.ordinary.type.pale :as pale]
             [heraldry.coat-of-arms.ordinary.type.pall :as pall]
             [heraldry.coat-of-arms.ordinary.type.pile :as pile]
+            [heraldry.coat-of-arms.ordinary.type.point :as point]
             [heraldry.coat-of-arms.ordinary.type.quarter :as quarter]
             [heraldry.coat-of-arms.ordinary.type.saltire :as saltire]
             [heraldry.coat-of-arms.position :as position]
@@ -37,7 +38,8 @@
    pile/ordinary-type
    gore/ordinary-type
    label/ordinary-type
-   quarter/ordinary-type])
+   quarter/ordinary-type
+   point/ordinary-type])
 
 (def choices
   (->> ordinaries
@@ -518,11 +520,40 @@
                                                       ["Sinister-chief" :sinister-chief]
                                                       ["Dexter-base" :dexter-base]
                                                       ["Sinister-base" :sinister-base]]
+                                 [:variant :default] :dexter-chief
                                  [:variant :ui :form-type] :select
                                  [:cottising] (-> default-options
                                                   :cottising
                                                   (dissoc :cottise-opposite-1)
-                                                  (dissoc :cottise-opposite-2))}))
+                                                  (dissoc :cottise-opposite-2))})
+         :point (options/pick default-options
+                              [[:type]
+                               [:line]
+                               [:geometry]
+                               [:variant]
+                               [:outline?]
+                               [:cottising]]
+                              {[:line] (-> line-style
+                                           (options/override-if-exists [:offset :min] 0)
+                                           (options/override-if-exists [:base-line] nil))
+                               [:variant :choices] [["Dexter" :dexter]
+                                                    ["Sinister" :sinister]]
+                               [:variant :default] :dexter
+                               [:geometry :size] nil
+                               [:geometry :width] {:type :range
+                                                   :min 10
+                                                   :max 100
+                                                   :default 50
+                                                   :ui {:label "Width"}}
+                               [:geometry :height] {:type :range
+                                                    :min 10
+                                                    :max 100
+                                                    :default 50
+                                                    :ui {:label "Height"}}
+                               [:cottising] (-> default-options
+                                                :cottising
+                                                (dissoc :cottise-opposite-1)
+                                                (dissoc :cottise-opposite-2))}))
        (assoc :manual-blazon (:manual-blazon default-options))
        (update :line (fn [line]
                        (when line

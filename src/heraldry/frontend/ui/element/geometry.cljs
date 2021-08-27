@@ -14,7 +14,7 @@
     (let [sanitized-geometry (options/sanitize geometry options)
           changes (concat
                    (when (some #(options/changed? % sanitized-geometry options)
-                               [:size :width :thickness])
+                               [:size :width :height :thickness])
                      ["resized"])
                    (when (some #(options/changed? % sanitized-geometry options)
                                [:eccentricity :stretch])
@@ -40,6 +40,7 @@
         [submenu/submenu path label link-name {:style {:width "19em"}
                                                :class "submenu-geometry"}
          (for [option [:width
+                       :height
                        :thickness
                        :size-mode
                        :size
