@@ -10,11 +10,15 @@
 (defmethod interface/blazon-component :heraldry.component/ordinary [path context]
   (let [ordinary-type (interface/get-sanitized-data (conj path :type) context)
         line (interface/get-sanitized-data (conj path :line) context)
-        ordinary-name (if (= ordinary-type :heraldry.ordinary.type/quarter)
+        ordinary-name (case ordinary-type
+                        :heraldry.ordinary.type/quarter
                         (let [size (interface/get-sanitized-data (conj path :geometry :size) context)]
-                          (if (< size 100)
-                            "Canton"
-                            "Quarter"))
+                          (str (if (< size 100)
+                                 "Canton "
+                                 "Quarter ")
+                               (util/translate (interface/get-sanitized-data (conj path :variant) context))))
+                        :heraldry.ordinary.type/point
+                        (str "Point " (util/translate (interface/get-sanitized-data (conj path :variant) context)))
                         (util/translate ordinary-type))
         rest (util/combine " " [ordinary-name
                                 (util/translate-line line)
