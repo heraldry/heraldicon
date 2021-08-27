@@ -24,7 +24,8 @@
                      "mirrored")
                    (when (:flipped? sanitized-line)
                      "flipped")
-                   (when (-> sanitized-line :fimbriation :mode (not= :none))
+                   (when (and (-> sanitized-line :fimbriation :mode)
+                              (-> sanitized-line :fimbriation :mode (not= :none)))
                      "fimbriated")]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
