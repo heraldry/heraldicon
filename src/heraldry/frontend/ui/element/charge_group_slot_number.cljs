@@ -1,9 +1,10 @@
 (ns heraldry.frontend.ui.element.charge-group-slot-number
   (:require [heraldry.frontend.ui.element.range :as range]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.macros :as macros]
             [re-frame.core :as rf]))
 
-(rf/reg-event-db :set-charge-group-slot-number
+(macros/reg-event-db :set-charge-group-slot-number
   (fn [db [_ path num-slots]]
     (-> db
         (update-in path (fn [slots]

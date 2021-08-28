@@ -11,6 +11,7 @@
             [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
             [heraldry.frontend.user :as user]
             [heraldry.interface :as interface]
+            [heraldry.macros :as macros]
             [heraldry.math.bezier :as bezier]
             [heraldry.math.catmullrom :as catmullrom]
             [heraldry.math.filter :as filter]
@@ -51,7 +52,7 @@
   {:render-options default/render-options
    :render-options-path [:context :render-options]})
 
-(rf/reg-event-db :ribbon-edit-remove-point
+(macros/reg-event-db :ribbon-edit-remove-point
   (fn [db [_ path]]
     (let [points-path (-> path drop-last vec)
           idx (last path)]
@@ -61,11 +62,11 @@
                                (drop (inc idx) path))
                        vec))))))
 
-(rf/reg-event-db :ribbon-edit-toggle-show-points
+(macros/reg-event-db :ribbon-edit-toggle-show-points
   (fn [db _]
     (update-in db [:ui :ribbon-edit :show-points?] not)))
 
-(rf/reg-event-db :ribbon-edit-add-point
+(macros/reg-event-db :ribbon-edit-add-point
   (fn [db [_ path idx new-point]]
     (update-in db path
                (fn [points]
@@ -108,7 +109,7 @@
   (fn [db _]
     (get-in db [:ui :ribbon-edit :key-modifiers])))
 
-(rf/reg-event-db :ribbon-edit-set-key-modifiers
+(macros/reg-event-db :ribbon-edit-set-key-modifiers
   (fn [db [_ key-modifiers]]
     (assoc-in db [:ui :ribbon-edit :key-modifiers] key-modifiers)))
 
@@ -150,7 +151,7 @@
         :else :edit)
       :none)))
 
-(rf/reg-event-db :ribbon-edit-select-point
+(macros/reg-event-db :ribbon-edit-select-point
   (fn [db [_ path pos]]
     (if path
       (let [current-pos (get-in db path)
@@ -161,7 +162,7 @@
                                                          :dy dy}))
       (assoc-in db [:ui :ribbon-edit :selected-point] nil))))
 
-(rf/reg-event-db :ribbon-edit-point-move-selected
+(macros/reg-event-db :ribbon-edit-point-move-selected
   (fn [db [_ pos]]
     (let [{:keys [dx dy
                   path]} (get-in db [:ui :ribbon-edit :selected-point])]

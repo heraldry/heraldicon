@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.submenu
   (:require [heraldry.frontend.state :as state]
+            [heraldry.macros :as macros]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :ui-submenu-open?
@@ -9,7 +10,7 @@
 (defn ui-submenu-close-all [db]
   (assoc-in db state/ui-submenu-open?-path nil))
 
-(rf/reg-event-db :ui-submenu-close-all
+(macros/reg-event-db :ui-submenu-close-all
   (fn [db _]
     (ui-submenu-close-all db)))
 
@@ -25,11 +26,11 @@
                         (into {}))))
       (assoc-in (conj state/ui-submenu-open?-path path) true)))
 
-(rf/reg-event-db :ui-submenu-open
+(macros/reg-event-db :ui-submenu-open
   (fn [db [_ path]]
     (ui-submenu-open db path)))
 
-(rf/reg-event-db :ui-submenu-close
+(macros/reg-event-db :ui-submenu-close
   (fn [db [_ path]]
     (assoc-in db (conj state/ui-submenu-open?-path path) false)))
 

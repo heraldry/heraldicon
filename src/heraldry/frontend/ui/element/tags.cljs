@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.element.tags
   (:require [clojure.string :as s]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.macros :as macros]
             [re-frame.core :as rf]))
 
 (def value-path [:ui :tag-input-value])
@@ -17,7 +18,7 @@
               pos?)
       (keyword normalized-tag))))
 
-(rf/reg-event-db :add-tags
+(macros/reg-event-db :add-tags
   (fn [db [_ db-path tags]]
     (update-in db db-path (fn [current-tags]
                             (-> current-tags
@@ -31,7 +32,7 @@
                                             [tag true]))
                                      (into {})))))))
 
-(rf/reg-event-db :remove-tags
+(macros/reg-event-db :remove-tags
   (fn [db [_ db-path tags]]
     (update-in db db-path (fn [current-tags]
                             (loop [current-tags current-tags

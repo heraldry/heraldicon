@@ -5,9 +5,10 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.macros :as macros]
             [re-frame.core :as rf]))
 
-(rf/reg-event-db :set-ribbon-data
+(macros/reg-event-db :set-ribbon-data
   (fn [db [_ path ribbon-data]]
     (let [previous-segments (get-in db (conj path :segments))]
       (-> db
@@ -19,7 +20,7 @@
                                               [:text
                                                :font])))))))
 
-(rf/reg-event-db :set-ribbon-reference
+(macros/reg-event-db :set-ribbon-reference
   (fn [db [_ path ribbon]]
     (let [{ribbon-id :id
            ribbon-version :version} ribbon

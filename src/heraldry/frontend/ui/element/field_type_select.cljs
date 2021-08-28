@@ -5,6 +5,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.macros :as macros]
             [heraldry.options :as options]
             [heraldry.static :as static]
             [re-frame.core :as rf]))
@@ -48,7 +49,7 @@
                                   (options/sanitize-or-nil % (field-options/options %))))
           (update-in path dissoc :tincture)))))
 
-(rf/reg-event-db :set-field-type
+(macros/reg-event-db :set-field-type
   (fn [db [_ path new-type num-fields-x num-fields-y num-base-fields]]
     (set-field-type db path new-type num-fields-x num-fields-y num-base-fields)))
 

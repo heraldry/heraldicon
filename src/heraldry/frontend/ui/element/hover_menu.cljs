@@ -1,15 +1,16 @@
 (ns heraldry.frontend.ui.element.hover-menu
-  (:require [re-frame.core :as rf]))
+  (:require [heraldry.macros :as macros]
+            [re-frame.core :as rf]))
 
 (rf/reg-sub :ui-hover-menu-open?
   (fn [db [_ path]]
     (get-in db [:ui :hover-menu-open? path])))
 
-(rf/reg-event-db :ui-hover-menu-open
+(macros/reg-event-db :ui-hover-menu-open
   (fn [db [_ path]]
     (assoc-in db [:ui :hover-menu-open? path] true)))
 
-(rf/reg-event-db :ui-hover-menu-close
+(macros/reg-event-db :ui-hover-menu-close
   (fn [db [_ path]]
     (update-in db [:ui :hover-menu-open?] dissoc path)))
 

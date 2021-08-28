@@ -5,10 +5,11 @@
             [heraldry.frontend.ui.element.charge-select :as charge-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.macros :as macros]
             [heraldry.static :as static]
             [re-frame.core :as rf]))
 
-(rf/reg-event-db :update-charge
+(macros/reg-event-db :update-charge
   (fn [db [_ path changes]]
     (update-in db path merge changes)))
 

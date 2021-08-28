@@ -51,6 +51,7 @@
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.frontend.validation :as validation] ;; needed for side effects
             [heraldry.interface :as interface]
+            [heraldry.macros :as macros]
             [heraldry.shared] ;; needed for side effects
             [heraldry.util :as util]
             [re-frame.core :as rf]))
@@ -81,7 +82,7 @@
 
 ;; events
 
-(rf/reg-event-db :add-element
+(macros/reg-event-db :add-element
   (fn [db [_ path value]]
     (let [elements (-> (get-in db path)
                        (conj value)
@@ -99,7 +100,7 @@
            (#{:heraldry.component/collection-element} added-type) (submenu/ui-submenu-open (conj element-path :reference))
            (#{:heraldry.component/motto} added-type) (submenu/ui-submenu-open (conj element-path :ribbon-variant)))))))
 
-(rf/reg-event-db :remove-element
+(macros/reg-event-db :remove-element
   (fn [db [_ path]]
     (let [elements-path (-> path drop-last vec)
           index (last path)
@@ -113,7 +114,7 @@
                                                     (subvec elements (inc index))))))
             (state/element-order-changed elements-path index nil))))))
 
-(rf/reg-event-db :move-element
+(macros/reg-event-db :move-element
   (fn [db [_ path new-index]]
     (let [elements-path (-> path drop-last vec)
           elements (vec (get-in db elements-path))
