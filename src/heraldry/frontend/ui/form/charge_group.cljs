@@ -8,7 +8,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.interface :as interface]
-            [heraldry.macros :as macros]
+            [heraldry.frontend.macros :as macros]
             [heraldry.math.vector :as v]
             [re-frame.core :as rf]))
 
@@ -102,12 +102,12 @@
                                         slots)))
           (state/element-order-changed elements-path index (inc index))))))
 
-(rf/reg-event-fx :add-charge-group-strip
-  (fn [{:keys [db]} [_ path value]]
+(macros/reg-event-db :add-charge-group-strip
+  (fn [db [_ path value]]
     (let [elements (-> (get-in db path)
                        (conj value)
                        vec)]
-      {:db (assoc-in db path elements)})))
+      (assoc-in db path elements))))
 
 (macros/reg-event-db :move-charge-group-charge-down
   (fn [db [_ path]]

@@ -1,7 +1,7 @@
 (ns heraldry.frontend.ui.element.tags
   (:require [clojure.string :as s]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.macros :as macros]
+            [heraldry.frontend.macros :as macros]
             [re-frame.core :as rf]))
 
 (def value-path [:ui :tag-input-value])

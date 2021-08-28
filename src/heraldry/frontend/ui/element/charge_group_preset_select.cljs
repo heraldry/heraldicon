@@ -2,7 +2,7 @@
   (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.macros :as macros]
+            [heraldry.frontend.macros :as macros]
             [heraldry.static :as static]
             [re-frame.core :as rf]))
 

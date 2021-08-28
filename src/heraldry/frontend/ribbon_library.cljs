@@ -11,7 +11,7 @@
             [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
             [heraldry.frontend.user :as user]
             [heraldry.interface :as interface]
-            [heraldry.macros :as macros]
+            [heraldry.frontend.macros :as macros]
             [heraldry.math.bezier :as bezier]
             [heraldry.math.catmullrom :as catmullrom]
             [heraldry.math.filter :as filter]

@@ -4,7 +4,7 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.tincture-select :as tincture-select]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.macros :as macros]
+            [heraldry.frontend.macros :as macros]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -19,12 +19,12 @@
           (assoc-in path referenced-part)
           (state/ui-component-node-select path :open? true)))))
 
-(rf/reg-event-fx :reset-field-part-reference
-  (fn [{:keys [db]} [_ path]]
+(macros/reg-event-db :reset-field-part-reference
+  (fn [db [_ path]]
     (let [index (last path)
           parent (get-in db (drop-last 2 path))]
-      {:db (assoc-in db path (-> (field/default-fields parent)
-                                 (get index)))})))
+      (assoc-in db path (-> (field/default-fields parent)
+                            (get index))))))
 
 (defn show-tinctures-only? [field-type]
   (-> field-type name keyword

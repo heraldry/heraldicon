@@ -5,7 +5,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.macros :as macros]
+            [heraldry.frontend.macros :as macros]
             [re-frame.core :as rf]))
 
 (macros/reg-event-db :set-ribbon-data

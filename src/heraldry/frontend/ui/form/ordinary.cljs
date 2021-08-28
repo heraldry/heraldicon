@@ -3,7 +3,7 @@
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.macros :as macros]
+            [heraldry.frontend.macros :as macros]
             [re-frame.core :as rf]))
 
 (macros/reg-event-db :remove-cottise

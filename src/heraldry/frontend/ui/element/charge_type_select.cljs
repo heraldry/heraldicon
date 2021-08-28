@@ -5,7 +5,7 @@
             [heraldry.frontend.ui.element.charge-select :as charge-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.macros :as macros]
+            [heraldry.frontend.macros :as macros]
             [heraldry.static :as static]
             [re-frame.core :as rf]))
 
