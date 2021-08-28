@@ -1,7 +1,7 @@
 (ns heraldry.frontend.ui.element.attributes
   (:require [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.macros :as macros]
+            [heraldry.frontend.macros :as macros]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 

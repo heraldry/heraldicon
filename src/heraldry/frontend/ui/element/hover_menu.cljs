@@ -1,5 +1,5 @@
 (ns heraldry.frontend.ui.element.hover-menu
-  (:require [heraldry.macros :as macros]
+  (:require [heraldry.frontend.macros :as macros]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :ui-hover-menu-open?

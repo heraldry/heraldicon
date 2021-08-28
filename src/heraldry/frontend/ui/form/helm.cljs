@@ -3,7 +3,7 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.macros :as macros]
+            [heraldry.frontend.macros :as macros]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :get-helm-status
