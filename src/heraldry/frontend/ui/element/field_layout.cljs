@@ -3,7 +3,7 @@
             [heraldry.frontend.ui.element.range :as range]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.macros :as macros]
+            [heraldry.frontend.macros :as macros]
             [heraldry.options :as options]
             [heraldry.util :as util]
             [re-frame.core :as rf]))

@@ -5,7 +5,7 @@
             [heraldry.frontend.ui.element.radio-select :as radio-select]
             [heraldry.frontend.ui.element.search-field :as search-field]
             [heraldry.frontend.ui.element.tags :as tags]
-            [heraldry.macros :as macros]
+            [heraldry.frontend.macros :as macros]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 

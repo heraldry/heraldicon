@@ -3,9 +3,9 @@
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.default :as default]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.ui.form.collection-element :as collection-element]
             [heraldry.interface :as interface]
-            [heraldry.macros :as macros]
             [re-frame.core :as rf]
             [taoensso.timbre :as log]))
 
