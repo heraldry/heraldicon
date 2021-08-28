@@ -3,6 +3,7 @@
             [heraldry.frontend.ui.element.range :as range]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.macros :as macros]
             [heraldry.options :as options]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
@@ -32,7 +33,7 @@
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
-(rf/reg-event-db :set-field-layout-num-fields-x
+(macros/reg-event-db :set-field-layout-num-fields-x
   (fn [db [_ path value]]
     (let [field-path (drop-last 2 path)
           field (get-in db field-path)]
@@ -44,7 +45,7 @@
        (-> field :layout :num-fields-y)
        (-> field :layout :num-base-fields)))))
 
-(rf/reg-event-db :set-field-layout-num-fields-y
+(macros/reg-event-db :set-field-layout-num-fields-y
   (fn [db [_ path value]]
     (let [field-path (drop-last 2 path)
           field (get-in db field-path)]
@@ -56,7 +57,7 @@
        value
        (-> field :layout :num-base-fields)))))
 
-(rf/reg-event-db :set-field-layout-num-base-fields
+(macros/reg-event-db :set-field-layout-num-base-fields
   (fn [db [_ path value]]
     (let [field-path (drop-last 2 path)
           field (get-in db field-path)]

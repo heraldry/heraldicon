@@ -5,6 +5,7 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.frontend.ui.form.collection-element :as collection-element]
             [heraldry.interface :as interface]
+            [heraldry.macros :as macros]
             [re-frame.core :as rf]
             [taoensso.timbre :as log]))
 
@@ -79,7 +80,7 @@
 ;; events
 
 
-(rf/reg-event-db :initialize-db
+(macros/reg-event-db :initialize-db
   (fn [db [_]]
     (merge {:example-coa {:render-options (assoc default/render-options
                                                  :escutcheon :rectangle)
@@ -113,15 +114,15 @@
                  :component-tree {}}}
            db)))
 
-(rf/reg-event-db :set
+(macros/reg-event-db :set
   (fn [db [_ path value]]
     (assoc-in db path value)))
 
-(rf/reg-event-db :set-title
+(macros/reg-event-db :set-title
   (fn [db [_ value]]
     (assoc-in db title-path value)))
 
-(rf/reg-event-db :update
+(macros/reg-event-db :update
   (fn [db [_ path update-fn]]
     (update-in db path update-fn)))
 
@@ -130,27 +131,27 @@
     (-> path count (= 1)) (dissoc (first path))
     (-> path count (> 1)) (update-in (drop-last path) dissoc (last path))))
 
-(rf/reg-event-db :remove
+(macros/reg-event-db :remove
   (fn [db [_ path]]
     (remove-element db path)))
 
-(rf/reg-event-db :set-form-error
+(macros/reg-event-db :set-form-error
   (fn [db [_ db-path error]]
     (assoc-in db (concat [:form-errors] db-path [:message]) error)))
 
-(rf/reg-event-db :set-form-message
+(macros/reg-event-db :set-form-message
   (fn [db [_ db-path message]]
     (assoc-in db (concat [:form-message] db-path [:message]) message)))
 
-(rf/reg-event-db :clear-form-errors
+(macros/reg-event-db :clear-form-errors
   (fn [db [_ db-path]]
     (remove-element db (into [:form-errors] db-path))))
 
-(rf/reg-event-db :clear-form-message
+(macros/reg-event-db :clear-form-message
   (fn [db [_ db-path]]
     (remove-element db (into [:form-message] db-path))))
 
-(rf/reg-event-db :clear-form
+(macros/reg-event-db :clear-form
   (fn [db [_ db-path]]
     (-> db
         (remove-element (into [:form-errors] db-path))
@@ -275,7 +276,7 @@
                    [other-path v])))
           (into {})))))
 
-(rf/reg-event-db :ui-component-node-toggle
+(macros/reg-event-db :ui-component-node-toggle
   (fn [db [_ path]]
     (if (component-node-open?
          (get-in db (conj node-flag-db-path path))
@@ -294,11 +295,11 @@
          (= component-type :heraldry.component/collection-element)
           (assoc-in collection-element/ui-highlighted-element-path path)))))
 
-(rf/reg-event-db :ui-component-node-select
+(macros/reg-event-db :ui-component-node-select
   (fn [db [_ path {:keys [open?]}]]
     (ui-component-node-select db path :open? open?)))
 
-(rf/reg-event-db :ui-component-node-select-default
+(macros/reg-event-db :ui-component-node-select-default
   (fn [db [_ path valid-prefixes]]
     (let [current-selected-node (get-in db ui-component-node-selected-path)
           valid-path? (some (fn [path]

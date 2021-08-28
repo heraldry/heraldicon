@@ -4,6 +4,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.macros :as macros]
             [heraldry.options :as options]
             [heraldry.static :as static]
             [heraldry.util :as util]
@@ -14,7 +15,7 @@
     :heraldry.ordinary.type/gore :enarched
     :straight))
 
-(rf/reg-event-db :set-ordinary-type
+(macros/reg-event-db :set-ordinary-type
   (fn [db [_ path new-type]]
     (let [current (get-in db path)
           has-default-line-style? (-> current

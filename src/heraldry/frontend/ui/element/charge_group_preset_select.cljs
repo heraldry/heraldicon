@@ -2,6 +2,7 @@
   (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
+            [heraldry.macros :as macros]
             [heraldry.static :as static]
             [re-frame.core :as rf]))
 
@@ -343,7 +344,7 @@
       [:charges 0 :anchor :angle] 0
       [:charges 0 :geometry :size] 50}]]])
 
-(rf/reg-event-db :select-charge-group-preset
+(macros/reg-event-db :select-charge-group-preset
   ;; TODO: this must not be an fn-traced, can be done once
   ;; https://github.com/day8/re-frame-debux/issues/40 is resolved
   (fn [db [_ path charge-group-preset charge-adjustments]]

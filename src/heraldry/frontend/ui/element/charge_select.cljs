@@ -6,6 +6,7 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
+            [heraldry.macros :as macros]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -196,7 +197,7 @@
      [:<> [:div.tag.modifier (util/translate modifier)] " "])
    [tags/tags-view (-> charge :tags keys)]])
 
-(rf/reg-event-db :prune-false-flags
+(macros/reg-event-db :prune-false-flags
   (fn [db [_ path]]
     (update-in db path (fn [flags]
                          (walk/postwalk (fn [value]

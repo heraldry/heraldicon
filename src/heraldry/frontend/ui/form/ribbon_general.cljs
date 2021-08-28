@@ -3,6 +3,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.text-field :as text-field]
             [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.macros :as macros]
             [heraldry.math.curve :as curve]
             [heraldry.ribbon :as ribbon]
             [re-frame.core :as rf]))
@@ -81,7 +82,7 @@
                        merge (get previous-text-segments previous-text-idx))
                rest)))))
 
-(rf/reg-event-db :ribbon-edit-annotate-segments
+(macros/reg-event-db :ribbon-edit-annotate-segments
   (fn [db [_ path layer-mode flow-mode start-mode]]
     (let [segments-path (conj path :segments)
           points (get-in db (conj path :points))
@@ -160,7 +161,7 @@
                            :text
                            :font]))))))))
 
-(rf/reg-event-db :ribbon-edit-invert-segments
+(macros/reg-event-db :ribbon-edit-invert-segments
   (fn [db [_ path]]
     (let [segments-path (conj path :segments)]
 

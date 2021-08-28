@@ -3,6 +3,7 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.macros :as macros]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :get-helm-status
@@ -23,7 +24,7 @@
                                 (= :heraldry.charge.function/torse))))
                   seq)}))
 
-(rf/reg-event-db :add-helm-part
+(macros/reg-event-db :add-helm-part
   (fn [db [_ path value]]
     (-> db
         (assoc-in path value)

@@ -8,10 +8,11 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.interface :as interface]
+            [heraldry.macros :as macros]
             [heraldry.math.vector :as v]
             [re-frame.core :as rf]))
 
-(rf/reg-event-db :cycle-charge-index
+(macros/reg-event-db :cycle-charge-index
   (fn [db [_ path num-charges]]
     (let [slots-path (drop-last path)
           slot-index (last path)
@@ -24,7 +25,7 @@
                       :else (inc current-value))]
       (assoc-in db slots-path (assoc slots slot-index new-value)))))
 
-(rf/reg-event-db :remove-charge-group-charge
+(macros/reg-event-db :remove-charge-group-charge
   (fn [db [_ path]]
     (let [elements-path (drop-last path)
           strips-path (-> path
@@ -59,7 +60,7 @@
                                         slots)))
           (state/element-order-changed elements-path index nil)))))
 
-(rf/reg-event-db :move-charge-group-charge-up
+(macros/reg-event-db :move-charge-group-charge-up
   (fn [db [_ path]]
     (let [elements-path (drop-last path)
           strips-path (-> path
@@ -108,7 +109,7 @@
                        vec)]
       {:db (assoc-in db path elements)})))
 
-(rf/reg-event-db :move-charge-group-charge-down
+(macros/reg-event-db :move-charge-group-charge-down
   (fn [db [_ path]]
     (let [elements-path (drop-last path)
           strips-path (-> path

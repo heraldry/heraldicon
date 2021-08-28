@@ -5,10 +5,11 @@
             [heraldry.frontend.ui.element.radio-select :as radio-select]
             [heraldry.frontend.ui.element.search-field :as search-field]
             [heraldry.frontend.ui.element.tags :as tags]
+            [heraldry.macros :as macros]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
-(rf/reg-event-db :filter-toggle-tag
+(macros/reg-event-db :filter-toggle-tag
   (fn [db [_ db-path tag]]
     (update-in db db-path (fn [current-tags]
                             (if (get current-tags tag)
