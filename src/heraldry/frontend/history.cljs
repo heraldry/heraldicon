@@ -20,10 +20,14 @@
 (defn index-path [path]
   (conj undo-path path :index))
 
+(defn identifier-path [path]
+  (conj undo-path path :identifier))
+
 (defn add-new-state [path db new-db]
   (let [previous-state (get-in db path)
         new-state (get-in new-db path)]
-    (if (= previous-state new-state)
+    (if (or (= previous-state new-state)
+            (not new-state))
       new-db
       (let [history-path (history-path path)
             index-path (index-path path)
@@ -66,6 +70,10 @@
   (fn [db [_ path]]
     (can-redo? db path)))
 
+(rf/reg-sub :identifier-changed?
+  (fn [db [_ path identifier]]
+    (not= (get-in db (identifier-path path)) identifier)))
+
 (defn restore-state [db path index-fn]
   (let [index-path (index-path path)
         history (get-in db (history-path path))
@@ -77,6 +85,13 @@
           (assoc-in index-path new-index)
           (state/change-selected-component-if-removed path))
       db)))
+
+(rf/reg-event-db :clear-history
+  (fn [db [_ path identifier]]
+    (-> db
+        (assoc-in (history-path path) nil)
+        (assoc-in (index-path path) 0)
+        (assoc-in (identifier-path path) identifier))))
 
 (rf/reg-event-db :undo
   (fn [db [_ path]]
