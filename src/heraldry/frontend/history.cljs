@@ -1,4 +1,4 @@
-(ns heraldry.frontend.undo
+(ns heraldry.frontend.history
   (:require [heraldry.frontend.state :as state]
             [re-frame.core :as rf]))
 
