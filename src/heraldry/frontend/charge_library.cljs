@@ -360,6 +360,8 @@
                         (conj example-coa-db-path :coat-of-arms :field :components 0)]]]])
 
 (defn charge-display [charge-id version]
+  (when @(rf/subscribe [:identifier-changed? form-db-path charge-id])
+    (rf/dispatch-sync [:clear-history form-db-path charge-id]))
   (let [[status charge-data] (state/async-fetch-data
                               form-db-path
                               [charge-id version]
@@ -382,6 +384,8 @@
      (:name charge)]))
 
 (defn create-charge [_match]
+  (when @(rf/subscribe [:identifier-changed? form-db-path nil])
+    (rf/dispatch-sync [:clear-history form-db-path nil]))
   (let [[status _charge-form-data] (state/async-fetch-data
                                     form-db-path
                                     :new
