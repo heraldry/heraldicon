@@ -4,13 +4,13 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
+            [heraldry.frontend.history :as history]
             [heraldry.frontend.macros :as macros]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.ribbon :as ribbon-frontend]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
-            [heraldry.frontend.undo :as undo]
             [heraldry.frontend.user :as user]
             [heraldry.interface :as interface]
             [heraldry.math.bezier :as bezier]
@@ -504,7 +504,7 @@
    [:div.no-scrollbar {:style {:grid-area "right"
                                :padding-top "5px"
                                :position "relative"}}
-    [undo/buttons form-db-path]
+    [history/buttons form-db-path]
     [ui/component-tree [form-db-path]]]])
 
 (defn ribbon-display [ribbon-id version]

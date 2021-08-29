@@ -5,13 +5,13 @@
             [heraldry.font :as font]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
+            [heraldry.frontend.history :as history]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.ui.element.arms-select :as arms-select]
             [heraldry.frontend.ui.element.collection-select :as collection-select]
             [heraldry.frontend.ui.form.collection-element :as collection-element]
             [heraldry.frontend.ui.shared :as shared]
-            [heraldry.frontend.undo :as undo]
             [heraldry.frontend.user :as user]
             [heraldry.render :as render]
             [heraldry.util :refer [id-for-url]]
@@ -310,7 +310,7 @@
    [:div.no-scrollbar {:style {:grid-area "right"
                                :padding-top "5px"
                                :position "relative"}}
-    [undo/buttons form-db-path]
+    [history/buttons form-db-path]
     [ui/component-tree [form-db-path
                         (conj form-db-path :render-options)
                         (conj form-db-path :collection)]]]])

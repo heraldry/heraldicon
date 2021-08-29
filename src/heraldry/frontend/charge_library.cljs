@@ -9,12 +9,12 @@
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.charge :as charge]
+            [heraldry.frontend.history :as history]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.ui.element.charge-select :as charge-select]
             [heraldry.frontend.ui.shared :as shared]
-            [heraldry.frontend.undo :as undo]
             [heraldry.frontend.user :as user]
             [heraldry.math.svg.core :as svg]
             [heraldry.render :as render]
@@ -354,7 +354,7 @@
    [:div.no-scrollbar {:style {:grid-area "right"
                                :padding-top "5px"
                                :position "relative"}}
-    [undo/buttons form-db-path]
+    [history/buttons form-db-path]
     [ui/component-tree [form-db-path
                         (conj example-coa-db-path :render-options)
                         (conj example-coa-db-path :coat-of-arms :field :components 0)]]]])
