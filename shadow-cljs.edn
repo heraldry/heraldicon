@@ -18,7 +18,8 @@
                               :warnings {:redef false}}
 
            :modules {:main {:init-fn heraldry.frontend.main/init
-                            :preloads [heraldry.frontend.preload]}}
+                            :preloads [heraldry.frontend.preload]
+                            :entries [heraldry.frontend.undo]}}
 
            :dev {:output-dir "./build/dev/generated"
                  :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
@@ -67,4 +68,3 @@
            :compiler-options {:warnings {:redef false}}
            :ns-regexp "test"
            :autorun true}}}
-

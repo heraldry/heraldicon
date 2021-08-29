@@ -12,6 +12,7 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.ui.element.arms-select :as arms-select]
+            [heraldry.frontend.undo :as undo]
             [heraldry.frontend.user :as user]
             [heraldry.interface :as interface]
             [heraldry.render :as render]
@@ -277,7 +278,9 @@
     [blazonry]
     [attribution]]
    [:div.no-scrollbar {:style {:grid-area "right"
-                               :padding-top "5px"}}
+                               :padding-top "5px"
+                               :position :relative}}
+    [undo/buttons form-db-path]
     [ui/component-tree [form-db-path
                         (conj form-db-path :render-options)
                         :spacer
