@@ -19,7 +19,7 @@
 
            :modules {:main {:init-fn heraldry.frontend.main/init
                             :preloads [heraldry.frontend.preload]
-                            :entries [heraldry.frontend.undo]}}
+                            :entries [heraldry.frontend.history]}}
 
            :dev {:output-dir "./build/dev/generated"
                  :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
