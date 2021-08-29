@@ -5,4 +5,4 @@
   `(rf/reg-event-db ~event-name
      (fn [~'db ~'args]
        (let [~'new-db (~event-fn ~'db ~'args)]
-         (~'heraldry.frontend.undo/add-new-state ~'db ~'new-db)))))
+         (~'heraldry.frontend.undo/add-new-states ~'db ~'new-db)))))

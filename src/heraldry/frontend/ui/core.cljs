@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.core
-  (:require [heraldry.frontend.state :as state]
+  (:require [heraldry.frontend.macros :as macros]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.arms-reference-select] ;; needed for side effects
             [heraldry.frontend.ui.element.attributes] ;; needed for side effects
             [heraldry.frontend.ui.element.attribution] ;; needed for side effects
@@ -51,7 +52,6 @@
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.frontend.validation :as validation] ;; needed for side effects
             [heraldry.interface :as interface]
-            [heraldry.frontend.macros :as macros]
             [heraldry.shared] ;; needed for side effects
             [heraldry.util :as util]
             [re-frame.core :as rf]))
