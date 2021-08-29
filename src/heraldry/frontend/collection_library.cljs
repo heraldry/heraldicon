@@ -11,6 +11,7 @@
             [heraldry.frontend.ui.element.collection-select :as collection-select]
             [heraldry.frontend.ui.form.collection-element :as collection-element]
             [heraldry.frontend.ui.shared :as shared]
+            [heraldry.frontend.undo :as undo]
             [heraldry.frontend.user :as user]
             [heraldry.render :as render]
             [heraldry.util :refer [id-for-url]]
@@ -307,7 +308,9 @@
     [button-row]
     [render-arms-preview]]
    [:div.no-scrollbar {:style {:grid-area "right"
-                               :padding-top "5px"}}
+                               :padding-top "5px"
+                               :position "relative"}}
+    [undo/buttons form-db-path]
     [ui/component-tree [form-db-path
                         (conj form-db-path :render-options)
                         (conj form-db-path :collection)]]]])

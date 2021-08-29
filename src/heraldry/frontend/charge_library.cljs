@@ -14,9 +14,10 @@
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.ui.element.charge-select :as charge-select]
             [heraldry.frontend.ui.shared :as shared]
+            [heraldry.frontend.undo :as undo]
             [heraldry.frontend.user :as user]
-            [heraldry.render :as render]
             [heraldry.math.svg.core :as svg]
+            [heraldry.render :as render]
             [heraldry.util :refer [id-for-url]]
             [hickory.core :as hickory]
             [re-frame.core :as rf]
@@ -351,7 +352,9 @@
     [button-row]
     [attribution]]
    [:div.no-scrollbar {:style {:grid-area "right"
-                               :padding-top "5px"}}
+                               :padding-top "5px"
+                               :position "relative"}}
+    [undo/buttons form-db-path]
     [ui/component-tree [form-db-path
                         (conj example-coa-db-path :render-options)
                         (conj example-coa-db-path :coat-of-arms :field :components 0)]]]])

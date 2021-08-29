@@ -928,3 +928,21 @@ li.ui-menu-header {
   width: 1.25em;
   vertical-align: middle;
 }
+
+.history-buttons {
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.history-buttons i {
+  color: #1b6690;
+  cursor: pointer;
+  margin-left: 0.5em;
+}
+
+.history-buttons i.disabled {
+  color: #ccc;
+  cursor: default;
+}
