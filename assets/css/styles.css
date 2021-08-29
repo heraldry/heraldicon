@@ -494,6 +494,7 @@ li.nav-menu-item a:hover {
   border: 1px solid #ddd;
   border-top: 0;
   width: 100%;
+  background: #fff;
 }
 
 .nav-menu-allow-hover:hover > .nav-menu-children {
