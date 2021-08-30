@@ -140,6 +140,7 @@
         unstretched-part-width (-> width
                                    (/ num-fields-x))
         part-width (-> unstretched-part-width
+                       (* stretch-x)
                        (* 0.7071067811865476))
         height (- (:y bottom-right)
                   (:y top-left))
@@ -147,23 +148,31 @@
                                   (-> height
                                       (/ num-fields-y))
                                   part-width)
-        part-height unstretched-part-height
+        part-height (-> unstretched-part-height
+                        (* stretch-y))
+        middle-x (/ width 2)
+        middle-y (/ height 2)
+        shift-x (- middle-x
+                   (* middle-x stretch-x))
+        shift-y (- middle-y
+                   (* middle-y stretch-y))
         pattern-id-prefix (util/id "fretty")
         {pattern-width :width
          pattern-height :height
          fretty-pattern :pattern
          fretty-outline :outline} (fretty-default part-width part-height thickness gap)]
-    [:g {:transform (str "scale(" stretch-x "," stretch-y ")"
-                         "rotate(" (- rotation) ")")}
+    [:g {:transform (str "rotate(" (- rotation) ")")}
      [:defs
       (when outline?
         [:pattern {:id (str pattern-id-prefix "-outline")
                    :width pattern-width
                    :height pattern-height
                    :x (+ (:x top-left)
-                         (* part-width offset-x))
+                         (* part-width offset-x)
+                         shift-x)
                    :y (+ (:y top-left)
-                         (* part-height offset-y))
+                         (* part-height offset-y)
+                         shift-y)
                    :pattern-units "userSpaceOnUse"}
          [:g (outline/style context)
           fretty-outline]])
@@ -173,9 +182,11 @@
                    :width pattern-width
                    :height pattern-height
                    :x (+ (:x top-left)
-                         (* part-width offset-x))
+                         (* part-width offset-x)
+                         shift-x)
                    :y (+ (:y top-left)
-                         (* part-height offset-y))
+                         (* part-height offset-y)
+                         shift-y)
                    :pattern-units "userSpaceOnUse"}
          [:rect {:x 0
                  :y 0
