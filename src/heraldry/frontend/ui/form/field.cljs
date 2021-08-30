@@ -46,6 +46,7 @@
                  :extra-line
                  :variant
                  :thickness
+                 :gap
                  :origin
                  :direction-anchor
                  :anchor
