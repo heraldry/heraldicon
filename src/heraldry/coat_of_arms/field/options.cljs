@@ -4,6 +4,7 @@
             [heraldry.coat-of-arms.field.type.bendy :as bendy]
             [heraldry.coat-of-arms.field.type.bendy-sinister :as bendy-sinister]
             [heraldry.coat-of-arms.field.type.chequy :as chequy]
+            [heraldry.coat-of-arms.field.type.fretty :as fretty]
             [heraldry.coat-of-arms.field.type.gyronny :as gyronny]
             [heraldry.coat-of-arms.field.type.lozengy :as lozengy]
             [heraldry.coat-of-arms.field.type.masonry :as masonry]
@@ -56,7 +57,8 @@
    vairy/field-type
    potenty/field-type
    papellony/field-type
-   masonry/field-type])
+   masonry/field-type
+   fretty/field-type])
 
 (def choices
   (->> fields
@@ -117,6 +119,12 @@
                :default 0.1
                :ui {:label "Thickness"
                     :step 0.01}}
+   :gap {:type :range
+         :min 0
+         :max 1
+         :default 0.1
+         :ui {:label "Gap"
+              :step 0.01}}
    :layout {:num-fields-x {:type :range
                            :min 1
                            :max 20
@@ -552,6 +560,23 @@
                                       [:layout :stretch-y]
                                       [:outline?]]
                                      {})
+            :fretty (options/pick default-options
+                                  [[:type]
+                                   [:inherit-environment?]
+                                   [:counterchanged?]
+                                   [:thickness]
+                                   [:gap]
+                                   [:layout :num-fields-x]
+                                   [:layout :offset-x]
+                                   [:layout :stretch-x]
+                                   [:layout :num-fields-y]
+                                   [:layout :offset-y]
+                                   [:layout :stretch-y]
+                                   [:layout :rotation]
+                                   [:outline?]]
+                                  {[:layout :rotation :min] -45
+                                   [:layout :rotation :max] 45
+                                   [:layout :rotation :default] 0})
             :masonry (options/pick default-options
                                    [[:type]
                                     [:inherit-environment?]
