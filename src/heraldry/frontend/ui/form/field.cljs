@@ -33,7 +33,8 @@
         :vairy
         :potenty
         :masonry
-        :papellony}))
+        :papellony
+        :fretty}))
 
 (defn form [path _]
   [:<>
