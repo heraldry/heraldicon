@@ -67,3 +67,18 @@
                     (into {}))]
     (-> data
         (replace-id-references id-map))))
+
+(defn strip-style-block [data]
+  (walk/postwalk (fn [value]
+                   (if (and (vector? value)
+                            (-> value first (= :style)))
+                     nil
+                     value))
+                 data))
+
+(defn strip-classes [data]
+  (walk/postwalk (fn [value]
+                   (if (map? value)
+                     (dissoc value :class)
+                     value))
+                 data))
