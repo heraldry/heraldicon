@@ -106,6 +106,8 @@
          hickory/parse-fragment
          first
          hickory/as-hiccup
+         svg/strip-style-block
+         svg/strip-classes
          svg/fix-string-style-values
          svg/fix-attribute-and-tag-names
          (as-> parsed
