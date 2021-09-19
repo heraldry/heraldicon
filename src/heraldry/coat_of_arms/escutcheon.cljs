@@ -229,18 +229,46 @@
     :points {:fess {:x 5 :y 6}}}))
 
 (def
-  ^{:display-name "Flag"}
+  ^{:display-name "Flag (3:2)"}
   flag
   (environment/create
    (str
     "M 0,0"
-    "h 15"
-    "v 10"
-    "h -15"
+    "h 3"
+    "v 2"
+    "h -3"
     "z")
    {:context :root
-    :bounding-box [0 15 0 10]
-    :points {:fess {:x 7.5 :y 5}}}))
+    :bounding-box [0 3 0 2]
+    :points {:fess {:x 1.5 :y 1}}}))
+
+(def
+  ^{:display-name "Flag (2:1)"}
+  flag-2-1
+  (environment/create
+   (str
+    "M 0,0"
+    "h 2"
+    "v 1"
+    "h -2"
+    "z")
+   {:context :root
+    :bounding-box [0 2 0 1]
+    :points {:fess {:x 1 :y 0.5}}}))
+
+(def
+  ^{:display-name "Flag (5:3)"}
+  flag-5-3
+  (environment/create
+   (str
+    "M 0,0"
+    "h 5"
+    "v 3"
+    "h -5"
+    "z")
+   {:context :root
+    :bounding-box [0 5 0 3]
+    :points {:fess {:x 2.5 :y 1.5}}}))
 
 (def
   ^{:display-name "Wedge"}
@@ -273,10 +301,12 @@
    #'lozenge
    #'roundel
    #'oval
-   #'french-modern
-   #'english
    #'rectangle
-   #'flag])
+   #'flag
+   #'flag-2-1
+   #'flag-5-3
+   #'french-modern
+   #'english])
 
 (def kinds-map
   (->> escutcheons
