@@ -1,5 +1,6 @@
 (ns heraldry.frontend.header
-  (:require [heraldry.frontend.route :as route]
+  (:require [heraldry.frontend.language :as language :refer [tr]]
+            [heraldry.frontend.route :as route]
             [heraldry.frontend.user :as user]))
 
 (defn view []
@@ -13,28 +14,40 @@
                     :style {:padding-right "5px"}} "Heraldry"]]
       [:sup {:style {:color "#d82"}} "beta"]]
      [:ul.nav-menu {:style {:flex 1}}
-      [route/nav-link {:to :home} "Home"]
-      [route/nav-link {:to :collections} "Collections"]
-      [route/nav-link {:to :arms} "Arms"]
-      [route/nav-link {:to :charges} "Charges"]
-      [route/nav-link {:to :ribbons} "Ribbons"]
-      [route/nav-link {:to :users} "Users"]
-      [route/nav-link {:to :about} "About"]
+      [route/nav-link {:to :home} [tr {:en "News"
+                                       :de "Neuigkeiten"}]]
+      [route/nav-link {:to :collections} [tr {:en "Collections"
+                                              :de "Sammlungen"}]]
+      [route/nav-link {:to :arms} [tr {:en "Arms"
+                                       :de "Wappen"}]]
+      [route/nav-link {:to :charges} [tr {:en "Charges"
+                                          :de "Wappenfiguren"}]]
+      [route/nav-link {:to :ribbons} [tr {:en "Ribbons"
+                                          :de "Bänder"}]]
+      [route/nav-link {:to :users} [tr {:en "Users"
+                                        :de "Benutzer"}]]
+      [route/nav-link {:to :about} [tr {:en "About"
+                                        :de "Infos"}]]
       [:span {:style {:width "5em"}}]
+      [:li [language/selector]]
       (if (:logged-in? user-data)
         [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
          {:style {:min-width "6em"}}
          [:<>
           [:a.nav-menu-link {:href "#"} (str "@" (:username user-data))]
           [:ul.nav-menu.nav-menu-children
-           [route/nav-link {:to :account} "Account"]
+           [route/nav-link {:to :account} [tr {:en "Account"
+                                               :de "Konto"}]]
            [:li.nav-menu-item
             [:a.nav-menu-link {:href "#"
-                               :on-click #(user/logout)} "Logout"]]]]]
+                               :on-click #(user/logout)} [tr {:en "Logout"
+                                                              :de "Ausloggen"}]]]]]]
         [:<>
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
-                             :on-click #(user/login-modal)} "Login"]]
+                             :on-click #(user/login-modal)} [tr {:en "Login"
+                                                                 :de "Einloggen"}]]]
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
-                             :on-click #(user/sign-up-modal)} "Register"]]])]]))
+                             :on-click #(user/sign-up-modal)} [tr {:en "Register"
+                                                                   :de "Registrieren"}]]]])]]))

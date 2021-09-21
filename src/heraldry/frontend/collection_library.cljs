@@ -6,6 +6,7 @@
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.history :as history]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.ui.element.arms-select :as arms-select]
@@ -56,7 +57,9 @@
         (state/invalidate-cache-without-current form-db-path [collection-id 0])
         (rf/dispatch-sync [:set list-db-path nil])
         (state/invalidate-cache list-db-path (:user-id user-data))
-        (rf/dispatch-sync [:set-form-message form-db-path (str "Collection saved, new version: " (:version response))])
+        (rf/dispatch-sync [:set-form-message form-db-path
+                           {:en (str "Collection saved, new version: " (:version response))
+                            :de (str "Sammlung gespeichert, neue Version: " (:version response))}])
         (reife/push-state :view-collection-by-id {:id (id-for-url collection-id)}))
       (catch :default e
         (log/error "save-form error:" e)
@@ -271,7 +274,7 @@
                            owned-by-me?))]
     [:<>
      (when form-message
-       [:div.success-message form-message])
+       [:div.success-message [tr form-message]])
      (when error-message
        [:div.error-message error-message])
 
@@ -281,15 +284,18 @@
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
                                            save-collection-clicked
-                                           #(js/alert "Need to be logged in and own the collection."))
+                                           #(js/alert (tr {:en "Need to be logged in and own the collection."
+                                                           :de "Du mußt eingeloggt und der Besitzer der Sammlung sein."})))
                                :style {:flex "initial"
                                        :margin-left "10px"}}
-       "Save"]]]))
+       [tr {:en "Save"
+            :de "Speichern"}]]]]))
 
 (defn collection-form []
   (if @(rf/subscribe [:get-value (conj form-db-path :id)])
     (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
-    (rf/dispatch [:set-title "Create Collection"]))
+    (rf/dispatch [:set-title [tr {:en "Create Collection"
+                                  :de "Neue Sammlung"}]]))
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
@@ -342,20 +348,26 @@
   (state/invalidate-cache list-db-path user-id))
 
 (defn view-list-collection []
-  (rf/dispatch [:set-title "Collections"])
+  (rf/dispatch [:set-title [tr {:en "Collections"
+                                :de "Sammlungen"}]])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
-    [:p
-     "Here you can view and create collections of coats of arms. "
-     "You explicitly have to save your collection as "
-     [:b "public"] " and add a license, if you want to share the link and allow others to view it."]]
+    [tr {:en [:p
+              "Here you can view and create collections of coats of arms. "
+              "You explicitly have to save your collection as "
+              [:b "public"] " and add a license, if you want to share the link and allow others to view it."]
+         :de [:p
+              "Hier kannst du Sammlungen von Wappen erstellen und ansehen. "
+              "Du mußt deine Sammlungen explizit als "
+              [:b "öffentlich"] " markieren eine Lizenz angeben, wenn du anderen den Zugriff erlauben und den Link teilen möchtest."]}]]
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
                   (reife/push-state :create-collection))}
-    "Create"]
+    [tr {:en "Create"
+         :de "Erstellen"}]]
    [:div {:style {:padding-top "0.5em"}}
     [list-collections]]])
 
@@ -374,7 +386,8 @@
     (when (= status :done)
       (if collection-data
         [collection-form]
-        [:div "Not found"]))))
+        [:div [tr {:en "Not found"
+                   :de "Nicht gefunden"}]]))))
 
 (defn view-collection-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
