@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.radio-select
-  (:require [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
@@ -16,7 +17,10 @@
                               (on-change value)
                               (rf/dispatch [:set path value])))}]
      [:label {:for component-id
-              :style {:margin-right "10px"}} display-name]]))
+              :style {:margin-right "10px"}}
+      (if (map? display-name)
+        [tr display-name]
+        display-name)]]))
 
 (defn radio-select [path & {:keys [on-change option]}]
   (when-let [option (or option

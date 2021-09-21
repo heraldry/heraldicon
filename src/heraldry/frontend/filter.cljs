@@ -1,11 +1,12 @@
 (ns heraldry.frontend.filter
   (:require [clojure.set :as set]
             [clojure.string :as s]
+            [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.ui.element.checkbox :as checkbox]
             [heraldry.frontend.ui.element.radio-select :as radio-select]
             [heraldry.frontend.ui.element.search-field :as search-field]
             [heraldry.frontend.ui.element.tags :as tags]
-            [heraldry.frontend.macros :as macros]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -85,21 +86,26 @@
      (when-not hide-ownership-filter?
        [checkbox/checkbox filter-own-path
         :option {:type :boolean
-                 :ui {:label "Mine only"}}])
+                 :ui {:label [tr {:en "Mine only"
+                                  :de "Nur meine"}]}}])
      (when-not hide-access-filter?
        [radio-select/radio-select filter-access-path
         :option {:type :choice
                  :default :all
-                 :choices [["All" :all]
-                           ["Public" :public]
-                           ["Private" :private]]}])
+                 :choices [[{:en "All"
+                             :de "Alle"} :all]
+                           [{:en "Public"
+                             :de "Öffentlich"} :public]
+                           [{:en "Private"
+                             :de "Privat"} :private]]}])
 
      [:div
       [tags/tags-view tags-to-display
        :on-click #(rf/dispatch [:filter-toggle-tag filter-tags-path %])
        :selected filter-tags]]
      (if (empty? filtered-items)
-       [:div "None"]
+       [:div [tr {:en "None"
+                  :de "Keine"}]]
        [display-fn
         :items filtered-items
         :filtered? filtered?])]))

@@ -5,6 +5,7 @@
             [heraldry.attribution :as attribution]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.filter :as filter]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
@@ -74,7 +75,8 @@
                 [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
               " "
               [link-fn collection]
-              " by "
+              [tr {:en " by "
+                   :de " von "}]
               [:a {:href (attribution/full-url-for-username username)
                    :target "_blank"} username]
 
@@ -93,4 +95,5 @@
        collection-list
        link-to-collection
        #(invalidate-collection-cache :all)]
-      [:div "loading..."])))
+      [:div [tr {:en "loading..."
+                 :de "Lade..."}]])))
