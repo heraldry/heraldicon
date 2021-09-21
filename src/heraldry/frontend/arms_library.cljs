@@ -8,6 +8,7 @@
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.context :as context]
             [heraldry.frontend.history :as history]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.ribbon :as ribbon]
             [heraldry.frontend.state :as state]
@@ -35,7 +36,8 @@
                           (map charge/fetch-charge-data))]
     (when (-> charges-data first :id)
       [:<>
-       [:h3 "Charges"]
+       [:h3 [tr {:en "Charges"
+                 :de "Wappenfiguren"}]]
        [:ul
         (doall
          (for [charge charges-data]
@@ -64,7 +66,8 @@
 (defn attribution []
   (let [attribution-data (attribution/for-arms form-db-path {})]
     [:div.attribution
-     [:h3 "Attribution"]
+     [:h3 [tr {:en "Attribution"
+               :de "Attribuierung"}]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]
      [charge-attribution]
@@ -79,7 +82,12 @@
 
 (defn blazonry []
   [:div.blazonry
-   [:h3 "Blazon" [:span {:style {:font-size "0.75em"}} " (beta, not complete)"]]
+   [:h3
+    [tr {:en "Blazon"
+         :de "Blasonierung"}]
+    [:span {:style {:font-size "0.75em"}}
+     [tr {:en " (beta, not complete)"
+          :de " (beta und derzeit nur Englisch)"}]]]
    [:div.blazon
     (interface/blazon (conj form-db-path :coat-of-arms) {})]])
 
@@ -140,7 +148,9 @@
         (rf/dispatch-sync [:set arms-select/list-db-path nil])
         (invalidate-arms-cache user-id)
         (invalidate-arms-cache :all)
-        (rf/dispatch-sync [:set-form-message form-db-path (str "Arms saved, new version: " (:version response))])
+        (rf/dispatch-sync [:set-form-message form-db-path
+                           {:en (str "Arms saved, new version: " (:version response))
+                            :de (str "Wappen gespeichert, neue Version: " (:version response))}])
         (reife/push-state :view-arms-by-id {:id (util/id-for-url arms-id)}))
       (modal/stop-loading)
       (catch :default e
@@ -167,13 +177,15 @@
          (dissoc :first-version-created-at)
          (dissoc :is-current-version)
          (dissoc :name)))
-    (rf/dispatch-sync [:set-form-message form-db-path "Created an unsaved copy."])
+    (rf/dispatch-sync [:set-form-message form-db-path {:en "Created an unsaved copy."
+                                                       :de "Ungespeicherte Kopie erstellt."}])
     (reife/push-state :create-arms)))
 
 (defn share-button-clicked [_event]
   (let [short-url (util/short-url @(rf/subscribe [:get-value form-db-path]))]
     (copy-to-clipboard short-url)
-    (rf/dispatch [:set-form-message form-db-path "Copied URL for sharing."])))
+    (rf/dispatch [:set-form-message form-db-path {:en "Copied URL for sharing."
+                                                  :de "URL zum Teilen kopiert"}])))
 
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
@@ -202,30 +214,36 @@
                         (not unsaved-changes?))]
     [:<>
      (when form-message
-       [:div.success-message form-message])
+       [:div.success-message [tr form-message]])
      (when error-message
        [:div.error-message error-message])
 
      [:div.buttons {:style {:display "flex"}}
       [:button.button {:type "button"
                        :class (when-not can-export? "disabled")
-                       :title (when-not can-export? "Arms need to be public and saved for exporting.")
+                       :title (when-not can-export? (tr {:en "Arms need to be public and saved for exporting."
+                                                         :de "Das Wappen muß öffentlich und gespeichert sein zum Exportieren."}))
                        :on-click (if can-export?
                                    generate-svg-clicked
                                    (if (not logged-in?)
-                                     #(js/alert "Need to be logged in")
-                                     #(js/alert "Save your changes first")))
+                                     #(js/alert (tr {:en "Need to be logged in."
+                                                     :de "Du mußt eingeloggt sein."}))
+                                     #(js/alert (tr {:en "Save your changes first."
+                                                     :de "Speicher deine Änderungen erst."}))))
                        :style {:flex "initial"
                                :margin-right "10px"}}
        "SVG"]
       [:button.button {:type "button"
                        :class (when-not can-export? "disabled")
-                       :title (when-not can-export? "Arms need to be public and saved for exporting.")
+                       :title (when-not can-export? (tr {:en "Arms need to be public and saved for exporting."
+                                                         :de "Das Wappen muß öffentlich und gespeichert sein zum Exportieren."}))
                        :on-click (if can-export?
                                    generate-png-clicked
                                    (if (not logged-in?)
-                                     #(js/alert "Need to be logged in")
-                                     #(js/alert "Save your changes first")))
+                                     #(js/alert (tr {:en "Need to be logged in."
+                                                     :de "Du mußt eingeloggt sein."}))
+                                     #(js/alert (tr {:en "Save your changes first."
+                                                     :de "Speicher deine Änderungen erst."}))))
                        :style {:flex "initial"
                                :margin-right "10px"}}
        "PNG"]
@@ -233,7 +251,8 @@
         [:button.button {:style {:flex "initial"
                                  :color "#777"}
                          :class (when-not can-share? "disabled")
-                         :title (when-not can-share? "Arms need to be public and saved for sharing.")
+                         :title (when-not can-share? (tr {:en "Arms need to be public and saved for sharing."
+                                                          :de "Das Wappen muß öffentlich und gespeichert sein zum Teilen."}))
                          :on-click share-button-clicked}
          [:i.fas.fa-share-alt]])
       [:div {:style {:flex "auto"}}]
@@ -244,21 +263,26 @@
                 :margin-left "10px"}
         :on-click (if can-copy?
                     copy-to-new-clicked
-                    #(js/alert "Need to be logged in and arms must be saved."))}
-       "Copy to new"]
+                    #(js/alert (tr {:en "Need to be logged in and arms must be saved."
+                                    :de "Du mußt eingeloggt sein und das Wappen gespeichert haben."})))}
+       [tr {:en "Copy to new"
+            :de "Kopie erstellen"}]]
       [:button.button.primary {:type "submit"
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
                                            save-arms-clicked
-                                           #(js/alert "Need to be logged in and own the arms."))
+                                           #(js/alert (tr {:en "Need to be logged in and own the arms."
+                                                           :de "Du mußt eingeloggt und der Besitzer des Wappens sein."})))
                                :style {:flex "initial"
                                        :margin-left "10px"}}
-       "Save"]]]))
+       [tr {:en "Save"
+            :de "Speichern"}]]]]))
 
 (defn arms-form []
   (if @(rf/subscribe [:get-value (conj form-db-path :id)])
     (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
-    (rf/dispatch [:set-title "Create Arms"]))
+    (rf/dispatch [:set-title {:en "Create Arms"
+                              :de "Neues Wappen"}]))
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
@@ -300,7 +324,8 @@
     (when (= status :done)
       (if arms-data
         [arms-form]
-        [:div "Not found"]))))
+        [:div [tr {:en "Not found"
+                   :de "Nicht gefunden"}]]))))
 
 (defn link-to-arms [arms]
   (let [arms-id (-> arms
@@ -316,21 +341,31 @@
   [arms-select/list-arms link-to-arms])
 
 (defn view-list-arms []
-  (rf/dispatch [:set-title "Arms"])
+  (rf/dispatch [:set-title {:en "Arms"
+                            :de "Wappen"}])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
-    [:p
-     "Here you can create and view coats of arms. You explicitly have to save your coat of arms as "
-     [:b "public"] " and add a license, if you want to share the link and allow others to view it."]
-    [:p
-     "However, SVG/PNG links can be viewed by anyone."]]
+    [tr {:en [:<>
+              [:p
+               "Here you can create and view coats of arms. You explicitly have to save your coat of arms as "
+               [:b "public"] " and add a license, if you want to share the link and allow others to view it."]
+              [:p
+               "However, SVG/PNG links can be viewed by anyone."]]
+         :de [:<>
+              [:p
+               "Hier kannst du Wappen erstellen und ansehen. "
+               "Du mußt deine Wappen explizit als "
+               [:b "öffentlich"] " markieren eine Lizenz angeben, wenn du anderen den Zugriff erlauben und den Link teilen möchtest."]
+              [:p
+               "SVG/PNG Links können auch für private Wappen geteilt und von jedem angesehen werden."]]}]]
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
                   (reife/push-state :create-arms))}
-    "Create"]
+    [tr {:en "Create"
+         :de "Erstellen"}]]
    [:div {:style {:padding-top "0.5em"}}
     [list-all-arms]]])
 

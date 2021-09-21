@@ -18,9 +18,7 @@
                               (rf/dispatch [:set path value])))}]
      [:label {:for component-id
               :style {:margin-right "10px"}}
-      (if (map? display-name)
-        [tr display-name]
-        display-name)]]))
+      [tr display-name]]]))
 
 (defn radio-select [path & {:keys [on-change option]}]
   (when-let [option (or option

@@ -1,5 +1,6 @@
 (ns heraldry.frontend.attribution
   (:require [heraldry.attribution :as attribution]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.interface :as interface]))
 
 (defn general [path attribution-type context]
@@ -28,34 +29,45 @@
        [:<>
         [:a {:href url
              :target "_blank"} title]
-        " by "
+        [tr {:en " by "
+             :de " von "}]
         [:a {:href (attribution/full-url-for-username username)
              :target "_blank"} username]
         " "
         (case (or license :none)
-          :none "is private"
-          :public-domain "is in the public domain"
-          [:<> "is licensed under "
+          :none [tr {:en "is private"
+                     :de "ist privat"}]
+          :public-domain [tr {:en "is in the public domain"
+                              :de "ist gemeinfrei"}]
+          [:<> [tr {:en "is licensed under "
+                    :de "ist lizensiert unter "}]
            [:a {:href license-url :target "_blank"} license-display-name]])
         (when (= nature :derivative)
           [:div.sub-credit
-           "source: "
+           [tr {:en "source: "
+                :de "Quelle: "}]
            (if (-> source-name count pos?)
              [:a {:href source-link
                   :target "_blank"} " " source-name]
-             "unnamed")
+             [tr {:en "unnamed"
+                  :de "unbenamt"}])
            (when (-> source-creator-name count pos?)
              [:<>
-              " by "
+              [tr {:en " by "
+                   :de " von "}]
               [:a {:href source-creator-link
                    :target "_blank"} source-creator-name]])
            " "
            (case (or source-license :none)
-             :none "is private"
-             :public-domain "is in the public domain"
-             [:<> "is licensed under "
+             :none [tr {:en "is private"
+                        :de "ist privat"}]
+             :public-domain [tr {:en "is in the public domain"
+                                 :de "ist gemeinfrei"}]
+             [:<> [tr {:en "is licensed under "
+                       :de "ist lizensiert unter "}]
               [:a {:href source-license-url :target "_blank"} source-license-display-name]])])])
-     "unsaved data")])
+     [tr {:en "unsaved data"
+          :de "ungespeicherte Daten"}])])
 
 (defn for-charge [path context]
   [general path :charge context])

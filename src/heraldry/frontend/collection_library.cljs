@@ -348,8 +348,8 @@
   (state/invalidate-cache list-db-path user-id))
 
 (defn view-list-collection []
-  (rf/dispatch [:set-title [tr {:en "Collections"
-                                :de "Sammlungen"}]])
+  (rf/dispatch [:set-title {:en "Collections"
+                            :de "Sammlungen"}])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
