@@ -37,7 +37,12 @@
                   :cursor "pointer"
                   :opacity @(rf/subscribe [::selector-opacity :de])}}]])
 
+(defn tr-raw [data language]
+  (if (map? data)
+    (get data
+         language
+         (get data :en))
+    data))
+
 (defn tr [data]
-  (get data
-       @(rf/subscribe [::selected-language])
-       (get data :en)))
+  (tr-raw data @(rf/subscribe [::selected-language])))

@@ -3,6 +3,7 @@
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.default :as default]
+            [heraldry.frontend.language :refer [tr-raw]]
             [heraldry.frontend.macros :as macros]
             [heraldry.frontend.ui.form.collection-element :as collection-element]
             [heraldry.interface :as interface]
@@ -34,10 +35,11 @@
 
 (rf/reg-sub :get-title
   (fn [_ _]
-    (rf/subscribe [:get title-path]))
+    [(rf/subscribe [:get title-path])
+     (rf/subscribe [:heraldry.frontend.language/selected-language])])
 
-  (fn [value [_ _path]]
-    value))
+  (fn [[value selected-language] [_ _path]]
+    (tr-raw value selected-language)))
 
 (rf/reg-sub :get-list-size
   (fn [[_ path] _]

@@ -10,6 +10,7 @@
             [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.history :as history]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.core :as ui]
@@ -232,7 +233,9 @@
           (state/invalidate-cache-without-current form-db-path [charge-id nil])
           (state/invalidate-cache-without-current form-db-path [charge-id 0])
           (invalidate-charges-cache)
-          (rf/dispatch-sync [:set-form-message form-db-path (str "Charge saved, new version: " (:version response))])
+          (rf/dispatch-sync [:set-form-message form-db-path
+                             {:en (str "Charge saved, new version: " (:version response))
+                              :de (str "Wappenfigur gespeichert, neue Version: " (:version response))}])
           (reife/push-state :view-charge-by-id {:id (id-for-url charge-id)}))
         (modal/stop-loading)
         (catch :default e
@@ -258,7 +261,9 @@
          (dissoc :first-version-created-at)
          (dissoc :is-current-version)
          (dissoc :name)))
-    (rf/dispatch-sync [:set-form-message form-db-path "Created an unsaved copy."])
+    (rf/dispatch-sync [:set-form-message form-db-path
+                       {:en "Created an unsaved copy."
+                        :de "Ungespeicherte Kopie erstellt."}])
     (reife/push-state :create-charge)))
 
 (defn button-row []
@@ -280,7 +285,7 @@
         can-upload? can-save?]
     [:<>
      (when form-message
-       [:div.success-message form-message])
+       [:div.success-message [tr form-message]])
      (when error-message
        [:div.error-message error-message])
 
@@ -290,7 +295,9 @@
                       :style {:display "inline-block"
                               :width "auto"
                               :flex "initial"
-                              :margin-right "10px"}} "Upload SVG"
+                              :margin-right "10px"}}
+       [tr {:en "Upload SVG"
+            :de "SVG hochladen"}]
        [:input {:type "file"
                 :accept "image/svg+xml"
                 :id "upload"
@@ -304,7 +311,8 @@
              :style {:flex "initial"
                      :padding-top "0.5em"
                      :white-space "nowrap"}}
-         "Original"])
+         [tr {:en "Original"
+              :de "Original"}]])
       [:div {:style {:flex "auto"}}]
       [:button.button
        {:type "button"
@@ -313,29 +321,35 @@
                 :margin-left "10px"}
         :on-click (if can-copy?
                     copy-to-new-clicked
-                    #(js/alert "Need to be logged in and arms must be saved."))}
-       "Copy to new"]
+                    #(js/alert (tr {:en "Need to be logged in and charge must be saved."
+                                    :de "Du mußt eingeloggt sein und die Wappenfigur gespeichert haben."})))}
+       [tr {:en "Copy to new"
+            :de "Kopie erstellen"}]]
       [:button.button.primary
        {:type "submit"
         :class (when-not can-save? "disabled")
         :on-click (if can-save?
                     save-charge-clicked
-                    #(js/alert "Need to be logged in and own the arms."))
+                    #(js/alert (tr {:en "Need to be logged in and own the charge."
+                                    :de "Du mußt eingeloggt und der Besitzer der Wappenfigur sein."})))
         :style {:flex "initial"
                 :margin-left "10px"}}
-       "Save"]]]))
+       [tr {:en "Save"
+            :de "Speichern"}]]]]))
 
 (defn attribution []
   (let [attribution-data (attribution/for-charge form-db-path {})]
     [:div.attribution
-     [:h3 "Attribution"]
+     [:h3 [tr {:en "Attribution"
+               :de "Attribuierung"}]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]]))
 
 (defn charge-form []
   (if @(rf/subscribe [:get-value (conj form-db-path :id)])
     (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
-    (rf/dispatch [:set-title "Create Charge"]))
+    (rf/dispatch [:set-title {:en "Create Charge"
+                              :de "Neue Wappenfigur"}]))
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path
                                                                      example-coa-db-path]])
   [:div {:style {:display "grid"
@@ -371,7 +385,8 @@
     (when (= status :done)
       (if charge-data
         [charge-form]
-        [:div "Not found"]))))
+        [:div [tr {:en "Not found"
+                   :de "Nicht gefunden"}]]))))
 
 (defn link-to-charge [charge & {:keys [type-prefix?]}]
   (let [charge-id (-> charge
@@ -398,7 +413,8 @@
       [charge-form])))
 
 (defn view-list-charges []
-  (rf/dispatch [:set-title "Charges"])
+  (rf/dispatch [:set-title {:en "Charges"
+                            :de "Wappenfiguren"}])
   (let [[status charges] (state/async-fetch-data
                           [:all-charges]
                           :all-charges
@@ -406,20 +422,31 @@
     [:div {:style {:padding "15px"}}
      [:div {:style {:text-align "justify"
                     :max-width "40em"}}
-      [:p
-       "Here you can view and create charges to be used in coats of arms. By default your charges "
-       "are private, so only you can see and use them. If you want to make them public, then you "
-       [:b "must"] " provide a license and attribution, if it is based on previous work."]]
+      [tr {:en [:<>
+                [:p
+                 "Here you can view and create charges to be used in coats of arms. By default your charges "
+                 "are private, so only you can see and use them. If you want to make them public, then you "
+                 [:b "must"] " provide a license and attribution, if it is based on previous work."]]
+
+           :de [:<>
+                [:p
+                 "Hier kannst du Wappenfiguren erstellen und ansehen, die in Wappen benutzt werden können. "
+                 "Deine Wappenfiguren sind privat, nur du kannst sie sehen und benutzen. Wenn du sie öffentlich "
+                 "machen möchtest, dann "
+                 [:b "mußt"] " du eine Lizenz angeben. Wenn du die Arbeit von anderen benutzt oder erweitert hast, "
+                 "dann gib auch die Quelle und die Lizenz der Quelle an."]]}]]
      [:button.button.primary
       {:on-click #(do
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-charge))}
-      "Create"]
+      [tr {:en "Create"
+           :de "Erstellen"}]]
      [:div {:style {:padding-top "0.5em"}}
       (if (= status :done)
         [charge-select/component charges link-to-charge invalidate-charges-cache]
-        [:div "loading..."])]]))
+        [:div [tr {:en "loading..."
+                   :de "Lade..."}]])]]))
 
 (defn view-charge-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
