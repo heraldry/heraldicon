@@ -4,7 +4,7 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
-            [heraldry.frontend.history :as history]
+            [heraldry.frontend.history.core :as history]
             [heraldry.frontend.macros :as macros]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.ribbon :as ribbon-frontend]
