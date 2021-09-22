@@ -3,10 +3,11 @@
             [heraldry.attribution :as attribution]
             [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.filter :as filter]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
-            [heraldry.frontend.macros :as macros]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -240,7 +241,7 @@
                                       [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
                                     " "
                                     [link-fn (-> node :data)]
-                                    " by "
+                                    strings/by
                                     [:a {:href (attribution/full-url-for-username username)
                                          :target "_blank"} username]]
                                    [charge-properties charge]])))}]])

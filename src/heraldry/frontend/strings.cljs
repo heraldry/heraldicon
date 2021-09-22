@@ -40,3 +40,7 @@
 (def edit
   [tr {:en "Edit"
        :de "Edit"}])
+
+(def by
+  [tr {:en " by "
+       :de " von "}])
