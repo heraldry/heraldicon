@@ -1,6 +1,7 @@
 (ns heraldry.frontend.header
   (:require [heraldry.frontend.language :as language :refer [tr]]
             [heraldry.frontend.route :as route]
+            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.user :as user]))
 
 (defn view []
@@ -16,14 +17,10 @@
      [:ul.nav-menu {:style {:flex 1}}
       [route/nav-link {:to :home} [tr {:en "News"
                                        :de "Neuigkeiten"}]]
-      [route/nav-link {:to :collections} [tr {:en "Collections"
-                                              :de "Sammlungen"}]]
-      [route/nav-link {:to :arms} [tr {:en "Arms"
-                                       :de "Wappen"}]]
-      [route/nav-link {:to :charges} [tr {:en "Charges"
-                                          :de "Wappenfiguren"}]]
-      [route/nav-link {:to :ribbons} [tr {:en "Ribbons"
-                                          :de "Bänder"}]]
+      [route/nav-link {:to :collections} [tr strings/collections]]
+      [route/nav-link {:to :arms} [tr strings/arms]]
+      [route/nav-link {:to :charges} [tr strings/charges]]
+      [route/nav-link {:to :ribbons} [tr strings/ribbons]]
       [route/nav-link {:to :users} [tr {:en "Users"
                                         :de "Benutzer"}]]
       [route/nav-link {:to :about} [tr {:en "About"

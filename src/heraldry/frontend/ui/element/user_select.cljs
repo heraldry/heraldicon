@@ -4,6 +4,7 @@
             [com.wsscode.common.async-cljs :refer [<?]]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.filter :as filter]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.strings :as strings]
             [heraldry.frontend.user :as user]
@@ -56,4 +57,4 @@
        user-list
        link-to-user
        #(invalidate-user-cache :all)]
-      [:div strings/loading])))
+      [:div [tr strings/loading]])))

@@ -262,9 +262,7 @@
          (dissoc :first-version-created-at)
          (dissoc :is-current-version)
          (dissoc :name)))
-    (rf/dispatch-sync [:set-form-message form-db-path
-                       {:en "Created an unsaved copy."
-                        :de "Ungespeicherte Kopie erstellt."}])
+    (rf/dispatch-sync [:set-form-message form-db-path strings/copy-created])
     (reife/push-state :create-charge)))
 
 (defn button-row []
@@ -324,7 +322,7 @@
                     copy-to-new-clicked
                     #(js/alert (tr {:en "Need to be logged in and charge must be saved."
                                     :de "Du mußt eingeloggt sein und die Wappenfigur gespeichert haben."})))}
-       strings/copy-to-new]
+       [tr strings/copy-to-new]]
       [:button.button.primary
        {:type "submit"
         :class (when-not can-save? "disabled")
@@ -334,12 +332,12 @@
                                     :de "Du mußt eingeloggt und der Besitzer der Wappenfigur sein."})))
         :style {:flex "initial"
                 :margin-left "10px"}}
-       strings/save]]]))
+       [tr strings/save]]]]))
 
 (defn attribution []
   (let [attribution-data (attribution/for-charge form-db-path {})]
     [:div.attribution
-     [:h3 strings/attribution]
+     [:h3 [tr strings/attribution]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]]))
 
@@ -383,7 +381,7 @@
     (when (= status :done)
       (if charge-data
         [charge-form]
-        [:div strings/not-found]))))
+        [:div [tr strings/not-found]]))))
 
 (defn link-to-charge [charge & {:keys [type-prefix?]}]
   (let [charge-id (-> charge
@@ -410,8 +408,7 @@
       [charge-form])))
 
 (defn view-list-charges []
-  (rf/dispatch [:set-title {:en "Charges"
-                            :de "Wappenfiguren"}])
+  (rf/dispatch [:set-title strings/charges])
   (let [[status charges] (state/async-fetch-data
                           [:all-charges]
                           :all-charges
@@ -437,11 +434,11 @@
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-charge))}
-      strings/create]
+      [tr strings/create]]
      [:div {:style {:padding-top "0.5em"}}
       (if (= status :done)
         [charge-select/component charges link-to-charge invalidate-charges-cache]
-        [:div strings/loading])]]))
+        [:div [tr strings/loading]])]]))
 
 (defn view-charge-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)

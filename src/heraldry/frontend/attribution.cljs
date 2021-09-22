@@ -30,7 +30,7 @@
        [:<>
         [:a {:href url
              :target "_blank"} title]
-        strings/by
+        [tr strings/by]
         [:a {:href (attribution/full-url-for-username username)
              :target "_blank"} username]
         " "
@@ -53,7 +53,7 @@
                   :de "unbenamt"}])
            (when (-> source-creator-name count pos?)
              [:<>
-              strings/by
+              [tr strings/by]
               [:a {:href source-creator-link
                    :target "_blank"} source-creator-name]])
            " "

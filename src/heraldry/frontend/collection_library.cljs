@@ -289,7 +289,7 @@
                                                            :de "Du mußt eingeloggt und der Besitzer der Sammlung sein."})))
                                :style {:flex "initial"
                                        :margin-left "10px"}}
-       strings/save]]]))
+       [tr strings/save]]]]))
 
 (defn collection-form []
   (if @(rf/subscribe [:get-value (conj form-db-path :id)])
@@ -348,8 +348,7 @@
   (state/invalidate-cache list-db-path user-id))
 
 (defn view-list-collection []
-  (rf/dispatch [:set-title {:en "Collections"
-                            :de "Sammlungen"}])
+  (rf/dispatch [:set-title strings/collections])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
@@ -366,7 +365,7 @@
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
                   (reife/push-state :create-collection))}
-    strings/create]
+    [tr strings/create]]
    [:div {:style {:padding-top "0.5em"}}
     [list-collections]]])
 
@@ -385,7 +384,7 @@
     (when (= status :done)
       (if collection-data
         [collection-form]
-        [:div strings/not-found]))))
+        [:div [tr strings/not-found]]))))
 
 (defn view-collection-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)

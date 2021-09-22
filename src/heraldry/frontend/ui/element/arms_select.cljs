@@ -5,6 +5,7 @@
             [heraldry.attribution :as attribution]
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.filter :as filter]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.element.tags :as tags]
@@ -75,7 +76,7 @@
                 [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
               " "
               [link-fn arms]
-              strings/by
+              [tr strings/by]
               [:a {:href (attribution/full-url-for-username username)
                    :target "_blank"} username]
               " "
@@ -93,4 +94,4 @@
        arms-list
        link-to-arms
        #(invalidate-arms-cache :all)]
-      [:div strings/loading])))
+      [:div [tr strings/loading]])))

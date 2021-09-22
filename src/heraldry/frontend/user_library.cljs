@@ -44,7 +44,7 @@
        #(invalidate-charges-cache-for-user user-id)
        :remove-empty-groups? true
        :hide-ownership-filter? true]
-      [:div strings/loading])))
+      [:div [tr strings/loading]])))
 
 (defn invalidate-arms-cache-for-user [user-id]
   (state/invalidate-cache [:user-arms] user-id))
@@ -60,7 +60,7 @@
        arms-library/link-to-arms
        #(invalidate-arms-cache-for-user user-id)
        :hide-ownership-filter? true]
-      [:div strings/loading])))
+      [:div [tr strings/loading]])))
 
 (defn invalidate-collection-cache-for-user [user-id]
   (state/invalidate-cache [:user-collections] user-id))
@@ -76,7 +76,7 @@
        collection-library/link-to-collection
        #(invalidate-collection-cache-for-user user-id)
        :hide-ownership-filter? true]
-      [:div strings/loading])))
+      [:div [tr strings/loading]])))
 
 (defn user-display []
   (let [user-info-data @(rf/subscribe [:get-value user-info-db-path])
@@ -98,15 +98,15 @@
                 :de (str "Benutzer: " (:username user-info-data))}]]]
      [:div.no-scrollbar {:style {:grid-area "collections"
                                  :overflow-y "scroll"}}
-      [:h4 strings/collections]
+      [:h4 [tr strings/collections]]
       [view-collections-for-user user-id]]
      [:div.no-scrollbar {:style {:grid-area "arms"
                                  :overflow-y "scroll"}}
-      [:h4 strings/arms]
+      [:h4 [tr strings/arms]]
       [view-arms-for-user user-id]]
      [:div.no-scrollbar {:style {:grid-area "charges"
                                  :overflow-y "scroll"}}
-      [:h4 strings/charges]
+      [:h4 [tr strings/charges]]
       [view-charges-for-user user-id]]]))
 
 (defn view-user [username]
