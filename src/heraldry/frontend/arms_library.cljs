@@ -37,7 +37,7 @@
                           (map charge/fetch-charge-data))]
     (when (-> charges-data first :id)
       [:<>
-       [:h3 strings/charges]
+       [:h3 [tr strings/charges]]
        [:ul
         (doall
          (for [charge charges-data]
@@ -66,7 +66,7 @@
 (defn attribution []
   (let [attribution-data (attribution/for-arms form-db-path {})]
     [:div.attribution
-     [:h3 strings/attribution]
+     [:h3 [tr strings/attribution]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]
      [charge-attribution]
@@ -176,8 +176,7 @@
          (dissoc :first-version-created-at)
          (dissoc :is-current-version)
          (dissoc :name)))
-    (rf/dispatch-sync [:set-form-message form-db-path {:en "Created an unsaved copy."
-                                                       :de "Ungespeicherte Kopie erstellt."}])
+    (rf/dispatch-sync [:set-form-message form-db-path strings/copy-created])
     (reife/push-state :create-arms)))
 
 (defn share-button-clicked [_event]
@@ -264,7 +263,7 @@
                     copy-to-new-clicked
                     #(js/alert (tr {:en "Need to be logged in and arms must be saved."
                                     :de "Du mußt eingeloggt sein und das Wappen gespeichert haben."})))}
-       strings/copy-to-new]
+       [tr strings/copy-to-new]]
       [:button.button.primary {:type "submit"
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
@@ -273,7 +272,7 @@
                                                            :de "Du mußt eingeloggt und der Besitzer des Wappens sein."})))
                                :style {:flex "initial"
                                        :margin-left "10px"}}
-       strings/save]]]))
+       [tr strings/save]]]]))
 
 (defn arms-form []
   (if @(rf/subscribe [:get-value (conj form-db-path :id)])
@@ -321,7 +320,7 @@
     (when (= status :done)
       (if arms-data
         [arms-form]
-        [:div strings/not-found]))))
+        [:div [tr strings/not-found]]))))
 
 (defn link-to-arms [arms]
   (let [arms-id (-> arms
@@ -337,8 +336,7 @@
   [arms-select/list-arms link-to-arms])
 
 (defn view-list-arms []
-  (rf/dispatch [:set-title {:en "Arms"
-                            :de "Wappen"}])
+  (rf/dispatch [:set-title strings/arms])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
@@ -360,7 +358,7 @@
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
                   (reife/push-state :create-arms))}
-    strings/create]
+    [tr strings/create]]
    [:div {:style {:padding-top "0.5em"}}
     [list-all-arms]]])
 

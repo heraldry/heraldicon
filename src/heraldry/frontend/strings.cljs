@@ -1,50 +1,57 @@
-(ns heraldry.frontend.strings
-  (:require [heraldry.frontend.language :refer [tr]]))
+(ns heraldry.frontend.strings)
 
 (def loading
-  [tr {:en "loading..."
-       :de "Lade..."}])
+  {:en "loading..."
+   :de "Lade..."})
 
 (def create
-  [tr {:en "Create"
-       :de "Erstellen"}])
+  {:en "Create"
+   :de "Erstellen"})
 
 (def save
-  [tr {:en "Save"
-       :de "Speichern"}])
+  {:en "Save"
+   :de "Speichern"})
 
 (def not-found
-  [tr {:en "Not found"
-       :de "Nicht gefunden"}])
+  {:en "Not found"
+   :de "Nicht gefunden"})
 
 (def copy-to-new
-  [tr {:en "Copy to new"
-       :de "Kopie erstellen"}])
+  {:en "Copy to new"
+   :de "Kopie erstellen"})
 
 (def attribution
-  [tr {:en "Attribution"
-       :de "Attribuierung"}])
+  {:en "Attribution"
+   :de "Attribuierung"})
 
 (def charges
-  [tr {:en "Charges"
-       :de "Wappenfiguren"}])
+  {:en "Charges"
+   :de "Wappenfiguren"})
 
 (def arms
-  [tr {:en "Arms"
-       :de "Wappen"}])
+  {:en "Arms"
+   :de "Wappen"})
 
 (def collections
-  [tr {:en "Collections"
-       :de "Sammlungen"}])
+  {:en "Collections"
+   :de "Sammlungen"})
+
+(def ribbons
+  {:en "Ribbons"
+   :de "Bänder"})
 
 (def edit
-  [tr {:en "Edit"
-       :de "Edit"}])
+  {:en "Edit"
+   :de "Edit"})
 
 (def by
-  [tr {:en " by "
-       :de " von "}])
+  {:en " by "
+   :de " von "})
 
 (def general
-  [tr {:en "General"
-       :de "Allgemein"}])
+  {:en "General"
+   :de "Allgemein"})
+
+(def copy-created
+  {:en "Created an unsaved copy."
+   :de "Ungespeicherte Kopie erstellt."})

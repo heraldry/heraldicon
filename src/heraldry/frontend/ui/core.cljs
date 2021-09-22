@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.core
-  (:require [heraldry.frontend.macros :as macros]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.arms-reference-select] ;; needed for side effects
             [heraldry.frontend.ui.element.attributes] ;; needed for side effects
@@ -170,7 +171,7 @@
                                     "fa-angle-right")}]]
           [:span.node-icon
            [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
-        title
+        [tr title]
 
         annotation
 
@@ -225,7 +226,7 @@
      [:div.ui-component-header
       [:h1
        [:i.fa.fa-sliders-h.ui-icon {:style {:margin-right "0.5em"}}]
-       title]]
+       [tr title]]]
      [:div.content
       (when form
         [form path form-args])]]))
