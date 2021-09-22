@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.checkbox
-  (:require [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
@@ -27,7 +28,7 @@
                               (if on-change
                                 (on-change new-checked?)
                                 (rf/dispatch [:set path new-checked?])))}]
-       [:label.for-checkbox {:for component-id} label]
+       [:label.for-checkbox {:for component-id} [tr label]]
        [value-mode-select/value-mode-select path :disabled? disabled?]])))
 
 (defmethod interface/form-element :checkbox [path]

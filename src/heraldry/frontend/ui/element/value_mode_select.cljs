@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.value-mode-select
-  (:require [heraldry.frontend.state :as state]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.hover-menu :as hover-menu]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
@@ -22,7 +23,8 @@
         {:keys [additional-values]} ui
         display-fn (or display-fn
                        (when (= type :choice)
-                         (util/choices->map choices))
+                         (fn [v]
+                           (tr ((util/choices->map choices) v))))
                        identity)
         effective-value (->> [current-value
                               inherited
@@ -38,7 +40,8 @@
                                             :handler (handler-for-value default)})
                (or (some? inherited)
                    (some? default)) (conj {:title (str (if (some? inherited)
-                                                         "Inherited"
+                                                         (tr {:en "Inherited"
+                                                              :de "Geerbt"})
                                                          "Auto")
                                                        " (" (display-fn (or inherited default)) ")")
                                            :icon (if (some? current-value)
@@ -59,7 +62,8 @@
                       "far fa-check-square"
                       "far fa-square")
         menu (cond-> menu
-               (seq menu) (conj {:title "Manual"
+               (seq menu) (conj {:title [tr {:en "Manual"
+                                             :de "Manuell"}]
                                  :icon manual-icon
                                  :handler (handler-for-value effective-value)}))]
 

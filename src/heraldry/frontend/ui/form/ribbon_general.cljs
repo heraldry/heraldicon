@@ -1,9 +1,10 @@
 (ns heraldry.frontend.ui.form.ribbon-general
-  (:require [heraldry.frontend.ui.element.select :as select]
+  (:require [heraldry.frontend.macros :as macros]
+            [heraldry.frontend.strings :as strings]
+            [heraldry.frontend.ui.element.select :as select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.text-field :as text-field]
             [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.frontend.macros :as macros]
             [heraldry.math.curve :as curve]
             [heraldry.ribbon :as ribbon]
             [re-frame.core :as rf]))
@@ -312,7 +313,7 @@
                  [:p "Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."]]]])])
 
 (defmethod ui-interface/component-node-data :heraldry.component/ribbon-general [path]
-  {:title "General"
+  {:title strings/general
    :validation @(rf/subscribe [:validate-ribbon-general path])})
 
 (defmethod ui-interface/component-form-data :heraldry.component/ribbon-general [_path]

@@ -44,3 +44,7 @@
 (def by
   [tr {:en " by "
        :de " von "}])
+
+(def general
+  [tr {:en "General"
+       :de "Allgemein"}])

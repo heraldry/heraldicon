@@ -4,11 +4,13 @@
             [heraldry.util :as util]))
 
 (def license-choices
-  [["None" :none]
+  [[{:en "None"
+     :de "Keine"} :none]
    ["CC Attribution" :cc-attribution]
    ["CC Attribution-ShareAlike" :cc-attribution-share-alike]
    ["CC Attribution-NonCommercial-ShareAlike" :cc-attribution-non-commercial-share-alike]
-   ["Public Domain" :public-domain]])
+   [{:en "Public Domain"
+     :de "Gemeinfrei"} :public-domain]])
 
 (def license-map
   (util/choices->map license-choices))
@@ -24,8 +26,10 @@
   (util/choices->map cc-license-version-choices))
 
 (def nature-choices
-  [["Own work" :own-work]
-   ["Derivative" :derivative]])
+  [[{:en "Own work"
+     :de "Selbstgemacht"} :own-work]
+   [{:en "Derivative"
+     :de "Abgeleitet"} :derivative]])
 
 (def nature-map
   (util/choices->map nature-choices))
@@ -61,8 +65,10 @@
         :cc-attribution (str "CC BY " version)
         :cc-attribution-share-alike (str "CC BY-SA " version)
         :cc-attribution-non-commercial-share-alike (str "CC BY-NC-SA " version)
-        :public-domain "public domain"
-        "none"))))
+        :public-domain {:en "public domain"
+                        :de "gemeinfrei"}
+        {:en "none"
+         :de "keine"}))))
 
 (defn license-compatible? [license source-license]
   (let [compatible-licenses
@@ -89,12 +95,14 @@
   {:license {:type :choice
              :choices license-choices
              :default :none
-             :ui {:label "License"}}
+             :ui {:label {:en "License"
+                          :de "Lizenz"}}}
 
    :license-version {:type :choice
                      :choices cc-license-version-choices
                      :default :v4
-                     :ui {:label "License version"}}
+                     :ui {:label {:en "License version"
+                                  :de "Lizenzversion"}}}
 
    :nature {:type :choice
             :choices nature-choices
@@ -104,29 +112,36 @@
    :source-license {:type :choice
                     :choices license-choices
                     :default :none
-                    :ui {:label "Source license"}}
+                    :ui {:label {:en "Source license"
+                                 :de "Lizenz der Quelle"}}}
 
    :source-license-version {:type :choice
                             :choices cc-license-version-choices
                             :default :v4
-                            :ui {:label "Source license version"}}
+                            :ui {:label {:en "License version"
+                                         :de "Lizenzversion"}}}
 
    :source-name {:type :text
                  :default ""
-                 :ui {:label "Source name"}}
+                 :ui {:label {:en "Source name"
+                              :de "Name der Quelle"}}}
 
    :source-link {:type :text
                  :default ""
-                 :ui {:label "Source link"}}
+                 :ui {:label {:en "Source link"
+                              :de "Link zur Quelle"}}}
 
    :source-creator-name {:type :text
                          :default ""
-                         :ui {:label "Creator name"}}
+                         :ui {:label {:en "Creator name"
+                                      :de "Name des Schöpfers"}}}
 
    :source-creator-link {:type :text
                          :default ""
-                         :ui {:label "Creator link"}}
-   :ui {:label "Attribution"
+                         :ui {:label {:en "Creator link"
+                                      :de "Link zum Schöpfer"}}}
+   :ui {:label {:en "Attribution"
+                :de "Attribuierung"}
         :form-type :attribution}})
 
 (defn options [attribution]
