@@ -1,6 +1,7 @@
 (ns heraldry.frontend.attribution
   (:require [heraldry.attribution :as attribution]
             [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.strings :as strings]
             [heraldry.interface :as interface]))
 
 (defn general [path attribution-type context]
@@ -29,8 +30,7 @@
        [:<>
         [:a {:href url
              :target "_blank"} title]
-        [tr {:en " by "
-             :de " von "}]
+        strings/by
         [:a {:href (attribution/full-url-for-username username)
              :target "_blank"} username]
         " "
@@ -53,8 +53,7 @@
                   :de "unbenamt"}])
            (when (-> source-creator-name count pos?)
              [:<>
-              [tr {:en " by "
-                   :de " von "}]
+              strings/by
               [:a {:href source-creator-link
                    :target "_blank"} source-creator-name]])
            " "
