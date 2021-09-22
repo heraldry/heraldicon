@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.element.submenu
-  (:require [heraldry.frontend.state :as state]
+  (:require [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.macros :as macros]
+            [heraldry.frontend.state :as state]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :ui-submenu-open?
@@ -45,6 +46,6 @@
        [:div.ui-component.ui-submenu extra
         [:div.ui-component-header [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-close submenu-id])}
                                    [:i.far.fa-times-circle]]
-         " " title]
+         " " [tr title]]
         (into [:div.content]
               content)])]))

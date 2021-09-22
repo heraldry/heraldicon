@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.arms-general
-  (:require [heraldry.frontend.ui.interface :as ui-interface]
+  (:require [heraldry.frontend.strings :as strings]
+            [heraldry.frontend.ui.interface :as ui-interface]
             [re-frame.core :as rf]))
 
 (defn form [path _]
@@ -13,7 +14,7 @@
    [:div {:style {:height "1.5em"}}]])
 
 (defmethod ui-interface/component-node-data :heraldry.component/arms-general [path]
-  {:title "General"
+  {:title strings/general
    :validation @(rf/subscribe [:validate-arms-general path])})
 
 (defmethod ui-interface/component-form-data :heraldry.component/arms-general [_path]

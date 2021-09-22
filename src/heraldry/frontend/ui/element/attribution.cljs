@@ -1,9 +1,10 @@
 (ns heraldry.frontend.ui.element.attribution
   (:require [heraldry.attribution :as attribution]
+            [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.ui.element.select :as select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.macros :as macros]
             [heraldry.options :as options]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
@@ -15,14 +16,13 @@
 
   (fn [[attribution options] [_ _path]]
     (let [sanitized-attribution (options/sanitize attribution options)
-          main-name (case (:nature sanitized-attribution)
-                      :own-work "Own work"
-                      :derivative "Derivative")
-          license (:license attribution)
-          changes [main-name
+          main-name (attribution/nature-map (:nature sanitized-attribution))
+          license (:license sanitized-attribution)
+          changes [(tr main-name)
                    (if (= license :none)
-                     "no license"
-                     (attribution/license-display-name license (:license-version attribution)))]]
+                     (tr {:en "no license"
+                          :de "keine Lizenz"})
+                     (tr (attribution/license-display-name license (:license-version sanitized-attribution))))]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
@@ -37,9 +37,9 @@
           link-name @(rf/subscribe [:attribution-submenu-link-name path])]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
-        [submenu/submenu path label link-name {:style {:width "29em"}
+        [submenu/submenu path label link-name {:style {:width "31em"}
                                                :class "submenu-attribution"}
          [:<>
           (when charge-presets?
@@ -47,7 +47,8 @@
              nil
              :none
              "Presets"
-             [["Autofill for known sources" :none]
+             [[{:en "Autofill for known sources"
+                :de "Vorauswahl für bekannte Quellen"} :none]
               ["WappenWiki" :wappenwiki]
               ["Wikimedia" :wikimedia]
               ["Wikimedia (Sodacan)" :wikimedia-sodacan]

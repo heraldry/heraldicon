@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.text-field
-  (:require [heraldry.frontend.ui.interface :as interface]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
 (defn text-field [path & {:keys [on-change style]}]
@@ -13,7 +14,7 @@
       [:div.ui-setting
        {:style style}
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
         [:input {:type "text"
                  :value value

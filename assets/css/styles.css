@@ -748,9 +748,12 @@ li.nav-menu-item a:hover {
 .submenu-field-layout label,
 .submenu-semy-layout label,
 .submenu-tincture-modifiers label,
-.submenu-fimbriation label,
-.submenu-attribution label {
+.submenu-fimbriation label {
   width: 8em;
+}
+
+.submenu-attribution label {
+  width: 11em;
 }
 
 .submenu-line label {
