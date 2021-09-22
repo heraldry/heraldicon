@@ -270,12 +270,12 @@
      (:path match)))
 
 (defn nav-link
-  [{:keys [to path-params] :as props} & children]
+  [{:keys [to path-params] :as props} content]
   (let [active (or (name-matches? to path-params @current-match)
                    (url-matches? to @current-match))]
     [:li.nav-menu-item {:class (when active "selected")}
      [link (-> props
-               (assoc :active active)) children]]))
+               (assoc :active active)) content]]))
 
 (defn view []
   (when @current-match
