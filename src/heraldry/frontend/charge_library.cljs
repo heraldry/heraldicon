@@ -9,7 +9,7 @@
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.attribution :as attribution]
             [heraldry.frontend.charge :as charge]
-            [heraldry.frontend.history :as history]
+            [heraldry.frontend.history.core :as history]
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
