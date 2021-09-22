@@ -5,6 +5,7 @@
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.filter :as filter]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.user :as user]
             [taoensso.timbre :as log]))
 
@@ -55,4 +56,4 @@
        user-list
        link-to-user
        #(invalidate-user-cache :all)]
-      [:div "loading..."])))
+      [:div strings/loading])))

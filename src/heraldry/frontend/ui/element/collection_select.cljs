@@ -7,6 +7,7 @@
             [heraldry.frontend.filter :as filter]
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
             [re-frame.core :as rf]
@@ -95,5 +96,4 @@
        collection-list
        link-to-collection
        #(invalidate-collection-cache :all)]
-      [:div [tr {:en "loading..."
-                 :de "Lade..."}]])))
+      [:div strings/loading])))

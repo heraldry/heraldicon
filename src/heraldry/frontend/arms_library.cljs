@@ -12,6 +12,7 @@
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.ribbon :as ribbon]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.ui.element.arms-select :as arms-select]
             [heraldry.frontend.user :as user]
@@ -36,8 +37,7 @@
                           (map charge/fetch-charge-data))]
     (when (-> charges-data first :id)
       [:<>
-       [:h3 [tr {:en "Charges"
-                 :de "Wappenfiguren"}]]
+       [:h3 strings/charges]
        [:ul
         (doall
          (for [charge charges-data]
@@ -66,8 +66,7 @@
 (defn attribution []
   (let [attribution-data (attribution/for-arms form-db-path {})]
     [:div.attribution
-     [:h3 [tr {:en "Attribution"
-               :de "Attribuierung"}]]
+     [:h3 strings/attribution]
      [:div {:style {:padding-left "1em"}}
       attribution-data]
      [charge-attribution]
@@ -265,8 +264,7 @@
                     copy-to-new-clicked
                     #(js/alert (tr {:en "Need to be logged in and arms must be saved."
                                     :de "Du mußt eingeloggt sein und das Wappen gespeichert haben."})))}
-       [tr {:en "Copy to new"
-            :de "Kopie erstellen"}]]
+       strings/copy-to-new]
       [:button.button.primary {:type "submit"
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
@@ -275,8 +273,7 @@
                                                            :de "Du mußt eingeloggt und der Besitzer des Wappens sein."})))
                                :style {:flex "initial"
                                        :margin-left "10px"}}
-       [tr {:en "Save"
-            :de "Speichern"}]]]]))
+       strings/save]]]))
 
 (defn arms-form []
   (if @(rf/subscribe [:get-value (conj form-db-path :id)])
@@ -324,8 +321,7 @@
     (when (= status :done)
       (if arms-data
         [arms-form]
-        [:div [tr {:en "Not found"
-                   :de "Nicht gefunden"}]]))))
+        [:div strings/not-found]))))
 
 (defn link-to-arms [arms]
   (let [arms-id (-> arms
@@ -364,8 +360,7 @@
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
                   (reife/push-state :create-arms))}
-    [tr {:en "Create"
-         :de "Erstellen"}]]
+    strings/create]
    [:div {:style {:padding-top "0.5em"}}
     [list-all-arms]]])
 

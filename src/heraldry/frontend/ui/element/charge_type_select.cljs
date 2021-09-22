@@ -1,11 +1,12 @@
 (ns heraldry.frontend.ui.element.charge-type-select
   (:require [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.frontend.charge :as frontend-charge]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.element.charge-select :as charge-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.macros :as macros]
             [heraldry.static :as static]
             [re-frame.core :as rf]))
 
@@ -70,7 +71,7 @@
                                                     [:attitude :facing]))])}
                   (:name charge-data)])
                #(state/invalidate-cache [:all-charges] :all-charges)]
-              [:div "loading..."])])]]])))
+              [:div strings/loading])])]]])))
 
 (defmethod interface/form-element :charge-type-select [path]
   [charge-type-select path])

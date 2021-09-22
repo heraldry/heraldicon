@@ -8,6 +8,7 @@
             [heraldry.frontend.history.core :as history]
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.ui.element.arms-select :as arms-select]
             [heraldry.frontend.ui.element.collection-select :as collection-select]
@@ -288,8 +289,7 @@
                                                            :de "Du mußt eingeloggt und der Besitzer der Sammlung sein."})))
                                :style {:flex "initial"
                                        :margin-left "10px"}}
-       [tr {:en "Save"
-            :de "Speichern"}]]]]))
+       strings/save]]]))
 
 (defn collection-form []
   (if @(rf/subscribe [:get-value (conj form-db-path :id)])
@@ -366,8 +366,7 @@
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
                   (reife/push-state :create-collection))}
-    [tr {:en "Create"
-         :de "Erstellen"}]]
+    strings/create]
    [:div {:style {:padding-top "0.5em"}}
     [list-collections]]])
 
@@ -386,8 +385,7 @@
     (when (= status :done)
       (if collection-data
         [collection-form]
-        [:div [tr {:en "Not found"
-                   :de "Nicht gefunden"}]]))))
+        [:div strings/not-found]))))
 
 (defn view-collection-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
