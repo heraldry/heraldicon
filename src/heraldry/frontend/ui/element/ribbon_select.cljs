@@ -6,6 +6,7 @@
             [heraldry.frontend.api.request :as api-request]
             [heraldry.frontend.filter :as filter]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
             [re-frame.core :as rf]
@@ -92,4 +93,4 @@
        ribbon-list
        link-to-ribbon
        #(invalidate-ribbon-cache :all)]
-      [:div "loading..."])))
+      [:div strings/loading])))

@@ -13,6 +13,7 @@
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.modal :as modal]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.core :as ui]
             [heraldry.frontend.ui.element.charge-select :as charge-select]
             [heraldry.frontend.ui.shared :as shared]
@@ -323,8 +324,7 @@
                     copy-to-new-clicked
                     #(js/alert (tr {:en "Need to be logged in and charge must be saved."
                                     :de "Du mußt eingeloggt sein und die Wappenfigur gespeichert haben."})))}
-       [tr {:en "Copy to new"
-            :de "Kopie erstellen"}]]
+       strings/copy-to-new]
       [:button.button.primary
        {:type "submit"
         :class (when-not can-save? "disabled")
@@ -334,14 +334,12 @@
                                     :de "Du mußt eingeloggt und der Besitzer der Wappenfigur sein."})))
         :style {:flex "initial"
                 :margin-left "10px"}}
-       [tr {:en "Save"
-            :de "Speichern"}]]]]))
+       strings/save]]]))
 
 (defn attribution []
   (let [attribution-data (attribution/for-charge form-db-path {})]
     [:div.attribution
-     [:h3 [tr {:en "Attribution"
-               :de "Attribuierung"}]]
+     [:h3 strings/attribution]
      [:div {:style {:padding-left "1em"}}
       attribution-data]]))
 
@@ -385,8 +383,7 @@
     (when (= status :done)
       (if charge-data
         [charge-form]
-        [:div [tr {:en "Not found"
-                   :de "Nicht gefunden"}]]))))
+        [:div strings/not-found]))))
 
 (defn link-to-charge [charge & {:keys [type-prefix?]}]
   (let [charge-id (-> charge
@@ -440,13 +437,11 @@
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-charge))}
-      [tr {:en "Create"
-           :de "Erstellen"}]]
+      strings/create]
      [:div {:style {:padding-top "0.5em"}}
       (if (= status :done)
         [charge-select/component charges link-to-charge invalidate-charges-cache]
-        [:div [tr {:en "loading..."
-                   :de "Lade..."}]])]]))
+        [:div strings/loading])]]))
 
 (defn view-charge-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)

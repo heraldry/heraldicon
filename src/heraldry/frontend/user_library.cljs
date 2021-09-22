@@ -6,7 +6,9 @@
             [heraldry.frontend.charge :as charge]
             [heraldry.frontend.charge-library :as charge-library]
             [heraldry.frontend.collection-library :as collection-library]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.element.arms-select :as arms-select]
             [heraldry.frontend.ui.element.charge-select :as charge-select]
             [heraldry.frontend.ui.element.collection-select :as collection-select]
@@ -42,7 +44,7 @@
        #(invalidate-charges-cache-for-user user-id)
        :remove-empty-groups? true
        :hide-ownership-filter? true]
-      [:div "loading..."])))
+      [:div strings/loading])))
 
 (defn invalidate-arms-cache-for-user [user-id]
   (state/invalidate-cache [:user-arms] user-id))
@@ -58,7 +60,7 @@
        arms-library/link-to-arms
        #(invalidate-arms-cache-for-user user-id)
        :hide-ownership-filter? true]
-      [:div "loading..."])))
+      [:div strings/loading])))
 
 (defn invalidate-collection-cache-for-user [user-id]
   (state/invalidate-cache [:user-collections] user-id))
@@ -74,7 +76,7 @@
        collection-library/link-to-collection
        #(invalidate-collection-cache-for-user user-id)
        :hide-ownership-filter? true]
-      [:div "loading..."])))
+      [:div strings/loading])))
 
 (defn user-display []
   (let [user-info-data @(rf/subscribe [:get-value user-info-db-path])
@@ -92,18 +94,19 @@
            :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
      [:div.no-scrollbar {:style {:grid-area "user-info"
                                  :overflow-y "scroll"}}
-      [:h3 (str "User: " (:username user-info-data))]]
+      [:h3 [tr {:en (str "User: " (:username user-info-data))
+                :de (str "Benutzer: " (:username user-info-data))}]]]
      [:div.no-scrollbar {:style {:grid-area "collections"
                                  :overflow-y "scroll"}}
-      [:h4 "Collections"]
+      [:h4 strings/collections]
       [view-collections-for-user user-id]]
      [:div.no-scrollbar {:style {:grid-area "arms"
                                  :overflow-y "scroll"}}
-      [:h4 "Arms"]
+      [:h4 strings/arms]
       [view-arms-for-user user-id]]
      [:div.no-scrollbar {:style {:grid-area "charges"
                                  :overflow-y "scroll"}}
-      [:h4 "Charges"]
+      [:h4 strings/charges]
       [view-charges-for-user user-id]]]))
 
 (defn view-user [username]
@@ -130,6 +133,7 @@
   [user-select/list-users link-to-user])
 
 (defn view-list-users []
-  (rf/dispatch [:set-title "Users"])
+  (rf/dispatch [:set-title {:en "Users"
+                            :de "Benutzer"}])
   [:div {:style {:padding "15px"}}
    [list-all-users]])
