@@ -514,7 +514,7 @@
 
 (defn ribbon-display [ribbon-id version]
   (when @(rf/subscribe [:heraldry.frontend.history.core/identifier-changed? form-db-path ribbon-id])
-    (rf/dispatch-sync [:clear-history form-db-path ribbon-id]))
+    (rf/dispatch-sync [:heraldry.frontend.history.core/clear form-db-path ribbon-id]))
   (let [[status ribbon-data] (state/async-fetch-data
                               form-db-path
                               [ribbon-id version]
@@ -538,7 +538,7 @@
 
 (defn create-ribbon [_match]
   (when @(rf/subscribe [:heraldry.frontend.history.core/identifier-changed? form-db-path nil])
-    (rf/dispatch-sync [:clear-history form-db-path nil]))
+    (rf/dispatch-sync [:heraldry.frontend.history.core/clear form-db-path nil]))
   (let [[status _ribbon-form-data] (state/async-fetch-data
                                     form-db-path
                                     :new

@@ -38,7 +38,7 @@
           (state/change-selected-component-if-removed path))
       db)))
 
-(rf/reg-event-db ::clear-history
+(rf/reg-event-db ::clear
   (fn [db [_ path identifier]]
     (-> db
         (assoc-in (shared/history-path path) nil)
