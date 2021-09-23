@@ -1,6 +1,6 @@
 (ns heraldry.frontend.ui.form.arms-general
-  (:require [heraldry.frontend.strings :as strings]
-            [heraldry.frontend.ui.interface :as ui-interface]
+  (:require [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.strings :as strings]
             [re-frame.core :as rf]))
 
 (defn form [path _]

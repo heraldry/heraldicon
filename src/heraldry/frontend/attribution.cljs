@@ -1,8 +1,8 @@
 (ns heraldry.frontend.attribution
   (:require [heraldry.attribution :as attribution]
             [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.strings :as strings]
-            [heraldry.interface :as interface]))
+            [heraldry.interface :as interface]
+            [heraldry.strings :as strings]))
 
 (defn general [path attribution-type context]
   [:div.credit

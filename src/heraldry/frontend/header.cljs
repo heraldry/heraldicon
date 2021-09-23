@@ -1,8 +1,8 @@
 (ns heraldry.frontend.header
   (:require [heraldry.frontend.language :as language :refer [tr]]
             [heraldry.frontend.route :as route]
-            [heraldry.frontend.strings :as strings]
-            [heraldry.frontend.user :as user]))
+            [heraldry.frontend.user :as user]
+            [heraldry.strings :as strings]))
 
 (defn view []
   (let [user-data (user/data)]

@@ -1,4 +1,4 @@
-(ns heraldry.frontend.strings)
+(ns heraldry.strings)
 
 (def loading
   {:en "loading..."
@@ -62,7 +62,7 @@
 
 (def outline
   {:en "Outline"
-   :de "Außenlinie"})
+   :de "Umrandung"})
 
 #_{:clj-kondo/ignore [:redefined-var]}
 (def type
@@ -72,3 +72,7 @@
 (def spacing
   {:en "Spacing"
    :de "Abstände"})
+
+(def make-public
+  {:en "Make public"
+   :de "Öffentlich machen"})

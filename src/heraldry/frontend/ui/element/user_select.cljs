@@ -6,8 +6,8 @@
             [heraldry.frontend.filter :as filter]
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.user :as user]
+            [heraldry.strings :as strings]
             [taoensso.timbre :as log]))
 
 (def list-db-path

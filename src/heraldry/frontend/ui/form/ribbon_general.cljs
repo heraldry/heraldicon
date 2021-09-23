@@ -1,13 +1,13 @@
 (ns heraldry.frontend.ui.form.ribbon-general
   (:require [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.element.select :as select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.text-field :as text-field]
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.math.curve :as curve]
             [heraldry.ribbon :as ribbon]
+            [heraldry.strings :as strings]
             [re-frame.core :as rf]))
 
 (def layers-path
