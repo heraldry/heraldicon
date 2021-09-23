@@ -60,36 +60,56 @@
        (into {})))
 
 (def choices
-  [["Metal"
-    ["None" :none]
-    ["Argent" :argent]
-    ["Or" :or]]
-   ["Colour"
-    ["Azure" :azure]
-    ["Gules" :gules]
-    ["Purpure" :purpure]
-    ["Sable" :sable]
-    ["Vert" :vert]]
-   ["Fur"
-    ["Ermine" :ermine]
-    ["Ermines" :ermines]
-    ["Erminois" :erminois]
-    ["Pean" :pean]]
+  [[{:en "Metal"
+     :de "Metall"}
+    [{:en "None"
+      :de "Keine"} :none]
+    [{:en "Argent"
+      :de "Silber"} :argent]
+    [{:en "Or"
+      :de "Gold"} :or]]
+   [{:en "Colour"
+     :de "Farbe"}
+    [{:en "Azure"
+      :de "Blau"} :azure]
+    [{:en "Gules"
+      :de "Rot"} :gules]
+    [{:en "Purpure"
+      :de "Purpur"} :purpure]
+    [{:en "Sable"
+      :de "Schwarz"} :sable]
+    [{:en "Vert"
+      :de "Grün"} :vert]]
+   [{:en "Fur"
+     :de "Pelzwerk"}
+    [{:en "Ermine"
+      :de "Hermelin"} :ermine]
+    [{:en "Ermines"
+      :de "Gegenhermelin"} :ermines]
+    [{:en "Erminois"
+      :de "Goldhermelin"} :erminois]
+    [{:en "Pean"
+      :de "Gegenhermelin in Gold"} :pean]]
    ["Stain"
     ["Sanguine" :sanguine]
     ["Murrey" :murrey]
     ["Tenné" :tenne]]
-   ["Helmet"
-    ["Light" :helmet-light]
+   [{:en "Helmet"
+     :de "Helm"}
+    [{:en "Light"
+      :de "Hell"} :helmet-light]
     ["Medium" :helmet-medium]
-    ["Dark" :helmet-dark]]])
+    [{:en "Dark"
+      :de "Dunkel"} :helmet-dark]]])
 
 (def tincture-map
   (util/choices->map choices))
 
 (def fixed-tincture-choices
-  (concat [["None (can be changed)" :none]
-           ["Proper" :proper]]
+  (concat [[{:en "None (can be changed)"
+             :de "Keine (kann verändert werden)"} :none]
+           [{:en "Proper"
+             :de "Natürlich"} :proper]]
           choices))
 
 (defn kind [tincture]
