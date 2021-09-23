@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.attributes
-  (:require [heraldry.util :as util]))
+  (:require [heraldry.strings :as strings]
+            [heraldry.util :as util]))
 
 (def attitude-choices
   [["None" :none]

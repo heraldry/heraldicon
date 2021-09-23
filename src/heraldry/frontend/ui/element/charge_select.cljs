@@ -6,9 +6,9 @@
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 

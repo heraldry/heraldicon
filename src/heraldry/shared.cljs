@@ -23,7 +23,8 @@
             [heraldry.motto] ;; needed for side effects
             [heraldry.options :as options]
             [heraldry.render-options] ;; needed for side effects
-            [heraldry.ribbon :as ribbon]))
+            [heraldry.ribbon :as ribbon]
+            [heraldry.strings :as strings]))
 
 (defmethod interface/get-raw-data :context [path context]
   (get-in context (drop 1 path)))
@@ -55,17 +56,13 @@
         options (get-relevant-options-by-context path context)]
     (options/sanitize-value-or-data data options)))
 
-(def make-public
-  {:en "Make public"
-   :de "Öffentlich machen"})
-
 ;; TODO: might not be the right place for it, others live in the coat-of-arms.[thing].options namespaces
 (defmethod interface/component-options :heraldry.component/arms-general [_path data]
   {:name {:type :text
           :default ""
           :ui {:label "Name"}}
    :is-public {:type :boolean
-               :ui {:label make-public}}
+               :ui {:label strings/make-public}}
    :attribution (attribution/options (:attribution data))
    :tags {:ui {:form-type :tags}}})
 
@@ -75,7 +72,7 @@
           :default ""
           :ui {:label "Name"}}
    :is-public {:type :boolean
-               :ui {:label make-public}}
+               :ui {:label strings/make-public}}
    :attribution (attribution/options (:attribution data))
    :tags {:ui {:form-type :tags}}
    :font font/default-options})
@@ -86,7 +83,7 @@
           :default ""
           :ui {:label "Name"}}
    :is-public {:type :boolean
-               :ui {:label make-public}}
+               :ui {:label strings/make-public}}
    :attribution (attribution/options (:attribution data))
    :tags {:ui {:form-type :tags}}
    :type {:type :text
@@ -115,7 +112,7 @@
           :default ""
           :ui {:label "Name"}}
    :is-public {:type :boolean
-               :ui {:label make-public}}
+               :ui {:label strings/make-public}}
    :attribution (attribution/options (:attribution data))
    :ribbon (ribbon/options (:ribbon data))
    :tags {:ui {:form-type :tags}}})

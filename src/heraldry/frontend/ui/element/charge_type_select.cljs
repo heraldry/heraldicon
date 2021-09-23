@@ -4,10 +4,10 @@
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.element.charge-select :as charge-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.strings :as strings]
             [heraldry.static :as static]
             [re-frame.core :as rf]))
 

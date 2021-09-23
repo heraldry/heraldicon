@@ -2,7 +2,6 @@
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
             [heraldry.font :as font]
-            [heraldry.frontend.strings :as strings]
             [heraldry.interface :as interface]
             [heraldry.math.bezier :as bezier]
             [heraldry.math.catmullrom :as catmullrom]
@@ -11,6 +10,7 @@
             [heraldry.math.svg.path :as path]
             [heraldry.math.vector :as v]
             [heraldry.options :as options]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]))
 
 (def default-options

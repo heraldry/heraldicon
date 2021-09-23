@@ -7,9 +7,9 @@
             [heraldry.frontend.filter :as filter]
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.element.tags :as tags]
             [heraldry.frontend.user :as user]
+            [heraldry.strings :as strings]
             [re-frame.core :as rf]
             [taoensso.timbre :as log]))
 

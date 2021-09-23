@@ -8,12 +8,12 @@
             [heraldry.frontend.collection-library :as collection-library]
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.element.arms-select :as arms-select]
             [heraldry.frontend.ui.element.charge-select :as charge-select]
             [heraldry.frontend.ui.element.collection-select :as collection-select]
             [heraldry.frontend.ui.element.user-select :as user-select]
             [heraldry.frontend.user :as user]
+            [heraldry.strings :as strings]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
             [taoensso.timbre :as log]))

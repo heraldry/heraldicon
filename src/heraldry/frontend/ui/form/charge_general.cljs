@@ -1,7 +1,7 @@
 (ns heraldry.frontend.ui.form.charge-general
-  (:require [heraldry.frontend.strings :as strings]
-            [heraldry.frontend.ui.element.checkbox :as checkbox]
+  (:require [heraldry.frontend.ui.element.checkbox :as checkbox]
             [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.strings :as strings]
             [re-frame.core :as rf]))
 
 (defn form [path _]
