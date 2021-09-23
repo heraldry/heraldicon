@@ -94,17 +94,20 @@
    :attitude {:type :choice
               :choices attributes/attitude-choices
               :default :none
-              :ui {:label "Attitude"}}
+              :ui {:label {:en "Attitude"
+                           :de "Haltung"}}}
    :facing {:type :choice
             :choices attributes/facing-choices
             :default :none
-            :ui {:label "Facing"}}
+            :ui {:label {:en "Facing"
+                         :de "Blickrichtung"}}}
    :colours {:ui {:form-type :colours}}
    :attributes {:ui {:form-type :attributes}}
    :fixed-tincture {:type :choice
                     :choices tincture/fixed-tincture-choices
                     :default :none
-                    :ui {:label "Fixed tincture"}}})
+                    :ui {:label {:en "Fixed tincture"
+                                 :de "Feste Tinktur"}}}})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-charge.[thing].options namespaces
 (defmethod interface/component-options :heraldry.component/ribbon-general [_path data]
