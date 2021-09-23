@@ -226,7 +226,7 @@
                                     :vertical-align "top"}}
          [:i.fas.fa-question-circle]
          [:div.bottom {:style {:width "20em"}}
-          tooltip]])]
+          [tr tooltip]]])]
 
      [:ul
       (doall
@@ -236,7 +236,8 @@
            [segment-form segment-path])))]
 
      [:p {:style {:color "#f86"}}
-      "The SVG export embeds the fonts, but some programs might not display them correctly. At least Chrome should display it."]]))
+      [tr {:en "The SVG export embeds the fonts, but some programs might not display them correctly. At least Chrome should display it."
+           :de "Der SVG Export beinhaltet die Fonts, aber einige Programme zeigen sie nicht korrekt an. Zumindest Chrome sollte es richtig anzeigen."}]]]))
 
 (defn form [path _]
   [:<>
@@ -251,17 +252,23 @@
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
-                  :margin-bottom "0.5em"}} "Topology"
+                  :margin-bottom "0.5em"}} [tr {:en "Topology"
+                                                :de "Topologie"}]
     [:div.tooltip.info {:style {:display "inline-block"
                                 :margin-left "0.2em"
                                 :vertical-align "top"}}
      [:i.fas.fa-question-circle]
      [:div.bottom {:style {:width "20em"}}
-      [:p "The ribbon curve can be interpreted in many ways, depending on what is fore-/background and which segments overlap which."]
-      [:p "The Presets can be used to setup the segments for some typical effects, the segments can then be fine-tuned."]]]]
+      [tr {:en [:<>
+                [:p "The ribbon curve can be interpreted in many ways, depending on what is fore-/background and which segments overlap which."]
+                [:p "The Presets can be used to setup the segments for some typical effects, the segments can then be fine-tuned."]]
+           :de [:<>
+                [:p "Die Band-Kurve kann unterschiedlich interpretiert werden, je nachdem was Vorder- und Rückseite ist und welche Segmente sich überlappen."]
+                [:p "Die Vorauswahl kann benutzt werden, um typische Effekte zu erzeugen, die Segmente können dann weiter angepaßt werden."]]}]]]]
 
    [:p {:style {:color "#f86"}}
-    "Apply a preset after you edited the ribbon curve and changed the number of segments."]
+    [tr {:en "Apply a preset after you edited the ribbon curve and changed the number of segments."
+         :de "Wende eine Vorauswahl an, wenn du eine Band-Kurve verändert hast und sich die Anzahl der Segmente verändert hat."}]]
 
    (let [layer-mode-value (or @(rf/subscribe [:get-value layers-path])
                               layer-mode-default)
@@ -273,26 +280,37 @@
       [select/raw-select
        layers-path
        layer-mode-value
-       "Layering presets"
-       [["Middle outwards" :middle-outwards]
-        ["Left to right" :left-to-right]
-        ["Right to left" :right-to-left]]]
+       {:en "Layering presets"
+        :de "Layer Vorauswahl"}
+       [[{:en "Middle outwards"
+          :de "Von Mitte nach außen"} :middle-outwards]
+        [{:en "Left to right"
+          :de "Von links nach rechts"} :left-to-right]
+        [{:en "Right to left"
+          :de "Von rechts nach links"} :right-to-left]]]
 
       [select/raw-select
        flow-path
        flow-mode-value
-       "Flow presets"
-       [["Stacked" :stacked]
-        ["Spiral clockwise" :spiral-clockwise]
-        ["Spiral counter-clockwise" :spiral-counter-clockwise]
+       {:en "Flow presets"
+        :de "Verlauf Vorauswahl"}
+       [[{:en "Stacked"
+          :de "Geschichtet"} :stacked]
+        [{:en "Spiral clockwise"
+          :de "Spirale rechtsrum"} :spiral-clockwise]
+        [{:en "Spiral counter-clockwise"
+          :de "Spirale linksrum"} :spiral-counter-clockwise]
         ["Nebuly" :nebuly]]]
 
       [select/raw-select
        start-path
        start-mode-value
-       "Start presets"
-       [["Foreground" :foreground]
-        ["Background" :background]]]
+       {:en "Start presets"
+        :de "Start Vorauswahl"}
+       [[{:en "Foreground"
+          :de "Vorderseite"} :foreground]
+        [{:en "Background"
+          :de "Rückseite"} :background]]]
 
       [:div
        [:button {:on-click #(rf/dispatch [:ribbon-edit-annotate-segments
@@ -300,16 +318,21 @@
                                           layer-mode-value
                                           flow-mode-value
                                           start-mode-value])}
-        "Apply presets"]
+        [tr {:en "Apply presets"
+             :de "Vorauswahl anwenden"}]]
        [:button {:on-click #(rf/dispatch [:ribbon-edit-invert-segments
                                           (conj path :ribbon)])}
-        "Invert"]]
+        [tr {:en "Invert"
+             :de "Invertieren"}]]]
 
       [ribbon-segments-form
        (conj path :ribbon)
-       :tooltip [:<>
-                 [:p "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number."]
-                 [:p "Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."]]]])])
+       :tooltip {:en [:<>
+                      [:p "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number."]
+                      [:p "Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."]]
+                 :de [:<>
+                      [:p "Segmente können Vorderseite oder Rückseite oder Vorderseite mit Text repräsentieren, und ihrer Render-Reihenfolge wird durch die Layer-Zahl angegeben."]
+                      [:p "Note: wende die Vorauswahl an nachdem sich die Anzahl der Segmente in der Kurve ändert. Das überschreibt die Änderungen hier, aber im Moment gibt es keinen guten Weg, diese Änderungen beizubehalten."]]}]])])
 
 (defmethod ui-interface/component-node-data :heraldry.component/ribbon-general [path]
   {:title strings/general
