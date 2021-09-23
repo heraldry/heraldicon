@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.ribbon-general
-  (:require [heraldry.frontend.macros :as macros]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.strings :as strings]
             [heraldry.frontend.ui.element.select :as select]
             [heraldry.frontend.ui.element.submenu :as submenu]
@@ -186,10 +187,7 @@
         idx (last path)
         z-index @(rf/subscribe [:get-sanitized-data (conj path :z-index)])
         title (str (inc idx) ". "
-                   (case segment-type
-                     :heraldry.ribbon.segment/foreground-with-text "Text"
-                     :heraldry.ribbon.segment/foreground "Foreground"
-                     :heraldry.ribbon.segment/background "Background")
+                   (tr (ribbon/segment-type-map segment-type))
                    ", layer " z-index)]
 
     [:div {:style {:position "relative"}}
@@ -220,7 +218,8 @@
   (let [segments-path (conj path :segments)
         num-segments @(rf/subscribe [:get-list-size segments-path])]
     [:div.option.ribbon-segments {:style {:margin-top "0.5em"}}
-     [:div {:style {:font-size "1.3em"}} "Segments"
+     [:div {:style {:font-size "1.3em"}} [tr {:en "Segments"
+                                              :de "Segmente"}]
       (when tooltip
         [:div.tooltip.info {:style {:display "inline-block"
                                     :margin-left "0.2em"

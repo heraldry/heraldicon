@@ -75,4 +75,5 @@
     data))
 
 (defn tr [data]
-  (tr-raw data @(rf/subscribe [::selected-language])))
+  (when data
+    (tr-raw data @(rf/subscribe [::selected-language]))))
