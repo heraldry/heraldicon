@@ -3,8 +3,10 @@
             [heraldry.util :as util]))
 
 (def attitude-choices
-  [["None" :none]
-   ["Beasts"
+  [[{:en "None"
+     :de "Keine"} :none]
+   [{:en "Beasts"
+     :de "Tiere"}
     ["Cadent" :cadent]
     ["Couchant" :couchant]
     ["Courant" :courant]
@@ -17,11 +19,13 @@
     ["Sejant" :sejant]
     ["Sejant erect" :sejant-erect]
     ["Statant" :statant]]
-   ["Two beasts"
+   [{:en "Two beasts"
+     :de "Zwei Tiere"}
     ["Addorsed" :addorsed]
     ["Combatant" :combatant]
     ["Respectant" :respectant]]
-   ["Winged creatures"
+   [{:en "Winged creatures"
+     :de "Geflügelte Kreaturen"}
     ["Close" :close]
     ["Displayed" :displayed]
     ["In her piety" :in-her-piety]
@@ -32,11 +36,13 @@
     ["Vigilant" :vigilant]
     ["Volant" :volant]
     ["Vulning herself" :vulning]]
-   ["Sea creatures"
+   [{:en "Sea creatures"
+     :de "Wasser-Kreaturen"}
     ["Hauriant" :hauriant]
     ["Naiant" :naiant]
     ["Urinant" :urinant]]
-   ["Serpents"
+   [{:en "Serpents"
+     :de "Schlangen"}
     ["Glissant" :glissant]
     ["Nowed" :nowed]]])
 
@@ -44,7 +50,8 @@
   (util/choices->map attitude-choices))
 
 (def facing-choices
-  [["None" :none]
+  [[{:en "None"
+     :de "Keine"} :none]
    ["To dexter (default)" :to-dexter]
    ["To sinister" :to-sinister]
    ["Affronté" :affronte]
@@ -58,11 +65,12 @@
   (util/choices->map facing-choices))
 
 (def attribute-choices
-  [["General"
+  [[strings/general
     ["Erased" :erased]
     ["Pierced" :pierced]
     ["Voided" :voided]]
-   ["Tail"
+   [{:en "Tail"
+     :de "Schwanz"}
     ["Coward" :coward]
     ["Defamed" :defamed]
     ["Double queued" :double-queued]
@@ -100,10 +108,12 @@
     ["Leaved" :leaved]
     ["Seeded" :seeded]
     ["Slipped" :slipped]]
-   ["Helmet"
+   [{:en "Helmet"
+     :de "Helm"}
     ["Barred" :barred]
     ["Trimmed" :trimmed]]
-   ["Other"
+   [{:en "Other"
+     :de "Andere"}
     ["Caparisoned" :caparisoned]
     ["Collared" :collared]
     ["Erased" :erased]
@@ -120,14 +130,21 @@
   (util/choices->map tincture-modifier-choices))
 
 (def tincture-modifier-for-charge-choices
-  (concat [["Technical"
-            ["Don't replace" :keep]
-            ["Primary" :primary]
-            ["Secondary" :secondary]
-            ["Tertiary" :tertiary]
-            ["Outline" :outline]
-            ["Shadow" :shadow]
-            ["Highlight" :highlight]]]
+  (concat [[{:en "Technical"
+             :de "Technisch"}
+            [{:en "Don't replace"
+              :de "Nicht ersetzen"} :keep]
+            [{:en "Primary"
+              :de "Primär"} :primary]
+            [{:en "Secondary"
+              :de "Sekundär"} :secondary]
+            [{:en "Tertiary"
+              :de "Tertiär"} :tertiary]
+            [strings/outline :outline]
+            [{:en "Shadow"
+              :de "Schattierung"} :shadow]
+            [{:en "Highlight"
+              :de "Glanz"} :highlight]]]
           tincture-modifier-choices))
 
 (def tincture-modifier-for-charge-map

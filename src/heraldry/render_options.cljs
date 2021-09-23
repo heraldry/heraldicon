@@ -55,7 +55,8 @@
                :ui {:label "Squiggly lines (can be slow)"}}
 
    :preview-original? {:type :boolean
-                       :ui {:label "Preview original (don't replace colours)"}}
+                       :ui {:label {:en "Preview original (don't replace colours)"
+                                    :de "Preview Original (Farben nicht ersetzen)"}}}
    :coat-of-arms-angle {:type :range
                         :default 0
                         :min -45
