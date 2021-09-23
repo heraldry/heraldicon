@@ -323,7 +323,7 @@
 
 (defn collection-display [collection-id version]
   (when @(rf/subscribe [:heraldry.frontend.history.core/identifier-changed? form-db-path collection-id])
-    (rf/dispatch-sync [:clear-history form-db-path collection-id]))
+    (rf/dispatch-sync [:heraldry.frontend.history.core/clear form-db-path collection-id]))
   (let [[status _collection-data] (state/async-fetch-data
                                    form-db-path
                                    [collection-id version]
@@ -371,7 +371,7 @@
 
 (defn create-collection [_match]
   (when @(rf/subscribe [:heraldry.frontend.history.core/identifier-changed? form-db-path nil])
-    (rf/dispatch-sync [:clear-history form-db-path nil]))
+    (rf/dispatch-sync [:heraldry.frontend.history.core/clear form-db-path nil]))
   (let [[status collection-data] (state/async-fetch-data
                                   form-db-path
                                   :new
