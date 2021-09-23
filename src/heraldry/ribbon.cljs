@@ -2,6 +2,7 @@
   (:require ["svgpath" :as svgpath]
             [clojure.string :as s]
             [heraldry.font :as font]
+            [heraldry.frontend.strings :as strings]
             [heraldry.interface :as interface]
             [heraldry.math.bezier :as bezier]
             [heraldry.math.catmullrom :as catmullrom]
@@ -9,31 +10,34 @@
             [heraldry.math.curve :as curve]
             [heraldry.math.svg.path :as path]
             [heraldry.math.vector :as v]
-            [heraldry.options :as options]))
+            [heraldry.options :as options]
+            [heraldry.util :as util]))
 
 (def default-options
   {:thickness {:type :range
                :default 30
                :min 5
                :max 150
-               :ui {:label "Thickness"
+               :ui {:label strings/thickness
                     :step 0.1}}
    :edge-angle {:type :range
                 :default 0
                 :min -90
                 :max 90
-                :ui {:label "Edge angle"
+                :ui {:label {:en "Edge angle"
+                             :de "Kantenwinkel"}
                      :step 1
                      :tooltip "This currently can cause glitches at some angles for some curves due to some numerical issues, set it carefully."}}
    :end-split {:type :range
                :default 0
                :min 0
                :max 80
-               :ui {:label "End split"
+               :ui {:label {:en "End split"
+                            :de "Spaltung am Ende"}
                     :step 1}}
    :outline? {:type :boolean
               :default true
-              :ui {:label "Outline"}}})
+              :ui {:label strings/outline}}})
 
 (defn options [data]
   default-options)
@@ -119,12 +123,21 @@
                         (map (comp vec (partial drop 1)))
                         vec)}))
 
+(def segment-type-choices
+  [[{:en "Text"
+     :de "Text"} :heraldry.ribbon.segment/foreground-with-text]
+   [{:en "Foreground"
+     :de "Vorderseite"} :heraldry.ribbon.segment/foreground]
+   [{:en "Background"
+     :de "Rückseite"} :heraldry.ribbon.segment/background]])
+
+(def segment-type-map
+  (util/choices->map segment-type-choices))
+
 (def default-segment-options
   {:type {:type :choice
-          :choices [["Text" :heraldry.ribbon.segment/foreground-with-text]
-                    ["Foreground" :heraldry.ribbon.segment/foreground]
-                    ["Background" :heraldry.ribbon.segment/background]]
-          :ui {:label "Type"
+          :choices segment-type-choices
+          :ui {:label strings/type
                :form-type :radio-select}}
    :z-index {:type :range
              :min 0
@@ -147,13 +160,14 @@
                 :default 0.8
                 :min 0.01
                 :max 1
-                :ui {:label "Font scale"
+                :ui {:label {:en "Font scale"
+                             :de "Font-Faktor"}
                      :step 0.01}}
    :spacing {:type :range
              :default 0.1
              :min -0.5
              :max 2
-             :ui {:label "Spacing"
+             :ui {:label strings/spacing
                   :step 0.01}}
    :text {:type :text
           :default ""}

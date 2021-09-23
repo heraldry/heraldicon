@@ -55,3 +55,20 @@
 (def copy-created
   {:en "Created an unsaved copy."
    :de "Ungespeicherte Kopie erstellt."})
+
+(def thickness
+  {:en "Thickness"
+   :de "Dicke"})
+
+(def outline
+  {:en "Outline"
+   :de "Außenlinie"})
+
+#_{:clj-kondo/ignore [:redefined-var]}
+(def type
+  {:en "Type"
+   :de "Typ"})
+
+(def spacing
+  {:en "Spacing"
+   :de "Abstände"})

@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.range
-  (:require [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.util :as util]
             [re-frame.core :as rf]
@@ -22,7 +23,7 @@
                         default
                         min)]
           [:div.ui-setting
-           [:label {:for component-id} label
+           [:label {:for component-id} [tr label]
             (when tooltip
               [:div.tooltip.info {:style {:display "inline-block"
                                           :margin-left "0.2em"}}
