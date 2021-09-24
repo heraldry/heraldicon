@@ -3,7 +3,8 @@
             [heraldry.coat-of-arms.texture :as texture]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.interface :as interface]
-            [heraldry.options :as options]))
+            [heraldry.options :as options]
+            [heraldry.strings :as strings]))
 
 (def default-options
   {:escutcheon {:type :choice
@@ -83,8 +84,7 @@
    :scope {:type :choice
            :choices [[{:en "Everything (Helms, etc.)"
                        :de "Vollwappen (Helme, etc.)"} :achievement]
-                     [{:en "Coat of Arms"
-                       :de "Wappen"} :coat-of-arms]]
+                     [strings/coat-of-arms :coat-of-arms]]
            :default :achievement
            :ui {:label {:en "Scope"
                         :de "Umfang"}}}})

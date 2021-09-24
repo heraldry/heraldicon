@@ -3,6 +3,7 @@
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.macros :as macros]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.strings :as strings]
             [re-frame.core :as rf]))
 
 (def value-path [:ui :tag-input-value])
@@ -118,8 +119,7 @@
         {:disabled (-> value (or "") s/trim count zero?)
          :on-click on-click
          :type "button"}
-        [tr {:en "Add"
-             :de "Hinzufügen"}]]
+        [tr strings/add]]
        [:div {:style {:padding-top "10px"}}
         [tags-view (keys tags)
          :on-delete #(delete-tag-clicked path %)]]]]]))

@@ -1,12 +1,13 @@
 (ns heraldry.frontend.ui.form.field
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.core :as field]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.tincture-select :as tincture-select]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.macros :as macros]
             [heraldry.util :as util]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [heraldry.strings :as strings]))
 
 (macros/reg-event-db :override-field-part-reference
   (fn [db [_ path]]
@@ -104,17 +105,18 @@
      :validation @(rf/subscribe [:validate-field path])
      :buttons (if ref?
                 [{:icon "fas fa-sliders-h"
-                  :title "Change"
+                  :title strings/change
                   :handler #(state/dispatch-on-event % [:override-field-part-reference path])}]
                 (cond-> [{:icon "fas fa-plus"
-                          :title "Add"
-                          :menu [{:title "Ordinary"
+                          :title strings/add
+                          :menu [{:title strings/ordinary
                                   :handler #(state/dispatch-on-event % [:add-element components-path default/ordinary])}
-                                 {:title "Charge"
+                                 {:title strings/charge
                                   :handler #(state/dispatch-on-event % [:add-element components-path default/charge])}
-                                 {:title "Charge group"
+                                 {:title strings/charge-group
                                   :handler #(state/dispatch-on-event % [:add-element components-path default/charge-group])}
-                                 {:title "Semy"
+                                 {:title {:en "Semy"
+                                          :de "Besähung"}
                                   :handler #(state/dispatch-on-event % [:add-element components-path default/semy])}]}]
                   (non-mandatory-part-of-parent? path)
                   (conj {:icon "fas fa-undo"
@@ -133,14 +135,14 @@
                                   {:path component-path
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
-                                              :tooltip "move down"
+                                              :tooltip strings/move-down
                                               :handler #(state/dispatch-on-event % [:move-element component-path (dec idx)])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-components))
-                                              :tooltip "move up"
+                                              :tooltip strings/move-up
                                               :handler #(state/dispatch-on-event % [:move-element component-path (inc idx)])}
                                              {:icon "far fa-trash-alt"
-                                              :tooltip "remove"
+                                              :tooltip strings/remove
                                               :handler #(state/dispatch-on-event % [:remove-element component-path])}]})))
                          vec))}))
 

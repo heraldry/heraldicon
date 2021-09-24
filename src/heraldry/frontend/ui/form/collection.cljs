@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.form.collection
   (:require [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.strings :as strings]
             [re-frame.core :as rf]))
 
 (defn form [path _]
@@ -10,10 +11,10 @@
 
 (defmethod interface/component-node-data :heraldry.component/collection [path]
   (let [num-elements @(rf/subscribe [:get-list-size (conj path :elements)])]
-    {:title "Arms"
+    {:title strings/arms
      :buttons [{:icon "fas fa-plus"
-                :title "Add"
-                :menu [{:title "Arms"
+                :title strings/add
+                :menu [{:title strings/arms
                         :handler #(state/dispatch-on-event % [:add-element (conj path :elements) {}])}]}]
      :nodes (->> (range num-elements)
                  (map (fn [idx]
@@ -21,14 +22,14 @@
                           {:path component-path
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
-                                      :tooltip "move down"
+                                      :tooltip strings/move-down
                                       :handler #(state/dispatch-on-event % [:move-element component-path (dec idx)])}
                                      {:icon "fas fa-chevron-down"
                                       :disabled? (= idx (dec num-elements))
-                                      :tooltip "move up"
+                                      :tooltip strings/move-up
                                       :handler #(state/dispatch-on-event % [:move-element component-path (inc idx)])}
                                      {:icon "far fa-trash-alt"
-                                      :tooltip "remove"
+                                      :tooltip strings/remove
                                       :handler #(state/dispatch-on-event % [:remove-element component-path])}]})))
                  vec)}))
 

@@ -2,6 +2,7 @@
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.strings :as strings]
             [re-frame.core :as rf]))
 
 (defn form [path _]
@@ -12,15 +13,16 @@
 (defmethod ui-interface/component-node-data :heraldry.component/mottos [path]
   (let [mottos-path (conj path :elements)
         num-mottos @(rf/subscribe [:get-list-size mottos-path])]
-    {:title "Mottos and slogans"
+    {:title {:en "Mottos and slogans"
+             :de "Wahlsprüche und Slogans"}
      :annotation [:div.tooltip.info {:style {:display "inline-block"
                                              :margin-left "0.2em"}}
                   [:sup {:style {:color "#d40"}}
                    "alpha"]
                   [:div.bottom
-                   [:p "This feature is incomplete and likely going to change, so use with caution. :)"]]]
+                   [:p strings/alpha-feature]]]
      :buttons [{:icon "fas fa-plus"
-                :title "Add"
+                :title strings/add
                 :menu [{:title "Motto"
                         :handler #(state/dispatch-on-event % [:add-element mottos-path default/motto])}
                        {:title "Slogan"
@@ -31,14 +33,14 @@
                           {:path motto-path
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
-                                      :tooltip "move down"
+                                      :tooltip strings/move-down
                                       :handler #(state/dispatch-on-event % [:move-element motto-path (dec idx)])}
                                      {:icon "fas fa-chevron-down"
                                       :disabled? (= idx (dec num-mottos))
-                                      :tooltip "move up"
+                                      :tooltip strings/move-up
                                       :handler #(state/dispatch-on-event % [:move-element motto-path (inc idx)])}
                                      {:icon "far fa-trash-alt"
-                                      :tooltip "remove"
+                                      :tooltip strings/remove
                                       :handler #(state/dispatch-on-event % [:remove-element motto-path])}]}))))}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/mottos [_path]

@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.hover-menu
-  (:require [heraldry.frontend.macros :as macros]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.macros :as macros]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :ui-hover-menu-open?
@@ -36,7 +37,7 @@
                                       "block"
                                       "none")
                            :min-width "7em"}}
-      [:li.ui-menu-header title]
+      [:li.ui-menu-header [tr title]]
       (for [{:keys [icon title handler]} menu]
         (let [handler (when handler
                         #(do
@@ -52,4 +53,4 @@
                                   :color (if disabled?
                                            "#ccc"
                                            "#777")}}])
-           title]))]]))
+           [tr title]]))]]))
