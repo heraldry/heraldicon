@@ -4,6 +4,7 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]))
 
 (def type-choices
@@ -41,25 +42,25 @@
                  :min 1
                  :max 10
                  :default 6
-                 :ui {:label "Thickness"
+                 :ui {:label strings/thickness
                       :step 0.01}}
    :tincture-1 {:type :choice
                 :choices tincture/choices
                 :default :none
-                :ui {:label "Tincture"
+                :ui {:label strings/tincture
                      :form-type :tincture-select}}
    :thickness-2 {:type :range
                  :min 1
                  :max 10
                  :default 3
-                 :ui {:label "Thickness 2"
+                 :ui {:label strings/thickness-2
                       :step 0.01}}
    :tincture-2 {:type :choice
                 :choices tincture/choices
                 :default :none
-                :ui {:label "Tincture 2"
+                :ui {:label strings/tincture-2
                      :form-type :tincture-select}}
-   :ui {:label "Fimbriation"
+   :ui {:label strings/fimbriation
         :form-type :fimbriation}})
 
 (defn options [fimbriation & {:keys [inherited base-options]

@@ -141,10 +141,8 @@
             [{:en "Tertiary"
               :de "Tertiär"} :tertiary]
             [strings/outline :outline]
-            [{:en "Shadow"
-              :de "Schattierung"} :shadow]
-            [{:en "Highlight"
-              :de "Glanz"} :highlight]]]
+            [strings/shadow :shadow]
+            [strings/highlight :highlight]]]
           tincture-modifier-choices))
 
 (def tincture-modifier-for-charge-map

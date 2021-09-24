@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.charge-group.options
-  (:require [heraldry.options :as options]
-            [heraldry.coat-of-arms.position :as position]
+  (:require [heraldry.coat-of-arms.position :as position]
             [heraldry.interface :as interface]
+            [heraldry.options :as options]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]))
 
 (def type-choices
@@ -15,7 +16,7 @@
 (def default-options
   {:type {:type :choice
           :choices type-choices
-          :ui {:label "Type"
+          :ui {:label strings/type
                :form-type :charge-group-type-select}}
    :origin (-> position/default-options
                (dissoc :alignment))
@@ -30,12 +31,12 @@
                (assoc-in [:angle :min] -180)
                (assoc-in [:angle :max] 180)
                (assoc-in [:angle :default] 0)
-               (assoc-in [:ui :label] "Anchor"))
+               (assoc-in [:ui :label] strings/anchor))
    :spacing {:type :range
              :min 1
              :max 100
              :default 40
-             :ui {:label "Spacing"
+             :ui {:label strings/spacing
                   :step 0.1}}
    :stretch {:type :range
              :min 0
@@ -85,7 +86,7 @@
                      :ui {:label "Rotate charges"}}
    :manual-blazon {:type :text
                    :default nil
-                   :ui {:label "Manual blazon"}}})
+                   :ui {:label strings/manual-blazon}}})
 
 (defn options [charge-group]
   (when charge-group

@@ -32,6 +32,7 @@
             [heraldry.math.svg.squiggly :as squiggly]
             [heraldry.math.vector :as v]
             [heraldry.options :as options]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]))
 
 (defn line-base [{:keys [base-line]} {line-min :min
@@ -152,7 +153,7 @@
   {:type {:type :choice
           :choices choices
           :default :straight
-          :ui {:label "Type"
+          :ui {:label strings/type
                :form-type :line-type-select}}
    :eccentricity {:type :range
                   :min 0
@@ -182,7 +183,7 @@
              :min 0
              :max 5
              :default 0
-             :ui {:label "Spacing"
+             :ui {:label strings/spacing
                   :step 0.01}}
    :base-line {:type :choice
                :choices [["Bottom" :bottom]
@@ -198,7 +199,7 @@
               :default false
               :ui {:label "Flipped"}}
    :fimbriation fimbriation/default-options
-   :ui {:label "Line"
+   :ui {:label strings/line
         :form-type :line}})
 
 (defn options [line & {:keys [inherited]}]
@@ -407,7 +408,7 @@
                                  (-> (fimbriation/options (:fimbriation line)
                                                           :inherited (:fimbriation inherited)
                                                           :base-options (:fimbriation default-options))
-                                     (assoc :ui {:label "Fimbriation"
+                                     (assoc :ui {:label strings/fimbriation
                                                  :form-type :fimbriation}))))))))
 
 (defn create-raw [{:keys [type] :or {type :straight} :as line} length

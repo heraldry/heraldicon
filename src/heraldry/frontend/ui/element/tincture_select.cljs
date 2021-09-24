@@ -1,10 +1,12 @@
 (ns heraldry.frontend.ui.element.tincture-select
-  (:require [heraldry.frontend.state :as state]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.options :as options]
             [heraldry.static :as static]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -18,7 +20,7 @@
                             :height "4.5em"}
                     :src (static/static-url (str "/svg/tincture-" (name key) ".svg"))}]
    [:div.bottom
-    [:h3 {:style {:text-align "center"}} display-name]
+    [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
 (defn tincture-select [path & {:keys [default-option]}]
@@ -28,17 +30,18 @@
           {:keys [ui choices]} option
           value (options/get-value current-value option)
           tincture-map (util/choices->map choices)
-          label (or (:label ui) "Tincture")]
+          label (or (:label ui) strings/tincture)]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
-        [submenu/submenu path "Select Tincture" (get tincture-map value) {:style {:width "22em"}}
+        [submenu/submenu path {:en "Select Tincture"
+                               :de "Tinktur auswählen"} (get tincture-map value) {:style {:width "22em"}}
          (doall
           (for [[group-name & group] choices]
             ^{:key group-name}
             [:<>
-             [:h4 group-name]
+             [:h4 [tr group-name]]
              (doall
               (for [[display-name key] group]
                 ^{:key display-name}

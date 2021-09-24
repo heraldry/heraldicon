@@ -3,14 +3,15 @@
             [heraldry.coat-of-arms.field.options :as field-options]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+            [heraldry.interface :as interface]
             [heraldry.math.vector :as v]
-            [heraldry.interface :as interface]))
+            [heraldry.strings :as strings]))
 
 (def cottise-default-options
   {:line (-> line/default-options
-             (assoc-in [:ui :label] "Line"))
+             (assoc-in [:ui :label] strings/line))
    :opposite-line (-> line/default-options
-                      (assoc-in [:ui :label] "Opposite line"))
+                      (assoc-in [:ui :label] strings/opposite-line))
    :distance {:type :range
               :min -10
               :max 20
@@ -21,12 +22,12 @@
                :min 0.1
                :max 20
                :default 2
-               :ui {:label "Thickness"
+               :ui {:label strings/thickness
                     :step 0.1}}
    :field (field-options/options default/field)
    :outline? {:type :boolean
               :default false
-              :ui {:label "Outline"}}
+              :ui {:label strings/outline}}
    :ui {:form-type :cottising}})
 
 (def default-options

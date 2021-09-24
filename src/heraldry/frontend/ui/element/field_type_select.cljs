@@ -1,11 +1,12 @@
 (ns heraldry.frontend.ui.element.field-type-select
   (:require [heraldry.coat-of-arms.field.core :as field]
             [heraldry.coat-of-arms.field.options :as field-options]
+            [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.macros :as macros]
             [heraldry.options :as options]
             [heraldry.static :as static]
             [re-frame.core :as rf]))
@@ -82,9 +83,10 @@
           label (:label ui)]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
-        [submenu/submenu path "Select Division" (get field-options/field-map value) {:style {:width "21.5em"}}
+        [submenu/submenu path {:en "Select Division"
+                               :de "Teilung auswählen"} (get field-options/field-map value) {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
            [field-type-choice path key display-name :selected? (= key value)])]

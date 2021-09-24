@@ -40,6 +40,10 @@
   {:en "Ribbons"
    :de "Bänder"})
 
+(def ribbon
+  {:en "Ribbon"
+   :de "Band"})
+
 (def edit
   {:en "Edit"
    :de "Edit"})
@@ -59,6 +63,10 @@
 (def thickness
   {:en "Thickness"
    :de "Dicke"})
+
+(def thickness-2
+  {:en "Thickness 2"
+   :de "Dicke 2"})
 
 (def outline
   {:en "Outline"
@@ -117,3 +125,75 @@
 (def remove
   {:en "remove"
    :de "entfernen"})
+
+(def tincture
+  {:en "Tincture"
+   :de "Tinktur"})
+
+(def tincture-2
+  {:en "Tincture 2"
+   :de "Tinktur 2"})
+
+(def line
+  {:en "Line"
+   :de "Linie"})
+
+(def opposite-line
+  {:en "Opposite line"
+   :de "Gegenlinie"})
+
+(def extra-line
+  {:en "Extra line"
+   :de "Extralinie"})
+
+(def origin
+  {:en "Origin"
+   :de "Ursprung"})
+
+(def anchor
+  {:en "Anchor"
+   :de "Anker"})
+
+(def issuant
+  {:en "Issuant"
+   :de "Herkunft"})
+
+(def variant
+  {:en "Variant"
+   :de "Variante"})
+
+(def gap
+  {:en "Gap"
+   :de "Abstand"})
+
+(def manual-blazon
+  {:en "Manual blazon"
+   :de "Manuelle Blasonierung"})
+
+(def angle
+  {:en "Angle"
+   :de "Winkel"})
+
+(def escutcheon
+  {:en "Escutcheon"
+   :de "Schild"})
+
+(def shadow
+  {:en "Shadow"
+   :de "Schattierung"})
+
+(def highlight
+  {:en "Highlight"
+   :de "Glanz"})
+
+(def fimbriation
+  {:en "Fimbriation"
+   :de "Säumung"})
+
+(def motto
+  {:en "Motto"
+   :de "Wahlspruch"})
+
+(def slogan
+  {:en "Slogan"
+   :de "Slogan"})

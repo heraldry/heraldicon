@@ -2,6 +2,7 @@
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.options :as field-options]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
             [heraldry.util :as util]))
@@ -124,7 +125,8 @@
 
 (defn title [path context]
   (if (interface/get-sanitized-data (conj path :counterchanged?) context)
-    "Counterchanged field"
+    (tr {:en "Counterchanged field"
+         :de "Verwechseltes Feld"})
     (let [field-type (interface/get-sanitized-data (conj path :type) context)]
       (str
        (if (= field-type :heraldry.field.type/plain)
@@ -132,7 +134,8 @@
              util/translate-tincture
              util/upper-case-first)
          (get field-options/field-map field-type))
-       " field"))))
+       (tr {:en " field"
+            :de " Feld"})))))
 
 (defmethod interface/blazon-component :heraldry.component/field [path context]
   (if (interface/get-sanitized-data (conj path :counterchanged?) context)
