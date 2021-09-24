@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.theme-select
   (:require [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
@@ -17,7 +18,8 @@
                             :height "4.5em"}
                     :src (static/static-url (str "/svg/theme-" (name key) ".svg"))}]
    [:div.bottom
-    [:h3 {:style {:text-align "center"}} display-name]
+    [:h3 {:style {:text-align "center"}}
+     [tr display-name]]
     [:i]]])
 
 (defn theme-select [path]
@@ -32,11 +34,13 @@
        (when label
          [:label label])
        [:div.option
-        [submenu/submenu path "Select Colour Theme" (get tincture/theme-map value) {:style {:width "22em"}}
+        [submenu/submenu path {:en "Select Colour Theme"
+                               :de "Farbschema auswählen"}
+         (get tincture/theme-map value) {:style {:width "22em"}}
          (for [[group-name & group] choices]
            ^{:key group-name}
            [:<>
-            [:h4 group-name]
+            [:h4 [tr group-name]]
             (for [[display-name key] group]
               ^{:key display-name}
               [theme-choice path key display-name :selected? (= key value)])])]

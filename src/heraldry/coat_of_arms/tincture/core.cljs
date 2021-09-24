@@ -4,24 +4,36 @@
             [heraldry.coat-of-arms.tincture.pattern :as pattern]
             [heraldry.coat-of-arms.tincture.theme :as theme]
             [heraldry.interface :as interface]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]))
 
 (def themes
-  [["General"
-    ["WappenWiki (default)" :wappenwiki theme/theme-wappenwiki]
+  [[strings/general
+    [{:en "WappenWiki (default)"
+      :de "WappenWiki (Default)"} :wappenwiki theme/theme-wappenwiki]
     ["Web" :theme-web theme/theme-web]
     ["RAL Traffic" :ral-traffic theme/theme-ral-traffic]]
    ["Wikipedia"
-    ["Wikipedia default" :wikipedia-default theme/theme-wikipedia-default]
-    ["Wikipedia web" :wikipedia-web theme/theme-wikipedia-web]
-    ["Wikipedia Bajuvarian" :wikipedia-bajuvarian theme/theme-wikipedia-bajuvarian]
-    ["Wikipedia Brandenburg" :wikipedia-brandenburg theme/theme-wikipedia-brandenburg]
-    ["Wikipedia Württemberg" :wikipedia-wurttemberg theme/theme-wikipedia-wuerttemberg]
-    ["Wikipedia France" :wikipedia-france theme/theme-wikipedia-france]
-    ["Wikipedia Hungary" :wikipedia-hungary theme/theme-wikipedia-hungary]
-    ["Wikipedia Spain" :wikipedia-spain theme/theme-wikipedia-spain]
-    ["Wikipedia Sweden" :wikipedia-sweden theme/theme-wikipedia-sweden]
-    ["Wikipedia Switzerland" :wikipedia-switzerland theme/theme-wikipedia-switzerland]]
+    [{:en "Wikipedia default"
+      :de "Wikipedia Default"} :wikipedia-default theme/theme-wikipedia-default]
+    [{:en "Wikipedia web"
+      :de "Wikipedia Web"} :wikipedia-web theme/theme-wikipedia-web]
+    [{:en "Wikipedia Bajuvarian"
+      :de "Wikipedia Bayern"} :wikipedia-bajuvarian theme/theme-wikipedia-bajuvarian]
+    [{:en "Wikipedia Brandenburg"
+      :de "Wikipedia Brandenburg"} :wikipedia-brandenburg theme/theme-wikipedia-brandenburg]
+    [{:en "Wikipedia Württemberg"
+      :de "Wikipedia Württemberg"} :wikipedia-wurttemberg theme/theme-wikipedia-wuerttemberg]
+    [{:en "Wikipedia France"
+      :de "Wikipedia Frankreich"} :wikipedia-france theme/theme-wikipedia-france]
+    [{:en "Wikipedia Hungary"
+      :de "Wikipedia Ungarn"} :wikipedia-hungary theme/theme-wikipedia-hungary]
+    [{:en "Wikipedia Spain"
+      :de "Wikipedia Spanien"} :wikipedia-spain theme/theme-wikipedia-spain]
+    [{:en "Wikipedia Sweden"
+      :de "Wikipedia Schweden"} :wikipedia-sweden theme/theme-wikipedia-sweden]
+    [{:en "Wikipedia Switzerland"
+      :de "Wikipedia Schweiz"} :wikipedia-switzerland theme/theme-wikipedia-switzerland]]
    ["Community"
     ["CMwhyK" :community-cmwhyk theme/theme-community-cmwhyk]
     ["Cotton Candy" :community-cotton-candy theme/theme-community-cotton-candy]
