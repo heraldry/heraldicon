@@ -3,22 +3,38 @@
             [heraldry.util :as util]))
 
 (def textures
-  [["None" :none nil 0]
-   ["Cloth (rough)" :cloth-rough "/textures/cloth-rough.jpg" 1]
-   ["Cloth (smooth)" :cloth-smooth "/textures/cloth-smooth.jpg" 1]
-   ["Felt" :felt "/textures/felt.jpg" 1]
-   ["Glass (frosted)" :glass-frosted "/textures/glass-frosted.jpg" 1.5]
-   ["Marble" :marble "/textures/marble.jpg" 1]
-   ["Metal (brushed 1)" :metal-brushed-1 "/textures/metal-brushed-1.jpg" 1]
-   ["Metal (brushed 2)" :metal-brushed-2 "/textures/metal-brushed-2.jpg" 1]
-   ["Metal (rough)" :metal-rough "/textures/metal-rough.jpg" 1]
-   ["Metal (scraped)" :metal-scraped "/textures/metal-scraped.jpg" 1]
-   ["Metal (smooth)" :metal-smooth "/textures/metal-smooth.jpg" 1]
-   ["Mosaic" :mosaic "/textures/mosaic.jpg" 2]
-   ["Satin" :satin "/textures/satin.jpg" 10]
-   ["Stone" :stone "/textures/stone.jpg" 1]
-   ["Stone (rough)" :stone-rough "/textures/stone-rough.jpg" 1]
-   ["Wood" :wood "/textures/wood.jpg" 1]])
+  [[{:en "None"
+     :de "Keine"} :none nil 0]
+   [{:en "Cloth (rough)"
+     :de "Stoff (rau)"} :cloth-rough "/textures/cloth-rough.jpg" 1]
+   [{:en "Cloth (smooth)"
+     :de "Stoff (glatt)"} :cloth-smooth "/textures/cloth-smooth.jpg" 1]
+   [{:en "Felt"
+     :de "Filz"} :felt "/textures/felt.jpg" 1]
+   [{:en "Glass (frosted)"
+     :de "Glas (matt)"} :glass-frosted "/textures/glass-frosted.jpg" 1.5]
+   [{:en "Marble"
+     :de "Marmor"} :marble "/textures/marble.jpg" 1]
+   [{:en "Metal (brushed 1)"
+     :de "Metall (gebürstet 1)"} :metal-brushed-1 "/textures/metal-brushed-1.jpg" 1]
+   [{:en "Metal (brushed 2)"
+     :de "Metall (gebürstet 2)"} :metal-brushed-2 "/textures/metal-brushed-2.jpg" 1]
+   [{:en "Metal (rough)"
+     :de "Metall (rau)"} :metal-rough "/textures/metal-rough.jpg" 1]
+   [{:en "Metal (scraped)"
+     :de "Metall (zerkratzt)"} :metal-scraped "/textures/metal-scraped.jpg" 1]
+   [{:en "Metal (smooth)"
+     :de "Metall (glatt)"} :metal-smooth "/textures/metal-smooth.jpg" 1]
+   [{:en "Mosaic"
+     :de "Mosaik"} :mosaic "/textures/mosaic.jpg" 2]
+   [{:en "Satin"
+     :de "Satin"} :satin "/textures/satin.jpg" 10]
+   [{:en "Stone"
+     :de "Stein"} :stone "/textures/stone.jpg" 1]
+   [{:en "Stone (rough)"
+     :de "Stein (rau)"} :stone-rough "/textures/stone-rough.jpg" 1]
+   [{:en "Wood"
+     :de "Holz"} :wood "/textures/wood.jpg" 1]])
 
 (def choices
   (->> textures

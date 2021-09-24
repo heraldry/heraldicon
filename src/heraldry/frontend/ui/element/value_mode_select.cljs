@@ -49,7 +49,7 @@
                                                    "far fa-check-square")
                                            :handler (handler-for-value nil)})
                (seq additional-values) (-> (concat (map (fn [[display-value value]]
-                                                          {:title (str display-value " (" (display-fn value) ")")
+                                                          {:title (str (tr display-value) " (" (display-fn value) ")")
                                                            :icon (if (= current-value value)
                                                                    "far fa-check-square"
                                                                    "far fa-square")
