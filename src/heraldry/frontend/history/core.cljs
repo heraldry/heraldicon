@@ -1,5 +1,6 @@
 (ns heraldry.frontend.history.core
   (:require [heraldry.frontend.history.shared :as shared]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
             [re-frame.core :as rf]))
 
@@ -57,12 +58,14 @@
   (let [can-undo? @(rf/subscribe [::can-undo? path])
         can-redo? @(rf/subscribe [::can-redo? path])]
     [:div.history-buttons
-     [:i.fas.fa-undo.ui-icon {:title "undo"
+     [:i.fas.fa-undo.ui-icon {:title (tr {:en "undo"
+                                          :de "rückgängig"})
                               :on-click (when can-undo?
                                           #(state/dispatch-on-event % [::undo path]))
                               :class (when-not can-undo?
                                        "disabled")}]
-     [:i.fas.fa-redo.ui-icon {:title "redo"
+     [:i.fas.fa-redo.ui-icon {:title (tr {:en "redo"
+                                          :de "wiederholen"})
                               :on-click (when can-redo?
                                           #(state/dispatch-on-event % [::redo path]))
                               :class (when-not can-redo?
