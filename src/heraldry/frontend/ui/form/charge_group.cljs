@@ -3,13 +3,14 @@
             [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.charge-group-preset-select :as charge-group-preset-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.interface :as interface]
-            [heraldry.frontend.macros :as macros]
             [heraldry.math.vector :as v]
+            [heraldry.strings :as strings]
             [re-frame.core :as rf]))
 
 (macros/reg-event-db :cycle-charge-index
@@ -295,8 +296,8 @@
                                       (charge/title (conj path :charges 0) {})
                                       "various"))
      :buttons [{:icon "fas fa-plus"
-                :title "Add"
-                :menu [{:title "Charge"
+                :title strings/add
+                :menu [{:title strings/charge
                         :handler #(state/dispatch-on-event % [:add-element (conj path :charges) default/charge])}]}]
      :nodes (concat (->> (range num-charges)
                          reverse
@@ -305,15 +306,15 @@
                                   {:path charge-path
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
-                                              :tooltip "move down"
+                                              :tooltip strings/move-down
                                               :handler #(state/dispatch-on-event % [:move-charge-group-charge-down charge-path])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-charges))
-                                              :tooltip "move up"
+                                              :tooltip strings/move-up
                                               :handler #(state/dispatch-on-event % [:move-charge-group-charge-up charge-path])}
                                              {:icon "far fa-trash-alt"
                                               :disabled? (= num-charges 1)
-                                              :tooltip "remove"
+                                              :tooltip strings/remove
                                               :handler #(state/dispatch-on-event % [:remove-charge-group-charge charge-path])}]})))
                          vec))}))
 

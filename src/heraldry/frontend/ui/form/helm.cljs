@@ -1,9 +1,10 @@
 (ns heraldry.frontend.ui.form.helm
   (:require [heraldry.coat-of-arms.default :as default]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.frontend.macros :as macros]
+            [heraldry.strings :as strings]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :get-helm-status
@@ -57,7 +58,7 @@
                    (str (inc (last path)) ". ")) "Helm")
      :buttons (when (seq add-menu)
                 [{:icon "fas fa-plus"
-                  :title "Add"
+                  :title strings/add
                   :menu add-menu}])
      :nodes (->> (range num-components)
                  reverse
@@ -66,14 +67,14 @@
                           {:path component-path
                            :buttons [{:icon "fas fa-chevron-down"
                                       :disabled? (zero? idx)
-                                      :tooltip "move down"
+                                      :tooltip strings/move-down
                                       :handler #(state/dispatch-on-event % [:move-element component-path (dec idx)])}
                                      {:icon "fas fa-chevron-up"
                                       :disabled? (= idx (dec num-components))
-                                      :tooltip "move up"
+                                      :tooltip strings/move-up
                                       :handler #(state/dispatch-on-event % [:move-element component-path (inc idx)])}
                                      {:icon "far fa-trash-alt"
-                                      :tooltip "remove"
+                                      :tooltip strings/remove
                                       :handler #(state/dispatch-on-event % [:remove-element component-path])}]})))
                  vec)}))
 

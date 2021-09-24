@@ -76,3 +76,44 @@
 (def make-public
   {:en "Make public"
    :de "Öffentlich machen"})
+
+(def alpha-feature
+  {:en "This feature is incomplete and likely going to change, so use with caution. :)"
+   :de "Dieses Feature ist not unvollständig und wird sich wahrscheinlich noch ändern. :)"})
+
+(def coat-of-arms
+  {:en "Coat of Arms"
+   :de "Wappen"})
+
+(def change
+  {:en "Change"
+   :de "Ändern"})
+
+(def add
+  {:en "Add"
+   :de "Hinzufügen"})
+
+(def charge
+  {:en "Charge"
+   :de "Wappenfigur"})
+
+(def charge-group
+  {:en "Charge group"
+   :de "Wappenfigurengruppe"})
+
+(def ordinary
+  {:en "Ordinary"
+   :de "Heroldsbild"})
+
+(def move-up
+  {:en "move up"
+   :de "nach oben"})
+
+(def move-down
+  {:en "move down"
+   :de "nach unten"})
+
+#_{:clj-kondo/ignore [:redefined-var]}
+(def remove
+  {:en "remove"
+   :de "entfernen"})

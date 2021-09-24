@@ -1,9 +1,10 @@
 (ns heraldry.frontend.ui.form.ordinary
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.ordinary.core :as ordinary]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.macros :as macros]
+            [heraldry.strings :as strings]
             [re-frame.core :as rf]))
 
 (macros/reg-event-db :remove-cottise
@@ -119,7 +120,7 @@
     {:title (ordinary/title path {})
      :validation @(rf/subscribe [:validate-ordinary path])
      :buttons [{:icon "fas fa-plus"
-                :title "Add"
+                :title strings/add
                 :disabled? (empty? menu)
                 :menu menu}]
      :nodes (cond-> [{:path (conj path :field)}]

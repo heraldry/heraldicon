@@ -53,7 +53,7 @@
                           (map ribbon/fetch-ribbon-data))]
     (when (-> ribbons-data first :id)
       [:<>
-       [:h3 "Ribbons"]
+       [:h3 strings/ribbons]
        [:ul
         (doall
          (for [ribbon ribbons-data]
@@ -227,7 +227,7 @@
                                      #(js/alert (tr {:en "Need to be logged in."
                                                      :de "Du mußt eingeloggt sein."}))
                                      #(js/alert (tr {:en "Save your changes first."
-                                                     :de "Speicher deine Änderungen erst."}))))
+                                                     :de "Speichere deine Änderungen erst."}))))
                        :style {:flex "initial"
                                :margin-right "10px"}}
        "SVG"]
@@ -241,7 +241,7 @@
                                      #(js/alert (tr {:en "Need to be logged in."
                                                      :de "Du mußt eingeloggt sein."}))
                                      #(js/alert (tr {:en "Save your changes first."
-                                                     :de "Speicher deine Änderungen erst."}))))
+                                                     :de "Speichere deine Änderungen erst."}))))
                        :style {:flex "initial"
                                :margin-right "10px"}}
        "PNG"]
