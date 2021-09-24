@@ -23,9 +23,9 @@
                    [:p strings/alpha-feature]]]
      :buttons [{:icon "fas fa-plus"
                 :title strings/add
-                :menu [{:title "Motto"
+                :menu [{:title strings/motto
                         :handler #(state/dispatch-on-event % [:add-element mottos-path default/motto])}
-                       {:title "Slogan"
+                       {:title strings/slogan
                         :handler #(state/dispatch-on-event % [:add-element mottos-path default/slogan])}]}]
      :nodes (->> (range num-mottos)
                  (map (fn [idx]

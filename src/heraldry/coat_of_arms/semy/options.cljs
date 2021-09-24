@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.semy.options
   (:require [heraldry.coat-of-arms.position :as position]
-            [heraldry.interface :as interface]))
+            [heraldry.interface :as interface]
+            [heraldry.strings :as strings]))
 
 (def default-options
   {:origin (-> position/default-options
@@ -53,7 +54,7 @@
                   :ui {:label "Rectangular grid"}}
    :manual-blazon {:type :text
                    :default nil
-                   :ui {:label "Manual blazon"}}})
+                   :ui {:label strings/manual-blazon}}})
 
 (defn options [data]
   (-> default-options

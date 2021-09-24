@@ -22,6 +22,7 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]))
 
 (def ordinaries
@@ -56,23 +57,23 @@
 (def default-options
   {:type {:type :choice
           :choices choices
-          :ui {:label "Type"
+          :ui {:label strings/variant
                :form-type :ordinary-type-select}}
    :origin (-> position/default-options
-               (assoc-in [:ui :label] "Origin"))
+               (assoc-in [:ui :label] strings/origin))
    :direction-anchor (-> position/anchor-default-options
                          (dissoc :alignment)
                          (assoc-in [:angle :min] -180)
                          (assoc-in [:angle :max] 180)
                          (assoc-in [:angle :default] 0)
-                         (assoc-in [:ui :label] "Issuant"))
+                         (assoc-in [:ui :label] strings/issuant))
    :anchor (-> position/anchor-default-options
-               (assoc-in [:ui :label] "Anchor"))
+               (assoc-in [:ui :label] strings/anchor))
    :line (set-line-defaults line/default-options)
    :opposite-line (-> (set-line-defaults line/default-options)
-                      (assoc-in [:ui :label] "Opposite line"))
+                      (assoc-in [:ui :label] strings/opposite-line))
    :extra-line (-> (set-line-defaults line/default-options)
-                   (assoc-in [:ui :label] "Extra line"))
+                   (assoc-in [:ui :label] strings/extra-line))
    :geometry (-> geometry/default-options
                  (assoc-in [:size :min] 0.1)
                  (assoc-in [:size :max] 50)
@@ -84,7 +85,7 @@
              :choices [["Full" :full]
                        ["Truncated" :truncated]]
              :default :full
-             :ui {:label "Variant"
+             :ui {:label strings/variant
                   :form-type :radio-select}}
    :num-points {:type :range
                 :min 2
@@ -94,14 +95,14 @@
                 :ui {:label "Points"}}
    :outline? {:type :boolean
               :default false
-              :ui {:label "Outline"}}
+              :ui {:label strings/outline}}
    :fimbriation fimbriation/default-options
    :cottising (-> cottising/default-options
                   (dissoc :cottise-extra-1)
                   (dissoc :cottise-extra-2))
    :manual-blazon {:type :text
                    :default nil
-                   :ui {:label "Manual blazon"}}})
+                   :ui {:label strings/manual-blazon}}})
 
 (defn options [ordinary]
   (when ordinary
@@ -346,8 +347,8 @@
                                                      (options/override-if-exists [:offset :min] 0)
                                                      (options/override-if-exists [:base-line] nil))
                                 [:geometry :size-mode] {:type :choice
-                                                        :choices [["Thickness" :thickness]
-                                                                  ["Angle" :angle]]
+                                                        :choices [[strings/thickness :thickness]
+                                                                  [strings/angle :angle]]
                                                         :default :thickness
                                                         :ui {:label "Size mode"
                                                              :form-type :radio-select}}
@@ -577,7 +578,7 @@
                               (when fimbriation
                                 (-> (fimbriation/options (:fimbriation ordinary)
                                                          :base-options (:fimbriation default-options))
-                                    (assoc :ui {:label "Fimbriation"
+                                    (assoc :ui {:label strings/fimbriation
                                                 :form-type :fimbriation})))))
        (as-> options
              (cond-> options

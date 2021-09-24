@@ -16,7 +16,8 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.interface :as interface]
-            [heraldry.options :as options]))
+            [heraldry.options :as options]
+            [heraldry.strings :as strings]))
 
 (def charges
   [roundel/charge-type
@@ -37,11 +38,11 @@
 (def default-options
   {:type {:type :choice
           :choices choices
-          :ui {:label "Type"
+          :ui {:label strings/type
                :form-type :charge-type-select}}
    :origin (-> position/default-options
                (assoc :alignment nil)
-               (assoc-in [:ui :label] "Origin"))
+               (assoc-in [:ui :label] strings/origin))
    :anchor (-> position/anchor-default-options
                (assoc-in [:point :default] :angle)
                (update-in [:point :choices] (fn [choices]
@@ -53,12 +54,12 @@
                (assoc-in [:angle :min] -180)
                (assoc-in [:angle :max] 180)
                (assoc-in [:angle :default] 0)
-               (assoc-in [:ui :label] "Anchor"))
+               (assoc-in [:ui :label] strings/anchor))
    :geometry geometry/default-options
    :escutcheon {:type :choice
                 :choices (assoc-in (vec root-escutcheon/choices) [0 0] "Root")
                 :default :none
-                :ui {:label "Escutcheon"
+                :ui {:label strings/escutcheon
                      :form-type :escutcheon-select}}
    :fimbriation (-> line/default-options
                     :fimbriation
@@ -81,15 +82,16 @@
                        :min 0
                        :max 1
                        :default 1
-                       :ui {:label "Shadow"
+                       :ui {:label strings/shadow
                             :step 0.01}}
               :highlight {:type :range
                           :min 0
                           :max 1
                           :default 1
-                          :ui {:label "Highlight"
+                          :ui {:label strings/highlight
                                :step 0.01}}
-              :ui {:label "Tinctures"
+              :ui {:label {:en "Tinctures"
+                           :de "Tinkturen"}
                    :form-type :tincture-modifiers}}
    :outline-mode {:type :choice
                   :choices [["Keep" :keep]
@@ -97,10 +99,10 @@
                             ["Primary" :primary]
                             ["Remove" :remove]]
                   :default :keep
-                  :ui {:label "Outline"}}
+                  :ui {:label strings/outline}}
    :manual-blazon {:type :text
                    :default nil
-                   :ui {:label "Manual blazon"}}
+                   :ui {:label strings/manual-blazon}}
    :vertical-mask {:type :range
                    :default 0
                    :min -100
@@ -169,7 +171,7 @@
                                (when fimbriation
                                  (-> (fimbriation/options (:fimbriation charge)
                                                           :base-options (:fimbriation default-options))
-                                     (assoc :ui {:label "Fimbriation"
+                                     (assoc :ui {:label strings/fimbriation
                                                  :form-type :fimbriation}))))))))
 
 (defmethod interface/component-options :heraldry.component/charge [_path data]

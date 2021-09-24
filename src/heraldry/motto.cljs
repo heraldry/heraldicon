@@ -3,7 +3,8 @@
             [heraldry.coat-of-arms.position :as position]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.interface :as interface]
-            [heraldry.ribbon :as ribbon]))
+            [heraldry.ribbon :as ribbon]
+            [heraldry.strings :as strings]))
 
 (def tinctures-without-furs
   (-> tincture/choices
@@ -15,9 +16,9 @@
 
 (def default-motto-options
   {:type {:type :choice
-          :choices [["Motto" :heraldry.motto.type/motto]
-                    ["Slogan" :heraldry.motto.type/slogan]]
-          :ui {:label "Type"}}
+          :choices [[strings/motto :heraldry.motto.type/motto]
+                    [strings/slogan :heraldry.motto.type/slogan]]
+          :ui {:label strings/type}}
    :origin (-> position/default-options
                (assoc-in [:point :choices] [["Top" :top]
                                             ["Bottom" :bottom]])
@@ -27,13 +28,13 @@
                (assoc-in [:offset-y :min] -100)
                (assoc-in [:offset-y :max] 100)
                (dissoc :alignment)
-               (assoc-in [:ui :label] "Origin"))
+               (assoc-in [:ui :label] strings/origin))
    :geometry (-> geometry/default-options
                  (select-keys [:size :ui])
                  (assoc-in [:size :min] 0.1)
                  (assoc-in [:size :max] 200)
                  (assoc-in [:size :default] 100))
-   :ribbon-variant {:ui {:label "Ribbon"
+   :ribbon-variant {:ui {:label strings/ribbon
                          :form-type :ribbon-reference-select}}
    :ribbon ribbon/default-options
 

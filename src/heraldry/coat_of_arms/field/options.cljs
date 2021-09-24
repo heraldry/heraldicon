@@ -31,6 +31,7 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]))
 
 (def fields
@@ -71,39 +72,42 @@
 (def default-options
   {:type {:type :choice
           :choices choices
-          :ui {:label "Division"
+          :ui {:label {:en "Partition"
+                       :de "Teilung"}
                :form-type :field-type-select}}
    :inherit-environment? {:type :boolean
                           :default false
-                          :ui {:label "Inherit environment (dimidiation)"}}
+                          :ui {:label {:en "Inherit environment (e.g. for dimidiation)"
+                                       :de "Umgebung erben (e.g. für Halbierung)"}}}
    :counterchanged? {:type :boolean
                      :default false
-                     :ui {:label "Counterchanged"}}
+                     :ui {:label {:en "Counterchanged"
+                                  :de "Verwechselt"}}}
    :tincture {:type :choice
               :choices tincture/choices
               :default :none
-              :ui {:label "Tincture"
+              :ui {:label strings/tincture
                    :form-type :tincture-select}}
    :line (-> line/default-options
-             (assoc-in [:ui :label] "Line"))
+             (assoc-in [:ui :label] strings/line))
    :opposite-line (-> line/default-options
-                      (assoc-in [:ui :label] "Opposite line"))
+                      (assoc-in [:ui :label] strings/opposite-line))
    :extra-line (-> line/default-options
-                   (assoc-in [:ui :label] "Extra line"))
+                   (assoc-in [:ui :label] strings/extra-line))
    :origin (-> position/default-options
                (dissoc :alignment)
-               (assoc :ui {:label "Origin"
+               (assoc :ui {:label strings/origin
                            :form-type :position}))
    :direction-anchor (-> position/anchor-default-options
                          (dissoc :alignment)
                          (assoc-in [:angle :min] -180)
                          (assoc-in [:angle :max] 180)
                          (assoc-in [:angle :default] 0)
-                         (assoc :ui {:label "Issuant"
+                         (assoc :ui {:label strings/issuant
                                      :form-type :position}))
    :anchor (-> position/anchor-default-options
                (dissoc :alignment)
-               (assoc :ui {:label "Anchor"
+               (assoc :ui {:label strings/anchor
                            :form-type :position}))
    :variant {:type :choice
              :choices [["Default" :default]
@@ -112,39 +116,42 @@
                        ["En point" :en-point]
                        ["Ancien" :ancien]]
              :default :default
-             :ui {:label "Variant"}}
+             :ui {:label strings/variant}}
    :thickness {:type :range
                :min 0
                :max 0.5
                :default 0.1
-               :ui {:label "Thickness"
+               :ui {:label strings/thickness
                     :step 0.01}}
    :gap {:type :range
          :min 0
          :max 1
          :default 0.1
-         :ui {:label "Gap"
+         :ui {:label strings/gap
               :step 0.01}}
    :layout {:num-fields-x {:type :range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label "x-Subfields"
+                           :ui {:label {:en "x-Subfields"
+                                        :de "x-Unterfelder"}
                                 :form-type :field-layout-num-fields-x}}
             :num-fields-y {:type :range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label "y-Subfields"
+                           :ui {:label {:en "y-Subfields"
+                                        :de "y-Unterfelder"}
                                 :form-type :field-layout-num-fields-y}}
             :num-base-fields {:type :range
                               :min 2
                               :max 8
                               :default 2
                               :integer? true
-                              :ui {:label "Base fields"
+                              :ui {:label {:en "Base fields"
+                                           :de "Basisfelder"}
                                    :form-type :field-layout-num-base-fields}}
             :offset-x {:type :range
                        :min -1
@@ -180,10 +187,10 @@
                  :form-type :field-layout}}
    :outline? {:type :boolean
               :default false
-              :ui {:label "Outline"}}
+              :ui {:label strings/outline}}
    :manual-blazon {:type :text
                    :default nil
-                   :ui {:label "Manual blazon"}}})
+                   :ui {:label strings/manual-blazon}}})
 
 (defn options [field]
   (when field
@@ -363,8 +370,8 @@
                                                                       30)
                                                            :ui (-> geometry/default-options :size :ui)}
                                                     :size-mode {:type :choice
-                                                                :choices [["Thickness" :thickness]
-                                                                          ["Angle" :angle]]
+                                                                :choices [[strings/thickness :thickness]
+                                                                          [strings/angle :angle]]
                                                                 :default :thickness
                                                                 :ui {:form-type :radio-select}}
                                                     :ui (-> geometry/default-options :ui)}
