@@ -3,6 +3,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.options :as options]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -13,18 +14,19 @@
 
   (fn [[layout options] [_ _path]]
     (let [sanitized-layout (options/sanitize layout options)
-          main-name (str (:num-fields-x sanitized-layout) "x"
-                         (:num-fields-y sanitized-layout)
-                         " fields")
+          main-name (util/str-tr (:num-fields-x sanitized-layout) "x"
+                                 (:num-fields-y sanitized-layout)
+                                 {:en " fields"
+                                  :de " Felder"})
           changes [main-name
                    (when (some #(options/changed? % sanitized-layout options)
                                [:offset-x :offset-y])
-                     "shifted")
+                     strings/shifted)
                    (when (some #(options/changed? % sanitized-layout options)
                                [:stretch-x :stretch-y])
-                     "stretched")
+                     strings/stretched)
                    (when (options/changed? :rotation sanitized-layout options)
-                     "rotated")]]
+                     strings/rotated)]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
