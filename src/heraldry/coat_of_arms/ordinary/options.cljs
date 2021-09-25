@@ -32,9 +32,9 @@
    base/ordinary-type
    bend/ordinary-type
    bend-sinister/ordinary-type
-   chevron/ordinary-type
-   saltire/ordinary-type
    cross/ordinary-type
+   saltire/ordinary-type
+   chevron/ordinary-type
    pall/ordinary-type
    pile/ordinary-type
    gore/ordinary-type
