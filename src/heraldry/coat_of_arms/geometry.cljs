@@ -1,4 +1,5 @@
-(ns heraldry.coat-of-arms.geometry)
+(ns heraldry.coat-of-arms.geometry
+  (:require [heraldry.strings :as strings]))
 
 (def default-options
   {:size {:type :range
@@ -11,7 +12,7 @@
              :min 0.33
              :max 3
              :default 1
-             :ui {:label "Stretch"
+             :ui {:label strings/stretch
                   :step 0.01}}
    :mirrored? {:type :boolean
                :default false

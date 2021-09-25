@@ -234,3 +234,7 @@
 (def point
   {:en "Point"
    :de "Punkt"})
+
+(def stretch
+  {:en "Stretch"
+   :de "Streckung"})
