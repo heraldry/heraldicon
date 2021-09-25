@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.collection-element
-  (:require [heraldry.frontend.ui.interface :as interface]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.ui.interface :as interface]
             [re-frame.core :as rf]))
 
 (def ui-highlighted-element-path [:ui :collection-library :selected-element])
@@ -33,7 +34,8 @@
     {:title (str (inc index) ": "
                  (if (-> name count pos?)
                    name
-                   "<no name>"))}))
+                   (tr {:en "<no name>"
+                        :de "<unbenannt>"})))}))
 
 (defmethod interface/component-form-data :heraldry.component/collection-element [_path]
   {:form form})
