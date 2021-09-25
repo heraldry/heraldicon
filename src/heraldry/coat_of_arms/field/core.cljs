@@ -124,17 +124,14 @@
 
 (defn title [path context]
   (if (interface/get-sanitized-data (conj path :counterchanged?) context)
-    {:en "Counterchanged field"
-     :de "Verwechseltes Feld"}
+    {:en "Counterchanged"
+     :de "Verwechselt"}
     (let [field-type (interface/get-sanitized-data (conj path :type) context)]
-      (util/str-tr
-       (if (= field-type :heraldry.field.type/plain)
-         (-> (interface/get-raw-data (conj path :tincture) context)
-             util/translate-tincture
-             util/upper-case-first)
-         (get field-options/field-map field-type))
-       {:en " field"
-        :de " Feld"}))))
+      (if (= field-type :heraldry.field.type/plain)
+        (-> (interface/get-raw-data (conj path :tincture) context)
+            util/translate-tincture
+            util/upper-case-first)
+        (get field-options/field-map field-type)))))
 
 (defmethod interface/blazon-component :heraldry.component/field [path context]
   (if (interface/get-sanitized-data (conj path :counterchanged?) context)
