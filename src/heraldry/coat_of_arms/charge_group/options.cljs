@@ -42,7 +42,7 @@
              :min 0
              :max 5
              :default 1
-             :ui {:label "Stretch"
+             :ui {:label strings/stretch
                   :step 0.01}}
    :strip-angle {:type :range
                  :min -90
@@ -79,7 +79,7 @@
                  :min 0
                  :max 5
                  :default 1
-                 :ui {:label "Stretch"
+                 :ui {:label strings/stretch
                       :step 0.01}}
    :rotate-charges? {:type :boolean
                      :default false
@@ -129,7 +129,7 @@
              :min 0
              :max 5
              :default 1
-             :ui {:label "Stretch"
+             :ui {:label strings/stretch
                   :step 0.01}}
    :offset {:type :range
             :min -3

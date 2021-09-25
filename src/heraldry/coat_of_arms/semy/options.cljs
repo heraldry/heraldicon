@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.semy.options
   (:require [heraldry.coat-of-arms.position :as position]
             [heraldry.interface :as interface]
-            [heraldry.strings :as strings]))
+            [heraldry.strings :as strings]
+            [heraldry.util :as util]))
 
 (def default-options
   {:origin (-> position/default-options
@@ -34,13 +35,13 @@
                         :min 0.5
                         :max 2
                         :default 1
-                        :ui {:label "Stretch x"
+                        :ui {:label (util/str-tr strings/stretch " x")
                              :step 0.01}}
             :stretch-y {:type :range
                         :min 0.5
                         :max 2
                         :default 1
-                        :ui {:label "Stretch y"
+                        :ui {:label (util/str-tr strings/stretch " y")
                              :step 0.01}}
             :rotation {:type :range
                        :min -90

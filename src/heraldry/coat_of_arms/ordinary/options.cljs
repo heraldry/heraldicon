@@ -361,7 +361,7 @@
                                                       :min 0.33
                                                       :max 2
                                                       :default 1
-                                                      :ui {:label "Stretch"
+                                                      :ui {:label strings/stretch
                                                            :step 0.01}}
                                 [:origin :point :choices] (util/filter-choices
                                                            position/anchor-point-choices
@@ -495,7 +495,7 @@
                                                      :min 0.33
                                                      :max 10
                                                      :default 2
-                                                     :ui {:label "Stretch"
+                                                     :ui {:label strings/stretch
                                                           :step 0.01}}})
          :quarter (options/pick default-options
                                 [[:type]
