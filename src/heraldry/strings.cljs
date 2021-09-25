@@ -262,3 +262,8 @@
 (def flipped-lc
   {:en "flipped"
    :de "umgedreht"})
+
+#_{:clj-kondo/ignore [:redefined-var]}
+(def name
+  {:en "Name"
+   :de "Name"})
