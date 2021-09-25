@@ -60,7 +60,7 @@
 (defmethod interface/component-options :heraldry.component/arms-general [_path data]
   {:name {:type :text
           :default ""
-          :ui {:label "Name"}}
+          :ui {:label strings/name}}
    :is-public {:type :boolean
                :ui {:label strings/make-public}}
    :attribution (attribution/options (:attribution data))
@@ -70,7 +70,7 @@
 (defmethod interface/component-options :heraldry.component/collection-general [_path data]
   {:name {:type :text
           :default ""
-          :ui {:label "Name"}}
+          :ui {:label strings/name}}
    :is-public {:type :boolean
                :ui {:label strings/make-public}}
    :attribution (attribution/options (:attribution data))
@@ -81,13 +81,14 @@
 (defmethod interface/component-options :heraldry.component/charge-general [_path data]
   {:name {:type :text
           :default ""
-          :ui {:label "Name"}}
+          :ui {:label strings/name}}
    :is-public {:type :boolean
                :ui {:label strings/make-public}}
    :attribution (attribution/options (:attribution data))
    :tags {:ui {:form-type :tags}}
    :type {:type :text
-          :ui {:label "Charge type"}}
+          :ui {:label {:en "Charge type"
+                       :de "Wappenfigurtyp"}}}
    :attitude {:type :choice
               :choices attributes/attitude-choices
               :default :none
@@ -110,7 +111,7 @@
 (defmethod interface/component-options :heraldry.component/ribbon-general [_path data]
   {:name {:type :text
           :default ""
-          :ui {:label "Name"}}
+          :ui {:label strings/name}}
    :is-public {:type :boolean
                :ui {:label strings/make-public}}
    :attribution (attribution/options (:attribution data))

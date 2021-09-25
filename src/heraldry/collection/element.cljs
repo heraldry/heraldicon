@@ -4,7 +4,7 @@
 
 (def default-options
   {:name {:type :text
-          :ui {:label "Name"}}
+          :ui {:label strings/name}}
    :reference {:ui {:label strings/arms
                     :form-type :arms-reference-select}}})
 
