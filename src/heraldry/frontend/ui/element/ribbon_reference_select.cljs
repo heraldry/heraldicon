@@ -1,11 +1,12 @@
 (ns heraldry.frontend.ui.element.ribbon-reference-select
   (:require [com.wsscode.common.async-cljs :refer [<? go-catch]]
+            [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.macros :as macros]
             [re-frame.core :as rf]))
 
 (macros/reg-event-db :set-ribbon-data
@@ -57,9 +58,10 @@
                            (or "None"))]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
-        [submenu/submenu path "Select Ribbon" ribbon-title nil
+        [submenu/submenu path {:en "Select Ribbon"
+                               :de "Band auswählen"} ribbon-title nil
          [ribbon-select/list-ribbon (link-to-ribbon path)]]]])))
 
 (defmethod interface/form-element :ribbon-reference-select [path]

@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.escutcheon-select
   (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
@@ -27,7 +28,7 @@
           label (:label ui)]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
         [submenu/submenu path {:en "Select Escutcheon"
                                :de "Schild auswählen"} (get escutcheon/choice-map value) {:style {:width "17.5em"}}

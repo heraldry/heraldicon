@@ -31,7 +31,7 @@
                     default)]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
         (for [[display-name key] choices]
           ^{:key key}
