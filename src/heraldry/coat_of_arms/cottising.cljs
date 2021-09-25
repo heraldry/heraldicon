@@ -16,7 +16,8 @@
               :min -10
               :max 20
               :default 2
-              :ui {:label "Distance"
+              :ui {:label {:en "Distance"
+                           :de "Abstand"}
                    :step 0.1}}
    :thickness {:type :range
                :min 0.1
