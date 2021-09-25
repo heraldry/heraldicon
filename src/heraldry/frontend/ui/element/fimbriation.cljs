@@ -24,8 +24,9 @@
                                                :tincture-1
                                                util/translate-tincture
                                                util/upper-case-first)
-                                           {:en " and "
-                                            :de " und "}
+                                           " "
+                                           strings/and
+                                           " "
                                            (-> sanitized-fimbriation
                                                :tincture-2
                                                util/translate-tincture
