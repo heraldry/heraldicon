@@ -16,9 +16,10 @@
                   :step 0.01}}
    :mirrored? {:type :boolean
                :default false
-               :ui {:label "Mirrored"}}
+               :ui {:label strings/mirrored}}
    :reversed? {:type :boolean
                :default false
-               :ui {:label "Reversed"}}
-   :ui {:label "Geometry"
+               :ui {:label strings/reversed}}
+   :ui {:label {:en "Geometry"
+                :de "Geometrie"}
         :form-type :geometry}})

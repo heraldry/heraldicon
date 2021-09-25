@@ -194,7 +194,7 @@
                     :form-type :radio-select}}
    :mirrored? {:type :boolean
                :default false
-               :ui {:label "Mirrored"}}
+               :ui {:label strings/mirrored}}
    :flipped? {:type :boolean
               :default false
               :ui {:label "Flipped"}}

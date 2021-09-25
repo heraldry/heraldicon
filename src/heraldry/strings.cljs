@@ -242,3 +242,23 @@
 (def size
   {:en "Size"
    :de "Größe"})
+
+(def mirrored
+  {:en "Mirrored"
+   :de "Gespiegelt"})
+
+(def reversed
+  {:en "Reversed"
+   :de "Umgedreht"})
+
+(def resized
+  {:en "resized"
+   :de "vergrößert"})
+
+(def mirrored-lc
+  {:en "mirrored"
+   :de "gespiegelt"})
+
+(def flipped-lc
+  {:en "flipped"
+   :de "umgedreht"})
