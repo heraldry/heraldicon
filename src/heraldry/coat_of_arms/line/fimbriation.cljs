@@ -53,12 +53,12 @@
                  :min 1
                  :max 10
                  :default 3
-                 :ui {:label strings/thickness-2
+                 :ui {:label (util/str-tr strings/thickness " 2")
                       :step 0.01}}
    :tincture-2 {:type :choice
                 :choices tincture/choices
                 :default :none
-                :ui {:label strings/tincture-2
+                :ui {:label (util/str-tr strings/tincture " 2")
                      :form-type :tincture-select}}
    :ui {:label strings/fimbriation
         :form-type :fimbriation}})

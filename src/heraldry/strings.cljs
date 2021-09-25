@@ -64,10 +64,6 @@
   {:en "Thickness"
    :de "Dicke"})
 
-(def thickness-2
-  {:en "Thickness 2"
-   :de "Dicke 2"})
-
 (def outline
   {:en "Outline"
    :de "Umrandung"})
@@ -129,10 +125,6 @@
 (def tincture
   {:en "Tincture"
    :de "Tinktur"})
-
-(def tincture-2
-  {:en "Tincture 2"
-   :de "Tinktur 2"})
 
 (def line
   {:en "Line"
