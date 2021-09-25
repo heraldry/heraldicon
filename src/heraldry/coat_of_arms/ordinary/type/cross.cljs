@@ -5,15 +5,15 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.coat-of-arms.position :as position]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg.core :as svg]
             [heraldry.math.svg.path :as path]
+            [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/cross)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] "Cross")
+(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Cross"
+                                                              :de "Kreuz"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [path _parent-path environment context]

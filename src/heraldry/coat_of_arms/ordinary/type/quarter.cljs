@@ -11,7 +11,8 @@
 
 (def ordinary-type :heraldry.ordinary.type/quarter)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] "Quarter / Canton")
+(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Quarter / Canton"
+                                                              :de "Vierung / Obereck"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [path _parent-path environment context]

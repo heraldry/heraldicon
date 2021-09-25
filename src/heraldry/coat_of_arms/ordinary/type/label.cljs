@@ -3,15 +3,15 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
             [heraldry.coat-of-arms.position :as position]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
-            [heraldry.math.svg.core :as svg]
             [heraldry.math.svg.path :as path]
+            [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/label)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] "Label")
+(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Label"
+                                                              :de "Turnierkragen"})
 
 (defn relative-points [points]
   (reduce (fn [result point]

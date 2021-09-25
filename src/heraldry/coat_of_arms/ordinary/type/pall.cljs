@@ -14,7 +14,8 @@
 
 (def ordinary-type :heraldry.ordinary.type/pall)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] "Pall")
+(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Pall"
+                                                              :de "Deichsel"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [path _parent-path environment context]
