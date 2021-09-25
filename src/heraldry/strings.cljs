@@ -205,3 +205,19 @@
 (def adjusted
   {:en "adjusted"
    :de "angepaßt"})
+
+(def shifted
+  {:en "shifted"
+   :de "verschoben"})
+
+(def stretched
+  {:en "stretched"
+   :de "gestreckt"})
+
+(def rotated
+  {:en "rotated"
+   :de "rotiert"})
+
+(def default
+  {:en "default"
+   :de "Default"})
