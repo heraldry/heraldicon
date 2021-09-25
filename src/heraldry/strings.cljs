@@ -201,3 +201,7 @@
 (def none
   {:en "None"
    :de "Keine"})
+
+(def adjusted
+  {:en "adjusted"
+   :de "angepaßt"})

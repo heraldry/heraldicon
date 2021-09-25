@@ -18,11 +18,11 @@
     (let [sanitized-attribution (options/sanitize attribution options)
           main-name (attribution/nature-map (:nature sanitized-attribution))
           license (:license sanitized-attribution)
-          changes [(tr main-name)
+          changes [main-name
                    (if (= license :none)
-                     (tr {:en "no license"
-                          :de "keine Lizenz"})
-                     (tr (attribution/license-display-name license (:license-version sanitized-attribution))))]]
+                     {:en "no license"
+                      :de "keine Lizenz"}
+                     (attribution/license-display-name license (:license-version sanitized-attribution)))]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 

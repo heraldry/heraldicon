@@ -15,24 +15,25 @@
   (fn [[fimbriation options] [_ _path]]
     (let [sanitized-fimbriation (options/sanitize fimbriation options)
           main-name (case (:mode sanitized-fimbriation)
-                      :none (tr strings/none)
-                      :single (str (-> sanitized-fimbriation
-                                       :tincture-1
-                                       util/translate-tincture
-                                       util/upper-case-first))
-                      :double (str (-> sanitized-fimbriation
-                                       :tincture-1
-                                       util/translate-tincture
-                                       util/upper-case-first)
-                                   " and "
-                                   (-> sanitized-fimbriation
-                                       :tincture-2
-                                       util/translate-tincture
-                                       util/upper-case-first)))
+                      :none strings/none
+                      :single (util/str-tr (-> sanitized-fimbriation
+                                               :tincture-1
+                                               util/translate-tincture
+                                               util/upper-case-first))
+                      :double (util/str-tr (-> sanitized-fimbriation
+                                               :tincture-1
+                                               util/translate-tincture
+                                               util/upper-case-first)
+                                           {:en " and "
+                                            :de " und "}
+                                           (-> sanitized-fimbriation
+                                               :tincture-2
+                                               util/translate-tincture
+                                               util/upper-case-first)))
           changes [main-name
                    (when (some #(options/changed? % sanitized-fimbriation options)
                                [:alignment :thickness-1 :thickness-2])
-                     "adjusted")]]
+                     strings/adjusted)]]
 
       (-> (util/combine ", " changes)
           util/upper-case-first))))

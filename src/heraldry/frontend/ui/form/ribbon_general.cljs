@@ -8,6 +8,7 @@
             [heraldry.math.curve :as curve]
             [heraldry.ribbon :as ribbon]
             [heraldry.strings :as strings]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (def layers-path
@@ -186,9 +187,9 @@
   (let [segment-type @(rf/subscribe [:get-value (conj path :type)])
         idx (last path)
         z-index @(rf/subscribe [:get-sanitized-data (conj path :z-index)])
-        title (str (inc idx) ". "
-                   (tr (ribbon/segment-type-map segment-type))
-                   ", layer " z-index)]
+        title (util/str-tr (inc idx) ". "
+                           (ribbon/segment-type-map segment-type)
+                           ", layer " z-index)]
 
     [:div {:style {:position "relative"}}
      [submenu/submenu path type-str title {:style {:width "28em"}
