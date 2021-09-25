@@ -12,15 +12,13 @@
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label {:en "Num columns"
-                                        :de "Anzahl Spalten"}}}
+                           :ui {:label strings/num-columns}}
             :num-fields-y {:type :range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label {:en "Num rows"
-                                        :de "Anzahl Zeilen"}}}
+                           :ui {:label strings/num-rows}}
             :offset-x {:type :range
                        :min -1
                        :max 1

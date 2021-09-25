@@ -267,3 +267,11 @@
 (def name
   {:en "Name"
    :de "Name"})
+
+(def num-columns
+  {:en "Number of columns"
+   :de "Anzahl Spalten"})
+
+(def num-rows
+  {:en "Number of rows"
+   :de "Anzahl Reihen"})
