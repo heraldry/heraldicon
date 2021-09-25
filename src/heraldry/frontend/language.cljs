@@ -2,7 +2,8 @@
   (:require [clojure.string :as s]
             [heraldry.frontend.macros :as macros]
             [hodgepodge.core :refer [get-item local-storage set-item]]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [heraldry.util :as util]))
 
 (def language-path
   [:ui :language])
@@ -67,13 +68,6 @@
                   :cursor "pointer"
                   :opacity @(rf/subscribe [::selector-opacity :de])}}]])
 
-(defn tr-raw [data language]
-  (if (map? data)
-    (get data
-         language
-         (get data :en))
-    data))
-
 (defn tr [data]
   (when data
-    (tr-raw data @(rf/subscribe [::selected-language]))))
+    (util/tr-raw data @(rf/subscribe [::selected-language]))))

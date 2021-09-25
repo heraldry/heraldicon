@@ -155,8 +155,23 @@
       coll
       (into [] (vec-add (vec-remove coll pos1) pos2 el)))))
 
-(defn upper-case-first [s]
+(defn upper-case-first-str [s]
   (str (s/upper-case (or (first s) "")) (s/join (rest s))))
+
+(defn upper-case-first [s]
+  (if (map? s)
+    (->> s
+         (map (fn [[k v]]
+                [k (upper-case-first-str v)]))
+         (into {}))
+    (upper-case-first-str s)))
+
+(defn tr-raw [data language]
+  (if (map? data)
+    (get data
+         language
+         (get data :en))
+    data))
 
 (defn translate [keyword]
   (when keyword
@@ -181,13 +196,50 @@
       upper-case-first))
 
 (defn combine [separator words]
-  (->> words
-       (map (fn [s]
-              (if (string? s)
-                s
-                (str s))))
-       (filter #(> (count %) 0))
-       (s/join separator)))
+  (let [translated (->> [:en :de]
+                        (map (fn [language]
+                               [language
+                                (->> words
+                                     (map (fn [s]
+                                            (if (or (string? s)
+                                                    (map? s))
+                                              s
+                                              (str s))))
+                                     (map (fn [s]
+                                            (tr-raw s language)))
+                                     (filter #(> (count %) 0))
+                                     (s/join (tr-raw separator language)))]))
+                        (into {}))]
+    (if (-> translated
+            vals
+            set
+            count
+            (= 1))
+      (-> translated vals first)
+      translated)))
+
+(defn str-tr [& strs]
+  (let [translated (->> [:en :de]
+                        (map (fn [language]
+                               [language
+                                (->> strs
+                                     (map (fn [s]
+                                            (if (or (string? s)
+                                                    (map? s))
+                                              s
+                                              (str s))))
+                                     (map (fn [s]
+                                            (tr-raw s language)))
+                                     (filter #(> (count %) 0))
+                                     (apply str))]))
+                        (into {}))]
+    (if (-> translated
+            vals
+            set
+            count
+            (= 1))
+      (-> translated vals first)
+      translated)))
 
 (defn replace-recursively [data value replacement]
   (walk/postwalk #(if (= % value)

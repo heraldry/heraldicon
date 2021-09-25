@@ -3,6 +3,7 @@
             [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.strings :as strings]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (defn form [path _]
@@ -38,8 +39,8 @@
         title (case @(rf/subscribe [:get-value (conj path :type)])
                 :heraldry.motto.type/motto strings/motto
                 :heraldry.motto.type/slogan strings/slogan)]
-    {:title (str (when (> num-mottos 1)
-                   (str (inc (last path)) ". ")) (tr title))}))
+    {:title (util/str-tr (when (> num-mottos 1)
+                           (str (inc (last path)) ". ")) title)}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/motto [_path]
   {:form form})

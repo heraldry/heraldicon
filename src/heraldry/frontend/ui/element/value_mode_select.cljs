@@ -24,7 +24,7 @@
         display-fn (or display-fn
                        (when (= type :choice)
                          (fn [v]
-                           (tr ((util/choices->map choices) v))))
+                           ((util/choices->map choices) v)))
                        identity)
         effective-value (->> [current-value
                               inherited
@@ -35,21 +35,21 @@
                              first)
         menu (cond-> []
                (and (some? inherited)
-                    (some? default)) (conj {:title (str "Default (" (display-fn default) ")")
+                    (some? default)) (conj {:title (util/str-tr "Default (" (display-fn default) ")")
                                             :icon "fas fa-redo"
                                             :handler (handler-for-value default)})
                (or (some? inherited)
-                   (some? default)) (conj {:title (str (if (some? inherited)
-                                                         (tr {:en "Inherited"
-                                                              :de "Geerbt"})
-                                                         "Auto")
-                                                       " (" (display-fn (or inherited default)) ")")
+                   (some? default)) (conj {:title (util/str-tr (if (some? inherited)
+                                                                 {:en "Inherited"
+                                                                  :de "Geerbt"}
+                                                                 "Auto")
+                                                               " (" (display-fn (or inherited default)) ")")
                                            :icon (if (some? current-value)
                                                    "far fa-square"
                                                    "far fa-check-square")
                                            :handler (handler-for-value nil)})
                (seq additional-values) (-> (concat (map (fn [[display-value value]]
-                                                          {:title (str (tr display-value) " (" (display-fn value) ")")
+                                                          {:title (util/str-tr display-value " (" (display-fn value) ")")
                                                            :icon (if (= current-value value)
                                                                    "far fa-check-square"
                                                                    "far fa-square")
