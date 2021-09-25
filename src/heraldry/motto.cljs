@@ -41,7 +41,7 @@
    :tincture-foreground {:type :choice
                          :choices tinctures-without-furs
                          :default :argent
-                         :ui {:label "Foreground"
+                         :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment/foreground)
                               :form-type :tincture-select}}
 
    :tincture-background {:type :choice
@@ -52,13 +52,13 @@
                                                                    [(tincture/tincture-map :argent) :argent]
                                                                    [(tincture/tincture-map :or) :or]])
                          :default :none
-                         :ui {:label "Background"
+                         :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment/background)
                               :form-type :tincture-select}}
 
    :tincture-text {:type :choice
                    :choices tinctures-without-furs
                    :default :helmet-dark
-                   :ui {:label "Text"
+                   :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment/foreground-with-text)
                         :form-type :tincture-select}}})
 
 (defn motto-options [data]
