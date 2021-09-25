@@ -11,7 +11,8 @@
 
 (def field-type :heraldry.field.type/paly)
 
-(defmethod field-interface/display-name field-type [_] "Paly")
+(defmethod field-interface/display-name field-type [_] {:en "Paly"
+                                                        :de "Gespalten vielfach"})
 
 (defmethod field-interface/part-names field-type [_] nil)
 

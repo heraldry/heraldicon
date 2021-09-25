@@ -4,14 +4,14 @@
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
             [heraldry.math.svg.path :as path]
-            [heraldry.math.svg.core :as svg]))
+            [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/per-bend)
 
-(defmethod field-interface/display-name field-type [_] "Per bend")
+(defmethod field-interface/display-name field-type [_] {:en "Per bend"
+                                                        :de "Schräggeteilt"})
 
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
 

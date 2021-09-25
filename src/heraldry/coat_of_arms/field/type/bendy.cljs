@@ -3,12 +3,13 @@
             [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.shared :as shared]
             [heraldry.coat-of-arms.field.type.barry :as barry]
-            [heraldry.math.vector :as v]
-            [heraldry.interface :as interface]))
+            [heraldry.interface :as interface]
+            [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/bendy)
 
-(defmethod field-interface/display-name field-type [_] "Bendy")
+(defmethod field-interface/display-name field-type [_] {:en "Bendy"
+                                                        :de "Schräggeteilt vielfach"})
 
 (defmethod field-interface/part-names field-type [_] nil)
 

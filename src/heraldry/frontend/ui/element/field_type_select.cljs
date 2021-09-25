@@ -70,7 +70,7 @@
                     :src (static/static-url
                           (str "/svg/field-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
    [:div.bottom
-    [:h3 {:style {:text-align "center"}} display-name]
+    [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
 (defn field-type-select [path]

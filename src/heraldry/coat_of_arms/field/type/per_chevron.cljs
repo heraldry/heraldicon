@@ -13,7 +13,8 @@
 
 (def field-type :heraldry.field.type/per-chevron)
 
-(defmethod field-interface/display-name field-type [_] "Per chevron")
+(defmethod field-interface/display-name field-type [_] {:en "Per chevron"
+                                                        :de "Sparrenweise geteilt"})
 
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
 

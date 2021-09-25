@@ -4,15 +4,15 @@
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.shared.pile :as pile]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
             [heraldry.math.svg.path :as path]
-            [heraldry.math.svg.core :as svg]
+            [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/per-pile)
 
-(defmethod field-interface/display-name field-type [_] "Per pile")
+(defmethod field-interface/display-name field-type [_] {:en "Per pile"
+                                                        :de "Gepalten mit einer Spitze"})
 
 (defmethod field-interface/part-names field-type [_] nil)
 

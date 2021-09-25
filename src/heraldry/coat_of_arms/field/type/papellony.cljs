@@ -7,7 +7,8 @@
 
 (def field-type :heraldry.field.type/papellony)
 
-(defmethod field-interface/display-name field-type [_] "Papellony")
+(defmethod field-interface/display-name field-type [_] {:en "Papellony"
+                                                        :de "Bogenschuppenfeh"})
 
 (defmethod field-interface/part-names field-type [_] nil)
 

@@ -5,14 +5,14 @@
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.position :as position]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
             [heraldry.math.svg.path :as path]
-            [heraldry.math.svg.core :as svg]))
+            [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/tierced-per-pale)
 
-(defmethod field-interface/display-name field-type [_] "Tierced per pale")
+(defmethod field-interface/display-name field-type [_] {:en "Tierced per pale"
+                                                        :de "Zweimal gespalten"})
 
 (defmethod field-interface/part-names field-type [_] ["dexter" "fess" "sinister"])
 

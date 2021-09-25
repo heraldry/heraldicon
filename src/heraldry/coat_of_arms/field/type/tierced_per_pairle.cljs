@@ -14,7 +14,8 @@
 
 (def field-type :heraldry.field.type/tierced-per-pairle)
 
-(defmethod field-interface/display-name field-type [_] "Tierced per pairle")
+(defmethod field-interface/display-name field-type [_] {:en "Tierced per pall"
+                                                        :de "Deichselschnitt"})
 
 (defmethod field-interface/part-names field-type [_] ["middle" "side I" "side II"])
 
