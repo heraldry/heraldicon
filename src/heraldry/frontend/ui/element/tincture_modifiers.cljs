@@ -4,6 +4,7 @@
             [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.charge :as charge]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.ui.element.range :as range]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.tincture-select :as tincture-select]
@@ -82,7 +83,7 @@
         (when options
           [:div.ui-setting
            (when label
-             [:label label])
+             [:label [tr label]])
            [:div.option
             (if (empty? supported-tinctures)
               [:span.disabled "not supported by charge"]

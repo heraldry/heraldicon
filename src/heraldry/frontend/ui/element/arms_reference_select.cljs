@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.arms-reference-select
-  (:require [heraldry.frontend.state :as state]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.arms-select :as arms-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
@@ -27,7 +28,7 @@
                          (or "None"))]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
         [submenu/submenu path "Select Arms" arms-title nil
          [arms-select/list-arms (link-to-arms path)]]]])))

@@ -1,9 +1,10 @@
 (ns heraldry.frontend.ui.element.field-layout
-  (:require [heraldry.frontend.ui.element.field-type-select :as field-type-select]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.macros :as macros]
+            [heraldry.frontend.ui.element.field-type-select :as field-type-select]
             [heraldry.frontend.ui.element.range :as range]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.macros :as macros]
             [heraldry.options :as options]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
@@ -76,7 +77,7 @@
           link-name @(rf/subscribe [:field-layout-submenu-link-name path])]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
         [submenu/submenu path label link-name {:style {:width "22em"}
                                                :class "submenu-field-layout"}

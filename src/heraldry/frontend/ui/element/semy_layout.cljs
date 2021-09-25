@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.semy-layout
-  (:require [heraldry.frontend.ui.element.submenu :as submenu]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.options :as options]
             [heraldry.util :as util]
@@ -34,7 +35,7 @@
           link-name @(rf/subscribe [:semy-layout-submenu-link-name path])]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
         [submenu/submenu path label link-name {:style {:width "22em"}
                                                :class "submenu-semy-layout"}

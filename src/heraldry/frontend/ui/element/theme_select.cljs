@@ -32,7 +32,7 @@
           label (:label ui)]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
         [submenu/submenu path {:en "Select Colour Theme"
                                :de "Farbschema auswählen"}

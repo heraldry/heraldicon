@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.line
   (:require [heraldry.coat-of-arms.line.core :as line]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.options :as options]
@@ -37,7 +38,7 @@
           link-name @(rf/subscribe [:line-submenu-link-name path])]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
         [submenu/submenu path label link-name {:style {:width "24em"}
                                                :class "submenu-line"}

@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.line-type-select
   (:require [heraldry.coat-of-arms.line.core :as line]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
@@ -26,9 +27,10 @@
                     default)]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
-        [submenu/submenu path "Select Line Type" (get line/line-map value) {:style {:width "24em"}}
+        [submenu/submenu path {:en "Select Line Type"
+                               :de "Schnitt auswählen"} (get line/line-map value) {:style {:width "24em"}}
          (for [[display-name key] choices]
            ^{:key display-name}
            [line-type-choice path key display-name :selected? (= key value)])]

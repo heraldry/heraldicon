@@ -40,7 +40,7 @@
           charge-path (vec (drop-last path))]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
         [submenu/submenu path "Select Charge" (charge/title charge-path {}) {:style {:width "21.5em"}}
          (for [[display-name key] choices]
