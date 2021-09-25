@@ -66,7 +66,7 @@
 (defn list-tinctures [tinctures]
   (->> tinctures
        sort
-       (map util/translate-tincture)
+       (map tincture/translate-tincture)
        (util/combine
         ", ")))
 
@@ -143,25 +143,25 @@
               fimbriation-tincture-2-kind
               :metal) (conj {:level :note
                              :message (str "Fimbriation tinctures are both metal ("
-                                           (util/translate-tincture fimbriation-tincture-1)
+                                           (tincture/translate-tincture fimbriation-tincture-1)
                                            " and "
-                                           (util/translate-tincture fimbriation-tincture-2)
+                                           (tincture/translate-tincture fimbriation-tincture-2)
                                            ").")})
 
            (= fimbriation-tincture-1-kind
               fimbriation-tincture-2-kind
               :colour) (conj {:level :note
                               :message (str "Fimbriation tinctures are both colour ("
-                                            (util/translate-tincture fimbriation-tincture-1)
+                                            (tincture/translate-tincture fimbriation-tincture-1)
                                             " and "
-                                            (util/translate-tincture fimbriation-tincture-2)
+                                            (tincture/translate-tincture fimbriation-tincture-2)
                                             ").")})
 
            (= (set [fimbriation-tincture-1-kind])
               field-tincture-kinds
               #{:metal}) (conj {:level :note
                                 :message (str "Fimbriation metal tincture ("
-                                              (util/translate-tincture fimbriation-tincture-1)
+                                              (tincture/translate-tincture fimbriation-tincture-1)
                                               ") touches metal field ("
                                               (list-tinctures field-tinctures)
                                               ").")})
@@ -170,7 +170,7 @@
               field-tincture-kinds
               #{:colour}) (conj {:level :note
                                  :message (str "Fimbriation colour tincture ("
-                                               (util/translate-tincture fimbriation-tincture-1)
+                                               (tincture/translate-tincture fimbriation-tincture-1)
                                                ") touches colour field ("
                                                (list-tinctures field-tinctures)
                                                ").")}))]))))

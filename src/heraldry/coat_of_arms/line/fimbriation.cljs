@@ -199,10 +199,10 @@
 
 (defn blazon-fimbriation [{:keys [tincture-1 tincture-2]}]
   (if tincture-2
-    (util/str-tr strings/fimbriated " " (util/translate-tincture tincture-2)
-                 " " strings/and " " (util/translate-tincture tincture-1))
+    (util/str-tr strings/fimbriated " " (tincture/translate-tincture tincture-2)
+                 " " strings/and " " (tincture/translate-tincture tincture-1))
     (when tincture-1
-      (util/str-tr strings/fimbriated " " (util/translate-tincture tincture-1)))))
+      (util/str-tr strings/fimbriated " " (tincture/translate-tincture tincture-1)))))
 
 (defn blazon [path context & {:keys [include-lines?]}]
   (->> (concat

@@ -74,7 +74,7 @@
 (def choices
   [[{:en "Metal"
      :de "Metall"}
-    [strings/none :none]
+    [strings/void :none]
     [{:en "Argent"
       :de "Silber"} :argent]
     [{:en "Or"
@@ -115,6 +115,9 @@
 
 (def tincture-map
   (util/choices->map choices))
+
+(defn translate-tincture [keyword]
+  (tincture-map keyword (util/translate keyword)))
 
 (def fixed-tincture-choices
   (concat [[{:en "None (can be changed)"

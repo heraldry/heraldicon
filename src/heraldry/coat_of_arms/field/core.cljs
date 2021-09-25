@@ -2,6 +2,7 @@
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.options :as field-options]
+            [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
             [heraldry.util :as util]))
@@ -129,7 +130,7 @@
     (let [field-type (interface/get-sanitized-data (conj path :type) context)]
       (if (= field-type :heraldry.field.type/plain)
         (-> (interface/get-raw-data (conj path :tincture) context)
-            util/translate-tincture
+            tincture/translate-tincture
             util/upper-case-first)
         (get field-options/field-map field-type)))))
 
@@ -143,7 +144,7 @@
 
           field-description
           (case field-type
-            :heraldry.field.type/plain (util/translate-tincture
+            :heraldry.field.type/plain (tincture/translate-tincture
                                         (interface/get-sanitized-data (conj path :tincture) context))
             (let [line (interface/get-sanitized-data (conj path :line) context)
                   mandatory-part-count (mandatory-part-count path context)

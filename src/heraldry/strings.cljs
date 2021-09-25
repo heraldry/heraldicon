@@ -222,3 +222,7 @@
 (def and
   {:en "and"
    :de "und"})
+
+(def void
+  {:en "Void"
+   :de "Leer"})
