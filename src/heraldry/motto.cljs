@@ -8,11 +8,11 @@
 
 (def tinctures-without-furs
   (-> tincture/choices
-      (assoc 0 ["Metal"
-                ["Argent" :argent]
-                ["Or" :or]])
-      (->> (keep-indexed #(when-not (= %1 2) %2)))
-      vec))
+      (update 0 #(filterv (fn [v]
+                            (or (not (vector? v))
+                                (-> v second (not= :none))))
+                          %))
+      (->> (filterv #(when (-> % first :en (not= "Fur")) %)))))
 
 (def default-motto-options
   {:type {:type :choice
@@ -45,10 +45,12 @@
                               :form-type :tincture-select}}
 
    :tincture-background {:type :choice
-                         :choices (assoc tinctures-without-furs 0 ["Other / Metal"
-                                                                   ["Darkened foreground" :none]
-                                                                   ["Argent" :argent]
-                                                                   ["Or" :or]])
+                         :choices (assoc tinctures-without-furs 0 [{:en "Other / Metal"
+                                                                    :de "Andere / Metall"}
+                                                                   [{:en "Darkened foreground"
+                                                                     :de "Vorderseite verdunkelt"} :none]
+                                                                   [(tincture/tincture-map :argent) :argent]
+                                                                   [(tincture/tincture-map :or) :or]])
                          :default :none
                          :ui {:label "Background"
                               :form-type :tincture-select}}
