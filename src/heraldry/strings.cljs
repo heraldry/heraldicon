@@ -213,3 +213,12 @@
 (def default
   {:en "default"
    :de "Default"})
+
+(def fimbriated
+  {:en "fimbriated"
+   :de "gesäumt"})
+
+#_{:clj-kondo/ignore [:redefined-var]}
+(def and
+  {:en "and"
+   :de "und"})

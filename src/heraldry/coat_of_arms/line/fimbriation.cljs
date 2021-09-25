@@ -9,16 +9,21 @@
 
 (def type-choices
   [[strings/none :none]
-   ["Single" :single]
-   ["Double" :double]])
+   [{:en "Single"
+     :de "Einfach"} :single]
+   [{:en "Double"
+     :de "Doppelt"} :double]])
 
 (def type-map
   (util/choices->map type-choices))
 
 (def alignment-choices
-  [["Even" :even]
-   ["Outside" :outside]
-   ["Inside" :inside]])
+  [[{:en "Even"
+     :de "Gleichmäßig"} :even]
+   [{:en "Outside"
+     :de "Außen"} :outside]
+   [{:en "Inside"
+     :de "Innen"} :inside]])
 
 (def alignment-map
   (util/choices->map alignment-choices))
@@ -31,13 +36,18 @@
    :alignment {:type :choice
                :choices alignment-choices
                :default :even
-               :ui {:label "Alignment"}}
+               :ui {:label {:en "Alignment"
+                            :de "Ausrichtung"}}}
    :corner {:type :choice
-            :choices [["Round" :round]
-                      ["Sharp" :sharp]
-                      ["Bevel" :bevel]]
+            :choices [[{:en "Round"
+                        :de "Rund"} :round]
+                      [{:en "Sharp"
+                        :de "Spitz"} :sharp]
+                      [{:en "Bevel"
+                        :de "Abgeschnitten"} :bevel]]
             :default :sharp
-            :ui {:label "Corner"}}
+            :ui {:label {:en "Corner"
+                         :de "Kanten"}}}
    :thickness-1 {:type :range
                  :min 1
                  :max 10
@@ -189,10 +199,10 @@
 
 (defn blazon-fimbriation [{:keys [tincture-1 tincture-2]}]
   (if tincture-2
-    (str "fimbriated " (util/translate-tincture tincture-2)
-         " and " (util/translate-tincture tincture-1))
+    (util/str-tr strings/fimbriated " " (util/translate-tincture tincture-2)
+                 " " strings/and " " (util/translate-tincture tincture-1))
     (when tincture-1
-      (str "fimbriated " (util/translate-tincture tincture-1)))))
+      (util/str-tr strings/fimbriated " " (util/translate-tincture tincture-1)))))
 
 (defn blazon [path context & {:keys [include-lines?]}]
   (->> (concat
