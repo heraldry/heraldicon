@@ -12,13 +12,15 @@
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label "Num columns"}}
+                           :ui {:label {:en "Num columns"
+                                        :de "Anzahl Spalten"}}}
             :num-fields-y {:type :range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label "Num rows"}}
+                           :ui {:label {:en "Num rows"
+                                        :de "Anzahl Zeilen"}}}
             :offset-x {:type :range
                        :min -1
                        :max 1
@@ -52,7 +54,8 @@
                  :form-type :semy-layout}}
    :rectangular? {:type :boolean
                   :default false
-                  :ui {:label "Rectangular grid"}}
+                  :ui {:label {:en "Rectangular grid"
+                               :de "Rechteckiges Gitter"}}}
    :manual-blazon {:type :text
                    :default nil
                    :ui {:label strings/manual-blazon}}})
