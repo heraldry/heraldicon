@@ -4,15 +4,15 @@
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
             [heraldry.math.svg.path :as path]
-            [heraldry.math.svg.core :as svg]
+            [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/chief)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] "Chief")
+(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Chief"
+                                                              :de "Schildhaupt"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [path _parent-path environment {:keys [override-real-start

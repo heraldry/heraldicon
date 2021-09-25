@@ -11,7 +11,8 @@
 
 (def ordinary-type :heraldry.ordinary.type/point)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] "Point")
+(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Point"
+                                                              :de "Schrägeck"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [path _parent-path environment context]

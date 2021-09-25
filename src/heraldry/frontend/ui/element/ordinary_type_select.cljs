@@ -1,10 +1,11 @@
 (ns heraldry.frontend.ui.element.ordinary-type-select
   (:require [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+            [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.frontend.macros :as macros]
             [heraldry.options :as options]
             [heraldry.static :as static]
             [heraldry.util :as util]
@@ -44,7 +45,7 @@
                     :src (static/static-url
                           (str "/svg/ordinary-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
    [:div.bottom
-    [:h3 {:style {:text-align "center"}} display-name]
+    [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
 (defn ordinary-type-select [path]
@@ -57,9 +58,10 @@
           label (:label ui)]
       [:div.ui-setting
        (when label
-         [:label label])
+         [:label [tr label]])
        [:div.option
-        [submenu/submenu path "Select Ordinary" (get ordinary-options/ordinary-map value) {:style {:width "21.5em"}}
+        [submenu/submenu path {:en "Select Ordinary"
+                               :de "Heroldsbild auswählen"} (get ordinary-options/ordinary-map value) {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
            [ordinary-type-choice path key display-name :selected? (= key value)])]

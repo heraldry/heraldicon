@@ -14,7 +14,8 @@
 
 (def ordinary-type :heraldry.ordinary.type/chevron)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] "Chevron")
+(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Chevron"
+                                                              :de "Sparren"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [path _parent-path environment context]
