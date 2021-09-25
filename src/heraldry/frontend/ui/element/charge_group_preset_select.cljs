@@ -1,10 +1,8 @@
 (ns heraldry.frontend.ui.element.charge-group-preset-select
-  (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
+  (:require [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.static :as static]
-            [re-frame.core :as rf]))
+            [heraldry.static :as static]))
 
 (def presets
   [["Ordinaries"
@@ -377,7 +375,9 @@
   [:div.ui-setting
    [:label "Presets"]
    [:div.option
-    [submenu/submenu path "Select Charge Group Preset" "Select" {:style {:width "21.5em"}}
+    [submenu/submenu path {:en "Select Charge Group Preset"
+                           :de "Wappenfigurgruppen Vorauswahl"} {:en "Select"
+                                                                 :de "Auswählen"} {:style {:width "21.5em"}}
      (for [[group-name & group] presets]
        ^{:key group-name}
        [:<>
