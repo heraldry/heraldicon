@@ -4,7 +4,8 @@
 
 (def field-type :heraldry.field.type/plain)
 
-(defmethod field-interface/display-name field-type [_] "Plain")
+(defmethod field-interface/display-name field-type [_] {:en "Plain"
+                                                        :de "Ungeteilt"})
 
 (defmethod field-interface/part-names field-type [_] [])
 

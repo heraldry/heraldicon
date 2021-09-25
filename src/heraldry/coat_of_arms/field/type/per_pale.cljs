@@ -10,7 +10,8 @@
 
 (def field-type :heraldry.field.type/per-pale)
 
-(defmethod field-interface/display-name field-type [_] "Per pale")
+(defmethod field-interface/display-name field-type [_] {:en "Per pale"
+                                                        :de "Gespalten"})
 
 (defmethod field-interface/part-names field-type [_] ["dexter" "sinister"])
 

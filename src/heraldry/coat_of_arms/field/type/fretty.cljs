@@ -7,7 +7,8 @@
 
 (def field-type :heraldry.field.type/fretty)
 
-(defmethod field-interface/display-name field-type [_] "Fretty")
+(defmethod field-interface/display-name field-type [_] {:en "Fretty"
+                                                        :de "Flechtgitter"})
 
 (defmethod field-interface/part-names field-type [_] nil)
 

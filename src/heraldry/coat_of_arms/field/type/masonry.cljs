@@ -7,7 +7,8 @@
 
 (def field-type :heraldry.field.type/masonry)
 
-(defmethod field-interface/display-name field-type [_] "Masonry")
+(defmethod field-interface/display-name field-type [_] {:en "Masonry"
+                                                        :de "Gemauert"})
 
 (defmethod field-interface/part-names field-type [_] nil)
 

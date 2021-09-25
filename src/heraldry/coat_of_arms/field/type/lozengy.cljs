@@ -8,7 +8,8 @@
 
 (def field-type :heraldry.field.type/lozengy)
 
-(defmethod field-interface/display-name field-type [_] "Lozengy")
+(defmethod field-interface/display-name field-type [_] {:en "Lozengy"
+                                                        :de "Schräggewürfelt"})
 
 (defmethod field-interface/part-names field-type [_] nil)
 

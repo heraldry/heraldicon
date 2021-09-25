@@ -7,7 +7,8 @@
 
 (def field-type :heraldry.field.type/potenty)
 
-(defmethod field-interface/display-name field-type [_] "Potenty")
+(defmethod field-interface/display-name field-type [_] {:en "Potenty"
+                                                        :de "Krückenfeh"})
 
 (defmethod field-interface/part-names field-type [_] nil)
 
