@@ -36,8 +36,7 @@
    :alignment {:type :choice
                :choices alignment-choices
                :default :even
-               :ui {:label {:en "Alignment"
-                            :de "Ausrichtung"}}}
+               :ui {:label strings/alignment}}
    :corner {:type :choice
             :choices [[{:en "Round"
                         :de "Rund"} :round]
