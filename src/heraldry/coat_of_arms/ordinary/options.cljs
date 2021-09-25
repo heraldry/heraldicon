@@ -350,7 +350,8 @@
                                                         :choices [[strings/thickness :thickness]
                                                                   [strings/angle :angle]]
                                                         :default :thickness
-                                                        :ui {:label "Size mode"
+                                                        :ui {:label {:en "Size mode"
+                                                                     :de "Größenmodus"}
                                                              :form-type :radio-select}}
                                 [:geometry :size :min] 5
                                 [:geometry :size :max] 100

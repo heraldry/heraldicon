@@ -6,7 +6,7 @@
           :min 5
           :max 100
           :default 50
-          :ui {:label "Size"
+          :ui {:label strings/size
                :step 0.1}}
    :stretch {:type :range
              :min 0.33

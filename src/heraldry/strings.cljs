@@ -238,3 +238,7 @@
 (def stretch
   {:en "Stretch"
    :de "Streckung"})
+
+(def size
+  {:en "Size"
+   :de "Größe"})
