@@ -3,6 +3,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.options :as options]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -14,7 +15,7 @@
   (fn [[fimbriation options] [_ _path]]
     (let [sanitized-fimbriation (options/sanitize fimbriation options)
           main-name (case (:mode sanitized-fimbriation)
-                      :none "None"
+                      :none (tr strings/none)
                       :single (str (-> sanitized-fimbriation
                                        :tincture-1
                                        util/translate-tincture

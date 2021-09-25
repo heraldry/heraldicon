@@ -25,7 +25,8 @@
                                  #(arms-select/fetch-arms arms-id version nil)))
           arms-title (-> arms-data
                          :name
-                         (or "None"))]
+                         (or {:en "None"
+                              :de "Keins"}))]
       [:div.ui-setting
        (when label
          [:label [tr label]])

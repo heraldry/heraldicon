@@ -1,11 +1,11 @@
 (ns heraldry.attribution
   (:require [heraldry.config :as config]
             [heraldry.interface :as interface]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]))
 
 (def license-choices
-  [[{:en "None"
-     :de "Keine"} :none]
+  [[strings/none :none]
    ["CC Attribution" :cc-attribution]
    ["CC Attribution-ShareAlike" :cc-attribution-share-alike]
    ["CC Attribution-NonCommercial-ShareAlike" :cc-attribution-non-commercial-share-alike]

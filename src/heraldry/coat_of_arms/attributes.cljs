@@ -3,8 +3,7 @@
             [heraldry.util :as util]))
 
 (def attitude-choices
-  [[{:en "None"
-     :de "Keine"} :none]
+  [[strings/none :none]
    [{:en "Beasts"
      :de "Tiere"}
     ["Cadent" :cadent]
@@ -50,8 +49,7 @@
   (util/choices->map attitude-choices))
 
 (def facing-choices
-  [[{:en "None"
-     :de "Keine"} :none]
+  [[strings/none :none]
    ["To dexter (default)" :to-dexter]
    ["To sinister" :to-sinister]
    ["Affronté" :affronte]

@@ -8,7 +8,7 @@
             [heraldry.util :as util]))
 
 (def type-choices
-  [["None" :none]
+  [[strings/none :none]
    ["Single" :single]
    ["Double" :double]])
 

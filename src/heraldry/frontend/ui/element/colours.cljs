@@ -2,6 +2,7 @@
   (:require [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.ui.interface :as interface]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -42,8 +43,7 @@
                        [:option {:value (util/keyword->str key)}
                         (tr display-name)])]))]]
               [:br]]))
-         [tr {:en "None"
-              :de "Keine"}])]]]))
+         [tr strings/none])]]]))
 
 (defmethod interface/form-element :colours [path]
   [form path])
