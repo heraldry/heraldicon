@@ -3,6 +3,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.options :as options]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -16,14 +17,18 @@
           changes (concat
                    (when (some #(options/changed? % sanitized-geometry options)
                                [:size :width :height :thickness])
-                     ["resized"])
+                     [strings/resized])
                    (when (some #(options/changed? % sanitized-geometry options)
-                               [:eccentricity :stretch])
-                     ["adjusted"])
+                               [:eccentricity])
+                     [strings/adjusted])
+                   (when (some #(options/changed? % sanitized-geometry options)
+                               [:stretch])
+                     [strings/stretched])
                    (when (:mirrored? sanitized-geometry)
-                     ["mirrored"])
+                     [strings/mirrored-lc])
                    (when (:reversed? sanitized-geometry)
-                     ["reversed"]))]
+                     [{:en "reversed"
+                       :de "umgedreht"}]))]
       (if (seq changes)
         (-> (util/combine ", " changes)
             util/upper-case-first)

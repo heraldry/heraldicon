@@ -4,6 +4,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.options :as options]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -17,17 +18,17 @@
           changes [(-> sanitized-line :type line/line-map)
                    (when (some #(options/changed? % sanitized-line options)
                                [:eccentricity :spacing :offset :base-line])
-                     "adjusted")
+                     strings/adjusted)
                    (when (some #(options/changed? % sanitized-line options)
                                [:width :height])
-                     "resized")
+                     strings/resized)
                    (when (:mirrored? sanitized-line)
-                     "mirrored")
+                     strings/mirrored-lc)
                    (when (:flipped? sanitized-line)
-                     "flipped")
+                     strings/flipped-lc)
                    (when (and (-> sanitized-line :fimbriation :mode)
                               (-> sanitized-line :fimbriation :mode (not= :none)))
-                     "fimbriated")]]
+                     strings/fimbriated)]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
