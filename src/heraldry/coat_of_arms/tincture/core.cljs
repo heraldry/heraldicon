@@ -74,8 +74,7 @@
 (def choices
   [[{:en "Metal"
      :de "Metall"}
-    [{:en "None"
-      :de "Keine"} :none]
+    [strings/none :none]
     [{:en "Argent"
       :de "Silber"} :argent]
     [{:en "Or"

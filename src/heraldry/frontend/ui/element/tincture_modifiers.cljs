@@ -10,6 +10,7 @@
             [heraldry.frontend.ui.element.tincture-select :as tincture-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.options :as options]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -76,7 +77,7 @@
                                    (util/combine ", ")
                                    s/lower-case
                                    util/upper-case-first)
-                              "None")
+                              strings/none)
             link-name (if (-> tinctures-title count (> 30))
                         (str (subs tinctures-title 0 27) "...")
                         tinctures-title)]

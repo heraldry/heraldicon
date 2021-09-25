@@ -55,7 +55,8 @@
                                    #(ribbon-select/fetch-ribbon ribbon-id version nil)))
           ribbon-title (-> ribbon-data
                            :name
-                           (or "None"))]
+                           (or {:en "None"
+                                :de "Keins"}))]
       [:div.ui-setting
        (when label
          [:label [tr label]])

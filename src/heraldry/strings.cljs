@@ -197,3 +197,7 @@
 (def slogan
   {:en "Slogan"
    :de "Slogan"})
+
+(def none
+  {:en "None"
+   :de "Keine"})
