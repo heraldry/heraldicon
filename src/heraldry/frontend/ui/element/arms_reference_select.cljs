@@ -30,7 +30,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path "Select Arms" arms-title nil
+        [submenu/submenu path {:en "Select Arms"
+                               :de "Wappen auswählen"} arms-title nil
          [arms-select/list-arms (link-to-arms path)]]]])))
 
 (defmethod interface/form-element :arms-reference-select [path]

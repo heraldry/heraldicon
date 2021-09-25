@@ -7,8 +7,8 @@
             [heraldry.frontend.ui.element.charge-select :as charge-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
-            [heraldry.strings :as strings]
             [heraldry.static :as static]
+            [heraldry.strings :as strings]
             [re-frame.core :as rf]))
 
 (macros/reg-event-db :update-charge
@@ -42,7 +42,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path "Select Charge" (charge/title charge-path {}) {:style {:width "21.5em"}}
+        [submenu/submenu path {:en "Select Charge"
+                               :de "Wappenfigur auswählen"} (charge/title charge-path {}) {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
            [charge-type-choice path key display-name :selected? (= key value)])
