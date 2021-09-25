@@ -6,6 +6,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.options :as options]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -16,21 +17,29 @@
 
   (fn [[layout options] [_ _path]]
     (let [sanitized-layout (options/sanitize layout options)
-          main-name (str (util/combine "x"
-                                       [(:num-fields-x sanitized-layout)
-                                        (:num-fields-y sanitized-layout)])
-                         " fields")
-          changes [main-name
-                   (when (options/changed? :num-base-fields sanitized-layout options)
-                     (str (:num-base-fields sanitized-layout) " base fields"))
-                   (when (some #(options/changed? % sanitized-layout options)
-                               [:offset-x :offset-y])
-                     "shifted")
-                   (when (some #(options/changed? % sanitized-layout options)
-                               [:stretch-x :stretch-y])
-                     "stretched")
-                   (when (options/changed? :rotation sanitized-layout options)
-                     "rotated")]]
+          main-name (when (or (:num-fields-x options)
+                              (:num-fields-y options))
+                      (util/str-tr (util/combine "x"
+                                                 [(:num-fields-x sanitized-layout)
+                                                  (:num-fields-y sanitized-layout)])
+                                   {:en " fields"
+                                    :de " Felder"}))
+          changes (filter identity
+                          [main-name
+                           (when (options/changed? :num-base-fields sanitized-layout options)
+                             (util/str-tr (:num-base-fields sanitized-layout) {:en " base fields"
+                                                                               :de " Basisfelder"}))
+                           (when (some #(options/changed? % sanitized-layout options)
+                                       [:offset-x :offset-y])
+                             strings/shifted)
+                           (when (some #(options/changed? % sanitized-layout options)
+                                       [:stretch-x :stretch-y])
+                             strings/stretched)
+                           (when (options/changed? :rotation sanitized-layout options)
+                             strings/rotated)])
+          changes (if (seq changes)
+                    changes
+                    [strings/default])]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
