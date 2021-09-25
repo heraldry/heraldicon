@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.position
   (:require [heraldry.math.vector :as v]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]))
 
 (def point-choices
@@ -52,9 +53,12 @@
   (util/choices->map anchor-point-choices))
 
 (def alignment-choices
-  [["Left" :left]
-   ["Middle" :middle]
-   ["Right" :right]])
+  [[{:en "Left"
+     :de "Links"} :left]
+   [{:en "Middle"
+     :de "Mitte"} :middle]
+   [{:en "Right"
+     :de "Rechts"} :right]])
 
 (def alignment-map
   (util/choices->map alignment-choices))
@@ -63,17 +67,17 @@
   {:point {:type :choice
            :choices point-choices
            :default :fess
-           :ui {:label "Point"}}
+           :ui {:label strings/point}}
    :alignment {:type :choice
                :choices alignment-choices
                :default :middle
-               :ui {:label "Alignment"
+               :ui {:label strings/alignment
                     :form-type :radio-select}}
    :angle {:type :range
            :min 0
            :max 360
            :default 0
-           :ui {:label "Angle"}}
+           :ui {:label strings/angle}}
    :offset-x {:type :range
               :min -45
               :max 45
@@ -133,6 +137,6 @@
                         (+ base-angle)
                         (* Math/PI) (/ 180))]
       (v/add origin (v/mul (v/v (Math/cos angle-rad)
-                            (Math/sin angle-rad))
-                       200)))
+                                (Math/sin angle-rad))
+                           200)))
     (calculate anchor environment)))

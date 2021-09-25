@@ -226,3 +226,11 @@
 (def void
   {:en "Void"
    :de "Leer"})
+
+(def alignment
+  {:en "Alignment"
+   :de "Ausrichtung"})
+
+(def point
+  {:en "Point"
+   :de "Punkt"})
