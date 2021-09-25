@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.fimbriation
-  (:require [heraldry.frontend.language :refer [tr]]
+  (:require [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.options :as options]
@@ -18,18 +19,18 @@
                       :none strings/none
                       :single (util/str-tr (-> sanitized-fimbriation
                                                :tincture-1
-                                               util/translate-tincture
+                                               tincture/translate-tincture
                                                util/upper-case-first))
                       :double (util/str-tr (-> sanitized-fimbriation
                                                :tincture-1
-                                               util/translate-tincture
+                                               tincture/translate-tincture
                                                util/upper-case-first)
                                            " "
                                            strings/and
                                            " "
                                            (-> sanitized-fimbriation
                                                :tincture-2
-                                               util/translate-tincture
+                                               tincture/translate-tincture
                                                util/upper-case-first)))
           changes [main-name
                    (when (some #(options/changed? % sanitized-fimbriation options)

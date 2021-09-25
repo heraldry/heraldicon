@@ -181,11 +181,6 @@
         (s/replace "fleur de lis" "fleur-de-lis")
         (s/replace "fleur de lys" "fleur-de-lys"))))
 
-(defn translate-tincture [keyword]
-  (case keyword
-    :none "void"
-    (translate keyword)))
-
 (defn translate-line [{:keys [type]}]
   (when (not= type :straight)
     (translate type)))
