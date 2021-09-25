@@ -10,7 +10,7 @@
   {:escutcheon {:type :choice
                 :choices (drop 1 escutcheon/choices)
                 :default :heater
-                :ui {:label "Escutcheon"
+                :ui {:label strings/escutcheon
                      :form-type :escutcheon-select}}
 
    :mode {:type :choice
