@@ -3,7 +3,8 @@
             [heraldry.util :as util]))
 
 (def
-  ^{:display-name "Heater"}
+  ^{:display-name {:en "Heater"
+                   :de "Dreieckschild"}}
   heater
   ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
   (environment/create
@@ -18,7 +19,8 @@
     :bounding-box [-3 3 0 (+ 2 5.196152422706632)]}))
 
 (def
-  ^{:display-name "Square French"}
+  ^{:display-name {:en "Square French"
+                   :de "Französische Form"}}
   square-french
   (environment/create
    (str "m 0,0"
@@ -31,7 +33,8 @@
     :bounding-box [0 (* 2 12) 0 (+ 15.7 13)]}))
 
 (def
-  ^{:display-name "Square Iberian"}
+  ^{:display-name {:en "Square Iberian"
+                   :de "Halbrundschild / Spanische Form"}}
   square-iberian
   (environment/create
    (str "m 0,0"
@@ -44,7 +47,8 @@
     :bounding-box [-5 5 0 (+ 7 5)]}))
 
 (def
-  ^{:display-name "Square Czech"}
+  ^{:display-name {:en "Square Czech"
+                   :de "Tschechische Form"}}
   square-czech
   (environment/create
    ;; diff(sqrt(r*r - x*x))
@@ -58,7 +62,8 @@
     :bounding-box [0 56 0 56.5]}))
 
 (def
-  ^{:display-name "French modern"}
+  ^{:display-name {:en "French modern"
+                   :de "Französische Form (modern) / Rechteck"}}
   french-modern
   (environment/create
    (str "m 0,0"
@@ -77,7 +82,8 @@
     :bounding-box [-7 7 0 (* 2 8)]}))
 
 (def
-  ^{:display-name "Lozenge"}
+  ^{:display-name {:en "Lozenge"
+                   :de "Rautenform / Damenschild"}}
   lozenge
   (environment/create
    (str "m 0,0"
@@ -90,7 +96,8 @@
     :points {:fess {:x 0 :y 6.5}}}))
 
 (def
-  ^{:display-name "Oval"}
+  ^{:display-name {:en "Oval"
+                   :de "Ovale Form"}}
   oval
   (environment/create
    (str "m 0,0"
@@ -104,7 +111,8 @@
     :points {:fess {:x 0 :y 6.5}}}))
 
 (def
-  ^{:display-name "Roundel"}
+  ^{:display-name {:en "Roundel"
+                   :de "Runde Form"}}
   roundel
   (environment/create
    (str "m 0,0"
@@ -116,7 +124,8 @@
     :points {:fess {:x 0 :y 5}}}))
 
 (def
-  ^{:display-name "Swiss"}
+  ^{:display-name {:en "Swiss"
+                   :de "Schweizer Form"}}
   swiss
   ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
   (environment/create
@@ -132,7 +141,8 @@
     :bounding-box [-3 3 0 (+ 2 5.196152422706632)]}))
 
 (def
-  ^{:display-name "English"}
+  ^{:display-name {:en "English"
+                   :de "Englische Form"}}
   english
   (environment/create
    (str "m 0,0"
@@ -153,7 +163,8 @@
     :bounding-box [-8 8 0 (+ (* 2 8) 1)]}))
 
 (def
-  ^{:display-name "Polish"}
+  ^{:display-name {:en "Polish"
+                   :de "Polnische Form"}}
   polish
   (environment/create
    (str "m 43.402145,5e-7 "
@@ -177,7 +188,8 @@
     :points {:fess {:x 50 :y 60}}}))
 
 (def
-  ^{:display-name "Polish 19th century"}
+  ^{:display-name {:en "Polish 19th century"
+                   :de "Polnische Form (19. Jh)"}}
   polish-19th-century
   (environment/create
    (str
@@ -215,7 +227,8 @@
     :points {:fess {:x 50 :y 55}}}))
 
 (def
-  ^{:display-name "Rectangle"}
+  ^{:display-name {:en "Rectangle"
+                   :de "Einfaches Rechteck"}}
   rectangle
   (environment/create
    (str
@@ -229,7 +242,8 @@
     :points {:fess {:x 5 :y 6}}}))
 
 (def
-  ^{:display-name "Flag (3:2)"}
+  ^{:display-name {:en "Flag (3:2)"
+                   :de "Flagge (3:2)"}}
   flag
   (environment/create
    (str
@@ -243,7 +257,8 @@
     :points {:fess {:x 1.5 :y 1}}}))
 
 (def
-  ^{:display-name "Flag (2:1)"}
+  ^{:display-name {:en "Flag (2:1)"
+                   :de "Flagge (2:1)"}}
   flag-2-1
   (environment/create
    (str
@@ -257,7 +272,8 @@
     :points {:fess {:x 1 :y 0.5}}}))
 
 (def
-  ^{:display-name "Flag (5:3)"}
+  ^{:display-name {:en "Flag (5:3)"
+                   :de "Flagge (5:3)"}}
   flag-5-3
   (environment/create
    (str
@@ -271,7 +287,8 @@
     :points {:fess {:x 2.5 :y 1.5}}}))
 
 (def
-  ^{:display-name "Wedge"}
+  ^{:display-name {:en "Wedge"
+                   :de "Dreieckschild (eingekerbt)"}}
   wedge
   ;; sqrt(3) / 2 * 6 + 2 ~ 7.196152422706632
   (let [height 7.196152422706632

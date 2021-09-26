@@ -57,7 +57,8 @@
                (assoc-in [:ui :label] strings/anchor))
    :geometry geometry/default-options
    :escutcheon {:type :choice
-                :choices (assoc-in (vec root-escutcheon/choices) [0 0] "Root")
+                :choices (assoc-in (vec root-escutcheon/choices) [0 0] {:en "Root"
+                                                                        :de "Ursprung"})
                 :default :none
                 :ui {:label strings/escutcheon
                      :form-type :escutcheon-select}}

@@ -1,11 +1,11 @@
 (ns heraldry.frontend.ui.element.escutcheon-select
-  (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
-            [heraldry.frontend.language :refer [tr]]
+  (:require [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.static :as static]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (defn escutcheon-choice [path key display-name & {:keys [selected?]}]
@@ -15,7 +15,7 @@
                     :src (static/static-url
                           (str "/svg/escutcheon-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
    [:div.bottom
-    [:h3 {:style {:text-align "center"}} display-name]
+    [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
 (defn escutcheon-select [path]
@@ -25,13 +25,14 @@
           value (or current-value
                     inherited
                     default)
-          label (:label ui)]
+          label (:label ui)
+          choice-map (util/choices->map choices)]
       [:div.ui-setting
        (when label
          [:label [tr label]])
        [:div.option
         [submenu/submenu path {:en "Select Escutcheon"
-                               :de "Schild auswählen"} (get escutcheon/choice-map value) {:style {:width "17.5em"}}
+                               :de "Schild auswählen"} (get choice-map value) {:style {:width "17.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
            [escutcheon-choice path key display-name :selected? (= key value)])]
