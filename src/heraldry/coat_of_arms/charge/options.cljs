@@ -17,7 +17,8 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.interface :as interface]
             [heraldry.options :as options]
-            [heraldry.strings :as strings]))
+            [heraldry.strings :as strings]
+            [heraldry.util :as util]))
 
 (def charges
   [roundel/charge-type
@@ -34,6 +35,9 @@
   (->> charges
        (map (fn [key]
               [(charge-interface/display-name key) key]))))
+
+(def choice-map
+  (util/choices->map choices))
 
 (def default-options
   {:type {:type :choice
@@ -183,3 +187,17 @@
 
 (defmethod interface/component-options :heraldry.component/charge [_path data]
   (options data))
+
+(defn title [path context]
+  (let [charge-type (interface/get-raw-data (conj path :type) context)
+        attitude (or (interface/get-raw-data (conj path :attitude) context)
+                     :none)
+        facing (or (interface/get-raw-data (conj path :facing) context)
+                   :none)
+        charge-name (or (choice-map charge-type)
+                        (util/translate-cap-first charge-type))]
+    (util/combine " " [charge-name
+                       (when-not (= attitude :none)
+                         (util/translate attitude))
+                       (when-not (#{:none :to-dexter} facing)
+                         (util/translate facing))])))

@@ -1,7 +1,9 @@
 (ns heraldry.frontend.ui.form.charge
   (:require [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.frontend.ui.interface :as interface]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [heraldry.coat-of-arms.charge.options :as charge-options]
+            [heraldry.util :as util]))
 
 (defn form [path _]
   [:<>
@@ -20,7 +22,7 @@
 (defmethod interface/component-node-data :heraldry.component/charge [path]
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
   ;; depends on charge data
-  {:title (str (charge/title path {}) " charge")
+  {:title (charge-options/title path {})
    :validation @(rf/subscribe [:validate-charge path])
    :nodes [{:path (conj path :field)}]})
 

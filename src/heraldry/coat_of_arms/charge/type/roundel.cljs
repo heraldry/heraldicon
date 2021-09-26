@@ -5,7 +5,8 @@
 
 (def charge-type :heraldry.charge.type/roundel)
 
-(defmethod charge-interface/display-name charge-type [_] "Roundel")
+(defmethod charge-interface/display-name charge-type [_] {:en "Roundel"
+                                                          :de "Kugel"})
 
 (defmethod charge-interface/render-charge charge-type
   [path parent-path environment context]

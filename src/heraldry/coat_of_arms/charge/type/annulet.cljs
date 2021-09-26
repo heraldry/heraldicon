@@ -5,7 +5,8 @@
 
 (def charge-type :heraldry.charge.type/annulet)
 
-(defmethod charge-interface/display-name charge-type [_] "Annulet")
+(defmethod charge-interface/display-name charge-type [_] {:en "Annulet"
+                                                          :de "Ring"})
 
 (defmethod charge-interface/render-charge charge-type
   [path parent-path environment context]

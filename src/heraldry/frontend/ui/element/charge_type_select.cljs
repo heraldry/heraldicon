@@ -1,5 +1,5 @@
 (ns heraldry.frontend.ui.element.charge-type-select
-  (:require [heraldry.coat-of-arms.charge.core :as charge]
+  (:require [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.frontend.charge :as frontend-charge]
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.macros :as macros]
@@ -26,7 +26,7 @@
                     :src (static/static-url
                           (str "/svg/charge-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
    [:div.bottom
-    [:h3 {:style {:text-align "center"}} display-name]
+    [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
 (defn charge-type-select [path]
@@ -43,7 +43,7 @@
          [:label [tr label]])
        [:div.option
         [submenu/submenu path {:en "Select Charge"
-                               :de "Wappenfigur auswählen"} (charge/title charge-path {}) {:style {:width "21.5em"}}
+                               :de "Wappenfigur auswählen"} (charge-options/title charge-path {}) {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
            [charge-type-choice path key display-name :selected? (= key value)])

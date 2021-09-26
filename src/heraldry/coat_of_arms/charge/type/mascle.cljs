@@ -5,7 +5,8 @@
 
 (def charge-type :heraldry.charge.type/mascle)
 
-(defmethod charge-interface/display-name charge-type [_] "Mascle")
+(defmethod charge-interface/display-name charge-type [_] {:en "Mascle"
+                                                          :de "Fensterraute"})
 
 (defmethod charge-interface/render-charge charge-type
   [path parent-path environment context]

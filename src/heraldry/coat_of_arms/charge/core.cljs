@@ -9,18 +9,6 @@
 (defmethod interface/render-component :heraldry.component/charge [path parent-path environment context]
   [charge-interface/render-charge path parent-path environment context])
 
-(defn title [path context]
-  (let [charge-type (interface/get-raw-data (conj path :type) context)
-        attitude (or (interface/get-raw-data (conj path :attitude) context)
-                     :none)
-        facing (or (interface/get-raw-data (conj path :facing) context)
-                   :none)]
-    (util/combine " " [(util/translate-cap-first charge-type)
-                       (when-not (= attitude :none)
-                         (util/translate attitude))
-                       (when-not (#{:none :to-dexter} facing)
-                         (util/translate facing))])))
-
 (defmethod interface/blazon-component :heraldry.component/charge [path {:keys [load-charge-data] :as context}]
   (let [charge-type (interface/get-raw-data (conj path :type) context)
         attitude (interface/get-sanitized-data (conj path :attitude) context)
