@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.charge-group-preset-select
-  (:require [heraldry.frontend.macros :as macros]
+  (:require [heraldry.frontend.language :refer [tr]]
+            [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.static :as static]))
@@ -397,13 +398,13 @@
                     :src (static/static-url
                           (str "/svg/charge-group-preset-" (name key) ".svg"))}]
    [:div.bottom
-    [:h3 {:style {:text-align "center"}} display-name]
+    [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
 (defn charge-group-preset-select [path]
   [:div.ui-setting
-   [:label {:en "Presets"
-            :de "Vorauswahl"}]
+   [:label [tr {:en "Presets"
+                :de "Vorauswahl"}]]
    [:div.option
     [submenu/submenu path {:en "Select Charge Group Preset"
                            :de "Wappenfigurgruppen Vorauswahl"} {:en "Select"
@@ -411,7 +412,7 @@
      (for [[group-name & group] presets]
        ^{:key group-name}
        [:<>
-        [:h4 group-name]
+        [:h4 [tr group-name]]
         (for [[display-name key charge-group charge-adjustments] group]
           ^{:key display-name}
           [charge-group-preset-choice path key charge-group charge-adjustments display-name])])]]])
