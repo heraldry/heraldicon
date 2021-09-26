@@ -11,14 +11,14 @@
    ["Sinister" :sinister]
    ["Honour" :honour]
    ["Nombril" :nombril]
-   ["Top-left" :top-left]
-   ["Top" :top]
-   ["Top-right" :top-right]
-   ["Left" :left]
-   ["Right" :right]
-   ["Bottom-left" :bottom-left]
-   ["Bottom" :bottom]
-   ["Bottom-right" :bottom-right]])
+   [strings/top-left :top-left]
+   [strings/top :top]
+   [strings/top-right :top-right]
+   [strings/left :left]
+   [strings/right :right]
+   [strings/bottom-left :bottom-left]
+   [strings/bottom :bottom]
+   [strings/bottom-right :bottom-right]])
 
 (def point-choices-x
   (->> point-choices
@@ -32,14 +32,14 @@
    #{:chief :honour :fess :nombril :base}))
 
 (def anchor-point-choices
-  [["Top-left" :top-left]
-   ["Top" :top]
-   ["Top-right" :top-right]
-   ["Left" :left]
-   ["Right" :right]
-   ["Bottom-left" :bottom-left]
-   ["Bottom" :bottom]
-   ["Bottom-right" :bottom-right]
+  [[strings/top-left :top-left]
+   [strings/top :top]
+   [strings/top-right :top-right]
+   [strings/left :left]
+   [strings/right :right]
+   [strings/bottom-left :bottom-left]
+   [strings/bottom :bottom]
+   [strings/bottom-right :bottom-right]
    ["Fess" :fess]
    ["Chief" :chief]
    ["Base" :base]

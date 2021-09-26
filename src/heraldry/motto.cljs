@@ -20,8 +20,8 @@
                     [strings/slogan :heraldry.motto.type/slogan]]
           :ui {:label strings/type}}
    :origin (-> position/default-options
-               (assoc-in [:point :choices] [["Top" :top]
-                                            ["Bottom" :bottom]])
+               (assoc-in [:point :choices] [[strings/top :top]
+                                            [strings/bottom :bottom]])
                (assoc-in [:point :default] :bottom)
                (assoc-in [:offset-x :min] -100)
                (assoc-in [:offset-x :max] 100)

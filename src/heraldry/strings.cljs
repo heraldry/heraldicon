@@ -355,3 +355,19 @@
 (def bottom
   {:en "Bottom"
    :de "Unten"})
+
+(def bottom-left
+  {:en "Bottom-left"
+   :de "Unten-links"})
+
+(def bottom-right
+  {:en "Bottom-right"
+   :de "Unten-rechts"})
+
+(def top-left
+  {:en "Top-left"
+   :de "Oben-links"})
+
+(def top-right
+  {:en "Top-right"
+   :de "Oben-rechts"})
