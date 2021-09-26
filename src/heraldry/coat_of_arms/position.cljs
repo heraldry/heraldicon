@@ -53,12 +53,9 @@
   (util/choices->map anchor-point-choices))
 
 (def alignment-choices
-  [[{:en "Left"
-     :de "Links"} :left]
-   [{:en "Middle"
-     :de "Mitte"} :middle]
-   [{:en "Right"
-     :de "Rechts"} :right]])
+  [[strings/left :left]
+   [strings/middle :middle]
+   [strings/right :right]])
 
 (def alignment-map
   (util/choices->map alignment-choices))
@@ -82,15 +79,15 @@
               :min -45
               :max 45
               :default 0
-              :ui {:label "Offset x"
+              :ui {:label (util/str-tr strings/offset " x")
                    :step 0.1}}
    :offset-y {:type :range
               :min -45
               :max 45
               :default 0
-              :ui {:label "Offset y"
+              :ui {:label (util/str-tr strings/offset " y")
                    :step 0.1}}
-   :ui {:label "Position"
+   :ui {:label strings/position
         :form-type :position}})
 
 (def anchor-default-options

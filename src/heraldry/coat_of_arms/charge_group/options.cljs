@@ -48,32 +48,35 @@
                  :min -90
                  :max 90
                  :default 0
-                 :ui {:label "Strip angle"
+                 :ui {:label {:en "Strip angle"
+                              :de "Streifenwinkel"}
                       :step 1}}
    :start-angle {:type :range
                  :min -180
                  :max 180
                  :default 0
-                 :ui {:label "Start angle"
+                 :ui {:label {:en "Start angle"
+                              :de "Startwinkel"}
                       :step 1}}
    :arc-angle {:type :range
                :min 0
                :max 360
                :default 360
-               :ui {:label "Arc angle"
+               :ui {:label {:en "Arc angle"
+                            :de "Bogenwinkel"}
                     :step 1}}
    :slots {:type :range
            :min 1
            :max 20
            :default 5
            :integer? true
-           :ui {:label "Number"
+           :ui {:label strings/number
                 :form-type :charge-group-slot-number}}
    :radius {:type :range
             :min 0
             :max 100
             :default 30
-            :ui {:label "Radius"
+            :ui {:label strings/radius
                  :step 0.1}}
    :arc-stretch {:type :range
                  :min 0
@@ -83,7 +86,8 @@
                       :step 0.01}}
    :rotate-charges? {:type :boolean
                      :default false
-                     :ui {:label "Rotate charges"}}
+                     :ui {:label {:en "Rotate charges"
+                                  :de "Wappenfiguren rotieren"}}}
    :manual-blazon {:type :text
                    :default nil
                    :ui {:label strings/manual-blazon}}})
@@ -123,7 +127,7 @@
            :max 10
            :default 3
            :integer? true
-           :ui {:label "Number"
+           :ui {:label strings/number
                 :form-type :charge-group-slot-number}}
    :stretch {:type :range
              :min 0
@@ -135,7 +139,7 @@
             :min -3
             :max 3
             :default 0
-            :ui {:label "Offset"
+            :ui {:label strings/offset
                  :step 0.01}}})
 
 (defmethod interface/component-options :heraldry.component/charge-group [_path data]

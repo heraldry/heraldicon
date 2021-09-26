@@ -19,8 +19,7 @@
                     [{:en "Hatching"
                       :de "Schraffur"} :hatching]]
           :default :colours
-          :ui {:label {:en "Mode"
-                       :de "Modus"}
+          :ui {:label strings/mode
                :form-type :radio-select}}
 
    :theme {:type :choice

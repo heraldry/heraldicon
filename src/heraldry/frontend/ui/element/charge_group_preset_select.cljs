@@ -373,7 +373,8 @@
 
 (defn charge-group-preset-select [path]
   [:div.ui-setting
-   [:label "Presets"]
+   [:label {:en "Presets"
+            :de "Vorauswahl"}]
    [:div.option
     [submenu/submenu path {:en "Select Charge Group Preset"
                            :de "Wappenfigurgruppen Vorauswahl"} {:en "Select"

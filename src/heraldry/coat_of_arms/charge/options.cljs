@@ -73,11 +73,13 @@
    :tincture {:eyed {:type :choice
                      :choices tincture/choices
                      :default :argent
-                     :ui {:label "Eyed"}}
+                     :ui {:label {:en "Eyed"
+                                  :de "Augen"}}}
               :toothed {:type :choice
                         :choices tincture/choices
                         :default :argent
-                        :ui {:label "Toothed"}}
+                        :ui {:label {:en "Toothed"
+                                     :de "Zähne"}}}
               :shadow {:type :range
                        :min 0
                        :max 1
@@ -94,10 +96,13 @@
                            :de "Tinkturen"}
                    :form-type :tincture-modifiers}}
    :outline-mode {:type :choice
-                  :choices [["Keep" :keep]
+                  :choices [[{:en "Keep"
+                              :de "Anzeigen"} :keep]
                             ["Transparent" :transparent]
-                            ["Primary" :primary]
-                            ["Remove" :remove]]
+                            [{:en "Primary"
+                              :de "Primär"} :primary]
+                            [{:en "Remove"
+                              :de "Entfernen"} :remove]]
                   :default :keep
                   :ui {:label strings/outline}}
    :manual-blazon {:type :text
@@ -107,7 +112,8 @@
                    :default 0
                    :min -100
                    :max 100
-                   :ui {:label "Vertical mask"
+                   :ui {:label {:en "Vertical mask"
+                                :de "Vertikale Maske"}
                         :step 1}}})
 
 (defn options [charge & {:keys [part-of-semy? part-of-charge-group?]}]
