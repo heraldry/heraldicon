@@ -4,13 +4,13 @@
             [heraldry.util :as util]))
 
 (def point-choices
-  [["Fess" :fess]
-   ["Chief" :chief]
-   ["Base" :base]
-   ["Dexter" :dexter]
-   ["Sinister" :sinister]
-   ["Honour" :honour]
-   ["Nombril" :nombril]
+  [[strings/fess-point :fess]
+   [strings/chief-point :chief]
+   [strings/base-point :base]
+   [strings/dexter-point :dexter]
+   [strings/sinister-point :sinister]
+   [strings/honour-point :honour]
+   [strings/nombril-point :nombril]
    [strings/top-left :top-left]
    [strings/top :top]
    [strings/top-right :top-right]
@@ -40,14 +40,15 @@
    [strings/bottom-left :bottom-left]
    [strings/bottom :bottom]
    [strings/bottom-right :bottom-right]
-   ["Fess" :fess]
-   ["Chief" :chief]
-   ["Base" :base]
-   ["Dexter" :dexter]
-   ["Sinister" :sinister]
-   ["Honour" :honour]
-   ["Nombril" :nombril]
-   ["Fixed angle" :angle]])
+   [strings/fess-point :fess]
+   [strings/chief-point :chief]
+   [strings/base-point :base]
+   [strings/dexter-point :dexter]
+   [strings/sinister-point :sinister]
+   [strings/honour-point :honour]
+   [strings/nombril-point :nombril]
+   [{:en "Fixed angle"
+     :de "Fester Winkel"} :angle]])
 
 (def anchor-point-map
   (util/choices->map anchor-point-choices))
