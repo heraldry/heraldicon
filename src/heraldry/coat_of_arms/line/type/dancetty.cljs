@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.dancetty)
 
 (defn pattern
-  {:display-name "Dancetty"
+  {:display-name {:en "Dancetty"
+                  :de "Zickzackschnitt"}
    :value :dancetty}
   [{:keys [height
            width]}

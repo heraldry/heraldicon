@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.fir-twigged)
 
 (defn pattern
-  {:display-name "Fir-twigged"
+  {:display-name {:en "Fir-twigged"
+                  :de "Tannenreisschnitt"}
    :value :fir-twigged}
   [{:keys [height width]}
    _line-options]

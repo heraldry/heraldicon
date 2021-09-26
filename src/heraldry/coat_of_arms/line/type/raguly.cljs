@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.raguly)
 
 (defn pattern
-  {:display-name "Raguly"
+  {:display-name {:en "Raguly"
+                  :de "Schrägzinnenschnitt"}
    :value :raguly}
   [{:keys [eccentricity
            height

@@ -34,7 +34,8 @@
      (v/rotate (v/dot end vf) angle)]))
 
 (defn pattern
-  {:display-name "Rayonny (spiked)"
+  {:display-name {:en "Rayonny (spiked)"
+                  :de "Spitzen-Flammen-Schnitt"}
    :value :rayonny-spiked}
   [{:keys [eccentricity
            height

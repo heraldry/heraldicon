@@ -2,7 +2,8 @@
   (:require [heraldry.util :as util]))
 
 (defn pattern
-  {:display-name "Embattled in crosses"
+  {:display-name {:en "Embattled in crosses"
+                  :de "Kreuzzinnenschnitt"}
    :value :embattled-in-crosses}
   [{:keys [height
            eccentricity

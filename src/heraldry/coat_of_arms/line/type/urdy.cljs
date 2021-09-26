@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.urdy)
 
 (defn pattern
-  {:display-name "Urdy"
+  {:display-name {:en "Urdy"
+                  :de "Eisenhutschnitt"}
    :value :urdy}
   [{:keys [eccentricity
            height

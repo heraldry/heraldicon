@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.straight)
 
 (defn full
-  {:display-name "Straight"
+  {:display-name {:en "Straight"
+                  :de "Gerade"}
    :value :straight
    :full? true}
   [{:keys [width]}
