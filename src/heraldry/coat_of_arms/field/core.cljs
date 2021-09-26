@@ -164,7 +164,7 @@
                                                 :heraldry.field.type/ref) (util/combine
                                                                            " "
                                                                            [(when (> num-fields 3)
-                                                                              (str (part-name field-type index) ":"))
+                                                                              (util/str-tr (part-name field-type index) ":"))
                                                                             (interface/blazon subfield-path context)])))))))])))
           components-description (util/combine
                                   ", "
@@ -179,4 +179,4 @@
               (and (= field-type :heraldry.field.type/plain)
                    (zero? num-components)))
         blazon
-        (str "[" blazon "]")))))
+        (util/str-tr "[" blazon "]")))))
