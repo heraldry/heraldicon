@@ -45,7 +45,7 @@
 
 (macros/reg-event-db ::load-language-setting
   (fn [db _]
-    (let [loaded-language (get-item local-storage local-storage-language-name)
+    (let [loaded-language (get-item local-storage local-storage-language-name ":en")
           loaded-language (cond-> loaded-language
                             (s/starts-with? loaded-language ":") (-> (subs 1) keyword))]
       (set-language db loaded-language))))
