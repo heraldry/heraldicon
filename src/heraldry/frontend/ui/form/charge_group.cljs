@@ -3,14 +3,18 @@
             [heraldry.coat-of-arms.charge.core :as charge]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.charge-group-preset-select :as charge-group-preset-select]
+            [heraldry.frontend.ui.element.charge-group-preset-select
+             :as
+             charge-group-preset-select]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.interface :as interface]
             [heraldry.math.vector :as v]
             [heraldry.strings :as strings]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (macros/reg-event-db :cycle-charge-index
@@ -211,12 +215,18 @@
   (let [num-slots @(rf/subscribe [:get-list-size (conj path :slots)])
         stretch @(rf/subscribe [:get-sanitized-data (conj path :stretch)])
         offset @(rf/subscribe [:get-sanitized-data (conj path :offset)])
-        title (str num-slots
-                   " slot" (when (not= num-slots 1) "s")
-                   (when-not (= stretch 1)
-                     ", stretched")
-                   (when-not (zero? offset)
-                     ", offset"))]
+        title (util/combine
+               ", "
+               [(util/str-tr num-slots
+                             " " (if (= num-slots 1)
+                                   {:en "slot"
+                                    :de "Slot"}
+                                   {:en "slots"
+                                    :de "Slots"}))
+                (when-not (= stretch 1)
+                  strings/stretched)
+                (when-not (zero? offset)
+                  strings/shifted)])]
     [:div {:style {:position "relative"}}
      [submenu/submenu path type-str title {:style {:width "20em"}
                                            :class "submenu-strip-form"}
@@ -231,9 +241,17 @@
                        :heraldry.charge-group.type/columns}
                      charge-group-type)
         type-str (case charge-group-type
-                   :heraldry.charge-group.type/rows "Row"
-                   :heraldry.charge-group.type/columns "Column"
+                   :heraldry.charge-group.type/rows {:en "Row"
+                                                     :de "Zeile"}
+                   :heraldry.charge-group.type/columns {:en "Column"
+                                                        :de "Spalte"}
                    nil)
+        type-plural-str (case charge-group-type
+                          :heraldry.charge-group.type/rows {:en "Rows"
+                                                            :de "Zeilen"}
+                          :heraldry.charge-group.type/columns {:en "Columns"
+                                                               :de "Spalten"}
+                          nil)
         strips-path (conj path :strips)
         num-strips @(rf/subscribe [:get-list-size strips-path])]
     [:<> {:style {:display "table-cell"
@@ -258,9 +276,9 @@
 
      (when strip-type?
        [:div.ui-setting
-        [:label (str type-str "s ")
+        [:label [tr type-plural-str]
          [:button {:on-click #(state/dispatch-on-event % [:add-charge-group-strip strips-path default/charge-group-strip])}
-          [:i.fas.fa-plus] " Add"]]
+          [:i.fas.fa-plus] " " [tr strings/add]]]
 
         [:div.option.charge-group-strips
          [:ul
@@ -292,9 +310,11 @@
 
 (defmethod ui-interface/component-node-data :heraldry.component/charge-group [path]
   (let [num-charges @(rf/subscribe [:get-list-size (conj path :charges)])]
-    {:title (str "Charge group of " (if (= num-charges 1)
-                                      (charge/title (conj path :charges 0) {})
-                                      "various"))
+    {:title (util/str-tr {:en "Charge group of "
+                          :de "Gruppe von "} (if (= num-charges 1)
+                                               (charge/title (conj path :charges 0) {})
+                                               {:en "various"
+                                                :de "verschiedenen"}))
      :buttons [{:icon "fas fa-plus"
                 :title strings/add
                 :menu [{:title strings/charge
