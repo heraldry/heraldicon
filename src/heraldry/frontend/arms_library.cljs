@@ -148,8 +148,8 @@
         (invalidate-arms-cache user-id)
         (invalidate-arms-cache :all)
         (rf/dispatch-sync [:set-form-message form-db-path
-                           {:en (str "Arms saved, new version: " (:version response))
-                            :de (str "Wappen gespeichert, neue Version: " (:version response))}])
+                           (util/str-tr {:en "Arms saved, new version: "
+                                         :de "Wappen gespeichert, neue Version: "} (:version response))])
         (reife/push-state :view-arms-by-id {:id (util/id-for-url arms-id)}))
       (modal/stop-loading)
       (catch :default e

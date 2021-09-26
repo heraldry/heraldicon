@@ -20,7 +20,7 @@
             [heraldry.math.svg.core :as svg]
             [heraldry.render :as render]
             [heraldry.strings :as strings]
-            [heraldry.util :refer [id-for-url]]
+            [heraldry.util :as util :refer [id-for-url]]
             [hickory.core :as hickory]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
@@ -235,8 +235,8 @@
           (state/invalidate-cache-without-current form-db-path [charge-id 0])
           (invalidate-charges-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
-                             {:en (str "Charge saved, new version: " (:version response))
-                              :de (str "Wappenfigur gespeichert, neue Version: " (:version response))}])
+                             (util/str-tr {:en "Charge saved, new version: "
+                                           :de "Wappenfigur gespeichert, neue Version: "} (:version response))])
           (reife/push-state :view-charge-by-id {:id (id-for-url charge-id)}))
         (modal/stop-loading)
         (catch :default e
