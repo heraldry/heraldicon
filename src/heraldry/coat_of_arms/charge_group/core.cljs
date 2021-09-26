@@ -2,8 +2,8 @@
   (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
             [heraldry.coat-of-arms.escutcheon :as escutcheon]
             [heraldry.coat-of-arms.position :as position]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
+            [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
 (defn calculate-strip-slot-positions [path spacing context]
@@ -149,11 +149,11 @@
                                     (and k (pos? v))))
                           (sort-by second))
         context (assoc-in context [:blazonry :part-of-charge-group?] true)]
-    (str (util/combine
-          " and "
-          (map (fn [[charge-index number]]
-                 (str number " "
-                      (interface/blazon (conj path :charges charge-index)
-                                        (cond-> context
-                                          (> number 1) (assoc-in [:blazonry :pluralize?] true)))))
-               used-charges)))))
+    (util/str-tr (util/combine
+                  " and "
+                  (map (fn [[charge-index number]]
+                         (util/str-tr number " "
+                                      (interface/blazon (conj path :charges charge-index)
+                                                        (cond-> context
+                                                          (> number 1) (assoc-in [:blazonry :pluralize?] true)))))
+                       used-charges)))))

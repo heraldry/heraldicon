@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.semy.core
   (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
+            [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
 (defn shift-environment [environment point]
@@ -12,7 +12,7 @@
                                     [k (v/add v point)]))
                              (into {}))))))
 
-(defmethod interface/render-component :heraldry.component/semy [path parent-path environment context]
+(defmethod interface/render-component :heraldry.component/semy [path _parent-path environment context]
   (let [points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
@@ -101,6 +101,6 @@
               :fill (str "url(#" pattern-id ")")}]]]))
 
 (defmethod interface/blazon-component :heraldry.component/semy [path context]
-  (str "semy of " (interface/blazon
-                   (conj path :charge)
-                   (assoc-in context [:blazonry :drop-article?] true))))
+  (util/str-tr "semy of " (interface/blazon
+                           (conj path :charge)
+                           (assoc-in context [:blazonry :drop-article?] true))))

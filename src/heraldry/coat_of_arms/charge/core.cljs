@@ -48,11 +48,11 @@
     (util/combine " " [(when (and (not part-of-charge-group?)
                                   (not drop-article?))
                          "a")
-                       (str charge-name
-                            (when pluralize?
-                              (if (s/ends-with? charge-name "s")
-                                "es"
-                                "s")))
+                       (util/str-tr charge-name
+                                    (when pluralize?
+                                      (if (s/ends-with? charge-name "s")
+                                        "es"
+                                        "s")))
                        (when-not (= attitude :none)
                          (util/translate attitude))
                        (when-not (#{:none :to-dexter} facing)

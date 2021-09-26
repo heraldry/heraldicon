@@ -13,19 +13,19 @@
         ordinary-name (case ordinary-type
                         :heraldry.ordinary.type/quarter
                         (let [size (interface/get-sanitized-data (conj path :geometry :size) context)]
-                          (str (if (< size 100)
-                                 "Canton "
-                                 "Quarter ")
-                               (util/translate (interface/get-sanitized-data (conj path :variant) context))))
+                          (util/str-tr (if (< size 100)
+                                         "Canton "
+                                         "Quarter ")
+                                       (util/translate (interface/get-sanitized-data (conj path :variant) context))))
                         :heraldry.ordinary.type/point
-                        (str "Point " (util/translate (interface/get-sanitized-data (conj path :variant) context)))
+                        (util/str-tr "Point " (util/translate (interface/get-sanitized-data (conj path :variant) context)))
                         (util/translate ordinary-type))
         rest (util/combine " " [ordinary-name
                                 (util/translate-line line)
                                 (interface/blazon (conj path :field) context)
                                 (fimbriation/blazon path context
                                                     :include-lines? true)])
-        article (if (re-matches #"(?i)^[aeiouh].*" rest)
+        article (if (re-matches #"(?i)^[aeiouh].*" (util/tr-raw rest :en))
                   "an"
                   "a")]
     (util/combine " " [article rest])))
