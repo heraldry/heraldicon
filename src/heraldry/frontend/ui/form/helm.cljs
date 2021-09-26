@@ -5,6 +5,7 @@
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as ui-interface]
             [heraldry.strings :as strings]
+            [heraldry.util :as util]
             [re-frame.core :as rf]))
 
 (rf/reg-sub :get-helm-status
@@ -44,18 +45,22 @@
         num-helms @(rf/subscribe [:get-list-size (-> path drop-last vec)])
         num-components @(rf/subscribe [:get-list-size components-path])
         add-menu (cond-> []
-                   (not helmet?) (conj {:title "Helmet"
+                   (not helmet?) (conj {:title {:en "Helmet"
+                                                :de "Helm"}
                                         :handler #(state/dispatch-on-event
                                                    % [:add-element components-path default/helmet])})
-                   (not torse?) (conj {:title "Torse"
+                   (not torse?) (conj {:title {:en "Torse"
+                                               :de "Helmwulst"}
                                        :handler #(state/dispatch-on-event
                                                   % [:add-element components-path default/torse])})
-                   true (conj {:title "Crest charge"
+                   true (conj {:title {:en "Crest charge"
+                                       :de "Helmzier Figur"}
                                :handler #(state/dispatch-on-event
                                           % [:add-element components-path default/crest-charge])}))]
 
-    {:title (str (when (> num-helms 1)
-                   (str (inc (last path)) ". ")) "Helm")
+    {:title (util/str-tr (when (> num-helms 1)
+                           (str (inc (last path)) ". ")) {:en "Helm"
+                                                          :de "Helm"})
      :buttons (when (seq add-menu)
                 [{:icon "fas fa-plus"
                   :title strings/add
