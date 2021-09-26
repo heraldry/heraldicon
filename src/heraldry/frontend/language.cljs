@@ -1,9 +1,9 @@
 (ns heraldry.frontend.language
   (:require [clojure.string :as s]
             [heraldry.frontend.macros :as macros]
+            [heraldry.util :as util]
             [hodgepodge.core :refer [get-item local-storage set-item]]
-            [re-frame.core :as rf]
-            [heraldry.util :as util]))
+            [re-frame.core :as rf]))
 
 (def language-path
   [:ui :language])
