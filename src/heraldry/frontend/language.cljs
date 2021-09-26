@@ -1,6 +1,7 @@
 (ns heraldry.frontend.language
   (:require [clojure.string :as s]
             [heraldry.frontend.macros :as macros]
+            [heraldry.static :as static]
             [heraldry.util :as util]
             [hodgepodge.core :refer [get-item local-storage set-item]]
             [re-frame.core :as rf]))
@@ -54,14 +55,14 @@
                  :position "relative"
                  :top "50%"
                  :transform "translate(0,-50%)"}}
-   [:img {:src "/img/flag-united-kingdom.svg"
+   [:img {:src (static/static-url "/img/flag-united-kingdom.svg")
           :on-click #(rf/dispatch [::set-language :en])
           :style {:width "2em"
                   :height "1em"
                   :cursor "pointer"
                   :opacity @(rf/subscribe [::selector-opacity :en])}}]
    " "
-   [:img {:src "/img/flag-germany.svg"
+   [:img {:src (static/static-url "/img/flag-germany.svg")
           :on-click #(rf/dispatch [::set-language :de])
           :style {:width "2em"
                   :height "1em"
