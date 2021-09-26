@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.core
-  (:require [heraldry.frontend.language :refer [tr]]
+  (:require [heraldry.frontend.history.state] ;; needed for side effects
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.macros :as macros]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.arms-reference-select] ;; needed for side effects
