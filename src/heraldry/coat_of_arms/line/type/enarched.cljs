@@ -2,7 +2,8 @@
   (:require [heraldry.util :as util]))
 
 (defn full
-  {:display-name "Enarched / Embowed"
+  {:display-name {:en "Enarched / Embowed"
+                  :de "Bogenschnitt"}
    :value :enarched
    :full? true}
   [{:keys [height width eccentricity] :as _line-data}

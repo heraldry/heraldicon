@@ -2,7 +2,8 @@
   (:require [heraldry.util :as util]))
 
 (defn pattern
-  {:display-name "Wolf toothed"
+  {:display-name {:en "Wolf toothed"
+                  :de "Wolfzahnschnitt"}
    :value :wolf-toothed}
   [{:keys [eccentricity
            height

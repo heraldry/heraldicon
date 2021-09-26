@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.engrailed)
 
 (defn pattern
-  {:display-name "Engrailed"
+  {:display-name {:en "Engrailed"
+                  :de "Dornenschnitt"}
    :value :engrailed}
   [{:keys [eccentricity
            height

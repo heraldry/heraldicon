@@ -2,7 +2,8 @@
   (:require [heraldry.util :as util]))
 
 (defn pattern
-  {:display-name "Potenty"
+  {:display-name {:en "Potenty"
+                  :de "Krückenschnitt"}
    :value :potenty}
   [{:keys [height
            eccentricity

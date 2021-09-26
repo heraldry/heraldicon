@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.dovetailed)
 
 (defn pattern
-  {:display-name "Dovetailed"
+  {:display-name {:en "Dovetailed"
+                  :de "Schwalbenschwanzschnitt"}
    :value :dovetailed}
   [{:keys [eccentricity
            height

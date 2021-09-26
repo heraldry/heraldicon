@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.indented)
 
 (defn pattern
-  {:display-name "Indented"
+  {:display-name {:en "Indented"
+                  :de "Zahnschnitt"}
    :value :indented}
   [{:keys [height
            width]}

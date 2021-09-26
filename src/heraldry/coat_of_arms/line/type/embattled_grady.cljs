@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.embattled-grady)
 
 (defn pattern
-  {:display-name "Embattled grady"
+  {:display-name {:en "Embattled grady"
+                  :de "Stufengiebelschnitt"}
    :value :embattled-grady}
   [{:keys [height
            width]}

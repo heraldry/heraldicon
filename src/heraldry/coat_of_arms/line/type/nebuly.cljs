@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.nebuly)
 
 (defn pattern
-  {:display-name "Nebuly"
+  {:display-name {:en "Nebuly"
+                  :de "Wolkenschnitt"}
    :value :nebuly}
   [{:keys [eccentricity
            height
@@ -17,5 +18,5 @@
     {:pattern ["c" (- dx) (- anchor-height) (+ half-width dx) (- anchor-height) half-width 0
                "c" (- dx) anchor-height (+ half-width dx) anchor-height half-width 0]
      :min (* 0.75 (- anchor-height)) ; should be the maximum point at t = 0.5
-     :max (* 0.75 anchor-height)     ; should be the maximum point at t = 0.5
+     :max (* 0.75 anchor-height) ; should be the maximum point at t = 0.5
      }))

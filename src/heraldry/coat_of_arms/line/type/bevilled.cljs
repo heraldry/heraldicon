@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.bevilled)
 
 (defn full
-  {:display-name "Bevilled"
+  {:display-name {:en "Bevilled"
+                  :de "Z-förmig"}
    :value :bevilled
    :full? true}
   [{:keys [height width

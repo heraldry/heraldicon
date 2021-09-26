@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.wavy)
 
 (defn pattern
-  {:display-name "Wavy / undy"
+  {:display-name {:en "Wavy / undy"
+                  :de "Wellenschnitt"}
    :value :wavy}
   [{:keys [eccentricity
            height

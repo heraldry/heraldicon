@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.embattled)
 
 (defn pattern
-  {:display-name "Embattled"
+  {:display-name {:en "Embattled"
+                  :de "Zinnenschnitt"}
    :value :embattled}
   [{:keys [height
            width]}

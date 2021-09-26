@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.line.type.invected)
 
 (defn pattern
-  {:display-name "Invected"
+  {:display-name {:en "Invected"
+                  :de "Lappenschnitt"}
    :value :invected}
   [{:keys [eccentricity
            height

@@ -29,7 +29,8 @@
      (v/rotate (v/dot end vf) angle)]))
 
 (defn pattern
-  {:display-name "Rayonny (flaming)"
+  {:display-name {:en "Rayonny (flaming)"
+                  :de "Flammenschnitt"}
    :value :rayonny-flaming}
   [{:keys [eccentricity
            height
