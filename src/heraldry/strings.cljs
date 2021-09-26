@@ -278,7 +278,7 @@
 
 (def num-rows
   {:en "Number of rows"
-   :de "Anzahl Reihen"})
+   :de "Anzahl Zeilen"})
 
 (def number
   {:en "Number"

@@ -6,9 +6,12 @@
             [heraldry.util :as util]))
 
 (def type-choices
-  [["Rows" :heraldry.charge-group.type/rows]
-   ["Columns" :heraldry.charge-group.type/columns]
-   ["Arc" :heraldry.charge-group.type/arc]])
+  [[{:en "Rows"
+     :de "Zeilen"} :heraldry.charge-group.type/rows]
+   [{:en "Columns"
+     :de "Spalten"} :heraldry.charge-group.type/columns]
+   [{:en "Arc"
+     :de "Bogen"} :heraldry.charge-group.type/arc]])
 
 (def type-map
   (util/choices->map type-choices))

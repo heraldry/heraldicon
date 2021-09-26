@@ -301,7 +301,8 @@
           :de "Spirale rechtsrum"} :spiral-clockwise]
         [{:en "Spiral counter-clockwise"
           :de "Spirale linksrum"} :spiral-counter-clockwise]
-        ["Nebuly" :nebuly]]]
+        [{:en "Nebuly"
+          :de "Abwechselnd"} :nebuly]]]
 
       [select/raw-select
        start-path
