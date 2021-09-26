@@ -92,7 +92,8 @@
                 :max 16
                 :default 3
                 :integer? true
-                :ui {:label "Points"}}
+                :ui {:label {:en "Number of points"
+                             :de "Anzahl Lätze"}}}
    :outline? {:type :boolean
               :default false
               :ui {:label strings/outline}}
@@ -388,10 +389,12 @@
                                 [:anchor :angle :max] 90
                                 [:anchor :type] (when (-> ordinary :anchor :point (not= :angle))
                                                   {:type :choice
-                                                   :choices [["Edge" :edge]
-                                                             ["Point" :point]]
+                                                   :choices [[{:en "Edge"
+                                                               :de "Kante"} :edge]
+                                                             [{:en "Point"
+                                                               :de "Spitze"} :point]]
                                                    :default :edge
-                                                   :ui {:label "Point mode"
+                                                   :ui {:label strings/mode
                                                         :form-type :radio-select}})
                                 [:cottising] (-> default-options
                                                  :cottising
@@ -473,24 +476,24 @@
                               {[:origin :point :default] :chief
                                [:geometry :size :min] 2
                                [:geometry :size :default] 10
-                               [:geometry :size :ui :label] "Point thickness"
+                               [:geometry :size :ui :label] strings/point-thickness
                                [:geometry :width] {:type :range
                                                    :min 10
                                                    :max 150
                                                    :default 66
-                                                   :ui {:label "Width"
+                                                   :ui {:label strings/width
                                                         :step 0.1}}
                                [:geometry :thickness] {:type :range
                                                        :min 0
                                                        :max 20
                                                        :default 5
-                                                       :ui {:label "Bar thickness"
+                                                       :ui {:label strings/bar-thickness
                                                             :step 0.1}}
                                [:geometry :eccentricity] {:type :range
                                                           :min 0
                                                           :max 1
                                                           :default 0
-                                                          :ui {:label "Eccentricity"
+                                                          :ui {:label strings/eccentricity
                                                                :step 0.01}}
                                [:geometry :stretch] {:type :range
                                                      :min 0.33
@@ -546,12 +549,12 @@
                                                    :min 10
                                                    :max 100
                                                    :default 50
-                                                   :ui {:label "Width"}}
+                                                   :ui {:label strings/width}}
                                [:geometry :height] {:type :range
                                                     :min 10
                                                     :max 100
                                                     :default 50
-                                                    :ui {:label "Height"}}
+                                                    :ui {:label strings/height}}
                                [:cottising] (-> default-options
                                                 :cottising
                                                 (dissoc :cottise-opposite-1)

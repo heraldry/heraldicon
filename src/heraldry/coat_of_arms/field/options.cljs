@@ -157,13 +157,13 @@
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label "Offset x"
+                       :ui {:label (util/str-tr strings/offset " x")
                             :step 0.01}}
             :offset-y {:type :range
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label "Offset y"
+                       :ui {:label (util/str-tr strings/offset " y")
                             :step 0.01}}
             :stretch-x {:type :range
                         :min 0.5
@@ -181,9 +181,9 @@
                        :min -90
                        :max 90
                        :default 0
-                       :ui {:label "Rotation"
+                       :ui {:label strings/rotation
                             :step 0.01}}
-            :ui {:label "Layout"
+            :ui {:label strings/layout
                  :form-type :field-layout}}
    :outline? {:type :boolean
               :default false

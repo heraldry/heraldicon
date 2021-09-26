@@ -106,7 +106,8 @@
     [:<>
      [:div.ui-setting {:style {:margin-top "10px"
                                :white-space "nowrap"}}
-      [:label "Tags"]
+      [:label [tr {:en "Tags"
+                   :de "Tags"}]]
       [:div.option
        [:input {:value value
                 :on-change on-change

@@ -2,6 +2,7 @@
   (:require [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.hover-menu :as hover-menu]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -74,7 +75,7 @@
                       :position "absolute"}}
         [hover-menu/hover-menu
          path
-         "Mode"
+         strings/mode
          menu
          [:i.ui-icon {:class "fas fa-cog"}]
          :disabled? disabled?]])]))

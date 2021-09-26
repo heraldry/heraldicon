@@ -259,6 +259,10 @@
   {:en "mirrored"
    :de "gespiegelt"})
 
+(def flipped
+  {:en "Flipped"
+   :de "Umgedreht"})
+
 (def flipped-lc
   {:en "flipped"
    :de "umgedreht"})
@@ -275,3 +279,79 @@
 (def num-rows
   {:en "Number of rows"
    :de "Anzahl Reihen"})
+
+(def number
+  {:en "Number"
+   :de "Anzahl"})
+
+(def position
+  {:en "Position"
+   :de "Position"})
+
+(def rotation
+  {:en "Rotation"
+   :de "Rotation"})
+
+(def layout
+  {:en "Layout"
+   :de "Layout"})
+
+(def offset
+  {:en "Offset"
+   :de "Offset"})
+
+(def layer
+  {:en "Layer"
+   :de "Layer"})
+
+(def mode
+  {:en "Mode"
+   :de "Modus"})
+
+(def font
+  {:en "Font"
+   :de "Schriftart"})
+
+(def radius
+  {:en "Radius"
+   :de "Radius"})
+
+(def width
+  {:en "Width"
+   :de "Breite"})
+
+(def height
+  {:en "Height"
+   :de "Höhe"})
+
+(def bar-thickness
+  {:en "Bar thickness"
+   :de "Stegdicke"})
+
+(def eccentricity
+  {:en "Eccentricity"
+   :de "Exzentrizität"})
+
+(def point-thickness
+  {:en "Point thickness"
+   :de "Latzdicke"})
+
+(def left
+  {:en "Left"
+   :de "Links"})
+
+(def middle
+  {:en "Middle"
+   :de "Mitte"})
+
+(def right
+  {:en "Right"
+   :de "Rechts"})
+
+(def top
+  {:en "Top"
+   :de "Oben"})
+
+(def bottom
+  {:en "Bottom"
+   :de "Unten"})

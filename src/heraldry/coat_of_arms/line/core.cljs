@@ -159,25 +159,25 @@
                   :min 0
                   :max 1
                   :default 0.5
-                  :ui {:label "Eccentricity"
+                  :ui {:label strings/eccentricity
                        :step 0.01}}
    :height {:type :range
             :min 0
             :max 3
             :default 1
-            :ui {:label "Height"
+            :ui {:label strings/height
                  :step 0.01}}
    :width {:type :range
            :min 2
            :max 100
            :default 10
-           :ui {:label "Width"
+           :ui {:label strings/width
                 :step 0.01}}
    :offset {:type :range
             :min -1
             :max 3
             :default 0
-            :ui {:label "Offset"
+            :ui {:label strings/offset
                  :step 0.01}}
    :spacing {:type :range
              :min 0
@@ -186,18 +186,19 @@
              :ui {:label strings/spacing
                   :step 0.01}}
    :base-line {:type :choice
-               :choices [["Bottom" :bottom]
-                         ["Middle" :middle]
-                         ["Top" :top]]
+               :choices [[strings/bottom :bottom]
+                         [strings/middle :middle]
+                         [strings/top :top]]
                :default :middle
-               :ui {:label "Base line"
+               :ui {:label {:en "Base line"
+                            :de "Basislinie"}
                     :form-type :radio-select}}
    :mirrored? {:type :boolean
                :default false
                :ui {:label strings/mirrored}}
    :flipped? {:type :boolean
               :default false
-              :ui {:label "Flipped"}}
+              :ui {:label strings/flipped}}
    :fimbriation fimbriation/default-options
    :ui {:label strings/line
         :form-type :line}})

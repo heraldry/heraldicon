@@ -143,25 +143,25 @@
              :min 0
              :max 100
              :integer? true
-             :ui {:label "Layer"}}
+             :ui {:label strings/layer}}
    :offset-x {:type :range
               :default 0
               :min -0.5
               :max 0.5
-              :ui {:label "Offset x"
+              :ui {:label (util/str-tr strings/offset " x")
                    :step 0.01}}
    :offset-y {:type :range
               :default 0
               :min -0.5
               :max 0.5
-              :ui {:label "Offset y"
+              :ui {:label (util/str-tr strings/offset " y")
                    :step 0.01}}
    :font-scale {:type :range
                 :default 0.8
                 :min 0.01
                 :max 1
                 :ui {:label {:en "Font scale"
-                             :de "Font-Faktor"}
+                             :de "Schrift-Faktor"}
                      :step 0.01}}
    :spacing {:type :range
              :default 0.1
