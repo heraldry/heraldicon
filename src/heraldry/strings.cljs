@@ -371,3 +371,39 @@
 (def top-right
   {:en "Top-right"
    :de "Oben-rechts"})
+
+(def sinister
+  {:en "Sinister"
+   :de "Heraldisch links"})
+
+(def dexter
+  {:en "Dexter"
+   :de "Heraldisch rechts"})
+
+(def sinister-point
+  {:en "Sinister"
+   :de "Linke Hüftstelle"})
+
+(def dexter-point
+  {:en "Dexter"
+   :de "Rechte Hüftstelle"})
+
+(def chief-point
+  {:en "Chief"
+   :de "Oberstelle"})
+
+(def base-point
+  {:en "Base"
+   :de "Unterstelle"})
+
+(def honour-point
+  {:en "Honour"
+   :de "Ortstelle"})
+
+(def fess-point
+  {:en "Fess"
+   :de "Herzstelle"})
+
+(def nombril-point
+  {:en "Nombril"
+   :de "Fersenstelle"})

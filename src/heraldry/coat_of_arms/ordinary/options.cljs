@@ -521,10 +521,14 @@
                                  [:geometry :size :min] 10
                                  [:geometry :size :max] 150
                                  [:geometry :size :default] 100
-                                 [:variant :choices] [["Dexter-chief" :dexter-chief]
-                                                      ["Sinister-chief" :sinister-chief]
-                                                      ["Dexter-base" :dexter-base]
-                                                      ["Sinister-base" :sinister-base]]
+                                 [:variant :choices] [[{:en "Dexter-chief"
+                                                        :de "Heraldisch rechts-oben"} :dexter-chief]
+                                                      [{:en "Sinister-chief"
+                                                        :de "Heraldisch links-oben"} :sinister-chief]
+                                                      [{:en "Dexter-base"
+                                                        :de "Heraldisch rechts-unten"} :dexter-base]
+                                                      [{:en "Sinister-base"
+                                                        :de "Heraldisch links-unten"} :sinister-base]]
                                  [:variant :default] :dexter-chief
                                  [:variant :ui :form-type] :select
                                  [:cottising] (-> default-options
@@ -541,8 +545,8 @@
                               {[:line] (-> line-style
                                            (options/override-if-exists [:offset :min] 0)
                                            (options/override-if-exists [:base-line] nil))
-                               [:variant :choices] [["Dexter" :dexter]
-                                                    ["Sinister" :sinister]]
+                               [:variant :choices] [[strings/dexter :dexter]
+                                                    [strings/sinister :sinister]]
                                [:variant :default] :dexter
                                [:geometry :size] nil
                                [:geometry :width] {:type :range
