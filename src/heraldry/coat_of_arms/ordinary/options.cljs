@@ -82,8 +82,10 @@
                  (assoc :reversed? nil)
                  (assoc :stretch nil))
    :variant {:type :choice
-             :choices [["Full" :full]
-                       ["Truncated" :truncated]]
+             :choices [[{:en "Full"
+                         :de "Durchgehend"} :full]
+                       [{:en "Truncated"
+                         :de "Schwebend"} :truncated]]
              :default :full
              :ui {:label strings/variant
                   :form-type :radio-select}}
