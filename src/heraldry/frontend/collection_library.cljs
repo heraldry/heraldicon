@@ -16,7 +16,7 @@
             [heraldry.frontend.user :as user]
             [heraldry.render :as render]
             [heraldry.strings :as strings]
-            [heraldry.util :refer [id-for-url]]
+            [heraldry.util :as util :refer [id-for-url]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
             [taoensso.timbre :as log]))
@@ -59,8 +59,8 @@
         (rf/dispatch-sync [:set list-db-path nil])
         (state/invalidate-cache list-db-path (:user-id user-data))
         (rf/dispatch-sync [:set-form-message form-db-path
-                           {:en (str "Collection saved, new version: " (:version response))
-                            :de (str "Sammlung gespeichert, neue Version: " (:version response))}])
+                           (util/str-tr {:en "Collection saved, new version: "
+                                         :de "Sammlung gespeichert, neue Version: "} (:version response))])
         (reife/push-state :view-collection-by-id {:id (id-for-url collection-id)}))
       (catch :default e
         (log/error "save-form error:" e)

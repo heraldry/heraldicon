@@ -14,6 +14,7 @@
             [heraldry.frontend.ui.element.user-select :as user-select]
             [heraldry.frontend.user :as user]
             [heraldry.strings :as strings]
+            [heraldry.util :as util]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as reife]
             [taoensso.timbre :as log]))
@@ -94,8 +95,8 @@
            :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
      [:div.no-scrollbar {:style {:grid-area "user-info"
                                  :overflow-y "scroll"}}
-      [:h3 [tr {:en (str "User: " (:username user-info-data))
-                :de (str "Benutzer: " (:username user-info-data))}]]]
+      [:h3 [tr (util/str-tr {:en "User: "
+                             :de "Benutzer: "} (:username user-info-data))]]]
      [:div.no-scrollbar {:style {:grid-area "collections"
                                  :overflow-y "scroll"}}
       [:h4 [tr strings/collections]]

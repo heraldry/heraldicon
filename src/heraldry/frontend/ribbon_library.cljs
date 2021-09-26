@@ -390,8 +390,8 @@
           (state/invalidate-cache-without-current form-db-path [ribbon-id 0])
           (invalidate-ribbons-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
-                             [tr {:en (str "Ribbon saved, new version: " (:version response))
-                                  :de (str "Band gespeichert, neue Version: " (:version response))}]])
+                             (util/str-tr {:en "Ribbon saved, new version: "
+                                           :de "Band gespeichert, neue Version: "} (:version response))])
           (reife/push-state :view-ribbon-by-id {:id (id-for-url ribbon-id)}))
         (modal/stop-loading)
         (catch :default e
@@ -437,7 +437,7 @@
                            owned-by-me?))]
     [:<>
      (when form-message
-       [:div.success-message form-message])
+       [:div.success-message [tr form-message]])
      (when error-message
        [:div.error-message error-message])
 
