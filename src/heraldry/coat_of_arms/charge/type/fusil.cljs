@@ -5,7 +5,8 @@
 
 (def charge-type :heraldry.charge.type/fusil)
 
-(defmethod charge-interface/display-name charge-type [_] "Fusil")
+(defmethod charge-interface/display-name charge-type [_] {:en "Fusil"
+                                                          :de "Wecke"})
 
 (defmethod charge-interface/render-charge charge-type
   [path parent-path environment context]

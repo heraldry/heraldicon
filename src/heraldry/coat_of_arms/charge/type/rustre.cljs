@@ -5,7 +5,8 @@
 
 (def charge-type :heraldry.charge.type/rustre)
 
-(defmethod charge-interface/display-name charge-type [_] "Rustre")
+(defmethod charge-interface/display-name charge-type [_] {:en "Rustre"
+                                                          :de "Durchbohrte Raute"})
 
 (defmethod charge-interface/render-charge charge-type
   [path parent-path environment context]

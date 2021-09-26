@@ -5,7 +5,8 @@
 
 (def charge-type :heraldry.charge.type/billet)
 
-(defmethod charge-interface/display-name charge-type [_] "Billet")
+(defmethod charge-interface/display-name charge-type [_] {:en "Billet"
+                                                          :de "Schindel"})
 
 (defmethod charge-interface/render-charge charge-type
   [path parent-path environment context]

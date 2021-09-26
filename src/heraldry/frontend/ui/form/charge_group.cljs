@@ -1,6 +1,6 @@
 (ns heraldry.frontend.ui.form.charge-group
   (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
-            [heraldry.coat-of-arms.charge.core :as charge]
+            [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.coat-of-arms.default :as default]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.frontend.language :refer [tr]]
@@ -312,7 +312,7 @@
   (let [num-charges @(rf/subscribe [:get-list-size (conj path :charges)])]
     {:title (util/str-tr {:en "Charge group of "
                           :de "Gruppe von "} (if (= num-charges 1)
-                                               (charge/title (conj path :charges 0) {})
+                                               (charge-options/title (conj path :charges 0) {})
                                                {:en "various"
                                                 :de "verschiedenen"}))
      :buttons [{:icon "fas fa-plus"

@@ -5,7 +5,8 @@
 
 (def charge-type :heraldry.charge.type/crescent)
 
-(defmethod charge-interface/display-name charge-type [_] "Crescent")
+(defmethod charge-interface/display-name charge-type [_] {:en "Crescent"
+                                                          :de "Halbmond"})
 
 (defmethod charge-interface/render-charge charge-type
   [path parent-path environment context]
