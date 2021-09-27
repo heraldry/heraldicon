@@ -2,6 +2,7 @@
   (:require [heraldry.frontend.language :as language :refer [tr]]
             [heraldry.frontend.route :as route]
             [heraldry.frontend.user :as user]
+            [heraldry.static :as static]
             [heraldry.strings :as strings]))
 
 (defn view []
@@ -9,7 +10,12 @@
     [:div.header
      [:div {:style {:flex 1.5
                     :line-height "2em"
-                    :padding-left "1em"}}
+                    :padding-left "0.5em"}}
+      [:img {:src (static/static-url "/img/heraldry-digital-logo.png")
+             :style {:height "1.8em"
+                     :margin-right "0.25em"
+                     :position "relative"
+                     :transform "translate(0,0.4em)"}}]
       [:span {:style {:text-transform "uppercase"}}
        [route/link {:to :home
                     :style {:padding-right "5px"}} "Heraldry"]]
