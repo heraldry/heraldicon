@@ -407,3 +407,15 @@
 (def nombril-point
   {:en "Nombril"
    :de "Fersenstelle"})
+
+(def metal
+  {:en "Metal"
+   :de "Metall"})
+
+(def colour
+  {:en "Colour"
+   :de "Farbe"})
+
+(def field
+  {:en "Field"
+   :de "Feld"})
