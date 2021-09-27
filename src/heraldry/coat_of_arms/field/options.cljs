@@ -380,7 +380,7 @@
                                                                   [:top-left :top :top-right
                                                                    :left :right
                                                                    :bottom-left :bottom :bottom-right])
-                                       [:origin :point :default] :top
+                                       [:origin :point :default] :bottom
                                        [:origin :alignment] (:alignment position/default-options)
                                        [:anchor :point :choices] (util/filter-choices
                                                                   position/anchor-point-choices
