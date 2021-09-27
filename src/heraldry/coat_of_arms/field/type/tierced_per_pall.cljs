@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.field.type.tierced-per-pairle
+(ns heraldry.coat-of-arms.field.type.tierced-per-pall
   (:require [heraldry.coat-of-arms.angle :as angle]
             [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.field.shared :as shared]
@@ -12,7 +12,7 @@
             [heraldry.math.svg.path :as path]
             [heraldry.math.vector :as v]))
 
-(def field-type :heraldry.field.type/tierced-per-pairle)
+(def field-type :heraldry.field.type/tierced-per-pall)
 
 (defmethod field-interface/display-name field-type [_] {:en "Tierced per pall"
                                                         :de "Deichselschnitt"})
