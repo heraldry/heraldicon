@@ -1,7 +1,9 @@
 (ns heraldry.frontend.validation
   (:require [clojure.string :as s]
             [heraldry.coat-of-arms.tincture.core :as tincture]
+            [heraldry.frontend.language :refer [tr]]
             [heraldry.interface :as interface]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
@@ -70,6 +72,14 @@
        (util/combine
         ", ")))
 
+(def on
+  {:en "on"
+   :de "auf"})
+
+(def breaks-rule-of-tincture
+  {:en "breaks rule of tincture."
+   :de "bricht Tingierungsregel."})
+
 (defn verify-rule-of-tincture [parent-tinctures own-tinctures fimbriated?]
   (let [parent-kinds (->> parent-tinctures
                           (map tincture/kind)
@@ -81,19 +91,24 @@
       (= #{:metal}
          parent-kinds
          own-kinds) {:level :warning
-                     :message (str "Metal " (if fimbriated?
-                                              "fimbriation"
-                                              "field") " (" (list-tinctures own-tinctures)
-                                   ") on metal field (" (list-tinctures parent-tinctures)
-                                   ") breaks rule of tincture.")}
+                     :message (util/str-tr strings/metal
+                                           " "
+                                           (if fimbriated?
+                                             strings/fimbriation
+                                             strings/field) " (" (list-tinctures own-tinctures)
+                                           ") " on " "
+                                           strings/metal " " strings/field " (" (list-tinctures parent-tinctures)
+                                           ") " breaks-rule-of-tincture)}
       (= #{:colour}
          parent-kinds
          own-kinds) {:level :warning
-                     :message (str "Colour " (if fimbriated?
-                                               "fimbriation"
-                                               "field") " (" (list-tinctures own-tinctures)
-                                   ") on colour field (" (list-tinctures parent-tinctures)
-                                   ") breaks rule of tincture.")})))
+                     :message (util/str-tr strings/colour
+                                           " " (if fimbriated?
+                                                 strings/fimbriation
+                                                 strings/field) " (" (list-tinctures own-tinctures)
+                                           ") " on " "
+                                           strings/colour " " strings/field " (" (list-tinctures parent-tinctures)
+                                           ") " breaks-rule-of-tincture)})))
 
 (rf/reg-sub :validate-tinctures
   (fn [[_ field-path parent-field-path fimbriation-path] _]
@@ -132,48 +147,61 @@
          (cond-> []
            main-check (conj (-> main-check
                                 (update :message (fn [message]
-                                                   (str (case which
-                                                          :line "Main line: "
-                                                          :opposite-line "Opposite line: "
-                                                          :extra-line "Extra line: "
-                                                          nil)
-                                                        message)))))
+                                                   (util/str-tr (case which
+                                                                  :line {:en "Main line: "
+                                                                         :de "Hauptlinie: "}
+                                                                  :opposite-line {:en "Opposite line: "
+                                                                                  :de "Gegenlinie: "}
+                                                                  :extra-line {:en "Extra line: "
+                                                                               :de "Extralinie: "}
+                                                                  nil)
+                                                                message)))))
 
            (= fimbriation-tincture-1-kind
               fimbriation-tincture-2-kind
               :metal) (conj {:level :note
-                             :message (str "Fimbriation tinctures are both metal ("
-                                           (tincture/translate-tincture fimbriation-tincture-1)
-                                           " and "
-                                           (tincture/translate-tincture fimbriation-tincture-2)
-                                           ").")})
+                             :message (util/str-tr
+                                       {:en "Fimbriation tinctures are both metals ("
+                                        :de "Säumung Tinkturen sind beide Metalle ("}
+                                       (tincture/translate-tincture fimbriation-tincture-1)
+                                       " " strings/and " "
+                                       (tincture/translate-tincture fimbriation-tincture-2)
+                                       ").")})
 
            (= fimbriation-tincture-1-kind
               fimbriation-tincture-2-kind
               :colour) (conj {:level :note
-                              :message (str "Fimbriation tinctures are both colour ("
-                                            (tincture/translate-tincture fimbriation-tincture-1)
-                                            " and "
-                                            (tincture/translate-tincture fimbriation-tincture-2)
-                                            ").")})
+                              :message (util/str-tr
+                                        {:en "Fimbriation tinctures are both colours ("
+                                         :de "Säumung Tinkturen sind beide Farben ("}
+                                        (tincture/translate-tincture fimbriation-tincture-1)
+                                        " " strings/and " "
+                                        (tincture/translate-tincture fimbriation-tincture-2)
+                                        ").")})
 
            (= (set [fimbriation-tincture-1-kind])
               field-tincture-kinds
               #{:metal}) (conj {:level :note
-                                :message (str "Fimbriation metal tincture ("
-                                              (tincture/translate-tincture fimbriation-tincture-1)
-                                              ") touches metal field ("
-                                              (list-tinctures field-tinctures)
-                                              ").")})
+                                :message (util/str-tr
+                                          {:en "Fimbriation metal tincture ("
+                                           :de "Säumung Metall-Tinktur ("}
+                                          (tincture/translate-tincture fimbriation-tincture-1)
+                                          {:en ") touches metal field ("
+                                           :de ") berührt Metall-Feld ("}
+                                          (list-tinctures field-tinctures)
+                                          ").")})
 
            (= (set [fimbriation-tincture-1-kind])
               field-tincture-kinds
               #{:colour}) (conj {:level :note
-                                 :message (str "Fimbriation colour tincture ("
-                                               (tincture/translate-tincture fimbriation-tincture-1)
-                                               ") touches colour field ("
-                                               (list-tinctures field-tinctures)
-                                               ").")}))]))))
+                                 :message (util/str-tr
+                                           {:en "Fimbriation colour tincture ("
+                                            :de "Säumung Farb-Tinktur ("}
+                                           (tincture/translate-tincture fimbriation-tincture-1)
+                                           {:en ") touches colour field ("
+                                            :de ") berührt Farb-Feld ("}
+                                           (list-tinctures field-tinctures)
+                                           ").")}))]))))
 
 (defn sort-validations [validations]
   (sort-by (fn [validation]
@@ -273,13 +301,16 @@
       (cond-> []
         (and (= field-type :paly)
              (odd? num-fields-x)) (conj {:level :warning
-                                         :message "Paly should have an even number of fields, for an odd number use pales."})
+                                         :message {:en "Paly should have an even number of fields, for an odd number use pales."
+                                                   :de "Das Feld sollte in eine gerade Zahl von Felder gespalten sein, für ungerade Anzahl sollten Pfähle benutzt werden."}})
         (and (= field-type :barry)
              (odd? num-fields-y)) (conj {:level :warning
-                                         :message "Barry should have an even number of fields, for an odd number use bars."})
+                                         :message {:en "Barry should have an even number of fields, for an odd number use bars."
+                                                   :de "Das Feld sollte in eine gerade Zahl von Felder geteilt sein, für ungerade Anzahl sollten Balken benutzt werden."}})
         (and (#{:bendy :bendy-sinister} field-type)
              (odd? num-fields-y)) (conj {:level :warning
-                                         :message "Bendy should have an even number of fields, for an odd number use bends."})))))
+                                         :message {:en "Bendy should have an even number of fields, for an odd number use bends."
+                                                   :de "Das Feld sollte in eine gerade Zahl von Felder geteilt sein, für ungerade Anzahl sollten Schrägbalken benutzt werden."}})))))
 
 (rf/reg-sub :validate-attribution
   (fn [[_ path] _]
@@ -297,7 +328,8 @@
                                 (= value :none)
                                 (-> value (or "") s/trim count zero?))) source-fields)))
       [{:level :error
-        :message "All source fields required for derivative work."}])))
+        :message {:en "All source fields required for derivative work."
+                  :de "Alle Felder für die Quelle müssen ausgefüllt sein für abgeleitete Arbeit."}}])))
 
 (rf/reg-sub :validate-is-public
   (fn [[_ path] _]
@@ -307,7 +339,8 @@
   (fn [[is-public license] [_ _path]]
     (when (and is-public (= license :none))
       [{:level :error
-        :message "License required for public objects."}])))
+        :message {:en "License required for public objects."
+                  :de "Lizenz benötigt für öffentliche Objekte."}}])))
 
 (rf/reg-sub :validate-arms-general
   (fn [[_ path] _]
@@ -371,5 +404,5 @@
             [:li [:div {:style {:position "absolute"
                                 :left "0em"}}
                   [render-icon level]]
-             message]))]]])
+             [tr message]]))]]])
     [:<>]))

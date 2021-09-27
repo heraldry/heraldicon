@@ -4,10 +4,9 @@
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
             [heraldry.math.svg.path :as path]
-            [heraldry.math.svg.core :as svg]))
+            [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/paly)
 
