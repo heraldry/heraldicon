@@ -1,18 +1,18 @@
-(ns heraldry.coat-of-arms.field.type.masonry
+(ns heraldry.coat-of-arms.field.type.masony
   (:require [heraldry.coat-of-arms.field.interface :as field-interface]
             [heraldry.coat-of-arms.outline :as outline]
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
-(def field-type :heraldry.field.type/masonry)
+(def field-type :heraldry.field.type/masony)
 
-(defmethod field-interface/display-name field-type [_] {:en "Masonry"
+(defmethod field-interface/display-name field-type [_] {:en "Masony"
                                                         :de "Gemauert"})
 
 (defmethod field-interface/part-names field-type [_] nil)
 
-(defn masonry-default [part-width part-height thickness]
+(defn masony-default [part-width part-height thickness]
   (let [width part-width
         height (* 2 part-height)
         middle-x (/ width 2)
@@ -100,11 +100,11 @@
                    (* middle-x stretch-x))
         shift-y (- middle-y
                    (* middle-y stretch-y))
-        pattern-id (util/id "masonry")
+        pattern-id (util/id "masony")
         {pattern-width :width
          pattern-height :height
-         masonry-pattern :pattern
-         masonry-outline :outline} (masonry-default part-width part-height thickness)]
+         masony-pattern :pattern
+         masony-outline :outline} (masony-default part-width part-height thickness)]
     [:g
      [:defs
       (when outline?
@@ -119,7 +119,7 @@
                          shift-y)
                    :pattern-units "userSpaceOnUse"}
          [:g (outline/style context)
-          masonry-outline]])
+          masony-outline]])
       (doall
        (for [idx (range 2)]
          ^{:key idx}
@@ -139,7 +139,7 @@
                   :height pattern-height
                   :fill (get ["#ffffff" "#000000"] idx)}]
           [:g {:fill (get ["#000000" "#ffffff"] idx)}
-           masonry-pattern]]))]
+           masony-pattern]]))]
      (doall
       (for [idx (range 2)]
         (let [mask-id (util/id "mask")]
