@@ -244,7 +244,7 @@
 (def
   ^{:display-name {:en "Flag (3:2)"
                    :de "Flagge (3:2)"}}
-  flag
+  flag-3-2
   (environment/create
    (str
     "M 0,0"
@@ -319,7 +319,7 @@
    #'roundel
    #'oval
    #'rectangle
-   #'flag
+   #'flag-3-2
    #'flag-2-1
    #'flag-5-3
    #'french-modern
