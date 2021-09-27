@@ -7,7 +7,7 @@
             [heraldry.coat-of-arms.field.type.fretty :as fretty]
             [heraldry.coat-of-arms.field.type.gyronny :as gyronny]
             [heraldry.coat-of-arms.field.type.lozengy :as lozengy]
-            [heraldry.coat-of-arms.field.type.masonry :as masonry]
+            [heraldry.coat-of-arms.field.type.masony :as masony]
             [heraldry.coat-of-arms.field.type.paly :as paly]
             [heraldry.coat-of-arms.field.type.papellony :as papellony]
             [heraldry.coat-of-arms.field.type.per-bend :as per-bend]
@@ -58,7 +58,7 @@
    vairy/field-type
    potenty/field-type
    papellony/field-type
-   masonry/field-type
+   masony/field-type
    fretty/field-type])
 
 (def choices
@@ -584,19 +584,19 @@
                                   {[:layout :rotation :min] -45
                                    [:layout :rotation :max] 45
                                    [:layout :rotation :default] 0})
-            :masonry (options/pick default-options
-                                   [[:type]
-                                    [:inherit-environment?]
-                                    [:counterchanged?]
-                                    [:thickness]
-                                    [:layout :num-fields-x]
-                                    [:layout :offset-x]
-                                    [:layout :stretch-x]
-                                    [:layout :num-fields-y]
-                                    [:layout :offset-y]
-                                    [:layout :stretch-y]
-                                    [:outline?]]
-                                   {})
+            :masony (options/pick default-options
+                                  [[:type]
+                                   [:inherit-environment?]
+                                   [:counterchanged?]
+                                   [:thickness]
+                                   [:layout :num-fields-x]
+                                   [:layout :offset-x]
+                                   [:layout :stretch-x]
+                                   [:layout :num-fields-y]
+                                   [:layout :offset-y]
+                                   [:layout :stretch-y]
+                                   [:outline?]]
+                                  {})
             :bendy (options/pick default-options
                                  [[:type]
                                   [:inherit-environment?]

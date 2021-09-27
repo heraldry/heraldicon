@@ -100,10 +100,10 @@
       (#{:vairy
          :potenty
          :papellony
-         :masonry} type) [(-> default/field
-                              (assoc :tincture :azure))
-                          (-> default/field
-                              (assoc :tincture :argent))]
+         :masony} type) [(-> default/field
+                             (assoc :tincture :azure))
+                         (-> default/field
+                             (assoc :tincture :argent))]
       (#{:bendy
          :bendy-sinister} type) (-> (subvec defaults 0 2)
                                     (into (map (fn [i]

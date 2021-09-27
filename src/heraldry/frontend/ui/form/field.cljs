@@ -33,7 +33,7 @@
         :lozengy
         :vairy
         :potenty
-        :masonry
+        :masony
         :papellony
         :fretty}))
 
