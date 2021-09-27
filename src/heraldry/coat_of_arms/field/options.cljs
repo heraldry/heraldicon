@@ -22,7 +22,7 @@
             [heraldry.coat-of-arms.field.type.quartered :as quartered]
             [heraldry.coat-of-arms.field.type.quarterly :as quarterly]
             [heraldry.coat-of-arms.field.type.tierced-per-fess :as tierced-per-fess]
-            [heraldry.coat-of-arms.field.type.tierced-per-pairle :as tierced-per-pairle]
+            [heraldry.coat-of-arms.field.type.tierced-per-pall :as tierced-per-pall]
             [heraldry.coat-of-arms.field.type.tierced-per-pale :as tierced-per-pale]
             [heraldry.coat-of-arms.field.type.vairy :as vairy]
             [heraldry.coat-of-arms.geometry :as geometry]
@@ -47,7 +47,7 @@
    gyronny/field-type
    tierced-per-pale/field-type
    tierced-per-fess/field-type
-   tierced-per-pairle/field-type
+   tierced-per-pall/field-type
    per-pile/field-type
    paly/field-type
    barry/field-type
@@ -701,56 +701,56 @@
                                             {[:origin :point :choices] position/point-choices-y
                                              [:line] line-style
                                              [:line :fimbriation] nil})
-            :tierced-per-pairle (options/pick default-options
-                                              [[:type]
-                                               [:inherit-environment?]
-                                               [:counterchanged?]
-                                               [:line]
-                                               [:opposite-line]
-                                               [:extra-line]
-                                               [:origin]
-                                               [:anchor]
-                                               [:direction-anchor]
-                                               [:outline?]]
-                                              {[:line] (-> line-style
-                                                           (options/override-if-exists [:offset :min] 0)
-                                                           (options/override-if-exists [:base-line] nil)
-                                                           (dissoc :fimbriation))
-                                               [:opposite-line] (-> opposite-line-style
-                                                                    (options/override-if-exists [:offset :min] 0)
-                                                                    (options/override-if-exists [:base-line] nil)
-                                                                    (dissoc :fimbriation))
-                                               [:extra-line] (-> extra-line-style
-                                                                 (options/override-if-exists [:offset :min] 0)
-                                                                 (options/override-if-exists [:base-line] nil)
-                                                                 (dissoc :fimbriation))
-                                               [:direction-anchor :point :choices] (util/filter-choices
-                                                                                    position/anchor-point-choices
-                                                                                    [:top-left :top :top-right :left :right :bottom-left :bottom :bottom-right :angle])
-                                               [:direction-anchor :point :default] :top
-                                               [:anchor :point :choices] (util/filter-choices
-                                                                          position/anchor-point-choices
-                                                                          (case (-> field :direction-anchor :point (or :top))
-                                                                            :bottom [:bottom-left :bottom :bottom-right :left :right :angle]
-                                                                            :top [:top-left :top :top-right :left :right :angle]
-                                                                            :left [:top-left :left :bottom-left :top :bottom :angle]
-                                                                            :right [:top-right :right :bottom-right :top :bottom :angle]
-                                                                            :bottom-left [:bottom-left :bottom :bottom-right :top-left :left :angle]
-                                                                            :bottom-right [:bottom-left :bottom :bottom-right :right :top-right :angle]
-                                                                            :top-left [:top-left :top :top-right :left :bottom-left :angle]
-                                                                            :top-right [:top-left :top :top-right :left :bottom-right :angle]
-                                                                            [:top-left :top :top-right :left :right :bottom-left :bottom :bottom-right :angle]))
-                                               [:anchor :point :default] (case (-> field :direction-anchor :point (or :top))
-                                                                           :bottom :bottom-left
-                                                                           :top :top-right
-                                                                           :left :top-left
-                                                                           :right :bottom-right
-                                                                           :bottom-left :left
-                                                                           :bottom-right :bottom
-                                                                           :top-left :top
-                                                                           :top-right :right
-                                                                           :angle :angle
-                                                                           :bottom-left)})
+            :tierced-per-pall (options/pick default-options
+                                            [[:type]
+                                             [:inherit-environment?]
+                                             [:counterchanged?]
+                                             [:line]
+                                             [:opposite-line]
+                                             [:extra-line]
+                                             [:origin]
+                                             [:anchor]
+                                             [:direction-anchor]
+                                             [:outline?]]
+                                            {[:line] (-> line-style
+                                                         (options/override-if-exists [:offset :min] 0)
+                                                         (options/override-if-exists [:base-line] nil)
+                                                         (dissoc :fimbriation))
+                                             [:opposite-line] (-> opposite-line-style
+                                                                  (options/override-if-exists [:offset :min] 0)
+                                                                  (options/override-if-exists [:base-line] nil)
+                                                                  (dissoc :fimbriation))
+                                             [:extra-line] (-> extra-line-style
+                                                               (options/override-if-exists [:offset :min] 0)
+                                                               (options/override-if-exists [:base-line] nil)
+                                                               (dissoc :fimbriation))
+                                             [:direction-anchor :point :choices] (util/filter-choices
+                                                                                  position/anchor-point-choices
+                                                                                  [:top-left :top :top-right :left :right :bottom-left :bottom :bottom-right :angle])
+                                             [:direction-anchor :point :default] :top
+                                             [:anchor :point :choices] (util/filter-choices
+                                                                        position/anchor-point-choices
+                                                                        (case (-> field :direction-anchor :point (or :top))
+                                                                          :bottom [:bottom-left :bottom :bottom-right :left :right :angle]
+                                                                          :top [:top-left :top :top-right :left :right :angle]
+                                                                          :left [:top-left :left :bottom-left :top :bottom :angle]
+                                                                          :right [:top-right :right :bottom-right :top :bottom :angle]
+                                                                          :bottom-left [:bottom-left :bottom :bottom-right :top-left :left :angle]
+                                                                          :bottom-right [:bottom-left :bottom :bottom-right :right :top-right :angle]
+                                                                          :top-left [:top-left :top :top-right :left :bottom-left :angle]
+                                                                          :top-right [:top-left :top :top-right :left :bottom-right :angle]
+                                                                          [:top-left :top :top-right :left :right :bottom-left :bottom :bottom-right :angle]))
+                                             [:anchor :point :default] (case (-> field :direction-anchor :point (or :top))
+                                                                         :bottom :bottom-left
+                                                                         :top :top-right
+                                                                         :left :top-left
+                                                                         :right :bottom-right
+                                                                         :bottom-left :left
+                                                                         :bottom-right :bottom
+                                                                         :top-left :top
+                                                                         :top-right :right
+                                                                         :angle :angle
+                                                                         :bottom-left)})
             {})
           (assoc :manual-blazon (:manual-blazon default-options))
           (update :anchor (fn [anchor]

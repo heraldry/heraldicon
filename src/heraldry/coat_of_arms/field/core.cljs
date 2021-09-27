@@ -17,7 +17,7 @@
         nil 0
         :tierced-per-pale 3
         :tierced-per-fess 3
-        :tierced-per-pairle 3
+        :tierced-per-pall 3
         :tierced-per-pile 3
         2))))
 
@@ -115,7 +115,7 @@
                                                (range (- num-fields-y num-base-fields)))))
       (#{:tierced-per-pale
          :tierced-per-fess
-         :tierced-per-pairle
+         :tierced-per-pall
          :per-pile} type) (into (subvec defaults 0 2)
                                 [(nth defaults 2)])
       :else (subvec defaults 0 2))))
