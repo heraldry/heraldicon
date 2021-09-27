@@ -141,7 +141,7 @@
                                                   angle)}))]))]))
 
 (defmethod interface/blazon-component :heraldry.component/charge-group [path context]
-  (let [{:keys [slot-positions]} (calculate-points path escutcheon/flag context)
+  (let [{:keys [slot-positions]} (calculate-points path escutcheon/flag-3-2 context)
         used-charges (->> (group-by :charge-index slot-positions)
                           (map (fn [[k v]]
                                  [k (count v)]))
