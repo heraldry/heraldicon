@@ -43,7 +43,7 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path label link-name {:style {:width "19em"}
+        [submenu/submenu path label link-name {:style {:width "22em"}
                                                :class "submenu-geometry"}
          (for [option [:width
                        :height
