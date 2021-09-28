@@ -23,6 +23,8 @@
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (conj path :outline?) context))
         points (:points environment)
+        top-left (:top-left points)
+        bottom-right (:bottom-right points)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
         bottom (assoc (:bottom points) :x (:x origin-point))
@@ -200,7 +202,8 @@
                                (v/add fess-top-left
                                       line-fess-top-left-start)])
                (path/stitch line-fess-top-left)
-               "z"]]]
+               "z"]
+              [top-left bottom-right]]]
     [:<>
      [field-shared/make-subfield
       (conj path :field) part
