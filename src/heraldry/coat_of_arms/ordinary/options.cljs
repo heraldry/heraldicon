@@ -57,7 +57,7 @@
 (def default-options
   {:type {:type :choice
           :choices choices
-          :ui {:label strings/variant
+          :ui {:label strings/type
                :form-type :ordinary-type-select}}
    :origin (-> position/default-options
                (assoc-in [:ui :label] strings/origin))
