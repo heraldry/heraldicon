@@ -106,8 +106,10 @@
                                (v/add first-bottom
                                       line-one-start)])
                "z"]
-              [first-bottom
-               second-top]]
+              [(v/v (:x second-top)
+                    (:y top))
+               (v/v (:x first-bottom)
+                    (:y bottom))]]
         cottise-context (merge
                          context
                          {:override-shared-start-y shared-start-y
