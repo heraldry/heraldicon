@@ -54,7 +54,7 @@
                                                origin
                                                direction-anchor
                                                0
-                                               90)
+                                               -90)
         pall-angle (math/normalize-angle
                     (v/angle-to-point direction-origin-point
                                       direction-anchor-point))
