@@ -9,8 +9,8 @@
 
 (def charge-type :heraldry.charge.type/escutcheon)
 
-(defmethod charge-interface/display-name charge-type [_] {:en "Escutcheon / Inescutcheon"
-                                                          :de "Schild / Herzschild"})
+(defmethod charge-interface/display-name charge-type [_] {:en "Escutcheon"
+                                                          :de "Schild"})
 
 (defmethod charge-interface/render-charge charge-type
   [path parent-path environment {:keys [root-escutcheon] :as context}]
