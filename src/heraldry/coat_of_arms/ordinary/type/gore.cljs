@@ -4,10 +4,9 @@
             [heraldry.coat-of-arms.infinity :as infinity]
             [heraldry.coat-of-arms.line.core :as line]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.math.vector :as v]
             [heraldry.interface :as interface]
             [heraldry.math.svg.path :as path]
-            [heraldry.math.svg.core :as svg]))
+            [heraldry.math.vector :as v]))
 
 (defn arm-diagonal [origin-point anchor-point]
   (-> (v/sub anchor-point origin-point)
@@ -28,6 +27,8 @@
                      (interface/get-sanitized-data (conj path :outline?) context))
 
         points (:points environment)
+        top-left (:top-left points)
+        top-right (:top-right points)
         left? (case (-> anchor :point)
                 :top-left true
                 :angle (-> anchor :angle neg?)
@@ -79,7 +80,9 @@
                                (v/add diagonal-top
                                       line-diagonal-start)])
                "z"]
-              [intersection-top
+              [(if left?
+                 top-left
+                 top-right)
                origin-point
                bottom]]]
     [:<>
