@@ -19,6 +19,28 @@
     [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll "
      "group some features and new development and post an update here, so it is easy to stay informed."]]
 
+   [:h3 "2021-09-26 - German translation, undo/redo, quarter/canton/point ordinaries, fretty"]
+   [:div.release-row
+    [:div.info
+     [:p "Changes and new features:"]
+     [:ul
+      [:li "German translation"
+       [:ul
+        [:li "the entire interface is now available in German"]
+        [:li "News and About section aren't translated for the time being, might do that at some point as well"]
+        [:li "there might be some translations that are not ideal or awkward the way they are used, email me if you find such cases! :)"]]]
+
+      [:li "all forms now support undo/redo"]
+      [:li "added the quarter/canton ordinary"]
+      [:li "added the point ordinary"]
+      [:li "added fretty"]
+      [:li "added more flag aspect ratios"]
+      [:li "Bugfixes"
+       [:ul
+        [:li "the environments for many ordinaries and subfields were broken (they still need some work, but now most of them should be reasonable)"]
+        [:li "fixed some fretty issues"]
+        [:li "a bunch of minor things in the UI and rendering"]]]]]]
+
    [:h3 "2021-08-20 - helms/crests, mottos/slogans, ribbon editor + library"]
    [:div.release-row
     [:div.info
