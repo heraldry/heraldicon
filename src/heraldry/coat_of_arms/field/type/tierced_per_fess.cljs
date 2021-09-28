@@ -82,7 +82,9 @@
                                  (v/add first-left
                                         line-one-start)])
                  "z"]
-                [top-left first-right]]
+                [top-left
+                 (v/v (:x right)
+                      (:y first-right))]]
 
                [["M" (v/add first-left
                             line-one-start)
@@ -101,8 +103,10 @@
                                  (v/add first-left
                                         line-one-start)])
                  "z"]
-                [first-left
-                 second-right]]
+                [(v/v (:x left)
+                      (:y first-left))
+                 (v/v (:x right)
+                      (:y second-right))]]
 
                [["M" (v/add second-right
                             line-reversed-start)
@@ -114,7 +118,9 @@
                                  (v/add second-right
                                         line-reversed-start)])
                  "z"]
-                [second-left bottom-right]]]]
+                [(v/v (:x left)
+                      (:y second-left))
+                 bottom-right]]]]
     [:<>
      [shared/make-subfields
       path parts
