@@ -137,7 +137,12 @@
                (path/stitch line-reversed)
                "L" (v/add first-start
                           line-one-start)
-               "z"]]
+               "z"]
+              (if use-parent-environment?
+                [first-real-start first-real-end
+                 second-real-start second-real-end]
+                [(v/v 0 0)
+                 (v/v band-length band-height)])]
         cottise-context (merge
                          context
                          {:override-real-start real-start
