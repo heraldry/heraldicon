@@ -67,7 +67,9 @@
                                (v/add row-left
                                       line-one-start)])
                "z"]
-              [row-left bottom-right]]
+              [(v/v (:x left)
+                    (:y row-left))
+               bottom-right]]
         cottise-context (merge
                          context
                          {:override-shared-start-x shared-start-x
