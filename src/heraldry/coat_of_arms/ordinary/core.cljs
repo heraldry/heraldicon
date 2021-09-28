@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.ordinary.core
   (:require [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
             [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
             [heraldry.interface :as interface]
             [heraldry.util :as util]))
 
@@ -32,4 +33,4 @@
 
 (defn title [path context]
   (let [ordinary-type (interface/get-raw-data (conj path :type) context)]
-    (util/translate-cap-first ordinary-type)))
+    (ordinary-options/ordinary-map ordinary-type)))
