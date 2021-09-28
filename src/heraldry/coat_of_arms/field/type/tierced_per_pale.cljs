@@ -83,7 +83,8 @@
                                         line-one-start)])
                  "z"]
                 [top-left
-                 first-bottom]]
+                 (v/v (:x first-bottom)
+                      (:y bottom))]]
 
                [["M" (v/add second-bottom
                             line-reversed-start)
@@ -103,8 +104,10 @@
                                         line-reversed-start)
                                  first-bottom second-bottom])
                  "z"]
-                [first-top
-                 second-bottom]]
+                [(v/v (:x first-top)
+                      (:y top))
+                 (v/v (:x second-bottom)
+                      (:y bottom))]]
 
                [["M" (v/add second-bottom
                             line-reversed-start)
@@ -116,7 +119,8 @@
                                  (v/add second-bottom
                                         line-reversed-start)])
                  "z"]
-                [second-top
+                [(v/v (:x second-top)
+                      (:y top))
                  bottom-right]]]]
     [:<>
      [shared/make-subfields
