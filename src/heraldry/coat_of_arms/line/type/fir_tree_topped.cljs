@@ -2,7 +2,8 @@
   (:require [heraldry.util :as util]))
 
 (defn pattern
-  {:display-name "Fir-tree topped"
+  {:display-name {:en "Fir-tree topped"
+                  :de "Tannenschnitt"}
    :value :fir-tree-topped}
   [{:keys [eccentricity height width]}
    _line-options]
