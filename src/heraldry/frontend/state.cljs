@@ -5,6 +5,7 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.frontend.macros :as macros]
             [heraldry.frontend.ui.form.collection-element :as collection-element]
+            [heraldry.frontend.ui.shield-separator :as shield-separator]
             [heraldry.interface :as interface]
             [heraldry.util :as util]
             [re-frame.core :as rf]
@@ -294,7 +295,7 @@
         (ui-component-node-open (cond-> path
                                   (not open?) drop-last))
         (cond->
-         (= component-type :heraldry.component/collection-element)
+          (= component-type :heraldry.component/collection-element)
           (assoc-in collection-element/ui-highlighted-element-path path)))))
 
 (macros/reg-event-db :ui-component-node-select
@@ -311,7 +312,7 @@
       (-> db
           (assoc-in ui-component-node-selected-default-path path)
           (cond->
-           (not valid-path?) (assoc-in ui-component-node-selected-path nil))))))
+            (not valid-path?) (assoc-in ui-component-node-selected-path nil))))))
 
 (defn adjust-component-path-after-order-change [path elements-path index new-index]
   (let [elements-path-size (count elements-path)
@@ -383,3 +384,9 @@
 
 (defmethod interface/get-counterchange-tinctures :state [path context]
   @(rf/subscribe [:get-counterchange-tinctures path context]))
+
+(defmethod interface/get-element-indices :state [path {:keys [behind-shield?]} _context]
+  (let [elements @(rf/subscribe [:get-value path])]
+    (if behind-shield?
+      (shield-separator/element-indices-below-shield elements)
+      (shield-separator/element-indices-above-shield elements))))

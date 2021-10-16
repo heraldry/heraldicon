@@ -17,6 +17,7 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.collection.element] ;; needed for side effects
             [heraldry.collection.options] ;; needed for side effects
+            [heraldry.frontend.ui.shield-separator :as shield-separator]
             [heraldry.font :as font]
             [heraldry.helm] ;; needed for side effects
             [heraldry.interface :as interface]
@@ -117,3 +118,9 @@
    :attribution (attribution/options (:attribution data))
    :ribbon (ribbon/options (:ribbon data))
    :tags {:ui {:form-type :tags}}})
+
+(defmethod interface/get-element-indices :context [path {:keys [behind-shield?]} context]
+  (let [elements (get-in context (drop 1 path))]
+    (if behind-shield?
+      (shield-separator/element-indices-below-shield elements)
+      (shield-separator/element-indices-above-shield elements))))

@@ -1,7 +1,6 @@
 (ns heraldry.frontend.ui.shield-separator
   (:require [heraldry.coat-of-arms.default :as default]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.interface :as other-interface]))
+            [heraldry.frontend.ui.interface :as interface]))
 
 
 (defmethod interface/component-node-data :heraldry.component/shield-separator [_path]
@@ -11,9 +10,6 @@
 
 (defmethod interface/component-form-data :heraldry.component/shield-separator [_path]
   {})
-
-(defmethod other-interface/render-component :heraldry.component/shield-separator [_path]
-  [:<>])
 
 (defn shield-separator? [element]
   (-> element
@@ -36,3 +32,29 @@
                       elements)
                 elements
                 ))})
+
+(defn shield-separator-exists? [elements]
+  (->> elements
+       (filter shield-separator?)
+       seq))
+
+(defn element-indices-below-shield [elements]
+  (if (shield-separator-exists? elements)
+    (->> elements
+         (map-indexed vector)
+         (take-while (comp not shield-separator? second))
+         (map first)
+         vec)
+    []))
+
+(defn element-indices-above-shield [elements]
+  (if (shield-separator-exists? elements)
+    (->> elements
+         (map-indexed vector)
+         (drop-while (comp not shield-separator? second))
+         (filter (comp not shield-separator? second))
+         (map first)
+         vec)
+    (->> (count elements)
+         range
+         vec)))
