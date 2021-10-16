@@ -2,6 +2,7 @@
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.frontend.ui.shield-separator :as shield-separator]
             [heraldry.strings :as strings]
             [re-frame.core :as rf]))
 
@@ -24,24 +25,31 @@
      :buttons [{:icon "fas fa-plus"
                 :title strings/add
                 :menu [{:title strings/motto
-                        :handler #(state/dispatch-on-event % [:add-element mottos-path default/motto])}
+                        :handler #(state/dispatch-on-event % [:add-element mottos-path default/motto
+                                                              shield-separator/add-element-options])}
                        {:title strings/slogan
-                        :handler #(state/dispatch-on-event % [:add-element mottos-path default/slogan])}]}]
+                        :handler #(state/dispatch-on-event % [:add-element mottos-path default/slogan
+                                                              shield-separator/add-element-options])}]}]
      :nodes (->> (range num-mottos)
+                 reverse
                  (map (fn [idx]
-                        (let [motto-path (conj mottos-path idx)]
+                        (let [motto-path (conj mottos-path idx)
+                              removable? @(rf/subscribe [:element-removable? motto-path])]
                           {:path motto-path
-                           :buttons [{:icon "fas fa-chevron-up"
-                                      :disabled? (zero? idx)
-                                      :tooltip strings/move-down
-                                      :handler #(state/dispatch-on-event % [:move-element motto-path (dec idx)])}
-                                     {:icon "fas fa-chevron-down"
-                                      :disabled? (= idx (dec num-mottos))
-                                      :tooltip strings/move-up
-                                      :handler #(state/dispatch-on-event % [:move-element motto-path (inc idx)])}
-                                     {:icon "far fa-trash-alt"
-                                      :tooltip strings/remove
-                                      :handler #(state/dispatch-on-event % [:remove-element motto-path])}]}))))}))
+                           :buttons (cond-> [{:icon "fas fa-chevron-down"
+                                              :disabled? (zero? idx)
+                                              :tooltip strings/move-down
+                                              :handler #(state/dispatch-on-event % [:move-element motto-path (dec idx)])}
+                                             {:icon "fas fa-chevron-up"
+                                              :disabled? (= idx (dec num-mottos))
+                                              :tooltip strings/move-up
+                                              :handler #(state/dispatch-on-event % [:move-element motto-path (inc idx)])}]
+                                      removable? (conj {:icon "far fa-trash-alt"
+                                                        :tooltip strings/remove
+                                                        :handler #(state/dispatch-on-event
+                                                                   %
+                                                                   [:remove-element motto-path
+                                                                    shield-separator/remove-element-options])}))}))))}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/mottos [_path]
   {:form form})

@@ -52,6 +52,7 @@
             [heraldry.frontend.ui.form.ribbon-general] ;; needed for side effects
             [heraldry.frontend.ui.form.semy] ;; needed for side effects
             [heraldry.frontend.ui.interface :as ui-interface] ;; needed for side effects
+            [heraldry.frontend.ui.shield-separator :as shield-separator] ;; needed for side effects
             [heraldry.frontend.validation :as validation] ;; needed for side effects
             [heraldry.interface :as interface] ;; needed for side effects
             [heraldry.shared] ;; needed for side effects
@@ -85,10 +86,13 @@
 ;; events
 
 (macros/reg-event-db :add-element
-  (fn [db [_ path value]]
+  (fn [db [_ path value {:keys [post-fn]}]]
     (let [elements (-> (get-in db path)
                        (conj value)
                        vec)
+          elements (if post-fn
+                     (post-fn elements)
+                     elements)
           element-path (conj path (-> elements count dec))
           added-type (interface/effective-component-type element-path (:type value))]
       (-> db
@@ -103,7 +107,7 @@
             (#{:heraldry.component/motto} added-type) (submenu/ui-submenu-open (conj element-path :ribbon-variant)))))))
 
 (macros/reg-event-db :remove-element
-  (fn [db [_ path]]
+  (fn [db [_ path {:keys [post-fn]}]]
     (let [elements-path (-> path drop-last vec)
           index (last path)
           elements (vec (get-in db elements-path))
@@ -112,8 +116,9 @@
         db
         (-> db
             (update-in elements-path (fn [elements]
-                                       (vec (concat (subvec elements 0 index)
-                                                    (subvec elements (inc index))))))
+                                       (cond-> (vec (concat (subvec elements 0 index)
+                                                            (subvec elements (inc index))))
+                                         post-fn post-fn)))
             (state/element-order-changed elements-path index nil))))))
 
 (macros/reg-event-db :move-element
@@ -131,6 +136,12 @@
             (update-in elements-path util/vec-move index new-index)
             (state/element-order-changed elements-path index new-index))))))
 
+(rf/reg-sub :element-removable?
+  (fn [[_ path] _]
+    (rf/subscribe [:get path]))
+
+  (fn [element _]
+    (not (shield-separator/shield-separator? element))))
 
 ;; functions
 

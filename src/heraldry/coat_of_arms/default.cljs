@@ -99,9 +99,13 @@
    :tincture {:shadow 1
               :highlight 1}})
 
+(def shield-separator
+  {:type :heraldry.component/shield-separator})
+
 (def helm
   {:type :heraldry.component/helm
-   :components [helmet]})
+   :components [shield-separator
+                helmet]})
 
 (def ribbon
   {:ribbon {:thickness nil
