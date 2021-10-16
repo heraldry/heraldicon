@@ -591,8 +591,8 @@
                                     (assoc :ui {:label strings/fimbriation
                                                 :form-type :fimbriation})))))
        (as-> options
-             (cond-> options
-               (:cottising options) (update :cottising cottising/options (:cottising ordinary))))))))
+         (cond-> options
+           (:cottising options) (update :cottising cottising/options (:cottising ordinary))))))))
 
 (defmethod interface/component-options :heraldry.component/ordinary [_path data]
   (options data))

@@ -17,7 +17,7 @@
             [heraldry.frontend.ui.element.field-type-select] ;; needed for side effects
             [heraldry.frontend.ui.element.fimbriation] ;; needed for side effects
             [heraldry.frontend.ui.element.geometry] ;; needed for side effects
-            [heraldry.frontend.ui.element.hover-menu :as hover-menu]
+            [heraldry.frontend.ui.element.hover-menu :as hover-menu] ;; needed for side effects
             [heraldry.frontend.ui.element.line] ;; needed for side effects
             [heraldry.frontend.ui.element.line-type-select] ;; needed for side effects
             [heraldry.frontend.ui.element.ordinary-type-select] ;; needed for side effects
@@ -27,7 +27,7 @@
             [heraldry.frontend.ui.element.ribbon-reference-select] ;; needed for side effects
             [heraldry.frontend.ui.element.select] ;; needed for side effects
             [heraldry.frontend.ui.element.semy-layout] ;; needed for side effects
-            [heraldry.frontend.ui.element.submenu :as submenu]
+            [heraldry.frontend.ui.element.submenu :as submenu] ;; needed for side effects
             [heraldry.frontend.ui.element.tags] ;; needed for side effects
             [heraldry.frontend.ui.element.text-field] ;; needed for side effects
             [heraldry.frontend.ui.element.theme-select] ;; needed for side effects
@@ -51,9 +51,9 @@
             [heraldry.frontend.ui.form.render-options] ;; needed for side effects
             [heraldry.frontend.ui.form.ribbon-general] ;; needed for side effects
             [heraldry.frontend.ui.form.semy] ;; needed for side effects
-            [heraldry.frontend.ui.interface :as ui-interface]
+            [heraldry.frontend.ui.interface :as ui-interface] ;; needed for side effects
             [heraldry.frontend.validation :as validation] ;; needed for side effects
-            [heraldry.interface :as interface]
+            [heraldry.interface :as interface] ;; needed for side effects
             [heraldry.shared] ;; needed for side effects
             [heraldry.util :as util]
             [re-frame.core :as rf]))
@@ -96,11 +96,11 @@
           (state/ui-component-node-select element-path :open? true)
           submenu/ui-submenu-close-all
           (cond->
-           (#{:heraldry.component/ordinary
-              :heraldry.component/charge} added-type) (submenu/ui-submenu-open (conj element-path :type))
-           (#{:heraldry.component/charge-group} added-type) (submenu/ui-submenu-open element-path)
-           (#{:heraldry.component/collection-element} added-type) (submenu/ui-submenu-open (conj element-path :reference))
-           (#{:heraldry.component/motto} added-type) (submenu/ui-submenu-open (conj element-path :ribbon-variant)))))))
+            (#{:heraldry.component/ordinary
+               :heraldry.component/charge} added-type) (submenu/ui-submenu-open (conj element-path :type))
+            (#{:heraldry.component/charge-group} added-type) (submenu/ui-submenu-open element-path)
+            (#{:heraldry.component/collection-element} added-type) (submenu/ui-submenu-open (conj element-path :reference))
+            (#{:heraldry.component/motto} added-type) (submenu/ui-submenu-open (conj element-path :ribbon-variant)))))))
 
 (macros/reg-event-db :remove-element
   (fn [db [_ path]]
@@ -133,7 +133,6 @@
 
 
 ;; functions
-
 
 (defn component-node [path & {:keys [title parent-buttons]}]
   (if (= path :spacer)
