@@ -5,8 +5,8 @@
             [heraldry.coat-of-arms.default :as default]
             [heraldry.frontend.macros :as macros]
             [heraldry.frontend.ui.form.collection-element :as collection-element]
-            [heraldry.frontend.ui.shield-separator :as shield-separator]
             [heraldry.interface :as interface]
+            [heraldry.shield-separator :as shield-separator]
             [heraldry.util :as util]
             [re-frame.core :as rf]
             [taoensso.timbre :as log]))

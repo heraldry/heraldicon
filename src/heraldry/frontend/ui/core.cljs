@@ -52,10 +52,11 @@
             [heraldry.frontend.ui.form.ribbon-general] ;; needed for side effects
             [heraldry.frontend.ui.form.semy] ;; needed for side effects
             [heraldry.frontend.ui.interface :as ui-interface] ;; needed for side effects
-            [heraldry.frontend.ui.shield-separator :as shield-separator] ;; needed for side effects
+            [heraldry.frontend.ui.shield-separator] ;; needed for side effects
             [heraldry.frontend.validation :as validation] ;; needed for side effects
             [heraldry.interface :as interface] ;; needed for side effects
             [heraldry.shared] ;; needed for side effects
+            [heraldry.shield-separator :as shield-separator]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 

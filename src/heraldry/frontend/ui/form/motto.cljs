@@ -2,7 +2,7 @@
   (:require [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
             [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.frontend.ui.shield-separator :as shield-separator]
+            [heraldry.shield-separator :as shield-separator]
             [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
