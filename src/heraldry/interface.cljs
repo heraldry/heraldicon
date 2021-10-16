@@ -46,6 +46,9 @@
 (defmulti get-list-size (fn [path _context]
                           (state-source path)))
 
+(defmulti get-element-indices (fn [path _ _context]
+                                (state-source path)))
+
 (defmulti get-counterchange-tinctures (fn [path _context]
                                         (state-source path)))
 

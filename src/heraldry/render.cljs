@@ -121,12 +121,11 @@
                 [:g (outline/style context)
                  [:path {:d (:shape environment)}]])]}))
 
-(defn helm [path environment context]
-  (let [components-path (conj path :components)
-        num-components (interface/get-list-size components-path context)]
+(defn helm [path environment context & {:keys [behind-shield?]}]
+  (let [components-path (conj path :components)]
     [:<>
      (doall
-      (for [idx (range num-components)]
+      (for [idx (interface/get-element-indices components-path {:behind-shield? behind-shield?} context)]
         ^{:key idx}
         [interface/render-component
          (conj components-path idx)
@@ -153,20 +152,35 @@
         {:width (- width
                    (* 2 gap))
          :height total-height
-         :result [:g
-                  (doall
-                   (for [idx (range num-helms)]
-                     (let [helm-environment (environment/create
-                                             nil
-                                             {:bounding-box [(+ (* idx helm-width-with-gap)
-                                                                gap)
-                                                             (+ (* idx helm-width-with-gap)
-                                                                gap
-                                                                helm-width)
-                                                             (- helm-height)
-                                                             0]})]
-                       ^{:key idx}
-                       [helm (conj elements-path idx) helm-environment context])))]}))))
+         :result-below-shield [:g
+                               (doall
+                                (for [idx (range num-helms)]
+                                  (let [helm-environment (environment/create
+                                                          nil
+                                                          {:bounding-box [(+ (* idx helm-width-with-gap)
+                                                                             gap)
+                                                                          (+ (* idx helm-width-with-gap)
+                                                                             gap
+                                                                             helm-width)
+                                                                          (- helm-height)
+                                                                          0]})]
+                                    ^{:key idx}
+                                    [helm (conj elements-path idx) helm-environment context
+                                     :behind-shield? true])))]
+         :result-above-shield [:g
+                               (doall
+                                (for [idx (range num-helms)]
+                                  (let [helm-environment (environment/create
+                                                          nil
+                                                          {:bounding-box [(+ (* idx helm-width-with-gap)
+                                                                             gap)
+                                                                          (+ (* idx helm-width-with-gap)
+                                                                             gap
+                                                                             helm-width)
+                                                                          (- helm-height)
+                                                                          0]})]
+                                    ^{:key idx}
+                                    [helm (conj elements-path idx) helm-environment context])))]}))))
 
 (defn ribbon [path
               tincture-foreground
@@ -356,25 +370,35 @@
 
 (defn mottos [path width height context]
   (let [elements-path (conj path :elements)
-        num-mottos (interface/get-list-size elements-path context)
         motto-environment (environment/create
                            nil
                            {:bounding-box [0
                                            width
                                            0
                                            height]})
-        mottos-data (vec
-                     (for [idx (range num-mottos)]
-                       (-> (motto (conj elements-path idx) motto-environment context)
-                           (assoc :idx idx))))
-        combined-bounding-box (->> mottos-data
+        mottos-data-below-shield (vec
+                                  (for [idx (interface/get-element-indices elements-path {:behind-shield? true} context)]
+                                    (-> (motto (conj elements-path idx) motto-environment context)
+                                        (assoc :idx idx))))
+        mottos-data-above-shield (vec
+                                  (for [idx (interface/get-element-indices elements-path {:behind-shield? false} context)]
+                                    (-> (motto (conj elements-path idx) motto-environment context)
+                                        (assoc :idx idx))))
+        combined-bounding-box (->> (concat mottos-data-below-shield
+                                           mottos-data-above-shield)
                                    (keep :bounding-box)
                                    bounding-box/combine)]
-    {:result [:g
-              (doall
-               (for [{:keys [idx result]} mottos-data]
-                 ^{:key idx}
-                 [:<> result]))]
+    {:result-below-shield [:g
+                           (doall
+                            (for [{:keys [idx result]} mottos-data-below-shield]
+                              ^{:key idx}
+                              [:<> result]))]
+     :result-above-shield [:g
+                           (doall
+                            (for [{:keys [idx result]} mottos-data-above-shield]
+                              ^{:key idx}
+                              [:<> result]))]
+
      :bounding-box combined-bounding-box}))
 
 (defn transform-bounding-box [[min-x max-x min-y max-y] target-width & {:keys [max-aspect-ratio]}]
@@ -435,7 +459,8 @@
                                     context)
         {coat-of-arms-width :width
          coat-of-arms-height :height} environment
-        {helms-result :result
+        {helms-result-below-shield :result-below-shield
+         helms-result-above-shield :result-above-shield
          helms-width :width
          helms-height :height} (if (= scope :coat-of-arms)
                                  {:width 0
@@ -476,14 +501,15 @@
                                      0 coat-of-arms-height])
         coa-and-helms-bounding-box (bounding-box/combine
                                     (cond-> [coat-of-arms-bounding-box]
-                                      helms-result (conj helms-bounding-box)))
+                                      helms-result-below-shield (conj helms-bounding-box)))
         target-width 1000
         {coa-and-helms-width :target-width
          coa-and-helms-height :target-height
          coa-and-helms-transform :transform} (transform-bounding-box
                                               coa-and-helms-bounding-box
                                               target-width)
-        {mottos-result :result
+        {mottos-result-below-shield :result-below-shield
+         mottos-result-above-shield :result-above-shield
          mottos-bounding-box :bounding-box} (if (= scope :coat-of-arms)
                                               {:bounding-box [0 0 0 0]
                                                :result nil
@@ -500,7 +526,7 @@
         achievement-bounding-box (bounding-box/combine
                                   (cond-> [[0 coa-and-helms-width
                                             0 coa-and-helms-height]]
-                                    mottos-result (conj mottos-bounding-box)))
+                                    mottos-result-below-shield (conj mottos-bounding-box)))
         {achievement-width :target-width
          achievement-height :target-height
          achievement-transform :transform} (transform-bounding-box
@@ -527,8 +553,19 @@
      [:g {:transform (str "translate(" margin "," margin ")")}
       [:g {:transform achievement-transform
            :style {:transition "transform 0.5s"}}
+
+       (when mottos-result-below-shield
+         [:g
+          mottos-result-below-shield])
+
        [:g {:transform coa-and-helms-transform
             :style {:transition "transform 0.5s"}}
+
+        (when helms-result-below-shield
+          [:g {:transform (str "translate(" (v/->str helm-position) ")")
+               :style {:transition "transform 0.5s"}}
+           helms-result-below-shield])
+
         [:g {:transform (cond
                           (neg? coat-of-arms-angle) (str "rotate(" (- coat-of-arms-angle) ")")
                           (pos? coat-of-arms-angle) (str "translate(" coat-of-arms-width "," 0 ")"
@@ -537,14 +574,15 @@
                           :else nil)
              :style {:transition "transform 0.5s"}}
          coat-of-arms]
-        (when helms-result
+
+        (when helms-result-above-shield
           [:g {:transform (str "translate(" (v/->str helm-position) ")")
                :style {:transition "transform 0.5s"}}
-           helms-result])]
+           helms-result-above-shield])]
 
-       (when mottos-result
+       (when mottos-result-above-shield
          [:g
-          mottos-result])]]
+          mottos-result-above-shield])]]
 
      (when short-url
        [:text {:x margin
