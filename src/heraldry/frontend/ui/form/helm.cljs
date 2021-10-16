@@ -4,7 +4,7 @@
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.element.submenu :as submenu]
             [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.frontend.ui.shield-separator :as shield-separator]
+            [heraldry.shield-separator :as shield-separator]
             [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))

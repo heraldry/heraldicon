@@ -17,7 +17,6 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.collection.element] ;; needed for side effects
             [heraldry.collection.options] ;; needed for side effects
-            [heraldry.frontend.ui.shield-separator :as shield-separator]
             [heraldry.font :as font]
             [heraldry.helm] ;; needed for side effects
             [heraldry.interface :as interface]
@@ -25,6 +24,7 @@
             [heraldry.options :as options]
             [heraldry.render-options] ;; needed for side effects
             [heraldry.ribbon :as ribbon]
+            [heraldry.shield-separator :as shield-separator]
             [heraldry.strings :as strings]))
 
 (defmethod interface/get-raw-data :context [path context]

@@ -2,7 +2,7 @@
   (:require [heraldry.coat-of-arms.default :as default]
             [heraldry.frontend.state :as state]
             [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.frontend.ui.shield-separator :as shield-separator]
+            [heraldry.shield-separator :as shield-separator]
             [heraldry.strings :as strings]
             [re-frame.core :as rf]))
 
