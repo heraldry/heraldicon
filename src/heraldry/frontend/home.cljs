@@ -12,7 +12,12 @@
 
 (defn view []
   (rf/dispatch [:set-title "Home"])
-  [:div {:style {:padding "10px"}}
+  [:div
+   {:style {:padding "10px"
+            :text-align "justify"
+            :min-width "30em"
+            :max-width "60em"
+            :margin "auto"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
     [:h2 "News"]
