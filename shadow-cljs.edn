@@ -8,8 +8,7 @@
           {:target :browser
            :asset-path "/js/generated"
            :js-options {:js-package-dirs ["./node_modules"]}
-           :devtools {:before-load heraldry.frontend.main/stop
-                      :after-load heraldry.frontend.main/start
+           :devtools {:after-load heraldry.frontend.main/init
                       :http-root "./assets"
                       :http-port 8081
                       :preloads [devtools.preload
