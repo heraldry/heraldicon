@@ -27,6 +27,7 @@
     (-> path last (= :mottos)) :heraldry.component/mottos
     (-> path last (= :ribbon-form)) :heraldry.component/ribbon-general
     (-> path last (= :coat-of-arms)) :heraldry.component/coat-of-arms
+    (-> path last (= :compartment)) :heraldry.component/compartment
     (keyword? raw-type) (type->component-type raw-type)
     (and (-> path last keyword?)
          (-> path last name (s/starts-with? "cottise"))) :heraldry.component/cottise
