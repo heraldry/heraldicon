@@ -118,3 +118,15 @@
 
 (def slogan
   {:type :heraldry.motto.type/slogan})
+
+(def compartment-charge
+  {:type :heraldry.charge.type/compartment
+   :variant {:id (config/get :compartment-charge-id)
+             :version 0}
+   :field field
+   :tincture {:shadow 1
+              :highlight 1}
+   :origin {:point :bottom}
+   :anchor {:point :angle
+            :angle 0}
+   :geometry {:size 80}})

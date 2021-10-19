@@ -23,6 +23,21 @@
                 elements
                 ))})
 
+(def add-element-default-behind-options
+  {:post-fn (fn [elements]
+              (if (-> elements count (= 1))
+                (into elements
+                      [default/shield-separator])
+                elements
+                ))
+   :selected-element-path-fn (fn [selected-path element _elements]
+                               (if (shield-separator? element)
+                                 (-> selected-path
+                                     drop-last
+                                     vec
+                                     (conj 0))
+                                 selected-path))})
+
 (defn shield-separator-exists? [elements]
   (->> elements
        (filter shield-separator?)

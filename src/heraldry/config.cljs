@@ -25,7 +25,8 @@
            :torse-charge-id "charge:6A691Q"
            :helmet-charge-id "charge:Af7tBN"
            :static-files-url "http://localhost:8081"
-           :base-font-dir "/Users/oliver/dev/armory/assets/font"}
+           :base-font-dir "/Users/oliver/dev/armory/assets/font"
+           :compartment-charge-id "charge:lD7wLA"}
 
     "staging" {:heraldry-api-endpoint "https://ru73nh6ozg.execute-api.eu-central-1.amazonaws.com/api"
                :heraldry-url "https://staging.heraldry.digital"

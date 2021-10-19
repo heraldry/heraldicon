@@ -17,6 +17,7 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.collection.element] ;; needed for side effects
             [heraldry.collection.options] ;; needed for side effects
+            [heraldry.compartment] ;; needed for side effects
             [heraldry.font :as font]
             [heraldry.helm] ;; needed for side effects
             [heraldry.interface :as interface]

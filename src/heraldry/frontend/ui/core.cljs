@@ -41,6 +41,7 @@
             [heraldry.frontend.ui.form.collection] ;; needed for side effects
             [heraldry.frontend.ui.form.collection-element] ;; needed for side effects
             [heraldry.frontend.ui.form.collection-general] ;; needed for side effects
+            [heraldry.frontend.ui.form.compartment] ;; needed for side effects
             [heraldry.frontend.ui.form.cottise] ;; needed for side effects
             [heraldry.frontend.ui.form.field] ;; needed for side effects
             [heraldry.frontend.ui.form.helm] ;; needed for side effects
@@ -87,25 +88,28 @@
 ;; events
 
 (macros/reg-event-db :add-element
-  (fn [db [_ path value {:keys [post-fn]}]]
+  (fn [db [_ path value {:keys [post-fn selected-element-path-fn]}]]
     (let [elements (-> (get-in db path)
                        (conj value)
                        vec)
           elements (if post-fn
                      (post-fn elements)
                      elements)
-          element-path (conj path (-> elements count dec))
-          added-type (interface/effective-component-type element-path (:type value))]
+          new-element-path (conj path (-> elements count dec))
+          new-element-path (if selected-element-path-fn
+                             (selected-element-path-fn new-element-path (last elements) elements)
+                             new-element-path)
+          added-type (interface/effective-component-type new-element-path (:type value))]
       (-> db
           (assoc-in path elements)
-          (state/ui-component-node-select element-path :open? true)
+          (state/ui-component-node-select new-element-path :open? true)
           submenu/ui-submenu-close-all
           (cond->
             (#{:heraldry.component/ordinary
-               :heraldry.component/charge} added-type) (submenu/ui-submenu-open (conj element-path :type))
-            (#{:heraldry.component/charge-group} added-type) (submenu/ui-submenu-open element-path)
-            (#{:heraldry.component/collection-element} added-type) (submenu/ui-submenu-open (conj element-path :reference))
-            (#{:heraldry.component/motto} added-type) (submenu/ui-submenu-open (conj element-path :ribbon-variant)))))))
+               :heraldry.component/charge} added-type) (submenu/ui-submenu-open (conj new-element-path :type))
+            (#{:heraldry.component/charge-group} added-type) (submenu/ui-submenu-open new-element-path)
+            (#{:heraldry.component/collection-element} added-type) (submenu/ui-submenu-open (conj new-element-path :reference))
+            (#{:heraldry.component/motto} added-type) (submenu/ui-submenu-open (conj new-element-path :ribbon-variant)))))))
 
 (macros/reg-event-db :remove-element
   (fn [db [_ path {:keys [post-fn]}]]

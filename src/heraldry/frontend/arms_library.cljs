@@ -308,7 +308,9 @@
                         :spacer
                         (conj form-db-path :mottos)
                         :spacer
-                        (conj form-db-path :coat-of-arms)]]]])
+                        (conj form-db-path :coat-of-arms)
+                        :spacer
+                        (conj form-db-path :compartment)]]]])
 
 (defn arms-display [arms-id version]
   (when @(rf/subscribe [:heraldry.frontend.history.core/identifier-changed? form-db-path arms-id])

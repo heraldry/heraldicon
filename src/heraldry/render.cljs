@@ -401,6 +401,44 @@
 
      :bounding-box combined-bounding-box}))
 
+(defn compartment-elements [path environment context & {:keys [behind-shield?]}]
+  (let [elements-path (conj path :elements)]
+    [:<>
+     (doall
+      (for [idx (interface/get-element-indices elements-path {:behind-shield? behind-shield?} context)]
+        ^{:key idx}
+        [interface/render-component
+         (conj elements-path idx)
+         path environment
+         context]))]))
+
+(defn compartment [path coa-width coa-height context]
+  (let [elements-path (conj path :elements)
+        num-below (count (interface/get-element-indices elements-path {:behind-shield? true} context))
+        num-above (count (interface/get-element-indices elements-path {:behind-shield? false} context))
+        compartment-width (* 3 coa-width)
+        compartment-height coa-height
+        compartment-left (-> coa-width
+                             (/ 2)
+                             (- (/ compartment-width 2)))
+        compartment-top (- coa-height compartment-height)
+        environment (environment/create
+                     nil
+                     {:bounding-box [compartment-left
+                                     (+ compartment-left compartment-width)
+                                     compartment-top
+                                     (+ compartment-top compartment-height)]})]
+    (if (or (pos? num-below)
+            (pos? num-above))
+      {:result-below-shield [compartment-elements path environment context :behind-shield? true]
+       :result-above-shield [compartment-elements path environment context :behind-shield? false]
+
+       :bounding-box [compartment-left
+                      (+ compartment-left compartment-width)
+                      compartment-top
+                      (+ compartment-top (* compartment-height 1.3))]}
+      {:bounding-box [0 0 0 0]})))
+
 (defn transform-bounding-box [[min-x max-x min-y max-y] target-width & {:keys [max-aspect-ratio]}]
   (let [total-width (- max-x min-x)
         total-height (- max-y min-y)
@@ -512,7 +550,6 @@
          mottos-result-above-shield :result-above-shield
          mottos-bounding-box :bounding-box} (if (= scope :coat-of-arms)
                                               {:bounding-box [0 0 0 0]
-                                               :result nil
                                                :used-fonts #{}}
                                               (mottos
                                                (conj path :mottos)
@@ -520,13 +557,25 @@
                                                coa-and-helms-height
                                                context))
 
+        {compartment-result-below-shield :result-below-shield
+         compartment-result-above-shield :result-above-shield
+         compartment-bounding-box :bounding-box} (if (= scope :coat-of-arms)
+                                                   {:bounding-box [0 0 0 0]
+                                                    :used-fonts #{}}
+                                                   (compartment
+                                                    (conj path :compartment)
+                                                    coa-and-helms-width
+                                                    coa-and-helms-height
+                                                    context))
+
         used-fonts (cond-> (get-used-fonts path context)
                      short-url (conj short-url-font))
 
         achievement-bounding-box (bounding-box/combine
                                   (cond-> [[0 coa-and-helms-width
                                             0 coa-and-helms-height]]
-                                    mottos-result-below-shield (conj mottos-bounding-box)))
+                                    mottos-result-below-shield (conj mottos-bounding-box)
+                                    compartment-result-below-shield (conj compartment-bounding-box)))
         {achievement-width :target-width
          achievement-height :target-height
          achievement-transform :transform} (transform-bounding-box
@@ -554,6 +603,10 @@
       [:g {:transform achievement-transform
            :style {:transition "transform 0.5s"}}
 
+       (when compartment-result-below-shield
+         [:g
+          compartment-result-below-shield])
+
        (when mottos-result-below-shield
          [:g
           mottos-result-below-shield])
@@ -579,6 +632,10 @@
           [:g {:transform (str "translate(" (v/->str helm-position) ")")
                :style {:transition "transform 0.5s"}}
            helms-result-above-shield])]
+
+       (when compartment-result-above-shield
+         [:g
+          compartment-result-above-shield])
 
        (when mottos-result-above-shield
          [:g
