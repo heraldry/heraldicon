@@ -112,7 +112,8 @@
             :points [(v/v -150 -20) (v/v -75 0) (v/v 0 5) (v/v 75 0) (v/v 150 -20)]
             :segments [{:type :heraldry.ribbon.segment/foreground-with-text
                         :text "LOREM IPSUM"}]}})
-
+;;
+;; TODO: fetch a default ribbon
 (def motto
   {:type :heraldry.motto.type/motto})
 
@@ -129,4 +130,33 @@
    :origin {:point :bottom}
    :anchor {:point :angle
             :angle 0}
-   :geometry {:size 80}})
+   :geometry {:size 270}})
+
+(def supporter-left-charge
+  {:type :heraldry.charge.type/supporter
+   :variant {:id (config/get :supporter-charge-id)
+             :version 0}
+   :field field
+   :tincture {:shadow 1
+              :highlight 1}
+   :origin {:point :left
+            :offset-x -25
+            :offset-y 10}
+   :anchor {:point :angle
+            :angle 0}
+   :geometry {:size 150
+              :mirrored? true}})
+
+(def supporter-right-charge
+  {:type :heraldry.charge.type/supporter
+   :variant {:id (config/get :supporter-charge-id)
+             :version 0}
+   :field field
+   :tincture {:shadow 1
+              :highlight 1}
+   :origin {:point :right
+            :offset-x 25
+            :offset-y 10}
+   :anchor {:point :angle
+            :angle 0}
+   :geometry {:size 150}})

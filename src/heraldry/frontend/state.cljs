@@ -230,7 +230,7 @@
 (defn component-node-open-by-default? [path]
   (or (->> path (take-last 1) #{[:coat-of-arms]
                                 [:helms]
-                                [:mottos]})
+                                [:ornaments]})
       (->> path (take-last 2) #{[:coat-of-arms :field]
                                 [:collection-form :collection]})
       (->> path (take-last 5) #{[:example-coa :coat-of-arms :field :components 0]})))
@@ -390,3 +390,9 @@
     (if behind-shield?
       (shield-separator/element-indices-below-shield elements)
       (shield-separator/element-indices-above-shield elements))))
+
+(defmethod interface/motto? :state [path _context]
+  (-> @(rf/subscribe [:get-value path])
+      :type
+      #{:heraldry.motto.type/motto
+        :heraldry.motto.type/slogan}))

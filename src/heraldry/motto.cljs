@@ -27,12 +27,13 @@
                (assoc-in [:offset-x :max] 100)
                (assoc-in [:offset-y :min] -100)
                (assoc-in [:offset-y :max] 100)
+               (assoc-in [:offset-y :default] 15)
                (dissoc :alignment)
                (assoc-in [:ui :label] strings/origin))
    :geometry (-> geometry/default-options
                  (select-keys [:size :ui])
-                 (assoc-in [:size :min] 0.1)
-                 (assoc-in [:size :max] 200)
+                 (assoc-in [:size :min] 5)
+                 (assoc-in [:size :max] 300)
                  (assoc-in [:size :default] 100))
    :ribbon-variant {:ui {:label strings/ribbon
                          :form-type :ribbon-reference-select}}
@@ -66,19 +67,12 @@
         motto-type (:type data)]
     (-> default-motto-options
         (cond->
-         ribbon-variant? (update :ribbon ribbon/options (:ribbon data))
-         (not ribbon-variant?) (dissoc :ribbon)
-         (= motto-type :heraldry.motto.type/slogan) (assoc-in [:origin :point :default] :top))
+          ribbon-variant? (update :ribbon ribbon/options (:ribbon data))
+          (not ribbon-variant?) (dissoc :ribbon)
+          (= motto-type :heraldry.motto.type/slogan) (->
+                                                      (assoc-in [:origin :point :default] :top)
+                                                      (assoc-in [:origin :offset-y :default] -15)))
         (update :origin position/adjust-options))))
 
 (defmethod interface/component-options :heraldry.component/motto [_path data]
   (motto-options data))
-
-(def default-mottos-options
-  {})
-
-(defn mottos-options [data]
-  default-mottos-options)
-
-(defmethod interface/component-options :heraldry.component/mottos [_path data]
-  (mottos-options data))

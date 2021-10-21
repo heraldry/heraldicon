@@ -26,7 +26,10 @@
            :helmet-charge-id "charge:Af7tBN"
            :static-files-url "http://localhost:8081"
            :base-font-dir "/Users/oliver/dev/armory/assets/font"
-           :compartment-charge-id "charge:lD7wLA"}
+           :compartment-charge-id "charge:lD7wLA"
+           :supporter-charge-id "charge:MTMStn"
+           :motto-ribbon-id "ribbon:5jsojj"
+           :slogan-ribbon-id "ribbon:gGZoHQ"}
 
     "staging" {:heraldry-api-endpoint "https://ru73nh6ozg.execute-api.eu-central-1.amazonaws.com/api"
                :heraldry-url "https://staging.heraldry.digital"
