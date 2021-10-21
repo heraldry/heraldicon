@@ -121,7 +121,9 @@
                                 :de "Vertikale Maske"}
                         :step 1}}})
 
-(defn options [charge & {:keys [part-of-semy? part-of-charge-group?]}]
+(defn options [charge & {:keys [part-of-semy?
+                                part-of-charge-group?
+                                ornament?]}]
   (let [type (-> charge :type name keyword)]
     (-> (cond
           (= type :escutcheon) (options/pick default-options
@@ -170,14 +172,20 @@
                                [:vertical-mask]]))
         (assoc :manual-blazon (:manual-blazon default-options))
         (cond->
-         (or part-of-semy?
-             part-of-charge-group?) (dissoc :origin))
+          (or part-of-semy?
+              part-of-charge-group?) (dissoc :origin))
         (update :origin (fn [position]
                           (when position
                             (position/adjust-options position (-> charge :origin)))))
         (update :anchor (fn [position]
                           (when position
                             (position/adjust-options position (-> charge :anchor)))))
+        (update-in [:geometry :size] (fn [size]
+                                       (when size
+                                         (-> size
+                                             (assoc :min 5)
+                                             (assoc :max 400)
+                                             (assoc :default 100)))))
         (update :fimbriation (fn [fimbriation]
                                (when fimbriation
                                  (-> (fimbriation/options (:fimbriation charge)
@@ -185,8 +193,8 @@
                                      (assoc :ui {:label strings/fimbriation
                                                  :form-type :fimbriation}))))))))
 
-(defmethod interface/component-options :heraldry.component/charge [_path data]
-  (options data))
+(defmethod interface/component-options :heraldry.component/charge [path data]
+  (options data :ornament? (some #(= % :ornaments) path)))
 
 (defn title [path context]
   (let [charge-type (interface/get-raw-data (conj path :type) context)

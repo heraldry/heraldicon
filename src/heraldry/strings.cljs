@@ -419,3 +419,15 @@
 (def field
   {:en "Field"
    :de "Feld"})
+
+(def compartment
+  {:en "Compartment"
+   :de "Postament"})
+
+(def supporter-left
+  {:en "Supporter (left)"
+   :de "Schildhalter (links)"})
+
+(def supporter-right
+  {:en "Supporter (right)"
+   :de "Schildhalter (rechts)"})

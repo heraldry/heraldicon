@@ -41,14 +41,13 @@
             [heraldry.frontend.ui.form.collection] ;; needed for side effects
             [heraldry.frontend.ui.form.collection-element] ;; needed for side effects
             [heraldry.frontend.ui.form.collection-general] ;; needed for side effects
-            [heraldry.frontend.ui.form.compartment] ;; needed for side effects
             [heraldry.frontend.ui.form.cottise] ;; needed for side effects
             [heraldry.frontend.ui.form.field] ;; needed for side effects
             [heraldry.frontend.ui.form.helm] ;; needed for side effects
             [heraldry.frontend.ui.form.helms] ;; needed for side effects
             [heraldry.frontend.ui.form.motto] ;; needed for side effects
-            [heraldry.frontend.ui.form.mottos] ;; needed for side effects
             [heraldry.frontend.ui.form.ordinary] ;; needed for side effects
+            [heraldry.frontend.ui.form.ornaments] ;; needed for side effects
             [heraldry.frontend.ui.form.render-options] ;; needed for side effects
             [heraldry.frontend.ui.form.ribbon-general] ;; needed for side effects
             [heraldry.frontend.ui.form.semy] ;; needed for side effects

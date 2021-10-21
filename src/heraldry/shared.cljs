@@ -17,12 +17,12 @@
             [heraldry.coat-of-arms.tincture.core :as tincture]
             [heraldry.collection.element] ;; needed for side effects
             [heraldry.collection.options] ;; needed for side effects
-            [heraldry.compartment] ;; needed for side effects
             [heraldry.font :as font]
             [heraldry.helm] ;; needed for side effects
             [heraldry.interface :as interface]
             [heraldry.motto] ;; needed for side effects
             [heraldry.options :as options]
+            [heraldry.ornaments] ;; needed for side effects
             [heraldry.render-options] ;; needed for side effects
             [heraldry.ribbon :as ribbon]
             [heraldry.shield-separator :as shield-separator]
@@ -125,3 +125,10 @@
     (if behind-shield?
       (shield-separator/element-indices-below-shield elements)
       (shield-separator/element-indices-above-shield elements))))
+
+(defmethod interface/motto? :context [path context]
+  (-> context
+      (get-in (drop 1 path))
+      :type
+      #{:heraldry.motto.type/motto
+        :heraldry.motto.type/slogan}))

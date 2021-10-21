@@ -12,10 +12,11 @@
     (rf/subscribe [:get (drop-last path)]))
 
   (fn [elements [_ path]]
+    ;; TODO: fix numbering/naming
     (let [idx (last path)
-          num-mottos (->> elements
-                          (filter (comp not shield-separator/shield-separator?))
-                          count)
+          num-ornaments (->> elements
+                             (filter (comp not shield-separator/shield-separator?))
+                             count)
           shield-separator-index (->> elements
                                       (keep-indexed (fn [idx element]
                                                       (when (shield-separator/shield-separator? element)
@@ -24,7 +25,7 @@
           effective-helm-number (inc (if (> idx shield-separator-index)
                                        (dec idx)
                                        idx))]
-      (when (> num-mottos 1)
+      (when (> num-ornaments 1)
         (str effective-helm-number ". ")))))
 (defn form [path _]
   [:<>

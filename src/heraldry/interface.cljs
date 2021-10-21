@@ -24,10 +24,9 @@
     (->> path drop-last (take-last 2) (= [:collection :elements])) :heraldry.component/collection-element
     (-> path last (= :render-options)) :heraldry.component/render-options
     (-> path last (= :helms)) :heraldry.component/helms
-    (-> path last (= :mottos)) :heraldry.component/mottos
     (-> path last (= :ribbon-form)) :heraldry.component/ribbon-general
     (-> path last (= :coat-of-arms)) :heraldry.component/coat-of-arms
-    (-> path last (= :compartment)) :heraldry.component/compartment
+    (-> path last (= :ornaments)) :heraldry.component/ornaments
     (keyword? raw-type) (type->component-type raw-type)
     (and (-> path last keyword?)
          (-> path last name (s/starts-with? "cottise"))) :heraldry.component/cottise
@@ -49,6 +48,10 @@
 
 (defmulti get-element-indices (fn [path _ _context]
                                 (state-source path)))
+
+;; TODO: this needs to be improved
+(defmulti motto? (fn [path _context]
+                   (state-source path)))
 
 (defmulti get-counterchange-tinctures (fn [path _context]
                                         (state-source path)))
