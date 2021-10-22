@@ -32,7 +32,8 @@
                           :xlink:href :href
                           :gradienttransform :gradientTransform
                           :lineargradient :linearGradient
-                          :radialgradient :radialGradient} v v)
+                          :radialgradient :radialGradient
+                          :xml:space :xmlSpace} v v)
        :else v))
    data))
 
