@@ -17,7 +17,7 @@
             [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
-(defn remove-outlines [data placeholder-colours]
+(defn -remove-outlines [data placeholder-colours]
   (walk/postwalk #(if (and (vector? %)
                            (->> % first (get #{:stroke :fill :stop-color}))
                            (or (-> % second (s/starts-with? "url"))
@@ -26,7 +26,9 @@
                     %)
                  data))
 
-(defn remove-shading [data placeholder-colours]
+(def remove-outlines (memoize -remove-outlines))
+
+(defn -remove-shading [data placeholder-colours]
   (walk/postwalk #(if (and (vector? %)
                            (->> % first (get #{:stroke :fill :stop-color}))
                            (or (-> % second (s/starts-with? "url"))
@@ -35,7 +37,9 @@
                     %)
                  data))
 
-(defn replace-colours [data function]
+(def remove-shading (memoize -remove-shading))
+
+(defn -replace-colours [data function]
   (walk/postwalk #(if (and (vector? %)
                            (-> % second string?)
                            (->> % first (get #{:stroke :fill :stop-color}))
@@ -44,7 +48,9 @@
                     %)
                  data))
 
-(defn set-layer-separator-opacity [data layer-separator-colours opacity]
+(def replace-colours (memoize -replace-colours))
+
+(defn -set-layer-separator-opacity [data layer-separator-colours opacity]
   (if (seq layer-separator-colours)
     (let [layer-separator-colours (set layer-separator-colours)]
       (walk/postwalk (fn [v]
@@ -67,6 +73,8 @@
                      data))
     data))
 
+(def set-layer-separator-opacity (memoize -set-layer-separator-opacity))
+
 (defn get-replacement [kind provided-placeholder-colours]
   (let [replacement (get provided-placeholder-colours kind)]
     (if (or (nil? replacement)
@@ -74,8 +82,8 @@
       nil
       replacement)))
 
-(defn make-mask [data placeholder-colours provided-placeholder-colours
-                 outline-mode preview-original? hide-lower-layer?]
+(defn -make-mask [data placeholder-colours provided-placeholder-colours
+                  outline-mode preview-original? hide-lower-layer?]
   (let [mask-id (util/id "mask")
         mask-inverted-id (util/id "mask")
         mask (replace-colours
@@ -117,6 +125,8 @@
                                     hide-lower-layer?) "#000"
                                :else "#fff")))))]
     [mask-id mask mask-inverted-id mask-inverted]))
+
+(def make-mask (memoize -make-mask))
 
 (defmethod charge-interface/render-charge :heraldry.charge.type/other
   [path _parent-path environment {:keys [load-charge-data charge-group
