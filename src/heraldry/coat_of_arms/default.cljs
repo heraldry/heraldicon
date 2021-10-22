@@ -160,3 +160,23 @@
    :anchor {:point :angle
             :angle 0}
    :geometry {:size 150}})
+
+(def ornament-charge
+  {:type :heraldry.charge.type/roundel
+   :field field
+   :origin {:point :bottom}
+   :geometry {:size 30}
+   :tincture {:shadow 1
+              :highlight 1}})
+
+(def ornament-charge-group
+  {:type :heraldry.charge-group.type/rows
+   :origin {:point :bottom}
+   :strip-angle 0
+   :spacing 40
+   :stretch 0.866
+   :charges [ornament-charge]
+   :strips [{:type :heraldry.component/charge-group-strip
+             :slots [0 0]}
+            {:type :heraldry.component/charge-group-strip
+             :slots [0]}]})
