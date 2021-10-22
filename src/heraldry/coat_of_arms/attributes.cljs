@@ -67,6 +67,10 @@
     ["Erased" :erased]
     ["Pierced" :pierced]
     ["Voided" :voided]]
+   [{:en "Ornaments"
+     :de "Prachtstücke"}
+    [strings/compartment :compartment]
+    [strings/supporter :supporter]]
    [{:en "Tail"
      :de "Schwanz"}
     ["Coward" :coward]

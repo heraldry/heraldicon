@@ -1,5 +1,6 @@
 (ns heraldry.frontend.charge-map
   (:require [clojure.set :as set]
+            [clojure.string :as s]
             [clojure.walk :as walk]))
 
 (def group-map
@@ -176,7 +177,23 @@
                                  :scimitar
                                  :spear
                                  :sword
-                                 :trident}}}})
+                                 :trident}}
+            :ornaments {:node-type :group
+                        :name "ornaments"
+                        :charges #{:compartment
+                                   :supporter
+                                   :motto
+                                   :slogan}}}})
+
+(def prefix-types
+  (-> group-map :groups :ornaments :charges))
+
+(defn effective-type [t]
+  (some (fn [prefix]
+          (let [st (name t)
+                prefix (name prefix)]
+            (or (= st prefix)
+                (s/starts-with? st (str prefix "-"))))) prefix-types))
 
 (def known-charge-types
   (->> group-map
@@ -215,30 +232,30 @@
                                                  (-> % first (= :none)))) groups)))]
     (-> node
         (cond->
-         non-nil-groups (assoc (-> type
-                                   name
-                                   (str "s")
-                                   keyword)
-                               (->> non-nil-groups
-                                    (map (fn [[value grouped-charges]]
-                                           [value (build-charge-variants
-                                                   {:node-type type
-                                                    :type value
-                                                    :name (name value)}
-                                                   remaining-types
-                                                   grouped-charges)]))
-                                    (into {})))
-         (and nil-group
-              (-> remaining-types
-                  seq)) (build-charge-variants remaining-types nil-group)
-         (and nil-group
-              (-> remaining-types
-                  empty?)) (assoc :variants (->> nil-group
-                                                 (map (fn [charge]
-                                                        [(:id charge) {:node-type :variant
-                                                                       :name (:name charge)
-                                                                       :data charge}]))
-                                                 (into {})))))))
+          non-nil-groups (assoc (-> type
+                                    name
+                                    (str "s")
+                                    keyword)
+                                (->> non-nil-groups
+                                     (map (fn [[value grouped-charges]]
+                                            [value (build-charge-variants
+                                                    {:node-type type
+                                                     :type value
+                                                     :name (name value)}
+                                                    remaining-types
+                                                    grouped-charges)]))
+                                     (into {})))
+          (and nil-group
+               (-> remaining-types
+                   seq)) (build-charge-variants remaining-types nil-group)
+          (and nil-group
+               (-> remaining-types
+                   empty?)) (assoc :variants (->> nil-group
+                                                  (map (fn [charge]
+                                                         [(:id charge) {:node-type :variant
+                                                                        :name (:name charge)
+                                                                        :data charge}]))
+                                                  (into {})))))))
 
 (defn remove-empty-groups [charge-map]
   (walk/postwalk (fn [data]
@@ -260,12 +277,12 @@
                         (let [charge-types (second data)]
                           [:charges (->> charge-types
                                          (map (fn [type]
-                                                [type (build-charge-variants
-                                                       {:node-type :charge
-                                                        :type type
-                                                        :name (name type)}
-                                                       [:attitude]
-                                                       (get charges-by-type type))]))
+                                                [(effective-type type) (build-charge-variants
+                                                                        {:node-type :charge
+                                                                         :type type
+                                                                         :name (name type)}
+                                                                        [:attitude]
+                                                                        (get charges-by-type type))]))
 
                                          (into {}))])
                         data)) group-map)
