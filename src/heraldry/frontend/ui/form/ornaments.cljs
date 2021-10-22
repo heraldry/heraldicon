@@ -28,7 +28,7 @@
                        {:title strings/compartment
                         :handler #(state/dispatch-on-event % [:add-element elements-path
                                                               default/compartment-charge
-                                                              shield-separator/add-element-default-behind-options])}
+                                                              shield-separator/add-element-insert-at-bottom-options])}
                        {:title strings/supporter-left
                         :handler #(state/dispatch-on-event % [:add-element elements-path
                                                               default/supporter-left-charge

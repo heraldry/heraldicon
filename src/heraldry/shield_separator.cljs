@@ -20,23 +20,20 @@
               (if (-> elements count (= 1))
                 (into [default/shield-separator]
                       elements)
-                elements
-                ))})
+                elements))})
 
-(def add-element-default-behind-options
+(def add-element-insert-at-bottom-options
   {:post-fn (fn [elements]
-              (if (-> elements count (= 1))
-                (into elements
-                      [default/shield-separator])
-                elements
-                ))
-   :selected-element-path-fn (fn [selected-path element _elements]
-                               (if (shield-separator? element)
-                                 (-> selected-path
-                                     drop-last
-                                     vec
-                                     (conj 0))
-                                 selected-path))})
+              (let [elements (into [(last elements)] (concat (drop-last elements)))]
+                (if (-> elements count (= 1))
+                  (into elements
+                        [default/shield-separator])
+                  elements)))
+   :selected-element-path-fn (fn [selected-path _element _elements]
+                               (-> selected-path
+                                   drop-last
+                                   vec
+                                   (conj 0)))})
 
 (defn shield-separator-exists? [elements]
   (->> elements
