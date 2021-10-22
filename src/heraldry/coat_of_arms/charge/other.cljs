@@ -112,11 +112,10 @@
                       (interface/get-raw-data (conj path :tincture) context)
                       (interface/get-sanitized-data (conj path :tincture) context))
             render-options-preview-original? (interface/render-option :preview-original? context)
-            outline-mode (if
-                          (or (interface/render-option :outline? context)
-                              (= (interface/render-option :mode context)
-                                 :hatching)) :keep
-                          (interface/get-sanitized-data (conj path :outline-mode) context))
+            outline-mode (if (or (interface/render-option :outline? context)
+                                 (= (interface/render-option :mode context)
+                                    :hatching)) :keep
+                             (interface/get-sanitized-data (conj path :outline-mode) context))
             outline? (= outline-mode :keep)
             {:keys [charge-group-path
                     slot-spacing
@@ -206,7 +205,7 @@
             unadjusted-charge (:data charge-data)
             adjusted-charge (-> unadjusted-charge
                                 (cond->
-                                 (= outline-mode :remove) (remove-outlines placeholder-colours)))
+                                  (= outline-mode :remove) (remove-outlines placeholder-colours)))
             adjusted-charge-without-shading (-> adjusted-charge
                                                 (remove-shading placeholder-colours))
             [mask-id mask
