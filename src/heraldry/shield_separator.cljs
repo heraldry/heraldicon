@@ -63,3 +63,9 @@
     (->> (count elements)
          range
          vec)))
+
+(defn element-indices-with-position [elements]
+  (vec (concat (map (fn [idx]
+                      [idx true]) (element-indices-below-shield elements))
+               (map (fn [idx]
+                      [idx false]) (element-indices-above-shield elements)))))

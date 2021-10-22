@@ -46,7 +46,7 @@
 (defmulti get-list-size (fn [path _context]
                           (state-source path)))
 
-(defmulti get-element-indices (fn [path _ _context]
+(defmulti get-element-indices (fn [path _context]
                                 (state-source path)))
 
 ;; TODO: this needs to be improved

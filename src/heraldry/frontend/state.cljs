@@ -385,11 +385,9 @@
 (defmethod interface/get-counterchange-tinctures :state [path context]
   @(rf/subscribe [:get-counterchange-tinctures path context]))
 
-(defmethod interface/get-element-indices :state [path {:keys [behind-shield?]} _context]
+(defmethod interface/get-element-indices :state [path _context]
   (let [elements @(rf/subscribe [:get-value path])]
-    (if behind-shield?
-      (shield-separator/element-indices-below-shield elements)
-      (shield-separator/element-indices-above-shield elements))))
+    (shield-separator/element-indices-with-position elements)))
 
 (defmethod interface/motto? :state [path _context]
   (-> @(rf/subscribe [:get-value path])
