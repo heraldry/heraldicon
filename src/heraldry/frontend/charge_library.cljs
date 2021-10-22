@@ -4,6 +4,7 @@
             [cljs.core.async.interop :refer-macros [<p!]]
             [clojure.set :as set]
             [clojure.string :as s]
+            [clojure.walk :as walk]
             [com.wsscode.common.async-cljs :refer [<? go-catch]]
             [heraldry.colour :as colour]
             [heraldry.frontend.api.request :as api-request]
@@ -113,63 +114,77 @@
          svg/fix-string-style-values
          svg/fix-attribute-and-tag-names
          (as-> parsed
-               (let [edn-data (-> parsed
-                                  (assoc 0 :g)
-                                         ;; add fill and stroke at top level as default
-                                         ;; some SVGs don't specify them for elements if
-                                         ;; they are black, but for that to work we need
-                                         ;; the root element to specify them
-                                         ;; disadvantage: this colour will now always show
-                                         ;; im the interface, even if the charge doesn't
-                                         ;; contain and black elements, but they usually will
-                                         ;;
-                                         ;; the stroke-width is also set to 0, because areas
-                                         ;; that really should not get an outline otherwise
-                                         ;; would default to one of width 1
-                                  (assoc 1 {:fill "#000000"
-                                            :stroke "#000000"
-                                            :stroke-width 0}))
-                     width (-> parsed
-                               (get-in [1 :width])
-                               parse-number-with-unit)
-                     height (-> parsed
-                                (get-in [1 :height])
-                                parse-number-with-unit)
-                     [shift-x shift-y
-                      width height] (let [[viewbox-x viewbox-y
-                                           viewbox-width viewbox-height] (-> parsed
-                                                                             (get-in [1 :viewbox])
-                                                                             parse-width-height-from-viewbox)]
-                                      (if (and viewbox-width viewbox-height)
-                                        [viewbox-x viewbox-y viewbox-width viewbox-height]
-                                        [0 0 width height]))
-                     [shift-x shift-y] (if (and shift-x shift-y)
-                                         [shift-x shift-y]
-                                         [100 100])
-                     [width height] (if (and width height)
-                                      [width height]
-                                      [100 100])
-                     colours (into {}
-                                   (map (fn [c]
-                                          [c :keep]) (find-colours
-                                                      edn-data)))
-                     edn-data (-> edn-data
-                                  (assoc-in [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")")))]
-                 (let [existing-colours @(rf/subscribe [:get-value (conj db-path :colours)])
-                       new-colours (merge colours
-                                          (select-keys existing-colours
-                                                       (set/intersection
-                                                        (-> colours
-                                                            keys
-                                                            set)
-                                                        (-> existing-colours
-                                                            keys
-                                                            set))))]
-                   (rf/dispatch [:set (conj db-path :colours) new-colours]))
-                 (rf/dispatch [:set (conj db-path :data) {:edn-data {:data edn-data
-                                                                     :width width
-                                                                     :height height}
-                                                          :svg-data data}]))))
+           (let [edn-data (-> parsed
+                              (assoc 0 :g)
+                              ;; add fill and stroke at top level as default
+                              ;; some SVGs don't specify them for elements if
+                              ;; they are black, but for that to work we need
+                              ;; the root element to specify them
+                              ;; disadvantage: this colour will now always show
+                              ;; im the interface, even if the charge doesn't
+                              ;; contain and black elements, but they usually will
+                              ;;
+                              ;; the stroke-width is also set to 0, because areas
+                              ;; that really should not get an outline otherwise
+                              ;; would default to one of width 1
+                              (assoc 1 {:fill "#000000"
+                                        :stroke "none"
+                                        :stroke-width 0})
+                              (->>
+                               (walk/postwalk (fn [data]
+                                                ;; as a follow up to above comment:
+                                                ;; if we find an element that has a stroke-width but no
+                                                ;; stroke, then set that stroke to none, so those thick
+                                                ;; black outlines won't appear
+                                                ;; TODO: this might, for some SVGs, remove some outlines,
+                                                ;; namely if the element was supposed to inherit the stroke
+                                                ;; from a parent element
+                                                (if (and (map? data)
+                                                         (contains? data :stroke-width)
+                                                         (not (contains? data :stroke)))
+                                                  (assoc data :stroke "none")
+                                                  data)))))
+                 width (-> parsed
+                           (get-in [1 :width])
+                           parse-number-with-unit)
+                 height (-> parsed
+                            (get-in [1 :height])
+                            parse-number-with-unit)
+                 [shift-x shift-y
+                  width height] (let [[viewbox-x viewbox-y
+                                       viewbox-width viewbox-height] (-> parsed
+                                                                         (get-in [1 :viewbox])
+                                                                         parse-width-height-from-viewbox)]
+                                  (if (and viewbox-width viewbox-height)
+                                    [viewbox-x viewbox-y viewbox-width viewbox-height]
+                                    [0 0 width height]))
+                 [shift-x shift-y] (if (and shift-x shift-y)
+                                     [shift-x shift-y]
+                                     [100 100])
+                 [width height] (if (and width height)
+                                  [width height]
+                                  [100 100])
+                 colours (into {}
+                               (map (fn [c]
+                                      [c :keep]) (find-colours
+                                                  edn-data)))
+                 edn-data (-> edn-data
+                              (assoc-in [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")")))]
+             (let [existing-colours @(rf/subscribe [:get-value (conj db-path :colours)])
+                   new-colours (merge colours
+                                      (select-keys existing-colours
+                                                   (set/intersection
+                                                    (-> colours
+                                                        keys
+                                                        set)
+                                                    (-> existing-colours
+                                                        keys
+                                                        set))))]
+               (rf/dispatch [:set (conj db-path :colours) new-colours]))
+             (rf/dispatch [:set (conj db-path :data) {:edn-data {:data edn-data
+                                                                 :width width
+                                                                 :height height}
+                                                      :svg-data data}]))))
      (catch :default e
        (log/error "load svg file error:" e)))))
 
