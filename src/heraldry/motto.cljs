@@ -27,7 +27,6 @@
                (assoc-in [:offset-x :max] 100)
                (assoc-in [:offset-y :min] -100)
                (assoc-in [:offset-y :max] 100)
-               (assoc-in [:offset-y :default] 15)
                (dissoc :alignment)
                (assoc-in [:ui :label] strings/origin))
    :geometry (-> geometry/default-options
@@ -69,9 +68,7 @@
         (cond->
           ribbon-variant? (update :ribbon ribbon/options (:ribbon data))
           (not ribbon-variant?) (dissoc :ribbon)
-          (= motto-type :heraldry.motto.type/slogan) (->
-                                                      (assoc-in [:origin :point :default] :top)
-                                                      (assoc-in [:origin :offset-y :default] -15)))
+          (= motto-type :heraldry.motto.type/slogan) (assoc-in [:origin :point :default] :top))
         (update :origin position/adjust-options))))
 
 (defmethod interface/component-options :heraldry.component/motto [_path data]

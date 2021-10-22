@@ -344,18 +344,13 @@
              min-y max-y] (bounding-box/min-max-x-y (concat points
                                                             (map (partial v/add (v/v 0 thickness)) points)))
             ribbon-width (- max-x min-x)
-            shift (v/v (- (/ ribbon-width -2) min-x)
-                       (case origin-point
-                         :top (- max-y)
-                         :bottom (- min-y)))
             target-width ((util/percent-of width) size)
             scale (/ target-width ribbon-width)
             outline-thickness (/ outline/stroke-width
                                  2
                                  scale)]
         {:result [:g {:transform (str "translate(" (v/->str position) ")"
-                                      "scale(" scale "," scale ")"
-                                      "translate(" (v/->str shift) ")")}
+                                      "scale(" scale "," scale ")")}
                   [ribbon
                    ribbon-path
                    tincture-foreground
@@ -363,11 +358,9 @@
                    tincture-text
                    context :outline-thickness outline-thickness]]
          :bounding-box (let [top-left (-> (v/v min-x min-y)
-                                          (v/add shift)
                                           (v/mul scale)
                                           (v/add position))
                              bottom-right (-> (v/v max-x max-y)
-                                              (v/add shift)
                                               (v/mul scale)
                                               (v/add position))]
 
