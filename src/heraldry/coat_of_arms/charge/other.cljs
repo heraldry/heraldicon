@@ -85,10 +85,10 @@
     [mask-id mask mask-inverted-id mask-inverted]))
 
 (defmethod charge-interface/render-charge :heraldry.charge.type/other
-  [path parent-path environment {:keys [load-charge-data charge-group
-                                        origin-override size-default
-                                        auto-resize?] :as context
-                                 :or {auto-resize? true}}]
+  [path _parent-path environment {:keys [load-charge-data charge-group
+                                         origin-override size-default
+                                         auto-resize?] :as context
+                                  :or {auto-resize? true}}]
   (let [data (interface/get-raw-data (conj path :data) context)
         variant (interface/get-raw-data (conj path :variant) context)
         full-charge-data (or data (when variant (load-charge-data variant)))]
@@ -119,8 +119,7 @@
                                     :hatching)) :keep
                              (interface/get-sanitized-data (conj path :outline-mode) context))
             outline? (= outline-mode :keep)
-            {:keys [charge-group-path
-                    slot-spacing
+            {:keys [slot-spacing
                     slot-angle]} charge-group
             context (dissoc context :charge-group)
             charge-data (:data full-charge-data)
