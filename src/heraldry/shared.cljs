@@ -120,11 +120,9 @@
    :ribbon (ribbon/options (:ribbon data))
    :tags {:ui {:form-type :tags}}})
 
-(defmethod interface/get-element-indices :context [path {:keys [behind-shield?]} context]
+(defmethod interface/get-element-indices :context [path context]
   (let [elements (get-in context (drop 1 path))]
-    (if behind-shield?
-      (shield-separator/element-indices-below-shield elements)
-      (shield-separator/element-indices-above-shield elements))))
+    (shield-separator/element-indices-with-position elements)))
 
 (defmethod interface/motto? :context [path context]
   (-> context

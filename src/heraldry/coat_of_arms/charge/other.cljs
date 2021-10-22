@@ -121,12 +121,25 @@
 (defmethod charge-interface/render-charge :heraldry.charge.type/other
   [path _parent-path environment {:keys [load-charge-data charge-group
                                          origin-override size-default
-                                         auto-resize? hide-lower-layer?] :as context
+                                         self-below-shield? render-pass-below-shield?
+                                         auto-resize?] :as context
                                   :or {auto-resize? true}}]
   (let [data (interface/get-raw-data (conj path :data) context)
         variant (interface/get-raw-data (conj path :variant) context)
-        full-charge-data (or data (when variant (load-charge-data variant)))]
-    (if (:data full-charge-data)
+        full-charge-data (or data (when variant (load-charge-data variant)))
+        placeholder-colours (:colours full-charge-data)
+        layer-separator-colours (->> placeholder-colours
+                                     (keep (fn [[colour placeholder]]
+                                             (when (= placeholder :layer-separator)
+                                               (colour/normalize colour))))
+                                     set)]
+    (if (and (:data full-charge-data)
+             ;; in order to require rendering, we either have
+             ;; to be located in the right render pass
+             ;; OR have some layer separator in the charge
+             (or (= (boolean self-below-shield?)
+                    (boolean render-pass-below-shield?))
+                 (seq layer-separator-colours)))
       (let [context (-> context
                         (dissoc :origin-override)
                         (dissoc :size-default)
@@ -221,12 +234,6 @@
                             (/ target-height positional-charge-height)))
             scale-y (* (if reversed? -1 1)
                        (* (Math/abs scale-x) stretch))
-            placeholder-colours (:colours full-charge-data)
-            layer-separator-colours (->> placeholder-colours
-                                         (keep (fn [[colour placeholder]]
-                                                 (when (= placeholder :layer-separator)
-                                                   (colour/normalize colour))))
-                                         set)
             render-shadow? (and (-> placeholder-colours
                                     vals
                                     set
@@ -254,6 +261,8 @@
                                   (= outline-mode :remove) (remove-outlines placeholder-colours)))
             adjusted-charge-without-shading (-> adjusted-charge
                                                 (remove-shading placeholder-colours))
+            hide-lower-layer? (and (seq layer-separator-colours)
+                                   (not render-pass-below-shield?))
             [mask-id mask
              mask-inverted-id mask-inverted] (make-mask adjusted-charge-without-shading
                                                         placeholder-colours

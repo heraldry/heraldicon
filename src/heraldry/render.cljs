@@ -121,16 +121,19 @@
                 [:g (outline/style context)
                  [:path {:d (:shape environment)}]])]}))
 
-(defn helm [path environment context & {:keys [behind-shield?]}]
+(defn helm [path environment context & {:keys [below-shield?]}]
   (let [components-path (conj path :components)]
     [:<>
      (doall
-      (for [idx (interface/get-element-indices components-path {:behind-shield? behind-shield?} context)]
+      (for [[idx self-below-shield?] (interface/get-element-indices components-path context)]
         ^{:key idx}
         [interface/render-component
          (conj components-path idx)
          path environment
-         context]))]))
+         (-> context
+             (assoc :auto-resize? false)
+             (assoc :self-below-shield? self-below-shield?)
+             (assoc :render-pass-below-shield? below-shield?))]))]))
 
 (defn helms [path width context]
   (let [elements-path (conj path :elements)
@@ -166,7 +169,7 @@
                                                                           0]})]
                                     ^{:key idx}
                                     [helm (conj elements-path idx) helm-environment context
-                                     :behind-shield? true])))]
+                                     :below-shield? true])))]
          :result-above-shield [:g
                                (doall
                                 (for [idx (range num-helms)]
@@ -315,10 +318,13 @@
                             :startOffset (str (+ 50 (* offset-x 100)) "%")}
                  text]]))])))]))
 
-(defn motto [path {:keys [width] :as environment} context]
+(defn motto [path {:keys [width] :as environment} {:keys [self-below-shield? render-pass-below-shield?]
+                                                   :as context}]
   (let [ribbon-path (conj path :ribbon)
         points (interface/get-raw-data (conj ribbon-path :points) context)]
-    (if points
+    (if (and (= (boolean self-below-shield?)
+                (boolean render-pass-below-shield?))
+             points)
       (let [origin-point (interface/get-sanitized-data (conj path :origin :point) context)
             tincture-foreground (interface/get-sanitized-data (conj path :tincture-foreground) context)
             tincture-background (interface/get-sanitized-data (conj path :tincture-background) context)
@@ -370,29 +376,30 @@
       {:result nil
        :bounding-box nil})))
 
-(defn ornaments-elements [path environment context & {:keys [behind-shield?]}]
+(defn ornaments-elements [path environment context & {:keys [below-shield?]}]
   (let [elements-path (conj path :elements)]
     [:<>
      (doall
-      (for [idx (interface/get-element-indices elements-path {:behind-shield? behind-shield?} context)]
+      (for [[idx self-below-shield?] (interface/get-element-indices elements-path context)]
         (let [element-path (conj elements-path idx)
-              motto? (interface/motto? element-path context)]
+              motto? (interface/motto? element-path context)
+              updated-context (-> context
+                                  (assoc :auto-resize? false)
+                                  (assoc :self-below-shield? self-below-shield?)
+                                  (assoc :render-pass-below-shield? below-shield?))]
           ^{:key idx}
           [:<>
            (if motto?
-             (:result (motto element-path environment context))
+             (:result (motto element-path environment updated-context))
              [interface/render-component
               element-path
               path environment
-              (-> context
-                  (assoc :auto-resize? false)
-                  (assoc :hide-lower-layer? (not behind-shield?)))])])))]))
+              updated-context])])))]))
 
 (defn ornaments [path coa-bounding-box context]
   (let [[bb-min-x bb-max-x bb-min-y bb-max-y] coa-bounding-box
         elements-path (conj path :elements)
-        num-below (count (interface/get-element-indices elements-path {:behind-shield? true} context))
-        num-above (count (interface/get-element-indices elements-path {:behind-shield? false} context))
+        num-ornaments (count (interface/get-element-indices elements-path context))
         width (- bb-max-x bb-min-x)
         height (- bb-max-y bb-min-y)
         ornaments-width (* 3 1.2 width)
@@ -408,10 +415,9 @@
         environment (environment/create
                      nil
                      {:bounding-box coa-bounding-box})]
-    (if (or (pos? num-below)
-            (pos? num-above))
-      {:result-below-shield [ornaments-elements path environment context :behind-shield? true]
-       :result-above-shield [ornaments-elements path environment context :behind-shield? false]
+    (if (pos? num-ornaments)
+      {:result-below-shield [ornaments-elements path environment context :below-shield? true]
+       :result-above-shield [ornaments-elements path environment context :below-shield? false]
 
        :bounding-box [ornaments-left
                       (+ ornaments-left ornaments-width)
