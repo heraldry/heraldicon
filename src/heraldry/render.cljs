@@ -531,7 +531,8 @@
 
         {ornaments-result-below-shield :result-below-shield
          ornaments-result-above-shield :result-above-shield
-         ornaments-bounding-box :bounding-box} (if (= scope :coat-of-arms)
+         ornaments-bounding-box :bounding-box} (if (#{:coat-of-arms
+                                                      :coat-of-arms-and-helm} scope)
                                                  {:bounding-box [0 0 0 0]}
                                                  (ornaments
                                                   (conj path :ornaments)
