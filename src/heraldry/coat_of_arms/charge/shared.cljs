@@ -33,11 +33,10 @@
         mirrored? (interface/get-sanitized-data (conj path :geometry :mirrored?) context)
         reversed? (interface/get-sanitized-data (conj path :geometry :reversed?) context)
         squiggly? (interface/render-option :squiggly? context)
-        outline-mode (if
-                      (or (interface/render-option :outline? context)
-                          (= (interface/render-option :mode context)
-                             :hatching)) :keep
-                      (interface/get-sanitized-data (conj path :outline-mode) context))
+        outline-mode (if (or (interface/render-option :outline? context)
+                             (= (interface/render-option :mode context)
+                                :hatching)) :keep
+                         (interface/get-sanitized-data (conj path :outline-mode) context))
         outline? (= outline-mode :keep)
         {:keys [charge-group-path
                 slot-spacing
@@ -117,11 +116,11 @@
                           (.scale scale-x scale-y)
                           (.toString))
                          (cond->
-                          squiggly? squiggly/squiggly-path
-                          (not= angle 0) (->
-                                          (svgpath)
-                                          (.rotate angle)
-                                          (.toString)))
+                           squiggly? squiggly/squiggly-path
+                           (not= angle 0) (->
+                                           (svgpath)
+                                           (.rotate angle)
+                                           (.toString)))
                          (path/translate (:x origin-point) (:y origin-point)))
         mask-shape (when mask
                      (-> mask
