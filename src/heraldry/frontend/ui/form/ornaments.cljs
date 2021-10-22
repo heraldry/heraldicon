@@ -24,7 +24,10 @@
                    [:p strings/alpha-feature]]]
      :buttons [{:icon "fas fa-plus"
                 :title strings/add
-                :menu [
+                :menu [{:title strings/mantling
+                        :handler #(state/dispatch-on-event % [:add-element elements-path
+                                                              default/mantling-charge
+                                                              shield-separator/add-element-insert-at-bottom-options])}
                        {:title strings/compartment
                         :handler #(state/dispatch-on-event % [:add-element elements-path
                                                               default/compartment-charge

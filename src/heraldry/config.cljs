@@ -28,6 +28,7 @@
            :base-font-dir "/Users/oliver/dev/armory/assets/font"
            :compartment-charge-id "charge:lD7wLA"
            :supporter-charge-id "charge:MTMStn"
+           :mantling-charge-id "charge:qGoikm"
            :motto-ribbon-id "ribbon:5jsojj"
            :slogan-ribbon-id "ribbon:gGZoHQ"}
 
@@ -43,6 +44,7 @@
                :base-font-dir "./assets/font"
                :compartment-charge-id "charge:lD7wLA"
                :supporter-charge-id "charge:MTMStn"
+               :mantling-charge-id "charge:qGoikm"
                :motto-ribbon-id "ribbon:5jsojj"
                :slogan-ribbon-id "ribbon:gGZoHQ"}
 
@@ -58,6 +60,7 @@
             :static-files-url "https://cdn.heraldry.digital"
             :compartment-charge-id "charge:SSLk9y"
             :supporter-charge-id "charge:fxOk19"
+            :mantling-charge-id "charge:gTrIM7"
             :base-font-dir "./assets/font"}))
 
 #_{:clj-kondo/ignore [:redefined-var]}

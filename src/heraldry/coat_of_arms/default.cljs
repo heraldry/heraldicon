@@ -120,6 +120,19 @@
 (def slogan
   {:type :heraldry.motto.type/slogan})
 
+(def mantling-charge
+  {:type :heraldry.charge.type/mantling
+   :variant {:id (config/get :mantling-charge-id)
+             :version 0}
+   :field field
+   :tincture {:shadow 1
+              :highlight 1
+              :secondary :or}
+   :origin {:point :honour}
+   :anchor {:point :angle
+            :angle 0}
+   :geometry {:size 200}})
+
 (def compartment-charge
   {:type :heraldry.charge.type/compartment
    :variant {:id (config/get :compartment-charge-id)
