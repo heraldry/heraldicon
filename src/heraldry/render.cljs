@@ -383,7 +383,8 @@
               element-path
               path environment
               (-> context
-                  (assoc :auto-resize? false))])])))]))
+                  (assoc :auto-resize? false)
+                  (assoc :hide-lower-layer? (not behind-shield?)))])])))]))
 
 (defn ornaments [path coa-bounding-box context]
   (let [[bb-min-x bb-max-x bb-min-y bb-max-y] coa-bounding-box

@@ -44,6 +44,29 @@
                     %)
                  data))
 
+(defn set-layer-separator-opacity [data layer-separator-colours opacity]
+  (if (seq layer-separator-colours)
+    (let [layer-separator-colours (set layer-separator-colours)]
+      (walk/postwalk (fn [v]
+                       (if (map? v)
+                         (loop [v v
+                                [[attribute opacity-attribute] & rest] [[:stroke :stroke-opacity]
+                                                                        [:fill :fill-opacity]
+                                                                        [:stop-color :stop-opacity]]]
+                           (let [new-v (cond-> v
+                                         (some-> (get v attribute)
+                                                 colour/normalize
+                                                 layer-separator-colours) (-> (assoc opacity-attribute opacity)
+                                                                              (cond->
+                                                                                (:opacity v) (assoc :opacity opacity)))
+                                         )]
+                             (if (seq rest)
+                               (recur new-v rest)
+                               new-v)))
+                         v))
+                     data))
+    data))
+
 (defn get-replacement [kind provided-placeholder-colours]
   (let [replacement (get provided-placeholder-colours kind)]
     (if (or (nil? replacement)
@@ -51,7 +74,8 @@
       nil
       replacement)))
 
-(defn make-mask [data placeholder-colours provided-placeholder-colours outline-mode]
+(defn make-mask [data placeholder-colours provided-placeholder-colours
+                 outline-mode preview-original? hide-lower-layer?]
   (let [mask-id (util/id "mask")
         mask-inverted-id (util/id "mask")
         mask (replace-colours
@@ -62,12 +86,17 @@
                   (let [colour-lower (colour/normalize colour)
                         kind (get placeholder-colours colour-lower)
                         replacement (get-replacement kind provided-placeholder-colours)]
-                    (if (or (= kind :keep)
-                            (and (not (#{:transparent :primary} outline-mode))
-                                 (= kind :outline))
-                            replacement)
-                      "#fff"
-                      "#000")))))
+                    (cond
+                      (or preview-original?
+                          (= kind :keep)
+                          (and (not (#{:transparent :primary} outline-mode))
+                               (= kind :outline))
+                          replacement) "#fff"
+                      (and (= kind :layer-separator)
+                           (not hide-lower-layer?)) "none"
+                      (and (= kind :layer-separator)
+                           hide-lower-layer?) "#000"
+                      :else "#000")))))
         mask-inverted (replace-colours
                        data
                        (fn [colour]
@@ -76,18 +105,23 @@
                            (let [colour-lower (colour/normalize colour)
                                  kind (get placeholder-colours colour-lower)
                                  replacement (get-replacement kind provided-placeholder-colours)]
-                             (if (or (= kind :keep)
-                                     (and (not (#{:primary} outline-mode))
-                                          (= kind :outline))
-                                     replacement)
-                               "#000"
-                               "#fff")))))]
+                             (cond
+                               (or preview-original?
+                                   (= kind :keep)
+                                   (and (not (#{:primary} outline-mode))
+                                        (= kind :outline))
+                                   replacement) "#000"
+                               (and (= kind :layer-separator)
+                                    (not hide-lower-layer?)) "none"
+                               (and (= kind :layer-separator)
+                                    hide-lower-layer?) "#000"
+                               :else "#fff")))))]
     [mask-id mask mask-inverted-id mask-inverted]))
 
 (defmethod charge-interface/render-charge :heraldry.charge.type/other
   [path _parent-path environment {:keys [load-charge-data charge-group
                                          origin-override size-default
-                                         auto-resize?] :as context
+                                         auto-resize? hide-lower-layer?] :as context
                                   :or {auto-resize? true}}]
   (let [data (interface/get-raw-data (conj path :data) context)
         variant (interface/get-raw-data (conj path :variant) context)
@@ -113,7 +147,7 @@
             tincture (merge
                       (interface/get-raw-data (conj path :tincture) context)
                       (interface/get-sanitized-data (conj path :tincture) context))
-            render-options-preview-original? (interface/render-option :preview-original? context)
+            preview-original? (interface/render-option :preview-original? context)
             outline-mode (if (or (interface/render-option :outline? context)
                                  (= (interface/render-option :mode context)
                                     :hatching)) :keep
@@ -187,8 +221,12 @@
                             (/ target-height positional-charge-height)))
             scale-y (* (if reversed? -1 1)
                        (* (Math/abs scale-x) stretch))
-            placeholder-colours (:colours
-                                 full-charge-data)
+            placeholder-colours (:colours full-charge-data)
+            layer-separator-colours (->> placeholder-colours
+                                         (keep (fn [[colour placeholder]]
+                                                 (when (= placeholder :layer-separator)
+                                                   (colour/normalize colour))))
+                                         set)
             render-shadow? (and (-> placeholder-colours
                                     vals
                                     set
@@ -210,6 +248,9 @@
             unadjusted-charge (:data charge-data)
             adjusted-charge (-> unadjusted-charge
                                 (cond->
+                                  (not preview-original?) (set-layer-separator-opacity
+                                                           layer-separator-colours
+                                                           1)
                                   (= outline-mode :remove) (remove-outlines placeholder-colours)))
             adjusted-charge-without-shading (-> adjusted-charge
                                                 (remove-shading placeholder-colours))
@@ -217,7 +258,9 @@
              mask-inverted-id mask-inverted] (make-mask adjusted-charge-without-shading
                                                         placeholder-colours
                                                         tincture
-                                                        outline-mode)
+                                                        outline-mode
+                                                        preview-original?
+                                                        hide-lower-layer?)
             ;; this is the one drawn on top of the masked field version, for the tincture replacements
             ;; and outline; the primary colour has no replacement here, which might make it shine through
             ;; around the edges, to prevent that, it is specifically replaced with black
@@ -227,6 +270,10 @@
             ;; other things become black for the time being
             ;; TODO: perhaps they can be removed entirely? there still is a faint dark edge in some cases,
             ;; much less than before, however, and the dark edge is less obvious than the bright one
+            adjusted-charge-without-shading (set-layer-separator-opacity
+                                             adjusted-charge-without-shading
+                                             layer-separator-colours
+                                             0)
             coloured-charge (replace-colours
                              adjusted-charge-without-shading
                              (fn [colour]
@@ -423,7 +470,7 @@
                    :transform reverse-transform
                    :corner (-> fimbriation :corner)]]))
 
-             (if render-options-preview-original?
+             (if preview-original?
                unadjusted-charge
                [:g
                 [metadata/attribution

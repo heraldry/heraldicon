@@ -142,7 +142,7 @@
             [strings/shadow :shadow]
             [strings/highlight :highlight]
             [{:en "Layer separator"
-              :de "Ebenentrenner"} :separator]]]
+              :de "Ebenentrenner"} :layer-separator]]]
           tincture-modifier-choices))
 
 (def tincture-modifier-for-charge-map
