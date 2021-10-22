@@ -424,6 +424,10 @@
   {:en "Compartment"
    :de "Postament"})
 
+(def supporter
+  {:en "Supporter"
+   :de "Schildhalter"})
+
 (def supporter-left
   {:en "Supporter (left)"
    :de "Schildhalter (links)"})
