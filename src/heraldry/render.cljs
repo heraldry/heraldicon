@@ -382,7 +382,8 @@
              [interface/render-component
               element-path
               path environment
-              context])])))]))
+              (-> context
+                  (assoc :auto-resize? false))])])))]))
 
 (defn ornaments [path coa-bounding-box context]
   (let [[bb-min-x bb-max-x bb-min-y bb-max-y] coa-bounding-box

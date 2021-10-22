@@ -140,7 +140,9 @@
               :de "Tertiär"} :tertiary]
             [strings/outline :outline]
             [strings/shadow :shadow]
-            [strings/highlight :highlight]]]
+            [strings/highlight :highlight]
+            [{:en "Layer separator"
+              :de "Ebenentrenner"} :separator]]]
           tincture-modifier-choices))
 
 (def tincture-modifier-for-charge-map

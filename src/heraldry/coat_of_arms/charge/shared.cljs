@@ -16,7 +16,10 @@
   [path _parent-path environment
    {:keys [charge-group
            origin-override
-           size-default] :as context} arg function]
+           size-default
+           auto-resize?]
+    :or {auto-resize? true}
+    :as context} arg function]
   (let [context (-> context
                     (dissoc :origin-override)
                     (dissoc :size-default)
@@ -69,9 +72,13 @@
         arg-value (get environment arg)
 
         ;; since size now is filled with a default, check whether it was set at all,
-        ;; if not, then use nil
+        ;; if not, then use nil; exception: if auto-resize? is false, then always use
+        ;; the sanitized value
         ;; TODO: this probably needs a better mechanism and form representation
-        size (if (interface/get-raw-data (conj path :geometry :size) context) size nil)
+        size (if (or (not auto-resize?)
+                     (interface/get-raw-data (conj path :geometry :size) context))
+               size
+               nil)
         target-arg-value (-> (or size
                                  80)
                              ((util/percent-of arg-value)))
@@ -130,11 +137,11 @@
                           (.scale scale-x scale-y)
                           (.toString))
                          (cond->
-                          squiggly? squiggly/squiggly-path
-                          (not= angle 0) (->
-                                          (svgpath)
-                                          (.rotate angle)
-                                          (.toString)))
+                           squiggly? squiggly/squiggly-path
+                           (not= angle 0) (->
+                                           (svgpath)
+                                           (.rotate angle)
+                                           (.toString)))
                          (path/translate (:x origin-point) (:y origin-point))))
         [min-x max-x min-y max-y] (bounding-box/rotate charge-top-left
                                                        (v/add charge-top-left
