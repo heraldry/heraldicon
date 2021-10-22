@@ -53,7 +53,7 @@
                           (map ribbon/fetch-ribbon-data))]
     (when (-> ribbons-data first :id)
       [:<>
-       [:h3 strings/ribbons]
+       [:h3 [tr strings/ribbons]]
        [:ul
         (doall
          (for [ribbon ribbons-data]
