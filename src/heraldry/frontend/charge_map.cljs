@@ -182,6 +182,7 @@
                         :name "ornaments"
                         :charges #{:compartment
                                    :supporter
+                                   :mantling
                                    :motto
                                    :slogan}}}})
 
