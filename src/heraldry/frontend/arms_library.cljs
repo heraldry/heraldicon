@@ -41,8 +41,8 @@
        [:ul
         (doall
          (for [charge charges-data]
-           (when-let [charge-id (:id charge)]
-             ^{:key charge-id}
+           (when (:id charge)
+             ^{:key charge}
              [attribution/for-charge
               [:context :charge-data]
               {:charge-data charge}])))]])))
@@ -57,8 +57,8 @@
        [:ul
         (doall
          (for [ribbon ribbons-data]
-           (when-let [ribbon-id (:id ribbon)]
-             ^{:key ribbon-id}
+           (when (:id ribbon)
+             ^{:key ribbon}
              [attribution/for-ribbon
               [:context :ribbon-data]
               {:ribbon-data ribbon}])))]])))
