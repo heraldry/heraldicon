@@ -2,31 +2,36 @@
   (:require [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
             [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.shield-separator :as shield-separator]
             [heraldry.strings :as strings]
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
-(rf/reg-sub :motto-number
+(defn index-of [item coll]
+  (count (take-while (partial not= item) coll)))
+
+(rf/reg-sub :motto-name
   (fn [[_ path] _]
     (rf/subscribe [:get (drop-last path)]))
 
   (fn [elements [_ path]]
     ;; TODO: fix numbering/naming
     (let [idx (last path)
-          num-ornaments (->> elements
-                             (filter (comp not shield-separator/shield-separator?))
-                             count)
-          shield-separator-index (->> elements
-                                      (keep-indexed (fn [idx element]
-                                                      (when (shield-separator/shield-separator? element)
-                                                        idx)))
-                                      first)
-          effective-helm-number (inc (if (> idx shield-separator-index)
-                                       (dec idx)
-                                       idx))]
-      (when (> num-ornaments 1)
-        (str effective-helm-number ". ")))))
+          mottos (keep-indexed (fn [idx element]
+                                 (when (-> element :type (= :heraldry.motto.type/motto))
+                                   idx)) elements)
+          slogans (keep-indexed (fn [idx element]
+                                  (when (-> element :type (= :heraldry.motto.type/slogan))
+                                    idx)) elements)
+          relevant-elements (if (some (set [idx]) mottos)
+                              mottos
+                              slogans)]
+      (util/str-tr
+       (when (-> relevant-elements count (> 1))
+         (str (inc (index-of idx relevant-elements)) ". "))
+       (if (= relevant-elements mottos)
+         strings/motto
+         strings/slogan)))))
+
 (defn form [path _]
   [:<>
    (for [option [:type
@@ -56,10 +61,7 @@
         [ribbon-general/ribbon-segments-form ribbon-path]]))])
 
 (defmethod ui-interface/component-node-data :heraldry.component/motto [path]
-  (let [title (case @(rf/subscribe [:get-value (conj path :type)])
-                :heraldry.motto.type/motto strings/motto
-                :heraldry.motto.type/slogan strings/slogan)]
-    {:title (util/str-tr @(rf/subscribe [:motto-number path]) title)}))
+  {:title @(rf/subscribe [:motto-name path])})
 
 (defmethod ui-interface/component-form-data :heraldry.component/motto [_path]
   {:form form})
