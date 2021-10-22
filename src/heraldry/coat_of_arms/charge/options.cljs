@@ -182,10 +182,10 @@
                             (position/adjust-options position (-> charge :anchor)))))
         (update-in [:geometry :size] (fn [size]
                                        (when size
-                                         (-> size
-                                             (assoc :min 5)
-                                             (assoc :max 400)
-                                             (assoc :default 100)))))
+                                         (cond-> size
+                                           ornament? (assoc :min 5
+                                                            :max 400
+                                                            :default 100)))))
         (update :fimbriation (fn [fimbriation]
                                (when fimbriation
                                  (-> (fimbriation/options (:fimbriation charge)
