@@ -318,8 +318,8 @@
                             :startOffset (str (+ 50 (* offset-x 100)) "%")}
                  text]]))])))]))
 
-(defn motto [path {:keys [width] :as environment} {:keys [self-below-shield? render-pass-below-shield?]
-                                                   :as context}]
+(defn motto [path {:keys [width height] :as environment} {:keys [self-below-shield? render-pass-below-shield?]
+                                                          :as context}]
   (let [ribbon-path (conj path :ribbon)
         points (interface/get-raw-data (conj ribbon-path :points) context)]
     (if (and (= (boolean self-below-shield?)
@@ -335,7 +335,7 @@
             thickness (interface/get-sanitized-data (conj ribbon-path :thickness) context)
             position (-> (-> environment :points (get origin-point))
                          (v/add (v/v ((util/percent-of width) offset-x)
-                                     (- ((util/percent-of width) offset-y)))))
+                                     (- ((util/percent-of height) offset-y)))))
             ;; TODO: not ideal, need the thickness here and need to know that the edge-vector (here
             ;; assumed to be (0 thickness) as a max) needs to be added to every point for the correct
             ;; height; could perhaps be a subscription or the ribbon function can provide it?
