@@ -40,7 +40,11 @@
                :torse-charge-id "charge:6A691Q"
                :helmet-charge-id "charge:Af7tBN"
                :static-files-url "https://cdn.staging.heraldry.digital"
-               :base-font-dir "./assets/font"}
+               :base-font-dir "./assets/font"
+               :compartment-charge-id "charge:lD7wLA"
+               :supporter-charge-id "charge:MTMStn"
+               :motto-ribbon-id "ribbon:5jsojj"
+               :slogan-ribbon-id "ribbon:gGZoHQ"}
 
     "prod" {:heraldry-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/api"
             :heraldry-url "https://heraldry.digital"
