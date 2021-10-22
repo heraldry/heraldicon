@@ -435,3 +435,7 @@
 (def supporter-right
   {:en "Supporter (right)"
    :de "Schildhalter (rechts)"})
+
+(def mantling
+  {:en "Mantling"
+   :de "Helmdecke"})
