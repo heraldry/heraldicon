@@ -41,8 +41,7 @@
                                 :hatching)) :keep
                          (interface/get-sanitized-data (conj path :outline-mode) context))
         outline? (= outline-mode :keep)
-        {:keys [charge-group-path
-                slot-spacing
+        {:keys [slot-spacing
                 slot-angle]} charge-group
         context (dissoc context :charge-group)
         environment-for-origin (if origin-override
