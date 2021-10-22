@@ -56,6 +56,8 @@
             :helmet-charge-id "charge:hlsnvP"
             :bucket-data "data.heraldry.digital"
             :static-files-url "https://cdn.heraldry.digital"
+            :compartment-charge-id "charge:SSLk9y"
+            :supporter-charge-id "charge:fxOk19"
             :base-font-dir "./assets/font"}))
 
 #_{:clj-kondo/ignore [:redefined-var]}
