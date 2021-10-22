@@ -344,7 +344,9 @@
                          :bottom (- min-y)))
             target-width ((util/percent-of width) size)
             scale (/ target-width ribbon-width)
-            outline-thickness (/ 1 scale)]
+            outline-thickness (/ outline/stroke-width
+                                 2
+                                 scale)]
         {:result [:g {:transform (str "translate(" (v/->str position) ")"
                                       "scale(" scale "," scale ")"
                                       "translate(" (v/->str shift) ")")}
