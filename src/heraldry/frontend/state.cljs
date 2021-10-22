@@ -91,6 +91,7 @@
                                                  :tincture :argent
                                                  :components [{:type :heraldry.charge.type/preview
                                                                :preview? true
+                                                               :ignore-layer-separator? true
                                                                :field {:type :heraldry.field.type/plain
                                                                        :tincture :azure}
                                                                :tincture (merge (->> attributes/tincture-modifier-map

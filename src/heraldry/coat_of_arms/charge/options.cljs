@@ -119,7 +119,12 @@
                    :max 100
                    :ui {:label {:en "Vertical mask"
                                 :de "Vertikale Maske"}
-                        :step 1}}})
+                        :step 1}}
+   :ignore-layer-separator? {:type :boolean
+                             :default false
+                             :ui {:label {:en "Ignore layer separator"
+                                          :de "Ebenentrenner ignorieren"}
+                                  :tooltip "If the charge contains a layer separator for the shield, then this can disable it."}}})
 
 (defn options [charge & {:keys [part-of-semy?
                                 part-of-charge-group?
@@ -134,7 +139,8 @@
                                               [:escutcheon]
                                               [:fimbriation]
                                               [:outline-mode]
-                                              [:vertical-mask]]
+                                              [:vertical-mask]
+                                              [:ignore-layer-separator?]]
                                              {[:geometry :size :default] 30})
           (#{:roundel
              :annulet
@@ -149,7 +155,8 @@
                                            [:geometry]
                                            [:fimbriation]
                                            [:outline-mode]
-                                           [:vertical-mask]]
+                                           [:vertical-mask]
+                                           [:ignore-layer-separator?]]
                                           {[:geometry :reversed?] nil
                                            [:geometry :mirrored?] nil})
           (= type :crescent) (options/pick default-options
@@ -159,7 +166,8 @@
                                             [:geometry]
                                             [:fimbriation]
                                             [:outline-mode]
-                                            [:vertical-mask]]
+                                            [:vertical-mask]
+                                            [:ignore-layer-separator?]]
                                            {[:geometry :mirrored?] nil})
           :else (options/pick default-options
                               [[:type]
@@ -169,7 +177,8 @@
                                [:fimbriation]
                                [:tincture]
                                [:outline-mode]
-                               [:vertical-mask]]))
+                               [:vertical-mask]
+                               [:ignore-layer-separator?]]))
         (assoc :manual-blazon (:manual-blazon default-options))
         (cond->
           (or part-of-semy?
