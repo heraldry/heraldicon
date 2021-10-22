@@ -69,6 +69,7 @@
     ["Voided" :voided]]
    [{:en "Ornaments"
      :de "Prachtstücke"}
+    [strings/mantling :mantling]
     [strings/compartment :compartment]
     [strings/supporter :supporter]]
    [{:en "Tail"
