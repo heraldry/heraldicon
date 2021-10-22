@@ -1,9 +1,7 @@
 (ns heraldry.frontend.ui.form.charge
-  (:require [heraldry.coat-of-arms.charge.core :as charge]
+  (:require [heraldry.coat-of-arms.charge.options :as charge-options]
             [heraldry.frontend.ui.interface :as interface]
-            [re-frame.core :as rf]
-            [heraldry.coat-of-arms.charge.options :as charge-options]
-            [heraldry.util :as util]))
+            [re-frame.core :as rf]))
 
 (defn form [path _]
   [:<>
@@ -16,7 +14,8 @@
                  :tincture
                  :outline-mode
                  :vertical-mask
-                 :manual-blazon]]
+                 :manual-blazon
+                 :ignore-layer-separator?]]
      ^{:key option} [interface/form-element (conj path option)])])
 
 (defmethod interface/component-node-data :heraldry.component/charge [path]

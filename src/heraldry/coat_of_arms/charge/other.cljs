@@ -132,14 +132,16 @@
                                      (keep (fn [[colour placeholder]]
                                              (when (= placeholder :layer-separator)
                                                (colour/normalize colour))))
-                                     set)]
+                                     set)
+        ignore-layer-separator? (interface/get-sanitized-data (conj path :ignore-layer-separator?) context)]
     (if (and (:data full-charge-data)
              ;; in order to require rendering, we either have
              ;; to be located in the right render pass
              ;; OR have some layer separator in the charge
              (or (= (boolean self-below-shield?)
                     (boolean render-pass-below-shield?))
-                 (seq layer-separator-colours)))
+                 (and (not ignore-layer-separator?)
+                      (seq layer-separator-colours))))
       (let [context (-> context
                         (dissoc :origin-override)
                         (dissoc :size-default)
@@ -262,6 +264,7 @@
             adjusted-charge-without-shading (-> adjusted-charge
                                                 (remove-shading placeholder-colours))
             hide-lower-layer? (and (seq layer-separator-colours)
+                                   (not ignore-layer-separator?)
                                    (not render-pass-below-shield?))
             [mask-id mask
              mask-inverted-id mask-inverted] (make-mask adjusted-charge-without-shading
