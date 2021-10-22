@@ -189,11 +189,12 @@
   (-> group-map :groups :ornaments :charges))
 
 (defn effective-type [t]
-  (some (fn [prefix]
-          (let [st (name t)
-                prefix (name prefix)]
-            (or (= st prefix)
-                (s/starts-with? st (str prefix "-"))))) prefix-types))
+  (or (first (filter (fn [prefix]
+                       (let [st (name t)
+                             prefix (name prefix)]
+                         (or (= st prefix)
+                             (s/starts-with? st (str prefix "-"))))) prefix-types))
+      t))
 
 (def known-charge-types
   (->> group-map
@@ -269,6 +270,14 @@
                                       (into {}))
                      :else data)) charge-map))
 
+(defn collect-charges [charges-by-type type]
+  (->> charges-by-type
+       (keep (fn [[charge-type charges]]
+               (when (-> charge-type effective-type (= type))
+                 charges)))
+       (apply concat)
+       vec))
+
 (defn build-map [charges-by-type group-map & {:keys [remove-empty-groups?]}]
   (let [charge-map (walk/postwalk
                     (fn [data]
@@ -277,17 +286,18 @@
                         (let [charge-types (second data)]
                           [:charges (->> charge-types
                                          (map (fn [type]
-                                                [(effective-type type) (build-charge-variants
-                                                                        {:node-type :charge
-                                                                         :type type
-                                                                         :name (name type)}
-                                                                        [:attitude]
-                                                                        (get charges-by-type type))]))
+                                                [type (build-charge-variants
+                                                       {:node-type :charge
+                                                        :type type
+                                                        :name (name type)}
+                                                       [:attitude]
+                                                       (collect-charges charges-by-type type))]))
 
                                          (into {}))])
                         data)) group-map)
         ungrouped-types (-> charges-by-type
                             keys
+                            (->> (map effective-type))
                             set
                             (set/difference known-charge-types))]
     (cond-> charge-map
