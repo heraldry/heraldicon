@@ -43,9 +43,12 @@
                        {:title strings/slogan
                         :handler #(state/dispatch-on-event % [:add-element elements-path default/slogan
                                                               shield-separator/add-element-options])}
+                       {:title strings/charge
+                        :handler #(state/dispatch-on-event % [:add-element elements-path default/ornament-charge
+                                                              shield-separator/add-element-options])}
                        {:title strings/charge-group
-                        :handler #(state/dispatch-on-event % [:add-element elements-path default/charge-group
-                                                              shield-separator/add-element-default-behind-options])}]}]
+                        :handler #(state/dispatch-on-event % [:add-element elements-path default/ornament-charge-group
+                                                              shield-separator/add-element-options])}]}]
      :nodes (->> (range num-elements)
                  reverse
                  (map (fn [idx]
