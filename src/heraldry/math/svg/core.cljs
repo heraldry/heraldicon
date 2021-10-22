@@ -11,7 +11,7 @@
               (-> chunk
                   (s/split #":" 2)
                   (as-> [key value]
-                        [(keyword (s/trim key)) (s/trim value)]))))
+                    [(keyword (s/trim key)) (s/trim value)]))))
        (into {}))))
 
 (defn fix-string-style-values [data]
