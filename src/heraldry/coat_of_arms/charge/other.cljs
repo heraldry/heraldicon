@@ -86,7 +86,9 @@
 
 (defmethod charge-interface/render-charge :heraldry.charge.type/other
   [path parent-path environment {:keys [load-charge-data charge-group
-                                        origin-override size-default] :as context}]
+                                        origin-override size-default
+                                        auto-resize?] :as context
+                                 :or {auto-resize? true}}]
   (let [data (interface/get-raw-data (conj path :data) context)
         variant (interface/get-raw-data (conj path :variant) context)
         full-charge-data (or data (when variant (load-charge-data variant)))]
@@ -127,9 +129,13 @@
                               (or :none)
                               (= :none))
             ;; since size now is filled with a default, check whether it was set at all,
-            ;; if not, then use nil
+            ;; if not, then use nil; exception: if auto-resize? is false, then always use
+            ;; the sanitized value
             ;; TODO: this probably needs a better mechanism and form representation
-            size (if (interface/get-raw-data (conj path :geometry :size) context) size nil)
+            size (if (or (not auto-resize?)
+                         (interface/get-raw-data (conj path :geometry :size) context))
+                   size
+                   nil)
             points (:points environment)
             top (:top points)
             bottom (:bottom points)
