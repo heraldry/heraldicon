@@ -83,6 +83,8 @@
    :scope {:type :choice
            :choices [[{:en "Everything (Helms, etc.)"
                        :de "Vollwappen (Helme, etc.)"} :achievement]
+                     [{:en "Coat of Arms with Helm"
+                       :de "Wappen mit Helmzier"} :coat-of-arms-and-helm]
                      [strings/coat-of-arms :coat-of-arms]]
            :default :achievement
            :ui {:label {:en "Scope"
