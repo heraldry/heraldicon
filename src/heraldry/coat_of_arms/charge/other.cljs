@@ -342,7 +342,10 @@
                                                                  counterchanged?)
                                                          environment)})
             vertical-mask? (not (zero? vertical-mask))
-            vertical-mask-id (util/id "mask")]
+            vertical-mask-id (util/id "mask")
+            layer-separator-colour-for-shadow-highlight (if hide-lower-layer?
+                                                          "#000000"
+                                                          "none")]
         [:<>
          (when vertical-mask?
            (let [total-width (- max-x min-x)
@@ -385,6 +388,7 @@
                           :outline "#000000"
                           :shadow "none"
                           :highlight "none"
+                          :layer-separator layer-separator-colour-for-shadow-highlight
                           "#ffffff")))))
                  svg/make-unique-ids)]]
               [:g {:mask (str "url(#" shadow-helper-mask-id ")")}
@@ -399,6 +403,7 @@
                        (case kind
                          :shadow "#ffffff"
                          :highlight "none"
+                         :layer-separator layer-separator-colour-for-shadow-highlight
                          "#000000")))))
                 svg/make-unique-ids)]])
            (when render-highlight?
@@ -417,6 +422,7 @@
                           :outline "#000000"
                           :shadow "none"
                           :highlight "none"
+                          :layer-separator layer-separator-colour-for-shadow-highlight
                           "#ffffff")))))
                  svg/make-unique-ids)]]
               [:g {:mask (str "url(#" highlight-helper-mask-id ")")}
@@ -431,6 +437,7 @@
                        (case kind
                          :shadow "none"
                          :highlight "#ffffff"
+                         :layer-separator layer-separator-colour-for-shadow-highlight
                          "#000000")))))
                 svg/make-unique-ids)]])
            [:mask {:id mask-id}
