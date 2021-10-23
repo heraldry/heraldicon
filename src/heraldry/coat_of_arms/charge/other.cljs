@@ -17,6 +17,32 @@
             [heraldry.math.vector :as v]
             [heraldry.util :as util]))
 
+(defn opacity-to-grey [opacity]
+  (let [v (-> opacity (* 255) int)]
+    (colour/hex-colour v v v)))
+
+(def shadow-qualifiers
+  {:shadow-10 (opacity-to-grey 0.1)
+   :shadow-20 (opacity-to-grey 0.2)
+   :shadow-30 (opacity-to-grey 0.3)
+   :shadow-40 (opacity-to-grey 0.4)
+   :shadow-50 (opacity-to-grey 0.5)
+   :shadow-60 (opacity-to-grey 0.6)
+   :shadow-70 (opacity-to-grey 0.7)
+   :shadow-80 (opacity-to-grey 0.8)
+   :shadow-90 (opacity-to-grey 0.9)})
+
+(def highlight-qualifiers
+  {:highlight-10 (opacity-to-grey 0.1)
+   :highlight-20 (opacity-to-grey 0.2)
+   :highlight-30 (opacity-to-grey 0.3)
+   :highlight-40 (opacity-to-grey 0.4)
+   :highlight-50 (opacity-to-grey 0.5)
+   :highlight-60 (opacity-to-grey 0.6)
+   :highlight-70 (opacity-to-grey 0.7)
+   :highlight-80 (opacity-to-grey 0.8)
+   :highlight-90 (opacity-to-grey 0.9)})
+
 (defn placeholder-colour-modifier [placeholder-colours colour]
   (let [value (get placeholder-colours colour)]
     (if (vector? value)
@@ -140,6 +166,13 @@
 
 (def make-mask (memoize -make-mask))
 
+(defn colours-for-modifier [placeholder-colours modifier]
+  (->> placeholder-colours
+       (keep (fn [[colour placeholder]]
+               (when (= placeholder modifier)
+                 (colour/normalize colour))))
+       set))
+
 (defmethod charge-interface/render-charge :heraldry.charge.type/other
   [path _parent-path environment {:keys [load-charge-data charge-group
                                          origin-override size-default
@@ -150,11 +183,7 @@
         variant (interface/get-raw-data (conj path :variant) context)
         full-charge-data (or data (when variant (load-charge-data variant)))
         placeholder-colours (:colours full-charge-data)
-        layer-separator-colours (->> placeholder-colours
-                                     (keep (fn [[colour placeholder]]
-                                             (when (= placeholder :layer-separator)
-                                               (colour/normalize colour))))
-                                     set)
+        layer-separator-colours (colours-for-modifier placeholder-colours :layer-separator)
         ignore-layer-separator? (interface/get-sanitized-data (conj path :ignore-layer-separator?) context)]
     (if (and (:data full-charge-data)
              ;; in order to require rendering, we either have
@@ -258,20 +287,28 @@
                             (/ target-height positional-charge-height)))
             scale-y (* (if reversed? -1 1)
                        (* (Math/abs scale-x) stretch))
-            render-shadow? (and (-> placeholder-colours
-                                    vals
-                                    set
-                                    (get :shadow))
-                                (:shadow tincture))
+            render-shadow? (and (->> placeholder-colours
+                                     vals
+                                     (filter (fn [placeholder]
+                                               (or (= placeholder :shadow)
+                                                   (and (vector? placeholder)
+                                                        (-> placeholder second shadow-qualifiers)))))
+                                     first)
+                                (:shadow tincture)
+                                (pos? (:shadow tincture)))
             shadow-mask-id (when render-shadow?
                              (util/id "mask"))
             shadow-helper-mask-id (when render-shadow?
                                     (util/id "mask"))
-            render-highlight? (and (-> placeholder-colours
-                                       vals
-                                       set
-                                       (get :highlight))
-                                   (:highlight tincture))
+            render-highlight? (and (->> placeholder-colours
+                                        vals
+                                        (filter (fn [placeholder]
+                                                  (or (= placeholder :highlight)
+                                                      (and (vector? placeholder)
+                                                           (-> placeholder second highlight-qualifiers)))))
+                                        first)
+                                   (:highlight tincture)
+                                   (pos? (:highlight tincture)))
             highlight-mask-id (when render-highlight?
                                 (util/id "mask"))
             highlight-helper-mask-id (when render-highlight?
@@ -411,12 +448,15 @@
                    (if (s/starts-with? colour "url")
                      colour
                      (let [colour-lower (colour/normalize colour)
-                           kind (placeholder-colour-modifier placeholder-colours colour-lower)]
-                       (case kind
-                         :shadow "#ffffff"
-                         :highlight "none"
-                         :layer-separator layer-separator-colour-for-shadow-highlight
-                         "#000000")))))
+                           kind (placeholder-colour-modifier placeholder-colours colour-lower)
+                           qualifier (placeholder-colour-qualifier placeholder-colours colour-lower)
+                           specific (shadow-qualifiers qualifier)]
+                       (cond
+                         specific specific
+                         (= kind :shadow) "#ffffff"
+                         (= kind :highlight) "none"
+                         (= kind :layer-separator) layer-separator-colour-for-shadow-highlight
+                         :else "#000000")))))
                 svg/make-unique-ids)]])
            (when render-highlight?
              [:mask {:id highlight-mask-id}
@@ -445,12 +485,15 @@
                    (if (s/starts-with? colour "url")
                      colour
                      (let [colour-lower (colour/normalize colour)
-                           kind (placeholder-colour-modifier placeholder-colours colour-lower)]
-                       (case kind
-                         :shadow "none"
-                         :highlight "#ffffff"
-                         :layer-separator layer-separator-colour-for-shadow-highlight
-                         "#000000")))))
+                           kind (placeholder-colour-modifier placeholder-colours colour-lower)
+                           qualifier (placeholder-colour-qualifier placeholder-colours colour-lower)
+                           specific (highlight-qualifiers qualifier)]
+                       (cond
+                         specific specific
+                         (= kind :highlight) "#ffffff"
+                         (= kind :shadow) "none"
+                         (= kind :layer-separator) layer-separator-colour-for-shadow-highlight
+                         :else "#000000")))))
                 svg/make-unique-ids)]])
            [:mask {:id mask-id}
             (svg/make-unique-ids mask)]
