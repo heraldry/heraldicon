@@ -156,6 +156,12 @@
       (str "0" s)
       s)))
 
+(defn hex-colour [r g b]
+  (str "#"
+       (-to-hex-2 r)
+       (-to-hex-2 g)
+       (-to-hex-2 b)))
+
 (defn -convert-rgb [colour]
   (try
     (let [[_ r g b] (re-matches #"(?i)rgb\( *([0-9]*) *, *([0-9]*) *, *([0-9]*) *\)" colour)
@@ -163,10 +169,7 @@
           gv (js/parseInt g)
           bv (js/parseInt b)]
       (if (and r g b)
-        (str "#"
-             (-to-hex-2 rv)
-             (-to-hex-2 gv)
-             (-to-hex-2 bv))
+        (hex-colour rv gv bv)
         nil))
     (catch :default _
       nil)))
@@ -185,7 +188,4 @@
         new-r (quot r 2)
         new-g (quot g 2)
         new-b (quot b 2)]
-    (str "#"
-         (-to-hex-2 new-r)
-         (-to-hex-2 new-g)
-         (-to-hex-2 new-b))))
+    (hex-colour new-r new-g new-b)))
