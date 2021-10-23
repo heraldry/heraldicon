@@ -196,6 +196,7 @@
                                       :shadow
                                       :highlight}
                                     not))
+                       set
                        sort)]
      ^{:key modifier}
      [:<> [:div.tag.modifier (util/translate modifier)] " "])
