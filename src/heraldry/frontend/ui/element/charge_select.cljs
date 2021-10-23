@@ -175,8 +175,10 @@
                         sort)]
      ^{:key attribute}
      [:<> [:div.tag.attribute (util/translate attribute)] " "])
-   (when (or (-> charge :colours vals set :shadow)
-             (-> charge :colours vals set :highlight))
+   (when (or (->> charge :colours vals (map attributes/tincture-modifier) set :shadow)
+             (->> charge :colours vals (map attributes/tincture-modifier-qualifier) (keep attributes/shadow-qualifiers) seq)
+             (->> charge :colours vals (map attributes/tincture-modifier) set :highlight)
+             (->> charge :colours vals (map attributes/tincture-modifier-qualifier) (keep attributes/highlight-qualifiers) seq))
      [:div.tag.shading "shading"])
    " "
    (when-let [fixed-tincture (-> charge
