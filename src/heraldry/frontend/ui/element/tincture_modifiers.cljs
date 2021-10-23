@@ -33,6 +33,17 @@
                                            (options/sanitize tincture-data options))
             charge-data (when (not preview?)
                           (charge/fetch-charge-data variant))
+            qualifiers (->> charge-data
+                            :colours
+                            (map second)
+                            (map attributes/tincture-modifier-qualifier)
+                            set)
+            shadow-qualifiers? (->> qualifiers
+                                    (keep attributes/shadow-qualifiers)
+                                    first)
+            highlight-qualifiers? (->> qualifiers
+                                       (keep attributes/highlight-qualifiers)
+                                       first)
             supported-tinctures (-> attributes/tincture-modifier-map
                                     keys
                                     set
@@ -41,11 +52,14 @@
                                     (conj :shadow)
                                     (conj :highlight)
                                     (cond->
-                                     (not preview?) (set/intersection
-                                                     (-> charge-data
-                                                         :colours
-                                                         (->> (map second))
-                                                         set))))
+                                      (not preview?) (set/intersection
+                                                      (->> charge-data
+                                                           :colours
+                                                           (map second)
+                                                           (map attributes/tincture-modifier)
+                                                           set))
+                                      shadow-qualifiers? (conj :shadow)
+                                      highlight-qualifiers? (conj :highlight)))
             sorted-supported-tinctures (-> supported-tinctures
                                            (disj :shadow)
                                            (disj :highlight)
@@ -63,14 +77,14 @@
                               sort
                               vec
                               (cond->
-                               (and (:shadow supported-tinctures)
-                                    (-> sanitized-tincture-data
-                                        :shadow
-                                        pos?)) (conj :shadow)
-                               (and (:highlight supported-tinctures)
-                                    (-> sanitized-tincture-data
-                                        :highlight
-                                        pos?)) (conj :highlight)))
+                                (and (:shadow supported-tinctures)
+                                     (-> sanitized-tincture-data
+                                         :shadow
+                                         pos?)) (conj :shadow)
+                                (and (:highlight supported-tinctures)
+                                     (-> sanitized-tincture-data
+                                         :highlight
+                                         pos?)) (conj :highlight)))
             tinctures-title (if (-> tinctures-set count pos?)
                               (->> tinctures-set
                                    (map util/translate)

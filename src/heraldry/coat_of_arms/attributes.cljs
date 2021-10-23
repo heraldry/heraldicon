@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.attributes
-  (:require [heraldry.strings :as strings]
+  (:require [heraldry.colour :as colour]
+            [heraldry.strings :as strings]
             [heraldry.util :as util]))
 
 (def attitude-choices
@@ -188,3 +189,29 @@
   (if (vector? value)
     (second value)
     :none))
+
+(defn opacity-to-grey [opacity]
+  (let [v (-> opacity (* 255) int)]
+    (colour/hex-colour v v v)))
+
+(def shadow-qualifiers
+  {:shadow-10 (opacity-to-grey 0.1)
+   :shadow-20 (opacity-to-grey 0.2)
+   :shadow-30 (opacity-to-grey 0.3)
+   :shadow-40 (opacity-to-grey 0.4)
+   :shadow-50 (opacity-to-grey 0.5)
+   :shadow-60 (opacity-to-grey 0.6)
+   :shadow-70 (opacity-to-grey 0.7)
+   :shadow-80 (opacity-to-grey 0.8)
+   :shadow-90 (opacity-to-grey 0.9)})
+
+(def highlight-qualifiers
+  {:highlight-10 (opacity-to-grey 0.1)
+   :highlight-20 (opacity-to-grey 0.2)
+   :highlight-30 (opacity-to-grey 0.3)
+   :highlight-40 (opacity-to-grey 0.4)
+   :highlight-50 (opacity-to-grey 0.5)
+   :highlight-60 (opacity-to-grey 0.6)
+   :highlight-70 (opacity-to-grey 0.7)
+   :highlight-80 (opacity-to-grey 0.8)
+   :highlight-90 (opacity-to-grey 0.9)})
