@@ -18,11 +18,15 @@
 (s/def :heraldry.charge-data/attributes #(every? (fn [[k v]]
                                                    (and (get attributes/attribute-map k)
                                                         (boolean? v))) %))
-(s/def :heraldry.charge-data.colour/type attributes/tincture-modifier-for-charge-map)
+(s/def :heraldry.charge-data.colour/modifier attributes/tincture-modifier-for-charge-map)
+(s/def :heraldry.charge-data.colour/qualifier attributes/tincture-modifier-qualifier-for-charge-map)
 (s/def :heraldry.charge-data/colours #(every? (fn [[k v]]
                                                 (and (string? k)
                                                      (re-matches #"^#[a-z0-9]{6}$" k)
-                                                     (s/valid? :heraldry.charge-data.colour/type v))) %))
+                                                     (or (s/valid? :heraldry.charge-data.colour/modifier v)
+                                                         (and (vector? v)
+                                                              (s/valid? :heraldry.charge-data.colour/modifier (first v))
+                                                              (s/valid? :heraldry.charge-data.colour/qualifier (second v)))))) %))
 (s/def :heraldry.charge-data/spec-version number?)
 (s/def :heraldry.charge-data/fixed-tincture tincture/fixed-tincture-map)
 (s/def :heraldry/charge-data (s/keys :req-un [:heraldry.charge-data/name

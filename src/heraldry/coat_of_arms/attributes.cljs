@@ -152,3 +152,29 @@
 
 (def tincture-modifier-for-charge-map
   (util/choices->map tincture-modifier-for-charge-choices))
+
+(def tincture-modifier-qualifier-choices
+  [["Default" :none]
+   ["Shadow"
+    ["10%" :shadow-10]
+    ["20%" :shadow-20]
+    ["30%" :shadow-30]
+    ["40%" :shadow-40]
+    ["50%" :shadow-50]
+    ["60%" :shadow-60]
+    ["70%" :shadow-70]
+    ["80%" :shadow-80]
+    ["90%" :shadow-90]]
+   ["Highlight"
+    ["10%" :highlight-10]
+    ["20%" :highlight-20]
+    ["30%" :highlight-30]
+    ["40%" :highlight-40]
+    ["50%" :highlight-50]
+    ["60%" :highlight-60]
+    ["70%" :highlight-70]
+    ["80%" :highlight-80]
+    ["90%" :highlight-90]]])
+
+(def tincture-modifier-qualifier-for-charge-map
+  (util/choices->map tincture-modifier-qualifier-choices))
