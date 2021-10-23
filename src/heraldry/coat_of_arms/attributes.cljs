@@ -178,3 +178,13 @@
 
 (def tincture-modifier-qualifier-for-charge-map
   (util/choices->map tincture-modifier-qualifier-choices))
+
+(defn tincture-modifier [value]
+  (if (vector? value)
+    (first value)
+    value))
+
+(defn tincture-modifier-qualifier [value]
+  (if (vector? value)
+    (second value)
+    :none))

@@ -2,6 +2,7 @@
   (:require [clojure.string :as s]
             [clojure.walk :as walk]
             [heraldry.coat-of-arms.angle :as angle]
+            [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.coat-of-arms.charge.interface :as charge-interface]
             [heraldry.coat-of-arms.field.environment :as environment]
             [heraldry.coat-of-arms.field.shared :as field-shared]
@@ -44,16 +45,10 @@
    :highlight-90 (opacity-to-grey 0.9)})
 
 (defn placeholder-colour-modifier [placeholder-colours colour]
-  (let [value (get placeholder-colours colour)]
-    (if (vector? value)
-      (first value)
-      value)))
+  (attributes/tincture-modifier (get placeholder-colours colour)))
 
 (defn placeholder-colour-qualifier [placeholder-colours colour]
-  (let [value (get placeholder-colours colour)]
-    (if (vector? value)
-      (second value)
-      :none)))
+  (attributes/tincture-modifier-qualifier (get placeholder-colours colour)))
 
 (defn -remove-outlines [data placeholder-colours]
   (walk/postwalk #(if (and (vector? %)

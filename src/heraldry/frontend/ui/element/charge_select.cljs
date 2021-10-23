@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.element.charge-select
   (:require [clojure.walk :as walk]
             [heraldry.attribution :as attribution]
+            [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.frontend.charge-map :as charge-map]
             [heraldry.frontend.filter :as filter]
             [heraldry.frontend.language :refer [tr]]
@@ -187,6 +188,7 @@
    (for [modifier (->> charge
                        :colours
                        (map second)
+                       (keep attributes/tincture-modifier)
                        (filter #(-> %
                                     #{:primary
                                       :keep
