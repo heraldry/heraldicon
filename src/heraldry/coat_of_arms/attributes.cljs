@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.attributes
-  (:require [heraldry.colour :as colour]
+  (:require [goog.string :as gstring]
+            [heraldry.colour :as colour]
             [heraldry.strings :as strings]
             [heraldry.util :as util]))
 
@@ -154,32 +155,6 @@
 (def tincture-modifier-for-charge-map
   (util/choices->map tincture-modifier-for-charge-choices))
 
-(def tincture-modifier-qualifier-choices
-  [["Default" :none]
-   ["Shadow"
-    ["10%" :shadow-10]
-    ["20%" :shadow-20]
-    ["30%" :shadow-30]
-    ["40%" :shadow-40]
-    ["50%" :shadow-50]
-    ["60%" :shadow-60]
-    ["70%" :shadow-70]
-    ["80%" :shadow-80]
-    ["90%" :shadow-90]]
-   ["Highlight"
-    ["10%" :highlight-10]
-    ["20%" :highlight-20]
-    ["30%" :highlight-30]
-    ["40%" :highlight-40]
-    ["50%" :highlight-50]
-    ["60%" :highlight-60]
-    ["70%" :highlight-70]
-    ["80%" :highlight-80]
-    ["90%" :highlight-90]]])
-
-(def tincture-modifier-qualifier-for-charge-map
-  (util/choices->map tincture-modifier-qualifier-choices))
-
 (defn tincture-modifier [value]
   (if (vector? value)
     (first value)
@@ -194,24 +169,48 @@
   (let [v (-> opacity (* 255) int)]
     (colour/hex-colour v v v)))
 
+(def qualifier-data
+  (->> (range 5 100 5)
+       (mapcat (fn [percentage]
+                 (let [qualifier-name (str percentage "%")
+                       keyword-suffix (gstring/format "%02d" percentage)
+                       colour (opacity-to-grey (/ percentage 100))]
+                   [[:shadow
+                     (keyword (str "shadow-" keyword-suffix))
+                     qualifier-name
+                     colour]
+                    [:highlight
+                     (keyword (str "highlight-" keyword-suffix))
+                     qualifier-name
+                     colour]])))))
+
 (def shadow-qualifiers
-  {:shadow-10 (opacity-to-grey 0.1)
-   :shadow-20 (opacity-to-grey 0.2)
-   :shadow-30 (opacity-to-grey 0.3)
-   :shadow-40 (opacity-to-grey 0.4)
-   :shadow-50 (opacity-to-grey 0.5)
-   :shadow-60 (opacity-to-grey 0.6)
-   :shadow-70 (opacity-to-grey 0.7)
-   :shadow-80 (opacity-to-grey 0.8)
-   :shadow-90 (opacity-to-grey 0.9)})
+  (->> qualifier-data
+       (filter #(-> % first (= :shadow)))
+       (map (fn [[_ key _ colour]]
+              [key colour]))
+       (into {})))
 
 (def highlight-qualifiers
-  {:highlight-10 (opacity-to-grey 0.1)
-   :highlight-20 (opacity-to-grey 0.2)
-   :highlight-30 (opacity-to-grey 0.3)
-   :highlight-40 (opacity-to-grey 0.4)
-   :highlight-50 (opacity-to-grey 0.5)
-   :highlight-60 (opacity-to-grey 0.6)
-   :highlight-70 (opacity-to-grey 0.7)
-   :highlight-80 (opacity-to-grey 0.8)
-   :highlight-90 (opacity-to-grey 0.9)})
+  (->> qualifier-data
+       (filter #(-> % first (= :highlight)))
+       (map (fn [[_ key _ colour]]
+              [key colour]))
+       (into {})))
+
+
+(def tincture-modifier-qualifier-choices
+  [["Default" :none]
+   (into ["Shadow"]
+         (->> qualifier-data
+              (filter #(-> % first (= :shadow)))
+              (map (fn [[_ key qualifier-name _]]
+                     [qualifier-name key]))))
+   (into ["Highlight"]
+         (->> qualifier-data
+              (filter #(-> % first (= :highlight)))
+              (map (fn [[_ key qualifier-name _]]
+                     [qualifier-name key]))))])
+
+(def tincture-modifier-qualifier-for-charge-map
+  (util/choices->map tincture-modifier-qualifier-choices))
