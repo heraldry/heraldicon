@@ -177,11 +177,11 @@
                        colour (opacity-to-grey (/ percentage 100))]
                    [[:shadow
                      (keyword (str "shadow-" keyword-suffix))
-                     qualifier-name
+                     (str qualifier-name " Shadow")
                      colour]
                     [:highlight
                      (keyword (str "highlight-" keyword-suffix))
-                     qualifier-name
+                     (str qualifier-name " Highlight")
                      colour]])))))
 
 (def shadow-qualifiers
