@@ -17,7 +17,10 @@
        (if (seq colours)
          (doall
           (for [[colour _] (sort-by first colours)]
-            (let [value (get colours colour)]
+            (let [value (get colours colour)
+                  [value qualifier] (if (vector? value)
+                                      value
+                                      [value :none])]
               ^{:key colour}
               [:<>
                [:div {:style {:display "inline-block"
@@ -44,7 +47,34 @@
                         (for [[display-name key] group-choices]
                           ^{:key key}
                           [:option {:value (util/keyword->str key)}
-                           (tr display-name)]))])))]]
+                           (tr display-name)]))])))]
+                " "
+                (when-not (#{:keep
+                             :outline
+                             :shadow
+                             :highlight
+                             :layer-separator} value)
+                  [:select {:value qualifier
+                            :on-change #(let [selected (keyword (-> % .-target .-value))]
+                                          (rf/dispatch [:set (conj path colour) (if (= selected :none)
+                                                                                  value
+                                                                                  [value selected])]))
+                            :style {:vertical-align "top"}}
+                   (doall
+                    (for [[group-name & group-choices] attributes/tincture-modifier-qualifier-choices]
+                      (if (and (-> group-choices count (= 1))
+                               (-> group-choices first keyword?))
+                        (let [key (-> group-choices first)]
+                          ^{:key key}
+                          [:option {:value (util/keyword->str key)}
+                           (tr group-name)])
+                        ^{:key group-name}
+                        [:optgroup {:label (tr group-name)}
+                         (doall
+                          (for [[display-name key] group-choices]
+                            ^{:key key}
+                            [:option {:value (util/keyword->str key)}
+                             (tr display-name)]))])))])]
                [:br]])))
          [tr strings/none])]]]))
 
