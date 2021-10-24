@@ -96,6 +96,13 @@
   src: url("../font/baskerville/BaskervilleBE-Regular.otf") format("opentype");
 }
 
+@font-face {
+  font-family: "Liturgisch";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/liturgisch/liturgisch.regular.ttf") format("truetype");
+}
+
 body {
   font-family: "SiteDefault", sans-serif;
 }

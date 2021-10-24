@@ -14,6 +14,7 @@
    ["DejaVuSerif" :deja-vu-serif "/deja-vu/DejaVuSerif.ttf"]
    ["Garamond" :garamond "/garamond/Garamond Regular.ttf"]
    ["KJV1611" :kjv1611 "/kjv1611/KJV1611.otf"]
+   ["Liturgisch" :liturgisch "/liturgisch/liturgisch.regular.ttf"]
    ["Lohengrin" :lohengrin "/lohengrin/Lohengrin.ttf"]
    ["Magic School" :magic-school "/magic-school/MagicSchoolOne.ttf"]
    ["Prince Valiant" :prince-valiant "/prince-valiant/PrinceValiant.ttf"]])
