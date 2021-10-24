@@ -135,22 +135,22 @@
   (util/choices->map tincture-modifier-choices))
 
 (def tincture-modifier-for-charge-choices
-  (concat [[{:en "Technical"
-             :de "Technisch"}
-            [{:en "Don't replace"
-              :de "Nicht ersetzen"} :keep]
-            [{:en "Primary"
-              :de "Primär"} :primary]
-            [{:en "Secondary"
-              :de "Sekundär"} :secondary]
-            [{:en "Tertiary"
-              :de "Tertiär"} :tertiary]
-            [strings/outline :outline]
-            [strings/shadow :shadow]
-            [strings/highlight :highlight]
-            [{:en "Layer separator"
-              :de "Ebenentrenner"} :layer-separator]]]
-          tincture-modifier-choices))
+  (vec (concat [[{:en "Technical"
+                  :de "Technisch"}
+                 [{:en "Don't replace"
+                   :de "Nicht ersetzen"} :keep]
+                 [{:en "Primary"
+                   :de "Primär"} :primary]
+                 [{:en "Secondary"
+                   :de "Sekundär"} :secondary]
+                 [{:en "Tertiary"
+                   :de "Tertiär"} :tertiary]
+                 [strings/outline :outline]
+                 [strings/shadow :shadow]
+                 [strings/highlight :highlight]
+                 [{:en "Layer separator"
+                   :de "Ebenentrenner"} :layer-separator]]]
+               tincture-modifier-choices)))
 
 (def tincture-modifier-for-charge-map
   (util/choices->map tincture-modifier-for-charge-choices))
@@ -169,48 +169,47 @@
   (let [v (-> opacity (* 255) int)]
     (colour/hex-colour v v v)))
 
-(def qualifier-data
-  (->> (range 5 100 5)
-       (mapcat (fn [percentage]
-                 (let [qualifier-name (str percentage "%")
-                       keyword-suffix (gstring/format "%02d" percentage)
-                       colour (opacity-to-grey (/ percentage 100))]
-                   [[:shadow
-                     (keyword (str "shadow-" keyword-suffix))
-                     (str qualifier-name " Shadow")
-                     colour]
-                    [:highlight
-                     (keyword (str "highlight-" keyword-suffix))
-                     (str qualifier-name " Highlight")
-                     colour]])))))
+(defn make-qualifier [kind percentage]
+  (let [qualifier-name (str percentage "%")
+        keyword-suffix (gstring/format "%02d" percentage)
+        colour (opacity-to-grey (/ percentage 100))]
+    {:kind :shadow
+     :key (keyword (str (name kind) "-" keyword-suffix))
+     :name (util/str-tr qualifier-name " " (if (= kind :shadow)
+                                             strings/shadow
+                                             strings/highlight))
+     :colour colour}))
+
+(def qualifier-percentages
+  (range 5 100 5))
 
 (def shadow-qualifiers
-  (->> qualifier-data
-       (filter #(-> % first (= :shadow)))
-       (map (fn [[_ key _ colour]]
-              [key colour]))
+  (->> qualifier-percentages
+       (map (fn [percentage]
+              (let [{:keys [key colour]} (make-qualifier :shadow percentage)]
+                [key colour])))
        (into {})))
 
 (def highlight-qualifiers
-  (->> qualifier-data
-       (filter #(-> % first (= :highlight)))
-       (map (fn [[_ key _ colour]]
-              [key colour]))
+  (->> qualifier-percentages
+       (map (fn [percentage]
+              (let [{:keys [key colour]} (make-qualifier :highlight percentage)]
+                [key colour])))
        (into {})))
 
 
 (def tincture-modifier-qualifier-choices
-  [["Default" :none]
-   (into ["Shadow"]
-         (->> qualifier-data
-              (filter #(-> % first (= :shadow)))
-              (map (fn [[_ key qualifier-name _]]
-                     [qualifier-name key]))))
-   (into ["Highlight"]
-         (->> qualifier-data
-              (filter #(-> % first (= :highlight)))
-              (map (fn [[_ key qualifier-name _]]
-                     [qualifier-name key]))))])
+  (vec (concat (->> qualifier-percentages
+                    reverse
+                    (map (fn [percentage]
+                           (let [{:keys [name key]} (make-qualifier :highlight percentage)]
+                             [name key]))))
+               [[{:en "None"
+                  :de "Keine"} :none]]
+               (->> qualifier-percentages
+                    (map (fn [percentage]
+                           (let [{:keys [name key]} (make-qualifier :shadow percentage)]
+                             [name key])))))))
 
 (def tincture-modifier-qualifier-for-charge-map
   (util/choices->map tincture-modifier-qualifier-choices))
