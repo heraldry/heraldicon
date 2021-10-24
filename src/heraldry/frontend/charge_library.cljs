@@ -201,6 +201,12 @@
                                [:context :coat-of-arms]
                                100
                                (-> shared/coa-select-option-context
+                                   (assoc :ui-show-colours
+                                          (->> @(rf/subscribe [:get-value [:ui :colours :show]])
+                                               (keep (fn [value]
+                                                       (when (second value)
+                                                         (first value))))
+                                               set))
                                    (assoc :render-options-path
                                           (conj example-coa-db-path :render-options))
                                    (assoc :coat-of-arms

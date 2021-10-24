@@ -46,6 +46,8 @@
 
 (def remove-shading (memoize -remove-shading))
 
+;; TODO: the function here prevents efficient memoization, because the calling
+;; context uses anonymous functions that use closures
 (defn -replace-colours [data function]
   (walk/postwalk #(if (and (vector? %)
                            (-> % second string?)
@@ -56,6 +58,11 @@
                  data))
 
 (def replace-colours (memoize -replace-colours))
+
+(defn highlight-colour [colour highlight-colours]
+  (if (-> colour colour/normalize highlight-colours)
+    "#00ff00"
+    (colour/desaturate colour)))
 
 (defn -set-layer-separator-opacity [data layer-separator-colours opacity]
   (if (seq layer-separator-colours)
@@ -146,7 +153,8 @@
   [path _parent-path environment {:keys [load-charge-data charge-group
                                          origin-override size-default
                                          self-below-shield? render-pass-below-shield?
-                                         auto-resize?] :as context
+                                         auto-resize?
+                                         ui-show-colours] :as context
                                   :or {auto-resize? true}}]
   (let [data (interface/get-raw-data (conj path :data) context)
         variant (interface/get-raw-data (conj path :variant) context)
@@ -166,6 +174,8 @@
                         (dissoc :origin-override)
                         (dissoc :size-default)
                         (dissoc :charge-group))
+            highlight-colours? (seq ui-show-colours)
+            ui-show-colours (set ui-show-colours)
             origin (interface/get-sanitized-data (conj path :origin) context)
             anchor (interface/get-sanitized-data (conj path :anchor) context)
             vertical-mask (interface/get-sanitized-data (conj path :vertical-mask) context)
@@ -256,7 +266,8 @@
                             (/ target-height positional-charge-height)))
             scale-y (* (if reversed? -1 1)
                        (* (Math/abs scale-x) stretch))
-            render-shadow? (and (->> placeholder-colours
+            render-shadow? (and (not preview-original?)
+                                (->> placeholder-colours
                                      vals
                                      (filter (fn [placeholder]
                                                (or (= placeholder :shadow)
@@ -269,7 +280,8 @@
                              (util/id "mask"))
             shadow-helper-mask-id (when render-shadow?
                                     (util/id "mask"))
-            render-highlight? (and (->> placeholder-colours
+            render-highlight? (and (not preview-original?)
+                                   (->> placeholder-colours
                                         vals
                                         (filter (fn [placeholder]
                                                   (or (= placeholder :highlight)
@@ -287,10 +299,21 @@
                                 (cond->
                                   (not preview-original?) (set-layer-separator-opacity
                                                            layer-separator-colours
-                                                           1)
-                                  (= outline-mode :remove) (remove-outlines placeholder-colours)))
-            adjusted-charge-without-shading (-> adjusted-charge
-                                                (remove-shading placeholder-colours))
+                                                           (if highlight-colours?
+                                                             0.5
+                                                             1))
+
+                                  (and (not preview-original?)
+                                       (= outline-mode :remove)) (remove-outlines placeholder-colours)
+
+                                  (and (not preview-original?)
+                                       highlight-colours?) (replace-colours
+                                                            (fn [colour]
+                                                              (highlight-colour
+                                                               colour ui-show-colours)))))
+            adjusted-charge-without-shading (cond-> adjusted-charge
+                                              (and (not preview-original?)
+                                                   (not highlight-colours?)) (remove-shading placeholder-colours))
             hide-lower-layer? (and (seq layer-separator-colours)
                                    (not ignore-layer-separator?)
                                    (not render-pass-below-shield?))
@@ -523,42 +546,43 @@
                    :transform reverse-transform
                    :corner (-> fimbriation :corner)]]))
 
-             (if preview-original?
-               unadjusted-charge
-               [:g
-                [metadata/attribution
-                 [:context :charge-data]
-                 :charge {:charge-data full-charge-data}]
-                (when render-field?
-                  [:g {:mask (str "url(#" mask-inverted-id ")")}
-                   [:g {:transform reverse-transform}
-                    [field-shared/render (conj path :field) charge-environment context]]])
-                [:g {:mask (str "url(#" mask-id ")")
-                     ;; TODO: select component
-                     :on-click nil #_(when fn-select-component
-                                       (fn [event]
-                                         (fn-select-component (-> context
-                                                                  :db-path
-                                                                  (conj :field)))
-                                         (.stopPropagation event)))}
-                 (svg/make-unique-ids coloured-charge)]
-                (when render-shadow?
-                  [:g {:mask (str "url(#" shadow-mask-id ")")}
-                   [:rect {:transform reverse-transform
-                           :x -500
-                           :y -500
-                           :width 1100
-                           :height 1100
-                           :fill "#001040"
-                           :style {:opacity (:shadow tincture)}}]])
+             (cond
+               preview-original? unadjusted-charge
+               highlight-colours? adjusted-charge
+               :else [:g
+                      [metadata/attribution
+                       [:context :charge-data]
+                       :charge {:charge-data full-charge-data}]
+                      (when render-field?
+                        [:g {:mask (str "url(#" mask-inverted-id ")")}
+                         [:g {:transform reverse-transform}
+                          [field-shared/render (conj path :field) charge-environment context]]])
+                      [:g {:mask (str "url(#" mask-id ")")
+                           ;; TODO: select component
+                           :on-click nil #_(when fn-select-component
+                                             (fn [event]
+                                               (fn-select-component (-> context
+                                                                        :db-path
+                                                                        (conj :field)))
+                                               (.stopPropagation event)))}
+                       (svg/make-unique-ids coloured-charge)]
+                      (when render-shadow?
+                        [:g {:mask (str "url(#" shadow-mask-id ")")}
+                         [:rect {:transform reverse-transform
+                                 :x -500
+                                 :y -500
+                                 :width 1100
+                                 :height 1100
+                                 :fill "#001040"
+                                 :style {:opacity (:shadow tincture)}}]])
 
-                (when render-highlight?
-                  [:g {:mask (str "url(#" highlight-mask-id ")")}
-                   [:rect {:transform reverse-transform
-                           :x -500
-                           :y -500
-                           :width 1100
-                           :height 1100
-                           :fill "#ffffe8"
-                           :style {:opacity (:highlight tincture)}}]])])])]])
+                      (when render-highlight?
+                        [:g {:mask (str "url(#" highlight-mask-id ")")}
+                         [:rect {:transform reverse-transform
+                                 :x -500
+                                 :y -500
+                                 :width 1100
+                                 :height 1100
+                                 :fill "#ffffe8"
+                                 :style {:opacity (:highlight tincture)}}]])])])]])
       [:<>])))
