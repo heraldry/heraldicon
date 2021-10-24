@@ -146,8 +146,10 @@
                  [{:en "Tertiary"
                    :de "Tertiär"} :tertiary]
                  [strings/outline :outline]
-                 [strings/shadow :shadow]
-                 [strings/highlight :highlight]
+                 [{:en "Shadow (alpha)"
+                   :de "Schatten (alpha)"} :shadow]
+                 [{:en "Highlight (alpha)"
+                   :de "Glanz (alpha)"} :highlight]
                  [{:en "Layer separator"
                    :de "Ebenentrenner"} :layer-separator]]]
                tincture-modifier-choices)))
