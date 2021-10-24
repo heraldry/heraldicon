@@ -49,7 +49,9 @@
                          :padding-left "0.5em"}]
     [:<>
      [:div.ui-setting {:style {:margin-top "10px"
-                               :white-space "nowrap"}}
+                               :white-space "nowrap"
+                               :max-height "30em"
+                               :overflow "scroll"}}
       [:label [tr {:en "Colours"
                    :de "Farben"}]]
       [:div.option
