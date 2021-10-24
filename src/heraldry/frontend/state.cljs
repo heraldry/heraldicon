@@ -94,6 +94,7 @@
                                                                :ignore-layer-separator? true
                                                                :field {:type :heraldry.field.type/plain
                                                                        :tincture :azure}
+                                                               :geometry {:size 95}
                                                                :tincture (merge (->> attributes/tincture-modifier-map
                                                                                      (map (fn [[k _]]
                                                                                             [k :or]))
