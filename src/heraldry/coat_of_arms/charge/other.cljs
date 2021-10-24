@@ -98,9 +98,7 @@
 
 (defn -make-mask [data placeholder-colours provided-placeholder-colours
                   outline-mode preview-original? hide-lower-layer?]
-  (let [mask-id (util/id "mask")
-        mask-inverted-id (util/id "mask")
-        mask (replace-colours
+  (let [mask (replace-colours
               data
               (fn [colour]
                 (if (s/starts-with? colour "url")
@@ -138,7 +136,7 @@
                                (and (= kind :layer-separator)
                                     hide-lower-layer?) "#000"
                                :else "#fff")))))]
-    [mask-id mask mask-inverted-id mask-inverted]))
+    [mask mask-inverted]))
 
 (def make-mask (memoize -make-mask))
 
@@ -317,13 +315,14 @@
             hide-lower-layer? (and (seq layer-separator-colours)
                                    (not ignore-layer-separator?)
                                    (not render-pass-below-shield?))
-            [mask-id mask
-             mask-inverted-id mask-inverted] (make-mask adjusted-charge-without-shading
-                                                        placeholder-colours
-                                                        tincture
-                                                        outline-mode
-                                                        preview-original?
-                                                        hide-lower-layer?)
+            mask-id (util/id "mask")
+            mask-inverted-id (util/id "mask")
+            [mask mask-inverted] (make-mask adjusted-charge-without-shading
+                                            placeholder-colours
+                                            tincture
+                                            outline-mode
+                                            preview-original?
+                                            hide-lower-layer?)
             ;; this is the one drawn on top of the masked field version, for the tincture replacements
             ;; and outline; the primary colour has no replacement here, which might make it shine through
             ;; around the edges, to prevent that, it is specifically replaced with black
