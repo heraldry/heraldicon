@@ -189,3 +189,14 @@
         new-g (quot g 2)
         new-b (quot b 2)]
     (hex-colour new-r new-g new-b)))
+
+(defn desaturate [colour]
+  ;; this is an approximation, but it should work for the purpose
+  (let [[_ r1 r2 g1 g2 b1 b2] (normalize colour)
+        r (js/parseInt (str r1 r2) 16)
+        g (js/parseInt (str g1 g2) 16)
+        b (js/parseInt (str b1 b2) 16)
+        l (int (+ (* 0.3 r)
+                  (* 0.6 g)
+                  (* 0.1 b)))]
+    (hex-colour l l l)))

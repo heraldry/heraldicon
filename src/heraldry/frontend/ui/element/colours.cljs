@@ -2,6 +2,7 @@
   (:require [heraldry.coat-of-arms.attributes :as attributes]
             [heraldry.frontend.language :refer [tr]]
             [heraldry.frontend.state :as state]
+            [heraldry.frontend.ui.element.checkbox :as checkbox]
             [heraldry.frontend.ui.interface :as interface]
             [heraldry.strings :as strings]
             [heraldry.util :as util]
@@ -80,8 +81,16 @@
               [tr {:en "Shading"
                    :de "Schattierung"}]
               (when (= sort-column :qualifier)
-                [:i.fas.fa-sort {:style {:margin-left "5px"}}])]]]
-           [:tr {:style {:height "0.5em"}}]]
+                [:i.fas.fa-sort {:style {:margin-left "5px"}}])]]
+            [:td {:style header-td-style}
+             [tr {:en "Highlight"
+                  :de "Highlight"}]]]
+           [:tr {:style {:height "0.5em"}}
+            [:td]
+            [:td]
+            [:td]
+            [:td {:style {:padding-left "1em"
+                          :border-left "1px solid #888"}}]]]
           [:tbody
            (doall
             (for [[colour value] (sort-by sort-fn colours)]
@@ -116,7 +125,8 @@
                             [:option {:value (util/keyword->str key)}
                              (tr display-name)]))])))]]
 
-                 [:td {:style {:padding-left "0.5em"}}
+                 [:td {:style {:padding-left "0.5em"
+                               :padding-right "0.5em"}}
                   (when-not (#{:keep
                                :outline
                                :shadow
@@ -142,7 +152,11 @@
                             (for [[display-name key] group-choices]
                               ^{:key key}
                               [:option {:value (util/keyword->str key)}
-                               (tr display-name)]))])))])]])))]]
+                               (tr display-name)]))])))])]
+                 [:td {:style {:padding-left "1em"
+                               :border-left "1px solid #888"}}
+                  [checkbox/checkbox [:ui :colours :show colour]
+                   :option {:type :boolean}]]])))]]
          [tr strings/none])]]]))
 
 (defmethod interface/form-element :colours [path]
