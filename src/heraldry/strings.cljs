@@ -172,7 +172,7 @@
 
 (def shadow
   {:en "Shadow"
-   :de "Schattierung"})
+   :de "Schatten"})
 
 (def highlight
   {:en "Highlight"
