@@ -431,7 +431,7 @@
                           :highlight "none"
                           :layer-separator layer-separator-colour-for-shadow-highlight
                           "#ffffff")))))
-                 svg/make-unique-ids)]]
+                 (svg/make-unique-ids [path :shadow-mask-1]))]]
               [:g {:mask (str "url(#" shadow-helper-mask-id ")")}
                (->
                 adjusted-charge
@@ -449,7 +449,7 @@
                          (= kind :highlight) "none"
                          (= kind :layer-separator) layer-separator-colour-for-shadow-highlight
                          :else "#000000")))))
-                svg/make-unique-ids)]])
+                (svg/make-unique-ids [path :shadow-mask-2]))]])
            (when render-highlight?
              [:mask {:id highlight-mask-id}
               [:defs
@@ -468,7 +468,7 @@
                           :highlight "none"
                           :layer-separator layer-separator-colour-for-shadow-highlight
                           "#ffffff")))))
-                 svg/make-unique-ids)]]
+                 (svg/make-unique-ids [path :highlight-mask-1]))]]
               [:g {:mask (str "url(#" highlight-helper-mask-id ")")}
                (->
                 adjusted-charge
@@ -486,11 +486,11 @@
                          (= kind :shadow) "none"
                          (= kind :layer-separator) layer-separator-colour-for-shadow-highlight
                          :else "#000000")))))
-                svg/make-unique-ids)]])
+                (svg/make-unique-ids [path :highlight-mask-2]))]])
            [:mask {:id mask-id}
-            (svg/make-unique-ids mask)]
+            (svg/make-unique-ids mask [path :mask])]
            [:mask {:id mask-inverted-id}
-            (svg/make-unique-ids mask-inverted)]]
+            (svg/make-unique-ids mask-inverted [path :inverted-mask])]]
           (let [transform (str "translate(" (v/->str origin-point) ")"
                                "rotate(" angle ")"
                                "scale(" scale-x "," scale-y ")"
@@ -565,7 +565,7 @@
                                                                         :db-path
                                                                         (conj :field)))
                                                (.stopPropagation event)))}
-                       (svg/make-unique-ids coloured-charge)]
+                       (svg/make-unique-ids coloured-charge [path :tincture-modifiers])]
                       (when render-shadow?
                         [:g {:mask (str "url(#" shadow-mask-id ")")}
                          [:rect {:transform reverse-transform

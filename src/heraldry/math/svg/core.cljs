@@ -55,8 +55,9 @@
         %)
      data)))
 
-(defn make-unique-ids [data]
-  (let [ids (->> data
+(defn make-unique-ids [data identifier]
+  (let [prefix (util/sha1 identifier)
+        ids (->> data
                  (tree-seq (some-fn map? vector? seq?) seq)
                  (filter #(and (vector? %)
                                (-> % first (= :id))))
@@ -64,7 +65,7 @@
                  set)
         id-map (->> ids
                     (map (fn [id]
-                           [id (util/id (str "unique-" id))]))
+                           [id (util/id (str prefix "-unique-" id))]))
                     (into {}))]
     (-> data
         (replace-id-references id-map))))
