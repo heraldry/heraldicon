@@ -249,8 +249,8 @@
     (map? data) (some (fn [[k v]]
                         (or (and (keyword? k)
                                  (matches-word k word)
-                                     ;; this would be an attribute entry, the value
-                                     ;; must be truthy as well
+                                 ;; this would be an attribute entry, the value
+                                 ;; must be truthy as well
                                  v)
                             (matches-word v word))) data)))
 
