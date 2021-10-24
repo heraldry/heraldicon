@@ -6,9 +6,6 @@
             [heraldry.util :as util]
             [re-frame.core :as rf]))
 
-(defn index-of [item coll]
-  (count (take-while (partial not= item) coll)))
-
 (rf/reg-sub :motto-name
   (fn [[_ path] _]
     (rf/subscribe [:get (drop-last path)]))
@@ -27,7 +24,7 @@
                               slogans)]
       (util/str-tr
        (when (-> relevant-elements count (> 1))
-         (str (inc (index-of idx relevant-elements)) ". "))
+         (str (inc (util/index-of idx relevant-elements)) ". "))
        (if (= relevant-elements mottos)
          strings/motto
          strings/slogan)))))

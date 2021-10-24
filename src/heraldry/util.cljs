@@ -262,3 +262,6 @@
           (str "https://coa.to/" (id-for-url id))
           (str "https://coa.to/" (id-for-url id) "/" version))))
     "https://dev"))
+
+(defn index-of [item coll]
+  (count (take-while (partial not= item) coll)))
