@@ -375,8 +375,8 @@
     (environment/create
      (str "m 0,0"
           "a " r " " r " 0 0 1 " half-width " " d
-          "a " R " " R " 0 0 1 " (- half-width) " " height
-          "a " R " " R " 0 0 1 " (- half-width) " " (- height)
+          "a " R " " R " 0 0 1 " (- half-width) " " (- height d)
+          "a " R " " R " 0 0 1 " (- half-width) " " (- (- height d))
           "a " r " " r " 0 0 1 " half-width " " (- d)
           "z")
      {:context :root
