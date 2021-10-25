@@ -24,6 +24,33 @@
     [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll "
      "group some features and new development and post an update here, so it is easy to stay informed."]]
 
+   [:h3 "2021-10-25 - Supporters, compartments, mantling, charge library improvements"]
+   [:div.release-row
+    [:div.info
+     [:p "Changes and new features:"]
+     [:ul
+      [:li "Supporters, compartments, mantling"
+       [:ul
+        [:li "ornaments around the shield can now be added"]
+        [:li "there are some default charges for supporters, compartment, and mantling"]
+        [:li "any other existing charge or new custom charges can be used for this"]
+        [:li "a mechanism allows rendering these charges behind and in front of the shield (see next point)"]]]
+
+      [:li "charge library interface improvements"
+       [:ul
+        [:li "charges intended as ornaments can contain colour(s) that designate areas that separate background and foreground of the charge, so the shield can be rendered between them"]
+        [:li "the charge library interface now allows highlighting colours to easily see which area of the charge is affected by configuring it"]
+        [:li "a new shading option is available now, which can qualify colours with the level of shading it represents, so no alpha-transparency shadow/highlight has to be added manually for many existing SVGs"]
+        [:li "colours can also be sorted by colour, function, and shading modifier, making it easier to group them while editing"]]]
+      [:li "Known issues"
+       [:ul
+        [:li "mottos/slogans were moved into 'ornaments', and the achievement positioning system has been rewritten, unfortunately a "
+         "migration preserving their position wasn't feasible for all cases, this means that "
+         [:b "your mottos/slogans might have moved"] " so best check them and fix it"]]]]]
+
+    [:div
+     (release-image "/img/2021-10-25-release-update.png")]]
+
    [:h3 "2021-09-26 - German translation, undo/redo, quarter/canton/point ordinaries, fretty"]
    [:div.release-row
     [:div.info
