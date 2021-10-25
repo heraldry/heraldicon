@@ -43,7 +43,6 @@
       [:li "Bugfixes"
        [:ul
         [:li "the environments for many ordinaries and subfields were broken (they still need some work, but now most of them should be reasonable)"]
-        [:li "fixed some fretty issues"]
         [:li "a bunch of minor things in the UI and rendering"]]]]]]
 
    [:h3 "2021-08-20 - helms/crests, mottos/slogans, ribbon editor + library"]
