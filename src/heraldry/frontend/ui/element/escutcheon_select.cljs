@@ -11,7 +11,7 @@
 (defn escutcheon-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
    [:img.clickable {:style {:width "4em"
-                            :height "5em"}
+                            :vertical-align "top"}
                     :src (static/static-url
                           (str "/svg/escutcheon-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
    [:div.bottom
@@ -32,7 +32,8 @@
          [:label [tr label]])
        [:div.option
         [submenu/submenu path {:en "Select Escutcheon"
-                               :de "Schild auswählen"} (get choice-map value) {:style {:width "17.5em"}}
+                               :de "Schild auswählen"} (get choice-map value) {:style {:width "17.5em"
+                                                                                       :vertical-align "top"}}
          (for [[display-name key] choices]
            ^{:key key}
            [escutcheon-choice path key display-name :selected? (= key value)])]

@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.escutcheon
   (:require [heraldry.coat-of-arms.field.environment :as environment]
-            [heraldry.util :as util]))
+            [heraldry.util :as util]
+            [taoensso.timbre :as log]))
 
 (def
   ^{:display-name {:en "Heater"
@@ -305,6 +306,75 @@
      {:context :root
       :bounding-box [-3 3 0 7.196152422706632]})))
 
+(def
+  ^{:display-name {:en "Kite"
+                   :de "Drachenschild"}}
+  kite
+  (let [width 1
+        height 2
+        half-width (/ width 2)
+        R (-> (/ 1 4)
+              (+ (* (/ (- height half-width) width)
+                    (/ (- height half-width) width)))
+              (* width))]
+    (environment/create
+     (str "m 0,0"
+          "a " half-width " " half-width " 0 0 1 " half-width " " half-width
+          "a " R " " R " 0 0 1 " (- half-width) " " (- height half-width)
+          "a " R " " R " 0 0 1 " (- half-width) " " (- (- height half-width))
+          "a " half-width " " half-width " 0 0 1 " half-width " " (- half-width)
+          "z")
+     {:context :root
+      :bounding-box [(- half-width) half-width 0 height]
+      :points {:fess {:x half-width :y half-width}}})))
+
+(def
+  ^{:display-name {:en "Norman (late)"
+                   :de "Normannenschild (spät)"}}
+  norman
+  (let [width 5
+        height 8
+        half-width (/ width 2)
+        R (-> (/ 1 4)
+              (+ (* (/ height width)
+                    (/ height width)))
+              (* width))]
+    (environment/create
+     (str "m 0,0"
+          "h " half-width
+          "a " R " " R " 0 0 1 " (- half-width) " " height
+          "a " R " " R " 0 0 1 " (- half-width) " " (- height)
+          "z")
+     {:context :root
+      :bounding-box [(- half-width) half-width 0 height]
+      :points {:fess {:x half-width :y half-width}}})))
+
+(def
+  ^{:display-name {:en "Rounded Norman (late)"
+                   :de "Abgerundetes Normannenschild (spät)"}}
+  norman-rounded
+  (let [width 5
+        height 8
+        d (/ height 15)
+        half-width (/ width 2)
+        r (-> (* d d)
+              (+ (* half-width half-width))
+              (/ 2 d))
+        R (-> (/ 1 4)
+              (+ (* (/ (- height d) width)
+                    (/ (- height d) width)))
+              (* width))]
+    (environment/create
+     (str "m 0,0"
+          "a " r " " r " 0 0 1 " half-width " " d
+          "a " R " " R " 0 0 1 " (- half-width) " " height
+          "a " R " " R " 0 0 1 " (- half-width) " " (- height)
+          "a " r " " r " 0 0 1 " half-width " " (- d)
+          "z")
+     {:context :root
+      :bounding-box [(- half-width) half-width 0 height]
+      :points {:fess {:x half-width :y half-width}}})))
+
 (def escutcheons
   [#'heater
    #'square-french
@@ -318,12 +388,15 @@
    #'lozenge
    #'roundel
    #'oval
-   #'rectangle
+   #'kite
+   #'norman
+   #'norman-rounded
+   #'french-modern
+   #'english
    #'flag-3-2
    #'flag-2-1
    #'flag-5-3
-   #'french-modern
-   #'english])
+   #'rectangle])
 
 (def kinds-map
   (->> escutcheons
