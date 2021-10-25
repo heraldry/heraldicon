@@ -389,8 +389,8 @@
    #'roundel
    #'oval
    #'kite
-   #'norman
    #'norman-rounded
+   #'norman
    #'french-modern
    #'english
    #'flag-3-2
