@@ -313,16 +313,24 @@
   (let [width 1
         height 2
         half-width (/ width 2)
+        dx (- half-width (/ half-width 50))
+        dy (-> (* half-width
+                  half-width)
+               (- (* dx dx))
+               Math/sqrt)
         R (-> (/ 1 4)
               (+ (* (/ (- height half-width) width)
                     (/ (- height half-width) width)))
-              (* width))]
+              (* width)
+              ;; this factor is guessed, based on the 50 above, they
+              ;; result in roughly a curve that seems to have no corner
+              (* 2))]
     (environment/create
      (str "m 0,0"
-          "a " half-width " " half-width " 0 0 1 " half-width " " half-width
-          "a " R " " R " 0 0 1 " (- half-width) " " (- height half-width)
-          "a " R " " R " 0 0 1 " (- half-width) " " (- (- height half-width))
-          "a " half-width " " half-width " 0 0 1 " half-width " " (- half-width)
+          "a " half-width " " half-width " 0 0 1 " dx " " (+ half-width dy)
+          "a " R " " R " 0 0 1 " (- dx) " " (- height half-width dy)
+          "a " R " " R " 0 0 1 " (- dx) " " (- (- height half-width dy))
+          "a " half-width " " half-width " 0 0 1 " dx " " (- (+ half-width dy))
           "z")
      {:context :root
       :bounding-box [(- half-width) half-width 0 height]
