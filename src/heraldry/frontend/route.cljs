@@ -5,6 +5,7 @@
             [heraldry.frontend.arms-library :as arms-library]
             [heraldry.frontend.charge-library :as charge-library]
             [heraldry.frontend.collection-library :as collection-library]
+            [heraldry.frontend.contact :as contact]
             [heraldry.frontend.home :as home]
             [heraldry.frontend.ribbon-library :as ribbon-library]
             [heraldry.frontend.user-library :as user-library]
@@ -27,6 +28,14 @@
    ["/about"
     {:name :about-without-slash
      :view about/view}]
+
+   ["/contact/"
+    {:name :contact
+     :view contact/view}]
+
+   ["/contact"
+    {:name :contact-without-slash
+     :view contact/view}]
 
    ["/collections/"
     {:name :collections

@@ -57,16 +57,4 @@
      "implementation of these features, then please contact me."]]
    [:p
     "Note: SVGs get the proper metadata of license/attribution for the coat of arms and all used "
-    "charges, PNGs are a work in progress."]
-   [:h3 "Contact"]
-   [:p "The project is on " [:a {:href "https://github.com/heraldry" :target "_blank"} "github:heraldry"]
-    " if you want to get involved in some way."]
-   [:p
-    "You can email me at oliver [at] heraldry.digital for feedback, questions, complaints, feature "
-    "requests, or deep and meaningful friendship."]
-   [:p "I can also be found on:"]
-   [:ul
-    [:li [:a {:href "https://github.com/or" :target "_blank"} "github:or"]]
-    [:li [:a {:href "https://www.reddit.com/r/heraldry/" :target "_blank"} "reddit/heraldry"] ", where my username is " [:em "tierced"]]
-    [:li [:a {:href "https://discord.gg/PfGrYSz8" :target "_blank"} "discord:heraldry.digital"] ", where my username is " [:em "or#5915"]]
-    [:li [:a {:href "https://discord.gg/QFrsdMkbbj" :target "_blank"} "discord:heraldry"] ", which is operated by the heraldry subreddit, there my username is " [:em "or#5915"]]]])
+    "charges, PNGs are a work in progress."]])
