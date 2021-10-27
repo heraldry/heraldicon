@@ -23,14 +23,14 @@
      [:ul.nav-menu {:style {:flex 1}}
       [route/nav-link {:to :home} [tr {:en "News"
                                        :de "Neuigkeiten"}]]
+      [route/nav-link {:to :about} [tr {:en "About"
+                                        :de "Infos"}]]
       [route/nav-link {:to :collections} [tr strings/collections]]
       [route/nav-link {:to :arms} [tr strings/arms]]
       [route/nav-link {:to :charges} [tr strings/charges]]
       [route/nav-link {:to :ribbons} [tr strings/ribbons]]
       [route/nav-link {:to :users} [tr {:en "Users"
                                         :de "Benutzer"}]]
-      [route/nav-link {:to :about} [tr {:en "About"
-                                        :de "Infos"}]]
       [route/nav-link {:to :contact} [tr {:en "Contact"
                                           :de "Kontakt"}]]
       [:span {:style {:width "5em"}}]
