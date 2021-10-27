@@ -31,6 +31,8 @@
                                         :de "Benutzer"}]]
       [route/nav-link {:to :about} [tr {:en "About"
                                         :de "Infos"}]]
+      [route/nav-link {:to :contact} [tr {:en "Contact"
+                                          :de "Kontakt"}]]
       [:span {:style {:width "5em"}}]
       [:li [language/selector]]
       (if (:logged-in? user-data)
