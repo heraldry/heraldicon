@@ -33,7 +33,8 @@
                      :migration_handler heraldry.backend.migration.core/migrate-handler
                      :rollback_handler heraldry.backend.migration.core/rollback-handler
                      :collect_statistics_handler heraldry.backend.monitoring.core/collect-statistics-handler
-                     :collect_user_statistics_handler heraldry.backend.monitoring.core/collect-user-statistics-handler}
+                     :collect_user_statistics_handler heraldry.backend.monitoring.core/collect-user-statistics-handler
+                     :collect_discord_statistics_handler heraldry.backend.monitoring.core/collect-discord-statistics-handler}
            :js-options {:js-package-dirs ["./backend/node_modules"]}
            :compiler-options {:output-feature-set :es6
                               :warnings {:redef false}}
