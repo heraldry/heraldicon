@@ -376,25 +376,3 @@
                                                     (when new-path
                                                       [new-path flag]))))
                                           (into {}))))))
-
-(defmethod interface/get-sanitized-data :state [path _context]
-  @(rf/subscribe [:get-sanitized-data path]))
-
-(defmethod interface/get-raw-data :state [path _context]
-  @(rf/subscribe [:get-value path]))
-
-(defmethod interface/get-list-size :state [path _context]
-  @(rf/subscribe [:get-list-size path]))
-
-(defmethod interface/get-counterchange-tinctures :state [path context]
-  @(rf/subscribe [:get-counterchange-tinctures path context]))
-
-(defmethod interface/get-element-indices :state [path _context]
-  (let [elements @(rf/subscribe [:get-value path])]
-    (shield-separator/element-indices-with-position elements)))
-
-(defmethod interface/motto? :state [path _context]
-  (-> @(rf/subscribe [:get-value path])
-      :type
-      #{:heraldry.motto.type/motto
-        :heraldry.motto.type/slogan}))
