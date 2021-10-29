@@ -464,7 +464,7 @@
        [tr strings/save]]]]))
 
 (defn attribution []
-  (let [attribution-data (attribution/for-ribbon form-db-path {})]
+  (let [attribution-data (attribution/for-ribbon {:path form-db-path})]
     [:div.attribution
      [:h3 [tr strings/attribution]]
      [:div {:style {:padding-left "1em"}}

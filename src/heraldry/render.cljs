@@ -49,7 +49,7 @@
      :result [:g {:filter (when escutcheon-shadow?
                             "url(#shadow)")}
               (when metadata-path
-                [metadata/attribution metadata-path :arms context])
+                [metadata/attribution (assoc context :path metadata-path) :arms])
               [:defs
                (when shiny?
                  [:filter {:id shiny-id}
