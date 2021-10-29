@@ -1,6 +1,10 @@
 (ns heraldry.interface
   (:require
    [clojure.string :as s]
+   [heraldry.coat-of-arms.counterchange :as counterchange]
+   [heraldry.options :as options]
+   [heraldry.shield-separator :as shield-separator]
+   [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
 (defn type->component-type [t]
@@ -33,30 +37,70 @@
          (-> path last name (s/starts-with? "cottise"))) :heraldry.component/cottise
     :else nil))
 
-(defmulti get-sanitized-data (constantly :either))
+(defmulti component-options (fn [path data]
+                              (effective-component-type path (:type data))))
 
-(defmulti get-raw-data (constantly :either))
+(defmethod component-options nil [_path _data]
+  nil)
 
-(defmulti get-list-size (constantly :either))
+(defn get-raw-data [path context]
+  (if (-> path first (= :context))
+    (get-in context (drop 1 path))
+    @(rf/subscribe [:get-value path])))
 
-(defmulti get-element-indices (constantly :either))
+(defn get-options-by-context [path context]
+  (component-options path (get-raw-data path context)))
+
+(defn get-relevant-options-by-context [path context]
+  (let [[options relative-path] (or (->> (range (count path) 0 -1)
+                                         (keep (fn [idx]
+                                                 (let [option-path (subvec path 0 idx)
+                                                       relative-path (subvec path idx)
+                                                       options (get-options-by-context option-path context)]
+                                                   (when options
+                                                     [options relative-path]))))
+                                         first)
+                                    [nil nil])]
+    (get-in options relative-path)))
+
+(defn get-element-indices [path context]
+  (let [elements (if (-> path first (= :context))
+                   (get-in context (drop 1 path))
+                   @(rf/subscribe [:get-value path]))]
+    (shield-separator/element-indices-with-position elements)))
 
 ;; TODO: this needs to be improved
-(defmulti motto? (constantly :either))
+(defn motto? [path context]
+  (-> (if (-> path first (= :context))
+        (get-in context (drop 1 path))
+        @(rf/subscribe [:get-value path]))
+      :type
+      #{:heraldry.motto.type/motto
+        :heraldry.motto.type/slogan}))
 
-(defmulti get-counterchange-tinctures (constantly :either))
+(defn get-sanitized-data [path context]
+  (if (-> path first (= :context))
+    (let [data (get-raw-data path context)
+          options (get-relevant-options-by-context path context)]
+      (options/sanitize-value-or-data data options))
+    @(rf/subscribe [:get-sanitized-data path])))
+
+(defn get-list-size [path context]
+  (if (-> path first (= :context))
+    (count (get-in context (drop 1 path)))
+    @(rf/subscribe [:get-list-size path])))
+
+(defn get-counterchange-tinctures [path context]
+  (if (-> path first (= :context))
+    (-> (get-raw-data path context)
+        (counterchange/get-counterchange-tinctures context))
+    @(rf/subscribe [:get-counterchange-tinctures path context])))
 
 (defmulti fetch-charge-data (fn [kind _variant]
                               kind))
 
 (defn render-option [key {:keys [render-options-path] :as context}]
   (get-sanitized-data (conj render-options-path key) context))
-
-(defmulti component-options (fn [path data]
-                              (effective-component-type path (:type data))))
-
-(defmethod component-options nil [_path _data]
-  nil)
 
 (defmulti render-component (fn [path _parent-path _environment context]
                              (effective-component-type

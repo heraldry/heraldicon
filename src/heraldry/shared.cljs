@@ -8,7 +8,6 @@
    [heraldry.coat-of-arms.charge.options] ;; needed for side effects
    [heraldry.coat-of-arms.charge.other] ;; needed for side effects
    [heraldry.coat-of-arms.core] ;; needed for side effects
-   [heraldry.coat-of-arms.counterchange :as counterchange]
    [heraldry.coat-of-arms.field.core] ;; needed for side effects
    [heraldry.coat-of-arms.field.shared] ;; needed for side effects
    [heraldry.coat-of-arms.ordinary.core] ;; needed for side effects
@@ -22,51 +21,11 @@
    [heraldry.helm] ;; needed for side effects
    [heraldry.interface :as interface]
    [heraldry.motto] ;; needed for side effects
-   [heraldry.options :as options]
    [heraldry.ornaments] ;; needed for side effects
    [heraldry.render-options] ;; needed for side effects
    [heraldry.ribbon :as ribbon]
-   [heraldry.shield-separator :as shield-separator]
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
-
-(defmethod interface/get-raw-data :either [path context]
-  (if (-> path first (= :context))
-    (get-in context (drop 1 path))
-    @(rf/subscribe [:get-value path])))
-
-(defmethod interface/get-list-size :either [path context]
-  (if (-> path first (= :context))
-    (count (get-in context (drop 1 path)))
-    @(rf/subscribe [:get-list-size path])))
-
-(defmethod interface/get-counterchange-tinctures :either [path context]
-  (if (-> path first (= :context))
-    (-> (interface/get-raw-data path context)
-        (counterchange/get-counterchange-tinctures context))
-    @(rf/subscribe [:get-counterchange-tinctures path context])))
-
-(defn get-options-by-context [path context]
-  (interface/component-options path (interface/get-raw-data path context)))
-
-(defn get-relevant-options-by-context [path context]
-  (let [[options relative-path] (or (->> (range (count path) 0 -1)
-                                         (keep (fn [idx]
-                                                 (let [option-path (subvec path 0 idx)
-                                                       relative-path (subvec path idx)
-                                                       options (get-options-by-context option-path context)]
-                                                   (when options
-                                                     [options relative-path]))))
-                                         first)
-                                    [nil nil])]
-    (get-in options relative-path)))
-
-(defmethod interface/get-sanitized-data :either [path context]
-  (if (-> path first (= :context))
-    (let [data (interface/get-raw-data path context)
-          options (get-relevant-options-by-context path context)]
-      (options/sanitize-value-or-data data options))
-    @(rf/subscribe [:get-sanitized-data path])))
 
 ;; TODO: might not be the right place for it, others live in the coat-of-arms.[thing].options namespaces
 (defmethod interface/component-options :heraldry.component/arms-general [_path data]
@@ -129,17 +88,3 @@
    :attribution (attribution/options (:attribution data))
    :ribbon (ribbon/options (:ribbon data))
    :tags {:ui {:form-type :tags}}})
-
-(defmethod interface/get-element-indices :either [path context]
-  (let [elements (if (-> path first (= :context))
-                   (get-in context (drop 1 path))
-                   @(rf/subscribe [:get-value path]))]
-    (shield-separator/element-indices-with-position elements)))
-
-(defmethod interface/motto? :either [path context]
-  (-> (if (-> path first (= :context))
-        (get-in context (drop 1 path))
-        @(rf/subscribe [:get-value path]))
-      :type
-      #{:heraldry.motto.type/motto
-        :heraldry.motto.type/slogan}))
