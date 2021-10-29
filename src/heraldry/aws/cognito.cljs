@@ -1,8 +1,9 @@
 (ns heraldry.aws.cognito
-  (:require ["amazon-cognito-identity-js" :refer [CognitoUserPool
-                                                  CognitoUser
-                                                  AuthenticationDetails]]
-            [heraldry.config :as config]))
+  (:require
+   ["amazon-cognito-identity-js" :refer [CognitoUserPool
+                                         CognitoUser
+                                         AuthenticationDetails]]
+   [heraldry.config :as config]))
 
 (def user-pool
   (new CognitoUserPool (clj->js (select-keys (config/get :cognito-pool-config)

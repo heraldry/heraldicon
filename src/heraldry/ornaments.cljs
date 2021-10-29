@@ -1,5 +1,6 @@
 (ns heraldry.ornaments
-  (:require [heraldry.interface :as interface]))
+  (:require
+   [heraldry.interface :as interface]))
 
 (def default-options
   {})

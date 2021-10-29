@@ -1,15 +1,16 @@
 (ns heraldry.frontend.ui.element.field-type-select
-  (:require [heraldry.coat-of-arms.field.core :as field]
-            [heraldry.coat-of-arms.field.options :as field-options]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.options :as options]
-            [heraldry.static :as static]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.field.core :as field]
+   [heraldry.coat-of-arms.field.options :as field-options]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.options :as options]
+   [heraldry.static :as static]
+   [re-frame.core :as rf]))
 
 (defn set-field-type [db path new-type num-fields-x num-fields-y num-base-fields]
   (let [path (vec path)]

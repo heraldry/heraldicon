@@ -1,9 +1,10 @@
 (ns heraldry.frontend.ui.element.checkbox
-  (:require [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (defn checkbox [path & {:keys [disabled? on-change style option]}]
   (when-let [option (or option

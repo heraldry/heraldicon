@@ -1,10 +1,11 @@
 (ns heraldry.motto
-  (:require [heraldry.coat-of-arms.geometry :as geometry]
-            [heraldry.coat-of-arms.position :as position]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.interface :as interface]
-            [heraldry.ribbon :as ribbon]
-            [heraldry.strings :as strings]))
+  (:require
+   [heraldry.coat-of-arms.geometry :as geometry]
+   [heraldry.coat-of-arms.position :as position]
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.interface :as interface]
+   [heraldry.ribbon :as ribbon]
+   [heraldry.strings :as strings]))
 
 (def tinctures-without-furs
   (-> tincture/choices

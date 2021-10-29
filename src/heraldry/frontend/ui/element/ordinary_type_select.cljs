@@ -1,15 +1,16 @@
 (ns heraldry.frontend.ui.element.ordinary-type-select
-  (:require [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.options :as options]
-            [heraldry.static :as static]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.options :as options]
+   [heraldry.static :as static]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (defn -default-line-style-of-ordinary-type [ordinary-type]
   (case ordinary-type
@@ -30,9 +31,9 @@
       (-> db
           (assoc-in (conj path :type) new-type)
           (cond->
-           has-default-line-style? (->
-                                    (assoc-in (conj path :line :type) new-default-line-style)
-                                    (assoc-in (conj path :line :flipped?) new-flipped)))
+            has-default-line-style? (->
+                                     (assoc-in (conj path :line :type) new-default-line-style)
+                                     (assoc-in (conj path :line :flipped?) new-flipped)))
           (update-in path #(util/deep-merge-with (fn [_current-value new-value]
                                                    new-value)
                                                  %

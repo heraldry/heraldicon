@@ -1,14 +1,15 @@
 (ns heraldry.frontend.ui.element.user-select
-  (:require [cljs.core.async :refer [go]]
-            [clojure.string :as s]
-            [com.wsscode.common.async-cljs :refer [<?]]
-            [heraldry.frontend.api.request :as api-request]
-            [heraldry.frontend.filter :as filter]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.user :as user]
-            [heraldry.strings :as strings]
-            [taoensso.timbre :as log]))
+  (:require
+   [cljs.core.async :refer [go]]
+   [clojure.string :as s]
+   [com.wsscode.common.async-cljs :refer [<?]]
+   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.filter :as filter]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.user :as user]
+   [heraldry.strings :as strings]
+   [taoensso.timbre :as log]))
 
 (def list-db-path
   [:user-list])

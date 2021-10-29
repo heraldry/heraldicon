@@ -1,16 +1,17 @@
 (ns heraldry.coat-of-arms.charge.shared
-  (:require ["svgpath" :as svgpath]
-            [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.shared :as field-shared]
-            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
-            [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.interface :as interface]
-            [heraldry.math.bounding-box :as bounding-box]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.svg.squiggly :as squiggly]
-            [heraldry.math.vector :as v]
-            [heraldry.util :as util]))
+  (:require
+   ["svgpath" :as svgpath]
+   [heraldry.coat-of-arms.angle :as angle]
+   [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
+   [heraldry.coat-of-arms.outline :as outline]
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.interface :as interface]
+   [heraldry.math.bounding-box :as bounding-box]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.svg.squiggly :as squiggly]
+   [heraldry.math.vector :as v]
+   [heraldry.util :as util]))
 
 (defn make-charge
   [path _parent-path environment

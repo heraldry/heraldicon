@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.line.type.thorny
-  (:require [heraldry.util :as util]))
+  (:require
+   [heraldry.util :as util]))
 
 (defn pattern
   {:display-name "Thorny"

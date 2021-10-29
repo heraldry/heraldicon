@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.form.cottise
-  (:require [heraldry.frontend.ui.interface :as interface]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.frontend.ui.interface :as interface]
+   [re-frame.core :as rf]))
 
 (defn form [path _]
   [:<>

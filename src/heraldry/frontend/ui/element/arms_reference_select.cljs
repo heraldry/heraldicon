@@ -1,10 +1,11 @@
 (ns heraldry.frontend.ui.element.arms-reference-select
-  (:require [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.arms-select :as arms-select]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.interface :as interface]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.arms-select :as arms-select]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.frontend.ui.interface :as interface]
+   [re-frame.core :as rf]))
 
 (defn link-to-arms [path]
   (fn [arms]

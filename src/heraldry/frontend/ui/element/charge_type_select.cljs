@@ -1,15 +1,16 @@
 (ns heraldry.frontend.ui.element.charge-type-select
-  (:require [heraldry.coat-of-arms.charge.options :as charge-options]
-            [heraldry.frontend.charge :as frontend-charge]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.charge-select :as charge-select]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.static :as static]
-            [heraldry.strings :as strings]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.charge.options :as charge-options]
+   [heraldry.frontend.charge :as frontend-charge]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.charge-select :as charge-select]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.static :as static]
+   [heraldry.strings :as strings]
+   [re-frame.core :as rf]))
 
 (macros/reg-event-db :update-charge
   (fn [db [_ path changes]]

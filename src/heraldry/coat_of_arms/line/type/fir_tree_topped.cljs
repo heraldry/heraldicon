@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.line.type.fir-tree-topped
-  (:require [heraldry.util :as util]))
+  (:require
+   [heraldry.util :as util]))
 
 (defn pattern
   {:display-name {:en "Fir-tree topped"

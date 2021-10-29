@@ -1,15 +1,16 @@
 (ns heraldry.frontend.filter
-  (:require [clojure.set :as set]
-            [clojure.string :as s]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.ui.element.checkbox :as checkbox]
-            [heraldry.frontend.ui.element.radio-select :as radio-select]
-            [heraldry.frontend.ui.element.search-field :as search-field]
-            [heraldry.frontend.ui.element.tags :as tags]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [clojure.set :as set]
+   [clojure.string :as s]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.ui.element.checkbox :as checkbox]
+   [heraldry.frontend.ui.element.radio-select :as radio-select]
+   [heraldry.frontend.ui.element.search-field :as search-field]
+   [heraldry.frontend.ui.element.tags :as tags]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (macros/reg-event-db :filter-toggle-tag
   (fn [db [_ db-path tag]]

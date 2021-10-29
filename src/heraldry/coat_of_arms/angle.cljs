@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.angle
-  (:require [clojure.set :as set]
-            [heraldry.coat-of-arms.position :as position]
-            [heraldry.math.vector :as v]))
+  (:require
+   [clojure.set :as set]
+   [heraldry.coat-of-arms.position :as position]
+   [heraldry.math.vector :as v]))
 
 (defn calculate-origin-and-anchor [environment origin anchor width base-angle]
   (let [target-origin (position/calculate origin environment)

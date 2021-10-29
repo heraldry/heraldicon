@@ -1,10 +1,11 @@
 (ns heraldry.frontend.ribbon
-  (:require [cljs.core.async :refer [go]]
-            [com.wsscode.common.async-cljs :refer [<?]]
-            [heraldry.frontend.api.request :as api-request]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.user :as user]
-            [taoensso.timbre :as log]))
+  (:require
+   [cljs.core.async :refer [go]]
+   [com.wsscode.common.async-cljs :refer [<?]]
+   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.user :as user]
+   [taoensso.timbre :as log]))
 
 (defn fetch-ribbons-for-user [user-id]
   (go

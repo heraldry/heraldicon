@@ -1,13 +1,14 @@
 (ns heraldry.frontend.user
-  (:require [cljs.core.async :refer [go]]
-            [com.wsscode.common.async-cljs :refer [<?]]
-            [heraldry.aws.cognito :as cognito]
-            [heraldry.frontend.api.request :as api-request]
-            [heraldry.frontend.modal :as modal]
-            [heraldry.frontend.state :as state]
-            [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as log]))
+  (:require
+   [cljs.core.async :refer [go]]
+   [com.wsscode.common.async-cljs :refer [<?]]
+   [heraldry.aws.cognito :as cognito]
+   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.modal :as modal]
+   [heraldry.frontend.state :as state]
+   [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as log]))
 
 (def user-db-path [:user-data])
 

@@ -1,33 +1,34 @@
 (ns heraldry.frontend.ui.form.ordinary
-  (:require [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.ordinary.core :as ordinary]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.strings :as strings]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.default :as default]
+   [heraldry.coat-of-arms.ordinary.core :as ordinary]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.strings :as strings]
+   [re-frame.core :as rf]))
 
 (macros/reg-event-db :remove-cottise
   (fn [db [_ path cottise]]
     (-> db
         (cond->
-         (= cottise :cottise-1) (-> (update-in path dissoc :cottise-2)
-                                    (assoc-in (conj path :cottise-1)
-                                              (get-in db (conj path :cottise-2))))
+          (= cottise :cottise-1) (-> (update-in path dissoc :cottise-2)
+                                     (assoc-in (conj path :cottise-1)
+                                               (get-in db (conj path :cottise-2))))
 
-         (= cottise :cottise-2) (update-in path dissoc :cottise-2)
+          (= cottise :cottise-2) (update-in path dissoc :cottise-2)
 
-         (= cottise :cottise-opposite-1) (-> (update-in path dissoc :cottise-opposite-2)
-                                             (assoc-in (conj path :cottise-opposite-1)
-                                                       (get-in db (conj path :cottise-opposite-2))))
+          (= cottise :cottise-opposite-1) (-> (update-in path dissoc :cottise-opposite-2)
+                                              (assoc-in (conj path :cottise-opposite-1)
+                                                        (get-in db (conj path :cottise-opposite-2))))
 
-         (= cottise :cottise-opposite-2) (update-in path dissoc :cottise-opposite-2)
+          (= cottise :cottise-opposite-2) (update-in path dissoc :cottise-opposite-2)
 
-         (= cottise :cottise-extra-1) (-> (update-in path dissoc :cottise-extra-2)
-                                          (assoc-in (conj path :cottise-extra-1)
-                                                    (get-in db (conj path :cottise-extra-2))))
+          (= cottise :cottise-extra-1) (-> (update-in path dissoc :cottise-extra-2)
+                                           (assoc-in (conj path :cottise-extra-1)
+                                                     (get-in db (conj path :cottise-extra-2))))
 
-         (= cottise :cottise-extra-2) (update-in path dissoc :cottise-extra-2))
+          (= cottise :cottise-extra-2) (update-in path dissoc :cottise-extra-2))
         (state/change-selected-component-if-removed (-> path drop-last vec)))))
 
 (defn form [path _]

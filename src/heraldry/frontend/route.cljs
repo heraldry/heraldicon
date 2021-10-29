@@ -1,18 +1,19 @@
 (ns heraldry.frontend.route
-  (:require [clojure.string :as s]
-            [heraldry.frontend.about :as about]
-            [heraldry.frontend.account :as account]
-            [heraldry.frontend.arms-library :as arms-library]
-            [heraldry.frontend.charge-library :as charge-library]
-            [heraldry.frontend.collection-library :as collection-library]
-            [heraldry.frontend.contact :as contact]
-            [heraldry.frontend.home :as home]
-            [heraldry.frontend.ribbon-library :as ribbon-library]
-            [heraldry.frontend.user-library :as user-library]
-            [reagent.core :as rc]
-            [reitit.coercion.spec :as rss]
-            [reitit.frontend :as reif]
-            [reitit.frontend.easy :as reife]))
+  (:require
+   [clojure.string :as s]
+   [heraldry.frontend.about :as about]
+   [heraldry.frontend.account :as account]
+   [heraldry.frontend.arms-library :as arms-library]
+   [heraldry.frontend.charge-library :as charge-library]
+   [heraldry.frontend.collection-library :as collection-library]
+   [heraldry.frontend.contact :as contact]
+   [heraldry.frontend.home :as home]
+   [heraldry.frontend.ribbon-library :as ribbon-library]
+   [heraldry.frontend.user-library :as user-library]
+   [reagent.core :as rc]
+   [reitit.coercion.spec :as rss]
+   [reitit.frontend :as reif]
+   [reitit.frontend.easy :as reife]))
 
 (defonce current-match (rc/atom nil))
 

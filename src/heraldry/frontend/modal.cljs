@@ -1,5 +1,6 @@
 (ns heraldry.frontend.modal
-  (:require [re-frame.core :as rf]))
+  (:require
+   [re-frame.core :as rf]))
 
 (def dialog-db-path
   [:modal :dialog])

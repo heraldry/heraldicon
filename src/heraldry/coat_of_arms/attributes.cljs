@@ -1,8 +1,9 @@
 (ns heraldry.coat-of-arms.attributes
-  (:require [goog.string :as gstring]
-            [heraldry.colour :as colour]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]))
+  (:require
+   [goog.string :as gstring]
+   [heraldry.colour :as colour]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]))
 
 (def attitude-choices
   [[strings/none :none]

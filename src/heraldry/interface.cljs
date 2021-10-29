@@ -1,6 +1,7 @@
 (ns heraldry.interface
-  (:require [clojure.string :as s]
-            [taoensso.timbre :as log]))
+  (:require
+   [clojure.string :as s]
+   [taoensso.timbre :as log]))
 
 (defn type->component-type [t]
   (let [ts (str t)]

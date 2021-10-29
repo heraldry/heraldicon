@@ -1,13 +1,14 @@
 (ns heraldry.frontend.ui.element.attribution
-  (:require [heraldry.attribution :as attribution]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.ui.element.select :as select]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.options :as options]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.attribution :as attribution]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.ui.element.select :as select]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.options :as options]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (rf/reg-sub :attribution-submenu-link-name
   (fn [[_ path] _]

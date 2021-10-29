@@ -1,5 +1,6 @@
 (ns heraldry.frontend.preload
-  (:require [devtools.core :as devtools]))
+  (:require
+   [devtools.core :as devtools]))
 
 (defn setup-devtools []
   (let [{:keys [cljs-land-style]} (devtools/get-prefs)]

@@ -1,12 +1,13 @@
 (ns heraldry.frontend.ui.element.colours
-  (:require [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.checkbox :as checkbox]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.attributes :as attributes]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.checkbox :as checkbox]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (defn choice-keywords [choices]
   (->> choices

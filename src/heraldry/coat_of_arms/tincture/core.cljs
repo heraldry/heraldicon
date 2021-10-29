@@ -1,11 +1,12 @@
 (ns heraldry.coat-of-arms.tincture.core
-  (:require [clojure.string :as s]
-            [heraldry.coat-of-arms.hatching :as hatching]
-            [heraldry.coat-of-arms.tincture.pattern :as pattern]
-            [heraldry.coat-of-arms.tincture.theme :as theme]
-            [heraldry.interface :as interface]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]))
+  (:require
+   [clojure.string :as s]
+   [heraldry.coat-of-arms.hatching :as hatching]
+   [heraldry.coat-of-arms.tincture.pattern :as pattern]
+   [heraldry.coat-of-arms.tincture.theme :as theme]
+   [heraldry.interface :as interface]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]))
 
 (def themes
   [[strings/general

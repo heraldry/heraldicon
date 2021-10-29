@@ -1,8 +1,9 @@
 (ns heraldry.coat-of-arms.semy.options
-  (:require [heraldry.coat-of-arms.position :as position]
-            [heraldry.interface :as interface]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.position :as position]
+   [heraldry.interface :as interface]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]))
 
 (def default-options
   {:origin (-> position/default-options

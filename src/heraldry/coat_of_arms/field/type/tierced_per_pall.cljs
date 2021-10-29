@@ -1,16 +1,17 @@
 (ns heraldry.coat-of-arms.field.type.tierced-per-pall
-  (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.interface :as field-interface]
-            [heraldry.coat-of-arms.field.shared :as shared]
-            [heraldry.coat-of-arms.infinity :as infinity]
-            [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.position :as position]
-            [heraldry.coat-of-arms.shared.chevron :as chevron]
-            [heraldry.interface :as interface]
-            [heraldry.math.core :as math]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.vector :as v]))
+  (:require
+   [heraldry.coat-of-arms.angle :as angle]
+   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.shared :as shared]
+   [heraldry.coat-of-arms.infinity :as infinity]
+   [heraldry.coat-of-arms.line.core :as line]
+   [heraldry.coat-of-arms.outline :as outline]
+   [heraldry.coat-of-arms.position :as position]
+   [heraldry.coat-of-arms.shared.chevron :as chevron]
+   [heraldry.interface :as interface]
+   [heraldry.math.core :as math]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/tierced-per-pall)
 

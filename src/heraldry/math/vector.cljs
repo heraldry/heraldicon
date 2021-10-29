@@ -1,6 +1,7 @@
 (ns heraldry.math.vector
-  (:require ["path-intersection" :as -path-intersection]
-            [heraldry.math.core :as math]))
+  (:require
+   ["path-intersection" :as -path-intersection]
+   [heraldry.math.core :as math]))
 
 (def path-intersection
   (memoize -path-intersection))

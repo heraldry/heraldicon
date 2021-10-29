@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.core
-  (:require [heraldry.interface :as interface]
-            [heraldry.strings :as strings]))
+  (:require
+   [heraldry.interface :as interface]
+   [heraldry.strings :as strings]))
 
 (def default-options
   {:manual-blazon {:type :text

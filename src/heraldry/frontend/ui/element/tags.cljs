@@ -1,17 +1,18 @@
 (ns heraldry.frontend.ui.element.tags
-  (:require [clojure.string :as s]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.strings :as strings]
-            [re-frame.core :as rf]))
+  (:require
+   [clojure.string :as s]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.strings :as strings]
+   [re-frame.core :as rf]))
 
 (def value-path [:ui :tag-input-value])
 
 (defn normalize-tag [tag]
   (let [normalized-tag (-> tag
                            (cond->
-                            (keyword? tag) name)
+                             (keyword? tag) name)
                            (or "")
                            s/trim
                            s/lower-case)]

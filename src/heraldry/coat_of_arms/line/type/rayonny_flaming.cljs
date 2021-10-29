@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.line.type.rayonny-flaming
-  (:require [heraldry.math.vector :as v]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.math.vector :as v]
+   [heraldry.util :as util]))
 
 (defn curvy-line [direction eccentricity flipped?]
   (let [length (-> direction

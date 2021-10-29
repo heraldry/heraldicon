@@ -1,10 +1,11 @@
 (ns heraldry.coat-of-arms.field.shared
-  (:require [heraldry.coat-of-arms.field.environment :as environment]
-            [heraldry.coat-of-arms.field.interface :as ui-interface]
-            [heraldry.interface :as interface]
-            [heraldry.math.bounding-box :as bounding-box]
-            [heraldry.math.svg.path :as path]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.field.environment :as environment]
+   [heraldry.coat-of-arms.field.interface :as ui-interface]
+   [heraldry.interface :as interface]
+   [heraldry.math.bounding-box :as bounding-box]
+   [heraldry.math.svg.path :as path]
+   [heraldry.util :as util]))
 
 (def overlap-stroke-width 0.1)
 
@@ -43,9 +44,9 @@
                             [k (get tincture-replacer v v)]))
                      (into {}))
                     (as-> new-mapping
-                          (cond-> new-mapping
-                            (not (contains? new-mapping t1)) (assoc t1 t2)
-                            (not (contains? new-mapping t2)) (assoc t2 t1)))))))
+                      (cond-> new-mapping
+                        (not (contains? new-mapping t1)) (assoc t1 t2)
+                        (not (contains? new-mapping t2)) (assoc t2 t1)))))))
     context))
 
 (defn render-components [path environment context]

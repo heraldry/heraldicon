@@ -1,7 +1,8 @@
 (ns heraldry.math.svg.core
-  (:require [clojure.string :as s]
-            [clojure.walk :as walk]
-            [heraldry.util :as util]))
+  (:require
+   [clojure.string :as s]
+   [clojure.walk :as walk]
+   [heraldry.util :as util]))
 
 (defn split-style-value [value]
   (-> value

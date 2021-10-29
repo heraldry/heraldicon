@@ -1,10 +1,11 @@
 (ns heraldry.render-options
-  (:require [heraldry.coat-of-arms.escutcheon :as escutcheon]
-            [heraldry.coat-of-arms.texture :as texture]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.interface :as interface]
-            [heraldry.options :as options]
-            [heraldry.strings :as strings]))
+  (:require
+   [heraldry.coat-of-arms.escutcheon :as escutcheon]
+   [heraldry.coat-of-arms.texture :as texture]
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.interface :as interface]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]))
 
 (def default-options
   {:escutcheon {:type :choice

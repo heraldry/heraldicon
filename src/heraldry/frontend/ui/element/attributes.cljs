@@ -1,10 +1,11 @@
 (ns heraldry.frontend.ui.element.attributes
-  (:require [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.attributes :as attributes]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (macros/reg-event-db :add-attribute
   (fn [db [_ db-path attribute]]

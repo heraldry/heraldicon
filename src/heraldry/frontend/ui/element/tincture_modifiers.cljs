@@ -1,18 +1,19 @@
 (ns heraldry.frontend.ui.element.tincture-modifiers
-  (:require [clojure.set :as set]
-            [clojure.string :as s]
-            [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.charge :as charge]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.ui.element.range :as range]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.element.tincture-select :as tincture-select]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.options :as options]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [clojure.set :as set]
+   [clojure.string :as s]
+   [heraldry.coat-of-arms.attributes :as attributes]
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.frontend.charge :as charge]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.ui.element.range :as range]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.frontend.ui.element.tincture-select :as tincture-select]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (defn tincture-modifiers-submenu [path]
   (let [preview? @(rf/subscribe [:get-value (-> path

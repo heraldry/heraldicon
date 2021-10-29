@@ -1,7 +1,8 @@
 (ns heraldry.frontend.charge-map
-  (:require [clojure.set :as set]
-            [clojure.string :as s]
-            [clojure.walk :as walk]))
+  (:require
+   [clojure.set :as set]
+   [clojure.string :as s]
+   [clojure.walk :as walk]))
 
 (def group-map
   {:node-type :_root

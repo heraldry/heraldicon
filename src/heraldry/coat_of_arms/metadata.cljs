@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.metadata
-  (:require [heraldry.attribution :as attribution]
-            [heraldry.interface :as interface]))
+  (:require
+   [heraldry.attribution :as attribution]
+   [heraldry.interface :as interface]))
 
 (defn actual-attribution [title creator creator-url url
                           {:keys [license license-version nature

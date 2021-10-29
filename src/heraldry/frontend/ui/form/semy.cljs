@@ -1,7 +1,8 @@
 (ns heraldry.frontend.ui.form.semy
-  (:require [heraldry.coat-of-arms.charge.options :as charge-options]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.charge.options :as charge-options]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.util :as util]))
 
 (defn form [path _]
   [:<>

@@ -1,12 +1,13 @@
 (ns heraldry.util
-  (:require ["crypto" :as crypto]
-            [clojure.pprint :refer [pprint]]
-            [clojure.string :as s]
-            [clojure.walk :as walk]
-            [goog.crypt :as crypt]
-            [goog.crypt.base64 :as b64]
-            [heraldry.config :as config]
-            [taoensso.timbre :as log]))
+  (:require
+   ["crypto" :as crypto]
+   [clojure.pprint :refer [pprint]]
+   [clojure.string :as s]
+   [clojure.walk :as walk]
+   [goog.crypt :as crypt]
+   [goog.crypt.base64 :as b64]
+   [heraldry.config :as config]
+   [taoensso.timbre :as log]))
 
 (def -current-id
   (atom 0))

@@ -1,9 +1,10 @@
 (ns heraldry.coat-of-arms.field.type.potenty
-  (:require [heraldry.coat-of-arms.field.interface :as field-interface]
-            [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.interface :as interface]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.outline :as outline]
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.interface :as interface]
+   [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/potenty)
 

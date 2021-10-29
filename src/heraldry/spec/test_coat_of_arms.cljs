@@ -1,7 +1,8 @@
 (ns heraldry.spec.test-coat-of-arms
-  (:require [cljs.spec.alpha :as s]
-            [cljs.test :refer-macros [deftest are]]
-            [heraldry.spec.coat-of-arms]))
+  (:require
+   [cljs.spec.alpha :as s]
+   [cljs.test :refer-macros [deftest are]]
+   [heraldry.spec.coat-of-arms]))
 
 (defn check-spec [spec form]
   (let [explain-output (with-out-str (s/explain spec form))

@@ -1,39 +1,40 @@
 (ns heraldry.coat-of-arms.line.core
-  (:require ["svgpath" :as svgpath]
-            [clojure.string :as s]
-            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
-            [heraldry.coat-of-arms.line.type.angled :as angled]
-            [heraldry.coat-of-arms.line.type.bevilled :as bevilled]
-            [heraldry.coat-of-arms.line.type.dancetty :as dancetty]
-            [heraldry.coat-of-arms.line.type.dovetailed :as dovetailed]
-            [heraldry.coat-of-arms.line.type.embattled :as embattled]
-            [heraldry.coat-of-arms.line.type.embattled-grady :as embattled-grady]
-            [heraldry.coat-of-arms.line.type.embattled-in-crosses :as embattled-in-crosses]
-            [heraldry.coat-of-arms.line.type.enarched :as enarched]
-            [heraldry.coat-of-arms.line.type.engrailed :as engrailed]
-            [heraldry.coat-of-arms.line.type.fir-tree-topped :as fir-tree-topped]
-            [heraldry.coat-of-arms.line.type.fir-twigged :as fir-twigged]
-            [heraldry.coat-of-arms.line.type.indented :as indented]
-            [heraldry.coat-of-arms.line.type.invected :as invected]
-            [heraldry.coat-of-arms.line.type.nebuly :as nebuly]
-            [heraldry.coat-of-arms.line.type.potenty :as potenty]
-            [heraldry.coat-of-arms.line.type.raguly :as raguly]
-            [heraldry.coat-of-arms.line.type.rayonny-flaming :as rayonny-flaming]
-            [heraldry.coat-of-arms.line.type.rayonny-spiked :as rayonny-spiked]
-            [heraldry.coat-of-arms.line.type.straight :as straight]
-            [heraldry.coat-of-arms.line.type.thorny :as thorny]
-            [heraldry.coat-of-arms.line.type.urdy :as urdy]
-            [heraldry.coat-of-arms.line.type.wavy :as wavy]
-            [heraldry.coat-of-arms.line.type.wolf-toothed :as wolf-toothed]
-            [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.interface :as interface]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.svg.squiggly :as squiggly]
-            [heraldry.math.vector :as v]
-            [heraldry.options :as options]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]))
+  (:require
+   ["svgpath" :as svgpath]
+   [clojure.string :as s]
+   [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
+   [heraldry.coat-of-arms.line.type.angled :as angled]
+   [heraldry.coat-of-arms.line.type.bevilled :as bevilled]
+   [heraldry.coat-of-arms.line.type.dancetty :as dancetty]
+   [heraldry.coat-of-arms.line.type.dovetailed :as dovetailed]
+   [heraldry.coat-of-arms.line.type.embattled :as embattled]
+   [heraldry.coat-of-arms.line.type.embattled-grady :as embattled-grady]
+   [heraldry.coat-of-arms.line.type.embattled-in-crosses :as embattled-in-crosses]
+   [heraldry.coat-of-arms.line.type.enarched :as enarched]
+   [heraldry.coat-of-arms.line.type.engrailed :as engrailed]
+   [heraldry.coat-of-arms.line.type.fir-tree-topped :as fir-tree-topped]
+   [heraldry.coat-of-arms.line.type.fir-twigged :as fir-twigged]
+   [heraldry.coat-of-arms.line.type.indented :as indented]
+   [heraldry.coat-of-arms.line.type.invected :as invected]
+   [heraldry.coat-of-arms.line.type.nebuly :as nebuly]
+   [heraldry.coat-of-arms.line.type.potenty :as potenty]
+   [heraldry.coat-of-arms.line.type.raguly :as raguly]
+   [heraldry.coat-of-arms.line.type.rayonny-flaming :as rayonny-flaming]
+   [heraldry.coat-of-arms.line.type.rayonny-spiked :as rayonny-spiked]
+   [heraldry.coat-of-arms.line.type.straight :as straight]
+   [heraldry.coat-of-arms.line.type.thorny :as thorny]
+   [heraldry.coat-of-arms.line.type.urdy :as urdy]
+   [heraldry.coat-of-arms.line.type.wavy :as wavy]
+   [heraldry.coat-of-arms.line.type.wolf-toothed :as wolf-toothed]
+   [heraldry.coat-of-arms.outline :as outline]
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.interface :as interface]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.svg.squiggly :as squiggly]
+   [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]))
 
 (defn line-base [{:keys [base-line]} {line-min :min
                                       line-max :max}]
@@ -62,9 +63,9 @@
         real-spacing (* spacing pattern-width)
         line-pattern (cond-> line-pattern
                        (pos? real-spacing) (cond->
-                                            (not effective-mirrored?) (conj "h" real-spacing)
-                                            effective-mirrored? (->>
-                                                                 (concat ["h" real-spacing]))))
+                                             (not effective-mirrored?) (conj "h" real-spacing)
+                                             effective-mirrored? (->>
+                                                                  (concat ["h" real-spacing]))))
         line-pattern (if effective-mirrored?
                        [(-> line-pattern
                             (->> (into ["M" 0 0]))
@@ -91,7 +92,7 @@
         line-start (v/v (min 0 offset-length) line-base)]
     {:line (-> []
                (cond->
-                (pos? offset-length) (into [["h" offset-length]]))
+                 (pos? offset-length) (into [["h" offset-length]]))
                (into (repeat repetitions line-pattern))
                (->> (apply merge))
                vec)
@@ -416,8 +417,8 @@
                   & {:keys [angle flipped? context seed reversed?] :as line-options}]
   (let [line-function (get kinds-function-map type)
         line-options-values (cond-> line #_(options/sanitize line (options line))
-                                    (= type :straight) (-> (assoc :width length)
-                                                           (assoc :offset 0)))
+                              (= type :straight) (-> (assoc :width length)
+                                                     (assoc :offset 0)))
         base-end (v/v length 0)
         line-data (if (-> line-function
                           meta
@@ -464,10 +465,10 @@
         (assoc :line
                (-> line-path
                    (cond->
-                    squiggly? (squiggly/squiggly-path :seed seed))
+                     squiggly? (squiggly/squiggly-path :seed seed))
                    svgpath
                    (cond->
-                    effective-flipped? (.scale 1 -1))
+                     effective-flipped? (.scale 1 -1))
                    (.rotate angle)
                    .toString))
         (assoc :line-start (when line-start (v/rotate line-start angle)))

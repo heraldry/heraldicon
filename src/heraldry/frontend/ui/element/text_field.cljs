@@ -1,7 +1,8 @@
 (ns heraldry.frontend.ui.element.text-field
-  (:require [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.ui.interface :as interface]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.ui.interface :as interface]
+   [re-frame.core :as rf]))
 
 (defn text-field [path & {:keys [on-change style]}]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]

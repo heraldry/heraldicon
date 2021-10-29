@@ -1,6 +1,7 @@
 (ns heraldry.frontend.about
-  (:require [heraldry.static :as static]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.static :as static]
+   [re-frame.core :as rf]))
 
 (defn view []
   (rf/dispatch [:set-title "About"])

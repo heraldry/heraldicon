@@ -1,13 +1,14 @@
 (ns heraldry.coat-of-arms.ordinary.type.pile
-  (:require [heraldry.coat-of-arms.cottising :as cottising]
-            [heraldry.coat-of-arms.field.shared :as field-shared]
-            [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.coat-of-arms.shared.pile :as pile]
-            [heraldry.interface :as interface]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.vector :as v]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.cottising :as cottising]
+   [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.line.core :as line]
+   [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.shared.pile :as pile]
+   [heraldry.interface :as interface]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.vector :as v]
+   [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/pile)
 

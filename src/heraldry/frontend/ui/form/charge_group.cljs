@@ -1,21 +1,22 @@
 (ns heraldry.frontend.ui.form.charge-group
-  (:require [heraldry.coat-of-arms.charge-group.core :as charge-group]
-            [heraldry.coat-of-arms.charge.options :as charge-options]
-            [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.charge-group-preset-select
-             :as
-             charge-group-preset-select]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.interface :as interface]
-            [heraldry.math.vector :as v]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.charge-group.core :as charge-group]
+   [heraldry.coat-of-arms.charge.options :as charge-options]
+   [heraldry.coat-of-arms.default :as default]
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.charge-group-preset-select
+    :as
+    charge-group-preset-select]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
+   [heraldry.math.vector :as v]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (macros/reg-event-db :cycle-charge-index
   (fn [db [_ path num-charges]]

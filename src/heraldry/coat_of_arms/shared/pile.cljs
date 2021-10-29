@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.shared.pile
-  (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.math.vector :as v]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.angle :as angle]
+   [heraldry.math.vector :as v]
+   [heraldry.util :as util]))
 
 (defn diagonals [origin-point point-point size]
   (let [direction (-> point-point
@@ -9,9 +10,9 @@
                       v/normal)
         direction-orthogonal (v/orthogonal direction)
         left-point (v/add origin-point
-                        (v/mul direction-orthogonal (/ size 2)))
+                          (v/mul direction-orthogonal (/ size 2)))
         right-point (v/sub origin-point
-                         (v/mul direction-orthogonal (/ size 2)))]
+                           (v/mul direction-orthogonal (/ size 2)))]
     {:left (-> left-point
                (v/sub point-point)
                v/normal

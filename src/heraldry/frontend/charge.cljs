@@ -1,12 +1,13 @@
 (ns heraldry.frontend.charge
-  (:require [cljs.core.async :refer [go]]
-            [com.wsscode.common.async-cljs :refer [<?]]
-            [heraldry.frontend.api.request :as api-request]
-            [heraldry.frontend.http :as http]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.user :as user]
-            [heraldry.interface :as interface]
-            [taoensso.timbre :as log]))
+  (:require
+   [cljs.core.async :refer [go]]
+   [com.wsscode.common.async-cljs :refer [<?]]
+   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.http :as http]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.user :as user]
+   [heraldry.interface :as interface]
+   [taoensso.timbre :as log]))
 
 (defn fetch-charges-for-user [user-id]
   (go

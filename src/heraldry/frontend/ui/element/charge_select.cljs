@@ -1,17 +1,18 @@
 (ns heraldry.frontend.ui.element.charge-select
-  (:require [clojure.walk :as walk]
-            [heraldry.attribution :as attribution]
-            [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.frontend.charge-map :as charge-map]
-            [heraldry.frontend.filter :as filter]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.tags :as tags]
-            [heraldry.frontend.user :as user]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [clojure.walk :as walk]
+   [heraldry.attribution :as attribution]
+   [heraldry.coat-of-arms.attributes :as attributes]
+   [heraldry.frontend.charge-map :as charge-map]
+   [heraldry.frontend.filter :as filter]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.tags :as tags]
+   [heraldry.frontend.user :as user]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (def node-icons
   {:group {:closed "fa-plus-square"

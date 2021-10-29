@@ -1,10 +1,11 @@
 (ns heraldry.coat-of-arms.charge.core
-  (:require [clojure.string :as s]
-            [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.coat-of-arms.charge.interface :as charge-interface]
-            [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
-            [heraldry.interface :as interface]
-            [heraldry.util :as util]))
+  (:require
+   [clojure.string :as s]
+   [heraldry.coat-of-arms.attributes :as attributes]
+   [heraldry.coat-of-arms.charge.interface :as charge-interface]
+   [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
+   [heraldry.interface :as interface]
+   [heraldry.util :as util]))
 
 (defmethod interface/render-component :heraldry.component/charge [path parent-path environment context]
   [charge-interface/render-charge path parent-path environment context])

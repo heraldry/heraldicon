@@ -1,8 +1,9 @@
 (ns heraldry.frontend.ui.form.collection
-  (:require [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.strings :as strings]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.strings :as strings]
+   [re-frame.core :as rf]))
 
 (defn form [path _]
   [:<>

@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.outline
-  (:require [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.interface :as interface]))
+  (:require
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.interface :as interface]))
 
 (def stroke-width 0.5)
 

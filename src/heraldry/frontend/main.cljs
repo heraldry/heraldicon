@@ -1,11 +1,12 @@
 (ns heraldry.frontend.main
-  (:require [heraldry.frontend.header :as header]
-            [heraldry.frontend.modal :as modal]
-            [heraldry.frontend.route :as route]
-            [heraldry.frontend.user :as user]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]
-            [reagent.dom :as r]))
+  (:require
+   [heraldry.frontend.header :as header]
+   [heraldry.frontend.modal :as modal]
+   [heraldry.frontend.route :as route]
+   [heraldry.frontend.user :as user]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]
+   [reagent.dom :as r]))
 
 (defn app []
   [:<>

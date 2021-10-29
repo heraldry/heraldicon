@@ -1,6 +1,7 @@
 (ns heraldry.random
-  (:require ["random" :as random-lib]
-            ["seedrandom" :as seedrandom]))
+  (:require
+   ["random" :as random-lib]
+   ["seedrandom" :as seedrandom]))
 
 (defn seed [seed]
   (.use random-lib (seedrandom seed)))

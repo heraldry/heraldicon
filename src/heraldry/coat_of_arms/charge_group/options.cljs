@@ -1,9 +1,10 @@
 (ns heraldry.coat-of-arms.charge-group.options
-  (:require [heraldry.coat-of-arms.position :as position]
-            [heraldry.interface :as interface]
-            [heraldry.options :as options]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.position :as position]
+   [heraldry.interface :as interface]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]))
 
 (def type-choices
   [[{:en "Rows"

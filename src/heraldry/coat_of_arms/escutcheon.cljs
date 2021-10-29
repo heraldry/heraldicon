@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.escutcheon
-  (:require [heraldry.coat-of-arms.field.environment :as environment]
-            [heraldry.util :as util]
-            [taoensso.timbre :as log]))
+  (:require
+   [heraldry.coat-of-arms.field.environment :as environment]
+   [heraldry.util :as util]
+   [taoensso.timbre :as log]))
 
 (def
   ^{:display-name {:en "Heater"

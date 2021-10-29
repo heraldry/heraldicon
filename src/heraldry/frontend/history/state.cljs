@@ -1,5 +1,6 @@
 (ns heraldry.frontend.history.state
-  (:require [heraldry.frontend.history.shared :as shared]))
+  (:require
+   [heraldry.frontend.history.shared :as shared]))
 
 (defn add-new-state [path db new-db]
   (let [previous-state (get-in db path)

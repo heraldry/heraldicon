@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.texture
-  (:require [heraldry.config :as config]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.config :as config]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]))
 
 (def textures
   [[strings/none :none nil 0]

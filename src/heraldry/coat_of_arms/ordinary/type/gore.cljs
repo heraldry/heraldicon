@@ -1,12 +1,13 @@
 (ns heraldry.coat-of-arms.ordinary.type.gore
-  (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.shared :as field-shared]
-            [heraldry.coat-of-arms.infinity :as infinity]
-            [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.interface :as interface]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.vector :as v]))
+  (:require
+   [heraldry.coat-of-arms.angle :as angle]
+   [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.infinity :as infinity]
+   [heraldry.coat-of-arms.line.core :as line]
+   [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.interface :as interface]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.vector :as v]))
 
 (defn arm-diagonal [origin-point anchor-point]
   (-> (v/sub anchor-point origin-point)

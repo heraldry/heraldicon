@@ -1,6 +1,7 @@
 (ns heraldry.collection.options
-  (:require [heraldry.interface :as interface]
-            [heraldry.strings :as strings]))
+  (:require
+   [heraldry.interface :as interface]
+   [heraldry.strings :as strings]))
 
 (def default-options
   {:num-columns {:type :range
