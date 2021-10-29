@@ -5,9 +5,9 @@
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
-(defn general [path attribution-type context]
+(defn general [context attribution-type]
   [:div.credit
-   (if (interface/get-raw-data (conj path :id) context)
+   (if (interface/get-raw-data (update context :path conj :id))
      (let [{:keys [nature
                    license
                    license-version
@@ -16,14 +16,14 @@
                    source-creator-link
                    source-link
                    source-license
-                   source-license-version]} (interface/get-sanitized-data (conj path :attribution) context)
-           title (interface/get-raw-data (conj path :name) context)
-           username (interface/get-raw-data (conj path :username) context)
+                   source-license-version]} (interface/get-sanitized-data (update context :path conj :attribution))
+           title (interface/get-raw-data (update context :path conj :name))
+           username (interface/get-raw-data (update context :path conj :username))
            url (case attribution-type
-                 :arms (attribution/full-url-for-arms path context)
-                 :charge (attribution/full-url-for-charge path context)
-                 :collection (attribution/full-url-for-collection path context)
-                 :ribbon (attribution/full-url-for-ribbon path context))
+                 :arms (attribution/full-url-for-arms context)
+                 :charge (attribution/full-url-for-charge context)
+                 :collection (attribution/full-url-for-collection context)
+                 :ribbon (attribution/full-url-for-ribbon context))
            license-url (attribution/license-url license license-version)
            license-display-name (attribution/license-display-name license license-version)
            source-license-url (attribution/license-url source-license source-license-version)
@@ -69,19 +69,14 @@
      [tr {:en "unsaved data"
           :de "ungespeicherte Daten"}])])
 
-(defn for-charge [path context]
-  [general path :charge context])
+(defn for-charge [context]
+  [general context :charge])
 
-(defn for-arms [path context]
-  [general path :arms context])
+(defn for-arms [context]
+  [general context :arms])
 
-(defn for-collection [collection]
-  #_(when (:id collection)
-      (let [attribution (-> collection :attribution)
-            username (:username collection)
-            title (:name collection)
-            url (util/full-url-for-collection collection)]
-        [general title url username attribution])))
+(defn for-collection [context]
+  [general context :collection])
 
-(defn for-ribbon [path context]
-  [general path :ribbon context])
+(defn for-ribbon [context]
+  [general context :ribbon])

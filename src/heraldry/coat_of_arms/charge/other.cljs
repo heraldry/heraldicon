@@ -551,8 +551,9 @@
                highlight-colours? adjusted-charge
                :else [:g
                       [metadata/attribution
-                       [:context :charge-data]
-                       :charge {:charge-data full-charge-data}]
+                       {:path [:context :charge-data]
+                        :charge-data full-charge-data}
+                       :charge]
                       (when render-field?
                         [:g {:mask (str "url(#" mask-inverted-id ")")}
                          [:g {:transform reverse-transform}

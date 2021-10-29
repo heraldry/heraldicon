@@ -254,7 +254,8 @@
           [:<>
            (when arms-id
              [:div.attribution
-              [attribution/for-arms [:context :arms] {:arms arms-data}]])
+              [attribution/for-arms {:path [:context :arms]
+                                     :arms arms-data}]])
            [:svg {:id "svg"
                   :style {:width "100%"}
                   :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))

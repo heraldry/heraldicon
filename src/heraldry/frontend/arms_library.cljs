@@ -45,8 +45,8 @@
            (when (:id charge)
              ^{:key charge}
              [attribution/for-charge
-              [:context :charge-data]
-              {:charge-data charge}])))]])))
+              {:path [:context :charge-data]
+               :charge-data charge}])))]])))
 
 (defn ribbon-attribution []
   (let [used-ribbons @(rf/subscribe [:used-ribbons form-db-path])
@@ -61,11 +61,11 @@
            (when (:id ribbon)
              ^{:key ribbon}
              [attribution/for-ribbon
-              [:context :ribbon-data]
-              {:ribbon-data ribbon}])))]])))
+              {:path [:context :ribbon-data]
+               :ribbon-data ribbon}])))]])))
 
 (defn attribution []
-  (let [attribution-data (attribution/for-arms form-db-path {})]
+  (let [attribution-data (attribution/for-arms {:path form-db-path})]
     [:div.attribution
      [:h3 [tr strings/attribution]]
      [:div {:style {:padding-left "1em"}}

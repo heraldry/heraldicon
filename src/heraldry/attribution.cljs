@@ -168,7 +168,8 @@
                                  (dissoc :source-creator-name)
                                  (dissoc :source-creator-link)))))
 
-(defn full-url [path base context]
+(defn full-url [{:keys [path]
+                 :as context} base]
   (when-let [object-id (interface/get-raw-data (conj path :id) context)]
     (let [version (interface/get-raw-data (conj path :version) context)
           version (if (zero? version)
@@ -176,17 +177,17 @@
                     version)]
       (str (config/get :heraldry-url) base (util/id-for-url object-id) "/" version))))
 
-(defn full-url-for-arms [path context]
-  (full-url path "/arms/" context))
+(defn full-url-for-arms [context]
+  (full-url context "/arms/"))
 
-(defn full-url-for-collection [path context]
-  (full-url path "/collection/" context))
+(defn full-url-for-collection [context]
+  (full-url context "/collection/"))
 
-(defn full-url-for-charge [path context]
-  (full-url path "/charges/" context))
+(defn full-url-for-charge [context]
+  (full-url context "/charges/"))
 
-(defn full-url-for-ribbon [path context]
-  (full-url path "/ribbons/" context))
+(defn full-url-for-ribbon [context]
+  (full-url context "/ribbons/"))
 
 (defn full-url-for-username [username]
   (str (config/get :heraldry-url) "/users/" username))

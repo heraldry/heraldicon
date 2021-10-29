@@ -357,7 +357,7 @@
        [tr strings/save]]]]))
 
 (defn attribution []
-  (let [attribution-data (attribution/for-charge form-db-path {})]
+  (let [attribution-data (attribution/for-charge {:path form-db-path})]
     [:div.attribution
      [:h3 [tr strings/attribution]]
      [:div {:style {:padding-left "1em"}}
