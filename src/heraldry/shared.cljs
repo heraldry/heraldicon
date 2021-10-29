@@ -27,7 +27,8 @@
    [heraldry.render-options] ;; needed for side effects
    [heraldry.ribbon :as ribbon]
    [heraldry.shield-separator :as shield-separator]
-   [heraldry.strings :as strings]))
+   [heraldry.strings :as strings]
+   [re-frame.core :as rf]))
 
 (defmethod interface/get-raw-data :context [path context]
   (get-in context (drop 1 path)))
@@ -128,6 +129,28 @@
 (defmethod interface/motto? :context [path context]
   (-> context
       (get-in (drop 1 path))
+      :type
+      #{:heraldry.motto.type/motto
+        :heraldry.motto.type/slogan}))
+
+(defmethod interface/get-sanitized-data :state [path _context]
+  @(rf/subscribe [:get-sanitized-data path]))
+
+(defmethod interface/get-raw-data :state [path _context]
+  @(rf/subscribe [:get-value path]))
+
+(defmethod interface/get-list-size :state [path _context]
+  @(rf/subscribe [:get-list-size path]))
+
+(defmethod interface/get-counterchange-tinctures :state [path context]
+  @(rf/subscribe [:get-counterchange-tinctures path context]))
+
+(defmethod interface/get-element-indices :state [path _context]
+  (let [elements @(rf/subscribe [:get-value path])]
+    (shield-separator/element-indices-with-position elements)))
+
+(defmethod interface/motto? :state [path _context]
+  (-> @(rf/subscribe [:get-value path])
       :type
       #{:heraldry.motto.type/motto
         :heraldry.motto.type/slogan}))
