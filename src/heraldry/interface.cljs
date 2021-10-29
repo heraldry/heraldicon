@@ -107,6 +107,9 @@
 (defn render-option [key {:keys [render-options-path] :as context}]
   (get-sanitized-data (c/<< context :path (conj render-options-path key))))
 
+(defmulti options (fn [entity]
+                    (:type entity)))
+
 (defmulti render-component effective-component-type)
 
 (defmethod render-component nil [context]
