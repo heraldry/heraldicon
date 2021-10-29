@@ -1,8 +1,9 @@
 (ns heraldry.attribution
-  (:require [heraldry.config :as config]
-            [heraldry.interface :as interface]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.config :as config]
+   [heraldry.interface :as interface]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]))
 
 (def license-choices
   [[strings/none :none]
@@ -147,25 +148,25 @@
 (defn options [attribution]
   (-> default-options
       (cond->
-       (-> attribution
-           :license
-           cc-license?
-           not) (dissoc :license-version)
+        (-> attribution
+            :license
+            cc-license?
+            not) (dissoc :license-version)
 
-       (-> attribution
-           :source-license
-           cc-license?
-           not) (dissoc :source-license-version)
+        (-> attribution
+            :source-license
+            cc-license?
+            not) (dissoc :source-license-version)
 
-       (-> attribution
-           :nature
-           (not= :derivative)) (->
-                                (dissoc :source-license)
-                                (dissoc :source-license-version)
-                                (dissoc :source-name)
-                                (dissoc :source-link)
-                                (dissoc :source-creator-name)
-                                (dissoc :source-creator-link)))))
+        (-> attribution
+            :nature
+            (not= :derivative)) (->
+                                 (dissoc :source-license)
+                                 (dissoc :source-license-version)
+                                 (dissoc :source-name)
+                                 (dissoc :source-link)
+                                 (dissoc :source-creator-name)
+                                 (dissoc :source-creator-link)))))
 
 (defn full-url [path base context]
   (when-let [object-id (interface/get-raw-data (conj path :id) context)]

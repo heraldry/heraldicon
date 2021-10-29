@@ -1,11 +1,12 @@
 (ns heraldry.frontend.validation
-  (:require [clojure.string :as s]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.interface :as interface]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [clojure.string :as s]
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.interface :as interface]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (def level-order
   {:error 0

@@ -1,8 +1,9 @@
 (ns heraldry.math.catmullrom
-  (:require [clojure.string :as string]
-            [heraldry.math.bezier :as bezier]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.vector :as v]))
+  (:require
+   [clojure.string :as string]
+   [heraldry.math.bezier :as bezier]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.vector :as v]))
 
 (defn smooth-point [main-fn p0 p1 p2 tension]
   (main-fn p1

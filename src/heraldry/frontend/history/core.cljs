@@ -1,8 +1,9 @@
 (ns heraldry.frontend.history.core
-  (:require [heraldry.frontend.history.shared :as shared]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.state :as state]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.frontend.history.shared :as shared]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.state :as state]
+   [re-frame.core :as rf]))
 
 (defn can-undo? [db path]
   (let [history (get-in db (shared/history-path path))

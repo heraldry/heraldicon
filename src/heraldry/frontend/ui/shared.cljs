@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.shared
-  (:require [heraldry.frontend.context :as context]))
+  (:require
+   [heraldry.frontend.context :as context]))
 
 (def coa-select-option-context
   (-> context/default

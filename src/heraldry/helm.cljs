@@ -1,5 +1,6 @@
 (ns heraldry.helm
-  (:require [heraldry.interface :as interface]))
+  (:require
+   [heraldry.interface :as interface]))
 
 (def default-helm-options
   {})

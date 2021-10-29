@@ -1,9 +1,10 @@
 (ns heraldry.coat-of-arms.field.type.fretty
-  (:require [heraldry.coat-of-arms.field.interface :as field-interface]
-            [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.interface :as interface]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.outline :as outline]
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.interface :as interface]
+   [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/fretty)
 
@@ -75,7 +76,7 @@
                                "z")}]]
 
      :outline [:<>
-;; -|-
+               ;; -|-
                [:path {:d (str "M " (- middle-x half-thickness gap) ",0"
                                "v " half-thickness
                                "h " (- (- middle-x half-thickness gap)))}]

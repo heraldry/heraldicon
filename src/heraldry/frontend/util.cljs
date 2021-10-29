@@ -1,7 +1,8 @@
 (ns heraldry.frontend.util
-  (:require [heraldry.config :as config]
-            [heraldry.util :as util]
-            [reitit.frontend.easy :as reife]))
+  (:require
+   [heraldry.config :as config]
+   [heraldry.util :as util]
+   [reitit.frontend.easy :as reife]))
 
 (defn full-url-for-arms [arms-data]
   (let [version (:version arms-data)

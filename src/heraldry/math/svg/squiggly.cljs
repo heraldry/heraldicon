@@ -1,9 +1,10 @@
 (ns heraldry.math.svg.squiggly
-  (:require [clojure.walk :as walk]
-            [heraldry.math.catmullrom :as catmullrom]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.vector :as v]
-            [heraldry.random :as random]))
+  (:require
+   [clojure.walk :as walk]
+   [heraldry.math.catmullrom :as catmullrom]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.vector :as v]
+   [heraldry.random :as random]))
 
 (defn jiggle [[previous
                {:keys [x y] :as current}

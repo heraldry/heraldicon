@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.form.coat-of-arms
-  (:require [heraldry.frontend.ui.interface :as interface]
-            [heraldry.strings :as strings]))
+  (:require
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.strings :as strings]))
 
 (defn form [path _]
   [:<>

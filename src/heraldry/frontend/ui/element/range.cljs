@@ -1,10 +1,11 @@
 (ns heraldry.frontend.ui.element.range
-  (:require [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]
-            [reagent.core :as r]))
+  (:require
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]
+   [reagent.core :as r]))
 
 (defn range-input [_]
   (let [tmp-value (r/atom nil)

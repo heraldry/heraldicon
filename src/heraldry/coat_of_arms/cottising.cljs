@@ -1,11 +1,12 @@
 (ns heraldry.coat-of-arms.cottising
-  (:require [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.field.options :as field-options]
-            [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.interface :as interface]
-            [heraldry.math.vector :as v]
-            [heraldry.strings :as strings]))
+  (:require
+   [heraldry.coat-of-arms.default :as default]
+   [heraldry.coat-of-arms.field.options :as field-options]
+   [heraldry.coat-of-arms.line.core :as line]
+   [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.interface :as interface]
+   [heraldry.math.vector :as v]
+   [heraldry.strings :as strings]))
 
 (def cottise-default-options
   {:line (-> line/default-options

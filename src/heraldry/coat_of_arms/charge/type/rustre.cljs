@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.charge.type.rustre
-  (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
-            [heraldry.coat-of-arms.charge.shared :as charge-shared]
-            [heraldry.math.vector :as v]))
+  (:require
+   [heraldry.coat-of-arms.charge.interface :as charge-interface]
+   [heraldry.coat-of-arms.charge.shared :as charge-shared]
+   [heraldry.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/rustre)
 

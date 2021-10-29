@@ -1,6 +1,7 @@
 (ns heraldry.math.bounding-box
-  (:require [heraldry.math.svg.path :as path]
-            [heraldry.math.vector :as v]))
+  (:require
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.vector :as v]))
 
 (defn min-max-x-y [[{x :x y :y} & rest]]
   (reduce (fn [[min-x max-x min-y max-y] {x :x y :y}]

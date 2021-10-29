@@ -1,13 +1,14 @@
 (ns heraldry.coat-of-arms.field.type.quartered
-  (:require [heraldry.coat-of-arms.field.interface :as field-interface]
-            [heraldry.coat-of-arms.field.shared :as shared]
-            [heraldry.coat-of-arms.infinity :as infinity]
-            [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.outline :as outline]
-            [heraldry.coat-of-arms.position :as position]
-            [heraldry.interface :as interface]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.vector :as v]))
+  (:require
+   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.shared :as shared]
+   [heraldry.coat-of-arms.infinity :as infinity]
+   [heraldry.coat-of-arms.line.core :as line]
+   [heraldry.coat-of-arms.outline :as outline]
+   [heraldry.coat-of-arms.position :as position]
+   [heraldry.interface :as interface]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/quartered)
 

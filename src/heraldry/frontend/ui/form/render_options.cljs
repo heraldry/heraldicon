@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.render-options
-  (:require [heraldry.frontend.ui.interface :as interface]))
+  (:require
+   [heraldry.frontend.ui.interface :as interface]))
 
 (defn form [path _]
   [:<>

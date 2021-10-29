@@ -1,15 +1,16 @@
 (ns heraldry.frontend.state
-  (:require [cljs.core.async :refer [go]]
-            [com.wsscode.common.async-cljs :refer [<?]]
-            [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.coat-of-arms.default :as default]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.ui.form.collection-element :as collection-element]
-            [heraldry.interface :as interface]
-            [heraldry.shield-separator :as shield-separator]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]
-            [taoensso.timbre :as log]))
+  (:require
+   [cljs.core.async :refer [go]]
+   [com.wsscode.common.async-cljs :refer [<?]]
+   [heraldry.coat-of-arms.attributes :as attributes]
+   [heraldry.coat-of-arms.default :as default]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.ui.form.collection-element :as collection-element]
+   [heraldry.interface :as interface]
+   [heraldry.shield-separator :as shield-separator]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as log]))
 
 (def title-path [:ui :title])
 

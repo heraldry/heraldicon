@@ -1,11 +1,12 @@
 (ns heraldry.coat-of-arms.charge.type.escutcheon
-  (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
-            [heraldry.coat-of-arms.charge.shared :as charge-shared]
-            [heraldry.coat-of-arms.escutcheon :as escutcheon]
-            [heraldry.coat-of-arms.field.environment :as environment]
-            [heraldry.interface :as interface]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.vector :as v]))
+  (:require
+   [heraldry.coat-of-arms.charge.interface :as charge-interface]
+   [heraldry.coat-of-arms.charge.shared :as charge-shared]
+   [heraldry.coat-of-arms.escutcheon :as escutcheon]
+   [heraldry.coat-of-arms.field.environment :as environment]
+   [heraldry.interface :as interface]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/escutcheon)
 

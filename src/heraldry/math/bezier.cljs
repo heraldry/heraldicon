@@ -1,6 +1,7 @@
 (ns heraldry.math.bezier
-  (:require [heraldry.math.vector :as v]
-            [heraldry.math.core :as math]))
+  (:require
+   [heraldry.math.vector :as v]
+   [heraldry.math.core :as math]))
 
 (defn bezier [p1 cp1 cp2 p2]
   [p1 cp1 cp2 p2])

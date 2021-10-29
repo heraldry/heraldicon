@@ -1,8 +1,9 @@
 (ns heraldry.math.svg.test-path
-  (:require [cljs.test :refer-macros [deftest are]]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.vector :as v]
-            [taoensso.timbre :as log]))
+  (:require
+   [cljs.test :refer-macros [deftest are]]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.vector :as v]
+   [taoensso.timbre :as log]))
 
 (deftest reverse-path
   (are [path start reversed-path] (let [result (path/reverse-path path)

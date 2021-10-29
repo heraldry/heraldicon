@@ -1,6 +1,7 @@
 (ns heraldry.frontend.account
-  (:require [heraldry.frontend.user :as user]
-            [heraldry.frontend.user-library :as user-library]))
+  (:require
+   [heraldry.frontend.user :as user]
+   [heraldry.frontend.user-library :as user-library]))
 
 (defn not-logged-in []
   [:div {:style {:padding "15px"}}

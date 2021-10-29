@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.ordinary.interface
-  (:require [heraldry.interface :as interface]
-            [taoensso.timbre :as log]))
+  (:require
+   [heraldry.interface :as interface]
+   [taoensso.timbre :as log]))
 
 (defmulti display-name identity)
 

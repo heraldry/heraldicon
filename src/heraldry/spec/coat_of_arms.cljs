@@ -1,13 +1,14 @@
 (ns heraldry.spec.coat-of-arms
-  (:require [cljs.spec.alpha :as s]
-            [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.coat-of-arms.charge-group.options :as charge-group]
-            [heraldry.coat-of-arms.escutcheon :as escutcheon]
-            [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.coat-of-arms.position :as position]
-            [heraldry.coat-of-arms.texture :as texture]
-            [heraldry.coat-of-arms.tincture.core :as tincture]))
+  (:require
+   [cljs.spec.alpha :as s]
+   [heraldry.coat-of-arms.attributes :as attributes]
+   [heraldry.coat-of-arms.charge-group.options :as charge-group]
+   [heraldry.coat-of-arms.escutcheon :as escutcheon]
+   [heraldry.coat-of-arms.line.core :as line]
+   [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+   [heraldry.coat-of-arms.position :as position]
+   [heraldry.coat-of-arms.texture :as texture]
+   [heraldry.coat-of-arms.tincture.core :as tincture]))
 
 (s/def :heraldry/spec-version number?)
 (s/def :heraldry/escutcheon #(get escutcheon/kinds-map %))

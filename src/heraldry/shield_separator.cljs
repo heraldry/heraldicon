@@ -1,5 +1,6 @@
 (ns heraldry.shield-separator
-  (:require [heraldry.coat-of-arms.default :as default]))
+  (:require
+   [heraldry.coat-of-arms.default :as default]))
 
 (defn shield-separator? [element]
   (-> element

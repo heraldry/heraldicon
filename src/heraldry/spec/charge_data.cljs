@@ -1,7 +1,8 @@
 (ns heraldry.spec.charge-data
-  (:require [cljs.spec.alpha :as s]
-            [heraldry.coat-of-arms.attributes :as attributes]
-            [heraldry.coat-of-arms.tincture.core :as tincture]))
+  (:require
+   [cljs.spec.alpha :as s]
+   [heraldry.coat-of-arms.attributes :as attributes]
+   [heraldry.coat-of-arms.tincture.core :as tincture]))
 
 (s/def :heraldry.charge-data.data.edn-data/width number?)
 (s/def :heraldry.charge-data.data.edn-data/height number?)

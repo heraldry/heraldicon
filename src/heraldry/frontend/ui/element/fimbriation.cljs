@@ -1,12 +1,13 @@
 (ns heraldry.frontend.ui.element.fimbriation
-  (:require [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.options :as options]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (rf/reg-sub :fimbriation-submenu-link-name
   (fn [[_ path] _]

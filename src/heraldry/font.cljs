@@ -1,6 +1,7 @@
 (ns heraldry.font
-  (:require [heraldry.strings :as strings]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]))
 
 (def default :prince-valiant)
 

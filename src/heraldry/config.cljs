@@ -1,5 +1,6 @@
 (ns heraldry.config
-  (:require [clojure.string :as s]))
+  (:require
+   [clojure.string :as s]))
 
 (defn -js->clj+
   "For cases when built-in js->clj doesn't work. Source: https://stackoverflow.com/a/32583549/4839573"

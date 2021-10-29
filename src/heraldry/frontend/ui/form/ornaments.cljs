@@ -1,10 +1,11 @@
 (ns heraldry.frontend.ui.form.ornaments
-  (:require [heraldry.coat-of-arms.default :as default]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.shield-separator :as shield-separator]
-            [heraldry.strings :as strings]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.default :as default]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.shield-separator :as shield-separator]
+   [heraldry.strings :as strings]
+   [re-frame.core :as rf]))
 
 (defn form [path _]
   [:<>

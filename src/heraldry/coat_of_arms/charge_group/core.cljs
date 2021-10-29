@@ -1,10 +1,11 @@
 (ns heraldry.coat-of-arms.charge-group.core
-  (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
-            [heraldry.coat-of-arms.escutcheon :as escutcheon]
-            [heraldry.coat-of-arms.position :as position]
-            [heraldry.interface :as interface]
-            [heraldry.math.vector :as v]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.charge.interface :as charge-interface]
+   [heraldry.coat-of-arms.escutcheon :as escutcheon]
+   [heraldry.coat-of-arms.position :as position]
+   [heraldry.interface :as interface]
+   [heraldry.math.vector :as v]
+   [heraldry.util :as util]))
 
 (defn calculate-strip-slot-positions [path spacing context]
   (let [stretch (interface/get-sanitized-data (conj path :stretch) context)

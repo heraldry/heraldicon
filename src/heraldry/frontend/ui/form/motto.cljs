@@ -1,10 +1,11 @@
 (ns heraldry.frontend.ui.form.motto
-  (:require [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
-            [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
+   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (rf/reg-sub :motto-name
   (fn [[_ path] _]

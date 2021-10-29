@@ -1,14 +1,15 @@
 (ns heraldry.frontend.ui.element.tincture-select
-  (:require [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.options :as options]
-            [heraldry.static :as static]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.options :as options]
+   [heraldry.static :as static]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (defn tincture-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])

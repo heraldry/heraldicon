@@ -1,5 +1,6 @@
 (ns heraldry.math.curve
-  (:require [heraldry.math.bezier :as bezier]))
+  (:require
+   [heraldry.math.bezier :as bezier]))
 
 (defn length [curve]
   (->> curve

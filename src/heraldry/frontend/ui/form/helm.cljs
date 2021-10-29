@@ -1,13 +1,14 @@
 (ns heraldry.frontend.ui.form.helm
-  (:require [heraldry.coat-of-arms.default :as default]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.interface :as ui-interface]
-            [heraldry.shield-separator :as shield-separator]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.default :as default]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.shield-separator :as shield-separator]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (rf/reg-sub :get-helm-status
   (fn [[_ path] _]

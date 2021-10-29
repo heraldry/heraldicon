@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.geometry
-  (:require [heraldry.strings :as strings]))
+  (:require
+   [heraldry.strings :as strings]))
 
 (def default-options
   {:size {:type :range

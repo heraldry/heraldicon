@@ -1,8 +1,9 @@
 (ns heraldry.frontend.ui.interface
-  (:require [heraldry.coat-of-arms.counterchange :as counterchange]
-            [heraldry.interface :as interface]
-            [heraldry.options :as options]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.counterchange :as counterchange]
+   [heraldry.interface :as interface]
+   [heraldry.options :as options]
+   [re-frame.core :as rf]))
 
 ;; component-node-data
 

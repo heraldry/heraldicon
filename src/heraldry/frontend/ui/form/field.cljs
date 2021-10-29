@@ -1,13 +1,14 @@
 (ns heraldry.frontend.ui.form.field
-  (:require [heraldry.coat-of-arms.default :as default]
-            [heraldry.coat-of-arms.field.core :as field]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.tincture-select :as tincture-select]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]
-            [heraldry.strings :as strings]))
+  (:require
+   [heraldry.coat-of-arms.default :as default]
+   [heraldry.coat-of-arms.field.core :as field]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.tincture-select :as tincture-select]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]
+   [heraldry.strings :as strings]))
 
 (macros/reg-event-db :override-field-part-reference
   (fn [db [_ path]]

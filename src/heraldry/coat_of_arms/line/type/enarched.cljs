@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.line.type.enarched
-  (:require [heraldry.util :as util]))
+  (:require
+   [heraldry.util :as util]))
 
 (defn full
   {:display-name {:en "Enarched / Embowed"

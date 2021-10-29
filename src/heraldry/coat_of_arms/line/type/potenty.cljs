@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.line.type.potenty
-  (:require [heraldry.util :as util]))
+  (:require
+   [heraldry.util :as util]))
 
 (defn pattern
   {:display-name {:en "Potenty"

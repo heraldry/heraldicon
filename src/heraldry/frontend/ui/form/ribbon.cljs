@@ -1,7 +1,8 @@
 (ns heraldry.frontend.ui.form.ribbon
-  (:require [heraldry.coat-of-arms.charge.core :as charge]
-            [heraldry.frontend.ui.interface :as interface]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.charge.core :as charge]
+   [heraldry.frontend.ui.interface :as interface]
+   [re-frame.core :as rf]))
 
 (defn form [path _]
   [:<>

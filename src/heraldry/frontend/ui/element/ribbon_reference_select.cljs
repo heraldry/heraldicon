@@ -1,13 +1,14 @@
 (ns heraldry.frontend.ui.element.ribbon-reference-select
-  (:require [com.wsscode.common.async-cljs :refer [<? go-catch]]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
-            [heraldry.frontend.ui.interface :as interface]
-            [re-frame.core :as rf]))
+  (:require
+   [com.wsscode.common.async-cljs :refer [<? go-catch]]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
+   [heraldry.frontend.ui.interface :as interface]
+   [re-frame.core :as rf]))
 
 (macros/reg-event-db :set-ribbon-data
   (fn [db [_ path ribbon-data]]

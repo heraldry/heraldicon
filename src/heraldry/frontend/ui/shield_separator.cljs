@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.shield-separator
-  (:require [heraldry.frontend.ui.interface :as interface]))
+  (:require
+   [heraldry.frontend.ui.interface :as interface]))
 
 
 (defmethod interface/component-node-data :heraldry.component/shield-separator [_path]

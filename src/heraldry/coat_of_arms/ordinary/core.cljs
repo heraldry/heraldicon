@@ -1,9 +1,10 @@
 (ns heraldry.coat-of-arms.ordinary.core
-  (:require [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
-            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
-            [heraldry.interface :as interface]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
+   [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+   [heraldry.interface :as interface]
+   [heraldry.util :as util]))
 
 (defmethod interface/render-component :heraldry.component/ordinary [path parent-path environment context]
   (ordinary-interface/render-ordinary path parent-path environment context))

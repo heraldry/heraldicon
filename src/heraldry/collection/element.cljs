@@ -1,6 +1,7 @@
 (ns heraldry.collection.element
-  (:require [heraldry.interface :as interface]
-            [heraldry.strings :as strings]))
+  (:require
+   [heraldry.interface :as interface]
+   [heraldry.strings :as strings]))
 
 (def default-options
   {:name {:type :text

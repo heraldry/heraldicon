@@ -1,6 +1,7 @@
 (ns heraldry.options
-  (:require [clojure.walk :as walk]
-            [heraldry.util :as util]))
+  (:require
+   [clojure.walk :as walk]
+   [heraldry.util :as util]))
 
 (def option-types #{:range :choice :boolean :text})
 

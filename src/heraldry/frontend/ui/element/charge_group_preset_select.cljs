@@ -1,10 +1,11 @@
 (ns heraldry.frontend.ui.element.charge-group-preset-select
-  (:require [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.charge-group-preset-select-presets :as charge-group-preset-select-presets]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.static :as static]))
+  (:require
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.charge-group-preset-select-presets :as charge-group-preset-select-presets]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.static :as static]))
 
 (macros/reg-event-db :select-charge-group-preset
   ;; TODO: this must not be an fn-traced, can be done once

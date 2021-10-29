@@ -1,8 +1,9 @@
 (ns heraldry.frontend.ui.element.submenu
-  (:require [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [heraldry.frontend.state :as state]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.state :as state]
+   [re-frame.core :as rf]))
 
 (rf/reg-sub :ui-submenu-open?
   (fn [db [_ path]]

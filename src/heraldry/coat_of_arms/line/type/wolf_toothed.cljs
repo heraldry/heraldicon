@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.line.type.wolf-toothed
-  (:require [heraldry.util :as util]))
+  (:require
+   [heraldry.util :as util]))
 
 (defn pattern
   {:display-name {:en "Wolf toothed"

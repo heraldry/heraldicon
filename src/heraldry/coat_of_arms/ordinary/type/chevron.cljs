@@ -1,16 +1,17 @@
 (ns heraldry.coat-of-arms.ordinary.type.chevron
-  (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.cottising :as cottising]
-            [heraldry.coat-of-arms.field.shared :as field-shared]
-            [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-            [heraldry.coat-of-arms.position :as position]
-            [heraldry.coat-of-arms.shared.chevron :as chevron]
-            [heraldry.interface :as interface]
-            [heraldry.math.core :as math]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.vector :as v]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.angle :as angle]
+   [heraldry.coat-of-arms.cottising :as cottising]
+   [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.line.core :as line]
+   [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.position :as position]
+   [heraldry.coat-of-arms.shared.chevron :as chevron]
+   [heraldry.interface :as interface]
+   [heraldry.math.core :as math]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.vector :as v]
+   [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/chevron)
 

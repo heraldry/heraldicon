@@ -1,12 +1,13 @@
 (ns heraldry.frontend.ui.element.theme-select
-  (:require [heraldry.coat-of-arms.tincture.core :as tincture]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.submenu :as submenu]
-            [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-            [heraldry.frontend.ui.interface :as interface]
-            [heraldry.static :as static]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.static :as static]
+   [re-frame.core :as rf]))
 
 (defn theme-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])

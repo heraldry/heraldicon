@@ -1,13 +1,14 @@
 (ns heraldry.coat-of-arms.field.type.per-pile
-  (:require [heraldry.coat-of-arms.field.interface :as field-interface]
-            [heraldry.coat-of-arms.field.shared :as shared]
-            [heraldry.coat-of-arms.infinity :as infinity]
-            [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.coat-of-arms.shared.pile :as pile]
-            [heraldry.interface :as interface]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.vector :as v]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.shared :as shared]
+   [heraldry.coat-of-arms.infinity :as infinity]
+   [heraldry.coat-of-arms.line.core :as line]
+   [heraldry.coat-of-arms.shared.pile :as pile]
+   [heraldry.interface :as interface]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.vector :as v]
+   [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/per-pile)
 
@@ -114,8 +115,8 @@
                    (v/add point
                           line-right-start)])
                  "z"]
-                                             ;; TODO: these fields inherit the whole parent
-                                             ;; environment points, but it can probably be reduced
+                ;; TODO: these fields inherit the whole parent
+                ;; environment points, but it can probably be reduced
                 [top-left top-right
                  bottom-left bottom-right]]
 
@@ -124,8 +125,8 @@
                  (path/stitch line-left)
                  (path/stitch line-right)
                  "z"]
-                                             ;; TODO: these fields inherit the whole parent
-                                             ;; environment points, but it can probably be reduced
+                ;; TODO: these fields inherit the whole parent
+                ;; environment points, but it can probably be reduced
                 [top-left top-right
                  bottom-left bottom-right]]
 
@@ -149,8 +150,8 @@
                    (v/add left-point
                           line-left-start)])
                  "z"]
-                                             ;; TODO: these fields inherit the whole parent
-                                             ;; environment points, but it can probably be reduced
+                ;; TODO: these fields inherit the whole parent
+                ;; environment points, but it can probably be reduced
                 [top-left top-right
                  bottom-left bottom-right]]]]
     [:<>

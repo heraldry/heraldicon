@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.line.type.embattled-in-crosses
-  (:require [heraldry.util :as util]))
+  (:require
+   [heraldry.util :as util]))
 
 (defn pattern
   {:display-name {:en "Embattled in crosses"

@@ -1,8 +1,9 @@
 (ns heraldry.coat-of-arms.semy.core
-  (:require [heraldry.coat-of-arms.charge.interface :as charge-interface]
-            [heraldry.interface :as interface]
-            [heraldry.math.vector :as v]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.coat-of-arms.charge.interface :as charge-interface]
+   [heraldry.interface :as interface]
+   [heraldry.math.vector :as v]
+   [heraldry.util :as util]))
 
 (defn shift-environment [environment point]
   (-> environment
@@ -82,10 +83,10 @@
         (for [[idx shift] (map-indexed
                            vector
                            (cond->
-                            [(v/v 0 0)
-                             {:x part-width :y 0}
-                             {:x 0 :y part-height}
-                             {:x part-width :y part-height}]
+                             [(v/v 0 0)
+                              {:x part-width :y 0}
+                              {:x 0 :y part-height}
+                              {:x part-width :y part-height}]
                              (not rectangular?) (conj {:x part-width-half :y part-height-half})))]
           ^{:key idx}
           [charge-interface/render-charge

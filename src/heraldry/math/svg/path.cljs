@@ -1,10 +1,11 @@
 (ns heraldry.math.svg.path
-  (:require ["svg-path-parse" :as svg-path-parse]
-            ["svg-path-properties" :as svg-path-properties]
-            ["svg-path-reverse" :as svg-path-reverse]
-            ["svgpath" :as svgpath]
-            [clojure.string :as s]
-            [heraldry.math.vector :as v]))
+  (:require
+   ["svg-path-parse" :as svg-path-parse]
+   ["svg-path-properties" :as svg-path-properties]
+   ["svg-path-reverse" :as svg-path-reverse]
+   ["svgpath" :as svgpath]
+   [clojure.string :as s]
+   [heraldry.math.vector :as v]))
 
 (defn stitch [path]
   ;; TODO: this can be improved, it already broke some things and caused unexpected behaviour,
@@ -33,13 +34,13 @@
       .relNormalize
       (js->clj :keywordize-keys true)
       (as-> path
-            (let [[move & rest] (:segments path)
-                  [x y] (:args move)
-                  adjusted-path (assoc path :segments (into [{:type "M" :args [0 0]}] rest))]
-              {:start (v/v x y)
-               :path (-> adjusted-path
-                         clj->js
-                         svg-path-parse/serializePath)}))))
+        (let [[move & rest] (:segments path)
+              [x y] (:args move)
+              adjusted-path (assoc path :segments (into [{:type "M" :args [0 0]}] rest))]
+          {:start (v/v x y)
+           :path (-> adjusted-path
+                     clj->js
+                     svg-path-parse/serializePath)}))))
 
 (defn normalize-path-relative [path]
   (-> path

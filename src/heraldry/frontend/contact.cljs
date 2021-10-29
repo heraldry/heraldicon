@@ -1,5 +1,6 @@
 (ns heraldry.frontend.contact
-  (:require [re-frame.core :as rf]))
+  (:require
+   [re-frame.core :as rf]))
 
 (defn view []
   (rf/dispatch [:set-title "About"])

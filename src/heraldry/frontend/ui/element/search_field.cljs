@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.search-field
-  (:require [re-frame.core :as rf]))
+  (:require
+   [re-frame.core :as rf]))
 
 (defn search-field [path & {:keys [on-change]}]
   (let [current-value @(rf/subscribe [:get-value path])]

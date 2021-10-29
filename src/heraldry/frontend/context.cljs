@@ -1,5 +1,6 @@
 (ns heraldry.frontend.context
-  (:require [heraldry.frontend.charge :as charge]))
+  (:require
+   [heraldry.frontend.charge :as charge]))
 
 (def default
   {:load-charge-data charge/fetch-charge-data

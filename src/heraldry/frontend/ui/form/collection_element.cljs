@@ -1,7 +1,8 @@
 (ns heraldry.frontend.ui.form.collection-element
-  (:require [heraldry.frontend.ui.interface :as interface]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (def ui-highlighted-element-path [:ui :collection-library :selected-element])
 

@@ -1,7 +1,8 @@
 (ns heraldry.frontend.ui.element.hover-menu
-  (:require [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.macros :as macros]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
+   [re-frame.core :as rf]))
 
 (rf/reg-sub :ui-hover-menu-open?
   (fn [db [_ path]]

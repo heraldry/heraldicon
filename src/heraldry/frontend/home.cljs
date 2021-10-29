@@ -1,6 +1,7 @@
 (ns heraldry.frontend.home
-  (:require [heraldry.static :as static]
-            [re-frame.core :as rf]))
+  (:require
+   [heraldry.static :as static]
+   [re-frame.core :as rf]))
 
 (defn release-image [img-src]
   (let [src (static/static-url img-src)]

@@ -1,12 +1,13 @@
 (ns heraldry.coat-of-arms.field.type.per-bend
-  (:require [heraldry.coat-of-arms.angle :as angle]
-            [heraldry.coat-of-arms.field.interface :as field-interface]
-            [heraldry.coat-of-arms.field.shared :as shared]
-            [heraldry.coat-of-arms.infinity :as infinity]
-            [heraldry.coat-of-arms.line.core :as line]
-            [heraldry.interface :as interface]
-            [heraldry.math.svg.path :as path]
-            [heraldry.math.vector :as v]))
+  (:require
+   [heraldry.coat-of-arms.angle :as angle]
+   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.shared :as shared]
+   [heraldry.coat-of-arms.infinity :as infinity]
+   [heraldry.coat-of-arms.line.core :as line]
+   [heraldry.interface :as interface]
+   [heraldry.math.svg.path :as path]
+   [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/per-bend)
 

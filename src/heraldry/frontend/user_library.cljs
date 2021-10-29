@@ -1,23 +1,24 @@
 (ns heraldry.frontend.user-library
-  (:require [cljs.core.async :refer [go]]
-            [com.wsscode.common.async-cljs :refer [<?]]
-            [heraldry.frontend.api.request :as api-request]
-            [heraldry.frontend.arms-library :as arms-library]
-            [heraldry.frontend.charge :as charge]
-            [heraldry.frontend.charge-library :as charge-library]
-            [heraldry.frontend.collection-library :as collection-library]
-            [heraldry.frontend.language :refer [tr]]
-            [heraldry.frontend.state :as state]
-            [heraldry.frontend.ui.element.arms-select :as arms-select]
-            [heraldry.frontend.ui.element.charge-select :as charge-select]
-            [heraldry.frontend.ui.element.collection-select :as collection-select]
-            [heraldry.frontend.ui.element.user-select :as user-select]
-            [heraldry.frontend.user :as user]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]
-            [re-frame.core :as rf]
-            [reitit.frontend.easy :as reife]
-            [taoensso.timbre :as log]))
+  (:require
+   [cljs.core.async :refer [go]]
+   [com.wsscode.common.async-cljs :refer [<?]]
+   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.arms-library :as arms-library]
+   [heraldry.frontend.charge :as charge]
+   [heraldry.frontend.charge-library :as charge-library]
+   [heraldry.frontend.collection-library :as collection-library]
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.arms-select :as arms-select]
+   [heraldry.frontend.ui.element.charge-select :as charge-select]
+   [heraldry.frontend.ui.element.collection-select :as collection-select]
+   [heraldry.frontend.ui.element.user-select :as user-select]
+   [heraldry.frontend.user :as user]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]
+   [re-frame.core :as rf]
+   [reitit.frontend.easy :as reife]
+   [taoensso.timbre :as log]))
 
 (def user-info-db-path
   [:user-info])

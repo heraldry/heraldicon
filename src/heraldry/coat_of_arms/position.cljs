@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.position
-  (:require [heraldry.math.vector :as v]
-            [heraldry.strings :as strings]
-            [heraldry.util :as util]))
+  (:require
+   [heraldry.math.vector :as v]
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]))
 
 (def point-choices
   [[strings/fess-point :fess]
