@@ -30,15 +30,21 @@
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
-(defmethod interface/get-raw-data :context [path context]
-  (get-in context (drop 1 path)))
+(defmethod interface/get-raw-data :either [path context]
+  (if (-> path first (= :context))
+    (get-in context (drop 1 path))
+    @(rf/subscribe [:get-value path])))
 
-(defmethod interface/get-list-size :context [path context]
-  (count (get-in context (drop 1 path))))
+(defmethod interface/get-list-size :either [path context]
+  (if (-> path first (= :context))
+    (count (get-in context (drop 1 path)))
+    @(rf/subscribe [:get-list-size path])))
 
-(defmethod interface/get-counterchange-tinctures :context [path context]
-  (-> (interface/get-raw-data path context)
-      (counterchange/get-counterchange-tinctures context)))
+(defmethod interface/get-counterchange-tinctures :either [path context]
+  (if (-> path first (= :context))
+    (-> (interface/get-raw-data path context)
+        (counterchange/get-counterchange-tinctures context))
+    @(rf/subscribe [:get-counterchange-tinctures path context])))
 
 (defn get-options-by-context [path context]
   (interface/component-options path (interface/get-raw-data path context)))
@@ -55,10 +61,12 @@
                                     [nil nil])]
     (get-in options relative-path)))
 
-(defmethod interface/get-sanitized-data :context [path context]
-  (let [data (interface/get-raw-data path context)
-        options (get-relevant-options-by-context path context)]
-    (options/sanitize-value-or-data data options)))
+(defmethod interface/get-sanitized-data :either [path context]
+  (if (-> path first (= :context))
+    (let [data (interface/get-raw-data path context)
+          options (get-relevant-options-by-context path context)]
+      (options/sanitize-value-or-data data options))
+    @(rf/subscribe [:get-sanitized-data path])))
 
 ;; TODO: might not be the right place for it, others live in the coat-of-arms.[thing].options namespaces
 (defmethod interface/component-options :heraldry.component/arms-general [_path data]
@@ -122,35 +130,16 @@
    :ribbon (ribbon/options (:ribbon data))
    :tags {:ui {:form-type :tags}}})
 
-(defmethod interface/get-element-indices :context [path context]
-  (let [elements (get-in context (drop 1 path))]
+(defmethod interface/get-element-indices :either [path context]
+  (let [elements (if (-> path first (= :context))
+                   (get-in context (drop 1 path))
+                   @(rf/subscribe [:get-value path]))]
     (shield-separator/element-indices-with-position elements)))
 
-(defmethod interface/motto? :context [path context]
-  (-> context
-      (get-in (drop 1 path))
-      :type
-      #{:heraldry.motto.type/motto
-        :heraldry.motto.type/slogan}))
-
-(defmethod interface/get-sanitized-data :state [path _context]
-  @(rf/subscribe [:get-sanitized-data path]))
-
-(defmethod interface/get-raw-data :state [path _context]
-  @(rf/subscribe [:get-value path]))
-
-(defmethod interface/get-list-size :state [path _context]
-  @(rf/subscribe [:get-list-size path]))
-
-(defmethod interface/get-counterchange-tinctures :state [path context]
-  @(rf/subscribe [:get-counterchange-tinctures path context]))
-
-(defmethod interface/get-element-indices :state [path _context]
-  (let [elements @(rf/subscribe [:get-value path])]
-    (shield-separator/element-indices-with-position elements)))
-
-(defmethod interface/motto? :state [path _context]
-  (-> @(rf/subscribe [:get-value path])
+(defmethod interface/motto? :either [path context]
+  (-> (if (-> path first (= :context))
+        (get-in context (drop 1 path))
+        @(rf/subscribe [:get-value path]))
       :type
       #{:heraldry.motto.type/motto
         :heraldry.motto.type/slogan}))

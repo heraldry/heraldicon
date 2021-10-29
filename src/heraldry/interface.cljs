@@ -33,29 +33,18 @@
          (-> path last name (s/starts-with? "cottise"))) :heraldry.component/cottise
     :else nil))
 
-(defn state-source [path]
-  (if (-> path first (= :context))
-    :context
-    :state))
+(defmulti get-sanitized-data (constantly :either))
 
-(defmulti get-sanitized-data (fn [path _context]
-                               (state-source path)))
+(defmulti get-raw-data (constantly :either))
 
-(defmulti get-raw-data (fn [path _context]
-                         (state-source path)))
+(defmulti get-list-size (constantly :either))
 
-(defmulti get-list-size (fn [path _context]
-                          (state-source path)))
-
-(defmulti get-element-indices (fn [path _context]
-                                (state-source path)))
+(defmulti get-element-indices (constantly :either))
 
 ;; TODO: this needs to be improved
-(defmulti motto? (fn [path _context]
-                   (state-source path)))
+(defmulti motto? (constantly :either))
 
-(defmulti get-counterchange-tinctures (fn [path _context]
-                                        (state-source path)))
+(defmulti get-counterchange-tinctures (constantly :either))
 
 (defmulti fetch-charge-data (fn [kind _variant]
                               kind))
