@@ -3,8 +3,11 @@
    ["svgpath" :as svgpath]
    [heraldry.coat-of-arms.angle :as angle]
    [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.geometry :as geometry]
+   [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldry.coat-of-arms.outline :as outline]
+   [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
@@ -12,7 +15,85 @@
    [heraldry.math.svg.path :as path]
    [heraldry.math.svg.squiggly :as squiggly]
    [heraldry.math.vector :as v]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]))
+
+(def options
+  {:origin (-> position/default-options
+               (dissoc :alignment)
+               (assoc-in [:ui :label] strings/origin))
+   :anchor (-> position/anchor-default-options
+               (dissoc :alignment)
+               (update-in [:point :choices] (fn [choices]
+                                              (-> choices
+                                                  drop-last
+                                                  (conj (last choices))
+                                                  vec)))
+               (update :point assoc :default :angle)
+               (update :angle assoc
+                       :min -180
+                       :max 180
+                       :default 0)
+               (assoc-in [:ui :label] strings/anchor))
+   :geometry geometry/default-options
+   :fimbriation (-> line/default-options
+                    :fimbriation
+                    (dissoc :alignment)
+                    (update :corner assoc :default :round)
+                    (update :thickness-1 assoc
+                            :max 50
+                            :default 10)
+                    (update :thickness-2 assoc
+                            :max 50
+                            :default 10))
+   :outline-mode {:type :choice
+                  :choices [[{:en "Keep"
+                              :de "Anzeigen"} :keep]
+                            ["Transparent" :transparent]
+                            [{:en "Primary"
+                              :de "Primär"} :primary]
+                            [{:en "Remove"
+                              :de "Entfernen"} :remove]]
+                  :default :keep
+                  :ui {:label strings/outline}}
+   :vertical-mask {:type :range
+                   :default 0
+                   :min -100
+                   :max 100
+                   :ui {:label {:en "Vertical mask"
+                                :de "Vertikale Maske"}
+                        :step 1}}
+   :manual-blazon {:type :text
+                   :default nil
+                   :ui {:label strings/manual-blazon}}})
+
+(defn post-process-options [options charge & {:keys [part-of-semy?
+                                                     part-of-charge-group?
+                                                     ornament?]}]
+  (let [without-origin? (or part-of-semy?
+                            part-of-charge-group?)]
+    (-> options
+        (cond->
+          without-origin? (dissoc :origin)
+          ornament? (update-in [:geometry :size] (fn [size]
+                                                   (when size
+                                                     (assoc size
+                                                            :min 5
+                                                            :max 400
+                                                            :default 100)))))
+        (update :origin (fn [position]
+                          (when position
+                            (position/adjust-options position (:origin charge)))))
+        (update :anchor (fn [position]
+                          (when position
+                            (position/adjust-options position (:anchor charge)))))
+        (update :fimbriation (fn [fimbriation]
+                               (when fimbriation
+                                 (-> (fimbriation/options
+                                      (:fimbriation charge)
+                                      :base-options (:fimbriation options))
+                                     (assoc :ui {:label strings/fimbriation
+                                                 :form-type :fimbriation}))))))))
 
 (defn make-charge
   [{:keys [environment

@@ -2,12 +2,18 @@
   (:require
    [heraldry.coat-of-arms.charge.interface :as charge-interface]
    [heraldry.coat-of-arms.charge.shared :as charge-shared]
+   [heraldry.interface :as interface]
    [heraldry.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/crescent)
 
 (defmethod charge-interface/display-name charge-type [_] {:en "Crescent"
                                                           :de "Halbmond"})
+
+(defmethod interface/options charge-type [charge & optional-args]
+  (-> charge-shared/options
+      (update :geometry dissoc :mirrored?)
+      (charge-shared/post-process-options charge optional-args)))
 
 (defmethod charge-interface/render-charge charge-type
   [context]
