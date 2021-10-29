@@ -43,58 +43,90 @@
 (defmethod component-options nil [_path _data]
   nil)
 
-(defn get-raw-data [path context]
-  (if (-> path first (= :context))
-    (get-in context (drop 1 path))
-    @(rf/subscribe [:get-value path])))
+(defn get-raw-data
+  ([path context]
+   (get-raw-data (assoc context :path path)))
 
-(defn get-options-by-context [path context]
-  (component-options path (get-raw-data path context)))
+  ([{:keys [path] :as context}]
+   (if (-> path first (= :context))
+     (get-in context (drop 1 path))
+     @(rf/subscribe [:get-value path]))))
 
-(defn get-relevant-options-by-context [path context]
-  (let [[options relative-path] (or (->> (range (count path) 0 -1)
-                                         (keep (fn [idx]
-                                                 (let [option-path (subvec path 0 idx)
-                                                       relative-path (subvec path idx)
-                                                       options (get-options-by-context option-path context)]
-                                                   (when options
-                                                     [options relative-path]))))
-                                         first)
-                                    [nil nil])]
-    (get-in options relative-path)))
+(defn get-options-by-context
+  ([path context]
+   (get-options-by-context (assoc context :path path)))
 
-(defn get-element-indices [path context]
-  (let [elements (if (-> path first (= :context))
-                   (get-in context (drop 1 path))
-                   @(rf/subscribe [:get-value path]))]
-    (shield-separator/element-indices-with-position elements)))
+  ([{:keys [path] :as context}]
+   (component-options path (get-raw-data path context))))
+
+(defn get-relevant-options-by-context
+  ([path context]
+   (get-relevant-options-by-context (assoc context :path path)))
+
+  ([{:keys [path] :as context}]
+   (let [[options relative-path] (or (->> (range (count path) 0 -1)
+                                          (keep (fn [idx]
+                                                  (let [option-path (subvec path 0 idx)
+                                                        relative-path (subvec path idx)
+                                                        options (get-options-by-context option-path context)]
+                                                    (when options
+                                                      [options relative-path]))))
+                                          first)
+                                     [nil nil])]
+     (get-in options relative-path))))
+
+(defn get-element-indices
+  ([path context]
+   (get-element-indices (assoc context :path path)))
+
+  ([{:keys [path] :as context}]
+   (let [elements (if (-> path first (= :context))
+                    (get-in context (drop 1 path))
+                    @(rf/subscribe [:get-value path]))]
+     (shield-separator/element-indices-with-position elements))))
 
 ;; TODO: this needs to be improved
-(defn motto? [path context]
-  (-> (if (-> path first (= :context))
-        (get-in context (drop 1 path))
-        @(rf/subscribe [:get-value path]))
-      :type
-      #{:heraldry.motto.type/motto
-        :heraldry.motto.type/slogan}))
+(defn motto?
+  ([path context]
+   (motto? (assoc context :path path)))
 
-(defn get-sanitized-data [path context]
-  (if (-> path first (= :context))
-    (let [data (get-raw-data path context)
-          options (get-relevant-options-by-context path context)]
-      (options/sanitize-value-or-data data options))
-    @(rf/subscribe [:get-sanitized-data path])))
+  ([{:keys [path] :as context}]
+   (-> (if (-> path first (= :context))
+         (get-in context (drop 1 path))
+         @(rf/subscribe [:get-value path]))
+       :type
+       #{:heraldry.motto.type/motto
+         :heraldry.motto.type/slogan})))
 
-(defn get-list-size [path context]
-  (if (-> path first (= :context))
-    (count (get-in context (drop 1 path)))
-    @(rf/subscribe [:get-list-size path])))
+(defn get-sanitized-data
+  ([path context]
+   (get-sanitized-data (assoc context :path path)))
 
-(defn get-counterchange-tinctures [path context]
-  (if (-> path first (= :context))
-    (-> (get-raw-data path context)
-        (counterchange/get-counterchange-tinctures context))
-    @(rf/subscribe [:get-counterchange-tinctures path context])))
+  ([{:keys [path] :as context}]
+   (if (-> path first (= :context))
+     (let [data (get-raw-data path context)
+           options (get-relevant-options-by-context path context)]
+       (options/sanitize-value-or-data data options))
+     @(rf/subscribe [:get-sanitized-data path]))))
+
+(defn get-list-size
+  ([path context]
+   (get-list-size (assoc context :path path)))
+
+  ([{:keys [path] :as context}]
+   (if (-> path first (= :context))
+     (count (get-in context (drop 1 path)))
+     @(rf/subscribe [:get-list-size path]))))
+
+(defn get-counterchange-tinctures
+  ([path context]
+   (get-counterchange-tinctures (assoc context :path path)))
+
+  ([{:keys [path] :as context}]
+   (if (-> path first (= :context))
+     (-> (get-raw-data path context)
+         (counterchange/get-counterchange-tinctures context))
+     @(rf/subscribe [:get-counterchange-tinctures path context]))))
 
 (defmulti fetch-charge-data (fn [kind _variant]
                               kind))
@@ -122,8 +154,12 @@
   (log/warn "blazon: unknown component" path)
   nil)
 
-(defn blazon [path context]
-  (let [manual-blazon (get-sanitized-data (conj path :manual-blazon) context)]
-    (if (-> manual-blazon count pos?)
-      manual-blazon
-      (blazon-component path context))))
+(defn blazon
+  ([path context]
+   (blazon (assoc context :path path)))
+
+  ([{:keys [path] :as context}]
+   (let [manual-blazon (get-sanitized-data (conj path :manual-blazon) context)]
+     (if (-> manual-blazon count pos?)
+       manual-blazon
+       (blazon-component path context)))))
