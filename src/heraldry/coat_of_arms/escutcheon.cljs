@@ -1,8 +1,7 @@
 (ns heraldry.coat-of-arms.escutcheon
   (:require
    [heraldry.coat-of-arms.field.environment :as environment]
-   [heraldry.util :as util]
-   [taoensso.timbre :as log]))
+   [heraldry.util :as util]))
 
 (def
   ^{:display-name {:en "Heater"
@@ -335,7 +334,7 @@
           "z")
      {:context :root
       :bounding-box [(- half-width) half-width 0 height]
-      :points {:fess {:x half-width :y half-width}}})))
+      :points {:fess {:x 0 :y half-width}}})))
 
 (def
   ^{:display-name {:en "Norman (late)"
@@ -356,7 +355,7 @@
           "z")
      {:context :root
       :bounding-box [(- half-width) half-width 0 height]
-      :points {:fess {:x half-width :y half-width}}})))
+      :points {:fess {:x 0 :y half-width}}})))
 
 (def
   ^{:display-name {:en "Rounded Norman (late)"
@@ -382,7 +381,7 @@
           "z")
      {:context :root
       :bounding-box [(- half-width) half-width 0 height]
-      :points {:fess {:x half-width :y half-width}}})))
+      :points {:fess {:x 0 :y half-width}}})))
 
 (def escutcheons
   [#'heater
