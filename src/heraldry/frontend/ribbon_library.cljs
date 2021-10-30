@@ -357,7 +357,8 @@
         [grid-lines width height 20 20])
 
       [:g {:transform (str "translate(" (/ width 2) "," (/ height 2) ")")}
-       [render/ribbon ribbon-path :argent :none :helmet-dark render-context]
+       [render/ribbon (assoc render-context
+                             :path ribbon-path) :argent :none :helmet-dark]
        [render-edit-overlay ribbon-path]
        (doall
         (for [idx (range num-points)]
