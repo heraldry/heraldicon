@@ -450,24 +450,27 @@
                  (- 0 (/ total-width 2) min-x) ","
                  (- 0 (/ total-height 2) min-y) ")")}))
 
-(defn get-used-fonts [path context]
-  (let [ornaments-elements-path (conj path :ornaments :elements)
-        num-ornaments (interface/get-list-size ornaments-elements-path context)]
+(defn get-used-fonts [context]
+  (let [num-ornaments (interface/get-list-size (update context :path conj :ornaments :elements))]
     ;; TODO: might have to be smarter here to only look into mottos,
     ;; but it should work if there's no :ribbon :segments
     (->> (for [i (range num-ornaments)
-               j (range (interface/get-list-size (conj
-                                                  ornaments-elements-path
-                                                  i
-                                                  :ribbon
-                                                  :segments) context))]
-           (interface/get-sanitized-data (conj
-                                          ornaments-elements-path
-                                          i
-                                          :ribbon
-                                          :segments
-                                          j
-                                          :font) context))
+               j (range (interface/get-list-size (update context :path
+                                                         conj
+                                                         :ornaments
+                                                         :elements
+                                                         i
+                                                         :ribbon
+                                                         :segments)))]
+           (interface/get-sanitized-data (update context :path
+                                                 conj
+                                                 :ornaments
+                                                 :elements
+                                                 i
+                                                 :ribbon
+                                                 :segments
+                                                 j
+                                                 :font)))
          (filter identity)
          (into #{}))))
 
@@ -540,7 +543,7 @@
                                                   (assoc context :path (conj path :ornaments))
                                                   coat-of-arms-bounding-box))
 
-        used-fonts (cond-> (get-used-fonts path context)
+        used-fonts (cond-> (get-used-fonts (assoc context :path path))
                      short-url (conj short-url-font))
 
         achievement-bounding-box (bounding-box/combine
