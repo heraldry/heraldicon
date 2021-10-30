@@ -474,8 +474,8 @@
          (filter identity)
          (into #{}))))
 
-(defn achievement [path {:keys [short-url
-                                svg-export?] :as context}]
+(defn achievement [{:keys [short-url
+                           svg-export?] :as context}]
   (let [short-url-font :deja-vu-sans
         coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
         scope (interface/render-option :scope context)
@@ -487,7 +487,7 @@
                                      coa-angle-rad-abs)
         {coat-of-arms :result
          environment :environment} (coat-of-arms
-                                    (assoc context :path (conj path :coat-of-arms))
+                                    (update context :path conj :coat-of-arms)
                                     100)
         {coat-of-arms-width :width
          coat-of-arms-height :height} environment
@@ -499,7 +499,7 @@
                                   :height 0
                                   :result nil}
                                  (helms
-                                  (assoc context :path (conj path :helms))
+                                  (update context :path conj :helms)
                                   100))
 
         short-arm (* coat-of-arms-width (Math/cos coa-angle-rad-abs))
@@ -540,10 +540,10 @@
                                                       :coat-of-arms-and-helm} scope)
                                                  {:bounding-box [0 0 0 0]}
                                                  (ornaments
-                                                  (assoc context :path (conj path :ornaments))
+                                                  (update context :path conj :ornaments)
                                                   coat-of-arms-bounding-box))
 
-        used-fonts (cond-> (get-used-fonts (assoc context :path path))
+        used-fonts (cond-> (get-used-fonts context)
                      short-url (conj short-url-font))
 
         achievement-bounding-box (bounding-box/combine

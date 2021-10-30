@@ -75,9 +75,9 @@
 
 (defn render-coat-of-arms []
   [render/achievement
-   form-db-path
    (assoc
     context/default
+    :path form-db-path
     :render-options-path (conj form-db-path :render-options))])
 
 (defn blazonry []
