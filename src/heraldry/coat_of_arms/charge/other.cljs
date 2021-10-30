@@ -557,7 +557,9 @@
                       (when render-field?
                         [:g {:mask (str "url(#" mask-inverted-id ")")}
                          [:g {:transform reverse-transform}
-                          [field-shared/render (conj path :field) charge-environment context]]])
+                          [field-shared/render (-> context
+                                                   (assoc :path (conj path :field))
+                                                   (assoc :environment charge-environment))]]])
                       [:g {:mask (str "url(#" mask-id ")")
                            ;; TODO: select component
                            :on-click nil #_(when fn-select-component
