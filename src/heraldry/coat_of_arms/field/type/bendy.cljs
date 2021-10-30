@@ -15,12 +15,12 @@
 (defmethod field-interface/part-names field-type [_] nil)
 
 (defmethod field-interface/render-field field-type
-  [path environment context]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        origin (interface/get-sanitized-data (conj path :origin) context)
-        anchor (interface/get-sanitized-data (conj path :anchor) context)
+  [{:keys [path environment] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        origin (interface/get-sanitized-data (update context :path conj :origin))
+        anchor (interface/get-sanitized-data (update context :path conj :anchor))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)
@@ -43,10 +43,9 @@
         required-half-width (v/distance-point-to-line top-left center-point (v/add center-point direction-orthogonal))
         required-half-height (v/distance-point-to-line top-right center-point (v/add center-point direction))
         [parts overlap outlines] (barry/barry-parts
-                                  path
                                   (v/v (- required-half-width) (- required-half-height))
                                   (v/v required-half-width required-half-height)
-                                  line outline? context environment)]
+                                  line outline? context)]
     [:g {:transform (str "translate(" (v/->str center-point) ")"
                          "rotate(" angle ")")}
      [shared/make-subfields

@@ -17,13 +17,13 @@
 (defmethod field-interface/part-names field-type [_] nil)
 
 (defmethod field-interface/render-field field-type
-  [path environment context]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        num-fields-x (interface/get-sanitized-data (conj path :layout :num-fields-x) context)
-        offset-x (interface/get-sanitized-data (conj path :layout :offset-x) context)
-        stretch-x (interface/get-sanitized-data (conj path :layout :stretch-x) context)
+  [{:keys [path environment] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        num-fields-x (interface/get-sanitized-data (update context :path conj :layout :num-fields-x))
+        offset-x (interface/get-sanitized-data (update context :path conj :layout :offset-x))
+        stretch-x (interface/get-sanitized-data (update context :path conj :layout :stretch-x))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)

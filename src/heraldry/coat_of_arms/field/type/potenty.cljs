@@ -246,17 +246,17 @@
                                "h" w)}]]}))
 
 (defmethod field-interface/render-field field-type
-  [path environment context]
-  (let [variant (interface/get-sanitized-data (conj path :variant) context)
-        num-fields-x (interface/get-sanitized-data (conj path :layout :num-fields-x) context)
-        num-fields-y (interface/get-sanitized-data (conj path :layout :num-fields-y) context)
-        raw-num-fields-y (interface/get-raw-data (conj path :layout :num-fields-y) context)
-        offset-x (interface/get-sanitized-data (conj path :layout :offset-x) context)
-        offset-y (interface/get-sanitized-data (conj path :layout :offset-y) context)
-        stretch-x (interface/get-sanitized-data (conj path :layout :stretch-x) context)
-        stretch-y (interface/get-sanitized-data (conj path :layout :stretch-y) context)
+  [{:keys [environment] :as context}]
+  (let [variant (interface/get-sanitized-data (update context :path conj :variant))
+        num-fields-x (interface/get-sanitized-data (update context :path conj :layout :num-fields-x))
+        num-fields-y (interface/get-sanitized-data (update context :path conj :layout :num-fields-y))
+        raw-num-fields-y (interface/get-raw-data (update context :path conj :layout :num-fields-y))
+        offset-x (interface/get-sanitized-data (update context :path conj :layout :offset-x))
+        offset-y (interface/get-sanitized-data (update context :path conj :layout :offset-y))
+        stretch-x (interface/get-sanitized-data (update context :path conj :layout :stretch-x))
+        stretch-y (interface/get-sanitized-data (update context :path conj :layout :stretch-y))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
@@ -339,8 +339,7 @@
                     :height 1100
                     :fill (str "url(#" pattern-id "-" idx ")")}]]
            [tincture/tinctured-field
-            (conj path :fields idx :tincture)
-            context
+            (update context :path conj :fields idx :tincture)
             :mask-id mask-id]])))
      (when outline?
        [:rect {:x -500

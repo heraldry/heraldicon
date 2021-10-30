@@ -197,9 +197,9 @@
       (lookup-colour background theme)
       (lookup-colour foreground theme)))))
 
-(defn tinctured-field [tincture-path {:keys [tincture-mapping] :as context} & {:keys [mask-id
-                                                                                      transform]}]
-  (let [tincture (interface/get-sanitized-data tincture-path context)
+(defn tinctured-field [{:keys [tincture-mapping] :as context} & {:keys [mask-id
+                                                                        transform]}]
+  (let [tincture (interface/get-sanitized-data context)
         theme (interface/render-option :theme context)
         theme (if (and (:svg-export? context)
                        (= theme :all))

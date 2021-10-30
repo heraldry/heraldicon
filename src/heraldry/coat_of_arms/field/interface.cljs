@@ -7,11 +7,11 @@
 
 (defmulti part-names identity)
 
-(defmulti render-field (fn [path _environment context]
-                         (let [field-type (interface/get-sanitized-data (conj path :type) context)]
+(defmulti render-field (fn [context]
+                         (let [field-type (interface/get-sanitized-data (update context :path conj :type))]
                            (when (keyword? field-type)
                              field-type))))
 
-(defmethod render-field nil [path _environment context]
-  (log/warn :not-implemented "render-field" path context)
+(defmethod render-field nil [context]
+  (log/warn :not-implemented "render-field" context)
   [:<>])

@@ -20,15 +20,15 @@
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
 
 (defmethod field-interface/render-field field-type
-  [path environment context]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
-        origin (interface/get-sanitized-data (conj path :origin) context)
-        anchor (interface/get-sanitized-data (conj path :anchor) context)
-        direction-anchor (interface/get-sanitized-data (conj path :direction-anchor) context)
+  [{:keys [path environment] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
+        origin (interface/get-sanitized-data (update context :path conj :origin))
+        anchor (interface/get-sanitized-data (update context :path conj :anchor))
+        direction-anchor (interface/get-sanitized-data (update context :path conj :direction-anchor))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
-        raw-direction-anchor (interface/get-raw-data (conj path :direction-anchor) context)
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
+        raw-direction-anchor (interface/get-raw-data (update context :path conj :direction-anchor))
         direction-anchor (cond-> direction-anchor
                            (-> direction-anchor
                                :point

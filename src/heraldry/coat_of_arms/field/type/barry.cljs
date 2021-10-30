@@ -16,10 +16,11 @@
 
 (defmethod field-interface/part-names field-type [_] nil)
 
-(defn barry-parts [path top-left bottom-right line outline? context environment]
-  (let [num-fields-y (interface/get-sanitized-data (conj path :layout :num-fields-y) context)
-        offset-y (interface/get-sanitized-data (conj path :layout :offset-y) context)
-        stretch-y (interface/get-sanitized-data (conj path :layout :stretch-y) context)
+(defn barry-parts [top-left bottom-right line outline? context]
+  (let [environment (:environment context)
+        num-fields-y (interface/get-sanitized-data (update context :path conj :layout :num-fields-y))
+        offset-y (interface/get-sanitized-data (update context :path conj :layout :offset-y))
+        stretch-y (interface/get-sanitized-data (update context :path conj :layout :stretch-y))
         height (- (:y bottom-right)
                   (:y top-left))
         bar-height (-> height
@@ -163,14 +164,14 @@
     [parts overlap outlines]))
 
 (defmethod field-interface/render-field field-type
-  [path environment context]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
+  [{:keys [path environment] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (barry-parts path top-left bottom-right line outline? context environment)]
+        [parts overlap outlines] (barry-parts top-left bottom-right line outline? context)]
     [:<>
      [shared/make-subfields
       path parts
