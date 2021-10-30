@@ -11,7 +11,7 @@
 (defmethod field-interface/part-names field-type [_] [])
 
 (defmethod field-interface/render-field field-type
-  [path _environment context]
+  [context]
   (tincture/tinctured-field
-   (conj path :tincture)
+   (update context :path conj :tincture)
    context))

@@ -86,18 +86,18 @@
           ;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
           ;; adding it to the choices in the option would affect the UI
           field-type (interface/get-raw-data (update context :path conj :type))
-          path (if (= field-type :heraldry.field.type/ref)
-                 (-> path
-                     drop-last
-                     vec
-                     (conj (interface/get-raw-data (update context :path conj :index))))
-                 path)]
+          field-path (if (= field-type :heraldry.field.type/ref)
+                       (-> path
+                           drop-last
+                           vec
+                           (conj (interface/get-raw-data (update context :path conj :index))))
+                       path)]
       [:<>
        [:g {:style (when (not svg-export?)
                      {:pointer-events "visiblePainted"
                       :cursor "pointer"})
             :transform transform}
-        [ui-interface/render-field path environment context]
+        [ui-interface/render-field (assoc context :path field-path)]
         [render-components
          (-> context
              (assoc :parent-field-path path)

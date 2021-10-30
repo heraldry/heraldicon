@@ -18,12 +18,12 @@
 (defmethod field-interface/part-names field-type [_] ["dexter" "fess" "sinister"])
 
 (defmethod field-interface/render-field field-type
-  [path environment context]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        stretch-x (interface/get-sanitized-data (conj path :layout :stretch-x) context)
-        origin (interface/get-sanitized-data (conj path :origin) context)
+  [{:keys [path environment] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        stretch-x (interface/get-sanitized-data (update context :path conj :layout :stretch-x))
+        origin (interface/get-sanitized-data (update context :path conj :origin))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
