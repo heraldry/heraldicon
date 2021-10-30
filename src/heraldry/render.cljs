@@ -21,11 +21,10 @@
    [heraldry.ribbon :as ribbon]
    [heraldry.util :as util]))
 
-(defn coat-of-arms [path width
-                    {:keys
+(defn coat-of-arms [{:keys
                      [svg-export?
                       metadata-path
-                      texture-link] :as context}]
+                      texture-link] :as context} width]
   (let [mode (interface/render-option :mode context)
         escutcheon (interface/render-option :escutcheon context)
         escutcheon-shadow? (when-not svg-export?
@@ -112,9 +111,10 @@
                                (str "url(#" shiny-id ")"))}
                  [:path {:d (:shape environment)
                          :fill "#f0f0f0"}]
-                 [field-shared/render (conj path :field)
+                 [field-shared/render (-> context :path (conj :field))
                   environment
                   (-> context
+                      (dissoc :path)
                       (dissoc :metadata-path)
                       (assoc :root-escutcheon escutcheon))]]]]
               (when (or escutcheon-outline?
@@ -485,9 +485,8 @@
                                      coa-angle-rad-abs)
         {coat-of-arms :result
          environment :environment} (coat-of-arms
-                                    (conj path :coat-of-arms)
-                                    100
-                                    context)
+                                    (assoc context :path (conj path :coat-of-arms))
+                                    100)
         {coat-of-arms-width :width
          coat-of-arms-height :height} environment
         {helms-result-below-shield :result-below-shield
