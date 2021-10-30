@@ -111,12 +111,11 @@
                                (str "url(#" shiny-id ")"))}
                  [:path {:d (:shape environment)
                          :fill "#f0f0f0"}]
-                 [field-shared/render (-> context :path (conj :field))
-                  environment
-                  (-> context
-                      (dissoc :path)
-                      (dissoc :metadata-path)
-                      (assoc :root-escutcheon escutcheon))]]]]
+                 [field-shared/render (-> context
+                                          (update :path conj :field)
+                                          (assoc :environment environment)
+                                          (dissoc :metadata-path)
+                                          (assoc :root-escutcheon escutcheon))]]]]
               (when (or escutcheon-outline?
                         outline?)
                 [:g (outline/style context)

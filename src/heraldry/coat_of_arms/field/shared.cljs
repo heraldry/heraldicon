@@ -62,32 +62,37 @@
        path environment
        context]))])
 
-(defn render-counterchanged-field [path environment {:keys [parent-field-path
-                                                            parent-field-environment] :as context} render-fn]
+(defn render-counterchanged-field [{:keys [path
+                                           environment
+                                           parent-field-path
+                                           parent-field-environment] :as context} render-fn]
   (if parent-field-path
     (let [counterchange-tinctures (interface/get-counterchange-tinctures parent-field-path context)
           context (-> context
                       (update :counterchanged-paths conj path)
                       (add-tinctures-to-mapping counterchange-tinctures))]
       [:<>
-       [render-fn parent-field-path parent-field-environment context]
+       [render-fn (-> context
+                      (assoc :path parent-field-path)
+                      (assoc :environment parent-field-environment ))]
        [render-components path environment context]])
     [:<>]))
 
-(defn render [path environment
-              {:keys [svg-export?
+(defn render [{:keys [path
+                      environment
+                      svg-export?
                       transform] :as context}]
-  (if (interface/get-sanitized-data (conj path :counterchanged?) context)
-    (render-counterchanged-field path environment context render)
+  (if (interface/get-sanitized-data (update context :path conj :counterchanged?))
+    (render-counterchanged-field context render)
     (let [selected? false
           ;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
           ;; adding it to the choices in the option would affect the UI
-          field-type (interface/get-raw-data (conj path :type) context)
+          field-type (interface/get-raw-data (update context :path conj :type))
           path (if (= field-type :heraldry.field.type/ref)
                  (-> path
                      drop-last
                      vec
-                     (conj (interface/get-raw-data (conj path :index) context)))
+                     (conj (interface/get-raw-data (update context :path conj :index))))
                  path)]
       [:<>
        [:g {:style (when (not svg-export?)
@@ -157,9 +162,9 @@
           [:g {:mask (when (-> env :meta :mask)
                        (str "url(#" mask-id ")"))}
            [render
-            part-path
-            env
-            context]]]])))])
+            (-> context
+                (assoc :path part-path)
+                (assoc :environment env))]]]])))])
 
 (defn make-subfields [field-path parts mask-overlaps parent-environment context]
   (-make-subfields field-path
