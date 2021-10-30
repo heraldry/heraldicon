@@ -122,19 +122,17 @@
                  [:path {:d (:shape environment)}]])]}))
 
 (defn helm [context & {:keys [below-shield?]}]
-  (let [components-path (-> context :path (conj :components))]
-    [:<>
-     (doall
-      (for [[idx self-below-shield?] (interface/get-element-indices
-                                      (update context :path conj :components))]
-        ^{:key idx}
-        [interface/render-component
-         (conj components-path idx)
-         (:environment context)
-         (-> context
-             (assoc :auto-resize? false)
-             (assoc :self-below-shield? self-below-shield?)
-             (assoc :render-pass-below-shield? below-shield?))]))]))
+  [:<>
+   (doall
+    (for [[idx self-below-shield?] (interface/get-element-indices
+                                    (update context :path conj :components))]
+      ^{:key idx}
+      [interface/render-component
+       (-> context
+           (update :path conj :components idx)
+           (assoc :auto-resize? false)
+           (assoc :self-below-shield? self-below-shield?)
+           (assoc :render-pass-below-shield? below-shield?))]))])
 
 (defn helms [context width]
   (let [num-helms (interface/get-list-size (update context :path conj :elements))]
@@ -392,10 +390,7 @@
         [:<>
          (if motto?
            (:result (motto updated-context))
-           [interface/render-component
-            (:path updated-context)
-            (:environment context)
-            updated-context])])))])
+           [interface/render-component updated-context])])))])
 
 (defn ornaments [context coa-bounding-box]
   (let [[bb-min-x bb-max-x bb-min-y bb-max-y] coa-bounding-box
