@@ -379,32 +379,28 @@
       {:result nil
        :bounding-box nil})))
 
-(defn ornaments-elements [path environment context & {:keys [below-shield?]}]
-  (let [elements-path (conj path :elements)]
-    [:<>
-     (doall
-      (for [[idx self-below-shield?] (interface/get-element-indices elements-path context)]
-        (let [element-path (conj elements-path idx)
-              motto? (interface/motto? element-path context)
-              updated-context (-> context
-                                  (assoc :path element-path)
-                                  (assoc :environment environment)
-                                  (assoc :auto-resize? false)
-                                  (assoc :self-below-shield? self-below-shield?)
-                                  (assoc :render-pass-below-shield? below-shield?))]
-          ^{:key idx}
-          [:<>
-           (if motto?
-             (:result (motto updated-context))
-             [interface/render-component
-              element-path
-              path environment
-              updated-context])])))]))
+(defn ornaments-elements [context & {:keys [below-shield?]}]
+  [:<>
+   (doall
+    (for [[idx self-below-shield?] (interface/get-element-indices context)]
+      (let [updated-context (-> context
+                                (update :path conj idx)
+                                (assoc :auto-resize? false)
+                                (assoc :self-below-shield? self-below-shield?)
+                                (assoc :render-pass-below-shield? below-shield?))
+            motto? (interface/motto? updated-context)]
+        ^{:key idx}
+        [:<>
+         (if motto?
+           (:result (motto updated-context))
+           [interface/render-component
+            (:path updated-context)
+            (:path context) (:environment context)
+            updated-context])])))])
 
-(defn ornaments [path coa-bounding-box context]
+(defn ornaments [context coa-bounding-box]
   (let [[bb-min-x bb-max-x bb-min-y bb-max-y] coa-bounding-box
-        elements-path (conj path :elements)
-        num-ornaments (count (interface/get-element-indices elements-path context))
+        num-ornaments (count (interface/get-element-indices (update context :path conj :elements)))
         width (- bb-max-x bb-min-x)
         height (- bb-max-y bb-min-y)
         ornaments-width (* 3 1.2 width)
@@ -419,10 +415,13 @@
                           (+ bb-min-y))
         environment (environment/create
                      nil
-                     {:bounding-box coa-bounding-box})]
+                     {:bounding-box coa-bounding-box})
+        updated-context (-> context
+                            (update :path conj :elements)
+                            (assoc :environment environment))]
     (if (pos? num-ornaments)
-      {:result-below-shield [ornaments-elements path environment context :below-shield? true]
-       :result-above-shield [ornaments-elements path environment context :below-shield? false]
+      {:result-below-shield [ornaments-elements updated-context :below-shield? true]
+       :result-above-shield [ornaments-elements updated-context :below-shield? false]
 
        :bounding-box [ornaments-left
                       (+ ornaments-left ornaments-width)
@@ -538,9 +537,8 @@
                                                       :coat-of-arms-and-helm} scope)
                                                  {:bounding-box [0 0 0 0]}
                                                  (ornaments
-                                                  (conj path :ornaments)
-                                                  coat-of-arms-bounding-box
-                                                  context))
+                                                  (assoc context :path (conj path :ornaments))
+                                                  coat-of-arms-bounding-box))
 
         used-fonts (cond-> (get-used-fonts path context)
                      short-url (conj short-url-font))
