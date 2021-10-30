@@ -122,23 +122,23 @@
                 [:g (outline/style context)
                  [:path {:d (:shape environment)}]])]}))
 
-(defn helm [path environment context & {:keys [below-shield?]}]
-  (let [components-path (conj path :components)]
+(defn helm [context & {:keys [below-shield?]}]
+  (let [components-path (-> context :path (conj :components))]
     [:<>
      (doall
-      (for [[idx self-below-shield?] (interface/get-element-indices components-path context)]
+      (for [[idx self-below-shield?] (interface/get-element-indices
+                                      (update context :path conj :components))]
         ^{:key idx}
         [interface/render-component
          (conj components-path idx)
-         path environment
+         (:path context) (:environment context)
          (-> context
              (assoc :auto-resize? false)
              (assoc :self-below-shield? self-below-shield?)
              (assoc :render-pass-below-shield? below-shield?))]))]))
 
-(defn helms [path width context]
-  (let [elements-path (conj path :elements)
-        num-helms (interface/get-list-size elements-path context)]
+(defn helms [context width]
+  (let [num-helms (interface/get-list-size (update context :path conj :elements))]
     (if (zero? num-helms)
       {:width 0
        :height 0
@@ -169,7 +169,9 @@
                                                                           (- helm-height)
                                                                           0]})]
                                     ^{:key idx}
-                                    [helm (conj elements-path idx) helm-environment context
+                                    [helm (-> context
+                                              (update :path conj :elements idx)
+                                              (assoc :environment helm-environment))
                                      :below-shield? true])))]
          :result-above-shield [:g
                                (doall
@@ -184,7 +186,9 @@
                                                                           (- helm-height)
                                                                           0]})]
                                     ^{:key idx}
-                                    [helm (conj elements-path idx) helm-environment context])))]}))))
+                                    [helm (-> context
+                                              (update :path conj :elements idx)
+                                              (assoc :environment helm-environment))])))]}))))
 
 (defn ribbon [path
               tincture-foreground
@@ -492,9 +496,8 @@
                                   :height 0
                                   :result nil}
                                  (helms
-                                  (conj path :helms)
-                                  100
-                                  context))
+                                  (assoc context :path (conj path :helms))
+                                  100))
 
         short-arm (* coat-of-arms-width (Math/cos coa-angle-rad-abs))
         long-arm (* coat-of-arms-height (Math/cos coa-angle-counter-rad-abs))
