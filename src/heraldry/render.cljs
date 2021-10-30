@@ -190,21 +190,19 @@
                                               (update :path conj :elements idx)
                                               (assoc :environment helm-environment))])))]}))))
 
-(defn ribbon [path
+(defn ribbon [context
               tincture-foreground
               tincture-background
               tincture-text
-              context & {:keys [outline-thickness]
-                         :or {outline-thickness 1}}]
-  (let [thickness (interface/get-sanitized-data (conj path :thickness) context)
-        edge-angle (interface/get-sanitized-data (conj path :edge-angle) context)
-        end-split (interface/get-sanitized-data (conj path :end-split) context)
+              & {:keys [outline-thickness]
+                 :or {outline-thickness 1}}]
+  (let [thickness (interface/get-sanitized-data (update context :path conj :thickness))
+        edge-angle (interface/get-sanitized-data (update context :path conj :edge-angle))
+        end-split (interface/get-sanitized-data (update context :path conj :end-split))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
-        points-path (conj path :points)
-        segments-path (conj path :segments)
-        points (interface/get-raw-data points-path context)
-        segments (interface/get-raw-data segments-path context)
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
+        points (interface/get-raw-data (update context :path conj :points))
+        segments (interface/get-raw-data (update context :path conj :segments))
         {:keys [curves edge-vectors]} (ribbon/generate-curves points edge-angle)
         num-curves (count curves)
         foreground-colour (tincture/pick tincture-foreground context)
@@ -269,11 +267,11 @@
                                                                              second-edge-vector))
                                                               (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
                                                               (path/line-to (v/mul first-edge-vector -1))))
-              segment-path (conj segments-path idx)
-              segment-type (interface/get-raw-data (conj segment-path :type) context)
+              segment-context (update context :path conj :segments idx)
+              segment-type (interface/get-raw-data (update segment-context :path conj :type))
               foreground? (#{:heraldry.ribbon.segment/foreground
                              :heraldry.ribbon.segment/foreground-with-text} segment-type)
-              text (some-> (interface/get-sanitized-data (conj segment-path :text) context)
+              text (some-> (interface/get-sanitized-data (update segment-context :path conj :text))
                            (s/replace #"[*]" "⬪"))
               text? (and (= segment-type :heraldry.ribbon.segment/foreground-with-text)
                          (some-> text
@@ -292,12 +290,12 @@
                                           background-colour)})}]
            (when text?
              (let [path-id (util/id "path")
-                   spacing (interface/get-sanitized-data (conj segment-path :spacing) context)
-                   offset-x (interface/get-sanitized-data (conj segment-path :offset-x) context)
-                   offset-y (interface/get-sanitized-data (conj segment-path :offset-y) context)
-                   font (some-> (interface/get-sanitized-data (conj segment-path :font) context)
+                   spacing (interface/get-sanitized-data (update segment-context :path conj :spacing))
+                   offset-x (interface/get-sanitized-data (update segment-context :path conj :offset-x))
+                   offset-y (interface/get-sanitized-data (update segment-context :path conj :offset-y))
+                   font (some-> (interface/get-sanitized-data (update segment-context :path conj :font))
                                 font/css-string)
-                   font-scale (interface/get-sanitized-data (conj segment-path :font-scale) context)
+                   font-scale (interface/get-sanitized-data (update segment-context :path conj :font-scale))
                    font-size (* font-scale thickness)
                    spacing (* spacing font-size)
                    text-path-start (v/add (ffirst partial-curve)
@@ -323,21 +321,23 @@
                             :startOffset (str (+ 50 (* offset-x 100)) "%")}
                  text]]))])))]))
 
-(defn motto [path {:keys [width height] :as environment} {:keys [self-below-shield? render-pass-below-shield?]
-                                                          :as context}]
-  (let [ribbon-path (conj path :ribbon)
-        points (interface/get-raw-data (conj ribbon-path :points) context)]
+(defn motto [{:keys [environment
+                     self-below-shield?
+                     render-pass-below-shield?]
+              :as context}]
+  (let [{:keys [width height]} environment
+        points (interface/get-raw-data (update context :path conj :ribbon :points))]
     (if (and (= (boolean self-below-shield?)
                 (boolean render-pass-below-shield?))
              points)
-      (let [origin-point (interface/get-sanitized-data (conj path :origin :point) context)
-            tincture-foreground (interface/get-sanitized-data (conj path :tincture-foreground) context)
-            tincture-background (interface/get-sanitized-data (conj path :tincture-background) context)
-            tincture-text (interface/get-sanitized-data (conj path :tincture-text) context)
-            offset-x (interface/get-sanitized-data (conj path :origin :offset-x) context)
-            offset-y (interface/get-sanitized-data (conj path :origin :offset-y) context)
-            size (interface/get-sanitized-data (conj path :geometry :size) context)
-            thickness (interface/get-sanitized-data (conj ribbon-path :thickness) context)
+      (let [origin-point (interface/get-sanitized-data (update context :path conj :origin :point))
+            tincture-foreground (interface/get-sanitized-data (update context :path conj :tincture-foreground))
+            tincture-background (interface/get-sanitized-data (update context :path conj :tincture-background))
+            tincture-text (interface/get-sanitized-data (update context :path conj :tincture-text))
+            offset-x (interface/get-sanitized-data (update context :path conj :origin :offset-x))
+            offset-y (interface/get-sanitized-data (update context :path conj :origin :offset-y))
+            size (interface/get-sanitized-data (update context :path conj :geometry :size))
+            thickness (interface/get-sanitized-data (update context :path conj :ribbon :thickness))
             position (-> (-> environment :points (get origin-point))
                          (v/add (v/v ((util/percent-of width) offset-x)
                                      (- ((util/percent-of height) offset-y)))))
@@ -362,11 +362,11 @@
                                                                 (v/add (v/v min-x min-y))
                                                                 (v/mul -1))) ")")}
                   [ribbon
-                   ribbon-path
+                   (update context :path conj :ribbon)
                    tincture-foreground
                    tincture-background
                    tincture-text
-                   context :outline-thickness outline-thickness]]
+                   :outline-thickness outline-thickness]]
          :bounding-box (let [top-left (-> (v/v min-x min-y)
                                           (v/mul scale)
                                           (v/add position))
@@ -387,13 +387,15 @@
         (let [element-path (conj elements-path idx)
               motto? (interface/motto? element-path context)
               updated-context (-> context
+                                  (assoc :path element-path)
+                                  (assoc :environment environment)
                                   (assoc :auto-resize? false)
                                   (assoc :self-below-shield? self-below-shield?)
                                   (assoc :render-pass-below-shield? below-shield?))]
           ^{:key idx}
           [:<>
            (if motto?
-             (:result (motto element-path environment updated-context))
+             (:result (motto updated-context))
              [interface/render-component
               element-path
               path environment
