@@ -5,7 +5,7 @@
 
 (defmulti display-name identity)
 
-(defmulti render-charge (fn [path _parent-path _environment context]
+(defmulti render-charge (fn [path _environment context]
                           (let [data (interface/get-raw-data (conj path :data) context)
                                 variant (interface/get-raw-data (conj path :variant) context)
                                 charge-type (interface/get-sanitized-data (conj path :type) context)]
@@ -13,6 +13,6 @@
                               :heraldry.charge.type/other
                               charge-type))))
 
-(defmethod render-charge nil [path _parent-path _environment context]
+(defmethod render-charge nil [path _environment context]
   (log/warn :not-implemented "render-charge" path context)
   [:<>])

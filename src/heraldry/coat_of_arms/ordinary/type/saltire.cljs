@@ -18,7 +18,7 @@
                                                               :de "Andreaskreuz"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path _parent-path environment context]
+  [path environment context]
   (let [line (interface/get-sanitized-data (conj path :line) context)
         origin (interface/get-sanitized-data (conj path :origin) context)
         anchor (interface/get-sanitized-data (conj path :anchor) context)

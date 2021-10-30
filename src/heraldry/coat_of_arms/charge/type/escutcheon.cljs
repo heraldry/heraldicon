@@ -14,10 +14,10 @@
                                                           :de "Schild"})
 
 (defmethod charge-interface/render-charge charge-type
-  [path parent-path environment {:keys [root-escutcheon] :as context}]
+  [path environment {:keys [root-escutcheon] :as context}]
   (let [escutcheon (interface/get-sanitized-data (conj path :escutcheon) context)]
     (charge-shared/make-charge
-     path parent-path environment context
+     path environment context
      :width
      (fn [width]
        (let [env (environment/transform-to-width

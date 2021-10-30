@@ -92,7 +92,6 @@
             outline? (interface/get-sanitized-data (conj cottise-path :outline?) context)]
         [ordinary-interface/render-ordinary
          [:context :cottise]
-         path
          environment
          (assoc
           context
@@ -126,7 +125,6 @@
             outline? (interface/get-sanitized-data (conj cottise-path :outline?) context)]
         [ordinary-interface/render-ordinary
          [:context :cottise]
-         path
          environment
          (assoc
           context
@@ -172,7 +170,6 @@
             outline? (interface/get-sanitized-data (conj cottise-path :outline?) context)]
         [ordinary-interface/render-ordinary
          [:context :cottise]
-         path
          environment
          (-> context
              (assoc
@@ -233,7 +230,6 @@
             outline? (interface/get-sanitized-data (conj cottise-path :outline?) context)]
         [ordinary-interface/render-ordinary
          [:context :cottise]
-         path
          environment
          (-> context
              (assoc

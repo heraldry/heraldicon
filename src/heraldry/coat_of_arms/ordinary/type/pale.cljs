@@ -17,9 +17,9 @@
                                                               :de "Pfahl"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path _parent-path environment {:keys [override-real-start
-                                         override-real-end
-                                         override-shared-start-y] :as context}]
+  [path environment {:keys [override-real-start
+                            override-real-end
+                            override-shared-start-y] :as context}]
   (let [line (interface/get-sanitized-data (conj path :line) context)
         opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
         origin (interface/get-sanitized-data (conj path :origin) context)

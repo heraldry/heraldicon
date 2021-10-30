@@ -16,7 +16,7 @@
                                                               :de "Schrägeck"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path _parent-path environment context]
+  [path environment context]
   (let [line (interface/get-sanitized-data (conj path :line) context)
         variant (interface/get-sanitized-data (conj path :variant) context)
         point-width (interface/get-sanitized-data (conj path :geometry :width) context)

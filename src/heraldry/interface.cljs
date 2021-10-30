@@ -134,14 +134,14 @@
 (defn render-option [key {:keys [render-options-path] :as context}]
   (get-sanitized-data (conj render-options-path key) context))
 
-(defmulti render-component (fn [path _parent-path _environment context]
+(defmulti render-component (fn [path _environment context]
                              (effective-component-type
                               path
                               ;; TODO: need the raw value here for type
                               (get-raw-data (conj path :type) context))))
 
-(defmethod render-component nil [path parent-path _environment _context]
-  (log/warn :not-implemented "render-component" path parent-path)
+(defmethod render-component nil [path _environment _context]
+  (log/warn :not-implemented "render-component" path)
   [:<>])
 
 (defmulti blazon-component (fn [path context]

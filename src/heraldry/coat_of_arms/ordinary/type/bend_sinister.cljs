@@ -16,11 +16,11 @@
                                                               :de "Schräglinksbalken"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path _parent-path environment {:keys [override-middle-real-start
-                                         override-middle-real-end
-                                         override-real-start
-                                         override-real-end
-                                         override-center-point] :as context}]
+  [path environment {:keys [override-middle-real-start
+                            override-middle-real-end
+                            override-real-start
+                            override-real-end
+                            override-center-point] :as context}]
   (let [line (interface/get-sanitized-data (conj path :line) context)
         opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
         origin (interface/get-sanitized-data (conj path :origin) context)
