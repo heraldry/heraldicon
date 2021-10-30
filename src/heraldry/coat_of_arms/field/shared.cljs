@@ -9,7 +9,7 @@
 
 (def overlap-stroke-width 0.1)
 
-(defn field-path-allowed? [path {:keys [counterchanged-paths]}]
+(defn field-path-allowed? [{:keys [path counterchanged-paths]}]
   (let [component-path (->> path
                             reverse
                             (drop-while (comp not int?)))
@@ -49,13 +49,12 @@
                         (not (contains? new-mapping t2)) (assoc t2 t1)))))))
     context))
 
-(defn render-components [path environment context]
+(defn render-components [{:keys [path environment] :as context}]
   [:<>
    (doall
-    (for [idx (range (interface/get-list-size (conj path :components) context))
+    (for [idx (range (interface/get-list-size (update context :path conj :components)))
           :while (field-path-allowed?
-                  (conj path :components idx)
-                  context)]
+                  (update context :path conj :components idx))]
       ^{:key idx}
       [interface/render-component
        (conj path :components idx)
@@ -63,7 +62,6 @@
        context]))])
 
 (defn render-counterchanged-field [{:keys [path
-                                           environment
                                            parent-field-path
                                            parent-field-environment] :as context} render-fn]
   (if parent-field-path
@@ -74,8 +72,8 @@
       [:<>
        [render-fn (-> context
                       (assoc :path parent-field-path)
-                      (assoc :environment parent-field-environment ))]
-       [render-components path environment context]])
+                      (assoc :environment parent-field-environment))]
+       [render-components context]])
     [:<>]))
 
 (defn render [{:keys [path
@@ -100,7 +98,7 @@
                       :cursor "pointer"})
             :transform transform}
         [ui-interface/render-field path environment context]
-        [render-components path environment
+        [render-components
          (-> context
              (assoc :parent-field-path path)
              (assoc :parent-field-environment environment))]]
