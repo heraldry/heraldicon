@@ -13,7 +13,7 @@
                                     [k (v/add v point)]))
                              (into {}))))))
 
-(defmethod interface/render-component :heraldry.component/semy [path _parent-path environment context]
+(defmethod interface/render-component :heraldry.component/semy [path environment context]
   (let [points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
@@ -91,7 +91,6 @@
           ^{:key idx}
           [charge-interface/render-charge
            charge-path
-           path
            (shift-environment charge-environment shift)
            (assoc charge-context :origin-override shift)]))]]
      [:g {:transform (str "rotate(" (- rotation) ")")}

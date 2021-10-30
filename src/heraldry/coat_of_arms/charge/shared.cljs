@@ -14,7 +14,7 @@
    [heraldry.util :as util]))
 
 (defn make-charge
-  [path _parent-path environment
+  [path environment
    {:keys [charge-group
            origin-override
            size-default

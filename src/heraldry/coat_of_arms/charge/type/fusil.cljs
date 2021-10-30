@@ -10,9 +10,9 @@
                                                           :de "Wecke"})
 
 (defmethod charge-interface/render-charge charge-type
-  [path parent-path environment context]
+  [path environment context]
   (charge-shared/make-charge
-   path parent-path environment context
+   path environment context
    :height
    (fn [height]
      (let [width (/ height 2)

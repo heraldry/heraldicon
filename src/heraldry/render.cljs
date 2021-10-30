@@ -130,7 +130,7 @@
         ^{:key idx}
         [interface/render-component
          (conj components-path idx)
-         (:path context) (:environment context)
+         (:environment context)
          (-> context
              (assoc :auto-resize? false)
              (assoc :self-below-shield? self-below-shield?)
@@ -394,7 +394,7 @@
            (:result (motto updated-context))
            [interface/render-component
             (:path updated-context)
-            (:path context) (:environment context)
+            (:environment context)
             updated-context])])))])
 
 (defn ornaments [context coa-bounding-box]

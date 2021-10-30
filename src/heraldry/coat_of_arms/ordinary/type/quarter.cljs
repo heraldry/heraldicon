@@ -16,7 +16,7 @@
                                                               :de "Vierung / Obereck"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path _parent-path environment context]
+  [path environment context]
   (let [line (interface/get-sanitized-data (conj path :line) context)
         opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
         variant (interface/get-sanitized-data (conj path :variant) context)

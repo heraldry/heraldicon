@@ -92,7 +92,7 @@
                 (conj "z"))}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path _parent-path environment context]
+  [path environment context]
   (let [origin (interface/get-sanitized-data (conj path :origin) context)
         variant (interface/get-sanitized-data (conj path :variant) context)
         num-points (interface/get-sanitized-data (conj path :num-points) context)

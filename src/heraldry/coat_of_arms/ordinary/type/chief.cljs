@@ -16,9 +16,9 @@
                                                               :de "Schildhaupt"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path _parent-path environment {:keys [override-real-start
-                                         override-real-end
-                                         override-shared-start-x] :as context}]
+  [path environment {:keys [override-real-start
+                            override-real-end
+                            override-shared-start-x] :as context}]
   (let [line (interface/get-sanitized-data (conj path :line) context)
         size (interface/get-sanitized-data (conj path :geometry :size) context)
         outline? (or (interface/render-option :outline? context)

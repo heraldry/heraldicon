@@ -58,7 +58,7 @@
       ^{:key idx}
       [interface/render-component
        (conj path :components idx)
-       path environment
+       environment
        context]))])
 
 (defn render-counterchanged-field [{:keys [path

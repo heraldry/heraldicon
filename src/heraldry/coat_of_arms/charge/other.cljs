@@ -149,12 +149,12 @@
        set))
 
 (defmethod charge-interface/render-charge :heraldry.charge.type/other
-  [path _parent-path environment {:keys [load-charge-data charge-group
-                                         origin-override size-default
-                                         self-below-shield? render-pass-below-shield?
-                                         auto-resize?
-                                         ui-show-colours] :as context
-                                  :or {auto-resize? true}}]
+  [path environment {:keys [load-charge-data charge-group
+                            origin-override size-default
+                            self-below-shield? render-pass-below-shield?
+                            auto-resize?
+                            ui-show-colours] :as context
+                     :or {auto-resize? true}}]
   (let [data (interface/get-raw-data (conj path :data) context)
         variant (interface/get-raw-data (conj path :variant) context)
         full-charge-data (or data (when variant (load-charge-data variant)))

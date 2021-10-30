@@ -5,11 +5,11 @@
 
 (defmulti display-name identity)
 
-(defmulti render-ordinary (fn [path _parent-path _environment context]
+(defmulti render-ordinary (fn [path _environment context]
                             (let [ordinary-type (interface/get-sanitized-data (conj path :type) context)]
                               (when (keyword? ordinary-type)
                                 ordinary-type))))
 
-(defmethod render-ordinary nil [path _parent-path _environment context]
+(defmethod render-ordinary nil [path environment context]
   (log/warn :not-implemented "render-ordinary" path context)
   [:<>])
