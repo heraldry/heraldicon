@@ -124,9 +124,8 @@
         collection-render-options @(rf/subscribe [:get-sanitized-data (conj form-db-path :render-options)])
         {:keys [result
                 environment]} (render/coat-of-arms
-                               [:context :coat-of-arms]
-                               size
                                (-> shared/coa-select-option-context
+                                   (assoc :path [:context :coat-of-arms])
                                    (assoc :render-options-path [:context :render-options])
                                    (assoc :render-options (-> arms-data
                                                               :render-options
@@ -136,7 +135,8 @@
                                    (assoc :coat-of-arms
                                           (if-let [coat-of-arms (:coat-of-arms arms-data)]
                                             coat-of-arms
-                                            default/coat-of-arms))))
+                                            default/coat-of-arms)))
+                               size)
 
         {:keys [width height]} environment]
     [:g
@@ -237,9 +237,8 @@
                 (= status :done))
         (let [{:keys [result
                       environment]} (render/coat-of-arms
-                                     [:context :coat-of-arms]
-                                     100
                                      (-> shared/coa-select-option-context
+                                         (assoc :path [:context :coat-of-arms])
                                          (assoc :render-options-path [:context :render-options])
                                          (assoc :render-options (-> arms-data
                                                                     :render-options
@@ -249,7 +248,8 @@
                                          (assoc :coat-of-arms
                                                 (if-let [coat-of-arms (:coat-of-arms arms-data)]
                                                   coat-of-arms
-                                                  default/coat-of-arms))))
+                                                  default/coat-of-arms)))
+                                     100)
               {:keys [width height]} environment]
           [:<>
            (when arms-id
