@@ -118,8 +118,9 @@
      :slot-spacing {:width (/ distance 1.2)
                     :height (/ distance 1.2)}}))
 
-(defmethod interface/render-component :heraldry.component/charge-group [path environment context]
-  (let [origin (interface/get-sanitized-data (conj path :origin) context)
+(defmethod interface/render-component :heraldry.component/charge-group [context]
+  (let [{:keys [path environment]} context
+        origin (interface/get-sanitized-data (conj path :origin) context)
         rotate-charges? (interface/get-sanitized-data (conj path :rotate-charges?) context)
         origin-point (position/calculate origin environment)
         {:keys [slot-positions

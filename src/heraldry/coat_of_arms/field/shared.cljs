@@ -49,7 +49,7 @@
                         (not (contains? new-mapping t2)) (assoc t2 t1)))))))
     context))
 
-(defn render-components [{:keys [path environment] :as context}]
+(defn render-components [context]
   [:<>
    (doall
     (for [idx (range (interface/get-list-size (update context :path conj :components)))
@@ -57,9 +57,7 @@
                   (update context :path conj :components idx))]
       ^{:key idx}
       [interface/render-component
-       (conj path :components idx)
-       environment
-       context]))])
+       (update context :path conj :components idx)]))])
 
 (defn render-counterchanged-field [{:keys [path
                                            parent-field-path
