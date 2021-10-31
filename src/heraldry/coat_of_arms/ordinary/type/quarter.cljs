@@ -192,13 +192,16 @@
                                                        2 point-bottom
                                                        3 point-bottom) outline? context]
      [cottising/render-chevron-cottise
-      :cottise-1 :cottise-2 :cottise-1
-      path environment context
-      :distance-fn (fn [distance _]
+      (update context :path conj :cottising :cottise-1)
+      :cottise-2 :cottise-1
+      :distance-fn (fn [distance half-joint-angle-rad]
                      (-> (- distance)
                          (/ 100)
                          (* size)
-                         (+ line-top-min)))
+                         (+ line-top-min)
+                         (/ (if (zero? half-joint-angle-rad)
+                              0.00001
+                              (Math/sin half-joint-angle-rad)))))
       :alignment :left
       :width width
       :height height

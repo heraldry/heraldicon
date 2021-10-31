@@ -84,8 +84,8 @@
       :all]
      [line/render line [line-one-data] row-left outline? context]
      [cottising/render-fess-cottise
-      :cottise-1 :cottise-2 :cottise-1
-      path environment cottise-context
+      (update cottise-context :path conj :cottising :cottise-1)
+      :cottise-2 :cottise-1
       :offset-y-fn (fn [base distance]
                      (-> base
                          (- row)

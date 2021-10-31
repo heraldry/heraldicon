@@ -125,8 +125,8 @@
      [line/render line [line-one-data] first-left outline? context]
      [line/render opposite-line [line-reversed-data] second-right outline? context]
      [cottising/render-fess-cottise
-      :cottise-1 :cottise-2 :cottise-1
-      path environment cottise-context
+      (update cottise-context :path conj :cottising :cottise-1)
+      :cottise-2 :cottise-1
       :offset-y-fn (fn [base distance]
                      (-> base
                          (- row1)
@@ -137,8 +137,8 @@
       :alignment :right]
 
      [cottising/render-fess-cottise
-      :cottise-opposite-1 :cottise-opposite-2 :cottise-opposite-1
-      path environment cottise-context
+      (update context :path conj :cottising :cottise-opposite-1)
+      :cottise-opposite-2 :cottise-opposite-1
       :offset-y-fn (fn [base distance]
                      (-> base
                          (- row2)

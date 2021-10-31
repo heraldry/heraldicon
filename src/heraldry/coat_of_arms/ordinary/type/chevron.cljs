@@ -177,8 +177,8 @@
      [line/render opposite-line [line-right-lower-data
                                  line-left-lower-data] right-lower outline? context]
      [cottising/render-chevron-cottise
-      :cottise-1 :cottise-2 :cottise-1
-      path environment context
+      (update context :path conj :cottising :cottise-1)
+      :cottise-2 :cottise-1
       :distance-fn (fn [distance half-joint-angle-rad]
                      (-> (- distance)
                          (/ 100)
@@ -194,8 +194,8 @@
       :joint-angle joint-angle
       :corner-point corner-upper]
      [cottising/render-chevron-cottise
-      :cottise-opposite-1 :cottise-opposite-2 :cottise-opposite-1
-      path environment context
+      (update context :path conj :cottising :cottise-opposite-1)
+      :cottise-opposite-2 :cottise-opposite-1
       :distance-fn (fn [distance half-joint-angle-rad]
                      (-> (+ distance)
                          (/ 100)
