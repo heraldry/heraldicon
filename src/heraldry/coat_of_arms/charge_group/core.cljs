@@ -7,10 +7,10 @@
    [heraldry.math.vector :as v]
    [heraldry.util :as util]))
 
-(defn calculate-strip-slot-positions [path spacing context]
-  (let [stretch (interface/get-sanitized-data (conj path :stretch) context)
-        offset (interface/get-sanitized-data (conj path :offset) context)
-        slots (interface/get-raw-data (conj path :slots) context)
+(defn calculate-strip-slot-positions [context spacing]
+  (let [stretch (interface/get-sanitized-data (update context :path conj :stretch))
+        offset (interface/get-sanitized-data (update context :path conj :offset))
+        slots (interface/get-raw-data (update context :path conj :slots))
         spacing (* spacing
                    stretch)
         offset (* spacing
@@ -30,22 +30,22 @@
                     :charge-index charge-index}) slots)))
 
 (defmulti calculate-points
-  (fn [path _environment context]
-    (case (interface/get-sanitized-data (conj path :type) context)
+  (fn [context]
+    (case (interface/get-sanitized-data (update context :path conj :type))
       :heraldry.charge-group.type/rows :strips
       :heraldry.charge-group.type/columns :strips
       :heraldry.charge-group.type/arc :arc)))
 
-(defmethod calculate-points :strips [path environment context]
-  (let [charge-group-type (interface/get-sanitized-data (conj path :type) context)
+(defmethod calculate-points :strips [{:keys [environment] :as context}]
+  (let [charge-group-type (interface/get-sanitized-data (update context :path conj :type))
         reference-length (case charge-group-type
                            :heraldry.charge-group.type/rows (:width environment)
                            :heraldry.charge-group.type/columns (:height environment))
-        spacing (interface/get-sanitized-data (conj path :spacing) context)
-        stretch (interface/get-sanitized-data (conj path :stretch) context)
-        strip-angle (interface/get-sanitized-data (conj path :strip-angle) context)
-        num-charges (interface/get-list-size (conj path :charges) context)
-        num-strips (interface/get-list-size (conj path :strips) context)
+        spacing (interface/get-sanitized-data (update context :path conj :spacing))
+        stretch (interface/get-sanitized-data (update context :path conj :stretch))
+        strip-angle (interface/get-sanitized-data (update context :path conj :strip-angle))
+        num-charges (interface/get-list-size (update context :path conj :charges))
+        num-strips (interface/get-list-size (update context :path conj :strips))
         spacing ((util/percent-of reference-length) spacing)
         strip-spacing (* spacing
                          stretch)
@@ -57,7 +57,7 @@
     {:slot-positions (->> (range num-strips)
                           (map (fn [idx]
                                  (let [slot-positions (calculate-strip-slot-positions
-                                                       (conj path :strips idx) spacing context)
+                                                       (update context :path conj :strips idx) spacing)
                                        strip-position (-> idx
                                                           (* strip-spacing)
                                                           (- (/ length 2)))]
@@ -65,7 +65,7 @@
                                           {:point (v/rotate (make-point-fn position
                                                                            strip-position)
                                                             strip-angle)
-                                           :slot-path (conj path :strips idx :slots slot-index)
+                                           :slot-path (-> context :path (conj :strips idx :slots slot-index))
                                            :charge-index (if (and (int? charge-index)
                                                                   (< -1 charge-index num-charges))
                                                            charge-index
@@ -79,14 +79,14 @@
                      :heraldry.charge-group.type/columns {:width strip-spacing
                                                           :height spacing})}))
 
-(defmethod calculate-points :arc [path environment context]
-  (let [radius (interface/get-sanitized-data (conj path :radius) context)
-        start-angle (interface/get-sanitized-data (conj path :start-angle) context)
-        arc-angle (interface/get-sanitized-data (conj path :arc-angle) context)
-        arc-stretch (interface/get-sanitized-data (conj path :arc-stretch) context)
-        slots (interface/get-raw-data (conj path :slots) context)
-        num-charges (interface/get-list-size (conj path :charges) context)
-        num-slots (interface/get-list-size (conj path :slots) context)
+(defmethod calculate-points :arc [{:keys [environment] :as context}]
+  (let [radius (interface/get-sanitized-data (update context :path conj :radius))
+        start-angle (interface/get-sanitized-data (update context :path conj :start-angle))
+        arc-angle (interface/get-sanitized-data (update context :path conj :arc-angle))
+        arc-stretch (interface/get-sanitized-data (update context :path conj :arc-stretch))
+        slots (interface/get-raw-data (update context :path conj :slots))
+        num-charges (interface/get-list-size (update context :path conj :charges))
+        num-slots (interface/get-list-size (update context :path conj :slots))
         radius ((util/percent-of (:width environment)) radius)
         stretch-vector (if (> arc-stretch 1)
                          (v/v (/ 1 arc-stretch) 1)
@@ -108,7 +108,7 @@
                                            {:point (-> (v/v radius 0)
                                                        (v/rotate slot-angle)
                                                        (v/dot stretch-vector))
-                                            :slot-path (conj path :slots slot-index)
+                                            :slot-path (-> context :path (conj :slots slot-index))
                                             :charge-index (if (and (int? charge-index)
                                                                    (< -1 charge-index num-charges))
                                                             charge-index
@@ -118,13 +118,12 @@
      :slot-spacing {:width (/ distance 1.2)
                     :height (/ distance 1.2)}}))
 
-(defmethod interface/render-component :heraldry.component/charge-group [context]
-  (let [{:keys [path environment]} context
-        origin (interface/get-sanitized-data (update context :path conj :origin))
+(defmethod interface/render-component :heraldry.component/charge-group [{:keys [path environment] :as context}]
+  (let [origin (interface/get-sanitized-data (update context :path conj :origin))
         rotate-charges? (interface/get-sanitized-data (update context :path conj :rotate-charges?))
         origin-point (position/calculate origin environment)
         {:keys [slot-positions
-                slot-spacing]} (calculate-points path environment context)
+                slot-spacing]} (calculate-points context)
         num-charges (interface/get-list-size (update context :path conj :charges))]
 
     [:g
@@ -134,7 +133,7 @@
        ^{:key idx}
        [charge-interface/render-charge
         (-> context
-            (update context :path conj :charges charge-index)
+            (update :path conj :charges charge-index)
             (assoc :origin-override (v/add origin-point point))
             (assoc :charge-group {:charge-group-path path
                                   :slot-spacing slot-spacing
@@ -142,7 +141,9 @@
                                                 angle)}))])]))
 
 (defmethod interface/blazon-component :heraldry.component/charge-group [path context]
-  (let [{:keys [slot-positions]} (calculate-points path escutcheon/flag-3-2 context)
+  (let [{:keys [slot-positions]} (calculate-points (-> context
+                                                       (assoc :path path)
+                                                       (assoc :environment escutcheon/flag-3-2)))
         used-charges (->> (group-by :charge-index slot-positions)
                           (map (fn [[k v]]
                                  [k (count v)]))
