@@ -10,9 +10,9 @@
                                                           :de "Ring"})
 
 (defmethod charge-interface/render-charge charge-type
-  [path environment context]
+  [context]
   (charge-shared/make-charge
-   path environment context
+   context
    :width
    (fn [width]
      (let [radius (/ width 2)

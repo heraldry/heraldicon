@@ -8,7 +8,7 @@
    [heraldry.util :as util]))
 
 (defmethod interface/render-component :heraldry.component/charge [context]
-  [charge-interface/render-charge (:path context) (:environment context) context])
+  [charge-interface/render-charge context])
 
 (defmethod interface/blazon-component :heraldry.component/charge [path {:keys [load-charge-data] :as context}]
   (let [charge-type (interface/get-raw-data (conj path :type) context)
