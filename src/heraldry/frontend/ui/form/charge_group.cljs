@@ -160,11 +160,12 @@
   [:azure :or :vert :gules :purpure :sable])
 
 (defn preview-form [path]
-  (let [context {:render-options-path [:example-coa :render-options]}
-        environment {:width 200
-                     :height 200}
+  (let [context {:path path
+                 :render-options-path [:example-coa :render-options]
+                 :environment {:width 200
+                               :height 200}}
         {:keys [slot-positions
-                slot-spacing]} (charge-group/calculate-points path environment context)
+                slot-spacing]} (charge-group/calculate-points context)
         num-charges (interface/get-list-size (conj path :charges) context)
         dot-size (/ (min (:width slot-spacing)
                          (:height slot-spacing))
