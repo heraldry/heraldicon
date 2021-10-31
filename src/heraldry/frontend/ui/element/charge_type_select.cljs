@@ -44,7 +44,8 @@
          [:label [tr label]])
        [:div.option
         [submenu/submenu path {:en "Select Charge"
-                               :de "Wappenfigur auswählen"} (charge-options/title charge-path {}) {:style {:width "21.5em"}}
+                               :de "Wappenfigur auswählen"}
+         (charge-options/title {:path charge-path}) {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
            [charge-type-choice path key display-name :selected? (= key value)])

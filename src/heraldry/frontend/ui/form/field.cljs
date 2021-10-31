@@ -102,7 +102,7 @@
                                                                     vec
                                                                     (conj
                                                                      @(rf/subscribe [:get-value (conj path :index)])))))
-                             (field/title path {}))])
+                             (field/title {:path path}))])
      :validation @(rf/subscribe [:validate-field path])
      :buttons (if ref?
                 [{:icon "fas fa-sliders-h"

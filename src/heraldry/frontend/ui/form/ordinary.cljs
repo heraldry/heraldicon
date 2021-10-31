@@ -118,7 +118,7 @@
                       :handler #(let [cottise-path (conj path :cottising :cottise-extra-2)]
                                   (rf/dispatch-sync [:set cottise-path default/cottise])
                                   (state/dispatch-on-event % [:ui-component-node-select cottise-path {:open? true}]))}))]
-    {:title (ordinary/title path {})
+    {:title (ordinary/title {:path path})
      :validation @(rf/subscribe [:validate-ordinary path])
      :buttons [{:icon "fas fa-plus"
                 :title strings/add

@@ -206,11 +206,11 @@
 (defmethod interface/component-options :heraldry.component/charge [path data]
   (options data :ornament? (some #(= % :ornaments) path)))
 
-(defn title [path context]
-  (let [charge-type (interface/get-raw-data (conj path :type) context)
-        attitude (or (interface/get-raw-data (conj path :attitude) context)
+(defn title [context]
+  (let [charge-type (interface/get-raw-data (update context :path conj :type))
+        attitude (or (interface/get-raw-data (update context :path conj :attitude))
                      :none)
-        facing (or (interface/get-raw-data (conj path :facing) context)
+        facing (or (interface/get-raw-data (update context :path conj :facing))
                    :none)
         charge-name (or (choice-map charge-type)
                         (util/translate-cap-first charge-type))]

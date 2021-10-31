@@ -314,7 +314,7 @@
   (let [num-charges @(rf/subscribe [:get-list-size (conj path :charges)])]
     {:title (util/str-tr {:en "Charge group of "
                           :de "Gruppe von "} (if (= num-charges 1)
-                                               (charge-options/title (conj path :charges 0) {})
+                                               (charge-options/title {:path (conj path :charges 0)})
                                                {:en "various"
                                                 :de "verschiedenen"}))
      :buttons [{:icon "fas fa-plus"
