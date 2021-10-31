@@ -144,22 +144,22 @@
   (log/warn :not-implemented "render-component" context)
   [:<>])
 
-(defmulti blazon-component (fn [path context]
+(defmulti blazon-component (fn [context]
                              (effective-component-type
-                              path
+                              (:path context)
                               ;; TODO: need the raw value here for type
-                              (get-raw-data (conj path :type) context))))
+                              (get-raw-data (update context :path conj :type)))))
 
-(defmethod blazon-component nil [path _context]
-  (log/warn "blazon: unknown component" path)
+(defmethod blazon-component nil [context]
+  (log/warn "blazon: unknown component" context)
   nil)
 
 (defn blazon
   ([path context]
    (blazon (assoc context :path path)))
 
-  ([{:keys [path] :as context}]
-   (let [manual-blazon (get-sanitized-data (conj path :manual-blazon) context)]
+  ([context]
+   (let [manual-blazon (get-sanitized-data (update context :path conj :manual-blazon))]
      (if (-> manual-blazon count pos?)
        manual-blazon
-       (blazon-component path context)))))
+       (blazon-component context)))))

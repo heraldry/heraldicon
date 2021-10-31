@@ -10,12 +10,12 @@
 (defmethod interface/render-component :heraldry.component/charge [context]
   [charge-interface/render-charge context])
 
-(defmethod interface/blazon-component :heraldry.component/charge [path {:keys [load-charge-data] :as context}]
-  (let [charge-type (interface/get-raw-data (conj path :type) context)
-        attitude (interface/get-sanitized-data (conj path :attitude) context)
-        facing (interface/get-sanitized-data (conj path :facing) context)
-        variant (interface/get-raw-data (conj path :variant) context)
-        tincture (interface/get-raw-data (conj path :tincture) context)
+(defmethod interface/blazon-component :heraldry.component/charge [{:keys [load-charge-data] :as context}]
+  (let [charge-type (interface/get-raw-data (update context :path conj :type))
+        attitude (interface/get-sanitized-data (update context :path conj :attitude))
+        facing (interface/get-sanitized-data (update context :path conj :facing))
+        variant (interface/get-raw-data (update context :path conj :variant))
+        tincture (interface/get-raw-data (update context :path conj :tincture))
         drop-article? (get-in context [:blazonry :drop-article?])
         part-of-charge-group? (get-in context [:blazonry :part-of-charge-group?])
         pluralize? (get-in context [:blazonry :pluralize?])
@@ -48,7 +48,7 @@
                          (util/translate facing))
                        (if fixed-tincture
                          (util/translate fixed-tincture)
-                         (interface/blazon (conj path :field) context))
+                         (interface/blazon (update context :path conj :field)))
                        (util/combine
                         " and "
                         (map (fn [colour-key]
@@ -59,4 +59,4 @@
                              (-> attributes/tincture-modifier-map
                                  keys
                                  sort)))
-                       (fimbriation/blazon path context)])))
+                       (fimbriation/blazon context)])))

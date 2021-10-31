@@ -87,7 +87,7 @@
   (let [index (last path)]
     (when (int? index)
       (when-let [parent-path (parent-path path)]
-        (>= index (field/mandatory-part-count parent-path {}))))))
+        (>= index (field/mandatory-part-count {:path parent-path}))))))
 
 (defmethod interface/component-node-data :heraldry.component/field [path]
   (let [field-type @(rf/subscribe [:get-value (conj path :type)])

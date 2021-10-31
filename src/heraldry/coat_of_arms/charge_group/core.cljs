@@ -140,9 +140,8 @@
                                   :slot-angle (when rotate-charges?
                                                 angle)}))])]))
 
-(defmethod interface/blazon-component :heraldry.component/charge-group [path context]
+(defmethod interface/blazon-component :heraldry.component/charge-group [context]
   (let [{:keys [slot-positions]} (calculate-points (-> context
-                                                       (assoc :path path)
                                                        (assoc :environment escutcheon/flag-3-2)))
         used-charges (->> (group-by :charge-index slot-positions)
                           (map (fn [[k v]]
@@ -155,7 +154,8 @@
                   " and "
                   (map (fn [[charge-index number]]
                          (util/str-tr number " "
-                                      (interface/blazon (conj path :charges charge-index)
-                                                        (cond-> context
-                                                          (> number 1) (assoc-in [:blazonry :pluralize?] true)))))
+                                      (interface/blazon (-> context
+                                                            (update :path conj :charges charge-index)
+                                                            (cond->
+                                                              (> number 1) (assoc-in [:blazonry :pluralize?] true))))))
                        used-charges)))))

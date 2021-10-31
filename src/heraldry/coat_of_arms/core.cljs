@@ -14,5 +14,7 @@
 (defmethod interface/component-options :heraldry.component/coat-of-arms [_path data]
   (options data))
 
-(defmethod interface/blazon-component :heraldry.component/coat-of-arms [path context]
-  (interface/blazon (conj path :field) (assoc-in context [:blazonry :root?] true)))
+(defmethod interface/blazon-component :heraldry.component/coat-of-arms [context]
+  (interface/blazon (-> context
+                        (update :path conj :field)
+                        (assoc-in [:blazonry :root?] true))))
