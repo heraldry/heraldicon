@@ -190,17 +190,18 @@
                                     [:done (:data query)])
       (-> query :state) [:loading nil]
       :else (do
-              (rf/dispatch-sync [:set db-path nil])
-              (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
-              (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id]
-                                 {:state :loading}])
               (go
                 (try
-                  (let [data (<? (async-function))]
+                  (when-not (:state @(rf/subscribe [:get-value [:async-fetch-data db-path :queries query-id]]))
+                    (rf/dispatch-sync [:set db-path nil])
+                    (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
                     (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id]
-                                       {:state :done
-                                        :data data}]))
-                  (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
+                                       {:state :loading}])
+                    (let [data (<? (async-function))]
+                      (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id]
+                                         {:state :done
+                                          :data data}]))
+                    (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id]))
                   (catch :default e
                     (log/error "async fetch data error:" db-path query-id e))))
               [:loading nil]))))
