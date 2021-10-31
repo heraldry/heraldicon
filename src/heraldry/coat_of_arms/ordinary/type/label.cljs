@@ -92,18 +92,18 @@
                 (conj "z"))}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path environment context]
-  (let [origin (interface/get-sanitized-data (conj path :origin) context)
-        variant (interface/get-sanitized-data (conj path :variant) context)
-        num-points (interface/get-sanitized-data (conj path :num-points) context)
-        fimbriation (interface/get-sanitized-data (conj path :fimbriation) context)
-        width (interface/get-sanitized-data (conj path :geometry :width) context)
-        size (interface/get-sanitized-data (conj path :geometry :size) context)
-        thickness (interface/get-sanitized-data (conj path :geometry :thickness) context)
-        eccentricity (interface/get-sanitized-data (conj path :geometry :eccentricity) context)
-        stretch (interface/get-sanitized-data (conj path :geometry :stretch) context)
+  [{:keys [environment] :as context}]
+  (let [origin (interface/get-sanitized-data (update context :path conj :origin))
+        variant (interface/get-sanitized-data (update context :path conj :variant))
+        num-points (interface/get-sanitized-data (update context :path conj :num-points))
+        fimbriation (interface/get-sanitized-data (update context :path conj :fimbriation))
+        width (interface/get-sanitized-data (update context :path conj :geometry :width))
+        size (interface/get-sanitized-data (update context :path conj :geometry :size))
+        thickness (interface/get-sanitized-data (update context :path conj :geometry :thickness))
+        eccentricity (interface/get-sanitized-data (update context :path conj :geometry :eccentricity))
+        stretch (interface/get-sanitized-data (update context :path conj :geometry :stretch))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
         line {:type :straight
               :fimbriation fimbriation}
         origin-point (position/calculate origin environment :fess)
@@ -130,7 +130,7 @@
               environment-points]]
     [:<>
      [field-shared/make-subfield
-      (conj path :field) part
-      :all
-      environment context]
+      (update context :path conj :field)
+      part
+      :all]
      [line/render line lines (first points) outline? context]]))

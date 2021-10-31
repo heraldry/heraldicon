@@ -16,18 +16,19 @@
                                                               :de "Schräglinksbalken"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path environment {:keys [override-middle-real-start
-                            override-middle-real-end
-                            override-real-start
-                            override-real-end
-                            override-center-point] :as context}]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
-        origin (interface/get-sanitized-data (conj path :origin) context)
-        anchor (interface/get-sanitized-data (conj path :anchor) context)
-        size (interface/get-sanitized-data (conj path :geometry :size) context)
+  [{:keys [path environment
+           override-middle-real-start
+           override-middle-real-end
+           override-real-start
+           override-real-end
+           override-center-point] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
+        origin (interface/get-sanitized-data (update context :path conj :origin))
+        anchor (interface/get-sanitized-data (update context :path conj :anchor))
+        size (interface/get-sanitized-data (update context :path conj :geometry :size))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
         points (:points environment)
         top (:top points)
         bottom (:bottom points)
@@ -126,8 +127,8 @@
                                               :real-end real-end
                                               :context context
                                               :environment environment)
-        counterchanged? (interface/get-sanitized-data (conj path :field :counterchanged?) context)
-        inherit-environment? (interface/get-sanitized-data (conj path :field :inherit-environment?) context)
+        counterchanged? (interface/get-sanitized-data (update context :path conj :field :counterchanged?))
+        inherit-environment? (interface/get-sanitized-data (update context :path conj :field :inherit-environment?))
         use-parent-environment? (or counterchanged?
                                     inherit-environment?)
         part [["M" (v/add first-start
@@ -150,13 +151,13 @@
                           :override-real-end real-end})]
     [:<>
      [field-shared/make-subfield
-      (conj path :field) part
-      :all
-      environment
       (-> context
+          (update :path conj :field)
           (assoc :transform (when (not use-parent-environment?)
                               (str "translate(" (v/->str ordinary-top-left) ")"
-                                   "rotate(" angle ")"))))]
+                                   "rotate(" angle ")"))))
+      part
+      :all]
      [line/render line [line-one-data] first-start outline? context]
      [line/render opposite-line [line-reversed-data] second-end outline? context]
      [cottising/render-bend-cottise

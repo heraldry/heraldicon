@@ -19,17 +19,17 @@
                                                               :de "Deichsel"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path environment context]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
-        extra-line (interface/get-sanitized-data (conj path :extra-line) context)
-        origin (interface/get-sanitized-data (conj path :origin) context)
-        anchor (interface/get-sanitized-data (conj path :anchor) context)
-        direction-anchor (interface/get-sanitized-data (conj path :direction-anchor) context)
-        size (interface/get-sanitized-data (conj path :geometry :size) context)
+  [{:keys [path environment] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
+        extra-line (interface/get-sanitized-data (update context :path conj :extra-line))
+        origin (interface/get-sanitized-data (update context :path conj :origin))
+        anchor (interface/get-sanitized-data (update context :path conj :anchor))
+        direction-anchor (interface/get-sanitized-data (update context :path conj :direction-anchor))
+        size (interface/get-sanitized-data (update context :path conj :geometry :size))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
-        raw-direction-anchor (interface/get-raw-data (conj path :direction-anchor) context)
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
+        raw-direction-anchor (interface/get-raw-data (update context :path conj :direction-anchor))
         direction-anchor (cond-> direction-anchor
                            (-> direction-anchor
                                :point
@@ -202,9 +202,9 @@
         cottise-side-joint-angle (math/normalize-angle (- 180 (/ joint-angle 2)))]
     [:<>
      [field-shared/make-subfield
-      (conj path :field) part
-      :all
-      environment context]
+      (update context :path conj :field)
+      part
+      :all]
      [line/render line [line-right-first-data
                         line-right-second-data] corner-right-end outline? context]
      [line/render opposite-line [line-left-first-data

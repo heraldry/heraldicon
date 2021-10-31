@@ -16,13 +16,13 @@
                                                               :de "Schrägeck"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path environment context]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        variant (interface/get-sanitized-data (conj path :variant) context)
-        point-width (interface/get-sanitized-data (conj path :geometry :width) context)
-        point-height (interface/get-sanitized-data (conj path :geometry :height) context)
+  [{:keys [path environment] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        variant (interface/get-sanitized-data (update context :path conj :variant))
+        point-width (interface/get-sanitized-data (update context :path conj :geometry :width))
+        point-height (interface/get-sanitized-data (update context :path conj :geometry :height))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
         width (:width environment)
         height (:height environment)
         points (:points environment)
@@ -101,9 +101,9 @@
 
     [:<>
      [field-shared/make-subfield
-      (conj path :field) part
-      :all
-      environment context]
+      (update context :path conj :field)
+      part
+      :all]
      [line/render line [line-one-data] (case variant
                                          :dexter real-point-top
                                          :sinister real-point-side) outline? context]

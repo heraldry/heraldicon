@@ -17,12 +17,12 @@
                                                               :de "Kreuz"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path environment context]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        origin (interface/get-sanitized-data (conj path :origin) context)
-        size (interface/get-sanitized-data (conj path :geometry :size) context)
+  [{:keys [path environment] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        origin (interface/get-sanitized-data (update context :path conj :origin))
+        size (interface/get-sanitized-data (update context :path conj :geometry :size))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
@@ -207,9 +207,9 @@
               [top-left bottom-right]]]
     [:<>
      [field-shared/make-subfield
-      (conj path :field) part
-      :all
-      environment context]
+      (update context :path conj :field)
+      part
+      :all]
      [line/render line [line-fess-top-left-data
                         line-pale-top-left-data] fess-top-left outline? context]
      [line/render line [line-pale-top-right-data

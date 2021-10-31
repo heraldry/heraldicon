@@ -18,13 +18,13 @@
                                                               :de "Andreaskreuz"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path environment context]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        origin (interface/get-sanitized-data (conj path :origin) context)
-        anchor (interface/get-sanitized-data (conj path :anchor) context)
-        size (interface/get-sanitized-data (conj path :geometry :size) context)
+  [{:keys [path environment] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        origin (interface/get-sanitized-data (update context :path conj :origin))
+        anchor (interface/get-sanitized-data (update context :path conj :anchor))
+        size (interface/get-sanitized-data (update context :path conj :geometry :size))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x unadjusted-origin-point))
@@ -208,9 +208,9 @@
               [top bottom left right]]]
     [:<>
      [field-shared/make-subfield
-      (conj path :field) part
-      :all
-      environment context]
+      (update context :path conj :field)
+      part
+      :all]
      [line/render line [line-top-left-upper-data
                         line-top-right-upper-data] top-left-upper outline? context]
      [line/render line [line-top-right-lower-data

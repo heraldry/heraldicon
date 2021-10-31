@@ -17,15 +17,16 @@
                                                               :de "Pfahl"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path environment {:keys [override-real-start
-                            override-real-end
-                            override-shared-start-y] :as context}]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
-        origin (interface/get-sanitized-data (conj path :origin) context)
-        size (interface/get-sanitized-data (conj path :geometry :size) context)
+  [{:keys [path environment
+           override-real-start
+           override-real-end
+           override-shared-start-y] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
+        origin (interface/get-sanitized-data (update context :path conj :origin))
+        size (interface/get-sanitized-data (update context :path conj :geometry :size))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top (assoc (:top points) :x (:x origin-point))
@@ -118,9 +119,9 @@
                           :override-real-end real-end})]
     [:<>
      [field-shared/make-subfield
-      (conj path :field) part
-      :all
-      environment context]
+      (update context :path conj :field)
+      part
+      :all]
      [line/render line [line-one-data] first-bottom outline? context]
      [line/render opposite-line [line-reversed-data] second-top outline? context]
      [cottising/render-pale-cottise

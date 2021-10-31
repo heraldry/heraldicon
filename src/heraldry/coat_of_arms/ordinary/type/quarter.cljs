@@ -16,14 +16,14 @@
                                                               :de "Vierung / Obereck"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path environment context]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
-        variant (interface/get-sanitized-data (conj path :variant) context)
-        origin (interface/get-sanitized-data (conj path :origin) context)
+  [{:keys [path environment] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
+        variant (interface/get-sanitized-data (update context :path conj :variant))
+        origin (interface/get-sanitized-data (update context :path conj :origin))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
-        size (interface/get-sanitized-data (conj path :geometry :size) context)
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
+        size (interface/get-sanitized-data (update context :path conj :geometry :size))
         points (:points environment)
         width (:width environment)
         height (:height environment)
@@ -183,9 +183,9 @@
         part (get parts target-part-index)]
     [:<>
      [field-shared/make-subfield
-      (conj path :field) part
-      :all
-      environment context]
+      (update context :path conj :field)
+      part
+      :all]
      [line/render line [line-one-data line-two-data] (case target-part-index
                                                        0 point-top
                                                        1 point-top

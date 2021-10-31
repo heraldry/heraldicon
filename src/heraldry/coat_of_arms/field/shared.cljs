@@ -168,6 +168,9 @@
                           (conj field-path :fields idx)) (-> parts count range))
                    parts mask-overlaps parent-environment context))
 
-(defn make-subfield [part-path part mask-overlap parent-environment context]
-  (-make-subfields (vec (drop-last part-path))
-                   [part-path] [part] [mask-overlap] parent-environment context))
+(defn make-subfield [context part mask-overlap]
+  (-make-subfields (-> context
+                       :path
+                       drop-last
+                       vec)
+                   [(:path context)] [part] [mask-overlap] (:environment context) context))

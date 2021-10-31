@@ -16,13 +16,14 @@
                                                               :de "Schildfuß"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path environment {:keys [override-real-start
-                            override-real-end
-                            override-shared-start-x] :as context}]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        size (interface/get-sanitized-data (conj path :geometry :size) context)
+  [{:keys [path environment
+           override-real-start
+           override-real-end
+           override-shared-start-x] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        size (interface/get-sanitized-data (update context :path conj :geometry :size))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
         points (:points environment)
         bottom (:bottom points)
         bottom-right (:bottom-right points)
@@ -78,9 +79,9 @@
                           :override-real-end real-end})]
     [:<>
      [field-shared/make-subfield
-      (conj path :field) part
-      :all
-      environment context]
+      (update context :path conj :field)
+      part
+      :all]
      [line/render line [line-one-data] row-left outline? context]
      [cottising/render-fess-cottise
       :cottise-1 :cottise-2 :cottise-1
