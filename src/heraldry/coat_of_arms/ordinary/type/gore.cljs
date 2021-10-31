@@ -19,13 +19,13 @@
 (defmethod ordinary-interface/display-name ordinary-type [_] "Gore")
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [path environment context]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
-        origin (interface/get-sanitized-data (conj path :origin) context)
-        anchor (interface/get-sanitized-data (conj path :anchor) context)
+  [{:keys [environment] :as context}]
+  (let [line (interface/get-sanitized-data (update context :path conj :line))
+        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
+        origin (interface/get-sanitized-data (update context :path conj :origin))
+        anchor (interface/get-sanitized-data (update context :path conj :anchor))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (update context :path conj :outline?)))
 
         points (:points environment)
         top-left (:top-left points)
@@ -88,7 +88,7 @@
                bottom]]]
     [:<>
      [field-shared/make-subfield
-      (conj path :field) part
-      :all
-      environment context]
+      (update context :path conj :field)
+      part
+      :all]
      [line/render line [line-diagonal-data line-down-data] diagonal-top outline? context]]))

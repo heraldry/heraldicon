@@ -14,7 +14,7 @@
    [heraldry.util :as util]))
 
 (defn make-charge
-  [{:keys [path environment
+  [{:keys [environment
            charge-group
            origin-override
            size-default
@@ -236,9 +236,9 @@
               :corner (-> fimbriation :corner)]]))
         [:g {:id charge-id}
          [field-shared/make-subfield
-          (-> context :path (conj :field)) part
-          :all
-          environment context]
+          (update context :path conj :field)
+          part
+          :all]
          (when outline?
            [:g (outline/style context)
             [:path {:d charge-shape}]

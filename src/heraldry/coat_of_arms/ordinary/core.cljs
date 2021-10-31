@@ -7,7 +7,7 @@
    [heraldry.util :as util]))
 
 (defmethod interface/render-component :heraldry.component/ordinary [context]
-  (ordinary-interface/render-ordinary (:path context) (:environment context) context))
+  (ordinary-interface/render-ordinary context))
 
 (defmethod interface/blazon-component :heraldry.component/ordinary [context]
   (let [ordinary-type (interface/get-sanitized-data (update context :path conj :type))
