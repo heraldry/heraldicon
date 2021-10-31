@@ -65,9 +65,10 @@
                                      :bottom-left {:x (- part-width-half) :y part-height-half}
                                      :bottom {:x 0 :y part-height-half}
                                      :bottom-right {:x part-width-half :y part-height-half}}}
-        charge-path (update context :path conj :charge)
         charge-context (-> context
-                           (assoc :size-default 50))]
+                           (update :path conj :charge)
+                           (assoc :size-default 50)
+                           (assoc :environment charge-environment))]
     [:g
      [:defs
       [:pattern {:id pattern-id
@@ -91,9 +92,9 @@
                              (not rectangular?) (conj {:x part-width-half :y part-height-half})))]
           ^{:key idx}
           [charge-interface/render-charge
-           charge-path
-           (shift-environment charge-environment shift)
-           (assoc charge-context :origin-override shift)]))]]
+           (-> charge-context
+               (assoc :origin-override shift)
+               (update :environment shift-environment shift))]))]]
      [:g {:transform (str "rotate(" (- rotation) ")")}
       [:rect {:x -500
               :y -500
