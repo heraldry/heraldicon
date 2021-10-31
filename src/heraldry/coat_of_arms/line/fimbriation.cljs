@@ -204,12 +204,12 @@
     (when tincture-1
       (util/str-tr strings/fimbriated " " (tincture/translate-tincture tincture-1)))))
 
-(defn blazon [path context & {:keys [include-lines?]}]
+(defn blazon [context & {:keys [include-lines?]}]
   (->> (concat
-        [(blazon-fimbriation (interface/get-sanitized-data (conj path :fimbriation) context))]
+        [(blazon-fimbriation (interface/get-sanitized-data (update context :path conj :fimbriation)))]
         (when include-lines?
-          [(blazon-fimbriation (interface/get-sanitized-data (conj path :line :fimbriation) context))
-           (blazon-fimbriation (interface/get-sanitized-data (conj path :opposite-line :fimbriation) context))
-           (blazon-fimbriation (interface/get-sanitized-data (conj path :extra-line :fimbriation) context))]))
+          [(blazon-fimbriation (interface/get-sanitized-data (update context :path conj :line :fimbriation)))
+           (blazon-fimbriation (interface/get-sanitized-data (update context :path conj :opposite-line :fimbriation)))
+           (blazon-fimbriation (interface/get-sanitized-data (update context :path conj :extra-line :fimbriation)))]))
        distinct
        (util/combine ", ")))

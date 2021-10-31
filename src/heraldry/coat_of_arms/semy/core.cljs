@@ -101,7 +101,8 @@
               :height 1100
               :fill (str "url(#" pattern-id ")")}]]]))
 
-(defmethod interface/blazon-component :heraldry.component/semy [path context]
+(defmethod interface/blazon-component :heraldry.component/semy [context]
   (util/str-tr "semy of " (interface/blazon
-                           (update context :path conj :charge)
-                           (assoc-in context [:blazonry :drop-article?] true))))
+                           (-> context
+                               (update :path conj :charge)
+                               (assoc-in [:blazonry :drop-article?] true)))))

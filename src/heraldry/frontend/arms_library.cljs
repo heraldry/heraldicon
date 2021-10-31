@@ -89,7 +89,7 @@
      [tr {:en " (beta, not complete)"
           :de " (beta und derzeit nur Englisch)"}]]]
    [:div.blazon
-    (util/tr-raw (interface/blazon (conj form-db-path :coat-of-arms) {}) :en)]])
+    (util/tr-raw (interface/blazon {:path (conj form-db-path :coat-of-arms)}) :en)]])
 
 (defn generate-svg-clicked [event]
   (.preventDefault event)
