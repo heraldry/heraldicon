@@ -14,7 +14,7 @@
 
 (defmethod interface/component-node-data :heraldry.component/semy [path]
   {:title (util/str-tr {:en "Semy of "
-                        :de "Besät mit "} (charge-options/title (conj path :charge) {}))
+                        :de "Besät mit "} (charge-options/title {:path (conj path :charge)}))
    :nodes [{:path (conj path :charge)}]})
 
 (defmethod interface/component-form-data :heraldry.component/semy [_path]

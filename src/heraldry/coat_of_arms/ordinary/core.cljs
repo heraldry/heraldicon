@@ -32,6 +32,6 @@
                   "a")]
     (util/combine " " [article rest])))
 
-(defn title [path context]
-  (let [ordinary-type (interface/get-raw-data (conj path :type) context)]
+(defn title [context]
+  (let [ordinary-type (interface/get-raw-data (update context :path conj :type))]
     (ordinary-options/ordinary-map ordinary-type)))

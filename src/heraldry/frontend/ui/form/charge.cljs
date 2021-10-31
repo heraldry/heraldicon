@@ -22,7 +22,7 @@
 (defmethod interface/component-node-data :heraldry.component/charge [path]
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
   ;; depends on charge data
-  {:title (charge-options/title path {})
+  {:title (charge-options/title {:path path})
    :validation @(rf/subscribe [:validate-charge path])
    :nodes [{:path (conj path :field)}]})
 

@@ -134,13 +134,13 @@
 (defn part-name [field-type index]
   (-> field-type field-interface/part-names (get index) (or (util/to-roman (inc index)))))
 
-(defn title [path context]
-  (if (interface/get-sanitized-data (conj path :counterchanged?) context)
+(defn title [context]
+  (if (interface/get-sanitized-data (update context :path conj :counterchanged?))
     {:en "Counterchanged"
      :de "Verwechselt"}
-    (let [field-type (interface/get-sanitized-data (conj path :type) context)]
+    (let [field-type (interface/get-sanitized-data (update context :path conj :type))]
       (if (= field-type :heraldry.field.type/plain)
-        (-> (interface/get-raw-data (conj path :tincture) context)
+        (-> (interface/get-raw-data (update context :path conj :tincture))
             tincture/translate-tincture
             util/upper-case-first)
         (get field-options/field-map field-type)))))
