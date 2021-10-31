@@ -149,18 +149,19 @@
        set))
 
 (defmethod charge-interface/render-charge :heraldry.charge.type/other
-  [path environment {:keys [load-charge-data charge-group
-                            origin-override size-default
-                            self-below-shield? render-pass-below-shield?
-                            auto-resize?
-                            ui-show-colours] :as context
-                     :or {auto-resize? true}}]
-  (let [data (interface/get-raw-data (conj path :data) context)
-        variant (interface/get-raw-data (conj path :variant) context)
+  [{:keys [path environment
+           load-charge-data charge-group
+           origin-override size-default
+           self-below-shield? render-pass-below-shield?
+           auto-resize?
+           ui-show-colours] :as context
+    :or {auto-resize? true}}]
+  (let [data (interface/get-raw-data (update context :path conj :data))
+        variant (interface/get-raw-data (update context :path conj :variant))
         full-charge-data (or data (when variant (load-charge-data variant)))
         placeholder-colours (:colours full-charge-data)
         layer-separator-colours (colours-for-modifier placeholder-colours :layer-separator)
-        ignore-layer-separator? (interface/get-sanitized-data (conj path :ignore-layer-separator?) context)]
+        ignore-layer-separator? (interface/get-sanitized-data (update context :path conj :ignore-layer-separator?))]
     (if (and (:data full-charge-data)
              ;; in order to require rendering, we either have
              ;; to be located in the right render pass
@@ -175,27 +176,27 @@
                         (dissoc :charge-group))
             highlight-colours? (seq ui-show-colours)
             ui-show-colours (set ui-show-colours)
-            origin (interface/get-sanitized-data (conj path :origin) context)
-            anchor (interface/get-sanitized-data (conj path :anchor) context)
-            vertical-mask (interface/get-sanitized-data (conj path :vertical-mask) context)
-            fimbriation (interface/get-sanitized-data (conj path :fimbriation) context)
+            origin (interface/get-sanitized-data (update context :path conj :origin))
+            anchor (interface/get-sanitized-data (update context :path conj :anchor))
+            vertical-mask (interface/get-sanitized-data (update context :path conj :vertical-mask))
+            fimbriation (interface/get-sanitized-data (update context :path conj :fimbriation))
             size (if (and size-default
-                          (not (interface/get-raw-data (conj path :geometry :size) context)))
+                          (not (interface/get-raw-data (update context :path conj :geometry :size))))
                    size-default
-                   (interface/get-sanitized-data (conj path :geometry :size) context))
-            stretch (interface/get-sanitized-data (conj path :geometry :stretch) context)
-            mirrored? (interface/get-sanitized-data (conj path :geometry :mirrored?) context)
-            reversed? (interface/get-sanitized-data (conj path :geometry :reversed?) context)
+                   (interface/get-sanitized-data (update context :path conj :geometry :size)))
+            stretch (interface/get-sanitized-data (update context :path conj :geometry :stretch))
+            mirrored? (interface/get-sanitized-data (update context :path conj :geometry :mirrored?))
+            reversed? (interface/get-sanitized-data (update context :path conj :geometry :reversed?))
             ;; not all tinctures have their own options, but some do, so
             ;; override those with the sanitized values
             tincture (merge
-                      (interface/get-raw-data (conj path :tincture) context)
-                      (interface/get-sanitized-data (conj path :tincture) context))
+                      (interface/get-raw-data (update context :path conj :tincture))
+                      (interface/get-sanitized-data (update context :path conj :tincture)))
             preview-original? (interface/render-option :preview-original? context)
             outline-mode (if (or (interface/render-option :outline? context)
                                  (= (interface/render-option :mode context)
                                     :hatching)) :keep
-                             (interface/get-sanitized-data (conj path :outline-mode) context))
+                             (interface/get-sanitized-data (update context :path conj :outline-mode)))
             outline? (= outline-mode :keep)
             {:keys [slot-spacing
                     slot-angle]} charge-group
@@ -210,7 +211,7 @@
             ;; the sanitized value
             ;; TODO: this probably needs a better mechanism and form representation
             size (if (or (not auto-resize?)
-                         (interface/get-raw-data (conj path :geometry :size) context))
+                         (interface/get-raw-data (update context :path conj :geometry :size)))
                    size
                    nil)
             points (:points environment)
@@ -361,11 +362,9 @@
                          (v/div 2)
                          (v/add origin-point))
             inherit-environment? (interface/get-sanitized-data
-                                  (conj path :field :inherit-environment?)
-                                  context)
+                                  (update context :path conj :field :inherit-environment?))
             counterchanged? (interface/get-sanitized-data
-                             (conj path :field :counterchanged?)
-                             context)
+                             (update context :path conj :field :counterchanged?))
             charge-environment (environment/create
                                 (path/make-path ["M" position
                                                  "l" (v/v (:x clip-size) 0)
@@ -558,7 +557,7 @@
                         [:g {:mask (str "url(#" mask-inverted-id ")")}
                          [:g {:transform reverse-transform}
                           [field-shared/render (-> context
-                                                   (assoc :path (conj path :field))
+                                                   (update :path conj :field)
                                                    (assoc :environment charge-environment))]]])
                       [:g {:mask (str "url(#" mask-id ")")
                            ;; TODO: select component

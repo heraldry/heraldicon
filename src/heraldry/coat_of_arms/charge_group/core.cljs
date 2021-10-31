@@ -120,28 +120,26 @@
 
 (defmethod interface/render-component :heraldry.component/charge-group [context]
   (let [{:keys [path environment]} context
-        origin (interface/get-sanitized-data (conj path :origin) context)
-        rotate-charges? (interface/get-sanitized-data (conj path :rotate-charges?) context)
+        origin (interface/get-sanitized-data (update context :path conj :origin))
+        rotate-charges? (interface/get-sanitized-data (update context :path conj :rotate-charges?))
         origin-point (position/calculate origin environment)
         {:keys [slot-positions
                 slot-spacing]} (calculate-points path environment context)
-        num-charges (interface/get-list-size (conj path :charges) context)]
+        num-charges (interface/get-list-size (update context :path conj :charges))]
 
     [:g
      (for [[idx {:keys [point charge-index angle]}] (map-indexed vector slot-positions)
            :when (and charge-index
                       (< charge-index num-charges))]
-       (let [charge-path (conj path :charges charge-index)]
-         ^{:key idx}
-         [charge-interface/render-charge
-          charge-path
-          environment
-          (-> context
-              (assoc :origin-override (v/add origin-point point))
-              (assoc :charge-group {:charge-group-path path
-                                    :slot-spacing slot-spacing
-                                    :slot-angle (when rotate-charges?
-                                                  angle)}))]))]))
+       ^{:key idx}
+       [charge-interface/render-charge
+        (-> context
+            (update context :path conj :charges charge-index)
+            (assoc :origin-override (v/add origin-point point))
+            (assoc :charge-group {:charge-group-path path
+                                  :slot-spacing slot-spacing
+                                  :slot-angle (when rotate-charges?
+                                                angle)}))])]))
 
 (defmethod interface/blazon-component :heraldry.component/charge-group [path context]
   (let [{:keys [slot-positions]} (calculate-points path escutcheon/flag-3-2 context)
