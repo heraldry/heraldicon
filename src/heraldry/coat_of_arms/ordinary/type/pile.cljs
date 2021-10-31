@@ -107,8 +107,8 @@
      [line/render line [line-left-data
                         line-right-data] left-point outline? context]
      [cottising/render-chevron-cottise
-      :cottise-1 :cottise-2 :cottise-1
-      path environment context
+      (update context :path conj :cottising :cottise-1)
+      :cottise-2 :cottise-1
       :distance-fn (fn [distance half-joint-angle-rad]
                      (-> (- distance)
                          (/ 100)

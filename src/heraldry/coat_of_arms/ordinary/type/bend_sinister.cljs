@@ -161,8 +161,8 @@
      [line/render line [line-one-data] first-start outline? context]
      [line/render opposite-line [line-reversed-data] second-end outline? context]
      [cottising/render-bend-cottise
-      :cottise-1 :cottise-2 :cottise-1
-      path environment cottise-context
+      (update cottise-context :path conj :cottising :cottise-1)
+      :cottise-2 :cottise-1
       :sinister? true
       :distance-fn (fn [distance thickness]
                      (-> (+ distance)
@@ -182,8 +182,8 @@
       :middle-real-end-fn (fn [point-offset]
                             (v/add middle-real-end point-offset))]
      [cottising/render-bend-cottise
-      :cottise-opposite-1 :cottise-opposite-2 :cottise-opposite-1
-      path environment cottise-context
+      (update cottise-context :path conj :cottising :cottise-opposite-1)
+      :cottise-opposite-2 :cottise-opposite-1
       :sinister? true
       :distance-fn (fn [distance thickness]
                      (-> (+ distance)

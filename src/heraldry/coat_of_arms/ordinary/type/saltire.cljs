@@ -228,8 +228,8 @@
                                 [90 corner-bottom (- 90 angle-bottom-right)]]]
         ^{:key chevron-angle}
         [cottising/render-chevron-cottise
-         :cottise-1 :cottise-2 :cottise-opposite-1
-         path environment context
+         (update context :path conj :cottising :cottise-1)
+         :cottise-2 :cottise-opposite-1
          :distance-fn (fn [distance half-joint-angle-rad]
                         (-> (+ distance)
                             (/ 100)
