@@ -18,9 +18,9 @@
                  :coat-of-arms-angle]]
      ^{:key option} [interface/form-element (conj path option)])])
 
-(defmethod interface/component-node-data :heraldry.component/render-options [_path]
+(defmethod interface/component-node-data :heraldry.component/render-options [_context]
   {:title {:en "Render Options"
            :de "Render Optionen"}})
 
-(defmethod interface/component-form-data :heraldry.component/render-options [_path]
+(defmethod interface/component-form-data :heraldry.component/render-options [_context]
   {:form form})

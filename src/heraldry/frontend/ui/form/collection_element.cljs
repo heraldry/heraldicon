@@ -29,7 +29,7 @@
                  :reference]]
      ^{:key option} [interface/form-element (conj path option)])])
 
-(defmethod interface/component-node-data :heraldry.component/collection-element [path]
+(defmethod interface/component-node-data :heraldry.component/collection-element [{:keys [path] :as _context}]
   (let [name @(rf/subscribe [:get-value (conj path :name)])
         index (last path)]
     {:title (util/str-tr (inc index) ": "
@@ -38,5 +38,5 @@
                            {:en "<no name>"
                             :de "<unbenannt>"}))}))
 
-(defmethod interface/component-form-data :heraldry.component/collection-element [_path]
+(defmethod interface/component-form-data :heraldry.component/collection-element [_context]
   {:form form})

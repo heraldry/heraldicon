@@ -22,9 +22,9 @@
    ;; TODO: not ideal, probably should move this at some point
    [checkbox/checkbox (conj [:example-coa :render-options :preview-original?])]])
 
-(defmethod ui-interface/component-node-data :heraldry.component/charge-general [path]
+(defmethod ui-interface/component-node-data :heraldry.component/charge-general [{:keys [path]}]
   {:title strings/general
    :validation @(rf/subscribe [:validate-charge-general path])})
 
-(defmethod ui-interface/component-form-data :heraldry.component/charge-general [_path]
+(defmethod ui-interface/component-form-data :heraldry.component/charge-general [_context]
   {:form form})

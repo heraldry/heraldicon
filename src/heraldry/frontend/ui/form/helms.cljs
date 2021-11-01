@@ -11,7 +11,7 @@
    (for [option []]
      ^{:key option} [ui-interface/form-element (conj path option)])])
 
-(defmethod ui-interface/component-node-data :heraldry.component/helms [path]
+(defmethod ui-interface/component-node-data :heraldry.component/helms [{:keys [path] :as context}]
   (let [helms-path (conj path :elements)
         num-helms @(rf/subscribe [:get-list-size helms-path])]
     {:title {:en "Helms and crests"
@@ -27,7 +27,7 @@
      :nodes (->> (range num-helms)
                  (map (fn [idx]
                         (let [helm-path (conj helms-path idx)]
-                          {:path helm-path
+                          {:context (assoc context :path helm-path)
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
                                       :tooltip strings/move-down
@@ -40,5 +40,5 @@
                                       :tooltip strings/remove
                                       :handler #(state/dispatch-on-event % [:remove-element helm-path])}]}))))}))
 
-(defmethod ui-interface/component-form-data :heraldry.component/helms [_path]
+(defmethod ui-interface/component-form-data :heraldry.component/helms [_context]
   {:form form})

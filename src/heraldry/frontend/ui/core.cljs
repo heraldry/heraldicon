@@ -65,25 +65,25 @@
 
 
 (rf/reg-sub :component-node
-  (fn [[_ path] _]
+  (fn [[_ {:keys [path]}] _]
     [(rf/subscribe [:ui-component-node-open? path])
      (rf/subscribe [:ui-component-node-selected-path])])
 
-  (fn [[open? selected-component-path] [_ path]]
+  (fn [[open? selected-component-path] [_ {:keys [path] :as context}]]
     (merge {:open? open?
             :selected? (= path selected-component-path)
             :selectable? true}
-           (ui-interface/component-node-data path))))
+           (ui-interface/component-node-data context))))
 
 (rf/reg-sub :component-form
-  (fn [[_ path] _]
-    (rf/subscribe [:component-node path]))
+  (fn [[_ context] _]
+    (rf/subscribe [:component-node context]))
 
-  (fn [{:keys [title]} [_ path]]
+  (fn [{:keys [title]} [_ context]]
     (merge
      {:title title
-      :path path}
-     (ui-interface/component-form-data path))))
+      :context context}
+     (ui-interface/component-form-data context))))
 
 ;; events
 
@@ -150,94 +150,96 @@
 
 ;; functions
 
-(defn component-node [path & {:keys [title parent-buttons]}]
-  (if (= path :spacer)
-    [:div {:style {:height "1em"}}]
-    (let [node-data @(rf/subscribe [:component-node path])
-          node-title (:title node-data)
-          {:keys [open?
-                  selected?
-                  selectable?
-                  nodes
-                  buttons
-                  annotation
-                  validation]} node-data
-          openable? (-> nodes count pos?)
-          title (or node-title title)
-          buttons (concat buttons parent-buttons)]
-      [:<>
-       [:div.node-name.clickable.no-select
-        {:class (when selected?
-                  "selected")
-         :on-click #(do
-                      (when (or (not open?)
-                                (not selectable?)
-                                selected?)
-                        (rf/dispatch [:ui-component-node-toggle path]))
-                      (when selectable?
-                        (rf/dispatch [:ui-component-node-select path]))
-                      (.stopPropagation %))
-         :style {:color (when-not selectable?
-                          "#000")}}
-        (if openable?
-          [:span.node-icon.clickable
-           {:on-click #(state/dispatch-on-event % [:ui-component-node-toggle path])}
-           [:i.fa.ui-icon {:class (if open?
-                                    "fa-angle-down"
-                                    "fa-angle-right")}]]
-          [:span.node-icon
-           [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
-        [tr title]
+(defn component-node [{:keys [path] :as context} & {:keys [title parent-buttons]}]
+  (let [node-data @(rf/subscribe [:component-node context])
+        node-title (:title node-data)
+        {:keys [open?
+                selected?
+                selectable?
+                nodes
+                buttons
+                annotation
+                validation]} node-data
+        openable? (-> nodes count pos?)
+        title (or node-title title)
+        buttons (concat buttons parent-buttons)]
+    [:<>
+     [:div.node-name.clickable.no-select
+      {:class (when selected?
+                "selected")
+       :on-click #(do
+                    (when (or (not open?)
+                              (not selectable?)
+                              selected?)
+                      (rf/dispatch [:ui-component-node-toggle path]))
+                    (when selectable?
+                      (rf/dispatch [:ui-component-node-select path]))
+                    (.stopPropagation %))
+       :style {:color (when-not selectable?
+                        "#000")}}
+      (if openable?
+        [:span.node-icon.clickable
+         {:on-click #(state/dispatch-on-event % [:ui-component-node-toggle path])}
+         [:i.fa.ui-icon {:class (if open?
+                                  "fa-angle-down"
+                                  "fa-angle-right")}]]
+        [:span.node-icon
+         [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
+      [tr title]
 
-        annotation
+      annotation
 
-        (validation/render validation)
+      (validation/render validation)
 
-        (when (seq buttons)
-          (doall
-           (for [[idx {:keys [icon menu handler disabled? tooltip title]}] (map-indexed vector buttons)]
-             (if menu
-               ^{:key idx}
-               [hover-menu/hover-menu
-                (conj path idx)
-                title
-                menu
-                [:i.ui-icon {:class icon
-                             :style {:margin-left "0.5em"
-                                     :font-size "0.8em"
-                                     :color (if disabled?
-                                              "#ccc"
-                                              "#777")
-                                     :cursor (when disabled? "not-allowed")}}]
-                :disabled? disabled?
-                :require-click? true]
-               ^{:key icon} [:span.node-icon
-                             {:class (when disabled? "disabled")
-                              :on-click (when-not disabled? handler)
-                              :title tooltip}
-                             [:i.ui-icon {:class icon
-                                          :style {:margin-left "0.5em"
-                                                  :font-size "0.8em"
-                                                  :color (if disabled?
-                                                           "#ccc"
-                                                           "#777")
-                                                  :cursor (when disabled? "not-allowed")}}]]))))]
-       (when open?
-         [:ul
-          (for [{node-path :path
-                 title :title
-                 buttons :buttons} nodes]
-            ^{:key node-path} [:li [component-node node-path :title title :parent-buttons buttons]])])])))
+      (when (seq buttons)
+        (doall
+         (for [[idx {:keys [icon menu handler disabled? tooltip title]}] (map-indexed vector buttons)]
+           (if menu
+             ^{:key idx}
+             [hover-menu/hover-menu
+              (conj path idx)
+              title
+              menu
+              [:i.ui-icon {:class icon
+                           :style {:margin-left "0.5em"
+                                   :font-size "0.8em"
+                                   :color (if disabled?
+                                            "#ccc"
+                                            "#777")
+                                   :cursor (when disabled? "not-allowed")}}]
+              :disabled? disabled?
+              :require-click? true]
+             ^{:key icon} [:span.node-icon
+                           {:class (when disabled? "disabled")
+                            :on-click (when-not disabled? handler)
+                            :title tooltip}
+                           [:i.ui-icon {:class icon
+                                        :style {:margin-left "0.5em"
+                                                :font-size "0.8em"
+                                                :color (if disabled?
+                                                         "#ccc"
+                                                         "#777")
+                                                :cursor (when disabled? "not-allowed")}}]]))))]
+     (when open?
+       [:ul
+        (for [{node-context :context
+               title :title
+               buttons :buttons} nodes]
+          ^{:key node-context} [:li [component-node node-context
+                                     :title title :parent-buttons buttons]])])]))
 
 (defn component-tree [paths]
   [:div.ui-tree
    [:ul
     (for [[idx node-path] (map-indexed vector paths)]
-      ^{:key idx} [:li [component-node node-path]])]])
+      ^{:key idx} [:li
+                   (if (= node-path :spacer)
+                     [:div {:style {:height "1em"}}]
+                     [component-node {:path node-path}])])]])
 
-(defn component-form [path]
-  (let [{:keys [title path form form-args]} (when path
-                                              @(rf/subscribe [:component-form path]))]
+(defn component-form [context]
+  (let [{:keys [title context form form-args]} (when context
+                                                 @(rf/subscribe [:component-form context]))]
     [:div.ui-component
      [:div.ui-component-header
       [:h1
@@ -245,8 +247,9 @@
        [tr title]]]
      [:div.content
       (when form
-        [form path form-args])]]))
+        [form (:path context) form-args])]]))
 
 (defn selected-component []
   (let [selected-component-path @(rf/subscribe [:ui-component-node-selected-path])]
-    [component-form selected-component-path]))
+    [component-form (when selected-component-path
+                      {:path selected-component-path})]))

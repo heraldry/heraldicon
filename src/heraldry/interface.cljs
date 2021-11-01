@@ -19,30 +19,6 @@
       (s/starts-with? ts ":heraldry.motto") :heraldry.component/motto
       :else nil)))
 
-(defn effective-component-type [path raw-type]
-  (cond
-    (-> path last (= :arms-form)) :heraldry.component/arms-general
-    (-> path last #{:charge-form
-                    :charge-data}) :heraldry.component/charge-general
-    (-> path last (= :collection-form)) :heraldry.component/collection-general
-    (-> path last (= :collection)) :heraldry.component/collection
-    (->> path drop-last (take-last 2) (= [:collection :elements])) :heraldry.component/collection-element
-    (-> path last (= :render-options)) :heraldry.component/render-options
-    (-> path last (= :helms)) :heraldry.component/helms
-    (-> path last (= :ribbon-form)) :heraldry.component/ribbon-general
-    (-> path last (= :coat-of-arms)) :heraldry.component/coat-of-arms
-    (-> path last (= :ornaments)) :heraldry.component/ornaments
-    (keyword? raw-type) (type->component-type raw-type)
-    (and (-> path last keyword?)
-         (-> path last name (s/starts-with? "cottise"))) :heraldry.component/cottise
-    :else nil))
-
-(defmulti component-options (fn [path data]
-                              (effective-component-type path (:type data))))
-
-(defmethod component-options nil [_path _data]
-  nil)
-
 (defn get-raw-data
   ([path context]
    (get-raw-data (assoc context :path path)))
@@ -51,6 +27,40 @@
    (if (-> path first (= :context))
      (get-in context (drop 1 path))
      @(rf/subscribe [:get-value path]))))
+
+(defn effective-component-type
+  ([path raw-type]
+   (effective-component-type {:path path
+                              :raw-type raw-type}))
+
+  ([context]
+   (if (vector? context)
+     (effective-component-type {:path context
+                                :raw-type @(rf/subscribe [:get-value (conj context :type)])})
+     (let [{:keys [path raw-type]} context
+           raw-type (or raw-type (get-raw-data (update context :path conj :type)))]
+       (cond
+         (-> path last (= :arms-form)) :heraldry.component/arms-general
+         (-> path last #{:charge-form
+                         :charge-data}) :heraldry.component/charge-general
+         (-> path last (= :collection-form)) :heraldry.component/collection-general
+         (-> path last (= :collection)) :heraldry.component/collection
+         (->> path drop-last (take-last 2) (= [:collection :elements])) :heraldry.component/collection-element
+         (-> path last (= :render-options)) :heraldry.component/render-options
+         (-> path last (= :helms)) :heraldry.component/helms
+         (-> path last (= :ribbon-form)) :heraldry.component/ribbon-general
+         (-> path last (= :coat-of-arms)) :heraldry.component/coat-of-arms
+         (-> path last (= :ornaments)) :heraldry.component/ornaments
+         (keyword? raw-type) (type->component-type raw-type)
+         (and (-> path last keyword?)
+              (-> path last name (s/starts-with? "cottise"))) :heraldry.component/cottise
+         :else nil)))))
+
+(defmulti component-options (fn [path data]
+                              (effective-component-type path (:type data))))
+
+(defmethod component-options nil [_path _data]
+  nil)
 
 (defn get-options-by-context
   ([path context]

@@ -9,9 +9,9 @@
                  :manual-blazon]]
      ^{:key option} [interface/form-element (conj path option)])])
 
-(defmethod interface/component-node-data :heraldry.component/coat-of-arms [path]
+(defmethod interface/component-node-data :heraldry.component/coat-of-arms [context]
   {:title strings/coat-of-arms
-   :nodes [{:path (conj path :field)}]})
+   :nodes [{:context (update context :path conj :field)}]})
 
-(defmethod interface/component-form-data :heraldry.component/coat-of-arms [_path]
+(defmethod interface/component-form-data :heraldry.component/coat-of-arms [_context]
   {:form form})
