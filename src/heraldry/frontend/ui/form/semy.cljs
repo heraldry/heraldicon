@@ -4,7 +4,7 @@
    [heraldry.frontend.ui.interface :as interface]
    [heraldry.util :as util]))
 
-(defn form [path _]
+(defn form [path]
   [:<>
    (for [option [:origin
                  :layout

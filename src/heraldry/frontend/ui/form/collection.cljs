@@ -5,7 +5,7 @@
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
-(defn form [path _]
+(defn form [path]
   [:<>
    (for [option [:num-columns]]
      ^{:key option} [interface/form-element (conj path option)])])

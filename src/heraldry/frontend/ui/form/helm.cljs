@@ -35,7 +35,7 @@
         (state/ui-component-node-select path :open? true)
         submenu/ui-submenu-close-all)))
 
-(defn form [path _]
+(defn form [path]
   [:<>
    (doall
     (for [option []]

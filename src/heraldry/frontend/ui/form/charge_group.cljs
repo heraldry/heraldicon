@@ -237,7 +237,7 @@
                     :offset]]
         ^{:key option} [ui-interface/form-element (conj path option)])]]))
 
-(defn form [path _]
+(defn form [path]
   (let [charge-group-type @(rf/subscribe [:get-value (conj path :type)])
         strip-type? (#{:heraldry.charge-group.type/rows
                        :heraldry.charge-group.type/columns}
