@@ -160,5 +160,5 @@
                    :option {:type :boolean}]]])))]]
          [tr strings/none])]]]))
 
-(defmethod interface/form-element :colours [path]
+(defmethod interface/form-element :colours [{:keys [path]}]
   [form path])

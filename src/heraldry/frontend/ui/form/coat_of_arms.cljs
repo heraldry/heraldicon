@@ -3,11 +3,11 @@
    [heraldry.frontend.ui.interface :as interface]
    [heraldry.strings :as strings]))
 
-(defn form [{:keys [path]}]
+(defn form [context]
   [:<>
    (for [option [:escutcheon
                  :manual-blazon]]
-     ^{:key option} [interface/form-element (conj path option)])])
+     ^{:key option} [interface/form-element (update context :path conj option)])])
 
 (defmethod interface/component-node-data :heraldry.component/coat-of-arms [context]
   {:title strings/coat-of-arms

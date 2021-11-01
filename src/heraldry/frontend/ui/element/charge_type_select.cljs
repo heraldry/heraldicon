@@ -77,5 +77,5 @@
                #(state/invalidate-cache [:all-charges] :all-charges)]
               [:div [tr strings/loading]])])]]])))
 
-(defmethod interface/form-element :charge-type-select [path]
+(defmethod interface/form-element :charge-type-select [{:keys [path]}]
   [charge-type-select path])

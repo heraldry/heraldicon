@@ -71,5 +71,5 @@
         [attributes-view (keys attributes)
          :on-delete #(rf/dispatch [:remove-attribute path %])]]]]]))
 
-(defmethod interface/form-element :attributes [path]
+(defmethod interface/form-element :attributes [{:keys [path]}]
   [form path])

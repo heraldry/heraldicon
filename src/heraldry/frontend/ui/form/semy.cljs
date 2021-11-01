@@ -4,13 +4,13 @@
    [heraldry.frontend.ui.interface :as interface]
    [heraldry.util :as util]))
 
-(defn form [{:keys [path]}]
+(defn form [context]
   [:<>
    (for [option [:origin
                  :layout
                  :rectangular?
                  :manual-blazon]]
-     ^{:key option} [interface/form-element (conj path option)])])
+     ^{:key option} [interface/form-element (update context :path conj option)])])
 
 (defmethod interface/component-node-data :heraldry.component/semy [context]
   (let [charge-context (update context :path conj :charge)]

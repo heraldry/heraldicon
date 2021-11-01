@@ -69,5 +69,5 @@
         [value-mode-select/value-mode-select path
          :display-fn ordinary-options/ordinary-map]]])))
 
-(defmethod interface/form-element :ordinary-type-select [path]
+(defmethod interface/form-element :ordinary-type-select [{:keys [path]}]
   [ordinary-type-select path])

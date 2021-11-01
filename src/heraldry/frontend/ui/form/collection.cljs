@@ -5,10 +5,10 @@
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
-(defn form [{:keys [path]}]
+(defn form [context]
   [:<>
    (for [option [:num-columns]]
-     ^{:key option} [interface/form-element (conj path option)])])
+     ^{:key option} [interface/form-element (update context :path conj option)])])
 
 (defmethod interface/component-node-data :heraldry.component/collection [{:keys [path] :as context}]
   (let [num-elements @(rf/subscribe [:get-list-size (conj path :elements)])]

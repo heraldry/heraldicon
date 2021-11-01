@@ -80,7 +80,7 @@
        (-> field :layout :num-fields-y)
        value))))
 
-(defn layout-submenu [path]
+(defn layout-submenu [{:keys [path] :as context}]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -99,22 +99,22 @@
                        :stretch-x
                        :stretch-y
                        :rotation]]
-           ^{:key option} [interface/form-element (conj path option)])]]])))
+           ^{:key option} [interface/form-element (update context :path conj option)])]]])))
 
-(defmethod interface/form-element :field-layout [path]
-  [layout-submenu path])
+(defmethod interface/form-element :field-layout [context]
+  [layout-submenu context])
 
-(defmethod interface/form-element :field-layout-num-fields-x [path]
+(defmethod interface/form-element :field-layout-num-fields-x [{:keys [path]}]
   [range/range-input path
    :on-change (fn [value]
                 (rf/dispatch [:set-field-layout-num-fields-x path value]))])
 
-(defmethod interface/form-element :field-layout-num-fields-y [path]
+(defmethod interface/form-element :field-layout-num-fields-y [{:keys [path]}]
   [range/range-input path
    :on-change (fn [value]
                 (rf/dispatch [:set-field-layout-num-fields-y path value]))])
 
-(defmethod interface/form-element :field-layout-num-base-fields [path]
+(defmethod interface/form-element :field-layout-num-base-fields [{:keys [path]}]
   [range/range-input path
    :on-change (fn [value]
                 (rf/dispatch [:set-field-layout-num-base-fields path value]))])

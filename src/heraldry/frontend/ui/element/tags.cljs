@@ -126,5 +126,5 @@
         [tags-view (keys tags)
          :on-delete #(delete-tag-clicked path %)]]]]]))
 
-(defmethod interface/form-element :tags [path]
+(defmethod interface/form-element :tags [{:keys [path]}]
   [form path])

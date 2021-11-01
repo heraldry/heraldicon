@@ -31,7 +31,7 @@
           (= cottise :cottise-extra-2) (update-in path dissoc :cottise-extra-2))
         (state/change-selected-component-if-removed (-> path drop-last vec)))))
 
-(defn form [{:keys [path]}]
+(defn form [context]
   [:<>
    (for [option [:type
                  :variant
@@ -48,7 +48,7 @@
                  :fimbriation
                  :outline?
                  :manual-blazon]]
-     ^{:key option} [interface/form-element (conj path option)])])
+     ^{:key option} [interface/form-element (update context :path conj option)])])
 
 (defmethod interface/component-node-data :heraldry.component/ordinary [{:keys [path] :as context}]
   (let [cottising-options @(rf/subscribe [:get-relevant-options (conj path :cottising)])

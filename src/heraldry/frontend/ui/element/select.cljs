@@ -46,5 +46,5 @@
                     :none)]
       [raw-select path value label choices :on-change on-change])))
 
-(defmethod interface/form-element :select [path]
+(defmethod interface/form-element :select [{:keys [path]}]
   [select path])

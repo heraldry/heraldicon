@@ -35,7 +35,7 @@
             util/upper-case-first)
         "Default"))))
 
-(defn geometry-submenu [path]
+(defn geometry-submenu [{:keys [path] :as context}]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -55,7 +55,7 @@
                        :stretch
                        :mirrored?
                        :reversed?]]
-           ^{:key option} [interface/form-element (conj path option)])]]])))
+           ^{:key option} [interface/form-element (update context :path conj option)])]]])))
 
-(defmethod interface/form-element :geometry [path]
-  [geometry-submenu path])
+(defmethod interface/form-element :geometry [context]
+  [geometry-submenu context])

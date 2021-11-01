@@ -31,7 +31,7 @@
   (fn [db [_ path data]]
     (update-in db path merge data)))
 
-(defn attribution-submenu [path & {:keys [charge-presets?]}]
+(defn attribution-submenu [{:keys [path] :as context} & {:keys [charge-presets?]}]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -96,7 +96,7 @@
           (for [option [:nature
                         :license
                         :license-version]]
-            ^{:key option} [interface/form-element (conj path option)])
+            ^{:key option} [interface/form-element (update context :path conj option)])
 
           [:div {:style {:height "1.5em"}}]
 
@@ -106,9 +106,9 @@
                         :source-link
                         :source-creator-name
                         :source-creator-link]]
-            ^{:key option} [interface/form-element (conj path option)])]]]])))
+            ^{:key option} [interface/form-element (update context :path conj option)])]]]])))
 
-(defmethod interface/form-element :attribution [path]
-  [attribution-submenu path
-   :charge-presets? (-> path drop-last last #{:charge-form
-                                              :charge-data})])
+(defmethod interface/form-element :attribution [context]
+  [attribution-submenu context
+   :charge-presets? (-> context :path drop-last last #{:charge-form
+                                                       :charge-data})])

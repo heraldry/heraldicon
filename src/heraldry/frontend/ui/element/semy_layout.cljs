@@ -31,7 +31,7 @@
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
-(defn layout-submenu [path]
+(defn layout-submenu [{:keys [path] :as context}]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -49,7 +49,7 @@
                        :stretch-x
                        :stretch-y
                        :rotation]]
-           ^{:key option} [interface/form-element (conj path option)])]]])))
+           ^{:key option} [interface/form-element (update context :path conj option)])]]])))
 
-(defmethod interface/form-element :semy-layout [path]
-  [layout-submenu path])
+(defmethod interface/form-element :semy-layout [context]
+  [layout-submenu context])

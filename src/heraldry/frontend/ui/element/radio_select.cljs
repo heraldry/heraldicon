@@ -41,5 +41,5 @@
            :on-change on-change])
         [value-mode-select/value-mode-select path]]])))
 
-(defmethod interface/form-element :radio-select [path]
+(defmethod interface/form-element :radio-select [{:keys [path]}]
   [radio-select path])

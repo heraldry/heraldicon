@@ -66,5 +66,5 @@
                                :de "Band auswählen"} ribbon-title nil
          [ribbon-select/list-ribbon (link-to-ribbon path)]]]])))
 
-(defmethod interface/form-element :ribbon-reference-select [path]
+(defmethod interface/form-element :ribbon-reference-select [{:keys [path]}]
   [ribbon-reference-select path])

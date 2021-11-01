@@ -26,7 +26,7 @@
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
-(defn position-submenu [path]
+(defn position-submenu [{:keys [path] :as context}]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -43,7 +43,7 @@
                        :offset-x
                        :offset-y
                        :type]]
-           ^{:key option} [interface/form-element (conj path option)])]]])))
+           ^{:key option} [interface/form-element (update context :path conj option)])]]])))
 
-(defmethod interface/form-element :position [path]
-  [position-submenu path])
+(defmethod interface/form-element :position [context]
+  [position-submenu context])

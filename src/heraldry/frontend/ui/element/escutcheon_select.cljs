@@ -40,5 +40,5 @@
            [escutcheon-choice path key display-name :selected? (= key value)])]
         [value-mode-select/value-mode-select path]]])))
 
-(defmethod interface/form-element :escutcheon-select [path]
+(defmethod interface/form-element :escutcheon-select [{:keys [path]}]
   [escutcheon-select path])

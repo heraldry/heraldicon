@@ -94,5 +94,5 @@
         [value-mode-select/value-mode-select path
          :display-fn field-options/field-map]]])))
 
-(defmethod interface/form-element :field-type-select [path]
+(defmethod interface/form-element :field-type-select [{:keys [path]}]
   [field-type-select path])
