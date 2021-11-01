@@ -213,8 +213,9 @@
        [:h3 {:style {:text-align "center"}} "Click the slots to disable them or cycle through the available charges (added below)."]
        [:i]]]]))
 
-(defn strip-form [path type-str]
-  (let [num-slots @(rf/subscribe [:get-list-size (conj path :slots)])
+(defn strip-form [context type-str]
+  (let [path (:path context)
+        num-slots @(rf/subscribe [:get-list-size (conj path :slots)])
         stretch @(rf/subscribe [:get-sanitized-data (conj path :stretch)])
         offset @(rf/subscribe [:get-sanitized-data (conj path :offset)])
         title (util/combine
@@ -235,9 +236,9 @@
       (for [option [:slots
                     :stretch
                     :offset]]
-        ^{:key option} [ui-interface/form-element (conj path option)])]]))
+        ^{:key option} [ui-interface/form-element (update context :path conj option)])]]))
 
-(defn form [{:keys [path]}]
+(defn form [{:keys [path] :as context}]
   (let [charge-group-type @(rf/subscribe [:get-value (conj path :type)])
         strip-type? (#{:heraldry.charge-group.type/rows
                        :heraldry.charge-group.type/columns}
@@ -256,11 +257,11 @@
                           nil)
         strips-path (conj path :strips)
         num-strips @(rf/subscribe [:get-list-size strips-path])]
-    [:<> {:style {:display "table-cell"
-                  :vertical-align "top"}}
+    [:div {:style {:display "table-cell"
+                   :vertical-align "top"}}
      [charge-group-preset-select/charge-group-preset-select path]
      (for [option [:origin]]
-       ^{:key option} [ui-interface/form-element (conj path option)])
+       ^{:key option} [ui-interface/form-element (update context :path conj option)])
 
      [preview-form path]
 
@@ -274,7 +275,7 @@
                    :arc-stretch
                    :rotate-charges?
                    :slots]]
-       ^{:key option} [ui-interface/form-element (conj path option)])
+       ^{:key option} [ui-interface/form-element (update context :path conj option)])
 
      (when strip-type?
        [:div.ui-setting
@@ -301,14 +302,14 @@
                        {:on-click #(state/dispatch-on-event % [:move-element strip-path (inc idx)])})
                   [:i.fas.fa-chevron-down]]]
                 [:div
-                 [strip-form strip-path type-str]]
+                 [strip-form (assoc context :path strip-path) type-str]]
                 [:div {:style {:padding-left "10px"}}
                  [:a (if (< num-strips 2)
                        {:class "disabled"}
                        {:on-click #(state/dispatch-on-event % [:remove-element strip-path])})
                   [:i.far.fa-trash-alt]]]])))]]])
 
-     [ui-interface/form-element (conj path :manual-blazon)]]))
+     [ui-interface/form-element (update context :path conj :manual-blazon)]]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/charge-group [{:keys [path] :as context}]
   (let [num-charges @(rf/subscribe [:get-list-size (conj path :charges)])]

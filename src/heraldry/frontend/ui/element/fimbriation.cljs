@@ -41,7 +41,7 @@
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
-(defn fimbriation-submenu [path]
+(defn fimbriation-submenu [{:keys [path] :as context}]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -59,7 +59,7 @@
                        :tincture-1
                        :thickness-2
                        :tincture-2]]
-           ^{:key option} [interface/form-element (conj path option)])]]])))
+           ^{:key option} [interface/form-element (update context :path conj option)])]]])))
 
-(defmethod interface/form-element :fimbriation [path]
-  [fimbriation-submenu path])
+(defmethod interface/form-element :fimbriation [context]
+  [fimbriation-submenu context])

@@ -4,7 +4,7 @@
    [heraldry.frontend.ui.interface :as interface]
    [re-frame.core :as rf]))
 
-(defn form [{:keys [path]}]
+(defn form [context]
   [:<>
    (for [option [:type
                  :escutcheon
@@ -16,7 +16,7 @@
                  :outline-mode
                  :vertical-mask
                  :manual-blazon]]
-     ^{:key option} [interface/form-element (conj path option)])])
+     ^{:key option} [interface/form-element (update context :path conj option)])])
 
 (defmethod interface/component-node-data :heraldry.component/charge [{:keys [path] :as context}]
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,

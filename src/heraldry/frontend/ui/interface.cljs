@@ -83,9 +83,9 @@
      (-> options :ui :form-type)
      (-> options :type default-element))))
 
-(defmulti form-element (fn [path]
+(defmulti form-element (fn [{:keys [path]}]
                          @(rf/subscribe [:get-form-element-type path])))
 
-(defmethod form-element nil [path]
+(defmethod form-element nil [{:keys [path]}]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
     [:div (str "not implemented: " path options)]))

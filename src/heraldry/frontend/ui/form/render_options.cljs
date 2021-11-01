@@ -2,7 +2,7 @@
   (:require
    [heraldry.frontend.ui.interface :as interface]))
 
-(defn form [{:keys [path]}]
+(defn form [context]
   [:<>
    (for [option [:scope
                  :escutcheon
@@ -16,7 +16,7 @@
                  :outline?
                  :squiggly?
                  :coat-of-arms-angle]]
-     ^{:key option} [interface/form-element (conj path option)])])
+     ^{:key option} [interface/form-element (update context :path conj option)])])
 
 (defmethod interface/component-node-data :heraldry.component/render-options [_context]
   {:title {:en "Render Options"

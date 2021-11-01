@@ -70,5 +70,5 @@
              :disabled? disabled?
              :on-change on-change]]])))))
 
-(defmethod interface/form-element :range [path]
+(defmethod interface/form-element :range [{:keys [path]}]
   [range-input path])

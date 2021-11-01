@@ -23,11 +23,11 @@
 (defn highlight-element [path]
   (rf/dispatch-sync [:set ui-highlighted-element-path path]))
 
-(defn form [{:keys [path]}]
+(defn form [context]
   [:<>
    (for [option [:name
                  :reference]]
-     ^{:key option} [interface/form-element (conj path option)])])
+     ^{:key option} [interface/form-element (update context :path conj option)])])
 
 (defmethod interface/component-node-data :heraldry.component/collection-element [{:keys [path] :as _context}]
   (let [name @(rf/subscribe [:get-value (conj path :name)])

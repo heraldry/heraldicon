@@ -21,6 +21,6 @@
                                          (= :heraldry.charge-group.type/arc))
                                      (-> charge-group :slots not)) (assoc :slots [0 0 0 0 0]))))))))
 
-(defmethod interface/form-element :charge-group-type-select [path]
+(defmethod interface/form-element :charge-group-type-select [{:keys [path]}]
   [radio-select/radio-select path
    :on-change #(rf/dispatch [:change-charge-group-type (vec (drop-last path)) %])])

@@ -184,17 +184,17 @@
                            (update :z-index #(- max-z-index %)))))
                 vec)))))))
 
-(defn segment-form [path type-str]
-  (let [segment-type @(rf/subscribe [:get-value (conj path :type)])
-        idx (last path)
-        z-index @(rf/subscribe [:get-sanitized-data (conj path :z-index)])
+(defn segment-form [context]
+  (let [segment-type @(rf/subscribe [:get-value (-> context :path (conj :type))])
+        idx (-> context :path last)
+        z-index @(rf/subscribe [:get-sanitized-data (-> context :path (conj :z-index))])
         title (util/str-tr (inc idx) ". "
                            (ribbon/segment-type-map segment-type)
                            ", layer " z-index)]
 
     [:div {:style {:position "relative"}}
-     [submenu/submenu path type-str title {:style {:width "28em"}
-                                           :class "submenu-segment-form"}
+     [submenu/submenu (:path context) nil title {:style {:width "28em"}
+                                                 :class "submenu-segment-form"}
       (for [option [:type
                     :z-index
                     :font
@@ -202,22 +202,22 @@
                     :spacing
                     :offset-x
                     :offset-y]]
-        ^{:key option} [ui-interface/form-element (conj path option)])]
-     [text-field/text-field (conj path :text)
+        ^{:key option} [ui-interface/form-element (update context :path conj option)])]
+     [text-field/text-field (-> context :path (conj :text))
       :style {:display "inline-block"
               :position "absolute"
               :left "13em"}]]))
 
-(defn ribbon-form [path]
+(defn ribbon-form [context]
   [:<>
    (for [option [:thickness
                  :edge-angle
                  :end-split
                  :outline?]]
-     ^{:key option} [ui-interface/form-element (conj path option)])])
+     ^{:key option} [ui-interface/form-element (update context :path conj option)])])
 
-(defn ribbon-segments-form [path & {:keys [tooltip]}]
-  (let [segments-path (conj path :segments)
+(defn ribbon-segments-form [context & {:keys [tooltip]}]
+  (let [segments-path (-> context :path (conj :segments))
         num-segments @(rf/subscribe [:get-list-size segments-path])]
     [:div.option.ribbon-segments {:style {:margin-top "0.5em"}}
      [:div {:style {:font-size "1.3em"}} [tr {:en "Segments"
@@ -233,24 +233,23 @@
      [:ul
       (doall
        (for [idx (range num-segments)]
-         (let [segment-path (conj segments-path idx)]
-           ^{:key idx}
-           [segment-form segment-path])))]
+         ^{:key idx}
+         [segment-form (update context :path conj :segments idx)]))]
 
      [:p {:style {:color "#f86"}}
       [tr {:en "The SVG export embeds the fonts, but some programs might not display them correctly. At least Chrome should display it."
            :de "Der SVG Export beinhaltet die Fonts, aber einige Programme zeigen sie nicht korrekt an. Zumindest Chrome sollte es richtig anzeigen."}]]]))
 
-(defn form [{:keys [path]}]
+(defn form [context]
   [:<>
    (for [option [:name
                  :attribution
                  :is-public
                  :attributes
                  :tags]]
-     ^{:key option} [ui-interface/form-element (conj path option)])
+     ^{:key option} [ui-interface/form-element (update context :path conj option)])
 
-   [ribbon-form (conj path :ribbon)]
+   [ribbon-form (update context :path conj :ribbon)]
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
@@ -317,19 +316,19 @@
 
       [:div
        [:button {:on-click #(rf/dispatch [:ribbon-edit-annotate-segments
-                                          (conj path :ribbon)
+                                          (-> context :path (conj :ribbon))
                                           layer-mode-value
                                           flow-mode-value
                                           start-mode-value])}
         [tr {:en "Apply presets"
              :de "Vorauswahl anwenden"}]]
        [:button {:on-click #(rf/dispatch [:ribbon-edit-invert-segments
-                                          (conj path :ribbon)])}
+                                          (-> context :path (conj :ribbon))])}
         [tr {:en "Invert"
              :de "Invertieren"}]]]
 
       [ribbon-segments-form
-       (conj path :ribbon)
+       (update context :path conj :ribbon)
        :tooltip {:en [:<>
                       [:p "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number."]
                       [:p "Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."]]

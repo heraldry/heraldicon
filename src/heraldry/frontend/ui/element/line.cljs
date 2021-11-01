@@ -33,7 +33,7 @@
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
-(defn line-submenu [path]
+(defn line-submenu [{:keys [path] :as context}]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -54,7 +54,7 @@
                        :mirrored?
                        :flipped?
                        :fimbriation]]
-           ^{:key option} [interface/form-element (conj path option)])]]])))
+           ^{:key option} [interface/form-element (update context :path conj option)])]]])))
 
-(defmethod interface/form-element :line [path]
-  [line-submenu path])
+(defmethod interface/form-element :line [context]
+  [line-submenu context])

@@ -30,12 +30,12 @@
          strings/motto
          strings/slogan)))))
 
-(defn form [{:keys [path]}]
+(defn form [context]
   [:<>
    (for [option [:type
                  :origin
                  :geometry]]
-     ^{:key option} [ui-interface/form-element (conj path option)])
+     ^{:key option} [ui-interface/form-element (update context :path conj option)])
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
@@ -44,19 +44,19 @@
    (for [option [:tincture-foreground
                  :tincture-background
                  :tincture-text]]
-     ^{:key option} [ui-interface/form-element (conj path option)])
+     ^{:key option} [ui-interface/form-element (update context :path conj option)])
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
                   :margin-bottom "0.5em"}} [tr strings/ribbon]]
 
-   [ui-interface/form-element (conj path :ribbon-variant)]
+   [ui-interface/form-element (update context :path conj :ribbon-variant)]
 
-   (when @(rf/subscribe [:get-value (conj path :ribbon-variant)])
-     (let [ribbon-path (conj path :ribbon)]
+   (when @(rf/subscribe [:get-value (-> context :path (conj :ribbon-variant))])
+     (let [ribbon-context (update context :path conj :ribbon)]
        [:<>
-        [ribbon-general/ribbon-form ribbon-path]
-        [ribbon-general/ribbon-segments-form ribbon-path]]))])
+        [ribbon-general/ribbon-form ribbon-context]
+        [ribbon-general/ribbon-segments-form ribbon-context]]))])
 
 (defmethod ui-interface/component-node-data :heraldry.component/motto [{:keys [path]}]
   {:title @(rf/subscribe [:motto-name path])})

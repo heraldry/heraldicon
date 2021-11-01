@@ -38,7 +38,7 @@
         :papellony
         :fretty}))
 
-(defn form [{:keys [path]}]
+(defn form [{:keys [path] :as context}]
   [:<>
    (for [option [:counterchanged?
                  :inherit-environment?
@@ -57,7 +57,7 @@
                  :layout
                  :outline?
                  :manual-blazon]]
-     ^{:key option} [interface/form-element (conj path option)])
+     ^{:key option} [interface/form-element (update context :path conj option)])
 
    (when (and
           (not @(rf/subscribe [:get-value (conj path :counterchanged?)]))

@@ -122,5 +122,5 @@
                                     :default :none
                                     :ui {:label (util/translate-cap-first t)}}])]])]])))))
 
-(defmethod interface/form-element :tincture-modifiers [path]
+(defmethod interface/form-element :tincture-modifiers [{:keys [path]}]
   [tincture-modifiers-submenu path])

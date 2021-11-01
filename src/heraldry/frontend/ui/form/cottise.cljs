@@ -3,14 +3,14 @@
    [heraldry.frontend.ui.interface :as interface]
    [re-frame.core :as rf]))
 
-(defn form [{:keys [path]}]
+(defn form [context]
   [:<>
    (for [option [:line
                  :opposite-line
                  :distance
                  :thickness
                  :outline?]]
-     ^{:key option} [interface/form-element (conj path option)])])
+     ^{:key option} [interface/form-element (update context :path conj option)])])
 
 ;; TODO: context
 (defn cottise-name [path]

@@ -5,7 +5,7 @@
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
-(defn form [{:keys [path]}]
+(defn form [context]
   [:<>
    (for [option [:name
                  :attribution
@@ -17,7 +17,7 @@
                  :fixed-tincture
                  :attributes
                  :tags]]
-     ^{:key option} [ui-interface/form-element (conj path option)])
+     ^{:key option} [ui-interface/form-element (update context :path conj option)])
 
    ;; TODO: not ideal, probably should move this at some point
    [checkbox/checkbox (conj [:example-coa :render-options :preview-original?])]])

@@ -32,5 +32,5 @@
        [:label.for-checkbox {:for component-id} [tr label]]
        [value-mode-select/value-mode-select path :disabled? disabled?]])))
 
-(defmethod interface/form-element :checkbox [path]
+(defmethod interface/form-element :checkbox [{:keys [path]}]
   [checkbox path])

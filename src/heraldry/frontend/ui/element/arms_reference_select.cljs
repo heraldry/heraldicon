@@ -36,5 +36,5 @@
                                :de "Wappen auswählen"} arms-title nil
          [arms-select/list-arms (link-to-arms path)]]]])))
 
-(defmethod interface/form-element :arms-reference-select [path]
+(defmethod interface/form-element :arms-reference-select [{:keys [path]}]
   [arms-reference-select path])

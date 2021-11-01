@@ -4,13 +4,13 @@
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
-(defn form [{:keys [path]}]
+(defn form [context]
   [:<>
    (for [option [:name
                  :attribution
                  :is-public
                  :tags]]
-     ^{:key option} [ui-interface/form-element (conj path option)])
+     ^{:key option} [ui-interface/form-element (update context :path conj option)])
 
    [:div {:style {:height "1.5em"}}]])
 
