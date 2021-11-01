@@ -12,6 +12,7 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.colour :as colour]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.bounding-box :as bounding-box]
    [heraldry.math.svg.core :as svg]
@@ -156,12 +157,12 @@
            auto-resize?
            ui-show-colours] :as context
     :or {auto-resize? true}}]
-  (let [data (interface/get-raw-data (update context :path conj :data))
-        variant (interface/get-raw-data (update context :path conj :variant))
+  (let [data (interface/get-raw-data (c/++ context :data))
+        variant (interface/get-raw-data (c/++ context :variant))
         full-charge-data (or data (when variant (load-charge-data variant)))
         placeholder-colours (:colours full-charge-data)
         layer-separator-colours (colours-for-modifier placeholder-colours :layer-separator)
-        ignore-layer-separator? (interface/get-sanitized-data (update context :path conj :ignore-layer-separator?))]
+        ignore-layer-separator? (interface/get-sanitized-data (c/++ context :ignore-layer-separator?))]
     (if (and (:data full-charge-data)
              ;; in order to require rendering, we either have
              ;; to be located in the right render pass
@@ -176,27 +177,27 @@
                         (dissoc :charge-group))
             highlight-colours? (seq ui-show-colours)
             ui-show-colours (set ui-show-colours)
-            origin (interface/get-sanitized-data (update context :path conj :origin))
-            anchor (interface/get-sanitized-data (update context :path conj :anchor))
-            vertical-mask (interface/get-sanitized-data (update context :path conj :vertical-mask))
-            fimbriation (interface/get-sanitized-data (update context :path conj :fimbriation))
+            origin (interface/get-sanitized-data (c/++ context :origin))
+            anchor (interface/get-sanitized-data (c/++ context :anchor))
+            vertical-mask (interface/get-sanitized-data (c/++ context :vertical-mask))
+            fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
             size (if (and size-default
-                          (not (interface/get-raw-data (update context :path conj :geometry :size))))
+                          (not (interface/get-raw-data (c/++ context :geometry :size))))
                    size-default
-                   (interface/get-sanitized-data (update context :path conj :geometry :size)))
-            stretch (interface/get-sanitized-data (update context :path conj :geometry :stretch))
-            mirrored? (interface/get-sanitized-data (update context :path conj :geometry :mirrored?))
-            reversed? (interface/get-sanitized-data (update context :path conj :geometry :reversed?))
+                   (interface/get-sanitized-data (c/++ context :geometry :size)))
+            stretch (interface/get-sanitized-data (c/++ context :geometry :stretch))
+            mirrored? (interface/get-sanitized-data (c/++ context :geometry :mirrored?))
+            reversed? (interface/get-sanitized-data (c/++ context :geometry :reversed?))
             ;; not all tinctures have their own options, but some do, so
             ;; override those with the sanitized values
             tincture (merge
-                      (interface/get-raw-data (update context :path conj :tincture))
-                      (interface/get-sanitized-data (update context :path conj :tincture)))
+                      (interface/get-raw-data (c/++ context :tincture))
+                      (interface/get-sanitized-data (c/++ context :tincture)))
             preview-original? (interface/render-option :preview-original? context)
             outline-mode (if (or (interface/render-option :outline? context)
                                  (= (interface/render-option :mode context)
                                     :hatching)) :keep
-                             (interface/get-sanitized-data (update context :path conj :outline-mode)))
+                             (interface/get-sanitized-data (c/++ context :outline-mode)))
             outline? (= outline-mode :keep)
             {:keys [slot-spacing
                     slot-angle]} charge-group
@@ -211,7 +212,7 @@
             ;; the sanitized value
             ;; TODO: this probably needs a better mechanism and form representation
             size (if (or (not auto-resize?)
-                         (interface/get-raw-data (update context :path conj :geometry :size)))
+                         (interface/get-raw-data (c/++ context :geometry :size)))
                    size
                    nil)
             points (:points environment)
@@ -362,9 +363,9 @@
                          (v/div 2)
                          (v/add origin-point))
             inherit-environment? (interface/get-sanitized-data
-                                  (update context :path conj :field :inherit-environment?))
+                                  (c/++ context :field :inherit-environment?))
             counterchanged? (interface/get-sanitized-data
-                             (update context :path conj :field :counterchanged?))
+                             (c/++ context :field :counterchanged?))
             charge-environment (environment/create
                                 (path/make-path ["M" position
                                                  "l" (v/v (:x clip-size) 0)
@@ -557,7 +558,7 @@
                         [:g {:mask (str "url(#" mask-inverted-id ")")}
                          [:g {:transform reverse-transform}
                           [field-shared/render (-> context
-                                                   (update :path conj :field)
+                                                   (c/++ :field)
                                                    (assoc :environment charge-environment))]]])
                       [:g {:mask (str "url(#" mask-id ")")
                            ;; TODO: select component

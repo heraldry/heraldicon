@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.field-layout
   (:require
+   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.field-type-select :as field-type-select]
@@ -99,7 +100,7 @@
                        :stretch-x
                        :stretch-y
                        :rotation]]
-           ^{:key option} [interface/form-element (update context :path conj option)])]]])))
+           ^{:key option} [interface/form-element (c/++ context option)])]]])))
 
 (defmethod interface/form-element :field-layout [context]
   [layout-submenu context])

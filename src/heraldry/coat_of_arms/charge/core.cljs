@@ -4,6 +4,7 @@
    [heraldry.coat-of-arms.attributes :as attributes]
    [heraldry.coat-of-arms.charge.interface :as charge-interface]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.util :as util]))
 
@@ -11,11 +12,11 @@
   [charge-interface/render-charge context])
 
 (defmethod interface/blazon-component :heraldry.component/charge [{:keys [load-charge-data] :as context}]
-  (let [charge-type (interface/get-raw-data (update context :path conj :type))
-        attitude (interface/get-sanitized-data (update context :path conj :attitude))
-        facing (interface/get-sanitized-data (update context :path conj :facing))
-        variant (interface/get-raw-data (update context :path conj :variant))
-        tincture (interface/get-raw-data (update context :path conj :tincture))
+  (let [charge-type (interface/get-raw-data (c/++ context :type))
+        attitude (interface/get-sanitized-data (c/++ context :attitude))
+        facing (interface/get-sanitized-data (c/++ context :facing))
+        variant (interface/get-raw-data (c/++ context :variant))
+        tincture (interface/get-raw-data (c/++ context :tincture))
         drop-article? (get-in context [:blazonry :drop-article?])
         part-of-charge-group? (get-in context [:blazonry :part-of-charge-group?])
         pluralize? (get-in context [:blazonry :pluralize?])
@@ -48,7 +49,7 @@
                          (util/translate facing))
                        (if fixed-tincture
                          (util/translate fixed-tincture)
-                         (interface/blazon (update context :path conj :field)))
+                         (interface/blazon (c/++ context :field)))
                        (util/combine
                         " and "
                         (map (fn [colour-key]

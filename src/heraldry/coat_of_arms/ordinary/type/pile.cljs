@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.shared.pile :as pile]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -16,14 +17,14 @@
                                                               :de "Spitze"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [{:keys [path environment] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
-        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
-        origin (interface/get-sanitized-data (update context :path conj :origin))
-        anchor (interface/get-sanitized-data (update context :path conj :anchor))
-        geometry (interface/get-sanitized-data (update context :path conj :geometry))
+  [{:keys [environment] :as context}]
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
+        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        geometry (interface/get-sanitized-data (c/++ context :geometry))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)
@@ -101,13 +102,13 @@
                bottom-left bottom-right]]]
     [:<>
      [field-shared/make-subfield
-      (update context :path conj :field)
+      (c/++ context :field)
       part
       :all]
      [line/render line [line-left-data
                         line-right-data] left-point outline? context]
      [cottising/render-chevron-cottise
-      (update context :path conj :cottising :cottise-1)
+      (c/++ context :cottising :cottise-1)
       :cottise-2 :cottise-1
       :distance-fn (fn [distance half-joint-angle-rad]
                      (-> (- distance)

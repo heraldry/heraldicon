@@ -11,6 +11,7 @@
    [heraldry.coat-of-arms.texture :as texture]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.colour :as colour]
+   [heraldry.context :as c]
    [heraldry.font :as font]
    [heraldry.interface :as interface]
    [heraldry.math.bounding-box :as bounding-box]
@@ -112,7 +113,7 @@
                  [:path {:d (:shape environment)
                          :fill "#f0f0f0"}]
                  [field-shared/render (-> context
-                                          (update :path conj :field)
+                                          (c/++ :field)
                                           (assoc :environment environment)
                                           (dissoc :metadata-path)
                                           (assoc :root-escutcheon escutcheon))]]]]
@@ -125,17 +126,17 @@
   [:<>
    (doall
     (for [[idx self-below-shield?] (interface/get-element-indices
-                                    (update context :path conj :components))]
+                                    (c/++ context :components))]
       ^{:key idx}
       [interface/render-component
        (-> context
-           (update :path conj :components idx)
+           (c/++ :components idx)
            (assoc :auto-resize? false)
            (assoc :self-below-shield? self-below-shield?)
            (assoc :render-pass-below-shield? below-shield?))]))])
 
 (defn helms [context width]
-  (let [num-helms (interface/get-list-size (update context :path conj :elements))]
+  (let [num-helms (interface/get-list-size (c/++ context :elements))]
     (if (zero? num-helms)
       {:width 0
        :height 0
@@ -167,7 +168,7 @@
                                                                           0]})]
                                     ^{:key idx}
                                     [helm (-> context
-                                              (update :path conj :elements idx)
+                                              (c/++ :elements idx)
                                               (assoc :environment helm-environment))
                                      :below-shield? true])))]
          :result-above-shield [:g
@@ -184,7 +185,7 @@
                                                                           0]})]
                                     ^{:key idx}
                                     [helm (-> context
-                                              (update :path conj :elements idx)
+                                              (c/++ :elements idx)
                                               (assoc :environment helm-environment))])))]}))))
 
 (defn ribbon [context
@@ -193,13 +194,13 @@
               tincture-text
               & {:keys [outline-thickness]
                  :or {outline-thickness 1}}]
-  (let [thickness (interface/get-sanitized-data (update context :path conj :thickness))
-        edge-angle (interface/get-sanitized-data (update context :path conj :edge-angle))
-        end-split (interface/get-sanitized-data (update context :path conj :end-split))
+  (let [thickness (interface/get-sanitized-data (c/++ context :thickness))
+        edge-angle (interface/get-sanitized-data (c/++ context :edge-angle))
+        end-split (interface/get-sanitized-data (c/++ context :end-split))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
-        points (interface/get-raw-data (update context :path conj :points))
-        segments (interface/get-raw-data (update context :path conj :segments))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
+        points (interface/get-raw-data (c/++ context :points))
+        segments (interface/get-raw-data (c/++ context :segments))
         {:keys [curves edge-vectors]} (ribbon/generate-curves points edge-angle)
         num-curves (count curves)
         foreground-colour (tincture/pick tincture-foreground context)
@@ -264,11 +265,11 @@
                                                                              second-edge-vector))
                                                               (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
                                                               (path/line-to (v/mul first-edge-vector -1))))
-              segment-context (update context :path conj :segments idx)
-              segment-type (interface/get-raw-data (update segment-context :path conj :type))
+              segment-context (c/++ context :segments idx)
+              segment-type (interface/get-raw-data (c/++ segment-context :type))
               foreground? (#{:heraldry.ribbon.segment/foreground
                              :heraldry.ribbon.segment/foreground-with-text} segment-type)
-              text (some-> (interface/get-sanitized-data (update segment-context :path conj :text))
+              text (some-> (interface/get-sanitized-data (c/++ segment-context :text))
                            (s/replace #"[*]" "⬪"))
               text? (and (= segment-type :heraldry.ribbon.segment/foreground-with-text)
                          (some-> text
@@ -287,12 +288,12 @@
                                           background-colour)})}]
            (when text?
              (let [path-id (util/id "path")
-                   spacing (interface/get-sanitized-data (update segment-context :path conj :spacing))
-                   offset-x (interface/get-sanitized-data (update segment-context :path conj :offset-x))
-                   offset-y (interface/get-sanitized-data (update segment-context :path conj :offset-y))
-                   font (some-> (interface/get-sanitized-data (update segment-context :path conj :font))
+                   spacing (interface/get-sanitized-data (c/++ segment-context :spacing))
+                   offset-x (interface/get-sanitized-data (c/++ segment-context :offset-x))
+                   offset-y (interface/get-sanitized-data (c/++ segment-context :offset-y))
+                   font (some-> (interface/get-sanitized-data (c/++ segment-context :font))
                                 font/css-string)
-                   font-scale (interface/get-sanitized-data (update segment-context :path conj :font-scale))
+                   font-scale (interface/get-sanitized-data (c/++ segment-context :font-scale))
                    font-size (* font-scale thickness)
                    spacing (* spacing font-size)
                    text-path-start (v/add (ffirst partial-curve)
@@ -323,18 +324,18 @@
                      render-pass-below-shield?]
               :as context}]
   (let [{:keys [width height]} environment
-        points (interface/get-raw-data (update context :path conj :ribbon :points))]
+        points (interface/get-raw-data (c/++ context :ribbon :points))]
     (if (and (= (boolean self-below-shield?)
                 (boolean render-pass-below-shield?))
              points)
-      (let [origin-point (interface/get-sanitized-data (update context :path conj :origin :point))
-            tincture-foreground (interface/get-sanitized-data (update context :path conj :tincture-foreground))
-            tincture-background (interface/get-sanitized-data (update context :path conj :tincture-background))
-            tincture-text (interface/get-sanitized-data (update context :path conj :tincture-text))
-            offset-x (interface/get-sanitized-data (update context :path conj :origin :offset-x))
-            offset-y (interface/get-sanitized-data (update context :path conj :origin :offset-y))
-            size (interface/get-sanitized-data (update context :path conj :geometry :size))
-            thickness (interface/get-sanitized-data (update context :path conj :ribbon :thickness))
+      (let [origin-point (interface/get-sanitized-data (c/++ context :origin :point))
+            tincture-foreground (interface/get-sanitized-data (c/++ context :tincture-foreground))
+            tincture-background (interface/get-sanitized-data (c/++ context :tincture-background))
+            tincture-text (interface/get-sanitized-data (c/++ context :tincture-text))
+            offset-x (interface/get-sanitized-data (c/++ context :origin :offset-x))
+            offset-y (interface/get-sanitized-data (c/++ context :origin :offset-y))
+            size (interface/get-sanitized-data (c/++ context :geometry :size))
+            thickness (interface/get-sanitized-data (c/++ context :ribbon :thickness))
             position (-> (-> environment :points (get origin-point))
                          (v/add (v/v ((util/percent-of width) offset-x)
                                      (- ((util/percent-of height) offset-y)))))
@@ -359,7 +360,7 @@
                                                                 (v/add (v/v min-x min-y))
                                                                 (v/mul -1))) ")")}
                   [ribbon
-                   (update context :path conj :ribbon)
+                   (c/++ context :ribbon)
                    tincture-foreground
                    tincture-background
                    tincture-text
@@ -381,7 +382,7 @@
    (doall
     (for [[idx self-below-shield?] (interface/get-element-indices context)]
       (let [updated-context (-> context
-                                (update :path conj idx)
+                                (c/++ idx)
                                 (assoc :auto-resize? false)
                                 (assoc :self-below-shield? self-below-shield?)
                                 (assoc :render-pass-below-shield? below-shield?))
@@ -394,7 +395,7 @@
 
 (defn ornaments [context coa-bounding-box]
   (let [[bb-min-x bb-max-x bb-min-y bb-max-y] coa-bounding-box
-        num-ornaments (count (interface/get-element-indices (update context :path conj :elements)))
+        num-ornaments (count (interface/get-element-indices (c/++ context :elements)))
         width (- bb-max-x bb-min-x)
         height (- bb-max-y bb-min-y)
         ornaments-width (* 3 1.2 width)
@@ -411,7 +412,7 @@
                      nil
                      {:bounding-box coa-bounding-box})
         updated-context (-> context
-                            (update :path conj :elements)
+                            (c/++ :elements)
                             (assoc :environment environment))]
     (if (pos? num-ornaments)
       {:result-below-shield [ornaments-elements updated-context :below-shield? true]
@@ -445,7 +446,7 @@
                  (- 0 (/ total-height 2) min-y) ")")}))
 
 (defn get-used-fonts [context]
-  (let [num-ornaments (interface/get-list-size (update context :path conj :ornaments :elements))]
+  (let [num-ornaments (interface/get-list-size (c/++ context :ornaments :elements))]
     ;; TODO: might have to be smarter here to only look into mottos,
     ;; but it should work if there's no :ribbon :segments
     (->> (for [i (range num-ornaments)
@@ -481,7 +482,7 @@
                                      coa-angle-rad-abs)
         {coat-of-arms :result
          environment :environment} (coat-of-arms
-                                    (update context :path conj :coat-of-arms)
+                                    (c/++ context :coat-of-arms)
                                     100)
         {coat-of-arms-width :width
          coat-of-arms-height :height} environment
@@ -493,7 +494,7 @@
                                   :height 0
                                   :result nil}
                                  (helms
-                                  (update context :path conj :helms)
+                                  (c/++ context :helms)
                                   100))
 
         short-arm (* coat-of-arms-width (Math/cos coa-angle-rad-abs))
@@ -534,7 +535,7 @@
                                                       :coat-of-arms-and-helm} scope)
                                                  {:bounding-box [0 0 0 0]}
                                                  (ornaments
-                                                  (update context :path conj :ornaments)
+                                                  (c/++ context :ornaments)
                                                   coat-of-arms-bounding-box))
 
         used-fonts (cond-> (get-used-fonts context)

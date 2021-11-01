@@ -6,6 +6,7 @@
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.bounding-box :as bounding-box]
    [heraldry.math.svg.path :as path]
@@ -30,22 +31,22 @@
                       (dissoc :origin-override)
                       (dissoc :size-default)
                       (dissoc :charge-group))
-          origin (interface/get-sanitized-data (update context :path conj :origin))
-          anchor (interface/get-sanitized-data (update context :path conj :anchor))
-          vertical-mask (interface/get-sanitized-data (update context :path conj :vertical-mask))
-          fimbriation (interface/get-sanitized-data (update context :path conj :fimbriation))
+          origin (interface/get-sanitized-data (c/++ context :origin))
+          anchor (interface/get-sanitized-data (c/++ context :anchor))
+          vertical-mask (interface/get-sanitized-data (c/++ context :vertical-mask))
+          fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
           size (if (and size-default
-                        (not (interface/get-raw-data (update context :path conj :geometry :size))))
+                        (not (interface/get-raw-data (c/++ context :geometry :size))))
                  size-default
-                 (interface/get-sanitized-data (update context :path conj :geometry :size)))
-          stretch (interface/get-sanitized-data (update context :path conj :geometry :stretch))
-          mirrored? (interface/get-sanitized-data (update context :path conj :geometry :mirrored?))
-          reversed? (interface/get-sanitized-data (update context :path conj :geometry :reversed?))
+                 (interface/get-sanitized-data (c/++ context :geometry :size)))
+          stretch (interface/get-sanitized-data (c/++ context :geometry :stretch))
+          mirrored? (interface/get-sanitized-data (c/++ context :geometry :mirrored?))
+          reversed? (interface/get-sanitized-data (c/++ context :geometry :reversed?))
           squiggly? (interface/render-option :squiggly? context)
           outline-mode (if (or (interface/render-option :outline? context)
                                (= (interface/render-option :mode context)
                                   :hatching)) :keep
-                           (interface/get-sanitized-data (update context :path conj :outline-mode)))
+                           (interface/get-sanitized-data (c/++ context :outline-mode)))
           outline? (= outline-mode :keep)
           {:keys [slot-spacing
                   slot-angle]} charge-group
@@ -81,7 +82,7 @@
           ;; the sanitized value
           ;; TODO: this probably needs a better mechanism and form representation
           size (if (or (not auto-resize?)
-                       (interface/get-raw-data (update context :path conj :geometry :size)))
+                       (interface/get-raw-data (c/++ context :geometry :size)))
                  size
                  nil)
           target-arg-value (-> (or size
@@ -236,7 +237,7 @@
               :corner (-> fimbriation :corner)]]))
         [:g {:id charge-id}
          [field-shared/make-subfield
-          (update context :path conj :field)
+          (c/++ context :field)
           part
           :all]
          (when outline?

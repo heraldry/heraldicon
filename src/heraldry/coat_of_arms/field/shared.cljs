@@ -2,6 +2,7 @@
   (:require
    [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.coat-of-arms.field.interface :as ui-interface]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.bounding-box :as bounding-box]
    [heraldry.math.svg.path :as path]
@@ -52,12 +53,12 @@
 (defn render-components [context]
   [:<>
    (doall
-    (for [idx (range (interface/get-list-size (update context :path conj :components)))
+    (for [idx (range (interface/get-list-size (c/++ context :components)))
           :while (field-path-allowed?
-                  (update context :path conj :components idx))]
+                  (c/++ context :components idx))]
       ^{:key idx}
       [interface/render-component
-       (update context :path conj :components idx)]))])
+       (c/++ context :components idx)]))])
 
 (defn render-counterchanged-field [{:keys [path
                                            parent-field-path
@@ -78,17 +79,17 @@
                       environment
                       svg-export?
                       transform] :as context}]
-  (if (interface/get-sanitized-data (update context :path conj :counterchanged?))
+  (if (interface/get-sanitized-data (c/++ context :counterchanged?))
     (render-counterchanged-field context render)
     (let [selected? false
           ;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
           ;; adding it to the choices in the option would affect the UI
-          field-type (interface/get-raw-data (update context :path conj :type))
+          field-type (interface/get-raw-data (c/++ context :type))
           field-path (if (= field-type :heraldry.field.type/ref)
                        (-> path
                            drop-last
                            vec
-                           (conj (interface/get-raw-data (update context :path conj :index))))
+                           (conj (interface/get-raw-data (c/++ context :index))))
                        path)]
       [:<>
        [:g {:style (when (not svg-export?)

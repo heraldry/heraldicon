@@ -6,6 +6,7 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.position :as position]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -17,12 +18,12 @@
                                                               :de "Kreuz"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [{:keys [path environment] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
-        origin (interface/get-sanitized-data (update context :path conj :origin))
-        size (interface/get-sanitized-data (update context :path conj :geometry :size))
+  [{:keys [environment] :as context}]
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        origin (interface/get-sanitized-data (c/++ context :origin))
+        size (interface/get-sanitized-data (c/++ context :geometry :size))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
@@ -207,7 +208,7 @@
               [top-left bottom-right]]]
     [:<>
      [field-shared/make-subfield
-      (update context :path conj :field)
+      (c/++ context :field)
       part
       :all]
      [line/render line [line-fess-top-left-data
@@ -226,7 +227,7 @@
                             [45 corner-bottom-right]]]
         ^{:key chevron-angle}
         [cottising/render-chevron-cottise
-         (update context :path conj :cottising :cottise-1)
+         (c/++ context :cottising :cottise-1)
          :cottise-2 :cottise-opposite-1
          :distance-fn (fn [distance half-joint-angle-rad]
                         (-> (+ distance)

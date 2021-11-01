@@ -4,6 +4,7 @@
    [heraldry.coat-of-arms.field.options :as field-options]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
    [heraldry.strings :as strings]))
@@ -81,19 +82,19 @@
                                      alignment
                                      swap-lines?]}]
   (when (interface/get-raw-data context)
-    (let [line (interface/get-sanitized-data (update context :path conj :line))
-          opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
+    (let [line (interface/get-sanitized-data (c/++ context :line))
+          opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
           [line opposite-line] (if swap-lines?
                                  [opposite-line line]
                                  [line opposite-line])
-          thickness (interface/get-sanitized-data (update context :path conj :thickness))
-          distance (interface/get-sanitized-data (update context :path conj :distance))
-          outline? (interface/get-sanitized-data (update context :path conj :outline?))]
+          thickness (interface/get-sanitized-data (c/++ context :thickness))
+          distance (interface/get-sanitized-data (c/++ context :distance))
+          outline? (interface/get-sanitized-data (c/++ context :outline?))]
       [ordinary-interface/render-ordinary
        (-> context
            (assoc :path [:context :cottise])
            (assoc :cottise {:type :heraldry.ordinary.type/fess
-                            :field (interface/get-raw-data (update context :path conj :field))
+                            :field (interface/get-raw-data (c/++ context :field))
                             :line line
                             :opposite-line opposite-line
                             :geometry {:size thickness}
@@ -117,19 +118,19 @@
                                      alignment
                                      swap-lines?]}]
   (when (interface/get-raw-data context)
-    (let [line (interface/get-sanitized-data (update context :path conj :line))
-          opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
+    (let [line (interface/get-sanitized-data (c/++ context :line))
+          opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
           [line opposite-line] (if swap-lines?
                                  [opposite-line line]
                                  [line opposite-line])
-          thickness (interface/get-sanitized-data (update context :path conj :thickness))
-          distance (interface/get-sanitized-data (update context :path conj :distance))
-          outline? (interface/get-sanitized-data (update context :path conj :outline?))]
+          thickness (interface/get-sanitized-data (c/++ context :thickness))
+          distance (interface/get-sanitized-data (c/++ context :distance))
+          outline? (interface/get-sanitized-data (c/++ context :outline?))]
       [ordinary-interface/render-ordinary
        (-> context
            (assoc :path [:context :cottise])
            (assoc :cottise {:type :heraldry.ordinary.type/pale
-                            :field (interface/get-raw-data (update context :path conj :field))
+                            :field (interface/get-raw-data (c/++ context :field))
                             :line line
                             :opposite-line opposite-line
                             :geometry {:size thickness}
@@ -161,25 +162,25 @@
                                      middle-real-end-fn
                                      sinister?]}]
   (when (interface/get-raw-data context)
-    (let [line (interface/get-sanitized-data (update context :path conj :line))
-          opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
+    (let [line (interface/get-sanitized-data (c/++ context :line))
+          opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
           [line opposite-line] (if swap-lines?
                                  [opposite-line line]
                                  [line opposite-line])
-          thickness (interface/get-sanitized-data (update context :path conj :thickness))
-          distance (interface/get-sanitized-data (update context :path conj :distance))
+          thickness (interface/get-sanitized-data (c/++ context :thickness))
+          distance (interface/get-sanitized-data (c/++ context :distance))
           effective-distance (distance-fn distance thickness)
           point-offset (v/mul direction-orthogonal effective-distance)
           new-center-point (v/add center-point point-offset)
           fess-offset (v/sub new-center-point (-> environment :points :fess))
-          outline? (interface/get-sanitized-data (update context :path conj :outline?))]
+          outline? (interface/get-sanitized-data (c/++ context :outline?))]
       [ordinary-interface/render-ordinary
        (-> context
            (assoc :path [:context :cottise])
            (assoc :cottise {:type (if sinister?
                                     :heraldry.ordinary.type/bend-sinister
                                     :heraldry.ordinary.type/bend)
-                            :field (interface/get-raw-data (update context :path conj :field))
+                            :field (interface/get-raw-data (c/++ context :field))
                             :line line
                             :opposite-line opposite-line
                             :geometry {:size thickness}
@@ -219,13 +220,13 @@
                                         chevron-angle
                                         corner-point]}]
   (when (interface/get-raw-data context)
-    (let [line (interface/get-sanitized-data (update context :path conj :line))
-          opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
+    (let [line (interface/get-sanitized-data (c/++ context :line))
+          opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
           [line opposite-line] (if swap-lines?
                                  [opposite-line line]
                                  [line opposite-line])
-          thickness (interface/get-sanitized-data (update context :path conj :thickness))
-          distance (interface/get-sanitized-data (update context :path conj :distance))
+          thickness (interface/get-sanitized-data (c/++ context :thickness))
+          distance (interface/get-sanitized-data (c/++ context :distance))
           half-joint-angle (/ joint-angle 2)
           half-joint-angle-rad (-> half-joint-angle
                                    (/ 180)
@@ -235,12 +236,12 @@
                            (v/rotate chevron-angle)
                            (v/add corner-point))
           fess-offset (v/sub point-offset (-> environment :points :fess))
-          outline? (interface/get-sanitized-data (update context :path conj :outline?))]
+          outline? (interface/get-sanitized-data (c/++ context :outline?))]
       [ordinary-interface/render-ordinary
        (-> context
            (assoc :path [:context :cottise])
            (assoc :cottise {:type :heraldry.ordinary.type/chevron
-                            :field (interface/get-raw-data (update context :path conj :field))
+                            :field (interface/get-raw-data (c/++ context :field))
                             :line line
                             :opposite-line opposite-line
                             :geometry {:size thickness}

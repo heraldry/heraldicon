@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.element.semy-layout
   (:require
+   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as interface]
@@ -49,7 +50,7 @@
                        :stretch-x
                        :stretch-y
                        :rotation]]
-           ^{:key option} [interface/form-element (update context :path conj option)])]]])))
+           ^{:key option} [interface/form-element (c/++ context option)])]]])))
 
 (defmethod interface/form-element :semy-layout [context]
   [layout-submenu context])

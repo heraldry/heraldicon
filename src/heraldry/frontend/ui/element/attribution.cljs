@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.element.attribution
   (:require
    [heraldry.attribution :as attribution]
+   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.select :as select]
@@ -96,7 +97,7 @@
           (for [option [:nature
                         :license
                         :license-version]]
-            ^{:key option} [interface/form-element (update context :path conj option)])
+            ^{:key option} [interface/form-element (c/++ context option)])
 
           [:div {:style {:height "1.5em"}}]
 
@@ -106,7 +107,7 @@
                         :source-link
                         :source-creator-name
                         :source-creator-link]]
-            ^{:key option} [interface/form-element (update context :path conj option)])]]]])))
+            ^{:key option} [interface/form-element (c/++ context option)])]]]])))
 
 (defmethod interface/form-element :attribution [context]
   [attribution-submenu context

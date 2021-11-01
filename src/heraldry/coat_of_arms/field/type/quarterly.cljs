@@ -4,6 +4,7 @@
    [heraldry.coat-of-arms.field.shared :as shared]
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.outline :as outline]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
@@ -17,14 +18,14 @@
 
 (defmethod field-interface/render-field field-type
   [{:keys [path environment] :as context}]
-  (let [num-fields-x (interface/get-sanitized-data (update context :path conj :layout :num-fields-x))
-        num-fields-y (interface/get-sanitized-data (update context :path conj :layout :num-fields-y))
-        offset-x (interface/get-sanitized-data (update context :path conj :layout :offset-x))
-        offset-y (interface/get-sanitized-data (update context :path conj :layout :offset-y))
-        stretch-x (interface/get-sanitized-data (update context :path conj :layout :stretch-x))
-        stretch-y (interface/get-sanitized-data (update context :path conj :layout :stretch-y))
+  (let [num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
+        num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
+        offset-x (interface/get-sanitized-data (c/++ context :layout :offset-x))
+        offset-y (interface/get-sanitized-data (c/++ context :layout :offset-y))
+        stretch-x (interface/get-sanitized-data (c/++ context :layout :stretch-x))
+        stretch-y (interface/get-sanitized-data (c/++ context :layout :stretch-y))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)

@@ -4,6 +4,7 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.position :as position]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -93,17 +94,17 @@
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
-  (let [origin (interface/get-sanitized-data (update context :path conj :origin))
-        variant (interface/get-sanitized-data (update context :path conj :variant))
-        num-points (interface/get-sanitized-data (update context :path conj :num-points))
-        fimbriation (interface/get-sanitized-data (update context :path conj :fimbriation))
-        width (interface/get-sanitized-data (update context :path conj :geometry :width))
-        size (interface/get-sanitized-data (update context :path conj :geometry :size))
-        thickness (interface/get-sanitized-data (update context :path conj :geometry :thickness))
-        eccentricity (interface/get-sanitized-data (update context :path conj :geometry :eccentricity))
-        stretch (interface/get-sanitized-data (update context :path conj :geometry :stretch))
+  (let [origin (interface/get-sanitized-data (c/++ context :origin))
+        variant (interface/get-sanitized-data (c/++ context :variant))
+        num-points (interface/get-sanitized-data (c/++ context :num-points))
+        fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
+        width (interface/get-sanitized-data (c/++ context :geometry :width))
+        size (interface/get-sanitized-data (c/++ context :geometry :size))
+        thickness (interface/get-sanitized-data (c/++ context :geometry :thickness))
+        eccentricity (interface/get-sanitized-data (c/++ context :geometry :eccentricity))
+        stretch (interface/get-sanitized-data (c/++ context :geometry :stretch))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         line {:type :straight
               :fimbriation fimbriation}
         origin-point (position/calculate origin environment :fess)
@@ -130,7 +131,7 @@
               environment-points]]
     [:<>
      [field-shared/make-subfield
-      (update context :path conj :field)
+      (c/++ context :field)
       part
       :all]
      [line/render line lines (first points) outline? context]]))

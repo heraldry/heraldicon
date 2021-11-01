@@ -4,6 +4,7 @@
    [heraldry.coat-of-arms.field.interface :as field-interface]
    [heraldry.coat-of-arms.field.shared :as shared]
    [heraldry.coat-of-arms.field.type.barry :as barry]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]))
 
@@ -16,11 +17,11 @@
 
 (defmethod field-interface/render-field field-type
   [{:keys [path environment] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
-        origin (interface/get-sanitized-data (update context :path conj :origin))
-        anchor (interface/get-sanitized-data (update context :path conj :anchor))
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)

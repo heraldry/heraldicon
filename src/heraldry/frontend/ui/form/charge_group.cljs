@@ -4,12 +4,12 @@
    [heraldry.coat-of-arms.charge.options :as charge-options]
    [heraldry.coat-of-arms.default :as default]
    [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.charge-group-preset-select
-    :as
-    charge-group-preset-select]
+    :as charge-group-preset-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.interface :as interface]
@@ -236,7 +236,7 @@
       (for [option [:slots
                     :stretch
                     :offset]]
-        ^{:key option} [ui-interface/form-element (update context :path conj option)])]]))
+        ^{:key option} [ui-interface/form-element (c/++ context option)])]]))
 
 (defn form [{:keys [path] :as context}]
   (let [charge-group-type @(rf/subscribe [:get-value (conj path :type)])
@@ -261,7 +261,7 @@
                    :vertical-align "top"}}
      [charge-group-preset-select/charge-group-preset-select path]
      (for [option [:origin]]
-       ^{:key option} [ui-interface/form-element (update context :path conj option)])
+       ^{:key option} [ui-interface/form-element (c/++ context option)])
 
      [preview-form path]
 
@@ -275,7 +275,7 @@
                    :arc-stretch
                    :rotate-charges?
                    :slots]]
-       ^{:key option} [ui-interface/form-element (update context :path conj option)])
+       ^{:key option} [ui-interface/form-element (c/++ context option)])
 
      (when strip-type?
        [:div.ui-setting
@@ -309,13 +309,13 @@
                        {:on-click #(state/dispatch-on-event % [:remove-element strip-path])})
                   [:i.far.fa-trash-alt]]]])))]]])
 
-     [ui-interface/form-element (update context :path conj :manual-blazon)]]))
+     [ui-interface/form-element (c/++ context :manual-blazon)]]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/charge-group [{:keys [path] :as context}]
   (let [num-charges @(rf/subscribe [:get-list-size (conj path :charges)])]
     {:title (util/str-tr {:en "Charge group of "
                           :de "Gruppe von "} (if (= num-charges 1)
-                                               (charge-options/title (update context :path conj :charges 0))
+                                               (charge-options/title (c/++ context :charges 0))
                                                {:en "various"
                                                 :de "verschiedenen"}))
      :buttons [{:icon "fas fa-plus"

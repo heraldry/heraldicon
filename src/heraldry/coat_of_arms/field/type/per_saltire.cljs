@@ -7,6 +7,7 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.shared.saltire :as saltire]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
@@ -20,12 +21,12 @@
 
 (defmethod field-interface/render-field field-type
   [{:keys [path environment] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
-        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
-        origin (interface/get-sanitized-data (update context :path conj :origin))
-        anchor (interface/get-sanitized-data (update context :path conj :anchor))
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
+        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment

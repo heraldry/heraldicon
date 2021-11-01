@@ -3,6 +3,7 @@
    [heraldry.coat-of-arms.field.interface :as field-interface]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.util :as util]))
 
@@ -121,19 +122,19 @@
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]
-  (let [thickness (interface/get-sanitized-data (update context :path conj :thickness))
-        gap (/ (interface/get-sanitized-data (update context :path conj :gap))
+  (let [thickness (interface/get-sanitized-data (c/++ context :thickness))
+        gap (/ (interface/get-sanitized-data (c/++ context :gap))
                5)
-        num-fields-x (interface/get-sanitized-data (update context :path conj :layout :num-fields-x))
-        num-fields-y (interface/get-sanitized-data (update context :path conj :layout :num-fields-y))
-        raw-num-fields-y (interface/get-raw-data (update context :path conj :layout :num-fields-y))
-        offset-x (interface/get-sanitized-data (update context :path conj :layout :offset-x))
-        offset-y (interface/get-sanitized-data (update context :path conj :layout :offset-y))
-        stretch-x (interface/get-sanitized-data (update context :path conj :layout :stretch-x))
-        stretch-y (interface/get-sanitized-data (update context :path conj :layout :stretch-y))
-        rotation (+ 45 (interface/get-sanitized-data (update context :path conj :layout :rotation)))
+        num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
+        num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
+        raw-num-fields-y (interface/get-raw-data (c/++ context :layout :num-fields-y))
+        offset-x (interface/get-sanitized-data (c/++ context :layout :offset-x))
+        offset-y (interface/get-sanitized-data (c/++ context :layout :offset-y))
+        stretch-x (interface/get-sanitized-data (c/++ context :layout :stretch-x))
+        stretch-y (interface/get-sanitized-data (c/++ context :layout :stretch-y))
+        rotation (+ 45 (interface/get-sanitized-data (c/++ context :layout :rotation)))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
@@ -209,7 +210,7 @@
                     :height 1100
                     :fill (str "url(#" pattern-id-prefix "-" idx ")")}]]
            [tincture/tinctured-field
-            (update context :path conj :fields idx :tincture)
+            (c/++ context :fields idx :tincture)
             :mask-id mask-id]])))
      (when outline?
        [:rect {:x -500

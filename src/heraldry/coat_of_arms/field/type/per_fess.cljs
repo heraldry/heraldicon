@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.position :as position]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
@@ -18,10 +19,10 @@
 
 (defmethod field-interface/render-field field-type
   [{:keys [path environment] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
-        origin (interface/get-sanitized-data (update context :path conj :origin))
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        origin (interface/get-sanitized-data (c/++ context :origin))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         top-left (:top-left points)

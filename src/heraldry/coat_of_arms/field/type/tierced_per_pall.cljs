@@ -8,6 +8,7 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.shared.chevron :as chevron]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.core :as math]
    [heraldry.math.svg.path :as path]
@@ -22,15 +23,15 @@
 
 (defmethod field-interface/render-field field-type
   [{:keys [path environment] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
-        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
-        extra-line (interface/get-sanitized-data (update context :path conj :extra-line))
-        origin (interface/get-sanitized-data (update context :path conj :origin))
-        anchor (interface/get-sanitized-data (update context :path conj :anchor))
-        direction-anchor (interface/get-sanitized-data (update context :path conj :direction-anchor))
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
+        extra-line (interface/get-sanitized-data (c/++ context :extra-line))
+        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        direction-anchor (interface/get-sanitized-data (c/++ context :direction-anchor))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
-        raw-direction-anchor (interface/get-raw-data (update context :path conj :direction-anchor))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
+        raw-direction-anchor (interface/get-raw-data (c/++ context :direction-anchor))
         direction-anchor (cond-> direction-anchor
                            (-> direction-anchor
                                :point
