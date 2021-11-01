@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.collection-general
   (:require
+   [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
@@ -10,12 +11,12 @@
                  :attribution
                  :is-public
                  :tags]]
-     ^{:key option} [ui-interface/form-element (update context :path conj option)])
+     ^{:key option} [ui-interface/form-element (c/++ context option)])
 
    [:div {:style {:height "1.5em"}}]
 
    (for [option [:font]]
-     ^{:key option} [ui-interface/form-element (update context :path conj option)])])
+     ^{:key option} [ui-interface/form-element (c/++ context option)])])
 
 (defmethod ui-interface/component-node-data :heraldry.component/collection-general [{:keys [path]}]
   {:title strings/general

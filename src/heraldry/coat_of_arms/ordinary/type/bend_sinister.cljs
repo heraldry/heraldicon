@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -16,19 +17,19 @@
                                                               :de "Schräglinksbalken"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [{:keys [path environment
+  [{:keys [environment
            override-middle-real-start
            override-middle-real-end
            override-real-start
            override-real-end
            override-center-point] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
-        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
-        origin (interface/get-sanitized-data (update context :path conj :origin))
-        anchor (interface/get-sanitized-data (update context :path conj :anchor))
-        size (interface/get-sanitized-data (update context :path conj :geometry :size))
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
+        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        size (interface/get-sanitized-data (c/++ context :geometry :size))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         top (:top points)
         bottom (:bottom points)
@@ -127,8 +128,8 @@
                                               :real-end real-end
                                               :context context
                                               :environment environment)
-        counterchanged? (interface/get-sanitized-data (update context :path conj :field :counterchanged?))
-        inherit-environment? (interface/get-sanitized-data (update context :path conj :field :inherit-environment?))
+        counterchanged? (interface/get-sanitized-data (c/++ context :field :counterchanged?))
+        inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
         use-parent-environment? (or counterchanged?
                                     inherit-environment?)
         part [["M" (v/add first-start
@@ -152,7 +153,7 @@
     [:<>
      [field-shared/make-subfield
       (-> context
-          (update :path conj :field)
+          (c/++ :field)
           (assoc :transform (when (not use-parent-environment?)
                               (str "translate(" (v/->str ordinary-top-left) ")"
                                    "rotate(" angle ")"))))
@@ -161,7 +162,7 @@
      [line/render line [line-one-data] first-start outline? context]
      [line/render opposite-line [line-reversed-data] second-end outline? context]
      [cottising/render-bend-cottise
-      (update cottise-context :path conj :cottising :cottise-1)
+      (c/++ cottise-context :cottising :cottise-1)
       :cottise-2 :cottise-1
       :sinister? true
       :distance-fn (fn [distance thickness]
@@ -182,7 +183,7 @@
       :middle-real-end-fn (fn [point-offset]
                             (v/add middle-real-end point-offset))]
      [cottising/render-bend-cottise
-      (update cottise-context :path conj :cottising :cottise-opposite-1)
+      (c/++ cottise-context :cottising :cottise-opposite-1)
       :cottise-opposite-2 :cottise-opposite-1
       :sinister? true
       :distance-fn (fn [distance thickness]

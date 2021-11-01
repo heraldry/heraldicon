@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.collection
   (:require
+   [heraldry.context :as c]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.interface :as interface]
    [heraldry.strings :as strings]
@@ -8,7 +9,7 @@
 (defn form [context]
   [:<>
    (for [option [:num-columns]]
-     ^{:key option} [interface/form-element (update context :path conj option)])])
+     ^{:key option} [interface/form-element (c/++ context option)])])
 
 (defmethod interface/component-node-data :heraldry.component/collection [{:keys [path] :as context}]
   (let [num-elements @(rf/subscribe [:get-list-size (conj path :elements)])]

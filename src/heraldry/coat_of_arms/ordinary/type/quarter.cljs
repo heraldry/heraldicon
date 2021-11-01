@@ -6,6 +6,7 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.position :as position]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
@@ -16,14 +17,14 @@
                                                               :de "Vierung / Obereck"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [{:keys [path environment] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
-        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
-        variant (interface/get-sanitized-data (update context :path conj :variant))
-        origin (interface/get-sanitized-data (update context :path conj :origin))
+  [{:keys [environment] :as context}]
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
+        variant (interface/get-sanitized-data (c/++ context :variant))
+        origin (interface/get-sanitized-data (c/++ context :origin))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
-        size (interface/get-sanitized-data (update context :path conj :geometry :size))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
+        size (interface/get-sanitized-data (c/++ context :geometry :size))
         points (:points environment)
         width (:width environment)
         height (:height environment)
@@ -183,7 +184,7 @@
         part (get parts target-part-index)]
     [:<>
      [field-shared/make-subfield
-      (update context :path conj :field)
+      (c/++ context :field)
       part
       :all]
      [line/render line [line-one-data line-two-data] (case target-part-index
@@ -192,7 +193,7 @@
                                                        2 point-bottom
                                                        3 point-bottom) outline? context]
      [cottising/render-chevron-cottise
-      (update context :path conj :cottising :cottise-1)
+      (c/++ context :cottising :cottise-1)
       :cottise-2 :cottise-1
       :distance-fn (fn [distance half-joint-angle-rad]
                      (-> (- distance)

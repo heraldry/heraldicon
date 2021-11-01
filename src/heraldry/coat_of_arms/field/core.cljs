@@ -4,14 +4,15 @@
    [heraldry.coat-of-arms.field.interface :as field-interface]
    [heraldry.coat-of-arms.field.options :as field-options]
    [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]))
 
 (defn mandatory-part-count [context]
-  (let [field-type (-> (interface/get-raw-data (update context :path conj :type))
+  (let [field-type (-> (interface/get-raw-data (c/++ context :type))
                        name keyword)
-        num-base-fields (interface/get-sanitized-data (update context :path conj :num-base-fields))]
+        num-base-fields (interface/get-sanitized-data (c/++ context :num-base-fields))]
     (if num-base-fields
       num-base-fields
       (case field-type
@@ -135,31 +136,31 @@
   (-> field-type field-interface/part-names (get index) (or (util/to-roman (inc index)))))
 
 (defn title [context]
-  (if (interface/get-sanitized-data (update context :path conj :counterchanged?))
+  (if (interface/get-sanitized-data (c/++ context :counterchanged?))
     {:en "Counterchanged"
      :de "Verwechselt"}
-    (let [field-type (interface/get-sanitized-data (update context :path conj :type))]
+    (let [field-type (interface/get-sanitized-data (c/++ context :type))]
       (if (= field-type :heraldry.field.type/plain)
-        (-> (interface/get-raw-data (update context :path conj :tincture))
+        (-> (interface/get-raw-data (c/++ context :tincture))
             tincture/translate-tincture
             util/upper-case-first)
         (get field-options/field-map field-type)))))
 
 (defmethod interface/blazon-component :heraldry.component/field [context]
-  (if (interface/get-sanitized-data (update context :path conj :counterchanged?))
+  (if (interface/get-sanitized-data (c/++ context :counterchanged?))
     "counterchanged"
     (let [root? (get-in context [:blazonry :root?])
           context (assoc-in context [:blazonry :root?] false)
-          field-type (interface/get-sanitized-data (update context :path conj :type))
-          num-components (interface/get-list-size (update context :path conj :components))
+          field-type (interface/get-sanitized-data (c/++ context :type))
+          num-components (interface/get-list-size (c/++ context :components))
 
           field-description
           (case field-type
             :heraldry.field.type/plain (tincture/translate-tincture
-                                        (interface/get-sanitized-data (update context :path conj :tincture)))
-            (let [line (interface/get-sanitized-data (update context :path conj :line))
+                                        (interface/get-sanitized-data (c/++ context :tincture)))
+            (let [line (interface/get-sanitized-data (c/++ context :line))
                   mandatory-part-count (mandatory-part-count context)
-                  num-fields (interface/get-list-size (update context :path conj :fields))]
+                  num-fields (interface/get-list-size (c/++ context :fields))]
               (util/combine
                " "
                [(util/translate field-type)
@@ -168,10 +169,10 @@
                               (->> (range num-fields)
                                    (map
                                     (fn [index]
-                                      (let [subfield-context (update context :path conj :fields index)]
+                                      (let [subfield-context (c/++ context :fields index)]
                                         (cond
                                           (< index mandatory-part-count) (interface/blazon subfield-context)
-                                          (not= (interface/get-raw-data (update subfield-context :path conj :type))
+                                          (not= (interface/get-raw-data (c/++ subfield-context :type))
                                                 :heraldry.field.type/ref) (util/combine
                                                                            " "
                                                                            [(when (> num-fields 3)
@@ -180,7 +181,7 @@
           components-description (util/combine
                                   ", "
                                   (map (fn [index]
-                                         (interface/blazon (update context :path conj :components index)))
+                                         (interface/blazon (c/++ context :components index)))
                                        (range num-components)))
 
           blazon (-> (util/combine ", " [field-description

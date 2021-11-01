@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.semy.core
   (:require
    [heraldry.coat-of-arms.charge.interface :as charge-interface]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
    [heraldry.util :as util]))
@@ -18,15 +19,15 @@
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        rectangular? (interface/get-sanitized-data (update context :path conj :rectangular?))
-        num-fields-x (interface/get-sanitized-data (update context :path conj :layout :num-fields-x))
-        num-fields-y (interface/get-sanitized-data (update context :path conj :layout :num-fields-y))
-        raw-num-fields-y (interface/get-raw-data (update context :path conj :layout :num-fields-y))
-        offset-x (interface/get-sanitized-data (update context :path conj :layout :offset-x))
-        offset-y (interface/get-sanitized-data (update context :path conj :layout :offset-y))
-        stretch-x (interface/get-sanitized-data (update context :path conj :layout :stretch-x))
-        stretch-y (interface/get-sanitized-data (update context :path conj :layout :stretch-y))
-        rotation (interface/get-sanitized-data (update context :path conj :layout :rotation))
+        rectangular? (interface/get-sanitized-data (c/++ context :rectangular?))
+        num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
+        num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
+        raw-num-fields-y (interface/get-raw-data (c/++ context :layout :num-fields-y))
+        offset-x (interface/get-sanitized-data (c/++ context :layout :offset-x))
+        offset-y (interface/get-sanitized-data (c/++ context :layout :offset-y))
+        stretch-x (interface/get-sanitized-data (c/++ context :layout :stretch-x))
+        stretch-y (interface/get-sanitized-data (c/++ context :layout :stretch-y))
+        rotation (interface/get-sanitized-data (c/++ context :layout :rotation))
         offset-x (or offset-x 0)
         stretch-x (or stretch-x 1)
         width (- (:x bottom-right)
@@ -66,7 +67,7 @@
                                      :bottom {:x 0 :y part-height-half}
                                      :bottom-right {:x part-width-half :y part-height-half}}}
         charge-context (-> context
-                           (update :path conj :charge)
+                           (c/++ :charge)
                            (assoc :size-default 50)
                            (assoc :environment charge-environment))]
     [:g
@@ -105,5 +106,5 @@
 (defmethod interface/blazon-component :heraldry.component/semy [context]
   (util/str-tr "semy of " (interface/blazon
                            (-> context
-                               (update :path conj :charge)
+                               (c/++ :charge)
                                (assoc-in [:blazonry :drop-article?] true)))))

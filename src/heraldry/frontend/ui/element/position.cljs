@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.element.position
   (:require
    [heraldry.coat-of-arms.position :as position]
+   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as interface]
@@ -43,7 +44,7 @@
                        :offset-x
                        :offset-y
                        :type]]
-           ^{:key option} [interface/form-element (update context :path conj option)])]]])))
+           ^{:key option} [interface/form-element (c/++ context option)])]]])))
 
 (defmethod interface/form-element :position [context]
   [position-submenu context])

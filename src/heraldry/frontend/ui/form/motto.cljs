@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.motto
   (:require
+   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
    [heraldry.frontend.ui.interface :as ui-interface]
@@ -35,7 +36,7 @@
    (for [option [:type
                  :origin
                  :geometry]]
-     ^{:key option} [ui-interface/form-element (update context :path conj option)])
+     ^{:key option} [ui-interface/form-element (c/++ context option)])
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
@@ -44,16 +45,16 @@
    (for [option [:tincture-foreground
                  :tincture-background
                  :tincture-text]]
-     ^{:key option} [ui-interface/form-element (update context :path conj option)])
+     ^{:key option} [ui-interface/form-element (c/++ context option)])
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
                   :margin-bottom "0.5em"}} [tr strings/ribbon]]
 
-   [ui-interface/form-element (update context :path conj :ribbon-variant)]
+   [ui-interface/form-element (c/++ context :ribbon-variant)]
 
    (when @(rf/subscribe [:get-value (-> context :path (conj :ribbon-variant))])
-     (let [ribbon-context (update context :path conj :ribbon)]
+     (let [ribbon-context (c/++ context :ribbon)]
        [:<>
         [ribbon-general/ribbon-form ribbon-context]
         [ribbon-general/ribbon-segments-form ribbon-context]]))])

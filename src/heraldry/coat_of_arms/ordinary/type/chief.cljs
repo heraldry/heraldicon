@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -20,10 +21,10 @@
            override-real-start
            override-real-end
            override-shared-start-x] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
-        size (interface/get-sanitized-data (update context :path conj :geometry :size))
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        size (interface/get-sanitized-data (c/++ context :geometry :size))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         top (:top points)
         top-left (:top-left points)
@@ -82,12 +83,12 @@
                           :override-real-end real-end})]
     [:<>
      [field-shared/make-subfield
-      (update context :path conj :field)
+      (c/++ context :field)
       part
       :all]
      [line/render line [line-reversed-data] row-right outline? context]
      [cottising/render-fess-cottise
-      (update cottise-context :path conj :cottising :cottise-1)
+      (c/++ cottise-context :cottising :cottise-1)
       :cottise-2 :cottise-opposite-1
       :offset-y-fn (fn [base distance]
                      (-> base

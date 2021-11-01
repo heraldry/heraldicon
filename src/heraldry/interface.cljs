@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldry.coat-of-arms.counterchange :as counterchange]
+   [heraldry.context :as c]
    [heraldry.options :as options]
    [heraldry.shield-separator :as shield-separator]
    [re-frame.core :as rf]
@@ -38,7 +39,7 @@
      (effective-component-type {:path context
                                 :raw-type @(rf/subscribe [:get-value (conj context :type)])})
      (let [{:keys [path raw-type]} context
-           raw-type (or raw-type (get-raw-data (update context :path conj :type)))]
+           raw-type (or raw-type (get-raw-data (c/++ context :type)))]
        (cond
          (-> path last (= :arms-form)) :heraldry.component/arms-general
          (-> path last #{:charge-form
@@ -148,7 +149,7 @@
                              (effective-component-type
                               (:path context)
                               ;; TODO: need the raw value here for type
-                              (get-raw-data (update context :path conj :type)))))
+                              (get-raw-data (c/++ context :type)))))
 
 (defmethod render-component nil [context]
   (log/warn :not-implemented "render-component" context)
@@ -158,7 +159,7 @@
                              (effective-component-type
                               (:path context)
                               ;; TODO: need the raw value here for type
-                              (get-raw-data (update context :path conj :type)))))
+                              (get-raw-data (c/++ context :type)))))
 
 (defmethod blazon-component nil [context]
   (log/warn "blazon: unknown component" context)
@@ -169,7 +170,7 @@
    (blazon (assoc context :path path)))
 
   ([context]
-   (let [manual-blazon (get-sanitized-data (update context :path conj :manual-blazon))]
+   (let [manual-blazon (get-sanitized-data (c/++ context :manual-blazon))]
      (if (-> manual-blazon count pos?)
        manual-blazon
        (blazon-component context)))))

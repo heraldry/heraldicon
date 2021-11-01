@@ -1,13 +1,14 @@
 (ns heraldry.frontend.attribution
   (:require
    [heraldry.attribution :as attribution]
+   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
 (defn general [context attribution-type]
   [:div.credit
-   (if (interface/get-raw-data (update context :path conj :id))
+   (if (interface/get-raw-data (c/++ context :id))
      (let [{:keys [nature
                    license
                    license-version
@@ -16,9 +17,9 @@
                    source-creator-link
                    source-link
                    source-license
-                   source-license-version]} (interface/get-sanitized-data (update context :path conj :attribution))
-           title (interface/get-raw-data (update context :path conj :name))
-           username (interface/get-raw-data (update context :path conj :username))
+                   source-license-version]} (interface/get-sanitized-data (c/++ context :attribution))
+           title (interface/get-raw-data (c/++ context :name))
+           username (interface/get-raw-data (c/++ context :username))
            url (case attribution-type
                  :arms (attribution/full-url-for-arms context)
                  :charge (attribution/full-url-for-charge context)

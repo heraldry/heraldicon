@@ -1,7 +1,8 @@
 (ns heraldry.coat-of-arms.field.type.plain
   (:require
    [heraldry.coat-of-arms.field.interface :as field-interface]
-   [heraldry.coat-of-arms.tincture.core :as tincture]))
+   [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.context :as c]))
 
 (def field-type :heraldry.field.type/plain)
 
@@ -13,5 +14,4 @@
 (defmethod field-interface/render-field field-type
   [context]
   (tincture/tinctured-field
-   (update context :path conj :tincture)
-   context))
+   (c/++ context :tincture)))

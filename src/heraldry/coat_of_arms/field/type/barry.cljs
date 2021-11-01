@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.outline :as outline]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
@@ -18,9 +19,9 @@
 
 (defn barry-parts [top-left bottom-right line outline? context]
   (let [environment (:environment context)
-        num-fields-y (interface/get-sanitized-data (update context :path conj :layout :num-fields-y))
-        offset-y (interface/get-sanitized-data (update context :path conj :layout :offset-y))
-        stretch-y (interface/get-sanitized-data (update context :path conj :layout :stretch-y))
+        num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
+        offset-y (interface/get-sanitized-data (c/++ context :layout :offset-y))
+        stretch-y (interface/get-sanitized-data (c/++ context :layout :stretch-y))
         height (- (:y bottom-right)
                   (:y top-left))
         bar-height (-> height
@@ -165,9 +166,9 @@
 
 (defmethod field-interface/render-field field-type
   [{:keys [path environment] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
+  (let [line (interface/get-sanitized-data (c/++ context :line))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)

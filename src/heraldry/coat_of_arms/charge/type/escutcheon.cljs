@@ -4,6 +4,7 @@
    [heraldry.coat-of-arms.charge.shared :as charge-shared]
    [heraldry.coat-of-arms.escutcheon :as escutcheon]
    [heraldry.coat-of-arms.field.environment :as environment]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
@@ -15,7 +16,7 @@
 
 (defmethod charge-interface/render-charge charge-type
   [{:keys [root-escutcheon] :as context}]
-  (let [escutcheon (interface/get-sanitized-data (update context :path conj :escutcheon))]
+  (let [escutcheon (interface/get-sanitized-data (c/++ context :escutcheon))]
     (charge-shared/make-charge
      context
      :width

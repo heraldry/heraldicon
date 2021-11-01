@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.ribbon-general
   (:require
+   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.select :as select]
@@ -202,7 +203,7 @@
                     :spacing
                     :offset-x
                     :offset-y]]
-        ^{:key option} [ui-interface/form-element (update context :path conj option)])]
+        ^{:key option} [ui-interface/form-element (c/++ context option)])]
      [text-field/text-field (-> context :path (conj :text))
       :style {:display "inline-block"
               :position "absolute"
@@ -214,7 +215,7 @@
                  :edge-angle
                  :end-split
                  :outline?]]
-     ^{:key option} [ui-interface/form-element (update context :path conj option)])])
+     ^{:key option} [ui-interface/form-element (c/++ context option)])])
 
 (defn ribbon-segments-form [context & {:keys [tooltip]}]
   (let [segments-path (-> context :path (conj :segments))
@@ -234,7 +235,7 @@
       (doall
        (for [idx (range num-segments)]
          ^{:key idx}
-         [segment-form (update context :path conj :segments idx)]))]
+         [segment-form (c/++ context :segments idx)]))]
 
      [:p {:style {:color "#f86"}}
       [tr {:en "The SVG export embeds the fonts, but some programs might not display them correctly. At least Chrome should display it."
@@ -247,9 +248,9 @@
                  :is-public
                  :attributes
                  :tags]]
-     ^{:key option} [ui-interface/form-element (update context :path conj option)])
+     ^{:key option} [ui-interface/form-element (c/++ context option)])
 
-   [ribbon-form (update context :path conj :ribbon)]
+   [ribbon-form (c/++ context :ribbon)]
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
@@ -328,7 +329,7 @@
              :de "Invertieren"}]]]
 
       [ribbon-segments-form
-       (update context :path conj :ribbon)
+       (c/++ context :ribbon)
        :tooltip {:en [:<>
                       [:p "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number."]
                       [:p "Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."]]

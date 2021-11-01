@@ -7,6 +7,7 @@
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.shared.chevron :as chevron]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.core :as math]
    [heraldry.math.svg.path :as path]
@@ -20,15 +21,15 @@
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [path environment] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
-        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
-        origin (interface/get-sanitized-data (update context :path conj :origin))
-        anchor (interface/get-sanitized-data (update context :path conj :anchor))
-        direction-anchor (interface/get-sanitized-data (update context :path conj :direction-anchor))
-        size (interface/get-sanitized-data (update context :path conj :geometry :size))
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
+        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        direction-anchor (interface/get-sanitized-data (c/++ context :direction-anchor))
+        size (interface/get-sanitized-data (c/++ context :geometry :size))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
-        raw-direction-anchor (interface/get-raw-data (update context :path conj :direction-anchor))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
+        raw-direction-anchor (interface/get-raw-data (c/++ context :direction-anchor))
         direction-anchor (cond-> direction-anchor
                            (-> direction-anchor
                                :point
@@ -169,7 +170,7 @@
               [top-left bottom-right]]]
     [:<>
      [field-shared/make-subfield
-      (update context :path conj :field)
+      (c/++ context :field)
       part
       :all]
      [line/render line [line-left-upper-data
@@ -177,7 +178,7 @@
      [line/render opposite-line [line-right-lower-data
                                  line-left-lower-data] right-lower outline? context]
      [cottising/render-chevron-cottise
-      (update context :path conj :cottising :cottise-1)
+      (c/++ context :cottising :cottise-1)
       :cottise-2 :cottise-1
       :distance-fn (fn [distance half-joint-angle-rad]
                      (-> (- distance)
@@ -194,7 +195,7 @@
       :joint-angle joint-angle
       :corner-point corner-upper]
      [cottising/render-chevron-cottise
-      (update context :path conj :cottising :cottise-opposite-1)
+      (c/++ context :cottising :cottise-opposite-1)
       :cottise-opposite-2 :cottise-opposite-1
       :distance-fn (fn [distance half-joint-angle-rad]
                      (-> (+ distance)

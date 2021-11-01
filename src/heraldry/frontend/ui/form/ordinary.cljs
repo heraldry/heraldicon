@@ -2,6 +2,7 @@
   (:require
    [heraldry.coat-of-arms.default :as default]
    [heraldry.coat-of-arms.ordinary.core :as ordinary]
+   [heraldry.context :as c]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.interface :as interface]
@@ -48,7 +49,7 @@
                  :fimbriation
                  :outline?
                  :manual-blazon]]
-     ^{:key option} [interface/form-element (update context :path conj option)])])
+     ^{:key option} [interface/form-element (c/++ context option)])])
 
 (defmethod interface/component-node-data :heraldry.component/ordinary [{:keys [path] :as context}]
   (let [cottising-options @(rf/subscribe [:get-relevant-options (conj path :cottising)])
@@ -124,30 +125,30 @@
                 :title strings/add
                 :disabled? (empty? menu)
                 :menu menu}]
-     :nodes (cond-> [{:context (update context :path conj :field)}]
-              cottise-2? (conj {:context (update context :path conj :cottising :cottise-2)
+     :nodes (cond-> [{:context (c/++ context :field)}]
+              cottise-2? (conj {:context (c/++ context :cottising :cottise-2)
                                 :buttons [{:icon "far fa-trash-alt"
                                            :tooltip "remove"
                                            :handler #(state/dispatch-on-event % [:remove-cottise (conj path :cottising) :cottise-2])}]})
-              cottise-1? (conj {:context (update context :path conj :cottising :cottise-1)
+              cottise-1? (conj {:context (c/++ context :cottising :cottise-1)
                                 :buttons [{:icon "far fa-trash-alt"
                                            :tooltip "remove"
                                            :handler #(state/dispatch-on-event % [:remove-cottise (conj path :cottising) :cottise-1])}]})
-              cottise-opposite-1? (conj {:context (update context :path conj :cottising :cottise-opposite-1)
+              cottise-opposite-1? (conj {:context (c/++ context :cottising :cottise-opposite-1)
                                          :buttons [{:icon "far fa-trash-alt"
                                                     :tooltip "remove"
                                                     :handler #(state/dispatch-on-event % [:remove-cottise (conj path :cottising) :cottise-opposite-1])}]})
 
-              cottise-opposite-2? (conj {:context (update context :path conj :cottising :cottise-opposite-2)
+              cottise-opposite-2? (conj {:context (c/++ context :cottising :cottise-opposite-2)
                                          :buttons [{:icon "far fa-trash-alt"
                                                     :tooltip "remove"
                                                     :handler #(state/dispatch-on-event % [:remove-cottise (conj path :cottising) :cottise-opposite-2])}]})
-              cottise-extra-1? (conj {:context (update context :path conj :cottising :cottise-extra-1)
+              cottise-extra-1? (conj {:context (c/++ context :cottising :cottise-extra-1)
                                       :buttons [{:icon "far fa-trash-alt"
                                                  :tooltip "remove"
                                                  :handler #(state/dispatch-on-event % [:remove-cottise (conj path :cottising) :cottise-extra-1])}]})
 
-              cottise-extra-2? (conj {:context (update context :path conj :cottising :cottise-extra-2)
+              cottise-extra-2? (conj {:context (c/++ context :cottising :cottise-extra-2)
                                       :buttons [{:icon "far fa-trash-alt"
                                                  :tooltip "remove"
                                                  :handler #(state/dispatch-on-event % [:remove-cottise (conj path :cottising) :cottise-extra-2])}]}))}))

@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.render-options
   (:require
+   [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as interface]))
 
 (defn form [context]
@@ -16,7 +17,7 @@
                  :outline?
                  :squiggly?
                  :coat-of-arms-angle]]
-     ^{:key option} [interface/form-element (update context :path conj option)])])
+     ^{:key option} [interface/form-element (c/++ context option)])])
 
 (defmethod interface/component-node-data :heraldry.component/render-options [_context]
   {:title {:en "Render Options"

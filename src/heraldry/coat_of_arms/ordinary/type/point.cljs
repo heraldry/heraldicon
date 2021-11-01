@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -16,13 +17,13 @@
                                                               :de "Schrägeck"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [{:keys [path environment] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
-        variant (interface/get-sanitized-data (update context :path conj :variant))
-        point-width (interface/get-sanitized-data (update context :path conj :geometry :width))
-        point-height (interface/get-sanitized-data (update context :path conj :geometry :height))
+  [{:keys [environment] :as context}]
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        variant (interface/get-sanitized-data (c/++ context :variant))
+        point-width (interface/get-sanitized-data (c/++ context :geometry :width))
+        point-height (interface/get-sanitized-data (c/++ context :geometry :height))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         width (:width environment)
         height (:height environment)
         points (:points environment)
@@ -101,14 +102,14 @@
 
     [:<>
      [field-shared/make-subfield
-      (update context :path conj :field)
+      (c/++ context :field)
       part
       :all]
      [line/render line [line-one-data] (case variant
                                          :dexter real-point-top
                                          :sinister real-point-side) outline? context]
      [cottising/render-bend-cottise
-      (update context :path conj :cottising :cottise-1)
+      (c/++ context :cottising :cottise-1)
       :cottise-2 :cottise-opposite-1
       :sinister? (= variant :dexter)
       :swap-lines? true

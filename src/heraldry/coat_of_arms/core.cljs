@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.core
   (:require
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
@@ -16,5 +17,5 @@
 
 (defmethod interface/blazon-component :heraldry.component/coat-of-arms [context]
   (interface/blazon (-> context
-                        (update :path conj :field)
+                        (c/++ :field)
                         (assoc-in [:blazonry :root?] true))))

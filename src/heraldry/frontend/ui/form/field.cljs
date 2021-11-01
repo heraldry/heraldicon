@@ -2,13 +2,14 @@
   (:require
    [heraldry.coat-of-arms.default :as default]
    [heraldry.coat-of-arms.field.core :as field]
+   [heraldry.context :as c]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
    [heraldry.frontend.ui.interface :as interface]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]
-   [re-frame.core :as rf]
-   [heraldry.strings :as strings]))
+   [re-frame.core :as rf]))
 
 (macros/reg-event-db :override-field-part-reference
   (fn [db [_ path]]
@@ -57,7 +58,7 @@
                  :layout
                  :outline?
                  :manual-blazon]]
-     ^{:key option} [interface/form-element (update context :path conj option)])
+     ^{:key option} [interface/form-element (c/++ context option)])
 
    (when (and
           (not @(rf/subscribe [:get-value (conj path :counterchanged?)]))
@@ -127,7 +128,7 @@
                                (-> field-type name keyword (not= :plain)))
                       (->> (range @(rf/subscribe [:get-list-size (conj path :fields)]))
                            (map (fn [idx]
-                                  {:context (update context :path conj :fields idx)}))
+                                  {:context (c/++ context :fields idx)}))
                            vec))
                     (->> (range num-components)
                          reverse

@@ -6,6 +6,7 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.position :as position]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -17,16 +18,16 @@
                                                               :de "Balken"})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
-  [{:keys [path environment
+  [{:keys [environment
            override-real-start
            override-real-end
            override-shared-start-x] :as context}]
-  (let [line (interface/get-sanitized-data (update context :path conj :line))
-        opposite-line (interface/get-sanitized-data (update context :path conj :opposite-line))
-        origin (interface/get-sanitized-data (update context :path conj :origin))
-        size (interface/get-sanitized-data (update context :path conj :geometry :size))
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
+        origin (interface/get-sanitized-data (c/++ context :origin))
+        size (interface/get-sanitized-data (c/++ context :geometry :size))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (update context :path conj :outline?)))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
@@ -119,13 +120,13 @@
                           :override-real-end real-end})]
     [:<>
      [field-shared/make-subfield
-      (update context :path conj :field)
+      (c/++ context :field)
       part
       :all]
      [line/render line [line-one-data] first-left outline? context]
      [line/render opposite-line [line-reversed-data] second-right outline? context]
      [cottising/render-fess-cottise
-      (update cottise-context :path conj :cottising :cottise-1)
+      (c/++ cottise-context :cottising :cottise-1)
       :cottise-2 :cottise-1
       :offset-y-fn (fn [base distance]
                      (-> base
@@ -137,7 +138,7 @@
       :alignment :right]
 
      [cottising/render-fess-cottise
-      (update context :path conj :cottising :cottise-opposite-1)
+      (c/++ context :cottising :cottise-opposite-1)
       :cottise-opposite-2 :cottise-opposite-1
       :offset-y-fn (fn [base distance]
                      (-> base

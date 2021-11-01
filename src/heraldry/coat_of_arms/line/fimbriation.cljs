@@ -3,6 +3,7 @@
    [clojure.walk :as walk]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
@@ -206,10 +207,10 @@
 
 (defn blazon [context & {:keys [include-lines?]}]
   (->> (concat
-        [(blazon-fimbriation (interface/get-sanitized-data (update context :path conj :fimbriation)))]
+        [(blazon-fimbriation (interface/get-sanitized-data (c/++ context :fimbriation)))]
         (when include-lines?
-          [(blazon-fimbriation (interface/get-sanitized-data (update context :path conj :line :fimbriation)))
-           (blazon-fimbriation (interface/get-sanitized-data (update context :path conj :opposite-line :fimbriation)))
-           (blazon-fimbriation (interface/get-sanitized-data (update context :path conj :extra-line :fimbriation)))]))
+          [(blazon-fimbriation (interface/get-sanitized-data (c/++ context :line :fimbriation)))
+           (blazon-fimbriation (interface/get-sanitized-data (c/++ context :opposite-line :fimbriation)))
+           (blazon-fimbriation (interface/get-sanitized-data (c/++ context :extra-line :fimbriation)))]))
        distinct
        (util/combine ", ")))

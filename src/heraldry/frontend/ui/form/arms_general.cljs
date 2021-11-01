@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.arms-general
   (:require
+   [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
@@ -10,7 +11,7 @@
                  :attribution
                  :is-public
                  :tags]]
-     ^{:key option} [ui-interface/form-element (update context :path conj option)])
+     ^{:key option} [ui-interface/form-element (c/++ context option)])
 
    [:div {:style {:height "1.5em"}}]])
 

@@ -16,6 +16,7 @@
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
@@ -207,10 +208,10 @@
   (options data :ornament? (some #(= % :ornaments) path)))
 
 (defn title [context]
-  (let [charge-type (interface/get-raw-data (update context :path conj :type))
-        attitude (or (interface/get-raw-data (update context :path conj :attitude))
+  (let [charge-type (interface/get-raw-data (c/++ context :type))
+        attitude (or (interface/get-raw-data (c/++ context :attitude))
                      :none)
-        facing (or (interface/get-raw-data (update context :path conj :facing))
+        facing (or (interface/get-raw-data (c/++ context :facing))
                    :none)
         charge-name (or (choice-map charge-type)
                         (util/translate-cap-first charge-type))]

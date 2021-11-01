@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.field.interface
   (:require
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [taoensso.timbre :as log]))
 
@@ -8,7 +9,7 @@
 (defmulti part-names identity)
 
 (defmulti render-field (fn [context]
-                         (let [field-type (interface/get-sanitized-data (update context :path conj :type))]
+                         (let [field-type (interface/get-sanitized-data (c/++ context :type))]
                            (when (keyword? field-type)
                              field-type))))
 
