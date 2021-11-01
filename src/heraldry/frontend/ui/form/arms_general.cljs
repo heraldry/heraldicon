@@ -14,9 +14,9 @@
 
    [:div {:style {:height "1.5em"}}]])
 
-(defmethod ui-interface/component-node-data :heraldry.component/arms-general [path]
+(defmethod ui-interface/component-node-data :heraldry.component/arms-general [{:keys [path]}]
   {:title strings/general
    :validation @(rf/subscribe [:validate-arms-general path])})
 
-(defmethod ui-interface/component-form-data :heraldry.component/arms-general [_path]
+(defmethod ui-interface/component-form-data :heraldry.component/arms-general [_context]
   {:form form})

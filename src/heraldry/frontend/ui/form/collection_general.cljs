@@ -17,9 +17,9 @@
    (for [option [:font]]
      ^{:key option} [ui-interface/form-element (conj path option)])])
 
-(defmethod ui-interface/component-node-data :heraldry.component/collection-general [path]
+(defmethod ui-interface/component-node-data :heraldry.component/collection-general [{:keys [path]}]
   {:title strings/general
    :validation @(rf/subscribe [:validate-collection-general path])})
 
-(defmethod ui-interface/component-form-data :heraldry.component/collection-general [_path]
+(defmethod ui-interface/component-form-data :heraldry.component/collection-general [_context]
   {:form form})

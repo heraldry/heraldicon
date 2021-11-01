@@ -12,6 +12,7 @@
                  :outline?]]
      ^{:key option} [interface/form-element (conj path option)])])
 
+;; TODO: context
 (defn cottise-name [path]
   (let [cottise-key (last path)
         ordinary-type @(rf/subscribe [:get-value (-> (drop-last 2 path)
@@ -39,10 +40,10 @@
                  :cottise-extra-2 "2 (extra)"})
         (get cottise-key))))
 
-(defmethod interface/component-node-data :heraldry.component/cottise [path]
+(defmethod interface/component-node-data :heraldry.component/cottise [{:keys [path] :as context}]
   {:title (str "Cottise " (cottise-name path))
    :validation @(rf/subscribe [:validate-cottise path])
-   :nodes [{:path (conj path :field)}]})
+   :nodes [{:context (update context :path conj :field)}]})
 
-(defmethod interface/component-form-data :heraldry.component/cottise [_path]
+(defmethod interface/component-form-data :heraldry.component/cottise [_context]
   {:form form})

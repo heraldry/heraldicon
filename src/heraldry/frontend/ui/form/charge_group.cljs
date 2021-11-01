@@ -310,11 +310,11 @@
 
      [ui-interface/form-element (conj path :manual-blazon)]]))
 
-(defmethod ui-interface/component-node-data :heraldry.component/charge-group [path]
+(defmethod ui-interface/component-node-data :heraldry.component/charge-group [{:keys [path] :as context}]
   (let [num-charges @(rf/subscribe [:get-list-size (conj path :charges)])]
     {:title (util/str-tr {:en "Charge group of "
                           :de "Gruppe von "} (if (= num-charges 1)
-                                               (charge-options/title {:path (conj path :charges 0)})
+                                               (charge-options/title (update context :path conj :charges 0))
                                                {:en "various"
                                                 :de "verschiedenen"}))
      :buttons [{:icon "fas fa-plus"
@@ -325,7 +325,7 @@
                          reverse
                          (map (fn [idx]
                                 (let [charge-path (conj path :charges idx)]
-                                  {:path charge-path
+                                  {:context (assoc context :path charge-path)
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :tooltip strings/move-down
@@ -340,5 +340,5 @@
                                               :handler #(state/dispatch-on-event % [:remove-charge-group-charge charge-path])}]})))
                          vec))}))
 
-(defmethod ui-interface/component-form-data :heraldry.component/charge-group [_path]
+(defmethod ui-interface/component-form-data :heraldry.component/charge-group [_context]
   {:form form})

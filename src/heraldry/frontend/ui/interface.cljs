@@ -3,26 +3,22 @@
    [heraldry.coat-of-arms.counterchange :as counterchange]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [taoensso.timbre :as log]))
 
 ;; component-node-data
 
-(defmulti component-node-data (fn [path]
-                                (interface/effective-component-type
-                                 path
-                                 @(rf/subscribe [:get-value (conj path :type)]))))
+(defmulti component-node-data interface/effective-component-type)
 
-(defmethod component-node-data nil [_path]
-  {:title "unknown"})
+(defmethod component-node-data nil [context]
+  (log/warn :not-implemented "component-node-data" context)
+  {:title (str "unknown")})
 
 ;; component-form-data
 
-(defmulti component-form-data (fn [path]
-                                (interface/effective-component-type
-                                 path
-                                 @(rf/subscribe [:get-value (conj path :type)]))))
+(defmulti component-form-data interface/effective-component-type)
 
-(defmethod component-form-data nil [_path]
+(defmethod component-form-data nil [_context]
   {:form (fn [_path _form-data]
            [:div])
    :form-args {}})

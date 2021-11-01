@@ -89,7 +89,7 @@
       (when-let [parent-path (parent-path path)]
         (>= index (field/mandatory-part-count {:path parent-path}))))))
 
-(defmethod interface/component-node-data :heraldry.component/field [path]
+(defmethod interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
   (let [field-type @(rf/subscribe [:get-value (conj path :type)])
         ref? (= field-type :heraldry.field.type/ref)
         components-path (conj path :components)
@@ -102,7 +102,7 @@
                                                                     vec
                                                                     (conj
                                                                      @(rf/subscribe [:get-value (conj path :index)])))))
-                             (field/title {:path path}))])
+                             (field/title context))])
      :validation @(rf/subscribe [:validate-field path])
      :buttons (if ref?
                 [{:icon "fas fa-sliders-h"
@@ -127,13 +127,13 @@
                                (-> field-type name keyword (not= :plain)))
                       (->> (range @(rf/subscribe [:get-list-size (conj path :fields)]))
                            (map (fn [idx]
-                                  {:path (conj path :fields idx)}))
+                                  {:context (update context :path conj :fields idx)}))
                            vec))
                     (->> (range num-components)
                          reverse
                          (map (fn [idx]
                                 (let [component-path (conj components-path idx)]
-                                  {:path component-path
+                                  {:context (assoc context :path component-path)
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :tooltip strings/move-down
@@ -147,5 +147,5 @@
                                               :handler #(state/dispatch-on-event % [:remove-element component-path])}]})))
                          vec))}))
 
-(defmethod interface/component-form-data :heraldry.component/field [_path]
+(defmethod interface/component-form-data :heraldry.component/field [_context]
   {:form form})

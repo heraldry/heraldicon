@@ -10,7 +10,7 @@
    (for [option [:num-columns]]
      ^{:key option} [interface/form-element (conj path option)])])
 
-(defmethod interface/component-node-data :heraldry.component/collection [path]
+(defmethod interface/component-node-data :heraldry.component/collection [{:keys [path] :as context}]
   (let [num-elements @(rf/subscribe [:get-list-size (conj path :elements)])]
     {:title strings/arms
      :buttons [{:icon "fas fa-plus"
@@ -20,7 +20,7 @@
      :nodes (->> (range num-elements)
                  (map (fn [idx]
                         (let [component-path (conj path :elements idx)]
-                          {:path component-path
+                          {:context (assoc context :path component-path)
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
                                       :tooltip strings/move-down
@@ -34,5 +34,5 @@
                                       :handler #(state/dispatch-on-event % [:remove-element component-path])}]})))
                  vec)}))
 
-(defmethod interface/component-form-data :heraldry.component/collection [_path]
+(defmethod interface/component-form-data :heraldry.component/collection [_context]
   {:form form})

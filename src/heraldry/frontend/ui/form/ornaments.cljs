@@ -12,7 +12,7 @@
    (for [option []]
      ^{:key option} [ui-interface/form-element (conj path option)])])
 
-(defmethod ui-interface/component-node-data :heraldry.component/ornaments [path]
+(defmethod ui-interface/component-node-data :heraldry.component/ornaments [{:keys [path] :as context}]
   (let [elements-path (conj path :elements)
         num-elements @(rf/subscribe [:get-list-size elements-path])]
     {:title {:en "Ornaments"
@@ -58,7 +58,7 @@
                  (map (fn [idx]
                         (let [motto-path (conj elements-path idx)
                               removable? @(rf/subscribe [:element-removable? motto-path])]
-                          {:path motto-path
+                          {:context (assoc context :path motto-path)
                            :buttons (cond-> [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :tooltip strings/move-down
@@ -74,5 +74,5 @@
                                                                    [:remove-element motto-path
                                                                     shield-separator/remove-element-options])}))}))))}))
 
-(defmethod ui-interface/component-form-data :heraldry.component/ornaments [_path]
+(defmethod ui-interface/component-form-data :heraldry.component/ornaments [_context]
   {:form form})
