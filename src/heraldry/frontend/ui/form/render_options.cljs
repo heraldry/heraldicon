@@ -2,7 +2,7 @@
   (:require
    [heraldry.frontend.ui.interface :as interface]))
 
-(defn form [path]
+(defn form [{:keys [path]}]
   [:<>
    (for [option [:scope
                  :escutcheon

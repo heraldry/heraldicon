@@ -23,7 +23,7 @@
 (defn highlight-element [path]
   (rf/dispatch-sync [:set ui-highlighted-element-path path]))
 
-(defn form [path]
+(defn form [{:keys [path]}]
   [:<>
    (for [option [:name
                  :reference]]

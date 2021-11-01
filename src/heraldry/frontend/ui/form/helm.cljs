@@ -35,11 +35,8 @@
         (state/ui-component-node-select path :open? true)
         submenu/ui-submenu-close-all)))
 
-(defn form [path]
-  [:<>
-   (doall
-    (for [option []]
-      ^{:key option} [ui-interface/form-element (conj path option)]))])
+(defn form [_context]
+  [:<>])
 
 (defmethod ui-interface/component-node-data :heraldry.component/helm [{:keys [path] :as context}]
   (let [{:keys [helmet?

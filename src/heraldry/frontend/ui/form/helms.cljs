@@ -6,10 +6,8 @@
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
-(defn form [path]
-  [:<>
-   (for [option []]
-     ^{:key option} [ui-interface/form-element (conj path option)])])
+(defn form [_context]
+  [:<>])
 
 (defmethod ui-interface/component-node-data :heraldry.component/helms [{:keys [path] :as context}]
   (let [helms-path (conj path :elements)
