@@ -31,7 +31,7 @@
           (= cottise :cottise-extra-2) (update-in path dissoc :cottise-extra-2))
         (state/change-selected-component-if-removed (-> path drop-last vec)))))
 
-(defn form [path _]
+(defn form [path]
   [:<>
    (for [option [:type
                  :variant

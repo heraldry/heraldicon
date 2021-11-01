@@ -30,7 +30,7 @@
          strings/motto
          strings/slogan)))))
 
-(defn form [path _]
+(defn form [path]
   [:<>
    (for [option [:type
                  :origin

@@ -238,8 +238,8 @@
                      [component-node {:path node-path}])])]])
 
 (defn component-form [context]
-  (let [{:keys [title context form form-args]} (when context
-                                                 @(rf/subscribe [:component-form context]))]
+  (let [{:keys [title context form]} (when context
+                                       @(rf/subscribe [:component-form context]))]
     [:div.ui-component
      [:div.ui-component-header
       [:h1
@@ -247,7 +247,7 @@
        [tr title]]]
      [:div.content
       (when form
-        [form (:path context) form-args])]]))
+        [form (:path context)])]]))
 
 (defn selected-component []
   (let [selected-component-path @(rf/subscribe [:ui-component-node-selected-path])]

@@ -3,7 +3,7 @@
    [heraldry.frontend.ui.interface :as interface]
    [heraldry.strings :as strings]))
 
-(defn form [path _]
+(defn form [path]
   [:<>
    (for [option [:escutcheon
                  :manual-blazon]]

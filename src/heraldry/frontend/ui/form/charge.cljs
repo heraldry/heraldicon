@@ -4,7 +4,7 @@
    [heraldry.frontend.ui.interface :as interface]
    [re-frame.core :as rf]))
 
-(defn form [path _]
+(defn form [path]
   [:<>
    (for [option [:type
                  :escutcheon
