@@ -241,7 +241,7 @@
       [tr {:en "The SVG export embeds the fonts, but some programs might not display them correctly. At least Chrome should display it."
            :de "Der SVG Export beinhaltet die Fonts, aber einige Programme zeigen sie nicht korrekt an. Zumindest Chrome sollte es richtig anzeigen."}]]]))
 
-(defn form [path]
+(defn form [{:keys [path]}]
   [:<>
    (for [option [:name
                  :attribution

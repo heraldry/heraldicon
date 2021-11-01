@@ -38,7 +38,7 @@
         :papellony
         :fretty}))
 
-(defn form [path]
+(defn form [{:keys [path]}]
   [:<>
    (for [option [:counterchanged?
                  :inherit-environment?

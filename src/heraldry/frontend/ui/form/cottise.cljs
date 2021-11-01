@@ -3,7 +3,7 @@
    [heraldry.frontend.ui.interface :as interface]
    [re-frame.core :as rf]))
 
-(defn form [path]
+(defn form [{:keys [path]}]
   [:<>
    (for [option [:line
                  :opposite-line

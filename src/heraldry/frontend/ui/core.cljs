@@ -247,7 +247,7 @@
        [tr title]]]
      [:div.content
       (when form
-        [form (:path context)])]]))
+        [form context])]]))
 
 (defn selected-component []
   (let [selected-component-path @(rf/subscribe [:ui-component-node-selected-path])]

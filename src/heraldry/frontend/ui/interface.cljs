@@ -19,8 +19,8 @@
 (defmulti component-form-data interface/effective-component-type)
 
 (defmethod component-form-data nil [_context]
-  {:form (fn [_path]
-           [:div])})
+  {:form (fn [_context]
+           [:<>])})
 
 ;; form-element
 
