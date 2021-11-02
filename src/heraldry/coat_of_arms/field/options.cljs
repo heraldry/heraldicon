@@ -525,10 +525,13 @@
                                       [:layout :offset-y :min] -3
                                       [:layout :offset-y :max] 3
                                       [:anchor :point :default] :angle
+                                      [:anchor :angle :min] 10
+                                      [:anchor :angle :max] 170
                                       [:anchor :point :choices] (util/filter-choices
 
                                                                  position/anchor-point-choices
-                                                                 [:bottom-left :bottom-right :angle])})
+                                                                 [:top-left :top-right
+                                                                  :bottom-left :bottom-right :angle])})
             :chequy (options/pick default-options
                                   [[:type]
                                    [:inherit-environment?]
