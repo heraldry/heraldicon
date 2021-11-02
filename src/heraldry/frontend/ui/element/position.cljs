@@ -4,7 +4,7 @@
    [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.options :as options]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -44,7 +44,7 @@
                        :offset-x
                        :offset-y
                        :type]]
-           ^{:key option} [interface/form-element (c/++ context option)])]]])))
+           ^{:key option} [ui-interface/form-element (c/++ context option)])]]])))
 
-(defmethod interface/form-element :position [context]
+(defmethod ui-interface/form-element :position [context]
   [position-submenu context])

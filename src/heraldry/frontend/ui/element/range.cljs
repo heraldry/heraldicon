@@ -2,7 +2,7 @@
   (:require
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]
    [reagent.core :as r]))
@@ -70,5 +70,5 @@
              :disabled? disabled?
              :on-change on-change]]])))))
 
-(defmethod interface/form-element :range [{:keys [path]}]
+(defmethod ui-interface/form-element :range [{:keys [path]}]
   [range-input path])

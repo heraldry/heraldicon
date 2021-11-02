@@ -3,7 +3,7 @@
    [heraldry.coat-of-arms.attributes :as attributes]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -71,5 +71,5 @@
         [attributes-view (keys attributes)
          :on-delete #(rf/dispatch [:remove-attribute path %])]]]]]))
 
-(defmethod interface/form-element :attributes [{:keys [path]}]
+(defmethod ui-interface/form-element :attributes [{:keys [path]}]
   [form path])

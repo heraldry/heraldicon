@@ -2,16 +2,16 @@
   (:require
    [heraldry.context :as c]
    [heraldry.frontend.state :as state]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
 (defn form [context]
   [:<>
    (for [option [:num-columns]]
-     ^{:key option} [interface/form-element (c/++ context option)])])
+     ^{:key option} [ui-interface/form-element (c/++ context option)])])
 
-(defmethod interface/component-node-data :heraldry.component/collection [{:keys [path] :as context}]
+(defmethod ui-interface/component-node-data :heraldry.component/collection [{:keys [path] :as context}]
   (let [num-elements @(rf/subscribe [:get-list-size (conj path :elements)])]
     {:title strings/arms
      :buttons [{:icon "fas fa-plus"
@@ -35,5 +35,5 @@
                                       :handler #(state/dispatch-on-event % [:remove-element component-path])}]})))
                  vec)}))
 
-(defmethod interface/component-form-data :heraldry.component/collection [_context]
+(defmethod ui-interface/component-form-data :heraldry.component/collection [_context]
   {:form form})

@@ -3,7 +3,7 @@
    [clojure.string :as s]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
@@ -126,5 +126,5 @@
         [tags-view (keys tags)
          :on-delete #(delete-tag-clicked path %)]]]]]))
 
-(defmethod interface/form-element :tags [{:keys [path]}]
+(defmethod ui-interface/form-element :tags [{:keys [path]}]
   [form path])

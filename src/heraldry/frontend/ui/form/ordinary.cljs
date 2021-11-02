@@ -5,7 +5,7 @@
    [heraldry.context :as c]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
@@ -49,9 +49,9 @@
                  :fimbriation
                  :outline?
                  :manual-blazon]]
-     ^{:key option} [interface/form-element (c/++ context option)])])
+     ^{:key option} [ui-interface/form-element (c/++ context option)])])
 
-(defmethod interface/component-node-data :heraldry.component/ordinary [{:keys [path] :as context}]
+(defmethod ui-interface/component-node-data :heraldry.component/ordinary [{:keys [path] :as context}]
   (let [cottising-options @(rf/subscribe [:get-relevant-options (conj path :cottising)])
         cottise-1 @(rf/subscribe [:get-value (conj path :cottising :cottise-1)])
         cottise-2 @(rf/subscribe [:get-value (conj path :cottising :cottise-2)])
@@ -153,5 +153,5 @@
                                                  :tooltip "remove"
                                                  :handler #(state/dispatch-on-event % [:remove-cottise (conj path :cottising) :cottise-extra-2])}]}))}))
 
-(defmethod interface/component-form-data :heraldry.component/ordinary [_context]
+(defmethod ui-interface/component-form-data :heraldry.component/ordinary [_context]
   {:form form})

@@ -1,7 +1,7 @@
 (ns heraldry.frontend.ui.form.collection-element
   (:require
    [heraldry.context :as c]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -28,9 +28,9 @@
   [:<>
    (for [option [:name
                  :reference]]
-     ^{:key option} [interface/form-element (c/++ context option)])])
+     ^{:key option} [ui-interface/form-element (c/++ context option)])])
 
-(defmethod interface/component-node-data :heraldry.component/collection-element [{:keys [path] :as _context}]
+(defmethod ui-interface/component-node-data :heraldry.component/collection-element [{:keys [path] :as _context}]
   (let [name @(rf/subscribe [:get-value (conj path :name)])
         index (last path)]
     {:title (util/str-tr (inc index) ": "
@@ -39,5 +39,5 @@
                            {:en "<no name>"
                             :de "<unbenannt>"}))}))
 
-(defmethod interface/component-form-data :heraldry.component/collection-element [_context]
+(defmethod ui-interface/component-form-data :heraldry.component/collection-element [_context]
   {:form form})

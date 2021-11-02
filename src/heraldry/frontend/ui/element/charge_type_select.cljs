@@ -7,7 +7,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.charge-select :as charge-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.static :as static]
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
@@ -77,5 +77,5 @@
                #(state/invalidate-cache [:all-charges] :all-charges)]
               [:div [tr strings/loading]])])]]])))
 
-(defmethod interface/form-element :charge-type-select [{:keys [path]}]
+(defmethod ui-interface/form-element :charge-type-select [{:keys [path]}]
   [charge-type-select path])

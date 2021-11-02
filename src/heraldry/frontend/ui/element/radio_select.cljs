@@ -2,7 +2,7 @@
   (:require
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -41,5 +41,5 @@
            :on-change on-change])
         [value-mode-select/value-mode-select path]]])))
 
-(defmethod interface/form-element :radio-select [{:keys [path]}]
+(defmethod ui-interface/form-element :radio-select [{:keys [path]}]
   [radio-select path])

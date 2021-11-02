@@ -4,7 +4,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.arms-select :as arms-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [re-frame.core :as rf]))
 
 (defn link-to-arms [path]
@@ -36,5 +36,5 @@
                                :de "Wappen auswählen"} arms-title nil
          [arms-select/list-arms (link-to-arms path)]]]])))
 
-(defmethod interface/form-element :arms-reference-select [{:keys [path]}]
+(defmethod ui-interface/form-element :arms-reference-select [{:keys [path]}]
   [arms-reference-select path])

@@ -2,7 +2,7 @@
   (:require
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -46,5 +46,5 @@
                     :none)]
       [raw-select path value label choices :on-change on-change])))
 
-(defmethod interface/form-element :select [{:keys [path]}]
+(defmethod ui-interface/form-element :select [{:keys [path]}]
   [select path])
