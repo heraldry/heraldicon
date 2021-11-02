@@ -1,6 +1,5 @@
 (ns heraldry.frontend.ui.form.collection-element
   (:require
-   [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -25,10 +24,10 @@
   (rf/dispatch-sync [:set ui-highlighted-element-path path]))
 
 (defn form [context]
-  [:<>
-   (for [option [:name
-                 :reference]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])])
+  (ui-interface/form-elements
+   context
+   [:name
+    :reference]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/collection-element [{:keys [path] :as _context}]
   (let [name @(rf/subscribe [:get-value (conj path :name)])

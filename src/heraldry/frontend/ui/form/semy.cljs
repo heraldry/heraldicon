@@ -6,12 +6,12 @@
    [heraldry.util :as util]))
 
 (defn form [context]
-  [:<>
-   (for [option [:origin
-                 :layout
-                 :rectangular?
-                 :manual-blazon]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])])
+  (ui-interface/form-elements
+   context
+   [:origin
+    :layout
+    :rectangular?
+    :manual-blazon]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/semy [context]
   (let [charge-context (c/++ context :charge)]

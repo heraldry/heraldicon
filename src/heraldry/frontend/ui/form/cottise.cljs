@@ -5,13 +5,13 @@
    [re-frame.core :as rf]))
 
 (defn form [context]
-  [:<>
-   (for [option [:line
-                 :opposite-line
-                 :distance
-                 :thickness
-                 :outline?]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])])
+  (ui-interface/form-elements
+   context
+   [:line
+    :opposite-line
+    :distance
+    :thickness
+    :outline?]))
 
 ;; TODO: context
 (defn cottise-name [path]

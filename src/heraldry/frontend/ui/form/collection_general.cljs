@@ -7,16 +7,16 @@
 
 (defn form [context]
   [:<>
-   (for [option [:name
-                 :attribution
-                 :is-public
-                 :tags]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])
+   (ui-interface/form-elements
+    context
+    [:name
+     :attribution
+     :is-public
+     :tags])
 
    [:div {:style {:height "1.5em"}}]
 
-   (for [option [:font]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])])
+   [ui-interface/form-element (c/++ context :font)]])
 
 (defmethod ui-interface/component-node-data :heraldry.component/collection-general [{:keys [path]}]
   {:title strings/general

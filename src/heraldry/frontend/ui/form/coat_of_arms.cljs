@@ -5,10 +5,10 @@
    [heraldry.strings :as strings]))
 
 (defn form [context]
-  [:<>
-   (for [option [:escutcheon
-                 :manual-blazon]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])])
+  (ui-interface/form-elements
+   context
+   [:escutcheon
+    :manual-blazon]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/coat-of-arms [context]
   {:title strings/coat-of-arms

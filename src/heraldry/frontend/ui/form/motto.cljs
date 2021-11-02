@@ -33,19 +33,21 @@
 
 (defn form [context]
   [:<>
-   (for [option [:type
-                 :origin
-                 :geometry]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])
+   (ui-interface/form-elements
+    context
+    [:type
+     :origin
+     :geometry])
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
                   :margin-bottom "0.5em"}} [tr strings/tincture]]
 
-   (for [option [:tincture-foreground
-                 :tincture-background
-                 :tincture-text]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])
+   (ui-interface/form-elements
+    context
+    [:tincture-foreground
+     :tincture-background
+     :tincture-text])
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"

@@ -233,10 +233,11 @@
     [:div {:style {:position "relative"}}
      [submenu/submenu path type-str title {:style {:width "20em"}
                                            :class "submenu-strip-form"}
-      (for [option [:slots
-                    :stretch
-                    :offset]]
-        ^{:key option} [ui-interface/form-element (c/++ context option)])]]))
+      (ui-interface/form-elements
+       context
+       [:slots
+        :stretch
+        :offset])]]))
 
 (defn form [{:keys [path] :as context}]
   (let [charge-group-type @(rf/subscribe [:get-value (conj path :type)])
@@ -260,22 +261,23 @@
     [:div {:style {:display "table-cell"
                    :vertical-align "top"}}
      [charge-group-preset-select/charge-group-preset-select path]
-     (for [option [:origin]]
-       ^{:key option} [ui-interface/form-element (c/++ context option)])
+
+     [ui-interface/form-element (c/++ context :origin)]
 
      [preview-form path]
 
-     (for [option [:type
-                   :spacing
-                   :stretch
-                   :strip-angle
-                   :radius
-                   :arc-angle
-                   :start-angle
-                   :arc-stretch
-                   :rotate-charges?
-                   :slots]]
-       ^{:key option} [ui-interface/form-element (c/++ context option)])
+     (ui-interface/form-elements
+      context
+      [:type
+       :spacing
+       :stretch
+       :strip-angle
+       :radius
+       :arc-angle
+       :start-angle
+       :arc-stretch
+       :rotate-charges?
+       :slots])
 
      (when strip-type?
        [:div.ui-setting

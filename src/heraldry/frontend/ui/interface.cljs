@@ -1,6 +1,7 @@
 (ns heraldry.frontend.ui.interface
   (:require
    [heraldry.coat-of-arms.counterchange :as counterchange]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [re-frame.core :as rf]
@@ -89,3 +90,9 @@
 (defmethod form-element nil [{:keys [path]}]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
     [:div (str "not implemented: " path options)]))
+
+(defn form-elements [context options]
+  [:<>
+   (doall
+    (for [option options]
+      ^{:key option} [form-element (c/++ context option)]))])
