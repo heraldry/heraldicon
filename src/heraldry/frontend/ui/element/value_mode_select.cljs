@@ -8,7 +8,7 @@
    [re-frame.core :as rf]))
 
 (defn value-mode-select [path & {:keys [display-fn disabled? on-change default-option]}]
-  (let [current-value @(rf/subscribe [:get-value path])
+  (let [current-value @(rf/subscribe [:get path])
         handler-for-value (fn [new-value]
                             (fn [event]
                               (if on-change

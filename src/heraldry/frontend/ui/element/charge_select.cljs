@@ -33,7 +33,7 @@
                            {:keys [still-on-path? render-variant open-all?]
                             :as opts}]
   (let [flag-path (conj node-flag-db-path tree-path)
-        flag-open? @(rf/subscribe [:get-value flag-path])
+        flag-open? @(rf/subscribe [:get flag-path])
         open? (or (and open-all?
                        (nil? flag-open?))
                   (= node-type :_root)

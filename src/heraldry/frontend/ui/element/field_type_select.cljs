@@ -58,7 +58,7 @@
 (defn field-type-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(let [;; TODO: this should move into the event handler
                                          field-path (vec (drop-last path))
-                                         field @(rf/subscribe [:get-value field-path])
+                                         field @(rf/subscribe [:get field-path])
                                          new-field (assoc field :type key)
                                          {:keys [num-fields-x
                                                  num-fields-y
@@ -76,7 +76,7 @@
 
 (defn field-type-select [path]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [current-value @(rf/subscribe [:get-value path])
+    (let [current-value @(rf/subscribe [:get path])
           {:keys [ui inherited default choices]} option
           value (or current-value
                     inherited

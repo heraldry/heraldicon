@@ -27,7 +27,7 @@
   ([{:keys [path] :as context}]
    (if (-> path first (= :context))
      (get-in context (drop 1 path))
-     @(rf/subscribe [:get-value path]))))
+     @(rf/subscribe [:get path]))))
 
 (defn effective-component-type
   ([path raw-type]
@@ -37,7 +37,7 @@
   ([context]
    (if (vector? context)
      (effective-component-type {:path context
-                                :raw-type @(rf/subscribe [:get-value (conj context :type)])})
+                                :raw-type @(rf/subscribe [:get (conj context :type)])})
      (let [{:keys [path raw-type]} context
            raw-type (or raw-type (get-raw-data (c/++ context :type)))]
        (cond
@@ -93,7 +93,7 @@
   ([{:keys [path] :as context}]
    (let [elements (if (-> path first (= :context))
                     (get-in context (drop 1 path))
-                    @(rf/subscribe [:get-value path]))]
+                    @(rf/subscribe [:get path]))]
      (shield-separator/element-indices-with-position elements))))
 
 ;; TODO: this needs to be improved
@@ -104,7 +104,7 @@
   ([{:keys [path] :as context}]
    (-> (if (-> path first (= :context))
          (get-in context (drop 1 path))
-         @(rf/subscribe [:get-value path]))
+         @(rf/subscribe [:get path]))
        :type
        #{:heraldry.motto.type/motto
          :heraldry.motto.type/slogan})))

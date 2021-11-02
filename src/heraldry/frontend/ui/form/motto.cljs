@@ -55,7 +55,7 @@
 
    [ui-interface/form-element (c/++ context :ribbon-variant)]
 
-   (when @(rf/subscribe [:get-value (-> context :path (conj :ribbon-variant))])
+   (when @(rf/subscribe [:get (-> context :path (conj :ribbon-variant))])
      (let [ribbon-context (c/++ context :ribbon)]
        [:<>
         [ribbon-general/ribbon-form ribbon-context]

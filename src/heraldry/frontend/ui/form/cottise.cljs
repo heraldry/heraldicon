@@ -16,9 +16,9 @@
 ;; TODO: context
 (defn cottise-name [path]
   (let [cottise-key (last path)
-        ordinary-type @(rf/subscribe [:get-value (-> (drop-last 2 path)
-                                                     vec
-                                                     (conj :type))])]
+        ordinary-type @(rf/subscribe [:get (-> (drop-last 2 path)
+                                               vec
+                                               (conj :type))])]
     (-> (cond
           (#{:heraldry.ordinary.type/pale}
            ordinary-type) {:cottise-1 "1 right"

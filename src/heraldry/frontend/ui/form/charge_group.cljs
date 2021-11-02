@@ -240,7 +240,7 @@
         :offset])]]))
 
 (defn form [{:keys [path] :as context}]
-  (let [charge-group-type @(rf/subscribe [:get-value (conj path :type)])
+  (let [charge-group-type @(rf/subscribe [:get (conj path :type)])
         strip-type? (#{:heraldry.charge-group.type/rows
                        :heraldry.charge-group.type/columns}
                      charge-group-type)

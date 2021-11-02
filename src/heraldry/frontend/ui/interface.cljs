@@ -35,7 +35,7 @@
 
 (rf/reg-sub :get-options
   (fn [[_ path] _]
-    (rf/subscribe [:get-value path]))
+    (rf/subscribe [:get path]))
 
   (fn [data [_ path]]
     (interface/component-options path data)))
@@ -62,7 +62,7 @@
 
 (rf/reg-sub :get-sanitized-data
   (fn [[_ path] _]
-    [(rf/subscribe [:get-value path])
+    [(rf/subscribe [:get path])
      (rf/subscribe [:get-relevant-options path])])
 
   (fn [[data options] [_ _path]]
@@ -70,7 +70,7 @@
 
 (rf/reg-sub :get-counterchange-tinctures
   (fn [[_ path _context] _]
-    (rf/subscribe [:get-value path]))
+    (rf/subscribe [:get path]))
 
   (fn [data [_ _path context]]
     (counterchange/get-counterchange-tinctures data context)))

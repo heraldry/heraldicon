@@ -13,7 +13,7 @@
     (fn [path & {:keys [value on-change disabled?]}]
       (when-let [option @(rf/subscribe [:get-relevant-options path])]
         (let [component-id (util/id "range")
-              current-value @(rf/subscribe [:get-value path])
+              current-value @(rf/subscribe [:get path])
               {:keys [ui inherited default min max]} option
               step (or (:step ui) 1)
               label (:label ui)

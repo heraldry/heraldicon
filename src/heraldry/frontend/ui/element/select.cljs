@@ -37,7 +37,7 @@
 
 (defn select [path & {:keys [on-change]}]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [current-value @(rf/subscribe [:get-value path])
+    (let [current-value @(rf/subscribe [:get path])
           {:keys [ui default inherited choices]} option
           label (:label ui)
           value (or current-value
