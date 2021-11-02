@@ -6,7 +6,7 @@
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -58,7 +58,7 @@
                  :layout
                  :outline?
                  :manual-blazon]]
-     ^{:key option} [interface/form-element (c/++ context option)])
+     ^{:key option} [ui-interface/form-element (c/++ context option)])
 
    (when (and
           (not @(rf/subscribe [:get-value (conj path :counterchanged?)]))
@@ -90,7 +90,7 @@
       (when-let [parent-path (parent-path path)]
         (>= index (field/mandatory-part-count {:path parent-path}))))))
 
-(defmethod interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
+(defmethod ui-interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
   (let [field-type @(rf/subscribe [:get-value (conj path :type)])
         ref? (= field-type :heraldry.field.type/ref)
         components-path (conj path :components)
@@ -148,5 +148,5 @@
                                               :handler #(state/dispatch-on-event % [:remove-element component-path])}]})))
                          vec))}))
 
-(defmethod interface/component-form-data :heraldry.component/field [_context]
+(defmethod ui-interface/component-form-data :heraldry.component/field [_context]
   {:form form})

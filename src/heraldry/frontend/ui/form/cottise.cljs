@@ -1,7 +1,7 @@
 (ns heraldry.frontend.ui.form.cottise
   (:require
    [heraldry.context :as c]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [re-frame.core :as rf]))
 
 (defn form [context]
@@ -11,7 +11,7 @@
                  :distance
                  :thickness
                  :outline?]]
-     ^{:key option} [interface/form-element (c/++ context option)])])
+     ^{:key option} [ui-interface/form-element (c/++ context option)])])
 
 ;; TODO: context
 (defn cottise-name [path]
@@ -41,10 +41,10 @@
                  :cottise-extra-2 "2 (extra)"})
         (get cottise-key))))
 
-(defmethod interface/component-node-data :heraldry.component/cottise [{:keys [path] :as context}]
+(defmethod ui-interface/component-node-data :heraldry.component/cottise [{:keys [path] :as context}]
   {:title (str "Cottise " (cottise-name path))
    :validation @(rf/subscribe [:validate-cottise path])
    :nodes [{:context (c/++ context :field)}]})
 
-(defmethod interface/component-form-data :heraldry.component/cottise [_context]
+(defmethod ui-interface/component-form-data :heraldry.component/cottise [_context]
   {:form form})

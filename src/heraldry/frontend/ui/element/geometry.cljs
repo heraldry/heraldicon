@@ -3,7 +3,7 @@
    [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
@@ -56,7 +56,7 @@
                        :stretch
                        :mirrored?
                        :reversed?]]
-           ^{:key option} [interface/form-element (c/++ context option)])]]])))
+           ^{:key option} [ui-interface/form-element (c/++ context option)])]]])))
 
-(defmethod interface/form-element :geometry [context]
+(defmethod ui-interface/form-element :geometry [context]
   [geometry-submenu context])

@@ -4,7 +4,7 @@
    [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
@@ -60,7 +60,7 @@
                        :tincture-1
                        :thickness-2
                        :tincture-2]]
-           ^{:key option} [interface/form-element (c/++ context option)])]]])))
+           ^{:key option} [ui-interface/form-element (c/++ context option)])]]])))
 
-(defmethod interface/form-element :fimbriation [context]
+(defmethod ui-interface/form-element :fimbriation [context]
   [fimbriation-submenu context])

@@ -5,7 +5,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.static :as static]
    [re-frame.core :as rf]))
 
@@ -49,5 +49,5 @@
               [theme-choice path key display-name :selected? (= key value)])])]
         [value-mode-select/value-mode-select path]]])))
 
-(defmethod interface/form-element :theme-select [{:keys [path]}]
+(defmethod ui-interface/form-element :theme-select [{:keys [path]}]
   [theme-select path])

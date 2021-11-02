@@ -1,7 +1,7 @@
 (ns heraldry.frontend.ui.element.text-field
   (:require
    [heraldry.frontend.language :refer [tr]]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [re-frame.core :as rf]))
 
 (defn text-field [path & {:keys [on-change style]}]
@@ -24,5 +24,5 @@
                                  (on-change value)
                                  (rf/dispatch-sync [:set path value])))}]]])))
 
-(defmethod interface/form-element :text-field [{:keys [path]}]
+(defmethod ui-interface/form-element :text-field [{:keys [path]}]
   [text-field path])

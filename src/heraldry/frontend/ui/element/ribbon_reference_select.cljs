@@ -7,7 +7,7 @@
    [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db :set-ribbon-data
@@ -66,5 +66,5 @@
                                :de "Band auswählen"} ribbon-title nil
          [ribbon-select/list-ribbon (link-to-ribbon path)]]]])))
 
-(defmethod interface/form-element :ribbon-reference-select [{:keys [path]}]
+(defmethod ui-interface/form-element :ribbon-reference-select [{:keys [path]}]
   [ribbon-reference-select path])

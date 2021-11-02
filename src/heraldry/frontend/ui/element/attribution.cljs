@@ -6,7 +6,7 @@
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.select :as select]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as interface]
+   [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.options :as options]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -97,7 +97,7 @@
           (for [option [:nature
                         :license
                         :license-version]]
-            ^{:key option} [interface/form-element (c/++ context option)])
+            ^{:key option} [ui-interface/form-element (c/++ context option)])
 
           [:div {:style {:height "1.5em"}}]
 
@@ -107,9 +107,9 @@
                         :source-link
                         :source-creator-name
                         :source-creator-link]]
-            ^{:key option} [interface/form-element (c/++ context option)])]]]])))
+            ^{:key option} [ui-interface/form-element (c/++ context option)])]]]])))
 
-(defmethod interface/form-element :attribution [context]
+(defmethod ui-interface/form-element :attribution [context]
   [attribution-submenu context
    :charge-presets? (-> context :path drop-last last #{:charge-form
                                                        :charge-data})])

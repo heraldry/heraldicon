@@ -1,17 +1,17 @@
 (ns heraldry.frontend.ui.form.arms-general
   (:require
-   [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
 (defn form [context]
   [:<>
-   (for [option [:name
-                 :attribution
-                 :is-public
-                 :tags]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])
+   (ui-interface/form-elements
+    context
+    [:name
+     :attribution
+     :is-public
+     :tags])
 
    [:div {:style {:height "1.5em"}}]])
 
