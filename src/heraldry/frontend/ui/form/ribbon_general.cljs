@@ -196,26 +196,28 @@
     [:div {:style {:position "relative"}}
      [submenu/submenu (:path context) nil title {:style {:width "28em"}
                                                  :class "submenu-segment-form"}
-      (for [option [:type
-                    :z-index
-                    :font
-                    :font-scale
-                    :spacing
-                    :offset-x
-                    :offset-y]]
-        ^{:key option} [ui-interface/form-element (c/++ context option)])]
+      (ui-interface/form-elements
+       context
+       [:type
+        :z-index
+        :font
+        :font-scale
+        :spacing
+        :offset-x
+        :offset-y])]
+
      [text-field/text-field (-> context :path (conj :text))
       :style {:display "inline-block"
               :position "absolute"
               :left "13em"}]]))
 
 (defn ribbon-form [context]
-  [:<>
-   (for [option [:thickness
-                 :edge-angle
-                 :end-split
-                 :outline?]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])])
+  (ui-interface/form-elements
+   context
+   [:thickness
+    :edge-angle
+    :end-split
+    :outline?]))
 
 (defn ribbon-segments-form [context & {:keys [tooltip]}]
   (let [segments-path (-> context :path (conj :segments))
@@ -243,12 +245,13 @@
 
 (defn form [context]
   [:<>
-   (for [option [:name
-                 :attribution
-                 :is-public
-                 :attributes
-                 :tags]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])
+   (ui-interface/form-elements
+    context
+    [:name
+     :attribution
+     :is-public
+     :attributes
+     :tags])
 
    [ribbon-form (c/++ context :ribbon)]
 

@@ -7,9 +7,7 @@
    [re-frame.core :as rf]))
 
 (defn form [context]
-  [:<>
-   (for [option [:num-columns]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])])
+  [ui-interface/form-element (c/++ context :num-columns)])
 
 (defmethod ui-interface/component-node-data :heraldry.component/collection [{:keys [path] :as context}]
   (let [num-elements @(rf/subscribe [:get-list-size (conj path :elements)])]

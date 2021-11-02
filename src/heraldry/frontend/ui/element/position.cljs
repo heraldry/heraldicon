@@ -38,13 +38,14 @@
        [:div.option
         [submenu/submenu path label link-name {:style {:width "22em"}
                                                :class "submenu-position"}
-         (for [option [:point
-                       :alignment
-                       :angle
-                       :offset-x
-                       :offset-y
-                       :type]]
-           ^{:key option} [ui-interface/form-element (c/++ context option)])]]])))
+         (ui-interface/form-elements
+          context
+          [:point
+           :alignment
+           :angle
+           :offset-x
+           :offset-y
+           :type])]]])))
 
 (defmethod ui-interface/form-element :position [context]
   [position-submenu context])

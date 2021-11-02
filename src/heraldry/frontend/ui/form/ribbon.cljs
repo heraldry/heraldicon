@@ -6,18 +6,18 @@
    [re-frame.core :as rf]))
 
 (defn form [context]
-  [:<>
-   (for [option [:type
-                 :escutcheon
-                 :origin
-                 :anchor
-                 :geometry
-                 :fimbriation
-                 :tincture
-                 :outline-mode
-                 :vertical-mask
-                 :manual-blazon]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])])
+  (ui-interface/form-elements
+   context
+   [:type
+    :escutcheon
+    :origin
+    :anchor
+    :geometry
+    :fimbriation
+    :tincture
+    :outline-mode
+    :vertical-mask
+    :manual-blazon]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/charge [{:keys [path] :as context}]
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,

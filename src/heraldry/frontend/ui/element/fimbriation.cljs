@@ -53,14 +53,15 @@
        [:div.option
         [submenu/submenu path label link-name {:style {:width "22em"}
                                                :class "submenu-fimbriation"}
-         (for [option [:mode
-                       :alignment
-                       :corner
-                       :thickness-1
-                       :tincture-1
-                       :thickness-2
-                       :tincture-2]]
-           ^{:key option} [ui-interface/form-element (c/++ context option)])]]])))
+         (ui-interface/form-elements
+          context
+          [:mode
+           :alignment
+           :corner
+           :thickness-1
+           :tincture-1
+           :thickness-2
+           :tincture-2])]]])))
 
 (defmethod ui-interface/form-element :fimbriation [context]
   [fimbriation-submenu context])

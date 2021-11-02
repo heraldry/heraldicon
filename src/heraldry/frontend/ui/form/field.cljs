@@ -41,24 +41,25 @@
 
 (defn form [{:keys [path] :as context}]
   [:<>
-   (for [option [:counterchanged?
-                 :inherit-environment?
-                 :type
-                 :tincture
-                 :line
-                 :opposite-line
-                 :extra-line
-                 :variant
-                 :thickness
-                 :gap
-                 :origin
-                 :direction-anchor
-                 :anchor
-                 :geometry
-                 :layout
-                 :outline?
-                 :manual-blazon]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])
+   (ui-interface/form-elements
+    context
+    [:counterchanged?
+     :inherit-environment?
+     :type
+     :tincture
+     :line
+     :opposite-line
+     :extra-line
+     :variant
+     :thickness
+     :gap
+     :origin
+     :direction-anchor
+     :anchor
+     :geometry
+     :layout
+     :outline?
+     :manual-blazon])
 
    (when (and
           (not @(rf/subscribe [:get-value (conj path :counterchanged?)]))

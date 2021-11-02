@@ -47,16 +47,17 @@
        [:div.option
         [submenu/submenu path label link-name {:style {:width "22em"}
                                                :class "submenu-geometry"}
-         (for [option [:width
-                       :height
-                       :thickness
-                       :size-mode
-                       :size
-                       :eccentricity
-                       :stretch
-                       :mirrored?
-                       :reversed?]]
-           ^{:key option} [ui-interface/form-element (c/++ context option)])]]])))
+         (ui-interface/form-elements
+          context
+          [:width
+           :height
+           :thickness
+           :size-mode
+           :size
+           :eccentricity
+           :stretch
+           :mirrored?
+           :reversed?])]]])))
 
 (defmethod ui-interface/form-element :geometry [context]
   [geometry-submenu context])

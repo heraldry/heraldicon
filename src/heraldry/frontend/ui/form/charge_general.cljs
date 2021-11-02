@@ -1,6 +1,5 @@
 (ns heraldry.frontend.ui.form.charge-general
   (:require
-   [heraldry.context :as c]
    [heraldry.frontend.ui.element.checkbox :as checkbox]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.strings :as strings]
@@ -8,17 +7,18 @@
 
 (defn form [context]
   [:<>
-   (for [option [:name
-                 :attribution
-                 :is-public
-                 :type
-                 :attitude
-                 :facing
-                 :colours
-                 :fixed-tincture
-                 :attributes
-                 :tags]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])
+   (ui-interface/form-elements
+    context
+    [:name
+     :attribution
+     :is-public
+     :type
+     :attitude
+     :facing
+     :colours
+     :fixed-tincture
+     :attributes
+     :tags])
 
    ;; TODO: not ideal, probably should move this at some point
    [checkbox/checkbox (conj [:example-coa :render-options :preview-original?])]])

@@ -43,14 +43,15 @@
        [:div.option
         [submenu/submenu path label link-name {:style {:width "22em"}
                                                :class "submenu-semy-layout"}
-         (for [option [:num-fields-x
-                       :num-fields-y
-                       :offset-x
-                       :offset-y
-                       :stretch-x
-                       :stretch-y
-                       :rotation]]
-           ^{:key option} [ui-interface/form-element (c/++ context option)])]]])))
+         (ui-interface/form-elements
+          context
+          [:num-fields-x
+           :num-fields-y
+           :offset-x
+           :offset-y
+           :stretch-x
+           :stretch-y
+           :rotation])]]])))
 
 (defmethod ui-interface/form-element :semy-layout [context]
   [layout-submenu context])

@@ -45,17 +45,18 @@
        [:div.option
         [submenu/submenu path label link-name {:style {:width "24em"}
                                                :class "submenu-line"}
-         (for [option [:type
-                       :eccentricity
-                       :height
-                       :width
-                       :spacing
-                       :offset
-                       :base-line
-                       :mirrored?
-                       :flipped?
-                       :fimbriation]]
-           ^{:key option} [ui-interface/form-element (c/++ context option)])]]])))
+         (ui-interface/form-elements
+          context
+          [:type
+           :eccentricity
+           :height
+           :width
+           :spacing
+           :offset
+           :base-line
+           :mirrored?
+           :flipped?
+           :fimbriation])]]])))
 
 (defmethod ui-interface/form-element :line [context]
   [line-submenu context])

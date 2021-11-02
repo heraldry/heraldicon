@@ -33,23 +33,23 @@
         (state/change-selected-component-if-removed (-> path drop-last vec)))))
 
 (defn form [context]
-  [:<>
-   (for [option [:type
-                 :variant
-                 :line
-                 :opposite-line
-                 :extra-line
-                 :escutcheon
-                 :num-points
-                 :angle
-                 :origin
-                 :direction-anchor
-                 :anchor
-                 :geometry
-                 :fimbriation
-                 :outline?
-                 :manual-blazon]]
-     ^{:key option} [ui-interface/form-element (c/++ context option)])])
+  (ui-interface/form-elements
+   context
+   [:type
+    :variant
+    :line
+    :opposite-line
+    :extra-line
+    :escutcheon
+    :num-points
+    :angle
+    :origin
+    :direction-anchor
+    :anchor
+    :geometry
+    :fimbriation
+    :outline?
+    :manual-blazon]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/ordinary [{:keys [path] :as context}]
   (let [cottising-options @(rf/subscribe [:get-relevant-options (conj path :cottising)])

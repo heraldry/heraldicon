@@ -92,15 +92,16 @@
        [:div.option
         [submenu/submenu path label link-name {:style {:width "22em"}
                                                :class "submenu-field-layout"}
-         (for [option [:num-base-fields
-                       :num-fields-x
-                       :num-fields-y
-                       :offset-x
-                       :offset-y
-                       :stretch-x
-                       :stretch-y
-                       :rotation]]
-           ^{:key option} [ui-interface/form-element (c/++ context option)])]]])))
+         (ui-interface/form-elements
+          context
+          [:num-base-fields
+           :num-fields-x
+           :num-fields-y
+           :offset-x
+           :offset-y
+           :stretch-x
+           :stretch-y
+           :rotation])]]])))
 
 (defmethod ui-interface/form-element :field-layout [context]
   [layout-submenu context])
