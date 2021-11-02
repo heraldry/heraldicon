@@ -7,6 +7,7 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.shared.chevron :as chevron]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.core :as math]
    [heraldry.math.svg.path :as path]
@@ -19,13 +20,14 @@
 
 (defmethod field-interface/part-names field-type [_] nil)
 
-(defn chevronny-parts [path top-left bottom-right line opposite-line outline? context environment]
-  (let [num-fields-y (interface/get-sanitized-data (conj path :layout :num-fields-y) context)
-        offset-y (interface/get-sanitized-data (conj path :layout :offset-y) context)
-        stretch-y (interface/get-sanitized-data (conj path :layout :stretch-y) context)
+(defn chevronny-parts [top-left bottom-right line opposite-line outline? context]
+  (let [environment (:environment context)
+        num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
+        offset-y (interface/get-sanitized-data (c/++ context :layout :offset-y))
+        stretch-y (interface/get-sanitized-data (c/++ context :layout :stretch-y))
         height (- (:y bottom-right)
                   (:y top-left))
-        anchor (interface/get-sanitized-data (conj path :anchor) context)
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         chevron-angle 90
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
@@ -164,15 +166,15 @@
     [parts overlap outlines]))
 
 (defmethod field-interface/render-field field-type
-  [path environment context]
-  (let [line (interface/get-sanitized-data (conj path :line) context)
-        opposite-line (interface/get-sanitized-data (conj path :opposite-line) context)
+  [{:keys [path environment] :as context}]
+  (let [line (interface/get-sanitized-data (c/++ context :line))
+        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
         outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (conj path :outline?) context))
+                     (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [parts overlap outlines] (chevronny-parts path top-left bottom-right line opposite-line outline? context environment)]
+        [parts overlap outlines] (chevronny-parts top-left bottom-right line opposite-line outline? context)]
     [:<>
      [shared/make-subfields
       path parts
