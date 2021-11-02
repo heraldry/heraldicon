@@ -63,23 +63,23 @@
 (defmethod component-options nil [_path _data]
   nil)
 
-(defn get-options-by-context
+(defn get-options
   ([path context]
-   (get-options-by-context (assoc context :path path)))
+   (get-options (assoc context :path path)))
 
   ([{:keys [path] :as context}]
    (component-options path (get-raw-data path context))))
 
-(defn get-relevant-options-by-context
+(defn get-relevant-options
   ([path context]
-   (get-relevant-options-by-context (assoc context :path path)))
+   (get-relevant-options (assoc context :path path)))
 
   ([{:keys [path] :as context}]
    (let [[options relative-path] (or (->> (range (count path) 0 -1)
                                           (keep (fn [idx]
                                                   (let [option-path (subvec path 0 idx)
                                                         relative-path (subvec path idx)
-                                                        options (get-options-by-context option-path context)]
+                                                        options (get-options option-path context)]
                                                     (when options
                                                       [options relative-path]))))
                                           first)
@@ -116,7 +116,7 @@
   ([{:keys [path] :as context}]
    (if (-> path first (= :context))
      (let [data (get-raw-data path context)
-           options (get-relevant-options-by-context path context)]
+           options (get-relevant-options path context)]
        (options/sanitize-value-or-data data options))
      @(rf/subscribe [:get-sanitized-data path]))))
 
