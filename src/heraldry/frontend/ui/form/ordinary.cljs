@@ -53,12 +53,12 @@
 
 (defmethod ui-interface/component-node-data :heraldry.component/ordinary [{:keys [path] :as context}]
   (let [cottising-options @(rf/subscribe [:get-relevant-options (conj path :cottising)])
-        cottise-1 @(rf/subscribe [:get-value (conj path :cottising :cottise-1)])
-        cottise-2 @(rf/subscribe [:get-value (conj path :cottising :cottise-2)])
-        cottise-opposite-1 @(rf/subscribe [:get-value (conj path :cottising :cottise-opposite-1)])
-        cottise-opposite-2 @(rf/subscribe [:get-value (conj path :cottising :cottise-opposite-2)])
-        cottise-extra-1 @(rf/subscribe [:get-value (conj path :cottising :cottise-extra-1)])
-        cottise-extra-2 @(rf/subscribe [:get-value (conj path :cottising :cottise-extra-2)])
+        cottise-1 @(rf/subscribe [:get (conj path :cottising :cottise-1)])
+        cottise-2 @(rf/subscribe [:get (conj path :cottising :cottise-2)])
+        cottise-opposite-1 @(rf/subscribe [:get (conj path :cottising :cottise-opposite-1)])
+        cottise-opposite-2 @(rf/subscribe [:get (conj path :cottising :cottise-opposite-2)])
+        cottise-extra-1 @(rf/subscribe [:get (conj path :cottising :cottise-extra-1)])
+        cottise-extra-2 @(rf/subscribe [:get (conj path :cottising :cottise-extra-2)])
         cottise-1? (and (:cottise-1 cottising-options)
                         cottise-1)
         cottise-2? (and (:cottise-2 cottising-options)

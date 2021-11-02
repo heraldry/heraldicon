@@ -16,20 +16,20 @@
    [re-frame.core :as rf]))
 
 (defn tincture-modifiers-submenu [path]
-  (let [preview? @(rf/subscribe [:get-value (-> path
-                                                drop-last
-                                                vec
-                                                (conj :preview?))])
-        variant @(rf/subscribe [:get-value (-> path
-                                               drop-last
-                                               vec
-                                               (conj :variant))])]
+  (let [preview? @(rf/subscribe [:get (-> path
+                                          drop-last
+                                          vec
+                                          (conj :preview?))])
+        variant @(rf/subscribe [:get (-> path
+                                         drop-last
+                                         vec
+                                         (conj :variant))])]
     (when (or preview?
               variant)
       (let [options @(rf/subscribe [:get-relevant-options path])
             {:keys [ui]} options
             label (:label ui)
-            tincture-data @(rf/subscribe [:get-value path])
+            tincture-data @(rf/subscribe [:get path])
             sanitized-tincture-data (merge tincture-data
                                            (options/sanitize tincture-data options))
             charge-data (when (not preview?)

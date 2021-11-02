@@ -186,7 +186,7 @@
                 vec)))))))
 
 (defn segment-form [context]
-  (let [segment-type @(rf/subscribe [:get-value (-> context :path (conj :type))])
+  (let [segment-type @(rf/subscribe [:get (-> context :path (conj :type))])
         idx (-> context :path last)
         z-index @(rf/subscribe [:get-sanitized-data (-> context :path (conj :z-index))])
         title (util/str-tr (inc idx) ". "
@@ -275,11 +275,11 @@
     [tr {:en "Apply a preset after you edited the ribbon curve and changed the number of segments."
          :de "Wende eine Vorauswahl an, wenn du eine Band-Kurve verändert hast und sich die Anzahl der Segmente verändert hat."}]]
 
-   (let [layer-mode-value (or @(rf/subscribe [:get-value layers-path])
+   (let [layer-mode-value (or @(rf/subscribe [:get layers-path])
                               layer-mode-default)
-         flow-mode-value (or @(rf/subscribe [:get-value flow-path])
+         flow-mode-value (or @(rf/subscribe [:get flow-path])
                              flow-mode-default)
-         start-mode-value (or @(rf/subscribe [:get-value start-path])
+         start-mode-value (or @(rf/subscribe [:get start-path])
                               start-mode-default)]
      [:<>
       [select/raw-select

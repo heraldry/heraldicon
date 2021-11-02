@@ -171,7 +171,7 @@
                                                   edn-data)))
                  edn-data (-> edn-data
                               (assoc-in [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")")))]
-             (let [existing-colours @(rf/subscribe [:get-value (conj db-path :colours)])
+             (let [existing-colours @(rf/subscribe [:get (conj db-path :colours)])
                    new-colours (merge colours
                                       (select-keys existing-colours
                                                    (set/intersection
@@ -191,18 +191,18 @@
 
 (defn preview []
   (let [{:keys [data]
-         :as form-data} @(rf/subscribe [:get-value form-db-path])
+         :as form-data} @(rf/subscribe [:get form-db-path])
         {:keys [edn-data]} data
         prepared-charge-data (-> form-data
                                  (assoc :data edn-data)
                                  (update :username #(or % (:username (user/data)))))
-        coat-of-arms @(rf/subscribe [:get-value (conj example-coa-db-path :coat-of-arms)])
+        coat-of-arms @(rf/subscribe [:get (conj example-coa-db-path :coat-of-arms)])
         {:keys [result
                 environment]} (render/coat-of-arms
                                (-> shared/coa-select-option-context
                                    (assoc :path [:context :coat-of-arms])
                                    (assoc :ui-show-colours
-                                          (->> @(rf/subscribe [:get-value [:ui :colours :show]])
+                                          (->> @(rf/subscribe [:get [:ui :colours :show]])
                                                (keep (fn [value]
                                                        (when (second value)
                                                          (first value))))
@@ -243,7 +243,7 @@
 (defn save-charge-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
-  (let [payload @(rf/subscribe [:get-value form-db-path])
+  (let [payload @(rf/subscribe [:get form-db-path])
         user-data (user/data)]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (rf/dispatch-sync [:clear-form-message form-db-path])
@@ -269,7 +269,7 @@
 (defn copy-to-new-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
-  (let [charge-data @(rf/subscribe [:get-value form-db-path])]
+  (let [charge-data @(rf/subscribe [:get form-db-path])]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (state/set-async-fetch-data
      form-db-path
@@ -290,9 +290,9 @@
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
-        charge-id @(rf/subscribe [:get-value (conj form-db-path :id)])
-        charge-username @(rf/subscribe [:get-value (conj form-db-path :username)])
-        charge-svg-url @(rf/subscribe [:get-value (conj form-db-path :svg-data-url)])
+        charge-id @(rf/subscribe [:get (conj form-db-path :id)])
+        charge-username @(rf/subscribe [:get (conj form-db-path :username)])
+        charge-svg-url @(rf/subscribe [:get (conj form-db-path :svg-data-url)])
         user-data (user/data)
         logged-in? (:logged-in? user-data)
         saved? charge-id
@@ -364,8 +364,8 @@
       attribution-data]]))
 
 (defn charge-form []
-  (if @(rf/subscribe [:get-value (conj form-db-path :id)])
-    (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
+  (if @(rf/subscribe [:get (conj form-db-path :id)])
+    (rf/dispatch [:set-title @(rf/subscribe [:get (conj form-db-path :name)])])
     (rf/dispatch [:set-title {:en "Create Charge"
                               :de "Neue Wappenfigur"}]))
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path

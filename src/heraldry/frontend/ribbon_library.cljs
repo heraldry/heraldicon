@@ -292,7 +292,7 @@
         selected-curve-idx (->> (count curves)
                                 range
                                 (keep (fn [idx]
-                                        (when @(rf/subscribe [:get-value [:ui :submenu-open? (conj segments-path idx)]])
+                                        (when @(rf/subscribe [:get [:ui :submenu-open? (conj segments-path idx)]])
                                           idx)))
                                 first)]
     [:<>
@@ -378,7 +378,7 @@
 (defn save-ribbon-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
-  (let [payload @(rf/subscribe [:get-value form-db-path])
+  (let [payload @(rf/subscribe [:get form-db-path])
         user-data (user/data)]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (rf/dispatch-sync [:clear-form-message form-db-path])
@@ -404,7 +404,7 @@
 (defn copy-to-new-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
-  (let [ribbon-data @(rf/subscribe [:get-value form-db-path])]
+  (let [ribbon-data @(rf/subscribe [:get form-db-path])]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (state/set-async-fetch-data
      form-db-path
@@ -425,8 +425,8 @@
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
-        ribbon-id @(rf/subscribe [:get-value (conj form-db-path :id)])
-        ribbon-username @(rf/subscribe [:get-value (conj form-db-path :username)])
+        ribbon-id @(rf/subscribe [:get (conj form-db-path :id)])
+        ribbon-username @(rf/subscribe [:get (conj form-db-path :username)])
         user-data (user/data)
         logged-in? (:logged-in? user-data)
         saved? ribbon-id
@@ -485,8 +485,8 @@
        " Shift - add point, Alt - remove points")]))
 
 (defn ribbon-form []
-  (if @(rf/subscribe [:get-value (conj form-db-path :id)])
-    (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
+  (if @(rf/subscribe [:get (conj form-db-path :id)])
+    (rf/dispatch [:set-title @(rf/subscribe [:get (conj form-db-path :name)])])
     (rf/dispatch [:set-title {:en "Create Ribbon"
                               :de "Neues Band"}]))
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])

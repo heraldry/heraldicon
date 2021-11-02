@@ -247,8 +247,8 @@
                                         vec)
           parent-type (some->
                        (or
-                        @(rf/subscribe [:get-value (conj parent-semy-path :type)])
-                        @(rf/subscribe [:get-value (conj parent-charge-group-path :type)]))
+                        @(rf/subscribe [:get (conj parent-semy-path :type)])
+                        @(rf/subscribe [:get (conj parent-charge-group-path :type)]))
                        interface/type->component-type)
           parent-field-path (case parent-type
                               :heraldry.component/charge-group (->> parent-charge-group-path
@@ -293,7 +293,7 @@
 
 (rf/reg-sub :validate-field
   (fn [[_ path] _]
-    [(rf/subscribe [:get-value (conj path :type)])
+    [(rf/subscribe [:get (conj path :type)])
      (rf/subscribe [:get-sanitized-data (conj path :layout :num-fields-x)])
      (rf/subscribe [:get-sanitized-data (conj path :layout :num-fields-y)])])
 

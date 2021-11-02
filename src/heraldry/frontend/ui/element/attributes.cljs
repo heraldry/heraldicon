@@ -39,7 +39,7 @@
        " "]))])
 
 (defn form [path]
-  (let [attributes @(rf/subscribe [:get-value path])]
+  (let [attributes @(rf/subscribe [:get path])]
     [:<>
      [:div.ui-setting {:style {:margin-top "10px"
                                :white-space "nowrap"}}

@@ -3,7 +3,7 @@
    [re-frame.core :as rf]))
 
 (defn search-field [path & {:keys [on-change]}]
-  (let [current-value @(rf/subscribe [:get-value path])]
+  (let [current-value @(rf/subscribe [:get path])]
     [:div {:style {:display "inline-block"
                    :border-radius "999px"
                    :border "1px solid #ccc"

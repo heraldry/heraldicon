@@ -28,7 +28,7 @@
 (defn theme-select [path]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
     (let [{:keys [ui inherited default choices]} option
-          current-value @(rf/subscribe [:get-value path])
+          current-value @(rf/subscribe [:get path])
           value (or current-value
                     inherited
                     default)

@@ -49,12 +49,12 @@
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (rf/dispatch-sync [:clear-form-message form-db-path])
     (try
-      (let [payload @(rf/subscribe [:get-value form-db-path])
+      (let [payload @(rf/subscribe [:get form-db-path])
             user-data (user/data)
             response (<? (api-request/call :save-collection payload user-data))
             collection-id (-> response :collection-id)]
         (rf/dispatch-sync [:set (conj form-db-path :id) collection-id])
-        (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get-value form-db-path])])
+        (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
         (state/invalidate-cache-without-current form-db-path [collection-id nil])
         (state/invalidate-cache-without-current form-db-path [collection-id 0])
         (rf/dispatch-sync [:set list-db-path nil])
@@ -113,7 +113,7 @@
 
 (defn render-arms [x y size path & {:keys [font font-size]
                                     :or {font-size 12}}]
-  (let [data @(rf/subscribe [:get-value path])
+  (let [data @(rf/subscribe [:get path])
         {arms-id :id
          version :version} (:reference data)
         [_status arms-data] (when arms-id
@@ -154,11 +154,11 @@
   (state/dispatch-on-event event [:ui-component-node-select (conj form-db-path :collection :elements index)]))
 
 (defn render-collection [& {:keys [allow-adding?]}]
-  (let [font (some-> @(rf/subscribe [:get-value (conj form-db-path :font)])
+  (let [font (some-> @(rf/subscribe [:get (conj form-db-path :font)])
                      font/css-string)
         num-columns @(rf/subscribe [:get-sanitized-data (conj form-db-path :collection :num-columns)])
         num-elements @(rf/subscribe [:get-list-size (conj form-db-path :collection :elements)])
-        name @(rf/subscribe [:get-value (conj form-db-path :name)])
+        name @(rf/subscribe [:get (conj form-db-path :name)])
         num-rows (inc (quot num-elements
                             num-columns))
         margin 10
@@ -224,7 +224,7 @@
 
 (defn render-arms-preview []
   (when-let [selected-element-index (selected-element-index)]
-    (let [arms-reference @(rf/subscribe [:get-value (conj form-db-path :collection :elements selected-element-index :reference)])
+    (let [arms-reference @(rf/subscribe [:get (conj form-db-path :collection :elements selected-element-index :reference)])
           {arms-id :id
            version :version} arms-reference
           [status arms-data] (when arms-id
@@ -266,8 +266,8 @@
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
-        collection-id @(rf/subscribe [:get-value (conj form-db-path :id)])
-        collection-username @(rf/subscribe [:get-value (conj form-db-path :username)])
+        collection-id @(rf/subscribe [:get (conj form-db-path :id)])
+        collection-username @(rf/subscribe [:get (conj form-db-path :username)])
         user-data (user/data)
         logged-in? (:logged-in? user-data)
         saved? collection-id
@@ -294,8 +294,8 @@
        [tr strings/save]]]]))
 
 (defn collection-form []
-  (if @(rf/subscribe [:get-value (conj form-db-path :id)])
-    (rf/dispatch [:set-title @(rf/subscribe [:get-value (conj form-db-path :name)])])
+  (if @(rf/subscribe [:get (conj form-db-path :id)])
+    (rf/dispatch [:set-title @(rf/subscribe [:get (conj form-db-path :name)])])
     (rf/dispatch [:set-title [tr {:en "Create Collection"
                                   :de "Neue Sammlung"}]]))
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])

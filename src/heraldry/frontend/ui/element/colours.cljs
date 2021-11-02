@@ -21,8 +21,8 @@
        vec))
 
 (defn form [path]
-  (let [colours @(rf/subscribe [:get-value path])
-        sort-column (or @(rf/subscribe [:get-value [:ui :colours :sort path]])
+  (let [colours @(rf/subscribe [:get path])
+        sort-column (or @(rf/subscribe [:get [:ui :colours :sort path]])
                         :colour)
         sort-fn (case sort-column
                   :modifier (fn [[colour value]]

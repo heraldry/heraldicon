@@ -12,7 +12,7 @@
     (let [component-id (util/id "checkbox")
           {:keys [ui inherited default]} option
           label (:label ui)
-          current-value @(rf/subscribe [:get-value path])
+          current-value @(rf/subscribe [:get path])
           checked? (->> [current-value
                          inherited
                          default]

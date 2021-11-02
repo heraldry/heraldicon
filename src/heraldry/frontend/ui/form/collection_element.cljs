@@ -30,7 +30,7 @@
     :reference]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/collection-element [{:keys [path] :as _context}]
-  (let [name @(rf/subscribe [:get-value (conj path :name)])
+  (let [name @(rf/subscribe [:get (conj path :name)])
         index (last path)]
     {:title (util/str-tr (inc index) ": "
                          (if (-> name count pos?)

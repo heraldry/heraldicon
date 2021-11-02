@@ -20,7 +20,7 @@
 
 (defn line-type-select [path]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [current-value @(rf/subscribe [:get-value path])
+    (let [current-value @(rf/subscribe [:get path])
           {:keys [ui inherited default choices]} option
           label (:label ui)
           value (or current-value

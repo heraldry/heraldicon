@@ -98,8 +98,8 @@
       " "])])
 
 (defn form [path]
-  (let [value @(rf/subscribe [:get-value value-path])
-        tags @(rf/subscribe [:get-value path])
+  (let [value @(rf/subscribe [:get value-path])
+        tags @(rf/subscribe [:get path])
         on-click (fn [event]
                    (.preventDefault event)
                    (.stopPropagation event)

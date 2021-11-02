@@ -13,7 +13,7 @@
                                      :content content
                                      :on-cancel on-cancel}]))
 (defn clear []
-  (when-let [on-cancel @(rf/subscribe [:get-value (conj dialog-db-path :on-cancel)])]
+  (when-let [on-cancel @(rf/subscribe [:get (conj dialog-db-path :on-cancel)])]
     (on-cancel))
   (rf/dispatch [:remove dialog-db-path]))
 
@@ -24,8 +24,8 @@
   (rf/dispatch-sync [:set loader-db-path nil]))
 
 (defn render []
-  (let [{:keys [title content]} @(rf/subscribe [:get-value dialog-db-path])
-        loader @(rf/subscribe [:get-value loader-db-path])]
+  (let [{:keys [title content]} @(rf/subscribe [:get dialog-db-path])
+        loader @(rf/subscribe [:get loader-db-path])]
     ^{:key title}
     [:<>
      (when content

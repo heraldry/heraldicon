@@ -81,7 +81,7 @@
       [:div [tr strings/loading]])))
 
 (defn user-display []
-  (let [user-info-data @(rf/subscribe [:get-value user-info-db-path])
+  (let [user-info-data @(rf/subscribe [:get user-info-db-path])
         user-id (:id user-info-data)]
     (rf/dispatch [:set-title (:username user-info-data)])
     [:div {:style {:display "grid"

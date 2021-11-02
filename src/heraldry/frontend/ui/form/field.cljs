@@ -62,9 +62,9 @@
      :manual-blazon])
 
    (when (and
-          (not @(rf/subscribe [:get-value (conj path :counterchanged?)]))
+          (not @(rf/subscribe [:get (conj path :counterchanged?)]))
           (show-tinctures-only?
-           @(rf/subscribe [:get-value (conj path :type)])))
+           @(rf/subscribe [:get (conj path :type)])))
      [:<>
       [:div {:style {:margin-bottom "1em"}}]
       (for [idx (range @(rf/subscribe [:get-list-size (conj path :fields)]))]
@@ -74,14 +74,14 @@
 (defn parent-path [path]
   (let [index (last path)
         parent-path (->> path (drop-last 2) vec)
-        parent-type @(rf/subscribe [:get-value (conj parent-path :type)])]
+        parent-type @(rf/subscribe [:get (conj parent-path :type)])]
     (when (and (int? index)
                (-> parent-type (or :dummy) namespace (= "heraldry.field.type")))
       parent-path)))
 
 (defn name-prefix-for-part [path]
   (when-let [parent-path (parent-path path)]
-    (let [parent-type @(rf/subscribe [:get-value (conj parent-path :type)])]
+    (let [parent-type @(rf/subscribe [:get (conj parent-path :type)])]
       (-> (field/part-name parent-type (last path))
           util/upper-case-first))))
 
@@ -92,7 +92,7 @@
         (>= index (field/mandatory-part-count {:path parent-path}))))))
 
 (defmethod ui-interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
-  (let [field-type @(rf/subscribe [:get-value (conj path :type)])
+  (let [field-type @(rf/subscribe [:get (conj path :type)])
         ref? (= field-type :heraldry.field.type/ref)
         components-path (conj path :components)
         num-components @(rf/subscribe [:get-list-size components-path])]
@@ -103,7 +103,7 @@
                                                                     drop-last
                                                                     vec
                                                                     (conj
-                                                                     @(rf/subscribe [:get-value (conj path :index)])))))
+                                                                     @(rf/subscribe [:get (conj path :index)])))))
                              (field/title context))])
      :validation @(rf/subscribe [:validate-field path])
      :buttons (if ref?
