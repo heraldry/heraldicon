@@ -15,10 +15,6 @@
 
 ;; subs
 
-(rf/reg-sub :get
-  (fn [db [_ path]]
-    (get-in db path)))
-
 (rf/reg-sub :get-form-error
   (fn [db [_ path]]
     (get-in db (concat [:form-errors] path [:message]))))
@@ -34,13 +30,6 @@
 
   (fn [[value selected-language] [_ _path]]
     (util/tr-raw value selected-language)))
-
-(rf/reg-sub :get-list-size
-  (fn [[_ path] _]
-    (rf/subscribe [:get path]))
-
-  (fn [value [_ _path]]
-    (count value)))
 
 (rf/reg-sub :used-charge-variants
   (fn [[_ path] _]

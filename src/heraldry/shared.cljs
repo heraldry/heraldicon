@@ -24,8 +24,8 @@
    [heraldry.ornaments] ;; needed for side effects
    [heraldry.render-options] ;; needed for side effects
    [heraldry.ribbon :as ribbon]
-   [heraldry.strings :as strings]
-   [re-frame.core :as rf]))
+   [heraldry.state] ;; needed for side effects
+   [heraldry.strings :as strings]))
 
 ;; TODO: might not be the right place for it, others live in the coat-of-arms.[thing].options namespaces
 (defmethod interface/component-options :heraldry.component/arms-general [_path data]
