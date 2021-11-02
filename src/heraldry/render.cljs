@@ -97,16 +97,12 @@
                (when (= mode :hatching)
                  hatching/patterns)]
               [:defs
-               [(if svg-export?
-                  :mask
-                  :clipPath)
+               [:mask
                 {:id mask-id}
                 [:path {:d (:shape environment)
                         :fill "#fff"
                         :stroke "none"}]]]
-              [:g {(if svg-export?
-                     :mask
-                     :clip-path) (str "url(#" mask-id ")")}
+              [:g {:mask (str "url(#" mask-id ")")}
                [:g {:filter (when texture-link (str "url(#" texture-id ")"))}
                 [:g {:filter (when shiny?
                                (str "url(#" shiny-id ")"))}
