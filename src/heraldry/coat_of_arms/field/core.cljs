@@ -92,6 +92,16 @@
                                          {:type :heraldry.field.type/ref
                                           :index (mod i num-base-fields)})
                                        (range (- num-fields-y num-base-fields))))))
+      (= :chevronny type) (if (= num-fields-y 1)
+                            (subvec defaults 0 1)
+                            (-> (subvec defaults 0 2)
+                                (into (map (fn [i]
+                                             (nth defaults (mod (+ i 2) (count defaults))))
+                                           (range (- num-base-fields 2))))
+                                (into (map (fn [i]
+                                             {:type :heraldry.field.type/ref
+                                              :index (mod i num-base-fields)})
+                                           (range (- num-fields-y num-base-fields))))))
       (= :chequy type) (if (= [num-fields-x num-fields-y] [1 1])
                          (subvec defaults 0 1)
                          (-> (subvec defaults 0 2)

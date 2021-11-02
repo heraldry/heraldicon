@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.field.type.bendy :as bendy]
    [heraldry.coat-of-arms.field.type.bendy-sinister :as bendy-sinister]
    [heraldry.coat-of-arms.field.type.chequy :as chequy]
+   [heraldry.coat-of-arms.field.type.chevronny :as chevronny]
    [heraldry.coat-of-arms.field.type.fretty :as fretty]
    [heraldry.coat-of-arms.field.type.gyronny :as gyronny]
    [heraldry.coat-of-arms.field.type.lozengy :as lozengy]
@@ -23,8 +24,8 @@
    [heraldry.coat-of-arms.field.type.quartered :as quartered]
    [heraldry.coat-of-arms.field.type.quarterly :as quarterly]
    [heraldry.coat-of-arms.field.type.tierced-per-fess :as tierced-per-fess]
-   [heraldry.coat-of-arms.field.type.tierced-per-pall :as tierced-per-pall]
    [heraldry.coat-of-arms.field.type.tierced-per-pale :as tierced-per-pale]
+   [heraldry.coat-of-arms.field.type.tierced-per-pall :as tierced-per-pall]
    [heraldry.coat-of-arms.field.type.vairy :as vairy]
    [heraldry.coat-of-arms.geometry :as geometry]
    [heraldry.coat-of-arms.line.core :as line]
@@ -54,6 +55,7 @@
    barry/field-type
    bendy/field-type
    bendy-sinister/field-type
+   chevronny/field-type
    chequy/field-type
    lozengy/field-type
    vairy/field-type
@@ -500,6 +502,33 @@
                                   [:outline?]]
                                  {[:line] line-style
                                   [:line :fimbriation] nil})
+            :chevronny (options/pick default-options
+                                     [[:type]
+                                      [:inherit-environment?]
+                                      [:anchor]
+                                      [:counterchanged?]
+                                      [:line]
+                                      [:opposite-line]
+                                      [:layout :num-base-fields]
+                                      [:layout :num-fields-y]
+                                      [:layout :offset-y]
+                                      [:layout :stretch-y]
+                                      [:outline?]]
+                                     {[:line] (-> line-style
+                                                  (options/override-if-exists [:offset :min] 0)
+                                                  (options/override-if-exists [:base-line] nil)
+                                                  (dissoc :fimbriation))
+                                      [:opposite-line] (-> opposite-line-style
+                                                           (options/override-if-exists [:offset :min] 0)
+                                                           (options/override-if-exists [:base-line] nil)
+                                                           (dissoc :fimbriation))
+                                      [:layout :offset-y :min] -3
+                                      [:layout :offset-y :max] 3
+                                      [:anchor :point :default] :angle
+                                      [:anchor :point :choices] (util/filter-choices
+
+                                                                 position/anchor-point-choices
+                                                                 [:bottom-left :bottom-right :angle])})
             :chequy (options/pick default-options
                                   [[:type]
                                    [:inherit-environment?]
