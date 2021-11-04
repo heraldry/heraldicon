@@ -3,6 +3,7 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]
    [reagent.core :as r]))
@@ -10,10 +11,10 @@
 (defn range-input [_]
   (let [tmp-value (r/atom nil)
         focused? (r/atom false)]
-    (fn [path & {:keys [value on-change disabled?]}]
-      (when-let [option @(rf/subscribe [:get-relevant-options path])]
+    (fn [{:keys [path] :as context} & {:keys [value on-change disabled?]}]
+      (when-let [option (interface/get-relevant-options context)]
         (let [component-id (util/id "range")
-              current-value @(rf/subscribe [:get path])
+              current-value (interface/get-raw-data context)
               {:keys [ui inherited default min max]} option
               step (or (:step ui) 1)
               label (:label ui)
@@ -66,9 +67,9 @@
                      :style {:display "inline-block"
                              :width "2em"
                              :margin-left "0.5em"}}]
-            [value-mode-select/value-mode-select {:path path}
+            [value-mode-select/value-mode-select context
              :disabled? disabled?
              :on-change on-change]]])))))
 
-(defmethod ui-interface/form-element :range [{:keys [path]}]
-  [range-input path])
+(defmethod ui-interface/form-element :range [context]
+  [range-input context])

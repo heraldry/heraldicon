@@ -108,10 +108,10 @@
                [:div.placeholders
                 (when (get supported-tinctures :shadow)
                   [range/range-input
-                   (conj path :shadow)])
+                   {:path (conj path :shadow)}])
                 (when (get supported-tinctures :highlight)
                   [range/range-input
-                   (conj path :highlight)])
+                   {:path (conj path :highlight)}])
                 (for [t sorted-supported-tinctures]
                   ^{:key t}
                   [tincture-select/tincture-select
