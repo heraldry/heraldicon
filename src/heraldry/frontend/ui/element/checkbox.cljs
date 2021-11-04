@@ -30,7 +30,7 @@
                                 (on-change new-checked?)
                                 (rf/dispatch [:set path new-checked?])))}]
        [:label.for-checkbox {:for component-id} [tr label]]
-       [value-mode-select/value-mode-select path :disabled? disabled?]])))
+       [value-mode-select/value-mode-select {:path path} :disabled? disabled?]])))
 
 (defmethod ui-interface/form-element :checkbox [{:keys [path]}]
   [checkbox path])

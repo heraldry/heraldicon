@@ -40,7 +40,7 @@
           [radio-choice path key display-name
            :selected? (= key value)
            :on-change on-change])
-        [value-mode-select/value-mode-select path]]])))
+        [value-mode-select/value-mode-select context]]])))
 
 (defmethod ui-interface/form-element :radio-select [context]
   [radio-select context])

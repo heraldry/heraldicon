@@ -3,12 +3,12 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.hover-menu :as hover-menu]
+   [heraldry.interface :as interface]
    [heraldry.strings :as strings]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
-(defn value-mode-select [path & {:keys [display-fn disabled? on-change default-option]}]
-  (let [current-value @(rf/subscribe [:get path])
+(defn value-mode-select [{:keys [path] :as context} & {:keys [display-fn disabled? on-change default-option]}]
+  (let [current-value (interface/get-raw-data context)
         handler-for-value (fn [new-value]
                             (fn [event]
                               (if on-change
@@ -20,7 +20,7 @@
                 default
                 type
                 choices
-                ui]} (or @(rf/subscribe [:get-relevant-options path])
+                ui]} (or (interface/get-relevant-options context)
                          default-option)
         {:keys [additional-values]} ui
         display-fn (or display-fn

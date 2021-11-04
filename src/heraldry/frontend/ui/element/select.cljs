@@ -33,7 +33,7 @@
                 ^{:key key}
                 [:option {:value (util/keyword->str key)}
                  (tr display-name)]))])))]
-      [value-mode-select/value-mode-select path]]]))
+      [value-mode-select/value-mode-select {:path path}]]]))
 
 (defn select [path & {:keys [on-change]}]
   (when-let [option @(rf/subscribe [:get-relevant-options path])]

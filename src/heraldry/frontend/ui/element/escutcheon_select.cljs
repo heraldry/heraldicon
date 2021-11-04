@@ -38,7 +38,7 @@
          (for [[display-name key] choices]
            ^{:key key}
            [escutcheon-choice path key display-name :selected? (= key value)])]
-        [value-mode-select/value-mode-select path]]])))
+        [value-mode-select/value-mode-select {:path path}]]])))
 
 (defmethod ui-interface/form-element :escutcheon-select [{:keys [path]}]
   [escutcheon-select path])

@@ -91,7 +91,7 @@
          (for [[display-name key] choices]
            ^{:key key}
            [field-type-choice path key display-name :selected? (= key value)])]
-        [value-mode-select/value-mode-select path
+        [value-mode-select/value-mode-select {:path path}
          :display-fn field-options/field-map]]])))
 
 (defmethod ui-interface/form-element :field-type-select [{:keys [path]}]
