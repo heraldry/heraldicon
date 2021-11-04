@@ -13,7 +13,9 @@
     [{:en "WappenWiki (default)"
       :de "WappenWiki (Default)"} :wappenwiki theme/theme-wappenwiki]
     ["Web" :theme-web theme/theme-web]
-    ["RAL Traffic" :ral-traffic theme/theme-ral-traffic]]
+    ["RAL Traffic" :ral-traffic theme/theme-ral-traffic]
+    [{:en "All of them!"
+      :de "Alle!"} :all theme/theme-all]]
    ["Wikipedia"
     [{:en "Wikipedia default"
       :de "Wikipedia Default"} :wikipedia-default theme/theme-wikipedia-default]
@@ -197,7 +199,18 @@
 
 (defn tinctured-field [tincture-path context & {:keys [mask-id
                                                        transform]}]
-  (let [tincture (interface/get-sanitized-data tincture-path context)]
+  (let [tincture (interface/get-sanitized-data tincture-path context)
+        theme (interface/render-option :theme context)
+        theme (if (and (:svg-export? context)
+                       (= theme :all))
+                :wappenwiki
+                theme)
+        [colour animation] (if (and (= theme :all)
+                                    (-> theme-data-map
+                                        (get :wappenwiki)
+                                        (get tincture)))
+                             [nil (str "all-theme-transition-" (name tincture))]
+                             [(pick tincture context) nil])]
     (conj (if mask-id
             [:g {:mask (str "url(#" mask-id ")")}]
             [:<>])
@@ -206,4 +219,6 @@
                   :width 1100
                   :height 1100
                   :transform transform
-                  :fill (pick tincture context)}])))
+                  :fill colour
+                  :style (when animation
+                           {:animation (str animation " linear 20s infinite")})}])))

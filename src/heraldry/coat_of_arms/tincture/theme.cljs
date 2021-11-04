@@ -1,5 +1,8 @@
 (ns heraldry.coat-of-arms.tincture.theme)
 
+(def theme-all
+  {:all true})
+
 ;; colours taken from ;; https://github.com/drawshield/Drawshield-Code/blob/0d7ecc865e5ccd2ae8b17c11511c6afebb2ff6c9/svg/schemes/wappenwiki.txt
 (def theme-wappenwiki
   {;; metals

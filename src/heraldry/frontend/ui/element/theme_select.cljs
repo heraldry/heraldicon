@@ -16,8 +16,10 @@
                                           "1px solid transparent")
                                 :border-radius "5px"}}
    [:img.clickable {:style {:width "4em"
-                            :height "4.5em"}
-                    :src (static/static-url (str "/svg/theme-" (name key) ".svg"))}]
+                            :height (when-not (= key :all) "4.5em")}
+                    :src (static/static-url (if (= key :all)
+                                              "/img/psychedelic.png"
+                                              (str "/svg/theme-" (name key) ".svg")))}]
    [:div.bottom
     [:h3 {:style {:text-align "center"}}
      [tr display-name]]
