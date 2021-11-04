@@ -5,11 +5,11 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.static :as static]
    [heraldry.strings :as strings]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
 (defn tincture-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
@@ -24,10 +24,10 @@
     [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
-(defn tincture-select [path & {:keys [default-option]}]
-  (when-let [option (or @(rf/subscribe [:get-relevant-options path])
+(defn tincture-select [{:keys [path] :as context} & {:keys [default-option]}]
+  (when-let [option (or (interface/get-relevant-options context)
                         default-option)]
-    (let [current-value @(rf/subscribe [:get path])
+    (let [current-value (interface/get-raw-data context)
           {:keys [ui choices]} option
           value (options/get-value current-value option)
           tincture-map (util/choices->map choices)
@@ -47,8 +47,8 @@
               (for [[display-name key] group]
                 ^{:key display-name}
                 [tincture-choice path key display-name :selected? (= key value)]))]))]
-        [value-mode-select/value-mode-select {:path path}
+        [value-mode-select/value-mode-select context
          :default-option default-option]]])))
 
-(defmethod ui-interface/form-element :tincture-select [{:keys [path]}]
-  [tincture-select path])
+(defmethod ui-interface/form-element :tincture-select [context]
+  [tincture-select context])

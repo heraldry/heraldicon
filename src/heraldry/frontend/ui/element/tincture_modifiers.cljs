@@ -116,7 +116,7 @@
                 (for [t sorted-supported-tinctures]
                   ^{:key t}
                   [tincture-select/tincture-select
-                   (conj path t)
+                   (c/++ context t)
                    ;; TODO: this could probably be generated dynamically in charge/options
                    :default-option {:type :choice
                                     :choices tincture/choices
