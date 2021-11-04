@@ -1,6 +1,8 @@
 (ns heraldry.frontend.ui.form.collection-element
   (:require
+   [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -29,8 +31,8 @@
    [:name
     :reference]))
 
-(defmethod ui-interface/component-node-data :heraldry.component/collection-element [{:keys [path] :as _context}]
-  (let [name @(rf/subscribe [:get (conj path :name)])
+(defmethod ui-interface/component-node-data :heraldry.component/collection-element [{:keys [path] :as context}]
+  (let [name (interface/get-raw-data (c/++ context :name))
         index (last path)]
     {:title (util/str-tr (inc index) ": "
                          (if (-> name count pos?)

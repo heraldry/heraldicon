@@ -2,6 +2,7 @@
   (:require
    [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
 (defn form [context]
@@ -14,11 +15,11 @@
     :outline?]))
 
 ;; TODO: context
-(defn cottise-name [path]
+(defn cottise-name [{:keys [path] :as context}]
   (let [cottise-key (last path)
-        ordinary-type @(rf/subscribe [:get (-> (drop-last 2 path)
-                                               vec
-                                               (conj :type))])]
+        ordinary-type (interface/get-raw-data (c/<< context :path (-> (drop-last 2 path)
+                                                                      vec
+                                                                      (conj :type))))]
     (-> (cond
           (#{:heraldry.ordinary.type/pale}
            ordinary-type) {:cottise-1 "1 left"
@@ -42,7 +43,7 @@
         (get cottise-key))))
 
 (defmethod ui-interface/component-node-data :heraldry.component/cottise [{:keys [path] :as context}]
-  {:title (str "Cottise " (cottise-name path))
+  {:title (str "Cottise " (cottise-name context))
    :validation @(rf/subscribe [:validate-cottise path])
    :nodes [{:context (c/++ context :field)}]})
 

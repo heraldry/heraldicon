@@ -40,7 +40,7 @@
         :papellony
         :fretty}))
 
-(defn form [{:keys [path] :as context}]
+(defn form [context]
   [:<>
    (ui-interface/form-elements
     context
@@ -63,48 +63,47 @@
      :manual-blazon])
 
    (when (and
-          (not @(rf/subscribe [:get (conj path :counterchanged?)]))
-          (show-tinctures-only?
-           @(rf/subscribe [:get (conj path :type)])))
+          (not (interface/get-raw-data (c/++ context :counterchanged?)))
+          (show-tinctures-only? (interface/get-raw-data (c/++ context :type))))
      [:<>
       [:div {:style {:margin-bottom "1em"}}]
       (for [idx (range (interface/get-list-size (c/++ context :fields)))]
         ^{:key idx}
         [tincture-select/tincture-select (c/++ context :fields idx :tincture)])])])
 
-(defn parent-path [path]
+(defn parent-path [{:keys [path] :as context}]
   (let [index (last path)
         parent-path (->> path (drop-last 2) vec)
-        parent-type @(rf/subscribe [:get (conj parent-path :type)])]
+        parent-type (interface/get-raw-data (c/<< context :path (conj parent-path :type)))]
     (when (and (int? index)
                (-> parent-type (or :dummy) namespace (= "heraldry.field.type")))
       parent-path)))
 
-(defn name-prefix-for-part [path]
-  (when-let [parent-path (parent-path path)]
-    (let [parent-type @(rf/subscribe [:get (conj parent-path :type)])]
+(defn name-prefix-for-part [{:keys [path] :as context}]
+  (when-let [parent-path (parent-path context)]
+    (let [parent-type (interface/get-raw-data (c/<< context :path (conj parent-path :type)))]
       (-> (field/part-name parent-type (last path))
           util/upper-case-first))))
 
 (defn non-mandatory-part-of-parent? [{:keys [path] :as context}]
   (let [index (last path)]
     (when (int? index)
-      (when-let [parent-path (parent-path path)]
+      (when-let [parent-path (parent-path context)]
         (>= index (field/mandatory-part-count (c/<< context :path parent-path)))))))
 
 (defmethod ui-interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
-  (let [field-type @(rf/subscribe [:get (conj path :type)])
+  (let [field-type (interface/get-raw-data (c/++ context :type))
         ref? (= field-type :heraldry.field.type/ref)
         components-path (conj path :components)
         num-components (interface/get-list-size (c/++ context :components))]
     {:title (util/combine ": "
-                          [(name-prefix-for-part path)
+                          [(name-prefix-for-part context)
                            (if ref?
-                             (str "like " (name-prefix-for-part (-> path
-                                                                    drop-last
-                                                                    vec
-                                                                    (conj
-                                                                     @(rf/subscribe [:get (conj path :index)])))))
+                             (str "like " (name-prefix-for-part (c/<< context :path
+                                                                      (-> path
+                                                                          drop-last
+                                                                          vec
+                                                                          (conj (interface/get-raw-data (c/++ context :index)))))))
                              (field/title context))])
      :validation @(rf/subscribe [:validate-field path])
      :buttons (if ref?
@@ -128,7 +127,7 @@
                          :handler #(state/dispatch-on-event % [:reset-field-part-reference path])})))
      :nodes (concat (when (and (not (show-tinctures-only? field-type))
                                (-> field-type name keyword (not= :plain)))
-                      (->> (range @(rf/subscribe [:get-list-size (conj path :fields)]))
+                      (->> (range (interface/get-list-size (c/++ context :fields)))
                            (map (fn [idx]
                                   {:context (c/++ context :fields idx)}))
                            vec))

@@ -47,7 +47,7 @@
 (defn ribbon-reference-select [{:keys [path] :as context}]
   (when-let [option (interface/get-relevant-options context)]
     (let [{ribbon-id :id
-           version :version} @(rf/subscribe [:get path])
+           version :version} (interface/get-raw-data context)
           {:keys [ui]} option
           label (:label ui)
           [_status ribbon-data] (when ribbon-id

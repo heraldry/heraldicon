@@ -4,6 +4,7 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -55,7 +56,7 @@
 
    [ui-interface/form-element (c/++ context :ribbon-variant)]
 
-   (when @(rf/subscribe [:get (-> context :path (conj :ribbon-variant))])
+   (when (interface/get-raw-data (c/++ context :ribbon-variant))
      (let [ribbon-context (c/++ context :ribbon)]
        [:<>
         [ribbon-general/ribbon-form ribbon-context]
