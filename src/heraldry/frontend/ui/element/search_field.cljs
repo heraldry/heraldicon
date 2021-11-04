@@ -1,9 +1,10 @@
 (ns heraldry.frontend.ui.element.search-field
   (:require
+   [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
-(defn search-field [path & {:keys [on-change]}]
-  (let [current-value @(rf/subscribe [:get path])]
+(defn search-field [{:keys [path] :as context} & {:keys [on-change]}]
+  (let [current-value (interface/get-raw-data context)]
     [:div {:style {:display "inline-block"
                    :border-radius "999px"
                    :border "1px solid #ccc"
