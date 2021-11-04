@@ -1,8 +1,8 @@
 (ns heraldry.frontend.ui.element.charge-group-type-select
   (:require
+   [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.radio-select :as radio-select]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.frontend.macros :as macros]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db :change-charge-group-type
@@ -21,6 +21,6 @@
                                          (= :heraldry.charge-group.type/arc))
                                      (-> charge-group :slots not)) (assoc :slots [0 0 0 0 0]))))))))
 
-(defmethod ui-interface/form-element :charge-group-type-select [{:keys [path]}]
-  [radio-select/radio-select path
+(defmethod ui-interface/form-element :charge-group-type-select [{:keys [path] :as context}]
+  [radio-select/radio-select context
    :on-change #(rf/dispatch [:change-charge-group-type (vec (drop-last path)) %])])
