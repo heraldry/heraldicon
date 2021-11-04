@@ -8,9 +8,9 @@
    [heraldry.frontend.ui.element.charge-select :as charge-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.static :as static]
-   [heraldry.strings :as strings]
-   [re-frame.core :as rf]))
+   [heraldry.strings :as strings]))
 
 (macros/reg-event-db :update-charge
   (fn [db [_ path changes]]
@@ -30,9 +30,9 @@
     [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
-(defn charge-type-select [path]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [current-value @(rf/subscribe [:get path])
+(defn charge-type-select [{:keys [path] :as context}]
+  (when-let [option (interface/get-relevant-options context)]
+    (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option
           value (or current-value
                     inherited
@@ -77,5 +77,5 @@
                #(state/invalidate-cache [:all-charges] :all-charges)]
               [:div [tr strings/loading]])])]]])))
 
-(defmethod ui-interface/form-element :charge-type-select [{:keys [path]}]
-  [charge-type-select path])
+(defmethod ui-interface/form-element :charge-type-select [context]
+  [charge-type-select context])
