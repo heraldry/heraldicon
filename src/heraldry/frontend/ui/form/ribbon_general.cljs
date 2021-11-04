@@ -7,6 +7,7 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.text-field :as text-field]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.math.curve :as curve]
    [heraldry.ribbon :as ribbon]
    [heraldry.strings :as strings]
@@ -186,9 +187,9 @@
                 vec)))))))
 
 (defn segment-form [context]
-  (let [segment-type @(rf/subscribe [:get (-> context :path (conj :type))])
+  (let [segment-type (interface/get-raw-data (c/++ context :type))
         idx (-> context :path last)
-        z-index @(rf/subscribe [:get-sanitized-data (-> context :path (conj :z-index))])
+        z-index (interface/get-sanitized-data (c/++ context :z-index))
         title (util/str-tr (inc idx) ". "
                            (ribbon/segment-type-map segment-type)
                            ", layer " z-index)]
@@ -220,8 +221,7 @@
     :outline?]))
 
 (defn ribbon-segments-form [context & {:keys [tooltip]}]
-  (let [segments-path (-> context :path (conj :segments))
-        num-segments @(rf/subscribe [:get-list-size segments-path])]
+  (let [num-segments (interface/get-list-size (c/++ context :segments))]
     [:div.option.ribbon-segments {:style {:margin-top "0.5em"}}
      [:div {:style {:font-size "1.3em"}} [tr {:en "Segments"
                                               :de "Segmente"}]
