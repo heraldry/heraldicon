@@ -91,7 +91,7 @@
                  :ui {:label [tr {:en "Mine only"
                                   :de "Nur meine"}]}}])
      (when-not hide-access-filter?
-       [radio-select/radio-select filter-access-path
+       [radio-select/radio-select {:path filter-access-path}
         :option {:type :choice
                  :default :all
                  :choices [[{:en "All"

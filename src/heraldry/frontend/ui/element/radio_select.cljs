@@ -3,6 +3,7 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -21,10 +22,10 @@
               :style {:margin-right "10px"}}
       [tr display-name]]]))
 
-(defn radio-select [path & {:keys [on-change option]}]
+(defn radio-select [{:keys [path] :as context} & {:keys [on-change option]}]
   (when-let [option (or option
-                        @(rf/subscribe [:get-relevant-options path]))]
-    (let [current-value @(rf/subscribe [:get path])
+                        (interface/get-relevant-options context))]
+    (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option
           label (:label ui)
           value (or current-value
@@ -41,5 +42,5 @@
            :on-change on-change])
         [value-mode-select/value-mode-select path]]])))
 
-(defmethod ui-interface/form-element :radio-select [{:keys [path]}]
-  [radio-select path])
+(defmethod ui-interface/form-element :radio-select [context]
+  [radio-select context])
