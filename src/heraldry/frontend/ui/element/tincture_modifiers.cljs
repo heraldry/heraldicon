@@ -4,32 +4,33 @@
    [clojure.string :as s]
    [heraldry.coat-of-arms.attributes :as attributes]
    [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.context :as c]
    [heraldry.frontend.charge :as charge]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.range :as range]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
-(defn tincture-modifiers-submenu [path]
-  (let [preview? @(rf/subscribe [:get (-> path
-                                          drop-last
-                                          vec
-                                          (conj :preview?))])
-        variant @(rf/subscribe [:get (-> path
-                                         drop-last
-                                         vec
-                                         (conj :variant))])]
+(defn tincture-modifiers-submenu [{:keys [path] :as context}]
+  (let [preview? (interface/get-raw-data (c/<< context :path (-> path
+                                                                 drop-last
+                                                                 vec
+                                                                 (conj :preview?))))
+        variant (interface/get-raw-data (c/<< context :path (-> path
+                                                                drop-last
+                                                                vec
+                                                                (conj :variant))))]
     (when (or preview?
               variant)
-      (let [options @(rf/subscribe [:get-relevant-options path])
+      (let [options (interface/get-relevant-options context)
             {:keys [ui]} options
             label (:label ui)
-            tincture-data @(rf/subscribe [:get path])
+            tincture-data (interface/get-raw-data context)
             sanitized-tincture-data (merge tincture-data
                                            (options/sanitize tincture-data options))
             charge-data (when (not preview?)
@@ -108,10 +109,10 @@
                [:div.placeholders
                 (when (get supported-tinctures :shadow)
                   [range/range-input
-                   {:path (conj path :shadow)}])
+                   (c/++ context :shadow)])
                 (when (get supported-tinctures :highlight)
                   [range/range-input
-                   {:path (conj path :highlight)}])
+                   (c/++ context :highlight)])
                 (for [t sorted-supported-tinctures]
                   ^{:key t}
                   [tincture-select/tincture-select
@@ -122,5 +123,5 @@
                                     :default :none
                                     :ui {:label (util/translate-cap-first t)}}])]])]])))))
 
-(defmethod ui-interface/form-element :tincture-modifiers [{:keys [path]}]
-  [tincture-modifiers-submenu path])
+(defmethod ui-interface/form-element :tincture-modifiers [context]
+  [tincture-modifiers-submenu context])
