@@ -6,8 +6,8 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.static :as static]
-   [re-frame.core :as rf]))
+   [heraldry.interface :as interface]
+   [heraldry.static :as static]))
 
 (defn line-type-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
@@ -18,9 +18,9 @@
     [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
-(defn line-type-select [path]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [current-value @(rf/subscribe [:get path])
+(defn line-type-select [{:keys [path] :as context}]
+  (when-let [option (interface/get-relevant-options context)]
+    (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option
           label (:label ui)
           value (or current-value
@@ -35,7 +35,7 @@
          (for [[display-name key] choices]
            ^{:key display-name}
            [line-type-choice path key display-name :selected? (= key value)])]
-        [value-mode-select/value-mode-select {:path path}]]])))
+        [value-mode-select/value-mode-select context]]])))
 
-(defmethod ui-interface/form-element :line-type-select [{:keys [path]}]
-  [line-type-select path])
+(defmethod ui-interface/form-element :line-type-select [context]
+  [line-type-select context])
