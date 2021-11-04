@@ -2,12 +2,13 @@
   (:require
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
-(defn text-field [path & {:keys [on-change style]}]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+(defn text-field [{:keys [path] :as context} & {:keys [on-change style]}]
+  (when-let [option (interface/get-relevant-options context)]
     (let [{:keys [ui inherited default]} option
-          current-value @(rf/subscribe [:get path])
+          current-value (interface/get-raw-data context)
           value (or current-value
                     inherited
                     default)
@@ -24,5 +25,5 @@
                                  (on-change value)
                                  (rf/dispatch-sync [:set path value])))}]]])))
 
-(defmethod ui-interface/form-element :text-field [{:keys [path]}]
-  [text-field path])
+(defmethod ui-interface/form-element :text-field [context]
+  [text-field context])
