@@ -6,8 +6,8 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.static :as static]
-   [re-frame.core :as rf]))
+   [heraldry.interface :as interface]
+   [heraldry.static :as static]))
 
 (defn theme-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
@@ -25,10 +25,10 @@
      [tr display-name]]
     [:i]]])
 
-(defn theme-select [path]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
+(defn theme-select [{:keys [path] :as context}]
+  (when-let [option (interface/get-relevant-options context)]
     (let [{:keys [ui inherited default choices]} option
-          current-value @(rf/subscribe [:get path])
+          current-value (interface/get-raw-data context)
           value (or current-value
                     inherited
                     default)
@@ -47,7 +47,7 @@
             (for [[display-name key] group]
               ^{:key display-name}
               [theme-choice path key display-name :selected? (= key value)])])]
-        [value-mode-select/value-mode-select {:path path}]]])))
+        [value-mode-select/value-mode-select context]]])))
 
-(defmethod ui-interface/form-element :theme-select [{:keys [path]}]
-  [theme-select path])
+(defmethod ui-interface/form-element :theme-select [context]
+  [theme-select context])
