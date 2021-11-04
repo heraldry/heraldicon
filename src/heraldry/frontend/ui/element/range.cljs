@@ -66,7 +66,7 @@
                      :style {:display "inline-block"
                              :width "2em"
                              :margin-left "0.5em"}}]
-            [value-mode-select/value-mode-select path
+            [value-mode-select/value-mode-select {:path path}
              :disabled? disabled?
              :on-change on-change]]])))))
 

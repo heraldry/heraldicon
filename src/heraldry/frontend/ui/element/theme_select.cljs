@@ -47,7 +47,7 @@
             (for [[display-name key] group]
               ^{:key display-name}
               [theme-choice path key display-name :selected? (= key value)])])]
-        [value-mode-select/value-mode-select path]]])))
+        [value-mode-select/value-mode-select {:path path}]]])))
 
 (defmethod ui-interface/form-element :theme-select [{:keys [path]}]
   [theme-select path])

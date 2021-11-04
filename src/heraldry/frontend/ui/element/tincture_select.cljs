@@ -47,7 +47,7 @@
               (for [[display-name key] group]
                 ^{:key display-name}
                 [tincture-choice path key display-name :selected? (= key value)]))]))]
-        [value-mode-select/value-mode-select path
+        [value-mode-select/value-mode-select {:path path}
          :default-option default-option]]])))
 
 (defmethod ui-interface/form-element :tincture-select [{:keys [path]}]

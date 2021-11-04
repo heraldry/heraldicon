@@ -66,7 +66,7 @@
          (for [[display-name key] choices]
            ^{:key key}
            [ordinary-type-choice path key display-name :selected? (= key value)])]
-        [value-mode-select/value-mode-select path
+        [value-mode-select/value-mode-select {:path path}
          :display-fn ordinary-options/ordinary-map]]])))
 
 (defmethod ui-interface/form-element :ordinary-type-select [{:keys [path]}]
