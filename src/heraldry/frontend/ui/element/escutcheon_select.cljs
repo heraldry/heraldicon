@@ -5,9 +5,9 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.static :as static]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
 (defn escutcheon-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
@@ -19,9 +19,9 @@
     [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
-(defn escutcheon-select [path]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [current-value @(rf/subscribe [:get path])
+(defn escutcheon-select [{:keys [path] :as context}]
+  (when-let [option (interface/get-relevant-options context)]
+    (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option
           value (or current-value
                     inherited
@@ -38,7 +38,7 @@
          (for [[display-name key] choices]
            ^{:key key}
            [escutcheon-choice path key display-name :selected? (= key value)])]
-        [value-mode-select/value-mode-select {:path path}]]])))
+        [value-mode-select/value-mode-select context]]])))
 
-(defmethod ui-interface/form-element :escutcheon-select [{:keys [path]}]
-  [escutcheon-select path])
+(defmethod ui-interface/form-element :escutcheon-select [context]
+  [escutcheon-select context])
