@@ -3,6 +3,7 @@
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.range :as range]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db :set-charge-group-slot-number
@@ -18,8 +19,8 @@
                                  vec)))))))
 
 (defmethod ui-interface/form-element :charge-group-slot-number [{:keys [path] :as context}]
-  (let [value @(rf/subscribe [:get-list-size path])
-        default (:default @(rf/subscribe [:get-relevant-options path]))]
+  (let [value (interface/get-list-size context)
+        default (:default (interface/get-relevant-options context))]
     [range/range-input context
      :value value
      :on-change #(rf/dispatch [:set-charge-group-slot-number path (or % default)])]))
