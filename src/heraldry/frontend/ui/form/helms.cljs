@@ -1,17 +1,18 @@
 (ns heraldry.frontend.ui.form.helms
   (:require
    [heraldry.coat-of-arms.default :as default]
+   [heraldry.context :as c]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.strings :as strings]
-   [re-frame.core :as rf]))
+   [heraldry.interface :as interface]
+   [heraldry.strings :as strings]))
 
 (defn form [_context]
   [:<>])
 
 (defmethod ui-interface/component-node-data :heraldry.component/helms [{:keys [path] :as context}]
   (let [helms-path (conj path :elements)
-        num-helms @(rf/subscribe [:get-list-size helms-path])]
+        num-helms (interface/get-list-size (c/++ context :elements))]
     {:title {:en "Helms and crests"
              :de "Helme und Helmzier"}
      :annotation [:div.tooltip.info {:style {:display "inline-block"
@@ -25,7 +26,7 @@
      :nodes (->> (range num-helms)
                  (map (fn [idx]
                         (let [helm-path (conj helms-path idx)]
-                          {:context (assoc context :path helm-path)
+                          {:context (c/++ context :elements idx)
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
                                       :tooltip strings/move-down
