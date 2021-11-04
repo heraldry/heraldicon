@@ -106,17 +106,17 @@
 (defmethod ui-interface/form-element :field-layout [context]
   [layout-submenu context])
 
-(defmethod ui-interface/form-element :field-layout-num-fields-x [{:keys [path]}]
-  [range/range-input path
+(defmethod ui-interface/form-element :field-layout-num-fields-x [{:keys [path] :as context}]
+  [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [:set-field-layout-num-fields-x path value]))])
 
-(defmethod ui-interface/form-element :field-layout-num-fields-y [{:keys [path]}]
-  [range/range-input path
+(defmethod ui-interface/form-element :field-layout-num-fields-y [{:keys [path] :as context}]
+  [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [:set-field-layout-num-fields-y path value]))])
 
-(defmethod ui-interface/form-element :field-layout-num-base-fields [{:keys [path]}]
-  [range/range-input path
+(defmethod ui-interface/form-element :field-layout-num-base-fields [{:keys [path] :as context}]
+  [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [:set-field-layout-num-base-fields path value]))])
