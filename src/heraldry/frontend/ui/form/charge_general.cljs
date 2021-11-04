@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.form.charge-general
   (:require
+   [heraldry.context :as c]
    [heraldry.frontend.ui.element.checkbox :as checkbox]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.strings :as strings]
@@ -21,7 +22,7 @@
      :tags])
 
    ;; TODO: not ideal, probably should move this at some point
-   [checkbox/checkbox (conj [:example-coa :render-options :preview-original?])]])
+   [checkbox/checkbox (c/<< context :path [:example-coa :render-options :preview-original?])]])
 
 (defmethod ui-interface/component-node-data :heraldry.component/charge-general [{:keys [path]}]
   {:title strings/general

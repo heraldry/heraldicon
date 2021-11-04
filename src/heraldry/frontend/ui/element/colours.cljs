@@ -156,7 +156,7 @@
                                (tr display-name)]))])))])]
                  [:td {:style {:padding-left "1em"
                                :border-left "1px solid #888"}}
-                  [checkbox/checkbox [:ui :colours :show colour]
+                  [checkbox/checkbox {:path [:ui :colours :show colour]}
                    :option {:type :boolean}]]])))]]
          [tr strings/none])]]]))
 

@@ -3,16 +3,17 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
-(defn checkbox [path & {:keys [disabled? on-change style option]}]
+(defn checkbox [{:keys [path] :as context} & {:keys [disabled? on-change style option]}]
   (when-let [option (or option
-                        @(rf/subscribe [:get-relevant-options path]))]
+                        (interface/get-relevant-options context))]
     (let [component-id (util/id "checkbox")
           {:keys [ui inherited default]} option
           label (:label ui)
-          current-value @(rf/subscribe [:get path])
+          current-value (interface/get-raw-data context)
           checked? (->> [current-value
                          inherited
                          default]
@@ -30,7 +31,7 @@
                                 (on-change new-checked?)
                                 (rf/dispatch [:set path new-checked?])))}]
        [:label.for-checkbox {:for component-id} [tr label]]
-       [value-mode-select/value-mode-select {:path path} :disabled? disabled?]])))
+       [value-mode-select/value-mode-select context :disabled? disabled?]])))
 
-(defmethod ui-interface/form-element :checkbox [{:keys [path]}]
-  [checkbox path])
+(defmethod ui-interface/form-element :checkbox [context]
+  [checkbox context])

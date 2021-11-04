@@ -86,7 +86,7 @@
                          (refresh-fn)
                          (.stopPropagation %))} [:i.fas.fa-sync-alt]])
      (when-not hide-ownership-filter?
-       [checkbox/checkbox filter-own-path
+       [checkbox/checkbox {:path filter-own-path}
         :option {:type :boolean
                  :ui {:label [tr {:en "Mine only"
                                   :de "Nur meine"}]}}])
