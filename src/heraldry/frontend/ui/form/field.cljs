@@ -7,6 +7,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -67,7 +68,7 @@
            @(rf/subscribe [:get (conj path :type)])))
      [:<>
       [:div {:style {:margin-bottom "1em"}}]
-      (for [idx (range @(rf/subscribe [:get-list-size (conj path :fields)]))]
+      (for [idx (range (interface/get-list-size (c/++ context :fields)))]
         ^{:key idx}
         [tincture-select/tincture-select (c/++ context :fields idx :tincture)])])])
 
@@ -85,17 +86,17 @@
       (-> (field/part-name parent-type (last path))
           util/upper-case-first))))
 
-(defn non-mandatory-part-of-parent? [path]
+(defn non-mandatory-part-of-parent? [{:keys [path] :as context}]
   (let [index (last path)]
     (when (int? index)
       (when-let [parent-path (parent-path path)]
-        (>= index (field/mandatory-part-count {:path parent-path}))))))
+        (>= index (field/mandatory-part-count (c/<< context :path parent-path)))))))
 
 (defmethod ui-interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
   (let [field-type @(rf/subscribe [:get (conj path :type)])
         ref? (= field-type :heraldry.field.type/ref)
         components-path (conj path :components)
-        num-components @(rf/subscribe [:get-list-size components-path])]
+        num-components (interface/get-list-size (c/++ context :components))]
     {:title (util/combine ": "
                           [(name-prefix-for-part path)
                            (if ref?
@@ -121,7 +122,7 @@
                                  {:title {:en "Semy"
                                           :de "Besähung"}
                                   :handler #(state/dispatch-on-event % [:add-element components-path default/semy])}]}]
-                  (non-mandatory-part-of-parent? path)
+                  (non-mandatory-part-of-parent? context)
                   (conj {:icon "fas fa-undo"
                          :title "Reset"
                          :handler #(state/dispatch-on-event % [:reset-field-part-reference path])})))
@@ -135,7 +136,7 @@
                          reverse
                          (map (fn [idx]
                                 (let [component-path (conj components-path idx)]
-                                  {:context (assoc context :path component-path)
+                                  {:context (c/<< context :path component-path)
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :tooltip strings/move-down

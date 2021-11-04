@@ -215,9 +215,9 @@
 
 (defn strip-form [context type-str]
   (let [path (:path context)
-        num-slots @(rf/subscribe [:get-list-size (conj path :slots)])
-        stretch @(rf/subscribe [:get-sanitized-data (conj path :stretch)])
-        offset @(rf/subscribe [:get-sanitized-data (conj path :offset)])
+        num-slots (interface/get-list-size (c/++ context :slots))
+        stretch (interface/get-sanitized-data (c/++ context :stretch))
+        offset (interface/get-sanitized-data (c/++ context :offset))
         title (util/combine
                ", "
                [(util/str-tr num-slots
@@ -257,7 +257,7 @@
                                                                :de "Spalten"}
                           nil)
         strips-path (conj path :strips)
-        num-strips @(rf/subscribe [:get-list-size strips-path])]
+        num-strips (interface/get-list-size (c/++ context :strips))]
     [:div {:style {:display "table-cell"
                    :vertical-align "top"}}
      [charge-group-preset-select/charge-group-preset-select path]
@@ -314,7 +314,7 @@
      [ui-interface/form-element (c/++ context :manual-blazon)]]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/charge-group [{:keys [path] :as context}]
-  (let [num-charges @(rf/subscribe [:get-list-size (conj path :charges)])]
+  (let [num-charges (interface/get-list-size (c/++ context :charges))]
     {:title (util/str-tr {:en "Charge group of "
                           :de "Gruppe von "} (if (= num-charges 1)
                                                (charge-options/title (c/++ context :charges 0))
@@ -328,7 +328,7 @@
                          reverse
                          (map (fn [idx]
                                 (let [charge-path (conj path :charges idx)]
-                                  {:context (assoc context :path charge-path)
+                                  {:context (c/<< context :path charge-path)
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :tooltip strings/move-down

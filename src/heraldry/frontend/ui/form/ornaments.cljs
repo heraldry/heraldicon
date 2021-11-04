@@ -1,8 +1,10 @@
 (ns heraldry.frontend.ui.form.ornaments
   (:require
    [heraldry.coat-of-arms.default :as default]
+   [heraldry.context :as c]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.shield-separator :as shield-separator]
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
@@ -12,7 +14,7 @@
 
 (defmethod ui-interface/component-node-data :heraldry.component/ornaments [{:keys [path] :as context}]
   (let [elements-path (conj path :elements)
-        num-elements @(rf/subscribe [:get-list-size elements-path])]
+        num-elements (interface/get-list-size (c/++ context :elements))]
     {:title {:en "Ornaments"
              :de "Prachtstücke"}
      :annotation [:div.tooltip.info {:style {:display "inline-block"
@@ -56,7 +58,7 @@
                  (map (fn [idx]
                         (let [motto-path (conj elements-path idx)
                               removable? @(rf/subscribe [:element-removable? motto-path])]
-                          {:context (assoc context :path motto-path)
+                          {:context (c/++ context :elements idx)
                            :buttons (cond-> [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :tooltip strings/move-down

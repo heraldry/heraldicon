@@ -3,14 +3,14 @@
    [heraldry.context :as c]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.strings :as strings]
-   [re-frame.core :as rf]))
+   [heraldry.interface :as interface]
+   [heraldry.strings :as strings]))
 
 (defn form [context]
   [ui-interface/form-element (c/++ context :num-columns)])
 
 (defmethod ui-interface/component-node-data :heraldry.component/collection [{:keys [path] :as context}]
-  (let [num-elements @(rf/subscribe [:get-list-size (conj path :elements)])]
+  (let [num-elements (interface/get-list-size (c/++ context :elements))]
     {:title strings/arms
      :buttons [{:icon "fas fa-plus"
                 :title strings/add
@@ -19,7 +19,7 @@
      :nodes (->> (range num-elements)
                  (map (fn [idx]
                         (let [component-path (conj path :elements idx)]
-                          {:context (assoc context :path component-path)
+                          {:context (c/<< context :path component-path)
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
                                       :tooltip strings/move-down
