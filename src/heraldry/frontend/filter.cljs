@@ -75,7 +75,7 @@
         filtered? (or (-> filter-string count pos?)
                       (-> filter-tags count pos?))]
     [:<>
-     [search-field/search-field filter-string-path
+     [search-field/search-field {:path filter-string-path}
       :on-change (fn [value]
                    (rf/dispatch-sync [:set filter-string-path value])
                    (when on-filter-string-change
