@@ -206,7 +206,7 @@
         :offset-x
         :offset-y])]
 
-     [text-field/text-field (-> context :path (conj :text))
+     [text-field/text-field (c/++ context :text)
       :style {:display "inline-block"
               :position "absolute"
               :left "13em"}]]))

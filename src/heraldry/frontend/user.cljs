@@ -129,7 +129,7 @@
       :on-submit on-submit}
      (when error-message
        [:div.error-message error-message])
-     [text-field (conj db-path :username)
+     [text-field {:path (conj db-path :username)}
       (fn [& {:keys [value on-change]}]
         [:div
          [:input {:id "username"
@@ -138,7 +138,7 @@
                   :on-change on-change
                   :placeholder "Username"
                   :type "text"}]])]
-     [text-field (conj db-path :password)
+     [text-field {:path (conj db-path :password)}
       (fn [& {:keys [value on-change]}]
         [:div
          [:input {:id "password"
@@ -203,7 +203,7 @@
       :on-submit on-submit}
      (when error-message
        [:div.error-message error-message])
-     [text-field (conj db-path :username)
+     [text-field {:path (conj db-path :username)}
       (fn [& {:keys [value on-change]}]
         [:<>
          [:label {:for "username"} "Username"]
@@ -214,7 +214,7 @@
                   :on-change on-change
                   :placeholder "Username"
                   :type "text"}]])]
-     [text-field (conj db-path :email)
+     [text-field {:path (conj db-path :email)}
       (fn [& {:keys [value on-change]}]
         [:<>
          [:label {:for "email"} "Email"]
@@ -225,7 +225,7 @@
                   :on-change on-change
                   :placeholder "Email"
                   :type "text"}]])]
-     [text-field (conj db-path :password)
+     [text-field {:path (conj db-path :password)}
       (fn [& {:keys [value on-change]}]
         [:<>
          [:label {:for "password"} "Password"]
@@ -236,7 +236,7 @@
                   :on-change on-change
                   :placeholder "Password"
                   :type "password"}]])]
-     [text-field (conj db-path :password-again)
+     [text-field {:path (conj db-path :password-again)}
       (fn [& {:keys [value on-change]}]
         [:<>
          [:label {:for "password-again"} "Password again"]
@@ -303,7 +303,7 @@
      "A confirmation code was sent to your email address."
      (when error-message
        [:div.error-message error-message])
-     [text-field (conj db-path :code)
+     [text-field {:path (conj db-path :code)}
       (fn [& {:keys [value on-change]}]
         [:input {:id "code"
                  :name "code"
@@ -359,7 +359,7 @@
       :on-submit on-submit}
      (when error-message
        [:div.error-message error-message])
-     [text-field (conj db-path :new-password)
+     [text-field {:path (conj db-path :new-password)}
       (fn [& {:keys [value on-change]}]
         [:<>
          [:label {:for "new-password"} "New password:"]
@@ -370,7 +370,7 @@
                   :autoComplete "off"
                   :placeholder "New password"
                   :type "password"}]])]
-     [text-field (conj db-path :new-password-again)
+     [text-field {:path (conj db-path :new-password-again)}
       (fn [& {:keys [value on-change]}]
         [:<>
          [:label {:for "new-password-again"} "New password again:"]
@@ -432,7 +432,7 @@
      "A password reset confirmation code was sent to your email address."
      (when error-message
        [:div.error-message error-message])
-     [text-field (conj db-path :code)
+     [text-field {:path (conj db-path :code)}
       (fn [& {:keys [value on-change]}]
         [:input {:id "code"
                  :name "code"
@@ -441,7 +441,7 @@
                  :on-change on-change
                  :placeholder "Confirmation code"
                  :type "text"}])]
-     [text-field (conj db-path :new-password)
+     [text-field {:path (conj db-path :new-password)}
       (fn [& {:keys [value on-change]}]
         [:<>
          [:label {:for "new-password"} "New password:"]
@@ -452,7 +452,7 @@
                   :on-change on-change
                   :placeholder "New password"
                   :type "password"}]])]
-     [text-field (conj db-path :new-password-again)
+     [text-field {:path (conj db-path :new-password-again)}
       (fn [& {:keys [value on-change]}]
         [:<>
          [:label {:for "new-password-again"} "New password again:"]
