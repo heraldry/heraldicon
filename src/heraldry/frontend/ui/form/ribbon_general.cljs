@@ -283,7 +283,7 @@
                               start-mode-default)]
      [:<>
       [select/raw-select
-       layers-path
+       {:path layers-path}
        layer-mode-value
        {:en "Layering presets"
         :de "Layer Vorauswahl"}
@@ -295,7 +295,7 @@
           :de "Von rechts nach links"} :right-to-left]]]
 
       [select/raw-select
-       flow-path
+       {:path flow-path}
        flow-mode-value
        {:en "Flow presets"
         :de "Verlauf Vorauswahl"}
@@ -309,7 +309,7 @@
           :de "Abwechselnd"} :nebuly]]]
 
       [select/raw-select
-       start-path
+       {:path start-path}
        start-mode-value
        {:en "Start presets"
         :de "Start Vorauswahl"}

@@ -3,10 +3,11 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
-(defn raw-select [path value label choices & {:keys [on-change]}]
+(defn raw-select [{:keys [path] :as context} value label choices & {:keys [on-change]}]
   (let [component-id (util/id "select")]
     [:div.ui-setting
      (when label
@@ -33,18 +34,18 @@
                 ^{:key key}
                 [:option {:value (util/keyword->str key)}
                  (tr display-name)]))])))]
-      [value-mode-select/value-mode-select {:path path}]]]))
+      [value-mode-select/value-mode-select context]]]))
 
-(defn select [path & {:keys [on-change]}]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [current-value @(rf/subscribe [:get path])
+(defn select [context & {:keys [on-change]}]
+  (when-let [option (interface/get-relevant-options context)]
+    (let [current-value (interface/get-raw-data context)
           {:keys [ui default inherited choices]} option
           label (:label ui)
           value (or current-value
                     inherited
                     default
                     :none)]
-      [raw-select path value label choices :on-change on-change])))
+      [raw-select context value label choices :on-change on-change])))
 
-(defmethod ui-interface/form-element :select [{:keys [path]}]
-  [select path])
+(defmethod ui-interface/form-element :select [context]
+  [select context])
