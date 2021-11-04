@@ -8,6 +8,7 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.static :as static]
    [re-frame.core :as rf]))
@@ -74,9 +75,9 @@
     [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
-(defn field-type-select [path]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [current-value @(rf/subscribe [:get path])
+(defn field-type-select [{:keys [path] :as context}]
+  (when-let [option (interface/get-relevant-options context)]
+    (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option
           value (or current-value
                     inherited
@@ -91,8 +92,8 @@
          (for [[display-name key] choices]
            ^{:key key}
            [field-type-choice path key display-name :selected? (= key value)])]
-        [value-mode-select/value-mode-select {:path path}
+        [value-mode-select/value-mode-select context
          :display-fn field-options/field-map]]])))
 
-(defmethod ui-interface/form-element :field-type-select [{:keys [path]}]
-  [field-type-select path])
+(defmethod ui-interface/form-element :field-type-select [context]
+  [field-type-select context])
