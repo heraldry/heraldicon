@@ -7,10 +7,10 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.static :as static]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
 (defn -default-line-style-of-ordinary-type [ordinary-type]
   (case ordinary-type
@@ -49,9 +49,9 @@
     [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
-(defn ordinary-type-select [path]
-  (when-let [option @(rf/subscribe [:get-relevant-options path])]
-    (let [current-value @(rf/subscribe [:get path])
+(defn ordinary-type-select [{:keys [path] :as context}]
+  (when-let [option (interface/get-relevant-options context)]
+    (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option
           value (or current-value
                     inherited
@@ -66,8 +66,8 @@
          (for [[display-name key] choices]
            ^{:key key}
            [ordinary-type-choice path key display-name :selected? (= key value)])]
-        [value-mode-select/value-mode-select {:path path}
+        [value-mode-select/value-mode-select context
          :display-fn ordinary-options/ordinary-map]]])))
 
-(defmethod ui-interface/form-element :ordinary-type-select [{:keys [path]}]
-  [ordinary-type-select path])
+(defmethod ui-interface/form-element :ordinary-type-select [context]
+  [ordinary-type-select context])
