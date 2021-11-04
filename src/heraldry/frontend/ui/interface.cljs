@@ -48,17 +48,11 @@
   (fn [data [_ _path context]]
     (counterchange/get-counterchange-tinctures data context)))
 
-(rf/reg-sub :get-form-element-type
-  (fn [[_ path] _]
-    (rf/subscribe [:get-relevant-options path]))
-
-  (fn [options [_ _path]]
-    (or
-     (-> options :ui :form-type)
-     (-> options :type default-element))))
-
-(defmulti form-element (fn [{:keys [path]}]
-                         @(rf/subscribe [:get-form-element-type path])))
+(defmulti form-element (fn [context]
+                         (let [options (interface/get-relevant-options context)]
+                           (or
+                            (-> options :ui :form-type)
+                            (-> options :type default-element)))))
 
 (defmethod form-element nil [{:keys [path]}]
   (when-let [options @(rf/subscribe [:get-relevant-options path])]
