@@ -1,9 +1,11 @@
 (ns heraldry.frontend.ui.element.tags
   (:require
    [clojure.string :as s]
+   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
@@ -97,9 +99,9 @@
        :selected? (get selected tag)]
       " "])])
 
-(defn form [path]
-  (let [value @(rf/subscribe [:get value-path])
-        tags @(rf/subscribe [:get path])
+(defn form [{:keys [path] :as context}]
+  (let [value (interface/get-raw-data (c/<< context :path value-path))
+        tags (interface/get-raw-data context)
         on-click (fn [event]
                    (.preventDefault event)
                    (.stopPropagation event)
@@ -126,5 +128,5 @@
         [tags-view (keys tags)
          :on-delete #(delete-tag-clicked path %)]]]]]))
 
-(defmethod ui-interface/form-element :tags [{:keys [path]}]
-  [form path])
+(defmethod ui-interface/form-element :tags [context]
+  [form context])
