@@ -4,6 +4,7 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -38,8 +39,8 @@
         :selected? (get selected attribute)]
        " "]))])
 
-(defn form [path]
-  (let [attributes @(rf/subscribe [:get path])]
+(defn form [{:keys [path] :as context}]
+  (let [attributes (interface/get-raw-data context)]
     [:<>
      [:div.ui-setting {:style {:margin-top "10px"
                                :white-space "nowrap"}}
@@ -71,5 +72,5 @@
         [attributes-view (keys attributes)
          :on-delete #(rf/dispatch [:remove-attribute path %])]]]]]))
 
-(defmethod ui-interface/form-element :attributes [{:keys [path]}]
-  [form path])
+(defmethod ui-interface/form-element :attributes [context]
+  [form context])
