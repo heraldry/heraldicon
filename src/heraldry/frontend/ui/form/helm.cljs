@@ -1,10 +1,12 @@
 (ns heraldry.frontend.ui.form.helm
   (:require
    [heraldry.coat-of-arms.default :as default]
+   [heraldry.context :as c]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.shield-separator :as shield-separator]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
@@ -42,8 +44,8 @@
   (let [{:keys [helmet?
                 torse?]} @(rf/subscribe [:get-helm-status path])
         components-path (conj path :components)
-        num-helms @(rf/subscribe [:get-list-size (-> path drop-last vec)])
-        num-components @(rf/subscribe [:get-list-size components-path])
+        num-helms (interface/get-list-size (c/<< context :path (-> path drop-last vec)))
+        num-components (interface/get-list-size (c/++ context :components))
         add-menu (cond-> []
                    (not helmet?) (conj {:title {:en "Helmet"
                                                 :de "Helm"}
@@ -73,7 +75,7 @@
                  (map (fn [idx]
                         (let [component-path (conj components-path idx)
                               removable? @(rf/subscribe [:element-removable? component-path])]
-                          {:context (assoc context :path component-path)
+                          {:context (c/<< context :path component-path)
                            :buttons (cond-> [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :tooltip strings/move-down
