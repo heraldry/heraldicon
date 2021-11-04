@@ -21,10 +21,10 @@
                                                (conj :type))])]
     (-> (cond
           (#{:heraldry.ordinary.type/pale}
-           ordinary-type) {:cottise-1 "1 right"
-                           :cottise-2 "2 right"
-                           :cottise-opposite-1 "1 left"
-                           :cottise-opposite-2 "2 left"}
+           ordinary-type) {:cottise-1 "1 left"
+                           :cottise-2 "2 left"
+                           :cottise-opposite-1 "1 right"
+                           :cottise-opposite-2 "2 right"}
           (#{:heraldry.ordinary.type/fess
              :heraldry.ordinary.type/bend
              :heraldry.ordinary.type/bend-sinister
