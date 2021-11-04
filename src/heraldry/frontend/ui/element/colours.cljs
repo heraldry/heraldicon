@@ -1,10 +1,12 @@
 (ns heraldry.frontend.ui.element.colours
   (:require
    [heraldry.coat-of-arms.attributes :as attributes]
+   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.checkbox :as checkbox]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -20,9 +22,9 @@
                  (second value))))
        vec))
 
-(defn form [path]
-  (let [colours @(rf/subscribe [:get path])
-        sort-column (or @(rf/subscribe [:get [:ui :colours :sort path]])
+(defn form [{:keys [path] :as context}]
+  (let [colours (interface/get-raw-data context)
+        sort-column (or (interface/get-raw-data (c/<< context :path [:ui :colours :sort path]))
                         :colour)
         sort-fn (case sort-column
                   :modifier (fn [[colour value]]
@@ -156,9 +158,9 @@
                                (tr display-name)]))])))])]
                  [:td {:style {:padding-left "1em"
                                :border-left "1px solid #888"}}
-                  [checkbox/checkbox {:path [:ui :colours :show colour]}
+                  [checkbox/checkbox (c/<< context :path [:ui :colours :show colour])
                    :option {:type :boolean}]]])))]]
          [tr strings/none])]]]))
 
-(defmethod ui-interface/form-element :colours [{:keys [path]}]
-  [form path])
+(defmethod ui-interface/form-element :colours [context]
+  [form context])
