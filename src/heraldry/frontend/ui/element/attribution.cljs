@@ -6,6 +6,7 @@
    [heraldry.frontend.ui.element.select :as select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -32,7 +33,7 @@
     (update-in db path merge data)))
 
 (defn attribution-submenu [{:keys [path] :as context} & {:keys [charge-presets?]}]
-  (when-let [options @(rf/subscribe [:get-relevant-options path])]
+  (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
           link-name @(rf/subscribe [:attribution-submenu-link-name path])]

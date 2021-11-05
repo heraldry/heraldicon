@@ -54,9 +54,9 @@
                             (-> options :ui :form-type)
                             (-> options :type default-element)))))
 
-(defmethod form-element nil [{:keys [path]}]
-  (when-let [options @(rf/subscribe [:get-relevant-options path])]
-    [:div (str "not implemented: " path options)]))
+(defmethod form-element nil [context]
+  (when-let [options (interface/get-relevant-options context)]
+    [:div (str "not implemented: " context options)]))
 
 (defn form-elements [context options]
   [:<>

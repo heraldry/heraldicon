@@ -1,12 +1,12 @@
 (ns heraldry.frontend.ui.element.field-layout
   (:require
-   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.field-type-select :as field-type-select]
    [heraldry.frontend.ui.element.range :as range]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
@@ -82,7 +82,7 @@
        value))))
 
 (defn layout-submenu [{:keys [path] :as context}]
-  (when-let [options @(rf/subscribe [:get-relevant-options path])]
+  (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
           link-name @(rf/subscribe [:field-layout-submenu-link-name path])]

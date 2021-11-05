@@ -1,10 +1,10 @@
 (ns heraldry.frontend.ui.element.fimbriation
   (:require
    [heraldry.coat-of-arms.tincture.core :as tincture]
-   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
@@ -43,7 +43,7 @@
           util/upper-case-first))))
 
 (defn fimbriation-submenu [{:keys [path] :as context}]
-  (when-let [options @(rf/subscribe [:get-relevant-options path])]
+  (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
           link-name @(rf/subscribe [:fimbriation-submenu-link-name path])]
