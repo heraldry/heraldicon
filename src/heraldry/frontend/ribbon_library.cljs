@@ -117,10 +117,6 @@
   (fn [db [_ key-modifiers]]
     (assoc-in db [:ui :ribbon-edit :key-modifiers] key-modifiers)))
 
-(rf/reg-sub :selected-point
-  (fn [db _]
-    (get-in db [:ui :ribbon-edit :selected-point])))
-
 (rf/reg-sub :ribbon-edit-selected-point
   (fn [_ _]
     (rf/subscribe [:get [:ui :ribbon-edit :selected-point :path]]))
