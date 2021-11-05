@@ -63,8 +63,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path {:en "Select Ribbon"
-                               :de "Band auswählen"} ribbon-title nil
+        [submenu/submenu context {:en "Select Ribbon"
+                                  :de "Band auswählen"} ribbon-title nil
          [ribbon-select/list-ribbon (link-to-ribbon path)]]]])))
 
 (defmethod ui-interface/form-element :ribbon-reference-select [context]

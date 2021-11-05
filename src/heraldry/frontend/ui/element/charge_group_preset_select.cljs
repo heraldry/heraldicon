@@ -36,14 +36,14 @@
     [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
-(defn charge-group-preset-select [path]
+(defn charge-group-preset-select [{:keys [path] :as context}]
   [:div.ui-setting
    [:label [tr {:en "Presets"
                 :de "Vorauswahl"}]]
    [:div.option
-    [submenu/submenu path {:en "Select Charge Group Preset"
-                           :de "Wappenfigurgruppen Vorauswahl"} {:en "Select"
-                                                                 :de "Auswählen"} {:style {:width "21.5em"}}
+    [submenu/submenu context {:en "Select Charge Group Preset"
+                              :de "Wappenfigurgruppen Vorauswahl"} {:en "Select"
+                                                                    :de "Auswählen"} {:style {:width "21.5em"}}
      (for [[group-name & group] charge-group-preset-select-presets/presets]
        ^{:key group-name}
        [:<>

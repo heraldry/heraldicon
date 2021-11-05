@@ -36,8 +36,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path label link-name {:style {:width "22em"}
-                                               :class "submenu-position"}
+        [submenu/submenu context label link-name {:style {:width "22em"}
+                                                  :class "submenu-position"}
          (ui-interface/form-elements
           context
           [:point

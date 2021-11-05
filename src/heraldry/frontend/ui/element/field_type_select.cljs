@@ -87,8 +87,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path {:en "Select Division"
-                               :de "Teilung auswählen"} (get field-options/field-map value) {:style {:width "21.5em"}}
+        [submenu/submenu context {:en "Select Division"
+                                  :de "Teilung auswählen"} (get field-options/field-map value) {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
            [field-type-choice path key display-name :selected? (= key value)])]

@@ -30,8 +30,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path {:en "Select Line Type"
-                               :de "Schnitt auswählen"} (get line/line-map value) {:style {:width "24em"}}
+        [submenu/submenu context {:en "Select Line Type"
+                                  :de "Schnitt auswählen"} (get line/line-map value) {:style {:width "24em"}}
          (for [[display-name key] choices]
            ^{:key display-name}
            [line-type-choice path key display-name :selected? (= key value)])]
