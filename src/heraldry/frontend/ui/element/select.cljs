@@ -7,7 +7,7 @@
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
-(defn raw-select [{:keys [path] :as context} value label choices & {:keys [on-change]}]
+(defn raw-select [context value label choices & {:keys [on-change]}]
   (let [component-id (util/id "select")]
     [:div.ui-setting
      (when label
@@ -18,7 +18,7 @@
                 :on-change #(let [selected (keyword (-> % .-target .-value))]
                               (if on-change
                                 (on-change selected)
-                                (rf/dispatch [:set path selected])))}
+                                (rf/dispatch [:set context selected])))}
        (doall
         (for [[group-name & group-choices] choices]
           (if (and (-> group-choices count (= 1))

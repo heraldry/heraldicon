@@ -11,7 +11,7 @@
 (defn range-input [_]
   (let [tmp-value (r/atom nil)
         focused? (r/atom false)]
-    (fn [{:keys [path] :as context} & {:keys [value on-change disabled?]}]
+    (fn [context & {:keys [value on-change disabled?]}]
       (when-let [option (interface/get-relevant-options context)]
         (let [component-id (util/id "range")
               current-value (interface/get-raw-data context)
@@ -47,7 +47,7 @@
                                                value)]
                                    (if on-change
                                      (on-change value)
-                                     (rf/dispatch [:set path value])))
+                                     (rf/dispatch [:set context value])))
                      :style {:width "10em"}}]
             [:input {:type "text"
                      :value (if @focused?
@@ -62,7 +62,7 @@
                                  (when-not (js/isNaN parsed-value)
                                    (if on-change
                                      (on-change parsed-value)
-                                     (rf/dispatch-sync [:set path parsed-value])))
+                                     (rf/dispatch-sync [:set context parsed-value])))
                                  (swap! focused? (fn [_] false)))
                      :style {:display "inline-block"
                              :width "2em"

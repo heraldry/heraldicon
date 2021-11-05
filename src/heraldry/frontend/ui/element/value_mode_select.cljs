@@ -7,7 +7,7 @@
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
-(defn value-mode-select [{:keys [path] :as context} & {:keys [display-fn disabled? on-change default-option]}]
+(defn value-mode-select [context & {:keys [display-fn disabled? on-change default-option]}]
   (let [current-value (interface/get-raw-data context)
         handler-for-value (fn [new-value]
                             (fn [event]
@@ -15,7 +15,7 @@
                                 (do
                                   (on-change new-value)
                                   (.stopPropagation event))
-                                (state/dispatch-on-event event [:set path new-value]))))
+                                (state/dispatch-on-event event [:set context new-value]))))
         {:keys [inherited
                 default
                 type

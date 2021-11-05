@@ -102,8 +102,10 @@
            db)))
 
 (macros/reg-event-db :set
-  (fn [db [_ path value]]
-    (assoc-in db path value)))
+  (fn [db [_ context value]]
+    (if (vector? context)
+      (assoc-in db context value)
+      (assoc-in db (:path context) value))))
 
 (macros/reg-event-db :set-title
   (fn [db [_ value]]

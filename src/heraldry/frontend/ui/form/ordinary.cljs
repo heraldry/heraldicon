@@ -79,47 +79,47 @@
                (and (:cottise-1 cottising-options)
                     (not cottise-1?))
                (conj {:title "Cottise 1"
-                      :handler #(let [cottise-path (conj path :cottising :cottise-1)]
-                                  (rf/dispatch-sync [:set cottise-path default/cottise])
-                                  (state/dispatch-on-event % [:ui-component-node-select cottise-path {:open? true}]))})
+                      :handler #(let [cottise-context (c/++ context :cottising :cottise-1)]
+                                  (rf/dispatch-sync [:set cottise-context default/cottise])
+                                  (state/dispatch-on-event % [:ui-component-node-select (:path cottise-context) {:open? true}]))})
 
                (and (:cottise-2 cottising-options)
                     cottise-1?
                     (not cottise-2?))
                (conj {:title "Cottise 2"
-                      :handler #(let [cottise-path (conj path :cottising :cottise-2)]
-                                  (rf/dispatch-sync [:set cottise-path default/cottise])
-                                  (state/dispatch-on-event % [:ui-component-node-select cottise-path {:open? true}]))})
+                      :handler #(let [cottise-context (c/++ context :cottising :cottise-2)]
+                                  (rf/dispatch-sync [:set cottise-context default/cottise])
+                                  (state/dispatch-on-event % [:ui-component-node-select (:path cottise-context) {:open? true}]))})
 
                (and (:cottise-opposite-1 cottising-options)
                     (not cottise-opposite-1?))
                (conj {:title "Cottise 1 (opposite)"
-                      :handler #(let [cottise-path (conj path :cottising :cottise-opposite-1)]
-                                  (rf/dispatch-sync [:set cottise-path default/cottise])
-                                  (state/dispatch-on-event % [:ui-component-node-select cottise-path {:open? true}]))})
+                      :handler #(let [cottise-context (c/++ context :cottising :cottise-opposite-1)]
+                                  (rf/dispatch-sync [:set cottise-context default/cottise])
+                                  (state/dispatch-on-event % [:ui-component-node-select (:path cottise-context) {:open? true}]))})
 
                (and (:cottise-opposite-2 cottising-options)
                     cottise-opposite-1?
                     (not cottise-opposite-2?))
                (conj {:title "Cottise 2 (opposite)"
-                      :handler #(let [cottise-path (conj path :cottising :cottise-opposite-2)]
-                                  (rf/dispatch-sync [:set cottise-path default/cottise])
-                                  (state/dispatch-on-event % [:ui-component-node-select cottise-path {:open? true}]))})
+                      :handler #(let [cottise-context (c/++ context :cottising :cottise-opposite-2)]
+                                  (rf/dispatch-sync [:set cottise-context default/cottise])
+                                  (state/dispatch-on-event % [:ui-component-node-select (:path cottise-context) {:open? true}]))})
 
                (and (:cottise-extra-1 cottising-options)
                     (not cottise-extra-1?))
                (conj {:title "Cottise 1 (extra)"
-                      :handler #(let [cottise-path (conj path :cottising :cottise-extra-1)]
-                                  (rf/dispatch-sync [:set cottise-path default/cottise])
-                                  (state/dispatch-on-event % [:ui-component-node-select cottise-path {:open? true}]))})
+                      :handler #(let [cottise-context (c/++ context :cottising :cottise-extra-1)]
+                                  (rf/dispatch-sync [:set cottise-context default/cottise])
+                                  (state/dispatch-on-event % [:ui-component-node-select (:path cottise-context) {:open? true}]))})
 
                (and (:cottise-extra-2 cottising-options)
                     cottise-extra-1?
                     (not cottise-extra-2?))
                (conj {:title "Cottise 2 (extra)"
-                      :handler #(let [cottise-path (conj path :cottising :cottise-extra-2)]
-                                  (rf/dispatch-sync [:set cottise-path default/cottise])
-                                  (state/dispatch-on-event % [:ui-component-node-select cottise-path {:open? true}]))}))]
+                      :handler #(let [cottise-context (c/++ context :cottising :cottise-extra-2)]
+                                  (rf/dispatch-sync [:set cottise-context default/cottise])
+                                  (state/dispatch-on-event % [:ui-component-node-select (:path cottise-context) {:open? true}]))}))]
     {:title (ordinary/title context)
      :validation @(rf/subscribe [:validate-ordinary path])
      :buttons [{:icon "fas fa-plus"

@@ -9,8 +9,8 @@
    [heraldry.interface :as interface]
    [heraldry.static :as static]))
 
-(defn theme-choice [path key display-name & {:keys [selected?]}]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
+(defn theme-choice [context key display-name & {:keys [selected?]}]
+  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set context key])
                         :style {:border (if selected?
                                           "1px solid #000"
                                           "1px solid transparent")
@@ -25,7 +25,7 @@
      [tr display-name]]
     [:i]]])
 
-(defn theme-select [{:keys [path] :as context}]
+(defn theme-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [{:keys [ui inherited default choices]} option
           current-value (interface/get-raw-data context)
@@ -46,7 +46,7 @@
             [:h4 [tr group-name]]
             (for [[display-name key] group]
               ^{:key display-name}
-              [theme-choice path key display-name :selected? (= key value)])])]
+              [theme-choice context key display-name :selected? (= key value)])])]
         [value-mode-select/value-mode-select context]]])))
 
 (defmethod ui-interface/form-element :theme-select [context]

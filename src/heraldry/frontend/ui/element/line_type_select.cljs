@@ -9,8 +9,8 @@
    [heraldry.interface :as interface]
    [heraldry.static :as static]))
 
-(defn line-type-choice [path key display-name & {:keys [selected?]}]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
+(defn line-type-choice [context key display-name & {:keys [selected?]}]
+  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set context key])}
    [:img.clickable {:style {:width "7.5em"}
                     :src (static/static-url
                           (str "/svg/line-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
@@ -18,7 +18,7 @@
     [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
-(defn line-type-select [{:keys [path] :as context}]
+(defn line-type-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option
@@ -34,7 +34,7 @@
                                   :de "Schnitt auswählen"} (get line/line-map value) {:style {:width "24em"}}
          (for [[display-name key] choices]
            ^{:key display-name}
-           [line-type-choice path key display-name :selected? (= key value)])]
+           [line-type-choice context key display-name :selected? (= key value)])]
         [value-mode-select/value-mode-select context]]])))
 
 (defmethod ui-interface/form-element :line-type-select [context]

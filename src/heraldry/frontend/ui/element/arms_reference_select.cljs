@@ -8,13 +8,13 @@
    [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
-(defn link-to-arms [path]
+(defn link-to-arms [context]
   (fn [arms]
-    [:a {:on-click #(rf/dispatch [:set path {:id (:id arms)
-                                             :version 0}])}
+    [:a {:on-click #(rf/dispatch [:set context {:id (:id arms)
+                                                :version 0}])}
      (:name arms)]))
 
-(defn arms-reference-select [{:keys [path] :as context}]
+(defn arms-reference-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [{arms-id :id
            version :version} (interface/get-raw-data context)
@@ -35,7 +35,7 @@
        [:div.option
         [submenu/submenu context {:en "Select Arms"
                                   :de "Wappen auswählen"} arms-title nil
-         [arms-select/list-arms (link-to-arms path)]]]])))
+         [arms-select/list-arms (link-to-arms context)]]]])))
 
 (defmethod ui-interface/form-element :arms-reference-select [context]
   [arms-reference-select context])
