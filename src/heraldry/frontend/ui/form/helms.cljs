@@ -10,9 +10,9 @@
 (defn form [_context]
   [:<>])
 
-(defmethod ui-interface/component-node-data :heraldry.component/helms [{:keys [path] :as context}]
-  (let [helms-path (conj path :elements)
-        num-helms (interface/get-list-size (c/++ context :elements))]
+(defmethod ui-interface/component-node-data :heraldry.component/helms [context]
+  (let [elements-context (c/++ context :elements)
+        num-helms (interface/get-list-size elements-context)]
     {:title {:en "Helms and crests"
              :de "Helme und Helmzier"}
      :annotation [:div.tooltip.info {:style {:display "inline-block"
@@ -22,22 +22,22 @@
                   [:div.bottom
                    [:p strings/alpha-feature]]]
      :buttons [{:icon "fas fa-plus"
-                :handler #(state/dispatch-on-event % [:add-element helms-path default/helm])}]
+                :handler #(state/dispatch-on-event % [:add-element elements-context default/helm])}]
      :nodes (->> (range num-helms)
                  (map (fn [idx]
-                        (let [helm-path (conj helms-path idx)]
-                          {:context (c/++ context :elements idx)
+                        (let [helm-context (c/++ elements-context idx)]
+                          {:context helm-context
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
                                       :tooltip strings/move-down
-                                      :handler #(state/dispatch-on-event % [:move-element helm-path (dec idx)])}
+                                      :handler #(state/dispatch-on-event % [:move-element helm-context (dec idx)])}
                                      {:icon "fas fa-chevron-down"
                                       :disabled? (= idx (dec num-helms))
                                       :tooltip strings/move-up
-                                      :handler #(state/dispatch-on-event % [:move-element helm-path (inc idx)])}
+                                      :handler #(state/dispatch-on-event % [:move-element helm-context (inc idx)])}
                                      {:icon "far fa-trash-alt"
                                       :tooltip strings/remove
-                                      :handler #(state/dispatch-on-event % [:remove-element helm-path])}]}))))}))
+                                      :handler #(state/dispatch-on-event % [:remove-element helm-context])}]}))))}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/helms [_context]
   {:form form})

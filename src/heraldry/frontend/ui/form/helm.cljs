@@ -36,24 +36,24 @@
 (defmethod ui-interface/component-node-data :heraldry.component/helm [{:keys [path] :as context}]
   (let [{:keys [helmet?
                 torse?]} @(rf/subscribe [:get-helm-status path])
-        components-path (conj path :components)
+        components-context (c/++ context :components)
         num-helms (interface/get-list-size (c/-- context))
-        num-components (interface/get-list-size (c/++ context :components))
+        num-components (interface/get-list-size components-context)
         add-menu (cond-> []
                    (not helmet?) (conj {:title {:en "Helmet"
                                                 :de "Helm"}
                                         :handler #(state/dispatch-on-event
-                                                   % [:add-element components-path default/helmet
+                                                   % [:add-element components-context default/helmet
                                                       shield-separator/add-element-options])})
                    (not torse?) (conj {:title {:en "Torse"
                                                :de "Helmwulst"}
                                        :handler #(state/dispatch-on-event
-                                                  % [:add-element components-path default/torse
+                                                  % [:add-element components-context default/torse
                                                      shield-separator/add-element-options])})
                    true (conj {:title {:en "Crest charge"
                                        :de "Helmzier Figur"}
                                :handler #(state/dispatch-on-event
-                                          % [:add-element components-path default/crest-charge
+                                          % [:add-element components-context default/crest-charge
                                              shield-separator/add-element-options])}))]
 
     {:title (util/str-tr (when (> num-helms 1)
@@ -66,23 +66,23 @@
      :nodes (->> (range num-components)
                  reverse
                  (map (fn [idx]
-                        (let [component-path (conj components-path idx)
-                              removable? @(rf/subscribe [:element-removable? component-path])]
-                          {:context (c/<< context :path component-path)
+                        (let [component-context (c/++ components-context idx)
+                              removable? @(rf/subscribe [:element-removable? component-context])]
+                          {:context component-context
                            :buttons (cond-> [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :tooltip strings/move-down
-                                              :handler #(state/dispatch-on-event % [:move-element component-path (dec idx)])}
+                                              :handler #(state/dispatch-on-event % [:move-element component-context (dec idx)])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-components))
                                               :tooltip strings/move-up
-                                              :handler #(state/dispatch-on-event % [:move-element component-path (inc idx)])}]
+                                              :handler #(state/dispatch-on-event % [:move-element component-context (inc idx)])}]
                                       removable? (conj
                                                   {:icon "far fa-trash-alt"
                                                    :tooltip strings/remove
                                                    :handler #(state/dispatch-on-event
                                                               %
-                                                              [:remove-element component-path
+                                                              [:remove-element component-context
                                                                shield-separator/remove-element-options])}))})))
                  vec)}))
 

@@ -94,8 +94,8 @@
 (defmethod ui-interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
   (let [field-type (interface/get-raw-data (c/++ context :type))
         ref? (= field-type :heraldry.field.type/ref)
-        components-path (conj path :components)
-        num-components (interface/get-list-size (c/++ context :components))]
+        components-context (c/++ context :components)
+        num-components (interface/get-list-size components-context)]
     {:title (util/combine ": "
                           [(name-prefix-for-part context)
                            (if ref?
@@ -113,40 +113,42 @@
                 (cond-> [{:icon "fas fa-plus"
                           :title strings/add
                           :menu [{:title strings/ordinary
-                                  :handler #(state/dispatch-on-event % [:add-element components-path default/ordinary])}
+                                  :handler #(state/dispatch-on-event % [:add-element components-context default/ordinary])}
                                  {:title strings/charge
-                                  :handler #(state/dispatch-on-event % [:add-element components-path default/charge])}
+                                  :handler #(state/dispatch-on-event % [:add-element components-context default/charge])}
                                  {:title strings/charge-group
-                                  :handler #(state/dispatch-on-event % [:add-element components-path default/charge-group])}
+                                  :handler #(state/dispatch-on-event % [:add-element components-context default/charge-group])}
                                  {:title {:en "Semy"
                                           :de "Besähung"}
-                                  :handler #(state/dispatch-on-event % [:add-element components-path default/semy])}]}]
+                                  :handler #(state/dispatch-on-event % [:add-element components-context default/semy])}]}]
                   (non-mandatory-part-of-parent? context)
                   (conj {:icon "fas fa-undo"
                          :title "Reset"
                          :handler #(state/dispatch-on-event % [:reset-field-part-reference path])})))
      :nodes (concat (when (and (not (show-tinctures-only? field-type))
                                (-> field-type name keyword (not= :plain)))
-                      (->> (range (interface/get-list-size (c/++ context :fields)))
-                           (map (fn [idx]
-                                  {:context (c/++ context :fields idx)}))
-                           vec))
+                      (let [fields-context (c/++ context :fields)
+                            num-fields (interface/get-list-size fields-context)]
+                        (->> (range num-fields)
+                             (map (fn [idx]
+                                    {:context (c/++ fields-context idx)}))
+                             vec)))
                     (->> (range num-components)
                          reverse
                          (map (fn [idx]
-                                (let [component-path (conj components-path idx)]
-                                  {:context (c/<< context :path component-path)
+                                (let [component-context (c/++ components-context idx)]
+                                  {:context component-context
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :tooltip strings/move-down
-                                              :handler #(state/dispatch-on-event % [:move-element component-path (dec idx)])}
+                                              :handler #(state/dispatch-on-event % [:move-element component-context (dec idx)])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-components))
                                               :tooltip strings/move-up
-                                              :handler #(state/dispatch-on-event % [:move-element component-path (inc idx)])}
+                                              :handler #(state/dispatch-on-event % [:move-element component-context (inc idx)])}
                                              {:icon "far fa-trash-alt"
                                               :tooltip strings/remove
-                                              :handler #(state/dispatch-on-event % [:remove-element component-path])}]})))
+                                              :handler #(state/dispatch-on-event % [:remove-element component-context])}]})))
                          vec))}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/field [_context]

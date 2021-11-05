@@ -210,7 +210,7 @@
         (let [x (mod num-elements num-columns)
               y (quot num-elements num-columns)]
           ^{:key num-elements}
-          [:g {:on-click #(state/dispatch-on-event % [:add-element (conj form-db-path :collection :elements) {}])
+          [:g {:on-click #(state/dispatch-on-event % [:add-element {:path (conj form-db-path :collection :elements)} {}])
                :style {:cursor "pointer"}}
            [render-add-arms
             (+ margin
