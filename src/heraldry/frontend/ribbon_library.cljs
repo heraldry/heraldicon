@@ -218,7 +218,7 @@
       (let [size path-point-size
             width (* size 1.1)
             height (* size 0.2)
-            {:keys [x y]} (interface/get-raw-data path {})
+            {:keys [x y]} (interface/get-raw-data {:path path})
             deletable? @(rf/subscribe [:ribbon-edit-point-deletable? path])
             route-path-point-click-fn (case edit-mode
                                         :remove (when deletable?
@@ -280,10 +280,10 @@
 
 (defn render-edit-overlay [path]
   (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])
-        edge-angle (interface/get-sanitized-data (conj path :edge-angle) {})
+        edge-angle (interface/get-sanitized-data {:path (conj path :edge-angle)})
         points-path (conj path :points)
         segments-path (conj path :segments)
-        points (interface/get-raw-data points-path {})
+        points (interface/get-raw-data {:path points-path})
         {:keys [curve curves]} (ribbon/generate-curves points edge-angle)
         selected-curve-idx (->> (count curves)
                                 range
@@ -321,7 +321,7 @@
   (let [[width height] [preview-width preview-height]
         ribbon-path (conj form-db-path :ribbon)
         points-path (conj ribbon-path :points)
-        num-points (interface/get-list-size points-path {})
+        num-points (interface/get-list-size {:path points-path})
         edit-mode @(rf/subscribe [:ribbon-edit-mode])
         route-path-point-mouse-up-fn (when (= edit-mode :edit)
                                        #(rf/dispatch [:ribbon-edit-select-point nil]))
