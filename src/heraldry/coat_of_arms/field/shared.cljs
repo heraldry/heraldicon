@@ -60,18 +60,20 @@
       [interface/render-component
        (c/++ context :components idx)]))])
 
+(declare render)
+
 (defn render-counterchanged-field [{:keys [path
                                            parent-field-path
-                                           parent-field-environment] :as context} render-fn]
+                                           parent-field-environment] :as context}]
   (if parent-field-path
     (let [counterchange-tinctures (interface/get-counterchange-tinctures (c/<< context :path parent-field-path))
           context (-> context
                       (update :counterchanged-paths conj path)
                       (add-tinctures-to-mapping counterchange-tinctures))]
       [:<>
-       [render-fn (-> context
-                      (c/<< :path parent-field-path)
-                      (c/<< :environment parent-field-environment))]
+       [render (-> context
+                   (c/<< :path parent-field-path)
+                   (c/<< :environment parent-field-environment))]
        [render-components context]])
     [:<>]))
 
@@ -80,7 +82,7 @@
                       svg-export?
                       transform] :as context}]
   (if (interface/get-sanitized-data (c/++ context :counterchanged?))
-    (render-counterchanged-field context render)
+    (render-counterchanged-field context)
     (let [selected? false
           ;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
           ;; adding it to the choices in the option would affect the UI
