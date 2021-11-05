@@ -33,10 +33,10 @@
 (macros/reg-event-db :remove-charge-group-charge
   (fn [db [_ path]]
     (let [elements-path (drop-last path)
-          strips-path (-> path
-                          (->> (drop-last 2))
-                          vec
-                          (conj :strips))
+          strips-context (-> path
+                             (->> (drop-last 2))
+                             vec
+                             (conj :strips))
           slots-path (-> path
                          (->> (drop-last 2))
                          vec
@@ -46,16 +46,16 @@
           (update-in elements-path (fn [elements]
                                      (vec (concat (subvec elements 0 index)
                                                   (subvec elements (inc index))))))
-          (update-in strips-path (fn [strips]
-                                   (mapv (fn [strip]
-                                           (update strip :slots (fn [slots]
-                                                                  (mapv (fn [charge-index]
-                                                                          (cond
-                                                                            (= charge-index index) 0
-                                                                            (> charge-index index) (dec charge-index)
-                                                                            :else charge-index))
-                                                                        slots))))
-                                         strips)))
+          (update-in strips-context (fn [strips]
+                                      (mapv (fn [strip]
+                                              (update strip :slots (fn [slots]
+                                                                     (mapv (fn [charge-index]
+                                                                             (cond
+                                                                               (= charge-index index) 0
+                                                                               (> charge-index index) (dec charge-index)
+                                                                               :else charge-index))
+                                                                           slots))))
+                                            strips)))
           (update-in slots-path (fn [slots]
                                   (mapv (fn [charge-index]
                                           (cond
@@ -68,10 +68,10 @@
 (macros/reg-event-db :move-charge-group-charge-up
   (fn [db [_ path]]
     (let [elements-path (drop-last path)
-          strips-path (-> path
-                          (->> (drop-last 2))
-                          vec
-                          (conj :strips))
+          strips-context (-> path
+                             (->> (drop-last 2))
+                             vec
+                             (conj :strips))
           slots-path (-> path
                          (->> (drop-last 2))
                          vec
@@ -88,16 +88,16 @@
                                              (conj (get elements index))
                                              (concat (subvec elements (+ index 2)))
                                              vec)))))
-          (update-in strips-path (fn [strips]
-                                   (mapv (fn [strip]
-                                           (update strip :slots (fn [slots]
-                                                                  (mapv (fn [charge-index]
-                                                                          (cond
-                                                                            (= charge-index index) (inc charge-index)
-                                                                            (= charge-index (inc index)) (dec charge-index)
-                                                                            :else charge-index))
-                                                                        slots))))
-                                         strips)))
+          (update-in strips-context (fn [strips]
+                                      (mapv (fn [strip]
+                                              (update strip :slots (fn [slots]
+                                                                     (mapv (fn [charge-index]
+                                                                             (cond
+                                                                               (= charge-index index) (inc charge-index)
+                                                                               (= charge-index (inc index)) (dec charge-index)
+                                                                               :else charge-index))
+                                                                           slots))))
+                                            strips)))
           (update-in slots-path (fn [slots]
                                   (mapv (fn [charge-index]
                                           (cond
@@ -108,7 +108,7 @@
           (state/element-order-changed elements-path index (inc index))))))
 
 (macros/reg-event-db :add-charge-group-strip
-  (fn [db [_ path value]]
+  (fn [db [_ {:keys [path]} value]]
     (let [elements (-> (get-in db path)
                        (conj value)
                        vec)]
@@ -117,10 +117,10 @@
 (macros/reg-event-db :move-charge-group-charge-down
   (fn [db [_ path]]
     (let [elements-path (drop-last path)
-          strips-path (-> path
-                          (->> (drop-last 2))
-                          vec
-                          (conj :strips))
+          strips-context (-> path
+                             (->> (drop-last 2))
+                             vec
+                             (conj :strips))
           slots-path (-> path
                          (->> (drop-last 2))
                          vec
@@ -136,16 +136,16 @@
                                            (conj (get elements (dec index)))
                                            (concat (subvec elements (inc index)))
                                            vec))))
-          (update-in strips-path (fn [strips]
-                                   (mapv (fn [strip]
-                                           (update strip :slots (fn [slots]
-                                                                  (mapv (fn [charge-index]
-                                                                          (cond
-                                                                            (= charge-index (dec index)) (inc charge-index)
-                                                                            (= charge-index index) (dec charge-index)
-                                                                            :else charge-index))
-                                                                        slots))))
-                                         strips)))
+          (update-in strips-context (fn [strips]
+                                      (mapv (fn [strip]
+                                              (update strip :slots (fn [slots]
+                                                                     (mapv (fn [charge-index]
+                                                                             (cond
+                                                                               (= charge-index (dec index)) (inc charge-index)
+                                                                               (= charge-index index) (dec charge-index)
+                                                                               :else charge-index))
+                                                                           slots))))
+                                            strips)))
           (update-in slots-path (fn [slots]
                                   (mapv (fn [charge-index]
                                           (cond
@@ -253,9 +253,7 @@
                                                             :de "Zeilen"}
                           :heraldry.charge-group.type/columns {:en "Columns"
                                                                :de "Spalten"}
-                          nil)
-        strips-path (conj path :strips)
-        num-strips (interface/get-list-size (c/++ context :strips))]
+                          nil)]
     [:div {:style {:display "table-cell"
                    :vertical-align "top"}}
      [charge-group-preset-select/charge-group-preset-select context]
@@ -278,41 +276,45 @@
        :slots])
 
      (when strip-type?
-       [:div.ui-setting
-        [:label [tr type-plural-str]
-         [:button {:on-click #(state/dispatch-on-event % [:add-charge-group-strip strips-path default/charge-group-strip])}
-          [:i.fas.fa-plus] " " [tr strings/add]]]
+       (let [strips-context (c/++ context :strips)
+             num-strips (interface/get-list-size strips-context)]
+         [:div.ui-setting
+          [:label [tr type-plural-str]
+           [:button {:on-click #(state/dispatch-on-event % [:add-charge-group-strip
+                                                            strips-context default/charge-group-strip])}
+            [:i.fas.fa-plus] " " [tr strings/add]]]
 
-        [:div.option.charge-group-strips
-         [:ul
-          (doall
-           (for [idx (range num-strips)]
-             (let [strip-path (conj strips-path idx)]
-               ^{:key idx}
-               [:li
-                [:div.no-select {:style {:padding-right "10px"
-                                         :white-space "nowrap"}}
-                 [:a (if (zero? idx)
-                       {:class "disabled"}
-                       {:on-click #(state/dispatch-on-event % [:move-element strip-path (dec idx)])})
-                  [:i.fas.fa-chevron-up]]
-                 " "
-                 [:a (if (= idx (dec num-strips))
-                       {:class "disabled"}
-                       {:on-click #(state/dispatch-on-event % [:move-element strip-path (inc idx)])})
-                  [:i.fas.fa-chevron-down]]]
-                [:div
-                 [strip-form (assoc context :path strip-path) type-str]]
-                [:div {:style {:padding-left "10px"}}
-                 [:a (if (< num-strips 2)
-                       {:class "disabled"}
-                       {:on-click #(state/dispatch-on-event % [:remove-element strip-path])})
-                  [:i.far.fa-trash-alt]]]])))]]])
+          [:div.option.charge-group-strips
+           [:ul
+            (doall
+             (for [idx (range num-strips)]
+               (let [strip-context (c/++ strips-context idx)]
+                 ^{:key idx}
+                 [:li
+                  [:div.no-select {:style {:padding-right "10px"
+                                           :white-space "nowrap"}}
+                   [:a (if (zero? idx)
+                         {:class "disabled"}
+                         {:on-click #(state/dispatch-on-event % [:move-element strip-context (dec idx)])})
+                    [:i.fas.fa-chevron-up]]
+                   " "
+                   [:a (if (= idx (dec num-strips))
+                         {:class "disabled"}
+                         {:on-click #(state/dispatch-on-event % [:move-element strip-context (inc idx)])})
+                    [:i.fas.fa-chevron-down]]]
+                  [:div
+                   [strip-form strip-context type-str]]
+                  [:div {:style {:padding-left "10px"}}
+                   [:a (if (< num-strips 2)
+                         {:class "disabled"}
+                         {:on-click #(state/dispatch-on-event % [:remove-element strip-context])})
+                    [:i.far.fa-trash-alt]]]])))]]]))
 
      [ui-interface/form-element (c/++ context :manual-blazon)]]))
 
-(defmethod ui-interface/component-node-data :heraldry.component/charge-group [{:keys [path] :as context}]
-  (let [num-charges (interface/get-list-size (c/++ context :charges))]
+(defmethod ui-interface/component-node-data :heraldry.component/charge-group [context]
+  (let [charges-context (c/++ context :charges)
+        num-charges (interface/get-list-size charges-context)]
     {:title (util/str-tr {:en "Charge group of "
                           :de "Gruppe von "} (if (= num-charges 1)
                                                (charge-options/title (c/++ context :charges 0))
@@ -321,24 +323,24 @@
      :buttons [{:icon "fas fa-plus"
                 :title strings/add
                 :menu [{:title strings/charge
-                        :handler #(state/dispatch-on-event % [:add-element (conj path :charges) default/charge])}]}]
+                        :handler #(state/dispatch-on-event % [:add-element charges-context default/charge])}]}]
      :nodes (concat (->> (range num-charges)
                          reverse
                          (map (fn [idx]
-                                (let [charge-path (conj path :charges idx)]
-                                  {:context (c/<< context :path charge-path)
+                                (let [charge-context (c/++ charges-context idx)]
+                                  {:context charge-context
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :tooltip strings/move-down
-                                              :handler #(state/dispatch-on-event % [:move-charge-group-charge-down charge-path])}
+                                              :handler #(state/dispatch-on-event % [:move-charge-group-charge-down charge-context])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-charges))
                                               :tooltip strings/move-up
-                                              :handler #(state/dispatch-on-event % [:move-charge-group-charge-up charge-path])}
+                                              :handler #(state/dispatch-on-event % [:move-charge-group-charge-up charge-context])}
                                              {:icon "far fa-trash-alt"
                                               :disabled? (= num-charges 1)
                                               :tooltip strings/remove
-                                              :handler #(state/dispatch-on-event % [:remove-charge-group-charge charge-path])}]})))
+                                              :handler #(state/dispatch-on-event % [:remove-charge-group-charge charge-context])}]})))
                          vec))}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/charge-group [_context]

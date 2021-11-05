@@ -9,28 +9,29 @@
 (defn form [context]
   [ui-interface/form-element (c/++ context :num-columns)])
 
-(defmethod ui-interface/component-node-data :heraldry.component/collection [{:keys [path] :as context}]
-  (let [num-elements (interface/get-list-size (c/++ context :elements))]
+(defmethod ui-interface/component-node-data :heraldry.component/collection [context]
+  (let [elements-context (c/++ context :elements)
+        num-elements (interface/get-list-size elements-context)]
     {:title strings/arms
      :buttons [{:icon "fas fa-plus"
                 :title strings/add
                 :menu [{:title strings/arms
-                        :handler #(state/dispatch-on-event % [:add-element (conj path :elements) {}])}]}]
+                        :handler #(state/dispatch-on-event % [:add-element elements-context {}])}]}]
      :nodes (->> (range num-elements)
                  (map (fn [idx]
-                        (let [component-path (conj path :elements idx)]
-                          {:context (c/<< context :path component-path)
+                        (let [element-context (c/++ elements-context idx)]
+                          {:context element-context
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
                                       :tooltip strings/move-down
-                                      :handler #(state/dispatch-on-event % [:move-element component-path (dec idx)])}
+                                      :handler #(state/dispatch-on-event % [:move-element element-context (dec idx)])}
                                      {:icon "fas fa-chevron-down"
                                       :disabled? (= idx (dec num-elements))
                                       :tooltip strings/move-up
-                                      :handler #(state/dispatch-on-event % [:move-element component-path (inc idx)])}
+                                      :handler #(state/dispatch-on-event % [:move-element element-context (inc idx)])}
                                      {:icon "far fa-trash-alt"
                                       :tooltip strings/remove
-                                      :handler #(state/dispatch-on-event % [:remove-element component-path])}]})))
+                                      :handler #(state/dispatch-on-event % [:remove-element element-context])}]})))
                  vec)}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/collection [_context]

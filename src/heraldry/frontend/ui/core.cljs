@@ -89,7 +89,7 @@
 ;; events
 
 (macros/reg-event-db :add-element
-  (fn [db [_ path value {:keys [post-fn selected-element-path-fn]}]]
+  (fn [db [_ {:keys [path]} value {:keys [post-fn selected-element-path-fn]}]]
     (let [elements (-> (get-in db path)
                        (conj value)
                        vec)
@@ -113,7 +113,7 @@
             (#{:heraldry.component/motto} added-type) (submenu/ui-submenu-open (conj new-element-path :ribbon-variant)))))))
 
 (macros/reg-event-db :remove-element
-  (fn [db [_ path {:keys [post-fn]}]]
+  (fn [db [_ {:keys [path]} {:keys [post-fn]}]]
     (let [elements-path (-> path drop-last vec)
           index (last path)
           elements (vec (get-in db elements-path))
@@ -128,7 +128,7 @@
             (state/element-order-changed elements-path index nil))))))
 
 (macros/reg-event-db :move-element
-  (fn [db [_ path new-index]]
+  (fn [db [_ {:keys [path]} new-index]]
     (let [elements-path (-> path drop-last vec)
           elements (vec (get-in db elements-path))
           index (last path)
@@ -143,7 +143,7 @@
             (state/element-order-changed elements-path index new-index))))))
 
 (rf/reg-sub :element-removable?
-  (fn [[_ path] _]
+  (fn [[_ {:keys [path]}] _]
     (rf/subscribe [:get path]))
 
   (fn [element _]
