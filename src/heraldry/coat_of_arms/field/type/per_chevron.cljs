@@ -21,7 +21,7 @@
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
 
 (defmethod field-interface/render-field field-type
-  [{:keys [path environment] :as context}]
+  [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
         origin (interface/get-sanitized-data (c/++ context :origin))
@@ -130,8 +130,8 @@
                 [top-left bottom-right]]]]
     [:<>
      [shared/make-subfields
-      path parts
+      context parts
       [:all nil]
-      environment context]
+      environment]
      [line/render line [line-left-data
                         line-right-data] diagonal-left outline? context]]))

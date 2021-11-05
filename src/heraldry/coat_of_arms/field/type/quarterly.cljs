@@ -17,7 +17,7 @@
 (defmethod field-interface/part-names field-type [_] nil)
 
 (defmethod field-interface/render-field field-type
-  [{:keys [path environment] :as context}]
+  [{:keys [environment] :as context}]
   (let [num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
         offset-x (interface/get-sanitized-data (c/++ context :layout :offset-x))
@@ -181,7 +181,7 @@
                                                     "L" [(+ x0 required-width outline-extra) y1]])}]))])]
     [:<>
      [shared/make-subfields
-      path parts
+      context parts
       overlap
-      environment context]
+      environment]
      outlines]))

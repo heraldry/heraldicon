@@ -16,7 +16,7 @@
 (defmethod field-interface/part-names field-type [_] nil)
 
 (defmethod field-interface/render-field field-type
-  [{:keys [path environment] :as context}]
+  [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         origin (interface/get-sanitized-data (c/++ context :origin))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
@@ -50,7 +50,7 @@
     [:g {:transform (str "translate(" (v/->str center-point) ")"
                          "rotate(" angle ")")}
      [shared/make-subfields
-      path parts
+      context parts
       overlap
-      environment context]
+      environment]
      outlines]))

@@ -152,9 +152,9 @@
      [field-shared/make-subfield
       (-> context
           (c/++ :field)
-          (assoc :transform (when (not use-parent-environment?)
-                              (str "translate(" (v/->str ordinary-top-left) ")"
-                                   "rotate(" angle ")"))))
+          (c/<< :transform (when (not use-parent-environment?)
+                             (str "translate(" (v/->str ordinary-top-left) ")"
+                                  "rotate(" angle ")"))))
       part
       :all]
      [line/render line [line-one-data] first-start outline? context]

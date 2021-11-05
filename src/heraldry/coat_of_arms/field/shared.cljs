@@ -108,24 +108,21 @@
                  :style {:opacity 0.25}
                  :fill "url(#selected)"}])])))
 
-(defn -make-subfields [field-path paths parts mask-overlaps parent-environment
-                       context]
+(defn -make-subfields [context paths parts mask-overlaps parent-environment]
   [:<>
    (doall
-    (for [[idx [part-path [shape-path bounding-box-points & extra] overlap-paths]]
+    (for [[idx [part-context [shape-path bounding-box-points & extra] overlap-paths]]
           (->> (map vector paths parts mask-overlaps)
                (map-indexed vector))]
       (let [clip-path-id (util/id (str "clip-" idx))
             mask-id (util/id (str "mask-" idx))
             inherit-environment? (interface/get-sanitized-data
-                                  (conj part-path :inherit-environment?)
-                                  context)
+                                  (c/++ part-context :inherit-environment?))
             counterchanged? (interface/get-sanitized-data
-                             (conj part-path :counterchanged?)
-                             context)
+                             (c/++ part-context :counterchanged?))
             env (environment/create
                  (path/make-path shape-path)
-                 {:parent field-path
+                 {:parent context
                   :parent-environment parent-environment
                   :bounding-box (bounding-box/bounding-box bounding-box-points)
                   :override-environment (when (or inherit-environment?
@@ -160,20 +157,17 @@
          [:g {:mask (str "url(#" clip-path-id ")")}
           [:g {:mask (when (-> env :meta :mask)
                        (str "url(#" mask-id ")"))}
-           [render
-            (-> context
-                (assoc :path part-path)
-                (assoc :environment env))]]]])))])
+           [render (c/<< part-context :environment env)]]]])))])
 
-(defn make-subfields [field-path parts mask-overlaps parent-environment context]
-  (-make-subfields field-path
+(defn make-subfields [context parts mask-overlaps parent-environment]
+  (-make-subfields context
                    (map (fn [idx]
-                          (conj field-path :fields idx)) (-> parts count range))
-                   parts mask-overlaps parent-environment context))
+                          (c/++ context :fields idx)) (-> parts count range))
+                   parts mask-overlaps parent-environment))
 
 (defn make-subfield [context part mask-overlap]
-  (-make-subfields (-> context
-                       :path
-                       drop-last
-                       vec)
-                   [(:path context)] [part] [mask-overlap] (:environment context) context))
+  (-make-subfields (c/<< context :path (-> context
+                                           :path
+                                           drop-last
+                                           vec))
+                   [context] [part] [mask-overlap] (:environment context)))

@@ -166,7 +166,7 @@
     [parts overlap outlines]))
 
 (defmethod field-interface/render-field field-type
-  [{:keys [path environment] :as context}]
+  [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
         outline? (or (interface/render-option :outline? context)
@@ -177,7 +177,7 @@
         [parts overlap outlines] (chevronny-parts top-left bottom-right line opposite-line outline? context)]
     [:<>
      [shared/make-subfields
-      path parts
+      context parts
       overlap
-      environment context]
+      environment]
      outlines]))

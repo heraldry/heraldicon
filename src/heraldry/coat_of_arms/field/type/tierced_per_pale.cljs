@@ -19,7 +19,7 @@
 (defmethod field-interface/part-names field-type [_] ["dexter" "fess" "sinister"])
 
 (defmethod field-interface/render-field field-type
-  [{:keys [path environment] :as context}]
+  [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         stretch-x (interface/get-sanitized-data (c/++ context :layout :stretch-x))
         origin (interface/get-sanitized-data (c/++ context :origin))
@@ -126,14 +126,14 @@
                  bottom-right]]]]
     [:<>
      [shared/make-subfields
-      path parts
+      context parts
       [:all
        [(path/make-path
          ["M" (v/add second-bottom
                      line-reversed-start)
           (path/stitch line-reversed)])]
        nil]
-      environment context]
+      environment]
      (when outline?
        [:g (outline/style context)
         [:path {:d (path/make-path

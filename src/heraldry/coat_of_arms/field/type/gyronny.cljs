@@ -20,7 +20,7 @@
 (defmethod field-interface/part-names field-type [_] ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"])
 
 (defmethod field-interface/render-field field-type
-  [{:keys [path environment] :as context}]
+  [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
         origin (interface/get-sanitized-data (c/++ context :origin))
@@ -273,7 +273,7 @@
                  bottom]]]]
     [:<>
      [shared/make-subfields
-      path parts
+      context parts
       [:all
        [(path/make-path
          ["M" origin-point
@@ -297,7 +297,7 @@
                      line-bottom-start)
           (path/stitch line-bottom)])]
        nil]
-      environment context]
+      environment]
      (when outline?
        [:g (outline/style context)
         [:path {:d (path/make-path
