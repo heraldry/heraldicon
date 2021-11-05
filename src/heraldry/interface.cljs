@@ -56,6 +56,7 @@
 (defmethod component-options nil [_context]
   nil)
 
+;; TODO: this is one of the biggest potential bottle necks
 (defn get-relevant-options
   ([path context]
    (get-relevant-options (assoc context :path path)))
