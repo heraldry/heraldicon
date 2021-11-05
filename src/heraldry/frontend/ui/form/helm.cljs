@@ -30,13 +30,6 @@
                                 (= :heraldry.charge.function/torse))))
                   seq)}))
 
-(macros/reg-event-db :add-helm-part
-  (fn [db [_ path value]]
-    (-> db
-        (assoc-in path value)
-        (state/ui-component-node-select path :open? true)
-        submenu/ui-submenu-close-all)))
-
 (defn form [_context]
   [:<>])
 

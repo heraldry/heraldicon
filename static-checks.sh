@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-rg reg-event -g '*.cljs' | grep -o ':[a-z][a-z0-9-]*' | sort > /tmp/heraldry-reg-events
+rg reg-event -g '*.clj*' | grep -E -o '::?[a-z][a-z0-9-]*' | sort > /tmp/heraldry-reg-events
 
 double_regs=$(</tmp/heraldry-reg-events uniq -c | grep -v ' 1 ')
 if [ -n "$double_regs" ]; then
@@ -9,7 +9,7 @@ if [ -n "$double_regs" ]; then
   echo
 fi
 
-rg -I reg-sub -g '*.cljs' | grep -o ':[a-z][a-z0-9-]*' | sort > /tmp/heraldry-reg-subs
+rg -I reg-sub -g '*.clj*' | grep -E -o '::?[a-z][a-z0-9-]*' | sort > /tmp/heraldry-reg-subs
 
 double_subs=$(</tmp/heraldry-reg-subs uniq -c | grep -v ' 1 ')
 if [ -n "$double_subs" ]; then
@@ -18,7 +18,7 @@ if [ -n "$double_subs" ]; then
   echo
 fi
 
-rg -I dispatch -g '*.cljs' | grep -E -v '(defn|dispatch effect)' | perl -pe 's/.*dispatch.*?[[](:[a-z][a-z0-9-]*).*/\1/' | sort | uniq > /tmp/heraldry-dispatches
+rg -I dispatch -g '*.clj*' | grep -E -v '(defn|dispatch effect)' | perl -pe 's/.*dispatch.*?[[](::?[a-z][a-z0-9-]*).*/\1/' | sort | uniq > /tmp/heraldry-dispatches
 
 unknown_events=$(comm -23 /tmp/heraldry-dispatches /tmp/heraldry-reg-events)
 if [ -n "$unknown_events" ]; then
@@ -34,7 +34,7 @@ if [ -n "$unused_events" ]; then
   echo
 fi
 
-rg -I subscribe -g '*.cljs' | perl -pe 's/.*subscribe.*?[[](:[a-z][a-z0-9-]*).*/\1/' | sort | uniq > /tmp/heraldry-subscribes
+rg -I subscribe -g '*.clj*' | perl -pe 's/.*subscribe.*?[[](::?[a-z][a-z0-9-]*).*/\1/' | sort | uniq > /tmp/heraldry-subscribes
 
 unknown_subs=$(comm -23 /tmp/heraldry-subscribes /tmp/heraldry-reg-subs)
 if [ -n "$unknown_subs" ]; then
@@ -51,11 +51,11 @@ if [ -n "$unused_subs" ]; then
 fi
 
 ignore="^(squiggly-paths|tangent-point)$"
-rg -I '[(]def(|n|multi) ' -g '*.cljs' -g '*.edn' | perl -ne 'print if s/.*[(]def[^ ]* +([a-z0-9_-]{3,}).*/\1/' | grep -E -v "$ignore" | sort | uniq > /tmp/heraldry-symbols
+rg -I '[(]def(|n|multi) ' -g '*.clj*' -g '*.edn' | perl -ne 'print if s/.*[(]def[^ ]* +([a-z0-9_-]{3,}).*/\1/' | grep -E -v "$ignore" | sort | uniq > /tmp/heraldry-symbols
 
 unused_symbols=$(
 for s in $(cat /tmp/heraldry-symbols); do
-   rg -I -o '[a-z0-9_-]*'"$s"'[a-z0-9_-]*' -g '*.cljs' -g '*.edn' | grep -o '^'"$s"'$' | sort | uniq -c | grep ' 1 '
+   rg -I -o '[a-z0-9_-]*'"$s"'[a-z0-9_-]*' -g '*.clj*' -g '*.edn' | grep -o '^'"$s"'$' | sort | uniq -c | grep ' 1 '
 done
               )
 
@@ -66,11 +66,11 @@ if [ -n "$unused_symbols" ]; then
 fi
 
 ignore="^(ttf|otf|selected)$"
-rg -I -o '[.][a-z][a-z0-9_-]*' -g '*.css' -g '!gitstats/' | sed 's/^[.]//' | grep -E -v "$ignore" | sort | uniq > /tmp/heraldry-css-classes
+rg -I -o '[.][a-z][a-z0-9_-]*' -g '*.css' assets/css | sed 's/^[.]//' | grep -E -v "$ignore" | sort | uniq > /tmp/heraldry-css-classes
 
 unused_css_classes=$(
 for s in $(cat /tmp/heraldry-css-classes); do
-  found=$(rg -I -o '[.]'"$s"'[a-z0-9_-]*' -g '*.cljs')
+  found=$(rg -I -o '[."]'"$s"'[a-z0-9_-]*' -g '*.clj*')
   if [ -z "$found" ]; then
     echo "$s"
   fi
