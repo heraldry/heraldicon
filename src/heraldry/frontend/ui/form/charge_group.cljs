@@ -15,8 +15,7 @@
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
    [heraldry.strings :as strings]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
 (macros/reg-event-db :cycle-charge-index
   (fn [db [_ path num-charges]]

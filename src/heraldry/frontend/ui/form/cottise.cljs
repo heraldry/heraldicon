@@ -17,9 +17,9 @@
 ;; TODO: context
 (defn cottise-name [{:keys [path] :as context}]
   (let [cottise-key (last path)
-        ordinary-type (interface/get-raw-data (c/<< context :path (-> (drop-last 2 path)
-                                                                      vec
-                                                                      (conj :type))))]
+        ordinary-type (interface/get-raw-data (-> context
+                                                  (c/-- 2)
+                                                  (c/++ :type)))]
     (-> (cond
           (#{:heraldry.ordinary.type/pale}
            ordinary-type) {:cottise-1 "1 left"

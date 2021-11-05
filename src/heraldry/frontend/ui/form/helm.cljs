@@ -44,7 +44,7 @@
   (let [{:keys [helmet?
                 torse?]} @(rf/subscribe [:get-helm-status path])
         components-path (conj path :components)
-        num-helms (interface/get-list-size (c/<< context :path (-> path drop-last vec)))
+        num-helms (interface/get-list-size (c/-- context))
         num-components (interface/get-list-size (c/++ context :components))
         add-menu (cond-> []
                    (not helmet?) (conj {:title {:en "Helmet"

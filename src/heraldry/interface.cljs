@@ -65,7 +65,8 @@
                                           (keep (fn [idx]
                                                   (let [option-path (subvec path 0 idx)
                                                         relative-path (subvec path idx)
-                                                        options (component-options (c/<< context :path option-path))]
+                                                        options (component-options
+                                                                 (c/<< context :path option-path))]
                                                     (when options
                                                       [options relative-path]))))
                                           first)
