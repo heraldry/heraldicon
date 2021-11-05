@@ -97,9 +97,11 @@
       (= texture :none) (dissoc :texture-displacement?)
       (not= mode :colours) (dissoc :theme))))
 
-(defmethod interface/component-options :heraldry.component/render-options [path data]
-  (cond-> (options data)
-    (= path [:collection-form :render-options]) (assoc :escutcheon {:type :choice
+(defmethod interface/component-options :heraldry.component/render-options [context]
+  (cond-> (options (interface/get-raw-data context))
+    (-> context
+        :path
+        (= [:collection-form :render-options])) (assoc :escutcheon {:type :choice
                                                                     :choices escutcheon/choices
                                                                     :default :none
                                                                     :ui {:label {:en "Escutcheon"

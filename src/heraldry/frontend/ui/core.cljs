@@ -100,7 +100,7 @@
           new-element-path (if selected-element-path-fn
                              (selected-element-path-fn new-element-path (last elements) elements)
                              new-element-path)
-          added-type (interface/effective-component-type new-element-path (:type value))]
+          added-type (interface/raw-effective-component-type new-element-path (:type value))]
       (-> db
           (assoc-in path elements)
           (state/ui-component-node-select new-element-path :open? true)

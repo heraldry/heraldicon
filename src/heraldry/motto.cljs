@@ -72,5 +72,5 @@
           (= motto-type :heraldry.motto.type/slogan) (assoc-in [:origin :point :default] :top))
         (update :origin position/adjust-options))))
 
-(defmethod interface/component-options :heraldry.component/motto [_path data]
-  (motto-options data))
+(defmethod interface/component-options :heraldry.component/motto [context]
+  (motto-options (interface/get-raw-data context)))

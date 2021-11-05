@@ -191,8 +191,8 @@
                     [[:type]
                      [:z-index]]))))
 
-(defmethod interface/component-options :heraldry.component/ribbon-segment [_path data]
-  (segment-options data))
+(defmethod interface/component-options :heraldry.component/ribbon-segment [context]
+  (segment-options (interface/get-raw-data context)))
 
 (defn project-path-to [curve new-start new-end & {:keys [reverse?]}]
   (let [original-start (ffirst curve)

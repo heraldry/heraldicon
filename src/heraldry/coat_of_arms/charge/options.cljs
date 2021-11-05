@@ -204,8 +204,9 @@
                                      (assoc :ui {:label strings/fimbriation
                                                  :form-type :fimbriation}))))))))
 
-(defmethod interface/component-options :heraldry.component/charge [path data]
-  (options data :ornament? (some #(= % :ornaments) path)))
+(defmethod interface/component-options :heraldry.component/charge [context]
+  (options (interface/get-raw-data context)
+           :ornament? (some #(= % :ornaments) (:path context))))
 
 (defn title [context]
   (let [charge-type (interface/get-raw-data (c/++ context :type))

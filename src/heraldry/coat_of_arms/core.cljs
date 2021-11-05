@@ -12,8 +12,8 @@
 (defn options [_coat-of-arms]
   default-options)
 
-(defmethod interface/component-options :heraldry.component/coat-of-arms [_path data]
-  (options data))
+(defmethod interface/component-options :heraldry.component/coat-of-arms [context]
+  (options (interface/get-raw-data context)))
 
 (defmethod interface/blazon-component :heraldry.component/coat-of-arms [context]
   (interface/blazon (-> context
