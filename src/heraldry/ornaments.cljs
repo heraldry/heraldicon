@@ -5,5 +5,5 @@
 (def default-options
   {})
 
-(defmethod interface/component-options :heraldry.component/ornaments [_path _data]
+(defmethod interface/component-options :heraldry.component/ornaments [_context]
   default-options)

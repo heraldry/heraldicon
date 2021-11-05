@@ -9,5 +9,5 @@
    :reference {:ui {:label strings/arms
                     :form-type :arms-reference-select}}})
 
-(defmethod interface/component-options :heraldry.component/collection-element [_path _data]
+(defmethod interface/component-options :heraldry.component/collection-element [_context]
   default-options)

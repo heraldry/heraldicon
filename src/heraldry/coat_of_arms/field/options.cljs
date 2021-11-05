@@ -815,11 +815,12 @@
             (-> field :counterchanged?) (select-keys [:counterchanged?
                                                       :manual-blazon]))))))
 
-(defmethod interface/component-options :heraldry.component/field [path data]
-  (let [root-field? (-> path drop-last last (= :coat-of-arms))
+(defmethod interface/component-options :heraldry.component/field [context]
+  (let [path (:path context)
+        root-field? (-> path drop-last last (= :coat-of-arms))
         subfield? (-> path last int?)
         semy-charge? (->> path (take-last 2) (= [:charge :field]))]
-    (cond-> (options data)
+    (cond-> (options (interface/get-raw-data context))
       (or root-field?
           semy-charge?) (->
                          (dissoc :inherit-environment?)

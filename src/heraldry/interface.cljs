@@ -29,46 +29,32 @@
      (get-in context (drop 1 path))
      @(rf/subscribe [:get path]))))
 
-(defn effective-component-type
-  ([path raw-type]
-   (effective-component-type {:path path
-                              :raw-type raw-type}))
+(defn raw-effective-component-type [path raw-type]
+  (cond
+    (-> path last (= :arms-form)) :heraldry.component/arms-general
+    (-> path last #{:charge-form
+                    :charge-data}) :heraldry.component/charge-general
+    (-> path last (= :collection-form)) :heraldry.component/collection-general
+    (-> path last (= :collection)) :heraldry.component/collection
+    (->> path drop-last (take-last 2) (= [:collection :elements])) :heraldry.component/collection-element
+    (-> path last (= :render-options)) :heraldry.component/render-options
+    (-> path last (= :helms)) :heraldry.component/helms
+    (-> path last (= :ribbon-form)) :heraldry.component/ribbon-general
+    (-> path last (= :coat-of-arms)) :heraldry.component/coat-of-arms
+    (-> path last (= :ornaments)) :heraldry.component/ornaments
+    (keyword? raw-type) (type->component-type raw-type)
+    (and (-> path last keyword?)
+         (-> path last name (s/starts-with? "cottise"))) :heraldry.component/cottise
+    :else nil))
 
-  ([context]
-   (if (vector? context)
-     (effective-component-type {:path context
-                                :raw-type @(rf/subscribe [:get (conj context :type)])})
-     (let [{:keys [path raw-type]} context
-           raw-type (or raw-type (get-raw-data (c/++ context :type)))]
-       (cond
-         (-> path last (= :arms-form)) :heraldry.component/arms-general
-         (-> path last #{:charge-form
-                         :charge-data}) :heraldry.component/charge-general
-         (-> path last (= :collection-form)) :heraldry.component/collection-general
-         (-> path last (= :collection)) :heraldry.component/collection
-         (->> path drop-last (take-last 2) (= [:collection :elements])) :heraldry.component/collection-element
-         (-> path last (= :render-options)) :heraldry.component/render-options
-         (-> path last (= :helms)) :heraldry.component/helms
-         (-> path last (= :ribbon-form)) :heraldry.component/ribbon-general
-         (-> path last (= :coat-of-arms)) :heraldry.component/coat-of-arms
-         (-> path last (= :ornaments)) :heraldry.component/ornaments
-         (keyword? raw-type) (type->component-type raw-type)
-         (and (-> path last keyword?)
-              (-> path last name (s/starts-with? "cottise"))) :heraldry.component/cottise
-         :else nil)))))
+(defn effective-component-type [context]
+  (raw-effective-component-type (:path context)
+                                (get-raw-data (c/++ context :type))))
 
-(defmulti component-options (fn [path data]
-                              (effective-component-type path (:type data))))
+(defmulti component-options effective-component-type)
 
-(defmethod component-options nil [_path _data]
+(defmethod component-options nil [_context]
   nil)
-
-(defn get-options
-  ([path context]
-   (get-options (assoc context :path path)))
-
-  ([{:keys [path] :as context}]
-   (component-options path (get-raw-data path context))))
 
 (defn get-relevant-options
   ([path context]
@@ -79,7 +65,7 @@
                                           (keep (fn [idx]
                                                   (let [option-path (subvec path 0 idx)
                                                         relative-path (subvec path idx)
-                                                        options (get-options option-path context)]
+                                                        options (component-options (c/<< context :path option-path))]
                                                     (when options
                                                       [options relative-path]))))
                                           first)
@@ -145,21 +131,13 @@
 (defn render-option [key {:keys [render-options-path] :as context}]
   (get-sanitized-data (conj render-options-path key) context))
 
-(defmulti render-component (fn [context]
-                             (effective-component-type
-                              (:path context)
-                              ;; TODO: need the raw value here for type
-                              (get-raw-data (c/++ context :type)))))
+(defmulti render-component effective-component-type)
 
 (defmethod render-component nil [context]
   (log/warn :not-implemented "render-component" context)
   [:<>])
 
-(defmulti blazon-component (fn [context]
-                             (effective-component-type
-                              (:path context)
-                              ;; TODO: need the raw value here for type
-                              (get-raw-data (c/++ context :type)))))
+(defmulti blazon-component effective-component-type)
 
 (defmethod blazon-component nil [context]
   (log/warn "blazon: unknown component" context)

@@ -14,13 +14,6 @@
   (fn [value [_ _path]]
     (count value)))
 
-(rf/reg-sub :get-options
-  (fn [[_ path] _]
-    (rf/subscribe [:get path]))
-
-  (fn [data [_ path]]
-    (interface/component-options path data)))
-
 (rf/reg-sub :get-relevant-options
   (fn [_ [_ path]]
     ;; TODO: can this be done by feeding the subscriptions in again?
@@ -30,7 +23,7 @@
          (keep (fn [idx]
                  (let [option-path (subvec path 0 idx)
                        relative-path (subvec path idx)
-                       options @(rf/subscribe [:get-options option-path])]
+                       options (interface/component-options {:path option-path})]
                    (when-let [relevant-options (get-in options relative-path)]
                      relevant-options))))
          first)))
