@@ -820,6 +820,7 @@
         root-field? (-> path drop-last last (= :coat-of-arms))
         subfield? (-> path last int?)
         semy-charge? (->> path (take-last 2) (= [:charge :field]))]
+    ;; TODO: all this likely now can be done in the options function
     (cond-> (options (interface/get-raw-data context))
       (or root-field?
           semy-charge?) (->
