@@ -165,7 +165,7 @@
     [parts overlap outlines]))
 
 (defmethod field-interface/render-field field-type
-  [{:keys [path environment] :as context}]
+  [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
@@ -175,7 +175,7 @@
         [parts overlap outlines] (barry-parts top-left bottom-right line outline? context)]
     [:<>
      [shared/make-subfields
-      path parts
+      context parts
       overlap
-      environment context]
+      environment]
      outlines]))

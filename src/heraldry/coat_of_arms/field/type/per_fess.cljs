@@ -18,7 +18,7 @@
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
 
 (defmethod field-interface/render-field field-type
-  [{:keys [path environment] :as context}]
+  [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         origin (interface/get-sanitized-data (c/++ context :origin))
         outline? (or (interface/render-option :outline? context)
@@ -73,7 +73,7 @@
                  bottom-right]]]]
     [:<>
      [shared/make-subfields
-      path parts
+      context parts
       [:all nil]
-      environment context]
+      environment]
      [line/render line [line-one-data] left outline? context]]))
