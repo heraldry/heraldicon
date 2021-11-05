@@ -54,17 +54,19 @@
 
 ;; TODO: this is one of the biggest potential bottle necks
 (defn get-relevant-options [{:keys [path] :as context}]
-  (let [[options relative-path] (or (->> (range (count path) 0 -1)
-                                         (keep (fn [idx]
-                                                 (let [option-path (subvec path 0 idx)
-                                                       relative-path (subvec path idx)
-                                                       options (component-options
-                                                                (c/<< context :path option-path))]
-                                                   (when options
-                                                     [options relative-path]))))
-                                         first)
-                                    [nil nil])]
-    (get-in options relative-path)))
+  (if (-> path first (not= :context))
+    @(rf/subscribe [:get-relevant-options path])
+    (let [[options relative-path] (or (->> (range (count path) 0 -1)
+                                           (keep (fn [idx]
+                                                   (let [option-path (subvec path 0 idx)
+                                                         relative-path (subvec path idx)
+                                                         options (component-options
+                                                                  (c/<< context :path option-path))]
+                                                     (when options
+                                                       [options relative-path]))))
+                                           first)
+                                      [nil nil])]
+      (get-in options relative-path))))
 
 (defn get-element-indices [{:keys [path] :as context}]
   (let [elements (if (-> path first (= :context))
