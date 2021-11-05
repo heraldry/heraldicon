@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.core
   (:require
+   [heraldry.context :as c]
    [heraldry.frontend.history.state] ;; needed for side effects
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
@@ -197,7 +198,7 @@
            (if menu
              ^{:key idx}
              [hover-menu/hover-menu
-              (conj path idx)
+              (c/++ context idx)
               title
               menu
               [:i.ui-icon {:class icon

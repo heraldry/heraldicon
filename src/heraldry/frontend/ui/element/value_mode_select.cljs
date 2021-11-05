@@ -75,7 +75,7 @@
                       :margin-left "0.5em"
                       :position "absolute"}}
         [hover-menu/hover-menu
-         path
+         context
          strings/mode
          menu
          [:i.ui-icon {:class "fas fa-cog"}]
