@@ -3,7 +3,7 @@
    [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
-(defn search-field [{:keys [path] :as context} & {:keys [on-change]}]
+(defn search-field [context & {:keys [on-change]}]
   (let [current-value (interface/get-raw-data context)]
     [:div {:style {:display "inline-block"
                    :border-radius "999px"
@@ -21,7 +21,7 @@
               :on-change #(let [value (-> % .-target .-value)]
                             (if on-change
                               (on-change value)
-                              (rf/dispatch-sync [:set path value])))
+                              (rf/dispatch-sync [:set context value])))
               :style {:outline "none"
                       :border "0"
                       :margin-left "0.5em"

@@ -9,8 +9,8 @@
    [heraldry.static :as static]
    [heraldry.util :as util]))
 
-(defn escutcheon-choice [path key display-name & {:keys [selected?]}]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])}
+(defn escutcheon-choice [context key display-name & {:keys [selected?]}]
+  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set context key])}
    [:img.clickable {:style {:width "4em"
                             :vertical-align "top"}
                     :src (static/static-url
@@ -19,7 +19,7 @@
     [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
-(defn escutcheon-select [{:keys [path] :as context}]
+(defn escutcheon-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option
@@ -37,7 +37,7 @@
                                                                                           :vertical-align "top"}}
          (for [[display-name key] choices]
            ^{:key key}
-           [escutcheon-choice path key display-name :selected? (= key value)])]
+           [escutcheon-choice context key display-name :selected? (= key value)])]
         [value-mode-select/value-mode-select context]]])))
 
 (defmethod ui-interface/form-element :escutcheon-select [context]

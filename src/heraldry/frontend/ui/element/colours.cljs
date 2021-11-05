@@ -110,7 +110,7 @@
                  [:td {:style {:padding-left "0.5em"}}
                   [:select {:value (util/keyword->str value)
                             :on-change #(let [selected (keyword (-> % .-target .-value))]
-                                          (rf/dispatch [:set (conj path colour) selected]))
+                                          (rf/dispatch [:set (c/++ context colour) selected]))
                             :style {:vertical-align "top"}}
                    (doall
                     (for [[group-name & group-choices] attributes/tincture-modifier-for-charge-choices]
@@ -137,9 +137,9 @@
                                :layer-separator} value)
                     [:select {:value qualifier
                               :on-change #(let [selected (keyword (-> % .-target .-value))]
-                                            (rf/dispatch [:set (conj path colour) (if (= selected :none)
-                                                                                    value
-                                                                                    [value selected])]))
+                                            (rf/dispatch [:set (c/++ context colour) (if (= selected :none)
+                                                                                       value
+                                                                                       [value selected])]))
                               :style {:vertical-align "top"}}
                      (doall
                       (for [[group-name & group-choices] attributes/tincture-modifier-qualifier-choices]

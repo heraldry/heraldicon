@@ -11,8 +11,8 @@
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
-(defn tincture-choice [path key display-name & {:keys [selected?]}]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set path key])
+(defn tincture-choice [context key display-name & {:keys [selected?]}]
+  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set context key])
                         :style {:border (if selected?
                                           "1px solid #000"
                                           "1px solid transparent")
@@ -24,7 +24,7 @@
     [:h3 {:style {:text-align "center"}} [tr display-name]]
     [:i]]])
 
-(defn tincture-select [{:keys [path] :as context} & {:keys [default-option]}]
+(defn tincture-select [context & {:keys [default-option]}]
   (when-let [option (or (interface/get-relevant-options context)
                         default-option)]
     (let [current-value (interface/get-raw-data context)
@@ -46,7 +46,7 @@
              (doall
               (for [[display-name key] group]
                 ^{:key display-name}
-                [tincture-choice path key display-name :selected? (= key value)]))]))]
+                [tincture-choice context key display-name :selected? (= key value)]))]))]
         [value-mode-select/value-mode-select context
          :default-option default-option]]])))
 

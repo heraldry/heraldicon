@@ -7,7 +7,7 @@
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
-(defn checkbox [{:keys [path] :as context} & {:keys [disabled? on-change style option]}]
+(defn checkbox [context & {:keys [disabled? on-change style option]}]
   (when-let [option (or option
                         (interface/get-relevant-options context))]
     (let [component-id (util/id "checkbox")
@@ -29,7 +29,7 @@
                 :on-change #(let [new-checked? (-> % .-target .-checked)]
                               (if on-change
                                 (on-change new-checked?)
-                                (rf/dispatch [:set path new-checked?])))}]
+                                (rf/dispatch [:set context new-checked?])))}]
        [:label.for-checkbox {:for component-id} [tr label]]
        [value-mode-select/value-mode-select context :disabled? disabled?]])))
 
