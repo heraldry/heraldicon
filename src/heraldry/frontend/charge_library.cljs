@@ -8,6 +8,7 @@
    [clojure.walk :as walk]
    [com.wsscode.common.async-cljs :refer [<? go-catch]]
    [heraldry.colour :as colour]
+   [heraldry.context :as c]
    [heraldry.frontend.api.request :as api-request]
    [heraldry.frontend.attribution :as attribution]
    [heraldry.frontend.charge :as charge]
@@ -200,18 +201,18 @@
         {:keys [result
                 environment]} (render/coat-of-arms
                                (-> shared/coa-select-option-context
-                                   (assoc :path [:context :coat-of-arms])
-                                   (assoc :ui-show-colours
-                                          (->> @(rf/subscribe [:get [:ui :colours :show]])
-                                               (keep (fn [value]
-                                                       (when (second value)
-                                                         (first value))))
-                                               set))
-                                   (assoc :render-options-path
-                                          (conj example-coa-db-path :render-options))
-                                   (assoc :coat-of-arms
-                                          (-> coat-of-arms
-                                              (assoc-in [:field :components 0 :data] prepared-charge-data))))
+                                   (c/<< :path [:context :coat-of-arms])
+                                   (c/<< :ui-show-colours
+                                         (->> @(rf/subscribe [:get [:ui :colours :show]])
+                                              (keep (fn [value]
+                                                      (when (second value)
+                                                        (first value))))
+                                              set))
+                                   (c/<< :render-options-path
+                                         (conj example-coa-db-path :render-options))
+                                   (c/<< :coat-of-arms
+                                         (-> coat-of-arms
+                                             (assoc-in [:field :components 0 :data] prepared-charge-data))))
                                100)
         {:keys [width height]} environment]
     [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))

@@ -3,7 +3,8 @@
    [heraldry.config :as config]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]
-   [heraldry.util :as util]))
+   [heraldry.util :as util]
+   [heraldry.context :as c]))
 
 (def license-choices
   [[strings/none :none]
@@ -168,12 +169,11 @@
                                  (dissoc :source-creator-name)
                                  (dissoc :source-creator-link)))))
 
-(defn full-url [{:keys [path]
-                 :as context} base]
-  (when-let [object-id (interface/get-raw-data (conj path :id) context)]
-    (let [version (interface/get-raw-data (conj path :version) context)
+(defn full-url [context base]
+  (when-let [object-id (interface/get-raw-data (c/++ context :id))]
+    (let [version (interface/get-raw-data (c/++ context :version))
           version (if (zero? version)
-                    (interface/get-raw-data (conj path :latest-version) context)
+                    (interface/get-raw-data (c/++ context :latest-version))
                     version)]
       (str (config/get :heraldry-url) base (util/id-for-url object-id) "/" version))))
 

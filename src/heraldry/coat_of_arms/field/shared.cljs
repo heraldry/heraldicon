@@ -64,7 +64,7 @@
                                            parent-field-path
                                            parent-field-environment] :as context} render-fn]
   (if parent-field-path
-    (let [counterchange-tinctures (interface/get-counterchange-tinctures parent-field-path context)
+    (let [counterchange-tinctures (interface/get-counterchange-tinctures (c/<< context :path parent-field-path))
           context (-> context
                       (update :counterchanged-paths conj path)
                       (add-tinctures-to-mapping counterchange-tinctures))]
