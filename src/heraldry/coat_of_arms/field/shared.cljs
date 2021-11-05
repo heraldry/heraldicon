@@ -70,8 +70,8 @@
                       (add-tinctures-to-mapping counterchange-tinctures))]
       [:<>
        [render-fn (-> context
-                      (assoc :path parent-field-path)
-                      (assoc :environment parent-field-environment))]
+                      (c/<< :path parent-field-path)
+                      (c/<< :environment parent-field-environment))]
        [render-components context]])
     [:<>]))
 
