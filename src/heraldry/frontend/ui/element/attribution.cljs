@@ -41,8 +41,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path label link-name {:style {:width "31em"}
-                                               :class "submenu-attribution"}
+        [submenu/submenu context label link-name {:style {:width "31em"}
+                                                  :class "submenu-attribution"}
          [:<>
           (when charge-presets?
             [select/raw-select

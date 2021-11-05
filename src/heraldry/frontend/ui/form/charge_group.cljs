@@ -214,8 +214,7 @@
        [:i]]]]))
 
 (defn strip-form [context type-str]
-  (let [path (:path context)
-        num-slots (interface/get-list-size (c/++ context :slots))
+  (let [num-slots (interface/get-list-size (c/++ context :slots))
         stretch (interface/get-sanitized-data (c/++ context :stretch))
         offset (interface/get-sanitized-data (c/++ context :offset))
         title (util/combine
@@ -231,8 +230,8 @@
                 (when-not (zero? offset)
                   strings/shifted)])]
     [:div {:style {:position "relative"}}
-     [submenu/submenu path type-str title {:style {:width "20em"}
-                                           :class "submenu-strip-form"}
+     [submenu/submenu context type-str title {:style {:width "20em"}
+                                              :class "submenu-strip-form"}
       (ui-interface/form-elements
        context
        [:slots
@@ -260,7 +259,7 @@
         num-strips (interface/get-list-size (c/++ context :strips))]
     [:div {:style {:display "table-cell"
                    :vertical-align "top"}}
-     [charge-group-preset-select/charge-group-preset-select path]
+     [charge-group-preset-select/charge-group-preset-select context]
 
      [ui-interface/form-element (c/++ context :origin)]
 

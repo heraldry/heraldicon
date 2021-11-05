@@ -61,8 +61,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path {:en "Select Ordinary"
-                               :de "Heroldsbild auswählen"} (get ordinary-options/ordinary-map value) {:style {:width "21.5em"}}
+        [submenu/submenu context {:en "Select Ordinary"
+                                  :de "Heroldsbild auswählen"} (get ordinary-options/ordinary-map value) {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
            [ordinary-type-choice path key display-name :selected? (= key value)])]

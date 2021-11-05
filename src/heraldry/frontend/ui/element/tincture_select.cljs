@@ -36,8 +36,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path {:en "Select Tincture"
-                               :de "Tinktur auswählen"} (get tincture-map value) {:style {:width "22em"}}
+        [submenu/submenu context {:en "Select Tincture"
+                                  :de "Tinktur auswählen"} (get tincture-map value) {:style {:width "22em"}}
          (doall
           (for [[group-name & group] choices]
             ^{:key group-name}

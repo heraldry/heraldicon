@@ -41,8 +41,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path label link-name {:style {:width "22em"}
-                                               :class "submenu-semy-layout"}
+        [submenu/submenu context label link-name {:style {:width "22em"}
+                                                  :class "submenu-semy-layout"}
          (ui-interface/form-elements
           context
           [:num-fields-x

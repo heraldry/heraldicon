@@ -36,7 +36,7 @@
   (fn [db [_ path]]
     (assoc-in db (conj state/ui-submenu-open?-path path) false)))
 
-(defn submenu [path title link-name extra & content]
+(defn submenu [{:keys [path]} title link-name extra & content]
   (let [submenu-id path
         submenu-open? @(rf/subscribe [:ui-submenu-open? submenu-id])]
     [:div.ui-submenu-setting {:style {:display "inline-block"}

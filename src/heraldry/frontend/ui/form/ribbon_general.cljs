@@ -195,8 +195,8 @@
                            ", layer " z-index)]
 
     [:div {:style {:position "relative"}}
-     [submenu/submenu (:path context) nil title {:style {:width "28em"}
-                                                 :class "submenu-segment-form"}
+     [submenu/submenu context nil title {:style {:width "28em"}
+                                         :class "submenu-segment-form"}
       (ui-interface/form-elements
        context
        [:type

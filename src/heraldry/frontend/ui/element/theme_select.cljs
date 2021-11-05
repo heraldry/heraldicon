@@ -37,8 +37,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path {:en "Select Colour Theme"
-                               :de "Farbschema auswählen"}
+        [submenu/submenu context {:en "Select Colour Theme"
+                                  :de "Farbschema auswählen"}
          (get tincture/theme-map value) {:style {:width "22em"}}
          (for [[group-name & group] choices]
            ^{:key group-name}

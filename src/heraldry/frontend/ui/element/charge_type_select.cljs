@@ -43,8 +43,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu path {:en "Select Charge"
-                               :de "Wappenfigur auswählen"}
+        [submenu/submenu context {:en "Select Charge"
+                                  :de "Wappenfigur auswählen"}
          (charge-options/title {:path charge-path}) {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
