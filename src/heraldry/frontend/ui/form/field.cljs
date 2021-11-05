@@ -71,25 +71,25 @@
         ^{:key idx}
         [tincture-select/tincture-select (c/++ context :fields idx :tincture)])])])
 
-(defn parent-path [{:keys [path] :as context}]
+(defn parent-context [{:keys [path] :as context}]
   (let [index (last path)
-        parent-path (->> path (drop-last 2) vec)
-        parent-type (interface/get-raw-data (c/<< context :path (conj parent-path :type)))]
+        parent-context (c/-- context 2)
+        parent-type (interface/get-raw-data (c/++ parent-context :type))]
     (when (and (int? index)
                (-> parent-type (or :dummy) namespace (= "heraldry.field.type")))
-      parent-path)))
+      parent-context)))
 
 (defn name-prefix-for-part [{:keys [path] :as context}]
-  (when-let [parent-path (parent-path context)]
-    (let [parent-type (interface/get-raw-data (c/<< context :path (conj parent-path :type)))]
+  (when-let [parent-context (parent-context context)]
+    (let [parent-type (interface/get-raw-data (c/++ parent-context :type))]
       (-> (field/part-name parent-type (last path))
           util/upper-case-first))))
 
 (defn non-mandatory-part-of-parent? [{:keys [path] :as context}]
   (let [index (last path)]
     (when (int? index)
-      (when-let [parent-path (parent-path context)]
-        (>= index (field/mandatory-part-count (c/<< context :path parent-path)))))))
+      (when-let [parent-context (parent-context context)]
+        (>= index (field/mandatory-part-count parent-context))))))
 
 (defmethod ui-interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
   (let [field-type (interface/get-raw-data (c/++ context :type))
@@ -99,11 +99,11 @@
     {:title (util/combine ": "
                           [(name-prefix-for-part context)
                            (if ref?
-                             (str "like " (name-prefix-for-part (c/<< context :path
-                                                                      (-> path
-                                                                          drop-last
-                                                                          vec
-                                                                          (conj (interface/get-raw-data (c/++ context :index)))))))
+                             (str "like " (name-prefix-for-part
+                                           (-> context
+                                               c/--
+                                               (c/++ (interface/get-raw-data
+                                                      (c/++ context :index))))))
                              (field/title context))])
      :validation @(rf/subscribe [:validate-field path])
      :buttons (if ref?

@@ -66,7 +66,8 @@
                                            parent-field-path
                                            parent-field-environment] :as context}]
   (if parent-field-path
-    (let [counterchange-tinctures (interface/get-counterchange-tinctures (c/<< context :path parent-field-path))
+    (let [counterchange-tinctures (interface/get-counterchange-tinctures
+                                   (c/<< context :path parent-field-path))
           context (-> context
                       (update :counterchanged-paths conj path)
                       (add-tinctures-to-mapping counterchange-tinctures))]
@@ -87,18 +88,18 @@
           ;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
           ;; adding it to the choices in the option would affect the UI
           field-type (interface/get-raw-data (c/++ context :type))
-          field-path (if (= field-type :heraldry.field.type/ref)
-                       (-> path
-                           drop-last
-                           vec
-                           (conj (interface/get-raw-data (c/++ context :index))))
-                       path)]
+          field-context (cond-> context
+                          (= field-type
+                             :heraldry.field.type/ref) (->
+                                                        c/--
+                                                        (c/++ (interface/get-raw-data
+                                                               (c/++ context :index)))))]
       [:<>
        [:g {:style (when (not svg-export?)
                      {:pointer-events "visiblePainted"
                       :cursor "pointer"})
             :transform transform}
-        [ui-interface/render-field (assoc context :path field-path)]
+        [ui-interface/render-field field-context]
         [render-components
          (-> context
              (assoc :parent-field-path path)
@@ -166,8 +167,5 @@
                    parts mask-overlaps parent-environment))
 
 (defn make-subfield [context part mask-overlap]
-  (-make-subfields (c/<< context :path (-> context
-                                           :path
-                                           drop-last
-                                           vec))
+  (-make-subfields (c/-- context)
                    [context] [part] [mask-overlap] (:environment context)))

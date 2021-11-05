@@ -99,12 +99,9 @@
                             :opposite-line opposite-line
                             :geometry {:size thickness}
                             :cottising {next-cottise-key (interface/get-raw-data
-                                                          (update context :path
-                                                                  (fn [path]
-                                                                    (-> path
-                                                                        drop-last
-                                                                        vec
-                                                                        (conj cottise-2-key)))))}
+                                                          (-> context
+                                                              c/--
+                                                              (c/++ cottise-2-key)))}
                             :origin {:point :fess
                                      :offset-y [:force (offset-y-fn
                                                         (-> environment :points :fess :y)
@@ -135,12 +132,9 @@
                             :opposite-line opposite-line
                             :geometry {:size thickness}
                             :cottising {next-cottise-key (interface/get-raw-data
-                                                          (update context :path
-                                                                  (fn [path]
-                                                                    (-> path
-                                                                        drop-last
-                                                                        vec
-                                                                        (conj cottise-2-key)))))}
+                                                          (-> context
+                                                              c/--
+                                                              (c/++ cottise-2-key)))}
                             :origin {:point :fess
                                      :offset-x [:force (offset-x-fn
                                                         (-> environment :points :fess :y)
@@ -185,12 +179,9 @@
                             :opposite-line opposite-line
                             :geometry {:size thickness}
                             :cottising {next-cottise-key (interface/get-raw-data
-                                                          (update context :path
-                                                                  (fn [path]
-                                                                    (-> path
-                                                                        drop-last
-                                                                        vec
-                                                                        (conj cottise-2-key)))))}
+                                                          (-> context
+                                                              c/--
+                                                              (c/++ cottise-2-key)))}
                             :origin {:point :fess
                                      :offset-x [:force (-> fess-offset
                                                            :x
@@ -246,12 +237,9 @@
                             :opposite-line opposite-line
                             :geometry {:size thickness}
                             :cottising {next-cottise-key (interface/get-raw-data
-                                                          (update context :path
-                                                                  (fn [path]
-                                                                    (-> path
-                                                                        drop-last
-                                                                        vec
-                                                                        (conj cottise-2-key)))))}
+                                                          (-> context
+                                                              c/--
+                                                              (c/++ cottise-2-key)))}
                             :origin {:point :fess
                                      :offset-x [:force (-> fess-offset
                                                            :x

@@ -16,15 +16,9 @@
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
-(defn tincture-modifiers-submenu [{:keys [path] :as context}]
-  (let [preview? (interface/get-raw-data (c/<< context :path (-> path
-                                                                 drop-last
-                                                                 vec
-                                                                 (conj :preview?))))
-        variant (interface/get-raw-data (c/<< context :path (-> path
-                                                                drop-last
-                                                                vec
-                                                                (conj :variant))))]
+(defn tincture-modifiers-submenu [context]
+  (let [preview? (interface/get-raw-data (-> context c/-- (c/++ :preview?)))
+        variant (interface/get-raw-data (-> context c/-- (c/++ :variant)))]
     (when (or preview?
               variant)
       (let [options (interface/get-relevant-options context)
