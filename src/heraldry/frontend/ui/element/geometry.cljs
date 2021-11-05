@@ -1,6 +1,5 @@
 (ns heraldry.frontend.ui.element.geometry
   (:require
-   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]

@@ -166,7 +166,7 @@
                                :height 200}}
         {:keys [slot-positions
                 slot-spacing]} (charge-group/calculate-points context)
-        num-charges (interface/get-list-size (conj path :charges) context)
+        num-charges (interface/get-list-size (c/++ context :charges))
         dot-size (/ (min (:width slot-spacing)
                          (:height slot-spacing))
                     2

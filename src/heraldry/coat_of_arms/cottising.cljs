@@ -92,7 +92,7 @@
           outline? (interface/get-sanitized-data (c/++ context :outline?))]
       [ordinary-interface/render-ordinary
        (-> context
-           (assoc :path [:context :cottise])
+           (c/<< :path [:context :cottise])
            (assoc :cottise {:type :heraldry.ordinary.type/fess
                             :field (interface/get-raw-data (c/++ context :field))
                             :line line
@@ -128,7 +128,7 @@
           outline? (interface/get-sanitized-data (c/++ context :outline?))]
       [ordinary-interface/render-ordinary
        (-> context
-           (assoc :path [:context :cottise])
+           (c/<< :path [:context :cottise])
            (assoc :cottise {:type :heraldry.ordinary.type/pale
                             :field (interface/get-raw-data (c/++ context :field))
                             :line line
@@ -176,7 +176,7 @@
           outline? (interface/get-sanitized-data (c/++ context :outline?))]
       [ordinary-interface/render-ordinary
        (-> context
-           (assoc :path [:context :cottise])
+           (c/<< :path [:context :cottise])
            (assoc :cottise {:type (if sinister?
                                     :heraldry.ordinary.type/bend-sinister
                                     :heraldry.ordinary.type/bend)
@@ -239,7 +239,7 @@
           outline? (interface/get-sanitized-data (c/++ context :outline?))]
       [ordinary-interface/render-ordinary
        (-> context
-           (assoc :path [:context :cottise])
+           (c/<< :path [:context :cottise])
            (assoc :cottise {:type :heraldry.ordinary.type/chevron
                             :field (interface/get-raw-data (c/++ context :field))
                             :line line

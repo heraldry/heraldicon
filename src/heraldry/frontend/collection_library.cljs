@@ -3,6 +3,7 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.common.async-cljs :refer [<?]]
    [heraldry.coat-of-arms.default :as default]
+   [heraldry.context :as c]
    [heraldry.font :as font]
    [heraldry.frontend.api.request :as api-request]
    [heraldry.frontend.attribution :as attribution]
@@ -125,17 +126,17 @@
         {:keys [result
                 environment]} (render/coat-of-arms
                                (-> shared/coa-select-option-context
-                                   (assoc :path [:context :coat-of-arms])
-                                   (assoc :render-options-path [:context :render-options])
-                                   (assoc :render-options (-> arms-data
-                                                              :render-options
-                                                              (merge (cond-> collection-render-options
-                                                                       (-> collection-render-options
-                                                                           :escutcheon (= :none)) (dissoc :escutcheon)))))
-                                   (assoc :coat-of-arms
-                                          (if-let [coat-of-arms (:coat-of-arms arms-data)]
-                                            coat-of-arms
-                                            default/coat-of-arms)))
+                                   (c/<< :path [:context :coat-of-arms])
+                                   (c/<< :render-options-path [:context :render-options])
+                                   (c/<< :render-options (-> arms-data
+                                                             :render-options
+                                                             (merge (cond-> collection-render-options
+                                                                      (-> collection-render-options
+                                                                          :escutcheon (= :none)) (dissoc :escutcheon)))))
+                                   (c/<< :coat-of-arms
+                                         (if-let [coat-of-arms (:coat-of-arms arms-data)]
+                                           coat-of-arms
+                                           default/coat-of-arms)))
                                size)
 
         {:keys [width height]} environment]

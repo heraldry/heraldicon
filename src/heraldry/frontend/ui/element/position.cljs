@@ -1,7 +1,6 @@
 (ns heraldry.frontend.ui.element.position
   (:require
    [heraldry.coat-of-arms.position :as position]
-   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
