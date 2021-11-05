@@ -5,7 +5,7 @@
 (def default-options
   {:size {:type :range
           :min 5
-          :max 100
+          :max 150
           :default 50
           :ui {:label strings/size
                :step 0.1}}
