@@ -7,6 +7,10 @@ I've started to learn about heraldry. There are many resources online, but I
 didn't find a lot of software to create coats of arms. And the software I found
 felt limited and hard to use.
 
+There's a [[https://discord.gg/EGbMW8dth2][Discord server]] now for feature requests, bug reports, or general
+discussion. Feel free to say hello, if also helps getting a sense of who is
+using this and what for, so future features can be prioritized accordingly. :)
+
 ** Goals
 - Implement a system to create and render data that describes coats of
   arms and ultimately entire heraldic achievements.
@@ -14,19 +18,16 @@ felt limited and hard to use.
 - Create precise, canonical results (if possible) that mainly use the
   description of the coat of arms and heraldic rules, i.e. it is not an SVG
   editor with a library of elements to arrange manually.
-- In cases where interpretation or manual tweaking is necessary, include
-  rendering hints, but those are strictly separate from any data that is covered
-  by blazonry.
-- Validate coat of arms data against heraldic rules and potentially rule sets,
-  e.g. specific to a period in time or region.
-
-** Potential future goals
+- Provide a wide array of emblazonment tweaks that aren't necessarily covered in
+  the blazonry, as different artists, regions, periods had different styles.
+- Validate coat of arms data against heraldic rules and potentially additional
+  rule sets, e.g. specific to a period in time or region.
 - An open database of historical coats of arms with their metadata and their
   rendering.
 
 ** Design decisions
 *** Language
-Clojure(Script) is awesome and sparks joy.
+Clojure(Script) is awesome.
 
 *** Intermediate data format
 It's no attempt to re-invent [[https://en.wikipedia.org/wiki/Blazon][Blazonry]], but the renderer will need some data
@@ -39,27 +40,25 @@ Conversion between this data representation and blazonry in both directions is
 still the goal.
 
 This data structure also is not intended for human consumption or manipulation,
-it is only the source of truth behind the curtains. And the editor is the tool
-to wrap around it.
+it is only the source of truth behind the curtains. And the user interface is
+the tool to wrap around it.
 
 I think [[https://github.com/edn-format/edn][EDN]] is perfect for this and will result in well-structured and concise
 representations.
 
 ** Licensing/attribution
-I'm still working on this, so if you see any work that isn't properly
-attributed, then please let me know!
-
 Any arms, collection, charge, ribbon made public on the site must get a license
 from the creator, and it'll be attributed in SVGs and when viewing the thing or
-its derivatives on the site.
+its derivatives on the site. See the site for details on this.
 
 See the [[./LICENSE][LICENSE]] file for this repository's own licensing info.
 
 ** Alternatives
-[[https://drawshield.net/][DrawShield]] was the best editor I found before I started. It also is an amazing
-resource on heraldry in general. It has an impressive blazonry parser and SVG
-renderer, but it is server-side, making working with it rather slow and as a
-beginner I found it difficult to understand the various parts of it.
-
-[[https://azgaar.github.io/Armoria/][Armoria]] is another awesome site, with a different focus. It probably is a
+[[https://github.com/Azgaar/Armoria][Armoria]] is another awesome site, with a different focus. It probably is a
 simpler alternative for a lot of use cases.
+
+[[https://github.com/drawshield/Drawshield-Code][DrawShield]] was the first editor I found before I started. It also is an amazing
+resource on heraldry in general. It has an impressive blazonry parser and a
+decent, if static, SVG renderer, but it is server-side, making working with it
+rather slow and as a beginner I found it difficult to understand the various
+parts of it.
