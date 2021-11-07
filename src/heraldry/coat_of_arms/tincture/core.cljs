@@ -49,7 +49,8 @@
     ["Pretty Soldier" :community-pretty-soldier theme/theme-community-pretty-soldier]
     ["Rainbow Groom" :community-rainbow-groom theme/theme-community-rainbow-groom]
     ["The Monet Maker" :community-the-monet-maker theme/theme-community-the-monet-maker]
-    ["Van Goes Vroem" :community-van-goes-vroem theme/theme-community-van-goes-vroem]]])
+    ["Van Goes Vroem" :community-van-goes-vroem theme/theme-community-van-goes-vroem]
+    ["Content Cranium" :community-content-cranium theme/theme-community-content-cranium]]])
 
 (def default-theme
   :wappenwiki)
