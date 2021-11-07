@@ -433,3 +433,19 @@
    :sanguine "#a32908" ;; 30% darkened gules
    :tenne "#705d00" ;; 60% darkened or
    })
+
+(def theme-community-content-cranium
+  {;; metals
+   :argent "#ffffff"
+   :or "#fffa00"
+   ;; colours
+   :azure "#0073b1"
+   :vert "#93ad00"
+   :gules "#fc0000"
+   :sable "#1c1616"
+   :purpure "#cd00ed"
+   ;; stains
+   :murrey "#8f00a5" ;; 30% darkened purpure
+   :sanguine "#b00000" ;; 30% darkened gules
+   :tenne "#666400" ;; 60% darkened or
+   })
