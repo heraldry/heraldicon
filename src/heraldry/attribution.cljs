@@ -1,10 +1,10 @@
 (ns heraldry.attribution
   (:require
    [heraldry.config :as config]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]
-   [heraldry.util :as util]
-   [heraldry.context :as c]))
+   [heraldry.util :as util]))
 
 (def license-choices
   [[strings/none :none]
@@ -93,81 +93,68 @@
 
     (compatible-licenses (or license :none))))
 
-(def default-options
-  {:license {:type :choice
-             :choices license-choices
-             :default :none
-             :ui {:label {:en "License"
-                          :de "Lizenz"}}}
+(defn options [context]
+  (-> {:license {:type :choice
+                 :choices license-choices
+                 :default :none
+                 :ui {:label {:en "License"
+                              :de "Lizenz"}}}
+       :nature {:type :choice
+                :choices nature-choices
+                :default :own-work
+                :ui {:form-type :radio-select}}
 
-   :license-version {:type :choice
-                     :choices cc-license-version-choices
-                     :default :v4
-                     :ui {:label {:en "License version"
-                                  :de "Lizenzversion"}}}
+       :ui {:label {:en "Attribution"
+                    :de "Attribuierung"}
+            :form-type :attribution}}
 
-   :nature {:type :choice
-            :choices nature-choices
-            :default :own-work
-            :ui {:form-type :radio-select}}
-
-   :source-license {:type :choice
-                    :choices license-choices
-                    :default :none
-                    :ui {:label {:en "Source license"
-                                 :de "Lizenz der Quelle"}}}
-
-   :source-license-version {:type :choice
-                            :choices cc-license-version-choices
-                            :default :v4
-                            :ui {:label {:en "License version"
-                                         :de "Lizenzversion"}}}
-
-   :source-name {:type :text
-                 :default ""
-                 :ui {:label {:en "Source name"
-                              :de "Name der Quelle"}}}
-
-   :source-link {:type :text
-                 :default ""
-                 :ui {:label {:en "Source link"
-                              :de "Link zur Quelle"}}}
-
-   :source-creator-name {:type :text
-                         :default ""
-                         :ui {:label {:en "Creator name"
-                                      :de "Name des Schöpfers"}}}
-
-   :source-creator-link {:type :text
-                         :default ""
-                         :ui {:label {:en "Creator link"
-                                      :de "Link zum Schöpfer"}}}
-   :ui {:label {:en "Attribution"
-                :de "Attribuierung"}
-        :form-type :attribution}})
-
-(defn options [attribution]
-  (-> default-options
       (cond->
-        (-> attribution
-            :license
-            cc-license?
-            not) (dissoc :license-version)
+        (-> context
+            (c/++ :license)
+            interface/get-raw-data
+            cc-license?) (assoc :license-version {:type :choice
+                                                  :choices cc-license-version-choices
+                                                  :default :v4
+                                                  :ui {:label {:en "License version"
+                                                               :de "Lizenzversion"}}})
 
-        (-> attribution
-            :source-license
-            cc-license?
-            not) (dissoc :source-license-version)
+        (-> context
+            (c/++  :nature)
+            interface/get-raw-data
+            (= :derivative)) (merge {:source-license {:type :choice
+                                                      :choices license-choices
+                                                      :default :none
+                                                      :ui {:label {:en "Source license"
+                                                                   :de "Lizenz der Quelle"}}}
 
-        (-> attribution
-            :nature
-            (not= :derivative)) (->
-                                 (dissoc :source-license)
-                                 (dissoc :source-license-version)
-                                 (dissoc :source-name)
-                                 (dissoc :source-link)
-                                 (dissoc :source-creator-name)
-                                 (dissoc :source-creator-link)))))
+                                     :source-name {:type :text
+                                                   :default ""
+                                                   :ui {:label {:en "Source name"
+                                                                :de "Name der Quelle"}}}
+
+                                     :source-link {:type :text
+                                                   :default ""
+                                                   :ui {:label {:en "Source link"
+                                                                :de "Link zur Quelle"}}}
+
+                                     :source-creator-name {:type :text
+                                                           :default ""
+                                                           :ui {:label {:en "Creator name"
+                                                                        :de "Name des Schöpfers"}}}
+
+                                     :source-creator-link {:type :text
+                                                           :default ""
+                                                           :ui {:label {:en "Creator link"
+                                                                        :de "Link zum Schöpfer"}}}})
+
+        (-> context
+            (c/++ :source-license)
+            interface/get-raw-data
+            cc-license?) (assoc :source-license-version {:type :choice
+                                                         :choices cc-license-version-choices
+                                                         :default :v4
+                                                         :ui {:label {:en "License version"
+                                                                      :de "Lizenzversion"}}}))))
 
 (defn full-url [context base]
   (when-let [object-id (interface/get-raw-data (c/++ context :id))]
