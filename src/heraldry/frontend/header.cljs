@@ -1,5 +1,6 @@
 (ns heraldry.frontend.header
   (:require
+   [heraldry.config :as config]
    [heraldry.frontend.language :as language :refer [tr]]
    [heraldry.frontend.route :as route]
    [heraldry.frontend.user :as user]
@@ -30,8 +31,9 @@
       [route/nav-link {:to :arms} [tr strings/arms]]
       [route/nav-link {:to :charges} [tr strings/charges]]
       [route/nav-link {:to :ribbons} [tr strings/ribbons]]
-      [route/nav-link {:to :users} [tr {:en "Users"
-                                        :de "Benutzer"}]]
+      (when (-> user-data :username ((config/get :admins)))
+        [route/nav-link {:to :users} [tr {:en "Users"
+                                          :de "Benutzer"}]])
       [route/nav-link {:to :contact} [tr {:en "Contact"
                                           :de "Kontakt"}]]
       [:span {:style {:width "5em"}}]
