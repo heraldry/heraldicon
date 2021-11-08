@@ -35,7 +35,7 @@
           :ui {:label strings/name}}
    :is-public {:type :boolean
                :ui {:label strings/make-public}}
-   :attribution (attribution/options (interface/get-raw-data (c/++ context :attribution)))
+   :attribution (attribution/options (c/++ context :attribution))
    :tags {:ui {:form-type :tags}}})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-collection.[thing].options namespaces
@@ -45,7 +45,7 @@
           :ui {:label strings/name}}
    :is-public {:type :boolean
                :ui {:label strings/make-public}}
-   :attribution (attribution/options (interface/get-raw-data (c/++ context :attribution)))
+   :attribution (attribution/options (c/++ context :attribution))
    :tags {:ui {:form-type :tags}}
    :font font/default-options})
 
@@ -56,7 +56,7 @@
                   :ui {:label strings/name}}
            :is-public {:type :boolean
                        :ui {:label strings/make-public}}
-           :attribution (attribution/options (interface/get-raw-data (c/++ context :attribution)))
+           :attribution (attribution/options (c/++ context :attribution))
            :tags {:ui {:form-type :tags}}
            :type {:type :text
                   :ui {:label {:en "Charge type"
@@ -91,6 +91,6 @@
           :ui {:label strings/name}}
    :is-public {:type :boolean
                :ui {:label strings/make-public}}
-   :attribution (attribution/options (interface/get-raw-data (c/++ context :attribution)))
+   :attribution (attribution/options (c/++ context :attribution))
    :ribbon (ribbon/options context)
    :tags {:ui {:form-type :tags}}})
