@@ -203,10 +203,9 @@
                     slot-angle]} charge-group
             context (dissoc context :charge-group)
             charge-data (:data full-charge-data)
-            render-field? (-> charge-data
-                              :fixed-tincture
-                              (or :none)
-                              (= :none))
+            fixed-tincture  (-> full-charge-data :fixed-tincture (or :none))
+            render-field? (= fixed-tincture :none)
+            landscape? (:landscape? full-charge-data)
             ;; since size now is filled with a default, check whether it was set at all,
             ;; if not, then use nil; exception: if auto-resize? is false, then always use
             ;; the sanitized value
@@ -320,12 +319,13 @@
                                    (not render-pass-below-shield?))
             mask-id (util/id "mask")
             mask-inverted-id (util/id "mask")
-            [mask mask-inverted] (make-mask adjusted-charge-without-shading
-                                            placeholder-colours
-                                            tincture
-                                            outline-mode
-                                            preview-original?
-                                            hide-lower-layer?)
+            [mask mask-inverted] (when-not landscape?
+                                   (make-mask adjusted-charge-without-shading
+                                              placeholder-colours
+                                              tincture
+                                              outline-mode
+                                              preview-original?
+                                              hide-lower-layer?))
             ;; this is the one drawn on top of the masked field version, for the tincture replacements
             ;; and outline; the primary colour has no replacement here, which might make it shine through
             ;; around the edges, to prevent that, it is specifically replaced with black
@@ -487,10 +487,12 @@
                          (= kind :layer-separator) layer-separator-colour-for-shadow-highlight
                          :else "#000000")))))
                 svg/make-unique-ids)]])
-           [:mask {:id mask-id}
-            (svg/make-unique-ids mask)]
-           [:mask {:id mask-inverted-id}
-            (svg/make-unique-ids mask-inverted)]]
+           (when-not landscape?
+             [:<>
+              [:mask {:id mask-id}
+               (svg/make-unique-ids mask)]
+              [:mask {:id mask-inverted-id}
+               (svg/make-unique-ids mask-inverted)]])]
           (let [transform (str "translate(" (v/->str origin-point) ")"
                                "rotate(" angle ")"
                                "scale(" scale-x "," scale-y ")"
@@ -547,7 +549,8 @@
                    :corner (-> fimbriation :corner)]]))
 
              (cond
-               preview-original? unadjusted-charge
+               (or preview-original?
+                   landscape?) unadjusted-charge
                highlight-colours? adjusted-charge
                :else [:g
                       [metadata/attribution

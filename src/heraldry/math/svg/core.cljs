@@ -34,6 +34,7 @@
                           :gradienttransform :gradientTransform
                           :lineargradient :linearGradient
                           :radialgradient :radialGradient
+                          :preserveaspectratio :preserveAspectRatio
                           :xml:space :xmlSpace} v v)
        :else v))
    data))
