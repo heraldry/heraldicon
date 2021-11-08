@@ -14,6 +14,7 @@
      :attribution
      :is-public
      :type
+     :landscape?
      :attitude
      :facing
      :colours
