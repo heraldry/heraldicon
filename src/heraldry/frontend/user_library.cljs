@@ -2,6 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.common.async-cljs :refer [<?]]
+   [heraldry.config :as config]
    [heraldry.frontend.api.request :as api-request]
    [heraldry.frontend.arms-library :as arms-library]
    [heraldry.frontend.charge :as charge]
@@ -132,7 +133,8 @@
    username])
 
 (defn list-all-users []
-  [user-select/list-users link-to-user])
+  (when (-> (user/data) :username ((config/get :admins)))
+    [user-select/list-users link-to-user]))
 
 (defn view-list-users []
   (rf/dispatch [:set-title {:en "Users"
