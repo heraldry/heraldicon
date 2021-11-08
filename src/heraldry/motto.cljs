@@ -37,7 +37,7 @@
                  (assoc-in [:size :default] 100))
    :ribbon-variant {:ui {:label strings/ribbon
                          :form-type :ribbon-reference-select}}
-   :ribbon ribbon/default-options
+   :ribbon (ribbon/options nil)
 
    :tincture-foreground {:type :choice
                          :choices tinctures-without-furs

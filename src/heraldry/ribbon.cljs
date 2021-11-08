@@ -2,6 +2,7 @@
   (:require
    ["svgpath" :as svgpath]
    [clojure.string :as s]
+   [heraldry.context :as c]
    [heraldry.font :as font]
    [heraldry.interface :as interface]
    [heraldry.math.bezier :as bezier]
@@ -14,7 +15,7 @@
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
-(def default-options
+(defn options [_context]
   {:thickness {:type :range
                :default 30
                :min 5
@@ -39,9 +40,6 @@
    :outline? {:type :boolean
               :default true
               :ui {:label strings/outline}}})
-
-(defn options [data]
-  default-options)
 
 (defn curve-segments [full-curve
                       last-index end-t last-edge-vector
@@ -135,64 +133,52 @@
 (def segment-type-map
   (util/choices->map segment-type-choices))
 
-(def default-segment-options
-  {:type {:type :choice
-          :choices segment-type-choices
-          :ui {:label strings/type
-               :form-type :radio-select}}
-   :z-index {:type :range
-             :min 0
-             :max 100
-             :integer? true
-             :ui {:label strings/layer}}
-   :offset-x {:type :range
-              :default 0
-              :min -0.5
-              :max 0.5
-              :ui {:label (util/str-tr strings/offset " x")
-                   :step 0.01}}
-   :offset-y {:type :range
-              :default 0
-              :min -0.5
-              :max 0.5
-              :ui {:label (util/str-tr strings/offset " y")
-                   :step 0.01}}
-   :font-scale {:type :range
-                :default 0.8
-                :min 0.01
-                :max 1
-                :ui {:label {:en "Font scale"
-                             :de "Schrift-Faktor"}
-                     :step 0.01}}
-   :spacing {:type :range
-             :default 0.1
-             :min -0.5
-             :max 2
-             :ui {:label strings/spacing
-                  :step 0.01}}
-   :text {:type :text
-          :default ""}
-   :font (-> font/default-options
-             (assoc :default :baskerville-berthold))})
-
-(defn segment-options [data]
-  (when-let [segment-type (:type data)]
-    (case segment-type
-      :heraldry.ribbon.segment/foreground-with-text (options/pick default-segment-options
-                                                                  [[:type]
-                                                                   [:z-index]
-                                                                   [:font]
-                                                                   [:font-scale]
-                                                                   [:spacing]
-                                                                   [:offset-x]
-                                                                   [:offset-y]
-                                                                   [:text]])
-      (options/pick default-segment-options
-                    [[:type]
-                     [:z-index]]))))
+(def type-option
+  {:type :choice
+   :choices segment-type-choices
+   :ui {:label strings/type
+        :form-type :radio-select}})
 
 (defmethod interface/component-options :heraldry.component/ribbon-segment [context]
-  (segment-options (interface/get-raw-data context)))
+  (-> {:z-index {:type :range
+                 :min 0
+                 :max 100
+                 :integer? true
+                 :ui {:label strings/layer}}}
+      (cond->
+        (= (interface/get-raw-data (c/++ context :type))
+           :heraldry.ribbon.segment/foreground-with-text)
+        (merge {
+                :offset-x {:type :range
+                           :default 0
+                           :min -0.5
+                           :max 0.5
+                           :ui {:label (util/str-tr strings/offset " x")
+                                :step 0.01}}
+                :offset-y {:type :range
+                           :default 0
+                           :min -0.5
+                           :max 0.5
+                           :ui {:label (util/str-tr strings/offset " y")
+                                :step 0.01}}
+                :font-scale {:type :range
+                             :default 0.8
+                             :min 0.01
+                             :max 1
+                             :ui {:label {:en "Font scale"
+                                          :de "Schrift-Faktor"}
+                                  :step 0.01}}
+                :spacing {:type :range
+                          :default 0.1
+                          :min -0.5
+                          :max 2
+                          :ui {:label strings/spacing
+                               :step 0.01}}
+                :text {:type :text
+                       :default ""}
+                :font (-> font/default-options
+                          (assoc :default :baskerville-berthold))}))
+      (assoc :type type-option)))
 
 (defn project-path-to [curve new-start new-end & {:keys [reverse?]}]
   (let [original-start (ffirst curve)

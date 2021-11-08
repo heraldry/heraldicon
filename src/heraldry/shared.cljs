@@ -92,5 +92,5 @@
    :is-public {:type :boolean
                :ui {:label strings/make-public}}
    :attribution (attribution/options (interface/get-raw-data (c/++ context :attribution)))
-   :ribbon (ribbon/options (interface/get-raw-data (c/++ context :ribbon)))
+   :ribbon (ribbon/options context)
    :tags {:ui {:form-type :tags}}})
