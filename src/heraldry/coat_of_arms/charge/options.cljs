@@ -1,7 +1,6 @@
 (ns heraldry.coat-of-arms.charge.options
   (:require
    [heraldry.coat-of-arms.charge.interface :as charge-interface]
-   [heraldry.coat-of-arms.charge.shared :as charge-shared]
    [heraldry.coat-of-arms.charge.type.annulet :as annulet]
    [heraldry.coat-of-arms.charge.type.billet :as billet]
    [heraldry.coat-of-arms.charge.type.crescent :as crescent]
@@ -11,10 +10,6 @@
    [heraldry.coat-of-arms.charge.type.mascle :as mascle]
    [heraldry.coat-of-arms.charge.type.roundel :as roundel]
    [heraldry.coat-of-arms.charge.type.rustre :as rustre]
-   [heraldry.coat-of-arms.geometry :as geometry]
-   [heraldry.coat-of-arms.line.core :as line]
-   [heraldry.coat-of-arms.position :as position]
-   [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]
@@ -39,104 +34,18 @@
 (def choice-map
   (util/choices->map choices))
 
-(def default-options
-  {:type {:type :choice
-          :choices choices
-          :ui {:label strings/type
-               :form-type :charge-type-select}}
-   :origin (-> position/default-options
-               (assoc :alignment nil)
-               (assoc-in [:ui :label] strings/origin))
-   :anchor (-> position/anchor-default-options
-               (assoc-in [:point :default] :angle)
-               (update-in [:point :choices] (fn [choices]
-                                              (-> choices
-                                                  drop-last
-                                                  (conj (last choices))
-                                                  vec)))
-               (assoc :alignment nil)
-               (assoc-in [:angle :min] -180)
-               (assoc-in [:angle :max] 180)
-               (assoc-in [:angle :default] 0)
-               (assoc-in [:ui :label] strings/anchor))
-   :geometry geometry/default-options
-   :fimbriation (-> line/default-options
-                    :fimbriation
-                    (dissoc :alignment)
-                    (assoc-in [:corner :default] :round)
-                    (assoc-in [:thickness-1 :default] 10)
-                    (assoc-in [:thickness-1 :max] 50)
-                    (assoc-in [:thickness-1 :default] 10)
-                    (assoc-in [:thickness-2 :max] 50)
-                    (assoc-in [:thickness-2 :default] 10))
-   :tincture {:eyed {:type :choice
-                     :choices tincture/choices
-                     :default :argent
-                     :ui {:label {:en "Eyed"
-                                  :de "Augen"}}}
-              :toothed {:type :choice
-                        :choices tincture/choices
-                        :default :argent
-                        :ui {:label {:en "Toothed"
-                                     :de "Zähne"}}}
-              :shadow {:type :range
-                       :min 0
-                       :max 1
-                       :default 1
-                       :ui {:label strings/shadow
-                            :step 0.01}}
-              :highlight {:type :range
-                          :min 0
-                          :max 1
-                          :default 1
-                          :ui {:label strings/highlight
-                               :step 0.01}}
-              :ui {:label {:en "Tinctures"
-                           :de "Tinkturen"}
-                   :form-type :tincture-modifiers}}
-   :outline-mode {:type :choice
-                  :choices [[{:en "Keep"
-                              :de "Anzeigen"} :keep]
-                            ["Transparent" :transparent]
-                            [{:en "Primary"
-                              :de "Primär"} :primary]
-                            [{:en "Remove"
-                              :de "Entfernen"} :remove]]
-                  :default :keep
-                  :ui {:label strings/outline}}
-   :manual-blazon {:type :text
-                   :default nil
-                   :ui {:label strings/manual-blazon}}
-   :vertical-mask {:type :range
-                   :default 0
-                   :min -100
-                   :max 100
-                   :ui {:label {:en "Vertical mask"
-                                :de "Vertikale Maske"}
-                        :step 1}}
-   :ignore-layer-separator? {:type :boolean
-                             :default false
-                             :ui {:label {:en "Ignore layer separator"
-                                          :de "Ebenentrenner ignorieren"}
-                                  :tooltip "If the charge contains a layer separator for the shield, then this can disable it."}}})
+(def type-option
+  {:type :choice
+   :choices choices
+   :ui {:label strings/type
+        :form-type :charge-type-select}})
 
-(defn options [charge & optional-args]
-  (if (#{:roundel
-         :annulet
-         :billet
-         :lozenge
-         :fusil
-         :mascle
-         :rustre
-         :crescent
-         :escutcheon} (-> charge :type name keyword))
-    (-> (interface/options charge optional-args)
-        (assoc :type (:type default-options)))
-    (charge-shared/post-process-options default-options charge)))
+(defmethod interface/options-dispatch-fn :heraldry.component/charge [context]
+  (charge-interface/effective-type context))
 
 (defmethod interface/component-options :heraldry.component/charge [context]
-  (options (interface/get-raw-data context)
-           :ornament? (some #(= % :ornaments) (:path context))))
+  (-> (interface/options context)
+      (assoc :type type-option)))
 
 (defn title [context]
   (let [charge-type (interface/get-raw-data (c/++ context :type))
