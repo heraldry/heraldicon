@@ -4,9 +4,9 @@
    [com.wsscode.common.async-cljs :refer [<?]]
    [heraldry.coat-of-arms.attributes :as attributes]
    [heraldry.coat-of-arms.default :as default]
+   [heraldry.component :as component]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.form.collection-element :as collection-element]
-   [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
@@ -276,7 +276,7 @@
 
 (defn ui-component-node-select [db path & {:keys [open?]}]
   (let [raw-type (get-in db (conj path :type))
-        component-type (interface/raw-effective-component-type path raw-type)]
+        component-type (component/effective-type path raw-type)]
     (-> db
         (assoc-in ui-component-node-selected-path path)
         (ui-component-node-open (cond-> path

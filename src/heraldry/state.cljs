@@ -2,7 +2,8 @@
   (:require
    [heraldry.context :as c]
    [heraldry.interface :as interface]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [heraldry.component :as component]))
 
 (rf/reg-sub :get
   (fn [db [_ path]]
@@ -38,10 +39,36 @@
     (rf/subscribe [::get-from-context (c/++ context :type)]))
 
   (fn [raw-type [_ context]]
-    {:component-type (interface/raw-effective-component-type (:path context) raw-type)
+    {:component-type (component/effective-type (:path context) raw-type)
      :entity-type raw-type}))
 
-(rf/reg-sub ::options
+(rf/reg-sub ::option-path
+  (fn [[_ {:keys [path] :as context}] _]
+    (->> (range (count path) 0 -1)
+         (mapv (fn [idx]
+                 (let [option-path (subvec path 0 idx)]
+                   (rf/subscribe [:component-type (c/<< context :path option-path)]))))))
+
+  (fn [component-types [_ {:keys [path]}]]
+    (->> component-types
+         (keep-indexed (fn [idx component-type]
+                         (when component-type
+                           (subvec path 0 idx))))
+         first)))
+
+(rf/reg-sub ::get-option
+  (fn [[_ context] _]
+    (let [option-path (rf/subscribe [:option-path context])]
+      [option-path
+       (rf/subscribe [:component-type @option-path])]
+      ;; + subscriptions returned by something like (interface/component-options-subs component-type)
+      ))
+
+  (fn [[[]] [_ context]]
+    ))
+
+
+(rf/reg-sub ::options-for-context
   (fn [[_ context] _]
     (let [component-type-info (rf/subscribe [::component-type-info context])]
       (-> {:component-type-info component-type-info}
