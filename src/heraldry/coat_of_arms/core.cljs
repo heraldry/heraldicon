@@ -4,16 +4,10 @@
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
-(def default-options
+(defmethod interface/component-options :heraldry.component/coat-of-arms [_context]
   {:manual-blazon {:type :text
                    :default nil
                    :ui {:label strings/manual-blazon}}})
-
-(defn options [_coat-of-arms]
-  default-options)
-
-(defmethod interface/component-options :heraldry.component/coat-of-arms [context]
-  (options (interface/get-raw-data context)))
 
 (defmethod interface/blazon-component :heraldry.component/coat-of-arms [context]
   (interface/blazon (-> context
