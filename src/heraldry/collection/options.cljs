@@ -3,12 +3,9 @@
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
-(def default-options
+(defmethod interface/component-options :heraldry.component/collection [_context]
   {:num-columns {:type :range
                  :default 6
                  :min 1
                  :max 10
                  :ui {:label strings/num-columns}}})
-
-(defmethod interface/component-options :heraldry.component/collection [_context]
-  default-options)
