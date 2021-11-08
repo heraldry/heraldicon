@@ -25,12 +25,14 @@
    :anchor (-> position/anchor-default-options
                (dissoc :alignment)
                (update-in [:point :choices] (fn [choices]
-                                              (-> choices
-                                                  drop-last
-                                                  (conj (last choices))
+                                              (-> (group-by #(-> % second (= :angle)) choices)
+                                                  (as-> groups
+                                                    (concat (get groups true)
+                                                            (get groups false)))
                                                   vec)))
                (update :point assoc :default :angle)
-               (update :angle assoc
+               (update :angle
+                       assoc
                        :min -180
                        :max 180
                        :default 0)
@@ -40,10 +42,12 @@
                     :fimbriation
                     (dissoc :alignment)
                     (update :corner assoc :default :round)
-                    (update :thickness-1 assoc
+                    (update :thickness-1
+                            assoc
                             :max 50
                             :default 10)
-                    (update :thickness-2 assoc
+                    (update :thickness-2
+                            assoc
                             :max 50
                             :default 10))
    :outline-mode {:type :choice
@@ -67,10 +71,12 @@
                    :default nil
                    :ui {:label strings/manual-blazon}}})
 
-(defn post-process-options [options charge & {:keys [part-of-semy?
-                                                     part-of-charge-group?
-                                                     ornament?]}]
-  (let [without-origin? (or part-of-semy?
+;; TODO: part-of-semy? and part-of-charge-group? got lost somewhere along the way,
+;; need to be considered again
+(defn post-process-options [options context & {:keys [part-of-semy?
+                                                      part-of-charge-group?]}]
+  (let [ornament? (some #(= % :ornaments) (:path context))
+        without-origin? (or part-of-semy?
                             part-of-charge-group?)]
     (-> options
         (cond->
@@ -83,14 +89,18 @@
                                                             :default 100)))))
         (update :origin (fn [position]
                           (when position
-                            (position/adjust-options position (:origin charge)))))
+                            (position/adjust-options
+                             position
+                             (interface/get-raw-data (c/++ context :origin))))))
         (update :anchor (fn [position]
                           (when position
-                            (position/adjust-options position (:anchor charge)))))
+                            (position/adjust-options
+                             position
+                             (interface/get-raw-data (c/++ context :anchor))))))
         (update :fimbriation (fn [fimbriation]
                                (when fimbriation
                                  (-> (fimbriation/options
-                                      (:fimbriation charge)
+                                      (interface/get-raw-data (c/++ context :fimbriation))
                                       :base-options (:fimbriation options))
                                      (assoc :ui {:label strings/fimbriation
                                                  :form-type :fimbriation}))))))))

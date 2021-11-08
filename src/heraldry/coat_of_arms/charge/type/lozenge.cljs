@@ -10,11 +10,11 @@
 (defmethod charge-interface/display-name charge-type [_] {:en "Lozenge"
                                                           :de "Raute"})
 
-(defmethod interface/options charge-type [charge & optional-args]
+(defmethod interface/options charge-type [context]
   (-> charge-shared/options
       (update :geometry dissoc :mirrored?)
       (update :geometry dissoc :reversed?)
-      (charge-shared/post-process-options charge optional-args)))
+      (charge-shared/post-process-options context)))
 
 (defmethod charge-interface/render-charge charge-type
   [context]

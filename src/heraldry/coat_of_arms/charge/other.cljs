@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.angle :as angle]
    [heraldry.coat-of-arms.attributes :as attributes]
    [heraldry.coat-of-arms.charge.interface :as charge-interface]
+   [heraldry.coat-of-arms.charge.shared :as charge-shared]
    [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
@@ -19,6 +20,16 @@
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
    [heraldry.util :as util]))
+
+(defmethod interface/options :heraldry.charge.type/other [context]
+  (-> charge-shared/options
+      (assoc :ignore-layer-separator?
+             {:type :boolean
+              :default false
+              :ui {:label {:en "Ignore layer separator"
+                           :de "Ebenentrenner ignorieren"}
+                   :tooltip "If the charge contains a layer separator for the shield, then this can disable it."}})
+      (charge-shared/post-process-options context)))
 
 (defn placeholder-colour-modifier [placeholder-colours colour]
   (attributes/tincture-modifier (get placeholder-colours colour)))
