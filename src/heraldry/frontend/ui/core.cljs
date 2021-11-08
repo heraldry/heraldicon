@@ -1,5 +1,6 @@
 (ns heraldry.frontend.ui.core
   (:require
+   [heraldry.component :as component]
    [heraldry.context :as c]
    [heraldry.frontend.history.state] ;; needed for side effects
    [heraldry.frontend.language :refer [tr]]
@@ -56,7 +57,6 @@
    [heraldry.frontend.ui.interface :as ui-interface] ;; needed for side effects
    [heraldry.frontend.ui.shield-separator] ;; needed for side effects
    [heraldry.frontend.validation :as validation] ;; needed for side effects
-   [heraldry.interface :as interface] ;; needed for side effects
    [heraldry.shared] ;; needed for side effects
    [heraldry.shield-separator :as shield-separator]
    [heraldry.util :as util]
@@ -100,7 +100,7 @@
           new-element-path (if selected-element-path-fn
                              (selected-element-path-fn new-element-path (last elements) elements)
                              new-element-path)
-          added-type (interface/raw-effective-component-type new-element-path (:type value))]
+          added-type (component/effective-type new-element-path (:type value))]
       (-> db
           (assoc-in path elements)
           (state/ui-component-node-select new-element-path :open? true)

@@ -2,8 +2,8 @@
   (:require
    [clojure.string :as s]
    [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.component :as component]
    [heraldry.frontend.language :refer [tr]]
-   [heraldry.interface :as interface]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -249,7 +249,7 @@
                        (or
                         @(rf/subscribe [:get (conj parent-semy-path :type)])
                         @(rf/subscribe [:get (conj parent-charge-group-path :type)]))
-                       interface/type->component-type)
+                       component/type->component-type)
           parent-field-path (case parent-type
                               :heraldry.component/charge-group (->> parent-charge-group-path
                                                                     (drop-last 2)
