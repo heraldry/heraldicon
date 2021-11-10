@@ -114,67 +114,35 @@
 
 (defn options [ordinary]
   (when ordinary
-    (let [line-style (-> (line/options (:line ordinary))
-                         set-line-defaults
-                         (assoc :ui (-> default-options :line :ui)))]
-      (->
-       (case (-> ordinary :type name keyword)
-         :point (options/pick default-options
-                              [[:type]
-                               [:line]
-                               [:geometry]
-                               [:variant]
-                               [:outline?]
-                               [:cottising]]
-                              {[:line] (-> line-style
-                                           (options/override-if-exists [:offset :min] 0)
-                                           (options/override-if-exists [:base-line] nil))
-                               [:variant :choices] [[strings/dexter :dexter]
-                                                    [strings/sinister :sinister]]
-                               [:variant :default] :dexter
-                               [:geometry :size] nil
-                               [:geometry :width] {:type :range
-                                                   :min 10
-                                                   :max 100
-                                                   :default 50
-                                                   :ui {:label strings/width}}
-                               [:geometry :height] {:type :range
-                                                    :min 10
-                                                    :max 100
-                                                    :default 50
-                                                    :ui {:label strings/height}}
-                               [:cottising] (-> default-options
-                                                :cottising
-                                                (dissoc :cottise-opposite-1)
-                                                (dissoc :cottise-opposite-2))}))
-       (assoc :manual-blazon (:manual-blazon default-options))
-       (update :line (fn [line]
-                       (when line
-                         (set-line-defaults line))))
-       (update :opposite-line (fn [opposite-line]
-                                (when opposite-line
-                                  (set-line-defaults opposite-line))))
-       (update :extra-line (fn [extra-line]
-                             (when extra-line
-                               (set-line-defaults extra-line))))
-       (update :origin (fn [origin]
-                         (when origin
-                           (position/adjust-options origin (-> ordinary :origin)))))
-       (update :anchor (fn [anchor]
-                         (when anchor
-                           (position/adjust-options anchor (-> ordinary :anchor)))))
-       (update :direction-anchor (fn [direction-anchor]
-                                   (when direction-anchor
-                                     (position/adjust-options direction-anchor (-> ordinary :direction-anchor)))))
-       (update :fimbriation (fn [fimbriation]
-                              (when fimbriation
-                                (-> (fimbriation/options (:fimbriation ordinary)
-                                                         :base-options (:fimbriation default-options))
-                                    (assoc :ui {:label strings/fimbriation
-                                                :form-type :fimbriation})))))
-       (as-> options
-         (cond-> options
-           (:cottising options) (update :cottising cottising/options (:cottising ordinary))))))))
+    (-> {}
+        (assoc :manual-blazon (:manual-blazon default-options))
+        (update :line (fn [line]
+                        (when line
+                          (set-line-defaults line))))
+        (update :opposite-line (fn [opposite-line]
+                                 (when opposite-line
+                                   (set-line-defaults opposite-line))))
+        (update :extra-line (fn [extra-line]
+                              (when extra-line
+                                (set-line-defaults extra-line))))
+        (update :origin (fn [origin]
+                          (when origin
+                            (position/adjust-options origin (-> ordinary :origin)))))
+        (update :anchor (fn [anchor]
+                          (when anchor
+                            (position/adjust-options anchor (-> ordinary :anchor)))))
+        (update :direction-anchor (fn [direction-anchor]
+                                    (when direction-anchor
+                                      (position/adjust-options direction-anchor (-> ordinary :direction-anchor)))))
+        (update :fimbriation (fn [fimbriation]
+                               (when fimbriation
+                                 (-> (fimbriation/options (:fimbriation ordinary)
+                                                          :base-options (:fimbriation default-options))
+                                     (assoc :ui {:label strings/fimbriation
+                                                 :form-type :fimbriation})))))
+        (as-> options
+          (cond-> options
+            (:cottising options) (update :cottising cottising/options (:cottising ordinary)))))))
 
 (defmethod interface/options-dispatch-fn :heraldry.component/ordinary [context]
   (interface/get-raw-data (c/++ context :type)))
@@ -195,7 +163,8 @@
             :cross
             :gore
             :label
-            :quarter})
+            :quarter
+            :point})
     (-> (interface/options context)
         (assoc :type type-option)
         (assoc :manual-blazon options/manual-blazon))
