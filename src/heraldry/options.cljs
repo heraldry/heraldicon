@@ -20,15 +20,18 @@
   (if (and (vector? value)
            (-> value first (= :force)))
     (second value)
-    (let [value (first (keep identity [value
-                                       (:inherited options)
-                                       (:default options)]))]
+    (let [fallback (first (keep identity [(:inherited options)
+                                          (:default options)]))
+          value (first (keep identity [value
+                                       fallback]))]
       (case (:type options)
         :boolean (boolean value)
         :choice (let [choices (util/choices->map (:choices options))]
                   (if (contains? choices value)
                     value
-                    (-> options :choices first second)))
+                    (if (contains? choices fallback)
+                      fallback
+                      (-> options :choices first second))))
         :range (cond
                  (and (nil? value)
                       (-> options :default nil?)) nil

@@ -28,25 +28,47 @@
         opposite-line-style (-> (line/options opposite-line-data :inherited sanitized-line)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside)
                                 (update :ui assoc :label strings/opposite-line))
-        origin-point-default :top-left
-        current-origin-point (or (interface/get-raw-data (c/++ context :origin :point))
-                                 origin-point-default)
-        anchor-point-default (case current-origin-point
-                               :top-left :fess
-                               :bottom-right :fess
-                               :top-left)
-        current-anchor-point (or (interface/get-raw-data (c/++ context :anchor :point))
-                                 anchor-point-default)]
-    {:origin {:point {:type :choice
-                      :choices [[strings/fess-point :fess]
-                                [strings/chief-point :chief]
-                                [strings/base-point :base]
-                                [strings/honour-point :honour]
-                                [strings/nombril-point :nombril]
-                                [strings/top-left :top-left]
-                                [strings/bottom-right :bottom-right]]
-                      :default origin-point-default
-                      :ui {:label strings/point}}
+        origin-point-option {:type :choice
+                             :choices [[strings/fess-point :fess]
+                                       [strings/chief-point :chief]
+                                       [strings/base-point :base]
+                                       [strings/honour-point :honour]
+                                       [strings/nombril-point :nombril]
+                                       [strings/top-left :top-left]
+                                       [strings/bottom-right :bottom-right]]
+                             :default :top-left
+                             :ui {:label strings/point}}
+        current-origin-point (options/get-value
+                              (interface/get-raw-data (c/++ context :origin :point))
+                              origin-point-option)
+        anchor-point-option {:type :choice
+                             :choices (case current-origin-point
+                                        :top-left [[strings/fess-point :fess]
+                                                   [strings/chief-point :chief]
+                                                   [strings/base-point :base]
+                                                   [strings/honour-point :honour]
+                                                   [strings/nombril-point :nombril]
+                                                   [strings/bottom-right :bottom-right]
+                                                   [strings/angle :angle]]
+                                        :bottom-right [[strings/fess-point :fess]
+                                                       [strings/chief-point :chief]
+                                                       [strings/base-point :base]
+                                                       [strings/honour-point :honour]
+                                                       [strings/nombril-point :nombril]
+                                                       [strings/top-left :top-left]
+                                                       [strings/angle :angle]]
+                                        [[strings/top-left :top-left]
+                                         [strings/bottom-right :bottom-right]
+                                         [strings/angle :angle]])
+                             :default (case current-origin-point
+                                        :top-left :fess
+                                        :bottom-right :fess
+                                        :top-left)
+                             :ui {:label strings/point}}
+        current-anchor-point (options/get-value
+                              (interface/get-raw-data (c/++ context :anchor :point))
+                              anchor-point-option)]
+    {:origin {:point origin-point-option
               :alignment {:type :choice
                           :choices position/alignment-choices
                           :default :middle
@@ -66,27 +88,7 @@
                               :step 0.1}}
               :ui {:label strings/origin
                    :form-type :position}}
-     :anchor (cond-> {:point {:type :choice
-                              :choices (case current-origin-point
-                                         :top-left [[strings/fess-point :fess]
-                                                    [strings/chief-point :chief]
-                                                    [strings/base-point :base]
-                                                    [strings/honour-point :honour]
-                                                    [strings/nombril-point :nombril]
-                                                    [strings/bottom-right :bottom-right]
-                                                    [strings/angle :angle]]
-                                         :bottom-right [[strings/fess-point :fess]
-                                                        [strings/chief-point :chief]
-                                                        [strings/base-point :base]
-                                                        [strings/honour-point :honour]
-                                                        [strings/nombril-point :nombril]
-                                                        [strings/top-left :top-left]
-                                                        [strings/angle :angle]]
-                                         [[strings/top-left :top-left]
-                                          [strings/bottom-right :bottom-right]
-                                          [strings/angle :angle]])
-                              :default anchor-point-default
-                              :ui {:label strings/point}}
+     :anchor (cond-> {:point anchor-point-option
                       :ui {:label strings/anchor
                            :form-type :position}}
 
