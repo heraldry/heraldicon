@@ -123,21 +123,6 @@
                                   (assoc :ui (-> default-options :opposite-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
-         :cross (options/pick default-options
-                              [[:type]
-                               [:origin]
-                               [:line]
-                               [:geometry]
-                               [:outline?]
-                               [:cottising]]
-                              {[:line] (-> line-style
-                                           (options/override-if-exists [:offset :min] 0)
-                                           (options/override-if-exists [:base-line] nil))
-                               [:origin :alignment] nil
-                               [:cottising] (-> default-options
-                                                :cottising
-                                                (dissoc :cottise-opposite-1)
-                                                (dissoc :cottise-opposite-2))})
          :gore (options/pick default-options
                              [[:type]
                               [:origin]
@@ -309,7 +294,8 @@
             :chevron
             :pall
             :pile
-            :saltire})
+            :saltire
+            :cross})
     (-> (interface/options context)
         (assoc :type type-option)
         (assoc :manual-blazon options/manual-blazon))
