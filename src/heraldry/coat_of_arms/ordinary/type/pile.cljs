@@ -4,17 +4,173 @@
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.shared.pile :as pile]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/pile)
 
 (defmethod ordinary-interface/display-name ordinary-type [_] {:en "Pile"
                                                               :de "Spitze"})
+
+(defmethod interface/options ordinary-type [context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        opposite-line-data (interface/get-raw-data (c/++ context :opposite-line))
+        line-style (-> (line/options line-data)
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                       (options/override-if-exists [:offset :min] 0)
+                       (options/override-if-exists [:base-line] nil))
+        sanitized-line (options/sanitize line-data line-style)
+        opposite-line-style (-> (line/options opposite-line-data :inherited sanitized-line)
+                                (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                                (options/override-if-exists [:offset :min] 0)
+                                (options/override-if-exists [:base-line] nil)
+                                (update :ui assoc :label strings/opposite-line))
+        origin-point-option {:type :choice
+                             :choices [[strings/chief-point :chief]
+                                       [strings/base-point :base]
+                                       [strings/dexter-point :dexter]
+                                       [strings/sinister-point :sinister]
+                                       [strings/top-left :top-left]
+                                       [strings/top :top]
+                                       [strings/top-right :top-right]
+                                       [strings/left :left]
+                                       [strings/right :right]
+                                       [strings/bottom-left :bottom-left]
+                                       [strings/bottom :bottom]
+                                       [strings/bottom-right :bottom-right]]
+                             :default :top
+                             :ui {:label strings/point}}
+        current-origin-point (options/get-value
+                              (interface/get-raw-data (c/++ context :origin :point))
+                              origin-point-option)
+        anchor-point-option {:type :choice
+                             :choices (util/filter-choices
+                                       [[strings/top-left :top-left]
+                                        [strings/top :top]
+                                        [strings/top-right :top-right]
+                                        [strings/left :left]
+                                        [strings/right :right]
+                                        [strings/bottom-left :bottom-left]
+                                        [strings/bottom :bottom]
+                                        [strings/bottom-right :bottom-right]
+                                        [strings/fess-point :fess]
+                                        [strings/chief-point :chief]
+                                        [strings/base-point :base]
+                                        [strings/dexter-point :dexter]
+                                        [strings/sinister-point :sinister]
+                                        [strings/honour-point :honour]
+                                        [strings/nombril-point :nombril]
+                                        [strings/angle :angle]]
+                                       #(not= % current-origin-point))
+                             :default :fess
+                             :ui {:label strings/point}}
+        current-anchor-point (options/get-value
+                              (interface/get-raw-data (c/++ context :anchor :point))
+                              anchor-point-option)
+        size-mode-option {:type :choice
+                          :choices [[strings/thickness :thickness]
+                                    [strings/angle :angle]]
+                          :default :thickness
+                          :ui {:label {:en "Size mode"
+                                       :de "Größenmodus"}
+                               :form-type :radio-select}}
+        current-size-mode (options/get-value
+                           (interface/get-raw-data (c/++ context :geometry :size-mode))
+                           size-mode-option)]
+    {:origin {:point origin-point-option
+              :alignment {:type :choice
+                          :choices position/alignment-choices
+                          :default :middle
+                          :ui {:label strings/alignment
+                               :form-type :radio-select}}
+              :offset-x {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-x
+                              :step 0.1}}
+              :offset-y {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-y
+                              :step 0.1}}
+              :ui {:label strings/origin
+                   :form-type :position}}
+     :anchor (cond-> {:point anchor-point-option
+                      :ui {:label strings/anchor
+                           :form-type :position}}
+
+               (= current-anchor-point
+                  :angle) (assoc :angle {:type :range
+                                         :min (cond
+                                                (#{:top-left
+                                                   :top-right
+                                                   :bottom-left
+                                                   :bottom-right} current-origin-point) 0
+                                                :else -90)
+                                         :max 90
+                                         :default (cond
+                                                    (#{:top-left
+                                                       :top-right
+                                                       :bottom-left
+                                                       :bottom-right} current-origin-point) 45
+                                                    :else 0)
+                                         :ui {:label strings/angle}})
+
+               (not= current-anchor-point
+                     :angle) (assoc :offset-x {:type :range
+                                               :min -45
+                                               :max 45
+                                               :default 0
+                                               :ui {:label strings/offset-x
+                                                    :step 0.1}}
+                                    :offset-y {:type :range
+                                               :min -45
+                                               :max 45
+                                               :default 0
+                                               :ui {:label strings/offset-y
+                                                    :step 0.1}}
+                                    :type {:type :choice
+                                           :choices [[{:en "Edge"
+                                                       :de "Kante"} :edge]
+                                                     [{:en "Point"
+                                                       :de "Spitze"} :point]]
+                                           :default :edge
+                                           :ui {:label strings/mode
+                                                :form-type :radio-select}}))
+     :line line-style
+     :opposite-line opposite-line-style
+     :geometry {:size-mode size-mode-option
+                :size {:type :range
+                       :min 5
+                       :max 120
+                       :default (case current-size-mode
+                                  :thickness 75
+                                  30)
+                       :ui {:label strings/size
+                            :step 0.1}}
+                :stretch {:type :range
+                          :min 0.33
+                          :max 2
+                          :default 1
+                          :ui {:label strings/stretch
+                               :step 0.01}}
+                :ui {:label strings/geometry
+                     :form-type :geometry}}
+     :outline? options/plain-outline?-option
+     :cottising (-> cottising/default-options
+                    (dissoc :cottise-opposite-1)
+                    (dissoc :cottise-opposite-2)
+                    (dissoc :cottise-extra-1)
+                    (dissoc :cottise-extra-2))}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
