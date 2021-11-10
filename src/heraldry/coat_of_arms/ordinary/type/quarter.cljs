@@ -9,12 +9,80 @@
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]))
+   [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]))
 
 (def ordinary-type :heraldry.ordinary.type/quarter)
 
 (defmethod ordinary-interface/display-name ordinary-type [_] {:en "Quarter / Canton"
                                                               :de "Vierung / Obereck"})
+
+(defmethod interface/options ordinary-type [context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        opposite-line-data (interface/get-raw-data (c/++ context :opposite-line))
+        line-style (-> (line/options line-data)
+                       (options/override-if-exists [:offset :min] 0)
+                       (options/override-if-exists [:base-line] nil)
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside))
+        sanitized-line (options/sanitize line-data line-style)
+        opposite-line-style (-> (line/options opposite-line-data :inherited sanitized-line)
+                                (options/override-if-exists [:offset :min] 0)
+                                (options/override-if-exists [:base-line] nil)
+                                (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                                (update :ui assoc :label strings/opposite-line))]
+    {:origin {:point {:type :choice
+                      :choices [[strings/fess-point :fess]
+                                [strings/chief-point :chief]
+                                [strings/base-point :base]
+                                [strings/honour-point :honour]
+                                [strings/nombril-point :nombril]
+                                [strings/top :top]
+                                [strings/bottom :bottom]]
+                      :default :fess
+                      :ui {:label strings/point}}
+              :alignment {:type :choice
+                          :choices position/alignment-choices
+                          :default :middle
+                          :ui {:label strings/alignment
+                               :form-type :radio-select}}
+              :offset-y {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-y
+                              :step 0.1}}
+              :ui {:label strings/origin
+                   :form-type :position}}
+     :line line-style
+     :opposite-line opposite-line-style
+     :variant {:type :choice
+               :choices [[{:en "Dexter-chief"
+                           :de "Heraldisch rechts-oben"} :dexter-chief]
+                         [{:en "Sinister-chief"
+                           :de "Heraldisch links-oben"} :sinister-chief]
+                         [{:en "Dexter-base"
+                           :de "Heraldisch rechts-unten"} :dexter-base]
+                         [{:en "Sinister-base"
+                           :de "Heraldisch links-unten"} :sinister-base]]
+               :default :dexter-chief
+               :ui {:label strings/variant
+                    :form-type :select}}
+     :geometry {:size {:type :range
+                       :min 10
+                       :max 150
+                       :default 100
+                       :ui {:label strings/size
+                            :step 0.1}}
+                :ui {:label strings/geometry
+                     :form-type :geometry}}
+     :outline? options/plain-outline?-option
+     :cottising (-> cottising/default-options
+                    :cottising
+                    (dissoc :cottise-opposite-1)
+                    (dissoc :cottise-opposite-2)
+                    (dissoc :cottise-extra-1)
+                    (dissoc :cottise-extra-2))}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
