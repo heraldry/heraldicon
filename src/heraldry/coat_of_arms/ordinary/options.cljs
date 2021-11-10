@@ -116,47 +116,9 @@
   (when ordinary
     (let [line-style (-> (line/options (:line ordinary))
                          set-line-defaults
-                         (assoc :ui (-> default-options :line :ui)))
-          sanitized-line (options/sanitize (:line ordinary) line-style)
-          opposite-line-style (-> (line/options (:opposite-line ordinary) :inherited sanitized-line)
-                                  set-line-defaults
-                                  (assoc :ui (-> default-options :opposite-line :ui)))]
+                         (assoc :ui (-> default-options :line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
-         :quarter (options/pick default-options
-                                [[:type]
-                                 [:origin]
-                                 [:line]
-                                 [:opposite-line]
-                                 [:geometry]
-                                 [:variant]
-                                 [:outline?]
-                                 [:cottising]]
-                                {[:line] (-> line-style
-                                             (options/override-if-exists [:offset :min] 0)
-                                             (options/override-if-exists [:base-line] nil))
-                                 [:opposite-line] (-> opposite-line-style
-                                                      (options/override-if-exists [:offset :min] 0)
-                                                      (options/override-if-exists [:base-line] nil))
-                                 [:origin :point :default] :fess
-                                 [:origin :alignment] nil
-                                 [:geometry :size :min] 10
-                                 [:geometry :size :max] 150
-                                 [:geometry :size :default] 100
-                                 [:variant :choices] [[{:en "Dexter-chief"
-                                                        :de "Heraldisch rechts-oben"} :dexter-chief]
-                                                      [{:en "Sinister-chief"
-                                                        :de "Heraldisch links-oben"} :sinister-chief]
-                                                      [{:en "Dexter-base"
-                                                        :de "Heraldisch rechts-unten"} :dexter-base]
-                                                      [{:en "Sinister-base"
-                                                        :de "Heraldisch links-unten"} :sinister-base]]
-                                 [:variant :default] :dexter-chief
-                                 [:variant :ui :form-type] :select
-                                 [:cottising] (-> default-options
-                                                  :cottising
-                                                  (dissoc :cottise-opposite-1)
-                                                  (dissoc :cottise-opposite-2))})
          :point (options/pick default-options
                               [[:type]
                                [:line]
@@ -232,7 +194,8 @@
             :saltire
             :cross
             :gore
-            :label})
+            :label
+            :quarter})
     (-> (interface/options context)
         (assoc :type type-option)
         (assoc :manual-blazon options/manual-blazon))
