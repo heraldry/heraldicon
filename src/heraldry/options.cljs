@@ -1,9 +1,15 @@
 (ns heraldry.options
   (:require
    [clojure.walk :as walk]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def option-types #{:range :choice :boolean :text})
+
+(def manual-blazon
+  {:type :text
+   :default nil
+   :ui {:label strings/manual-blazon}})
 
 (defn get-value [value options]
   (if (and (vector? value)
