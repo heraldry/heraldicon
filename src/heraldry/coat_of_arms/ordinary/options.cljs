@@ -120,61 +120,9 @@
           sanitized-line (options/sanitize (:line ordinary) line-style)
           opposite-line-style (-> (line/options (:opposite-line ordinary) :inherited sanitized-line)
                                   set-line-defaults
-                                  (assoc :ui (-> default-options :opposite-line :ui)))
-          extra-line-style (-> (line/options (:extra-line ordinary) :inherited sanitized-line)
-                               set-line-defaults
-                               (assoc :ui (-> default-options :extra-line :ui)))]
+                                  (assoc :ui (-> default-options :opposite-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
-         :pall (options/pick default-options
-                             [[:type]
-                              [:origin]
-                              [:direction-anchor]
-                              [:anchor]
-                              [:line]
-                              [:opposite-line]
-                              [:extra-line]
-                              [:geometry]
-                              [:outline?]
-                              [:cottising]]
-                             {[:line] (-> line-style
-                                          (options/override-if-exists [:offset :min] 0)
-                                          (options/override-if-exists [:base-line] nil))
-                              [:opposite-line] (-> opposite-line-style
-                                                   (options/override-if-exists [:offset :min] 0)
-                                                   (options/override-if-exists [:base-line] nil))
-                              [:extra-line] (-> extra-line-style
-                                                (options/override-if-exists [:offset :min] 0)
-                                                (options/override-if-exists [:base-line] nil))
-                              [:cottising] cottising/default-options
-                              [:direction-anchor :point :choices] (util/filter-choices
-                                                                   position/anchor-point-choices
-                                                                   [:top-left :top :top-right :left :right :bottom-left :bottom :bottom-right :angle])
-                              [:direction-anchor :point :default] :top
-                              [:anchor :point :choices] (util/filter-choices
-                                                         position/anchor-point-choices
-                                                         (case (-> ordinary :direction-anchor :point (or :top))
-                                                           :bottom [:bottom-left :bottom :bottom-right :left :right :angle]
-                                                           :top [:top-left :top :top-right :left :right :angle]
-                                                           :left [:top-left :left :bottom-left :top :bottom :angle]
-                                                           :right [:top-right :right :bottom-right :top :bottom :angle]
-                                                           :bottom-left [:bottom-left :bottom :bottom-right :top-left :left :angle]
-                                                           :bottom-right [:bottom-left :bottom :bottom-right :right :top-right :angle]
-                                                           :top-left [:top-left :top :top-right :left :bottom-left :angle]
-                                                           :top-right [:top-left :top :top-right :left :bottom-right :angle]
-                                                           [:top-left :top :top-right :left :right :bottom-left :bottom :bottom-right :angle]))
-                              [:anchor :point :default] (case (-> ordinary :direction-anchor :point (or :top))
-                                                          :bottom :bottom-left
-                                                          :top :top-right
-                                                          :left :top-left
-                                                          :right :bottom-right
-                                                          :bottom-left :left
-                                                          :bottom-right :bottom
-                                                          :top-left :top
-                                                          :top-right :right
-                                                          :angle :angle
-                                                          :bottom-left)
-                              [:geometry :size :default] 20})
          :pile (options/pick default-options
                              [[:type]
                               [:origin]
@@ -452,7 +400,8 @@
             :base
             :bend
             :bend-sinister
-            :chevron})
+            :chevron
+            :pall})
     (-> (interface/options context)
         (assoc :type type-option)
         (assoc :manual-blazon options/manual-blazon))
