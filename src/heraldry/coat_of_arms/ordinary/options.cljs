@@ -123,79 +123,6 @@
                                   (assoc :ui (-> default-options :opposite-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
-         :pile (options/pick default-options
-                             [[:type]
-                              [:origin]
-                              [:anchor]
-                              [:line]
-                              [:opposite-line]
-                              [:geometry]
-                              [:outline?]
-                              [:cottising]]
-                             (let [anchor-points #{:top-left :top :top-right
-                                                   :left :right
-                                                   :bottom-left :bottom :bottom-right
-                                                   :fess :honour :nombril :base :chief
-                                                   :angle}]
-                               {[:line] (-> line-style
-                                            (options/override-if-exists [:offset :min] 0)
-                                            (options/override-if-exists [:base-line] nil))
-                                [:opposite-line] (-> opposite-line-style
-                                                     (options/override-if-exists [:offset :min] 0)
-                                                     (options/override-if-exists [:base-line] nil))
-                                [:geometry :size-mode] {:type :choice
-                                                        :choices [[strings/thickness :thickness]
-                                                                  [strings/angle :angle]]
-                                                        :default :thickness
-                                                        :ui {:label {:en "Size mode"
-                                                                     :de "Größenmodus"}
-                                                             :form-type :radio-select}}
-                                [:geometry :size :min] 5
-                                [:geometry :size :max] 100
-                                [:geometry :size :default] (case (-> ordinary :geometry :size-mode (or :thickness))
-                                                             :thickness 75
-                                                             30)
-                                [:geometry :stretch] {:type :range
-                                                      :min 0.33
-                                                      :max 2
-                                                      :default 1
-                                                      :ui {:label strings/stretch
-                                                           :step 0.01}}
-                                [:origin :point :choices] (util/filter-choices
-                                                           position/anchor-point-choices
-                                                           anchor-points)
-                                [:origin :point :default] :top
-                                [:anchor :point :choices] (util/filter-choices
-                                                           position/anchor-point-choices
-                                                           (disj anchor-points (-> ordinary :origin :point (or :top))))
-                                [:anchor :point :default] :fess
-                                [:anchor :alignment] nil
-                                [:anchor :angle :default] (cond
-                                                            (#{:top-left
-                                                               :top-right
-                                                               :bottom-left
-                                                               :bottom-right} (-> ordinary :origin :point (or :top))) 45
-                                                            :else 0)
-                                [:anchor :angle :min] (cond
-                                                        (#{:top-left
-                                                           :top-right
-                                                           :bottom-left
-                                                           :bottom-right} (-> ordinary :origin :point (or :top))) 0
-                                                        :else -90)
-                                [:anchor :angle :max] 90
-                                [:anchor :type] (when (-> ordinary :anchor :point (not= :angle))
-                                                  {:type :choice
-                                                   :choices [[{:en "Edge"
-                                                               :de "Kante"} :edge]
-                                                             [{:en "Point"
-                                                               :de "Spitze"} :point]]
-                                                   :default :edge
-                                                   :ui {:label strings/mode
-                                                        :form-type :radio-select}})
-                                [:cottising] (-> default-options
-                                                 :cottising
-                                                 (dissoc :cottise-opposite-1)
-                                                 (dissoc :cottise-opposite-2))}))
          ;; TODO: perhaps there should be origin options for the corners?
          ;; so one can align fro top-left to bottom-right
          :saltire (options/pick default-options
@@ -401,7 +328,8 @@
             :bend
             :bend-sinister
             :chevron
-            :pall})
+            :pall
+            :pile})
     (-> (interface/options context)
         (assoc :type type-option)
         (assoc :manual-blazon options/manual-blazon))

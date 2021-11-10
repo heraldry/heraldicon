@@ -53,14 +53,17 @@
        (apply concat)
        (into {})))
 
-(defn filter-choices [choices values]
-  (let [value-set (set values)]
+(defn filter-choices [choices pred]
+  (let [pred (if (or (vector? pred)
+                     (seq? pred))
+               (set pred)
+               pred)]
     (walk/postwalk (fn [v]
                      (cond
                        (and (vector? v)
                             (-> v count (= 2))
                             (-> v second keyword?)
-                            (-> v second value-set not)) nil
+                            (-> v second pred not)) nil
                        (and (vector? v)
                             (-> v count (= 2))
                             (-> v second vector?)
