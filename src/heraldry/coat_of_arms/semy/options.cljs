@@ -21,25 +21,25 @@
                            :min -1
                            :max 1
                            :default 0
-                           :ui {:label (util/str-tr strings/offset " x")
+                           :ui {:label strings/offset-x
                                 :step 0.01}}
                 :offset-y {:type :range
                            :min -1
                            :max 1
                            :default 0
-                           :ui {:label (util/str-tr strings/offset " y")
+                           :ui {:label strings/offset-y
                                 :step 0.01}}
                 :stretch-x {:type :range
                             :min 0.5
                             :max 2
                             :default 1
-                            :ui {:label (util/str-tr strings/stretch " x")
+                            :ui {:label strings/stretch-x
                                  :step 0.01}}
                 :stretch-y {:type :range
                             :min 0.5
                             :max 2
                             :default 1
-                            :ui {:label (util/str-tr strings/stretch " y")
+                            :ui {:label strings/stretch-y
                                  :step 0.01}}
                 :rotation {:type :range
                            :min -90

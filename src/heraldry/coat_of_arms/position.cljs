@@ -48,8 +48,7 @@
    [strings/sinister-point :sinister]
    [strings/honour-point :honour]
    [strings/nombril-point :nombril]
-   [{:en "Fixed angle"
-     :de "Fester Winkel"} :angle]])
+   [strings/angle :angle]])
 
 (def anchor-point-map
   (util/choices->map anchor-point-choices))
@@ -81,13 +80,13 @@
               :min -45
               :max 45
               :default 0
-              :ui {:label (util/str-tr strings/offset " x")
+              :ui {:label strings/offset-x
                    :step 0.1}}
    :offset-y {:type :range
               :min -45
               :max 45
               :default 0
-              :ui {:label (util/str-tr strings/offset " y")
+              :ui {:label strings/offset-y
                    :step 0.1}}
    :ui {:label strings/position
         :form-type :position}})

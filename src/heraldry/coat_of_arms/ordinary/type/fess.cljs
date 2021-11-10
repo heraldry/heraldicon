@@ -46,7 +46,7 @@
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label (util/str-tr strings/offset " y")
+                         :ui {:label strings/offset-y
                               :step 0.1}}
               :ui {:label strings/origin
                    :form-type :position}}
