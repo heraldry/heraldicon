@@ -123,27 +123,6 @@
                                   (assoc :ui (-> default-options :opposite-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
-         ;; TODO: perhaps there should be origin options for the corners?
-         ;; so one can align fro top-left to bottom-right
-         :saltire (options/pick default-options
-                                [[:type]
-                                 [:origin]
-                                 [:anchor]
-                                 [:line]
-                                 [:geometry]
-                                 [:outline?]
-                                 [:cottising]]
-                                {[:line] (-> line-style
-                                             (options/override-if-exists [:offset :min] 0)
-                                             (options/override-if-exists [:base-line] nil))
-                                 [:origin :alignment] nil
-                                 [:anchor :point :choices] (util/filter-choices
-                                                            position/anchor-point-choices
-                                                            [:top-left :top-right :bottom-left :bottom-right :angle])
-                                 [:cottising] (-> default-options
-                                                  :cottising
-                                                  (dissoc :cottise-opposite-1)
-                                                  (dissoc :cottise-opposite-2))})
          :cross (options/pick default-options
                               [[:type]
                                [:origin]
@@ -329,7 +308,8 @@
             :bend-sinister
             :chevron
             :pall
-            :pile})
+            :pile
+            :saltire})
     (-> (interface/options context)
         (assoc :type type-option)
         (assoc :manual-blazon options/manual-blazon))
