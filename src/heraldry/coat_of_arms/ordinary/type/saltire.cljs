@@ -11,12 +11,100 @@
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/saltire)
 
 (defmethod ordinary-interface/display-name ordinary-type [_] {:en "Saltire"
                                                               :de "Andreaskreuz"})
+
+(defmethod interface/options ordinary-type [context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        line-style (-> (line/options line-data)
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                       (options/override-if-exists [:offset :min] 0)
+                       (options/override-if-exists [:base-line] nil))
+        anchor-point-option {:type :choice
+                             :choices [[strings/top-left :top-left]
+                                       [strings/top-right :top-right]
+                                       [strings/bottom-left :bottom-left]
+                                       [strings/bottom-right :bottom-right]
+                                       [strings/angle :angle]]
+                             :default :top-left
+                             :ui {:label strings/point}}
+        current-anchor-point (options/get-value
+                              (interface/get-raw-data (c/++ context :anchor :point))
+                              anchor-point-option)]
+    ;; TODO: perhaps there should be origin options for the corners?
+    ;; so one can align fro top-left to bottom-right
+    {:origin {:point {:type :choice
+                      :choices [[strings/chief-point :chief]
+                                [strings/base-point :base]
+                                [strings/fess-point :fess]
+                                [strings/dexter-point :dexter]
+                                [strings/sinister-point :sinister]
+                                [strings/honour-point :honour]
+                                [strings/nombril-point :nombril]]
+                      :default :fess
+                      :ui {:label strings/point}}
+              :offset-x {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-x
+                              :step 0.1}}
+              :offset-y {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-y
+                              :step 0.1}}
+              :ui {:label strings/origin
+                   :form-type :position}}
+     :anchor (cond-> {:point anchor-point-option
+                      :ui {:label strings/anchor
+                           :form-type :position}}
+
+               (= current-anchor-point
+                  :angle) (assoc :angle {:type :range
+                                         :min 10
+                                         :max 80
+                                         :default 45
+                                         :ui {:label strings/angle}})
+
+               (not= current-anchor-point
+                     :angle) (assoc :alignment {:type :choice
+                                                :choices position/alignment-choices
+                                                :default :middle
+                                                :ui {:label strings/alignment
+                                                     :form-type :radio-select}}
+                                    :offset-x {:type :range
+                                               :min -45
+                                               :max 45
+                                               :default 0
+                                               :ui {:label strings/offset-x
+                                                    :step 0.1}}
+                                    :offset-y {:type :range
+                                               :min -45
+                                               :max 45
+                                               :default 0
+                                               :ui {:label strings/offset-y
+                                                    :step 0.1}}))
+     :line line-style
+     :geometry {:size {:type :range
+                       :min 0.1
+                       :max 90
+                       :default 25
+                       :ui {:label strings/size
+                            :step 0.1}}
+                :ui {:label strings/geometry
+                     :form-type :geometry}}
+     :outline? options/plain-outline?-option
+     :cottising (-> cottising/default-options
+                    (dissoc :cottise-extra-1)
+                    (dissoc :cottise-extra-2))}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
