@@ -66,10 +66,7 @@
                    :max 100
                    :ui {:label {:en "Vertical mask"
                                 :de "Vertikale Maske"}
-                        :step 1}}
-   :manual-blazon {:type :text
-                   :default nil
-                   :ui {:label strings/manual-blazon}}})
+                        :step 1}}})
 
 ;; TODO: part-of-semy? and part-of-charge-group? got lost somewhere along the way,
 ;; need to be considered again

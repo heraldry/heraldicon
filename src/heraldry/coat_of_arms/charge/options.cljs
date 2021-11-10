@@ -12,6 +12,7 @@
    [heraldry.coat-of-arms.charge.type.rustre :as rustre]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
+   [heraldry.options :as options]
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
@@ -45,7 +46,8 @@
 
 (defmethod interface/component-options :heraldry.component/charge [context]
   (-> (interface/options context)
-      (assoc :type type-option)))
+      (assoc :type type-option)
+      (assoc :manual-blazon options/manual-blazon)))
 
 (defn title [context]
   (let [charge-type (interface/get-raw-data (c/++ context :type))
