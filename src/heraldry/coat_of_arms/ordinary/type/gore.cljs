@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.ordinary.type.gore
   (:require
    [heraldry.coat-of-arms.angle :as angle]
+   [heraldry.coat-of-arms.cottising :as cottising]
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
@@ -8,7 +9,9 @@
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]))
+   [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]))
 
 (defn arm-diagonal [origin-point anchor-point]
   (-> (v/sub anchor-point origin-point)
@@ -18,6 +21,83 @@
 (def ordinary-type :heraldry.ordinary.type/gore)
 
 (defmethod ordinary-interface/display-name ordinary-type [_] "Gore")
+
+(defmethod interface/options ordinary-type [context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        opposite-line-data (interface/get-raw-data (c/++ context :opposite-line))
+        line-style (-> (line/options (update line-data :type #(or % :enarched)))
+                       (options/override-if-exists [:offset :min] 0)
+                       (options/override-if-exists [:base-line] nil)
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                       (options/override-if-exists [:type :default] :enarched)
+                       (options/override-if-exists [:flipped? :default] true))
+        sanitized-line (options/sanitize line-data line-style)
+        opposite-line-style (-> (line/options opposite-line-data :inherited sanitized-line)
+                                (options/override-if-exists [:offset :min] 0)
+                                (options/override-if-exists [:base-line] nil)
+                                (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                                (update :ui assoc :label strings/opposite-line))
+        anchor-point-option {:type :choice
+                             :choices [[strings/top-left :top-left]
+                                       [strings/top-right :top-right]
+                                       [strings/angle :angle]]
+                             :default :top-left
+                             :ui {:label strings/point}}
+        current-anchor-point (options/get-value
+                              (interface/get-raw-data (c/++ context :anchor :point))
+                              anchor-point-option)]
+    {:origin {:point {:type :choice
+                      :choices [[strings/fess-point :fess]
+                                [strings/chief-point :chief]
+                                [strings/base-point :base]]
+                      :default :fess
+                      :ui {:label strings/point}}
+              :offset-x {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-x
+                              :step 0.1}}
+              :offset-y {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-y
+                              :step 0.1}}
+              :ui {:label strings/origin
+                   :form-type :position}}
+     :anchor (cond-> {:point anchor-point-option
+                      :ui {:label strings/anchor
+                           :form-type :position}}
+
+               (= current-anchor-point
+                  :angle) (assoc :angle {:type :range
+                                         :min -80
+                                         :max 80
+                                         :default -45
+                                         :ui {:label strings/angle}})
+
+               (not= current-anchor-point
+                     :angle) (assoc :offset-x {:type :range
+                                               :min -45
+                                               :max 45
+                                               :default 0
+                                               :ui {:label strings/offset-x
+                                                    :step 0.1}}
+                                    :offset-y {:type :range
+                                               :min -45
+                                               :max 45
+                                               :default 0
+                                               :ui {:label strings/offset-y
+                                                    :step 0.1}}))
+     :line line-style
+     :opposite-line opposite-line-style
+     :outline? options/plain-outline?-option
+     :cottising (-> cottising/default-options
+                    (dissoc :cottise-opposite-1)
+                    (dissoc :cottise-opposite-2)
+                    (dissoc :cottise-extra-1)
+                    (dissoc :cottise-extra-2))}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]

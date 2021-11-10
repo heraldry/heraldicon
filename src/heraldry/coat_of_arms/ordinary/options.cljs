@@ -123,35 +123,6 @@
                                   (assoc :ui (-> default-options :opposite-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
-         :gore (options/pick default-options
-                             [[:type]
-                              [:origin]
-                              [:anchor]
-                              [:line]
-                              [:opposite-line]
-                              [:outline?]]
-                             {[:line] (-> line-style
-                                          (options/override-if-exists [:offset :min] 0)
-                                          (options/override-if-exists [:base-line] nil)
-                                          (options/override-if-exists [:type :default] :enarched)
-                                          (options/override-if-exists [:flipped? :default] true))
-                              [:opposite-line] (-> opposite-line-style
-                                                   (options/override-if-exists [:offset :min] 0)
-                                                   (options/override-if-exists [:base-line] nil)
-                                                   (options/override-if-exists [:type :default] :enarched)
-                                                   (options/override-if-exists [:flipped? :default] true))
-                              [:origin :point :choices] (util/filter-choices
-                                                         position/anchor-point-choices
-                                                         [:fess :chief :base])
-                              [:origin :alignment] nil
-                              [:origin :point :default] :fess
-                              [:anchor :point :choices] (util/filter-choices
-                                                         position/anchor-point-choices
-                                                         [:top-left :top-right :angle])
-                              [:anchor :point :default] :top-left
-                              [:anchor :angle :min] -80
-                              [:anchor :angle :max] 80
-                              [:anchor :alignment] nil})
          :label (options/pick default-options
                               [[:type]
                                [:origin]
@@ -295,7 +266,8 @@
             :pall
             :pile
             :saltire
-            :cross})
+            :cross
+            :gore})
     (-> (interface/options context)
         (assoc :type type-option)
         (assoc :manual-blazon options/manual-blazon))
