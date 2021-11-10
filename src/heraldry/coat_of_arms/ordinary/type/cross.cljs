@@ -10,12 +10,58 @@
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/cross)
 
 (defmethod ordinary-interface/display-name ordinary-type [_] {:en "Cross"
                                                               :de "Kreuz"})
+
+(defmethod interface/options ordinary-type [context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        line-style (-> (line/options line-data)
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                       (options/override-if-exists [:offset :min] 0)
+                       (options/override-if-exists [:base-line] nil))]
+    {:origin {:point {:type :choice
+                      :choices [[strings/chief-point :chief]
+                                [strings/base-point :base]
+                                [strings/fess-point :fess]
+                                [strings/dexter-point :dexter]
+                                [strings/sinister-point :sinister]
+                                [strings/honour-point :honour]
+                                [strings/nombril-point :nombril]]
+                      :default :fess
+                      :ui {:label strings/point}}
+              :offset-x {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-x
+                              :step 0.1}}
+              :offset-y {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-y
+                              :step 0.1}}
+              :ui {:label strings/origin
+                   :form-type :position}}
+     :line line-style
+     :geometry {:size {:type :range
+                       :min 0.1
+                       :max 90
+                       :default 25
+                       :ui {:label strings/size
+                            :step 0.1}}
+                :ui {:label strings/geometry
+                     :form-type :geometry}}
+     :outline? options/plain-outline?-option
+     :cottising (-> cottising/default-options
+                    (dissoc :cottise-extra-1)
+                    (dissoc :cottise-extra-2))}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
