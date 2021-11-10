@@ -126,43 +126,6 @@
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
-         :bend (options/pick default-options
-                             [[:type]
-                              [:origin]
-                              [:anchor]
-                              [:line]
-                              [:opposite-line]
-                              [:geometry]
-                              [:outline?]
-                              [:cottising]]
-                             (let [useful-points #{:top-left :bottom-right
-                                                   :chief :honour :fess :nombril :base}
-                                   point-choices (util/filter-choices
-                                                  position/anchor-point-choices
-                                                  useful-points)
-                                   anchor-point-choices (util/filter-choices
-                                                         position/anchor-point-choices
-                                                         (conj useful-points :angle))]
-                               {[:line] line-style
-                                [:opposite-line] opposite-line-style
-                                [:origin :point :choices] point-choices
-                                [:origin :point :default] :top-left
-                                [:anchor :point :choices] (case (-> ordinary :origin :point (or :top-left))
-                                                            :top-left (util/filter-choices
-                                                                       anchor-point-choices
-                                                                       #{:bottom-right
-                                                                         :chief :honour :fess :nombril :base :angle})
-                                                            :bottom-right (util/filter-choices
-                                                                           anchor-point-choices
-                                                                           #{:top-left
-                                                                             :chief :honour :fess :nombril :base :angle})
-                                                            (util/filter-choices
-                                                             anchor-point-choices
-                                                             [:top-left :bottom-right :angle]))
-                                [:anchor :point :default] (case (-> ordinary :origin :point (or :top-left))
-                                                            :top-left :fess
-                                                            :bottom-right :fess
-                                                            :top-left)}))
          :bend-sinister (options/pick default-options
                                       [[:type]
                                        [:origin]
@@ -566,7 +529,8 @@
           #{:pale
             :fess
             :chief
-            :base})
+            :base
+            :bend})
     (-> (interface/options context)
         (assoc :type type-option)
         (assoc :manual-blazon options/manual-blazon))
