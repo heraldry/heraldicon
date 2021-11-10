@@ -9,12 +9,47 @@
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/point)
 
 (defmethod ordinary-interface/display-name ordinary-type [_] {:en "Point"
                                                               :de "Schrägeck"})
+
+(defmethod interface/options ordinary-type [context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        line-style (-> (line/options line-data)
+                       (options/override-if-exists [:offset :min] 0)
+                       (options/override-if-exists [:base-line] nil)
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside))]
+    {:line line-style
+     :variant {:type :choice
+               :choices [[strings/dexter :dexter]
+                         [strings/sinister :sinister]]
+               :default :dexter
+               :ui {:label strings/variant
+                    :form-type :select}}
+     :geometry {:width {:type :range
+                        :min 10
+                        :max 100
+                        :default 50
+                        :ui {:label strings/width}}
+                :height {:type :range
+                         :min 10
+                         :max 100
+                         :default 50
+                         :ui {:label strings/height}}
+                :ui {:label strings/geometry
+                     :form-type :geometry}}
+     :outline? options/plain-outline?-option
+     :cottising (-> cottising/default-options
+                    :cottising
+                    (dissoc :cottise-opposite-1)
+                    (dissoc :cottise-opposite-2)
+                    (dissoc :cottise-extra-1)
+                    (dissoc :cottise-extra-2))}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
