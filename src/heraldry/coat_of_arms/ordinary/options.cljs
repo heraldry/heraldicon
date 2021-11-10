@@ -126,17 +126,6 @@
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
-         :fess (options/pick default-options
-                             [[:type]
-                              [:origin]
-                              [:line]
-                              [:opposite-line]
-                              [:geometry]
-                              [:outline?]
-                              [:cottising]]
-                             {[:offset-x] nil
-                              [:line] line-style
-                              [:opposite-line] opposite-line-style})
          :chief (options/pick default-options
                               [[:type]
                                [:line]
@@ -594,7 +583,8 @@
 (defmethod interface/component-options :heraldry.component/ordinary [context]
   (if (-> (interface/get-raw-data (c/++ context :type))
           name keyword
-          #{:pale})
+          #{:pale
+            :fess})
     (-> (interface/options context)
         (assoc :type type-option)
         (assoc :manual-blazon options/manual-blazon))
