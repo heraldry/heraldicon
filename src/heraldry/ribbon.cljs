@@ -153,13 +153,13 @@
                            :default 0
                            :min -0.5
                            :max 0.5
-                           :ui {:label (util/str-tr strings/offset " x")
+                           :ui {:label strings/offset-x
                                 :step 0.01}}
                 :offset-y {:type :range
                            :default 0
                            :min -0.5
                            :max 0.5
-                           :ui {:label (util/str-tr strings/offset " y")
+                           :ui {:label strings/offset-y
                                 :step 0.01}}
                 :font-scale {:type :range
                              :default 0.8

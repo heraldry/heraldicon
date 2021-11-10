@@ -239,6 +239,14 @@
   {:en "Stretch"
    :de "Streckung"})
 
+(def stretch-x
+  {:en "Stretch x"
+   :de "Streckung x"})
+
+(def stretch-y
+  {:en "Stretch y"
+   :de "Streckung y"})
+
 (def size
   {:en "Size"
    :de "Größe"})
@@ -299,6 +307,14 @@
 (def offset
   {:en "Offset"
    :de "Offset"})
+
+(def offset-x
+  {:en "Offset x"
+   :de "Offset x"})
+
+(def offset-y
+  {:en "Offset y"
+   :de "Offset y"})
 
 (def layer
   {:en "Layer"
