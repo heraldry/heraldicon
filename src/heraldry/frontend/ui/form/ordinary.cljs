@@ -39,17 +39,17 @@
   (ui-interface/form-elements
    context
    [:type
+    :origin
+    :direction-anchor
+    :anchor
     :variant
     :line
     :opposite-line
     :extra-line
     :escutcheon
-    :num-points
     :angle
-    :origin
-    :direction-anchor
-    :anchor
     :geometry
+    :num-points
     :fimbriation
     :outline?
     :manual-blazon]))
