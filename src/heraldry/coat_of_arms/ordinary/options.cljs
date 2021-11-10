@@ -126,16 +126,6 @@
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
-         :base (options/pick default-options
-                             [[:type]
-                              [:line]
-                              [:geometry]
-                              [:outline?]]
-                             {[:line] line-style
-                              [:cottising] (-> default-options
-                                               :cottising
-                                               (dissoc :cottise-opposite-1)
-                                               (dissoc :cottise-opposite-2))})
          :bend (options/pick default-options
                              [[:type]
                               [:origin]
@@ -575,7 +565,8 @@
           name keyword
           #{:pale
             :fess
-            :chief})
+            :chief
+            :base})
     (-> (interface/options context)
         (assoc :type type-option)
         (assoc :manual-blazon options/manual-blazon))

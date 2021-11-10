@@ -9,12 +9,34 @@
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/base)
 
 (defmethod ordinary-interface/display-name ordinary-type [_] {:en "Base"
                                                               :de "Schildfuß"})
+
+(defmethod interface/options ordinary-type [context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        line-style (-> (line/options line-data)
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside))]
+    {:line line-style
+     :geometry {:size {:type :range
+                       :min 0.1
+                       :max 75
+                       :default 25
+                       :ui {:label strings/size
+                            :step 0.1}}
+                :ui {:label strings/geometry
+                     :form-type :geometry}}
+     :outline? options/plain-outline?-option
+     :cottising (-> cottising/default-options
+                    (dissoc :cottise-extra-1)
+                    (dissoc :cottise-extra-2)
+                    (dissoc :cottise-opposite-1)
+                    (dissoc :cottise-opposite-2))}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment
