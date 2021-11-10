@@ -10,12 +10,59 @@
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/pale)
 
 (defmethod ordinary-interface/display-name ordinary-type [_] {:en "Pale"
                                                               :de "Pfahl"})
+
+(defmethod interface/options ordinary-type [context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        opposite-line-data (interface/get-raw-data (c/++ context :opposite-line))
+        line-style (-> (line/options line-data)
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside))
+        sanitized-line (options/sanitize line-data line-style)
+        opposite-line-style (-> (line/options opposite-line-data :inherited sanitized-line)
+                                (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                                (update :ui assoc :label strings/opposite-line))]
+    {:origin {:point {:type :choice
+                      :choices [[strings/fess-point :fess]
+                                [strings/dexter-point :dexter]
+                                [strings/sinister-point :sinister]
+                                [strings/left :left]
+                                [strings/right :right]]
+                      :default :fess
+                      :ui {:label strings/point}}
+              :alignment {:type :choice
+                          :choices position/alignment-choices
+                          :default :middle
+                          :ui {:label strings/alignment
+                               :form-type :radio-select}}
+              :offset-x {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label (util/str-tr strings/offset " x")
+                              :step 0.1}}
+              :ui {:label strings/origin
+                   :form-type :position}}
+     :line line-style
+     :opposite-line opposite-line-style
+     :geometry {:size {:type :range
+                       :min 0.1
+                       :max 90
+                       :default 25
+                       :ui {:label strings/size
+                            :step 0.1}}
+                :ui {:label strings/geometry
+                     :form-type :geometry}}
+     :outline? options/plain-outline?-option
+     :cottising (-> cottising/default-options
+                    (dissoc :cottise-extra-1)
+                    (dissoc :cottise-extra-2))}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment

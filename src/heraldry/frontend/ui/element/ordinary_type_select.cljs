@@ -34,10 +34,11 @@
             has-default-line-style? (->
                                      (assoc-in (conj path :line :type) new-default-line-style)
                                      (assoc-in (conj path :line :flipped?) new-flipped)))
+          ;; TODO: the switch to context here is problematic
           (update-in path #(util/deep-merge-with (fn [_current-value new-value]
                                                    new-value)
                                                  %
-                                                 (options/sanitize-or-nil % (ordinary-options/options %))))))))
+                                                 (options/sanitize-or-nil % (interface/component-options {:path %}))))))))
 
 (defn ordinary-type-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type (vec (drop-last path)) key])}

@@ -21,6 +21,5 @@
    :reversed? {:type :boolean
                :default false
                :ui {:label strings/reversed}}
-   :ui {:label {:en "Geometry"
-                :de "Geometrie"}
+   :ui {:label strings/geometry
         :form-type :geometry}})

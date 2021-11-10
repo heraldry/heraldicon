@@ -11,6 +11,11 @@
    :default nil
    :ui {:label strings/manual-blazon}})
 
+(def plain-outline?-option
+  {:type :boolean
+   :default false
+   :ui {:label strings/outline}})
+
 (defn get-value [value options]
   (if (and (vector? value)
            (-> value first (= :force)))

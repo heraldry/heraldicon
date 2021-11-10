@@ -404,6 +404,7 @@
                          [:flipped?]
                          [:base-line]
                          [:fimbriation]]))
+        (assoc :ui (:ui default-options))
         (options/populate-inheritance inherited)
         (update :fimbriation (fn [fimbriation]
                                (when fimbriation

@@ -21,6 +21,7 @@
    [heraldry.coat-of-arms.ordinary.type.quarter :as quarter]
    [heraldry.coat-of-arms.ordinary.type.saltire :as saltire]
    [heraldry.coat-of-arms.position :as position]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
@@ -55,11 +56,14 @@
   (-> options
       (options/override-if-exists [:fimbriation :alignment :default] :outside)))
 
+(def type-option
+  {:type :choice
+   :choices choices
+   :ui {:label strings/type
+        :form-type :ordinary-type-select}})
+
 (def default-options
-  {:type {:type :choice
-          :choices choices
-          :ui {:label strings/type
-               :form-type :ordinary-type-select}}
+  {:type type-option
    :origin (-> position/default-options
                (assoc-in [:ui :label] strings/origin))
    :direction-anchor (-> position/anchor-default-options
@@ -122,17 +126,6 @@
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
-         :pale (options/pick default-options
-                             [[:type]
-                              [:origin]
-                              [:line]
-                              [:opposite-line]
-                              [:geometry]
-                              [:outline?]
-                              [:cottising]]
-                             {[:offset-y] nil
-                              [:line] line-style
-                              [:opposite-line] opposite-line-style})
          :fess (options/pick default-options
                              [[:type]
                               [:origin]
@@ -595,5 +588,14 @@
          (cond-> options
            (:cottising options) (update :cottising cottising/options (:cottising ordinary))))))))
 
+(defmethod interface/options-dispatch-fn :heraldry.component/ordinary [context]
+  (interface/get-raw-data (c/++ context :type)))
+
 (defmethod interface/component-options :heraldry.component/ordinary [context]
-  (options (interface/get-raw-data context)))
+  (if (-> (interface/get-raw-data (c/++ context :type))
+          name keyword
+          #{:pale})
+    (-> (interface/options context)
+        (assoc :type type-option)
+        (assoc :manual-blazon options/manual-blazon))
+    (options (interface/get-raw-data context))))

@@ -439,3 +439,7 @@
 (def mantling
   {:en "Mantling"
    :de "Helmdecke"})
+
+(def geometry
+  {:en "Geometry"
+   :de "Geometrie"})
