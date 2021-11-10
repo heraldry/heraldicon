@@ -2,18 +2,98 @@
   (:require
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.line.core :as line]
+   [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/label)
 
 (defmethod ordinary-interface/display-name ordinary-type [_] {:en "Label"
                                                               :de "Turnierkragen"})
+
+(defmethod interface/options ordinary-type [context]
+  {:origin {:point {:type :choice
+                    :choices [[strings/fess-point :fess]
+                              [strings/chief-point :chief]
+                              [strings/base-point :base]
+                              [strings/honour-point :honour]
+                              [strings/nombril-point :nombril]
+                              [strings/top :top]
+                              [strings/bottom :bottom]]
+                    :default :chief
+                    :ui {:label strings/point}}
+            :alignment {:type :choice
+                        :choices position/alignment-choices
+                        :default :middle
+                        :ui {:label strings/alignment
+                             :form-type :radio-select}}
+            :offset-y {:type :range
+                       :min -45
+                       :max 45
+                       :default 0
+                       :ui {:label strings/offset-y
+                            :step 0.1}}
+            :ui {:label strings/origin
+                 :form-type :position}}
+   :variant {:type :choice
+             :choices [[{:en "Full"
+                         :de "Durchgehend"} :full]
+                       [{:en "Truncated"
+                         :de "Schwebend"} :truncated]]
+             :default :full
+             :ui {:label strings/variant
+                  :form-type :radio-select}}
+   :num-points {:type :range
+                :min 2
+                :max 16
+                :default 3
+                :integer? true
+                :ui {:label {:en "Number of points"
+                             :de "Anzahl Lätze"}}}
+   :geometry {:size {:type :range
+                     :min 2
+                     :max 90
+                     :default 10
+                     :ui {:label strings/size
+                          :step 0.1}}
+              :width {:type :range
+                      :min 10
+                      :max 150
+                      :default 66
+                      :ui {:label strings/width
+                           :step 0.1}}
+              :thickness {:type :range
+                          :min 0
+                          :max 20
+                          :default 5
+                          :ui {:label strings/bar-thickness
+                               :step 0.1}}
+              :eccentricity {:type :range
+                             :min 0
+                             :max 1
+                             :default 0
+                             :ui {:label strings/eccentricity
+                                  :step 0.01}}
+              :stretch {:type :range
+                        :min 0.33
+                        :max 10
+                        :default 2
+                        :ui {:label strings/stretch
+                             :step 0.01}}
+              :ui {:label strings/geometry
+                   :form-type :geometry}}
+   :outline? options/plain-outline?-option
+   :fimbriation (-> (fimbriation/options (interface/get-raw-data (c/++ context :fimbriation))
+                                         :base-options fimbriation/default-options)
+                    (assoc :ui {:label strings/fimbriation
+                                :form-type :fimbriation}))})
 
 (defn relative-points [points]
   (reduce (fn [result point]

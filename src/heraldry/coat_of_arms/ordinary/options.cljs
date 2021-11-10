@@ -123,42 +123,6 @@
                                   (assoc :ui (-> default-options :opposite-line :ui)))]
       (->
        (case (-> ordinary :type name keyword)
-         :label (options/pick default-options
-                              [[:type]
-                               [:origin]
-                               [:geometry]
-                               [:variant]
-                               [:num-points]
-                               [:outline?]
-                               [:fimbriation]]
-                              {[:origin :point :default] :chief
-                               [:geometry :size :min] 2
-                               [:geometry :size :default] 10
-                               [:geometry :size :ui :label] strings/point-thickness
-                               [:geometry :width] {:type :range
-                                                   :min 10
-                                                   :max 150
-                                                   :default 66
-                                                   :ui {:label strings/width
-                                                        :step 0.1}}
-                               [:geometry :thickness] {:type :range
-                                                       :min 0
-                                                       :max 20
-                                                       :default 5
-                                                       :ui {:label strings/bar-thickness
-                                                            :step 0.1}}
-                               [:geometry :eccentricity] {:type :range
-                                                          :min 0
-                                                          :max 1
-                                                          :default 0
-                                                          :ui {:label strings/eccentricity
-                                                               :step 0.01}}
-                               [:geometry :stretch] {:type :range
-                                                     :min 0.33
-                                                     :max 10
-                                                     :default 2
-                                                     :ui {:label strings/stretch
-                                                          :step 0.01}}})
          :quarter (options/pick default-options
                                 [[:type]
                                  [:origin]
@@ -267,7 +231,8 @@
             :pile
             :saltire
             :cross
-            :gore})
+            :gore
+            :label})
     (-> (interface/options context)
         (assoc :type type-option)
         (assoc :manual-blazon options/manual-blazon))
