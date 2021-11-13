@@ -28,8 +28,10 @@
           (update-in path
                      (fn [prepared-field]
                        (let [current (or (:fields prepared-field) [])
-                             default (field/default-fields prepared-field)
-                             previous-default (field/default-fields (get-in db path))
+                             default (field/default-fields {:path [:context :dummy]
+                                                            :dummy prepared-field})
+                             previous-default (field/default-fields {:path [:context :dummy]
+                                                                     :dummy (get-in db path)})
                              previous-default (cond
                                                 (< (count previous-default) (count default)) (into previous-default (subvec default (count previous-default)))
                                                 (> (count previous-default) (count default)) (subvec previous-default 0 (count default))

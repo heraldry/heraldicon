@@ -24,10 +24,10 @@
           (state/ui-component-node-select path :open? true)))))
 
 (macros/reg-event-db :reset-field-part-reference
-  (fn [db [_ path]]
+  (fn [db [_ {:keys [path] :as context}]]
     (let [index (last path)
-          parent (get-in db (drop-last 2 path))]
-      (assoc-in db path (-> (field/default-fields parent)
+          parent-context (c/-- context 2)]
+      (assoc-in db path (-> (field/default-fields parent-context)
                             (get index))))))
 
 (defn show-tinctures-only? [field-type]
@@ -124,7 +124,7 @@
                   (non-mandatory-part-of-parent? context)
                   (conj {:icon "fas fa-undo"
                          :title "Reset"
-                         :handler #(state/dispatch-on-event % [:reset-field-part-reference path])})))
+                         :handler #(state/dispatch-on-event % [:reset-field-part-reference context])})))
      :nodes (concat (when (and (not (show-tinctures-only? field-type))
                                (-> field-type name keyword (not= :plain)))
                       (let [fields-context (c/++ context :fields)
