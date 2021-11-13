@@ -212,41 +212,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :per-bend (options/pick default-options
-                                    [[:type]
-                                     [:inherit-environment?]
-                                     [:counterchanged?]
-                                     [:line]
-                                     [:origin]
-                                     [:anchor]
-                                     [:outline?]]
-                                    (let [useful-points #{:top-left :bottom-right
-                                                          :chief :honour :fess :nombril :base}
-                                          point-choices (util/filter-choices
-                                                         position/anchor-point-choices
-                                                         useful-points)
-                                          anchor-point-choices (util/filter-choices
-                                                                position/anchor-point-choices
-                                                                (conj useful-points :angle))]
-                                      {[:line] line-style
-                                       [:origin :point :choices] point-choices
-                                       [:origin :point :default] :top-left
-                                       [:anchor :point :choices] (case (-> field :origin :point (or :top-left))
-                                                                   :top-left (util/filter-choices
-                                                                              anchor-point-choices
-                                                                              #{:bottom-right
-                                                                                :chief :honour :fess :nombril :base :angle})
-                                                                   :bottom-right (util/filter-choices
-                                                                                  anchor-point-choices
-                                                                                  #{:top-left
-                                                                                    :chief :honour :fess :nombril :base :angle})
-                                                                   (util/filter-choices
-                                                                    anchor-point-choices
-                                                                    [:top-left :bottom-right :angle]))
-                                       [:anchor :point :default] (case (-> field :origin :point (or :top-left))
-                                                                   :top-left :fess
-                                                                   :bottom-right :fess
-                                                                   :top-left)}))
             :per-bend-sinister (options/pick default-options
                                              [[:type]
                                               [:inherit-environment?]
@@ -809,7 +774,8 @@
                      keyword
                      #{:plain
                        :per-pale
-                       :per-fess})
+                       :per-fess
+                       :per-bend})
                (cond-> {:manual-blazon options/manual-blazon}
                  ;; TODO: should become a type
                  (not (or subfield?
