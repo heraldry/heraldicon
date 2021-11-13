@@ -208,19 +208,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :vairy (options/pick default-options
-                                 [[:type]
-                                  [:inherit-environment?]
-                                  [:counterchanged?]
-                                  [:variant]
-                                  [:layout :num-fields-x]
-                                  [:layout :offset-x]
-                                  [:layout :stretch-x]
-                                  [:layout :num-fields-y]
-                                  [:layout :offset-y]
-                                  [:layout :stretch-y]
-                                  [:outline?]]
-                                 {})
             :potenty (options/pick default-options
                                    [[:type]
                                     [:inherit-environment?]
@@ -418,7 +405,8 @@
                        :bendy-sinister
                        :chevronny
                        :chequy
-                       :lozengy})
+                       :lozengy
+                       :vairy})
                (cond-> {:manual-blazon options/manual-blazon}
                  (not (or counterchanged?
                           plain?)) (assoc :outline? options/plain-outline?-option)
