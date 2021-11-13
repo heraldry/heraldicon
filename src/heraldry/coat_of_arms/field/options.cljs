@@ -212,20 +212,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :quarterly (options/pick default-options
-                                     [[:type]
-                                      [:inherit-environment?]
-                                      [:counterchanged?]
-                                      [:layout :num-base-fields]
-                                      [:layout :num-fields-x]
-                                      [:layout :offset-x]
-                                      [:layout :stretch-x]
-                                      [:layout :num-fields-y]
-                                      [:layout :offset-y]
-                                      [:layout :stretch-y]
-                                      [:outline?]]
-                                     {[:layout :num-fields-x :default] 3
-                                      [:layout :num-fields-y :default] 4})
             :gyronny (options/pick default-options
                                    [[:type]
                                     [:inherit-environment?]
@@ -604,7 +590,8 @@
                        :per-chevron
                        :per-pile
                        :per-saltire
-                       :quartered})
+                       :quartered
+                       :quarterly})
                (cond-> {:manual-blazon options/manual-blazon}
                  ;; TODO: should become a type
                  (not (or subfield?
