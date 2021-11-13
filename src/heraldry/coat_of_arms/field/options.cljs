@@ -337,46 +337,6 @@
                                    [:layout :stretch-y]
                                    [:outline?]]
                                   {})
-            :bendy (options/pick default-options
-                                 [[:type]
-                                  [:inherit-environment?]
-                                  [:counterchanged?]
-                                  [:line]
-                                  [:layout :num-base-fields]
-                                  [:layout :num-fields-y]
-                                  [:layout :offset-y]
-                                  [:layout :stretch-y]
-                                  [:origin]
-                                  [:anchor]
-                                  [:outline?]]
-                                 (let [useful-points #{:top-left :bottom-right
-                                                       :chief :honour :fess :nombril :base}
-                                       point-choices (util/filter-choices
-                                                      position/anchor-point-choices
-                                                      useful-points)
-                                       anchor-point-choices (util/filter-choices
-                                                             position/anchor-point-choices
-                                                             (conj useful-points :angle))]
-                                   {[:line] (-> line-style
-                                                (dissoc :fimbriation))
-                                    [:origin :point :choices] point-choices
-                                    [:origin :point :default] :top-left
-                                    [:anchor :point :choices] (case (-> field :origin :point (or :top-left))
-                                                                :top-left (util/filter-choices
-                                                                           anchor-point-choices
-                                                                           #{:bottom-right
-                                                                             :chief :honour :fess :nombril :base :angle})
-                                                                :bottom-right (util/filter-choices
-                                                                               anchor-point-choices
-                                                                               #{:top-left
-                                                                                 :chief :honour :fess :nombril :base :angle})
-                                                                (util/filter-choices
-                                                                 anchor-point-choices
-                                                                 [:top-left :bottom-right :angle]))
-                                    [:anchor :point :default] (case (-> field :origin :point (or :top-left))
-                                                                :top-left :fess
-                                                                :bottom-right :fess
-                                                                :top-left)}))
             :bendy-sinister (options/pick default-options
                                           [[:type]
                                            [:inherit-environment?]
@@ -550,7 +510,8 @@
                        :quarterly
                        :gyronny
                        :paly
-                       :barry})
+                       :barry
+                       :bendy})
                (cond-> {:manual-blazon options/manual-blazon}
                  (not (or counterchanged?
                           plain?)) (assoc :outline? options/plain-outline?-option)
