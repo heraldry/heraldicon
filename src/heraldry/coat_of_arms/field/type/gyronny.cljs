@@ -10,7 +10,9 @@
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]))
+   [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]))
 
 (def field-type :heraldry.field.type/gyronny)
 
@@ -18,6 +20,81 @@
                                                         :de "Geständert"})
 
 (defmethod field-interface/part-names field-type [_] ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"])
+
+(defmethod interface/options field-type [context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        opposite-line-data (interface/get-raw-data (c/++ context :opposite-line))
+        line-style (-> (line/options line-data)
+                       (options/override-if-exists [:offset :min] 0)
+                       (options/override-if-exists [:base-line] nil)
+                       (dissoc :fimbriation))
+        sanitized-line (options/sanitize line-data line-style)
+        opposite-line-style (-> (line/options opposite-line-data :inherited sanitized-line)
+                                (options/override-if-exists [:offset :min] 0)
+                                (options/override-if-exists [:base-line] nil)
+                                (dissoc :fimbriation)
+                                (update :ui assoc :label strings/opposite-line))
+        anchor-point-option {:type :choice
+                             :choices [[strings/top-left :top-left]
+                                       [strings/top-right :top-right]
+                                       [strings/bottom-left :bottom-left]
+                                       [strings/bottom-right :bottom-right]
+                                       [strings/angle :angle]]
+                             :default :top-left
+                             :ui {:label strings/point}}
+        current-anchor-point (options/get-value
+                              (interface/get-raw-data (c/++ context :anchor :point))
+                              anchor-point-option)]
+    {:origin {:point {:type :choice
+                      :choices [[strings/chief-point :chief]
+                                [strings/base-point :base]
+                                [strings/fess-point :fess]
+                                [strings/dexter-point :dexter]
+                                [strings/sinister-point :sinister]
+                                [strings/honour-point :honour]
+                                [strings/nombril-point :nombril]]
+                      :default :fess
+                      :ui {:label strings/point}}
+              :offset-x {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-x
+                              :step 0.1}}
+              :offset-y {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-y
+                              :step 0.1}}
+              :ui {:label strings/origin
+                   :form-type :position}}
+     :anchor (cond-> {:point anchor-point-option
+                      :ui {:label strings/anchor
+                           :form-type :position}}
+
+               (= current-anchor-point
+                  :angle) (assoc :angle {:type :range
+                                         :min 10
+                                         :max 80
+                                         :default 45
+                                         :ui {:label strings/angle}})
+
+               (not= current-anchor-point
+                     :angle) (assoc :offset-x {:type :range
+                                               :min -45
+                                               :max 45
+                                               :default 0
+                                               :ui {:label strings/offset-x
+                                                    :step 0.1}}
+                                    :offset-y {:type :range
+                                               :min -45
+                                               :max 45
+                                               :default 0
+                                               :ui {:label strings/offset-y
+                                                    :step 0.1}}))
+     :line line-style
+     :opposite-line opposite-line-style}))
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]

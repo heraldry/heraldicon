@@ -212,27 +212,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :gyronny (options/pick default-options
-                                   [[:type]
-                                    [:inherit-environment?]
-                                    [:counterchanged?]
-                                    [:line]
-                                    [:opposite-line]
-                                    [:origin]
-                                    [:anchor]
-                                    [:outline?]]
-                                   {[:line] (-> line-style
-                                                (options/override-if-exists [:offset :min] 0)
-                                                (options/override-if-exists [:base-line] nil)
-                                                (dissoc :fimbriation))
-                                    [:opposite-line] (-> opposite-line-style
-                                                         (options/override-if-exists [:offset :min] 0)
-                                                         (options/override-if-exists [:base-line] nil)
-                                                         (dissoc :fimbriation))
-                                    [:origin :alignment] nil
-                                    [:anchor :point :choices] (util/filter-choices
-                                                               position/anchor-point-choices
-                                                               [:top-left :top-right :bottom-left :bottom-right :angle])})
             :paly (options/pick default-options
                                 [[:type]
                                  [:inherit-environment?]
@@ -595,7 +574,8 @@
                        :per-pile
                        :per-saltire
                        :quartered
-                       :quarterly})
+                       :quarterly
+                       :gyronny})
                (cond-> {:manual-blazon options/manual-blazon}
                  (not (or counterchanged?
                           plain?)) (assoc :outline? options/plain-outline?-option)
