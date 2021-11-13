@@ -225,19 +225,6 @@
                                   {[:layout :rotation :min] -45
                                    [:layout :rotation :max] 45
                                    [:layout :rotation :default] 0})
-            :masony (options/pick default-options
-                                  [[:type]
-                                   [:inherit-environment?]
-                                   [:counterchanged?]
-                                   [:thickness]
-                                   [:layout :num-fields-x]
-                                   [:layout :offset-x]
-                                   [:layout :stretch-x]
-                                   [:layout :num-fields-y]
-                                   [:layout :offset-y]
-                                   [:layout :stretch-y]
-                                   [:outline?]]
-                                  {})
             :tierced-per-pale (options/pick default-options
                                             [[:type]
                                              [:inherit-environment?]
@@ -379,7 +366,8 @@
                        :lozengy
                        :vairy
                        :potenty
-                       :papellony})
+                       :papellony
+                       :masony})
                (cond-> {:manual-blazon options/manual-blazon}
                  (not (or counterchanged?
                           plain?)) (assoc :outline? options/plain-outline?-option)
