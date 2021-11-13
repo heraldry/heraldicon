@@ -8,7 +8,9 @@
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]))
+   [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]))
 
 (def field-type :heraldry.field.type/per-bend)
 
@@ -16,6 +18,91 @@
                                                         :de "Schräggeteilt"})
 
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
+
+(defmethod interface/options field-type [context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        line-style (line/options line-data)
+        origin-point-option {:type :choice
+                             :choices [[strings/fess-point :fess]
+                                       [strings/chief-point :chief]
+                                       [strings/base-point :base]
+                                       [strings/honour-point :honour]
+                                       [strings/nombril-point :nombril]
+                                       [strings/top-left :top-left]
+                                       [strings/bottom-right :bottom-right]]
+                             :default :top-left
+                             :ui {:label strings/point}}
+        current-origin-point (options/get-value
+                              (interface/get-raw-data (c/++ context :origin :point))
+                              origin-point-option)
+        anchor-point-option {:type :choice
+                             :choices (case current-origin-point
+                                        :top-left [[strings/fess-point :fess]
+                                                   [strings/chief-point :chief]
+                                                   [strings/base-point :base]
+                                                   [strings/honour-point :honour]
+                                                   [strings/nombril-point :nombril]
+                                                   [strings/bottom-right :bottom-right]
+                                                   [strings/angle :angle]]
+                                        :bottom-right [[strings/fess-point :fess]
+                                                       [strings/chief-point :chief]
+                                                       [strings/base-point :base]
+                                                       [strings/honour-point :honour]
+                                                       [strings/nombril-point :nombril]
+                                                       [strings/top-left :top-left]
+                                                       [strings/angle :angle]]
+                                        [[strings/top-left :top-left]
+                                         [strings/bottom-right :bottom-right]
+                                         [strings/angle :angle]])
+                             :default (case current-origin-point
+                                        :top-left :fess
+                                        :bottom-right :fess
+                                        :top-left)
+                             :ui {:label strings/point}}
+        current-anchor-point (options/get-value
+                              (interface/get-raw-data (c/++ context :anchor :point))
+                              anchor-point-option)]
+    {:origin {:point origin-point-option
+              :offset-x {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-x
+                              :step 0.1}}
+              :offset-y {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-y
+                              :step 0.1}}
+              :ui {:label strings/origin
+                   :form-type :position}}
+     :anchor (cond-> {:point anchor-point-option
+                      :ui {:label strings/anchor
+                           :form-type :position}}
+
+               (= current-anchor-point
+                  :angle) (assoc :angle {:type :range
+                                         :min 0
+                                         :max 360
+                                         :default 45
+                                         :ui {:label strings/angle}})
+
+               (not= current-anchor-point
+                     :angle) (assoc :offset-x {:type :range
+                                               :min -45
+                                               :max 45
+                                               :default 0
+                                               :ui {:label strings/offset-x
+                                                    :step 0.1}}
+                                    :offset-y {:type :range
+                                               :min -45
+                                               :max 45
+                                               :default 0
+                                               :ui {:label strings/offset-y
+                                                    :step 0.1}}))
+     :line line-style
+     :outline? options/plain-outline?-option}))
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]
