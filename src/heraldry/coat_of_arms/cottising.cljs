@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.cottising
   (:require
-   [heraldry.coat-of-arms.default :as default]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.context :as c]
@@ -37,8 +36,6 @@
                         :default 2
                         :ui {:label strings/thickness
                              :step 0.1}}
-            :field (interface/component-options {:path [:context :dummy]
-                                                 :dummy default/field})
             :outline? {:type :boolean
                        :default false
                        :ui {:label strings/outline}}
