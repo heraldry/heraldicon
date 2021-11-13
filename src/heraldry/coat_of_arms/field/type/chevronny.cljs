@@ -73,8 +73,6 @@
 
         {line-right-upper :line} (line/create opposite-line
                                               start end-right
-                                              :flipped? true
-                                              :mirrored? true
                                               :context context
                                               :environment environment)
         {line-left-lower :line} (line/create line
