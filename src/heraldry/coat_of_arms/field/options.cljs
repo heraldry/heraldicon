@@ -209,36 +209,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :chevronny (options/pick default-options
-                                     [[:type]
-                                      [:inherit-environment?]
-                                      [:anchor]
-                                      [:counterchanged?]
-                                      [:line]
-                                      [:opposite-line]
-                                      [:layout :num-base-fields]
-                                      [:layout :num-fields-y]
-                                      [:layout :offset-y]
-                                      [:layout :stretch-y]
-                                      [:outline?]]
-                                     {[:line] (-> line-style
-                                                  (options/override-if-exists [:offset :min] 0)
-                                                  (options/override-if-exists [:base-line] nil)
-                                                  (dissoc :fimbriation))
-                                      [:opposite-line] (-> opposite-line-style
-                                                           (options/override-if-exists [:offset :min] 0)
-                                                           (options/override-if-exists [:base-line] nil)
-                                                           (dissoc :fimbriation))
-                                      [:layout :offset-y :min] -3
-                                      [:layout :offset-y :max] 3
-                                      [:anchor :point :default] :angle
-                                      [:anchor :angle :min] 10
-                                      [:anchor :angle :max] 170
-                                      [:anchor :point :choices] (util/filter-choices
-
-                                                                 position/anchor-point-choices
-                                                                 [:top-left :top-right
-                                                                  :bottom-left :bottom-right :angle])})
             :chequy (options/pick default-options
                                   [[:type]
                                    [:inherit-environment?]
@@ -472,7 +442,8 @@
                        :paly
                        :barry
                        :bendy
-                       :bendy-sinister})
+                       :bendy-sinister
+                       :chevronny})
                (cond-> {:manual-blazon options/manual-blazon}
                  (not (or counterchanged?
                           plain?)) (assoc :outline? options/plain-outline?-option)
