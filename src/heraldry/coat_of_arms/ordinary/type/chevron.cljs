@@ -40,12 +40,8 @@
                                                  [strings/dexter-point :dexter]
                                                  [strings/sinister-point :sinister]
                                                  [strings/top-left :top-left]
-                                                 [strings/top :top]
                                                  [strings/top-right :top-right]
-                                                 [strings/left :left]
-                                                 [strings/right :right]
                                                  [strings/bottom-left :bottom-left]
-                                                 [strings/bottom :bottom]
                                                  [strings/bottom-right :bottom-right]
                                                  [strings/angle :angle]]
                                        :default :base
@@ -55,52 +51,44 @@
                                         direction-anchor-point-option)
         anchor-point-option {:type :choice
                              :choices (case current-direction-anchor-point
-                                        :bottom [[strings/bottom-left :bottom-left]
-                                                 [strings/bottom :bottom]
-                                                 [strings/bottom-right :bottom-right]
-                                                 [strings/left :left]
-                                                 [strings/right :right]
-                                                 [strings/angle :angle]]
-                                        :top [[strings/top-left :top-left]
-                                              [strings/top :top]
-                                              [strings/top-right :top-right]
-                                              [strings/left :left]
-                                              [strings/right :right]
-                                              [strings/angle :angle]]
-                                        :left [[strings/top-left :top-left]
+                                        :base [[strings/bottom-left :bottom-left]
+                                               [strings/bottom-right :bottom-right]
                                                [strings/left :left]
-                                               [strings/bottom-left :bottom-left]
-                                               [strings/top :top]
-                                               [strings/bottom :bottom]
+                                               [strings/right :right]
                                                [strings/angle :angle]]
-                                        :right [[strings/top-right :top-right]
+                                        :chief [[strings/top-left :top-left]
+                                                [strings/top-right :top-right]
+                                                [strings/left :left]
                                                 [strings/right :right]
-                                                [strings/bottom-right :bottom-right]
-                                                [strings/top :top]
-                                                [strings/bottom :bottom]
                                                 [strings/angle :angle]]
-                                        :bottom-left [[strings/bottom-left :bottom-left]
-                                                      [strings/bottom :bottom]
+                                        :dexter [[strings/top-left :top-left]
+                                                 [strings/bottom-left :bottom-left]
+                                                 [strings/top :top]
+                                                 [strings/bottom :bottom]
+                                                 [strings/angle :angle]]
+                                        :sinister [[strings/top-right :top-right]
+                                                   [strings/bottom-right :bottom-right]
+                                                   [strings/top :top]
+                                                   [strings/bottom :bottom]
+                                                   [strings/angle :angle]]
+                                        :bottom-left [[strings/bottom :bottom]
                                                       [strings/bottom-right :bottom-right]
                                                       [strings/top-left :top-left]
                                                       [strings/left :left]
                                                       [strings/angle :angle]]
                                         :bottom-right [[strings/bottom-left :bottom-left]
                                                        [strings/bottom :bottom]
-                                                       [strings/bottom-right :bottom-right]
                                                        [strings/right :right]
                                                        [strings/top-right :top-right]
                                                        [strings/angle :angle]]
-                                        :top-left [[strings/top-left :top-left]
-                                                   [strings/top :top]
+                                        :top-left [[strings/top :top]
                                                    [strings/top-right :top-right]
                                                    [strings/left :left]
                                                    [strings/bottom-left :bottom-left]
                                                    [strings/angle :angle]]
                                         :top-right [[strings/top-left :top-left]
                                                     [strings/top :top]
-                                                    [strings/top-right :top-right]
-                                                    [strings/left :left]
+                                                    [strings/left :right]
                                                     [strings/bottom-right :bottom-right]
                                                     [strings/angle :angle]]
                                         [[strings/top-left :top-left]
@@ -113,13 +101,13 @@
                                          [strings/bottom-right :bottom-right]
                                          [strings/angle :angle]])
                              :default (case current-direction-anchor-point
-                                        :bottom :bottom-left
-                                        :top :top-right
-                                        :left :top-left
-                                        :right :bottom-right
+                                        :base :bottom-left
+                                        :chief :top-right
+                                        :dexter :top-left
+                                        :sinister :bottom-right
                                         :bottom-left :left
-                                        :bottom-right :bottom
-                                        :top-left :top
+                                        :bottom-right :right
+                                        :top-left :left
                                         :top-right :right
                                         :angle :angle
                                         :bottom-left)
