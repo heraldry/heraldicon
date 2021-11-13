@@ -1,82 +1,58 @@
 (ns heraldry.coat-of-arms.cottising
   (:require
    [heraldry.coat-of-arms.default :as default]
-   [heraldry.coat-of-arms.field.options :as field-options]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
+   [heraldry.options :as options]
    [heraldry.strings :as strings]))
 
-(def cottise-default-options
-  {:line (-> line/default-options
-             (assoc-in [:ui :label] strings/line))
-   :opposite-line (-> line/default-options
-                      (assoc-in [:ui :label] strings/opposite-line))
-   :distance {:type :range
-              :min -10
-              :max 20
-              :default 2
-              :ui {:label {:en "Distance"
-                           :de "Abstand"}
-                   :step 0.1}}
-   :thickness {:type :range
-               :min 0.1
-               :max 20
-               :default 2
-               :ui {:label strings/thickness
-                    :step 0.1}}
-   :field (interface/component-options {:path [:context :dummy]
-                                        :dummy default/field})
-   :outline? {:type :boolean
-              :default false
-              :ui {:label strings/outline}}
-   :ui {:form-type :cottising}})
+(defn add-cottise-options [options key context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        opposite-line-data (interface/get-raw-data (c/++ context :opposite-line))
+        line-style (-> (line/options line-data)
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside))
+        sanitized-line (options/sanitize line-data line-style)
+        opposite-line-style (-> (line/options opposite-line-data :inherited sanitized-line)
+                                (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                                (update :ui assoc :label strings/opposite-line))]
+    (assoc options
+           key
+           {:line (-> line-style
+                      (assoc-in [:ui :label] strings/line))
+            :opposite-line (-> opposite-line-style
+                               (assoc-in [:ui :label] strings/opposite-line))
+            :distance {:type :range
+                       :min -10
+                       :max 20
+                       :default 2
+                       :ui {:label {:en "Distance"
+                                    :de "Abstand"}
+                            :step 0.1}}
+            :thickness {:type :range
+                        :min 0.1
+                        :max 20
+                        :default 2
+                        :ui {:label strings/thickness
+                             :step 0.1}}
+            :field (interface/component-options {:path [:context :dummy]
+                                                 :dummy default/field})
+            :outline? {:type :boolean
+                       :default false
+                       :ui {:label strings/outline}}
+            :ui {:form-type :cottising}})))
 
-(def default-options
-  {:cottise-1 cottise-default-options
-   :cottise-2 cottise-default-options
-   :cottise-opposite-1 cottise-default-options
-   :cottise-opposite-2 cottise-default-options
-   :cottise-extra-1 cottise-default-options
-   :cottise-extra-2 cottise-default-options})
-
-(defn cottise-options [options {:keys [line opposite-line field]}]
-  (cond-> options
-    (:line options)
-    (assoc :line (-> (line/options line)
-                     (assoc :ui (-> cottise-default-options :line :ui))))
-
-    (:opposite-line options)
-    (assoc :opposite-line (-> (line/options opposite-line)
-                              (assoc :ui (-> cottise-default-options :opposite-line :ui))))
-
-    (:field options)
-    (assoc :field (interface/component-options {:path [:context :dummy]
-                                                :dummy field}))))
-
-(defn options [options {:keys [cottise-1 cottise-2
-                               cottise-opposite-1 cottise-opposite-2
-                               cottise-extra-1 cottise-extra-2]}]
-  (cond-> options
-    (:cottise-1 options)
-    (update :cottise-1 cottise-options cottise-1)
-
-    (:cottise-2 options)
-    (update :cottise-2 cottise-options cottise-2)
-
-    (:cottise-opposite-1 options)
-    (update :cottise-opposite-1 cottise-options cottise-opposite-1)
-
-    (:cottise-opposite-2 options)
-    (update :cottise-opposite-2 cottise-options cottise-opposite-2)
-
-    (:cottise-extra-1 options)
-    (update :cottise-extra-1 cottise-options cottise-extra-1)
-
-    (:cottise-extra-2 options)
-    (update :cottise-extra-2 cottise-options cottise-extra-2)))
+(defn add-cottising [context num]
+  (let [cottising-context (c/++ context :cottising)]
+    (cond-> {}
+      (>= num 1) (-> (add-cottise-options :cottise-1 (c/++ cottising-context :cottise-1))
+                     (add-cottise-options :cottise-2 (c/++ cottising-context :cottise-2)))
+      (>= num 2) (-> (add-cottise-options :cottise-opposite-1 (c/++ cottising-context :cottise-opposite-1))
+                     (add-cottise-options :cottise-opposite-2 (c/++ cottising-context :cottise-opposite-2)))
+      (>= num 3) (-> (add-cottise-options :cottise-extra-1 (c/++ cottising-context :cottise-extra-1))
+                     (add-cottise-options :cottise-extra-2 (c/++ cottising-context :cottise-extra-2))))))
 
 (defn render-fess-cottise [{:keys [environment] :as context}
                            cottise-2-key next-cottise-key

@@ -1,7 +1,6 @@
 (ns heraldry.coat-of-arms.ordinary.type.gore
   (:require
    [heraldry.coat-of-arms.angle :as angle]
-   [heraldry.coat-of-arms.cottising :as cottising]
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
@@ -92,12 +91,7 @@
                                                     :step 0.1}}))
      :line line-style
      :opposite-line opposite-line-style
-     :outline? options/plain-outline?-option
-     :cottising (-> cottising/default-options
-                    (dissoc :cottise-opposite-1)
-                    (dissoc :cottise-opposite-2)
-                    (dissoc :cottise-extra-1)
-                    (dissoc :cottise-extra-2))}))
+     :outline? options/plain-outline?-option}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]

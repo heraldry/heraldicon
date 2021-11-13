@@ -57,15 +57,10 @@
    :ui {:label strings/type
         :form-type :ordinary-type-select}})
 
-
 (defmethod interface/options-dispatch-fn :heraldry.component/ordinary [context]
   (interface/get-raw-data (c/++ context :type)))
 
 (defmethod interface/component-options :heraldry.component/ordinary [context]
   (-> (interface/options context)
       (assoc :type type-option)
-      (assoc :manual-blazon options/manual-blazon)
-      (update :cottising (fn [cottising-options]
-                           (when cottising-options
-                             (cottising/options cottising-options
-                                                (interface/get-raw-data (c/++ context :cottising))))))))
+      (assoc :manual-blazon options/manual-blazon)))

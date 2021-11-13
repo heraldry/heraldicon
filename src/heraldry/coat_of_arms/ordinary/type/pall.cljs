@@ -236,7 +236,7 @@
                 :ui {:label strings/geometry
                      :form-type :geometry}}
      :outline? options/plain-outline?-option
-     :cottising cottising/default-options}))
+     :cottising (cottising/add-cottising context 3)}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
