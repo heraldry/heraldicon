@@ -9,7 +9,8 @@
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]))
+   [heraldry.math.vector :as v]
+   [heraldry.strings :as strings]))
 
 (def field-type :heraldry.field.type/tierced-per-pale)
 
@@ -17,6 +18,36 @@
                                                         :de "Zweimal gespalten"})
 
 (defmethod field-interface/part-names field-type [_] ["dexter" "fess" "sinister"])
+
+(defmethod interface/options field-type [context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        line-style (-> (line/options line-data)
+                       (dissoc :fimbriation))]
+    {:origin {:point {:type :choice
+                      :choices [[strings/fess-point :fess]
+                                [strings/dexter-point :dexter]
+                                [strings/sinister-point :sinister]
+                                [strings/left :left]
+                                [strings/right :right]]
+                      :default :fess
+                      :ui {:label strings/point}}
+              :offset-x {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-x
+                              :step 0.1}}
+              :ui {:label strings/origin
+                   :form-type :position}}
+     :layout {:stretch-x {:type :range
+                          :min 0.5
+                          :max 2
+                          :default 1
+                          :ui {:label strings/stretch-x
+                               :step 0.01}}
+              :ui {:label strings/layout
+                   :form-type :field-layout}}
+     :line line-style}))
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]
