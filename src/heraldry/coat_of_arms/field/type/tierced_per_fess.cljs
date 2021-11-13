@@ -9,7 +9,8 @@
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]))
+   [heraldry.math.vector :as v]
+   [heraldry.strings :as strings]))
 
 (def field-type :heraldry.field.type/tierced-per-fess)
 
@@ -17,6 +18,37 @@
                                                         :de "Zweimal geteilt"})
 
 (defmethod field-interface/part-names field-type [_] ["chief" "fess" "base"])
+
+(defmethod interface/options field-type [context]
+  (let [line-data (interface/get-raw-data (c/++ context :line))
+        line-style (line/options line-data)]
+    {:origin {:point {:type :choice
+                      :choices [[strings/fess-point :fess]
+                                [strings/chief-point :chief]
+                                [strings/base-point :base]
+                                [strings/honour-point :honour]
+                                [strings/nombril-point :nombril]
+                                [strings/top :top]
+                                [strings/bottom :bottom]]
+                      :default :fess
+                      :ui {:label strings/point}}
+              :offset-y {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-y
+                              :step 0.1}}
+              :ui {:label strings/origin
+                   :form-type :position}}
+     :layout {:stretch-y {:type :range
+                          :min 0.5
+                          :max 2
+                          :default 1
+                          :ui {:label strings/stretch-y
+                               :step 0.01}}
+              :ui {:label strings/layout
+                   :form-type :field-layout}}
+     :line line-style}))
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]

@@ -208,18 +208,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :tierced-per-fess (options/pick default-options
-                                            [[:type]
-                                             [:inherit-environment?]
-                                             [:counterchanged?]
-                                             [:line]
-                                             [:layout :stretch-y]
-                                             [:origin :point]
-                                             [:origin :offset-y]
-                                             [:outline?]]
-                                            {[:origin :point :choices] position/point-choices-y
-                                             [:line] line-style
-                                             [:line :fimbriation] nil})
             :tierced-per-pall (options/pick default-options
                                             [[:type]
                                              [:inherit-environment?]
@@ -340,7 +328,8 @@
                        :papellony
                        :masony
                        :fretty
-                       :tierced-per-pale})
+                       :tierced-per-pale
+                       :tierced-per-fess})
                (cond-> {:manual-blazon options/manual-blazon}
                  (not (or counterchanged?
                           plain?)) (assoc :outline? options/plain-outline?-option)
