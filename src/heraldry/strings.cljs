@@ -459,3 +459,15 @@
 (def geometry
   {:en "Geometry"
    :de "Geometrie"})
+
+(def base-fields
+  {:en "Base fields"
+   :de "Basisfelder"})
+
+(def subfields-x
+  {:en "Subfields x"
+   :de "Unterfelder x"})
+
+(def subfields-y
+  {:en "Subfields y"
+   :de "Unterfelder y"})

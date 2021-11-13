@@ -27,16 +27,14 @@
                              :max 20
                              :default 6
                              :integer? true
-                             :ui {:label {:en "y-Subfields"
-                                          :de "y-Unterfelder"}
+                             :ui {:label strings/subfields-y
                                   :form-type :field-layout-num-fields-y}}
               :num-base-fields {:type :range
                                 :min 2
                                 :max 8
                                 :default 2
                                 :integer? true
-                                :ui {:label {:en "Base fields"
-                                             :de "Basisfelder"}
+                                :ui {:label strings/base-fields
                                      :form-type :field-layout-num-base-fields}}
               :offset-y {:type :range
                          :min -1
