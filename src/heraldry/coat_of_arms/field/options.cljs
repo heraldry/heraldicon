@@ -13,7 +13,8 @@
    [heraldry.coat-of-arms.field.type.paly :as paly]
    [heraldry.coat-of-arms.field.type.papellony :as papellony]
    [heraldry.coat-of-arms.field.type.per-bend :as per-bend]
-   [heraldry.coat-of-arms.field.type.per-bend-sinister :as per-bend-sinister]
+   [heraldry.coat-of-arms.field.type.per-bend-sinister
+    :as per-bend-sinister]
    [heraldry.coat-of-arms.field.type.per-chevron :as per-chevron]
    [heraldry.coat-of-arms.field.type.per-fess :as per-fess]
    [heraldry.coat-of-arms.field.type.per-pale :as per-pale]
@@ -31,6 +32,7 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
@@ -72,12 +74,15 @@
 (def field-map
   (util/choices->map choices))
 
+(def type-option
+  {:type :choice
+   :choices choices
+   :ui {:label {:en "Partition"
+                :de "Teilung"}
+        :form-type :field-type-select}})
+
 (def default-options
-  {:type {:type :choice
-          :choices choices
-          :ui {:label {:en "Partition"
-                       :de "Teilung"}
-               :form-type :field-type-select}}
+  {:type type-option
    :inherit-environment? {:type :boolean
                           :default false
                           :ui {:label {:en "Inherit environment (e.g. for dimidiation)"
@@ -207,11 +212,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :plain (options/pick default-options
-                                 [[:type]
-                                  [:inherit-environment?]
-                                  [:counterchanged?]
-                                  [:tincture]])
             :per-pale (options/pick default-options
                                     [[:type]
                                      [:inherit-environment?]
@@ -815,13 +815,39 @@
             (-> field :counterchanged?) (select-keys [:counterchanged?
                                                       :manual-blazon]))))))
 
+(defmethod interface/options-dispatch-fn :heraldry.component/field [context]
+  (interface/get-raw-data (c/++ context :type)))
+
 (defmethod interface/component-options :heraldry.component/field [context]
-  (let [path (:path context)
+  (let [counterchanged? (interface/get-raw-data (c/++ context :counterchanged?))
+        path (:path context)
         root-field? (-> path drop-last last (= :coat-of-arms))
         subfield? (-> path last int?)
-        semy-charge? (->> path (take-last 2) (= [:charge :field]))]
+        semy-charge? (->> path (take-last 2) (= [:charge :field]))
+        opts (if (-> (interface/get-raw-data (c/++ context :type))
+                     name
+                     keyword
+                     #{:plain})
+               (cond-> {:manual-blazon options/manual-blazon}
+                 ;; TODO: should become a type
+                 (not (or subfield?
+                          root-field?
+                          semy-charge?)) (assoc :counterchanged? {:type :boolean
+                                                                  :default false
+                                                                  :ui {:label {:en "Counterchanged"
+                                                                               :de "Verwechselt"}}})
+                 (not counterchanged?) (merge (interface/options context))
+                 (not counterchanged?) (assoc :type type-option)
+                 (not (or root-field?
+                          semy-charge?
+                          counterchanged?)) (assoc :inherit-environment?
+                                                   {:type :boolean
+                                                    :default false
+                                                    :ui {:label {:en "Inherit environment (e.g. for dimidiation)"
+                                                                 :de "Umgebung erben (e.g. für Halbierung)"}}}))
+               (options (interface/get-raw-data context)))]
     ;; TODO: all this likely now can be done in the options function
-    (cond-> (options (interface/get-raw-data context))
+    (cond-> opts
       (or root-field?
           semy-charge?) (->
                          (dissoc :inherit-environment?)
