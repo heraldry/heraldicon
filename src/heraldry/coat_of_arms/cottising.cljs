@@ -27,7 +27,8 @@
                :default 2
                :ui {:label strings/thickness
                     :step 0.1}}
-   :field (field-options/options default/field)
+   :field (interface/component-options {:path [:context :dummy]
+                                        :dummy default/field})
    :outline? {:type :boolean
               :default false
               :ui {:label strings/outline}}
@@ -52,7 +53,8 @@
                               (assoc :ui (-> cottise-default-options :opposite-line :ui))))
 
     (:field options)
-    (assoc :field (field-options/options field))))
+    (assoc :field (interface/component-options {:path [:context :dummy]
+                                                :dummy field}))))
 
 (defn options [options {:keys [cottise-1 cottise-2
                                cottise-opposite-1 cottise-opposite-2

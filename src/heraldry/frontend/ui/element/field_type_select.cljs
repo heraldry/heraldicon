@@ -13,6 +13,7 @@
    [heraldry.static :as static]
    [re-frame.core :as rf]))
 
+;; TODO: this needs some more thinking, currently it creates dummy contexts to access db data
 (defn set-field-type [db path new-type num-fields-x num-fields-y num-base-fields]
   (let [path (vec path)]
     (if (= new-type :heraldry.field.type/plain)
@@ -51,7 +52,8 @@
                                                           def)))
                                                  vec))))))
           (update-in path #(merge %
-                                  (options/sanitize-or-nil % (field-options/options %))))
+                                  (options/sanitize-or-nil % (interface/component-options {:path [:context :dummy]
+                                                                                           :dummy %}))))
           (update-in path dissoc :tincture)))))
 
 (macros/reg-event-db :set-field-type
@@ -67,7 +69,8 @@
                                                  num-fields-y
                                                  num-base-fields]} (:layout (options/sanitize-or-nil
                                                                              new-field
-                                                                             (field-options/options new-field)))]
+                                                                             (interface/component-options {:path [:context :dummy]
+                                                                                                           :dummy new-field})))]
                                      (state/dispatch-on-event % [:set-field-type field-path key num-fields-x num-fields-y num-base-fields]))}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}

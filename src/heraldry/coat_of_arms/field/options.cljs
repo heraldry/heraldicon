@@ -79,10 +79,6 @@
 (defmethod interface/options-dispatch-fn :heraldry.component/field [context]
   (interface/get-raw-data (c/++ context :type)))
 
-;; TODO: this is broken
-(defn options [_field]
-  {})
-
 (defmethod interface/component-options :heraldry.component/field [context]
   (let [counterchanged? (interface/get-raw-data (c/++ context :counterchanged?))
         path (:path context)
