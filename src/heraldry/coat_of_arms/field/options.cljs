@@ -28,13 +28,9 @@
    [heraldry.coat-of-arms.field.type.tierced-per-pale :as tierced-per-pale]
    [heraldry.coat-of-arms.field.type.tierced-per-pall :as tierced-per-pall]
    [heraldry.coat-of-arms.field.type.vairy :as vairy]
-   [heraldry.coat-of-arms.line.core :as line]
-   [heraldry.coat-of-arms.position :as position]
-   [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def fields
@@ -80,167 +76,12 @@
                 :de "Teilung"}
         :form-type :field-type-select}})
 
-(def default-options
-  {:type type-option
-   :inherit-environment? {:type :boolean
-                          :default false
-                          :ui {:label {:en "Inherit environment (e.g. for dimidiation)"
-                                       :de "Umgebung erben (e.g. für Halbierung)"}}}
-   :counterchanged? {:type :boolean
-                     :default false
-                     :ui {:label {:en "Counterchanged"
-                                  :de "Verwechselt"}}}
-   :tincture {:type :choice
-              :choices tincture/choices
-              :default :none
-              :ui {:label strings/tincture
-                   :form-type :tincture-select}}
-   :line (-> line/default-options
-             (assoc-in [:ui :label] strings/line))
-   :opposite-line (-> line/default-options
-                      (assoc-in [:ui :label] strings/opposite-line))
-   :extra-line (-> line/default-options
-                   (assoc-in [:ui :label] strings/extra-line))
-   :origin (-> position/default-options
-               (dissoc :alignment)
-               (assoc :ui {:label strings/origin
-                           :form-type :position}))
-   :direction-anchor (-> position/anchor-default-options
-                         (dissoc :alignment)
-                         (assoc-in [:angle :min] -180)
-                         (assoc-in [:angle :max] 180)
-                         (assoc-in [:angle :default] 0)
-                         (assoc :ui {:label strings/issuant
-                                     :form-type :position}))
-   :anchor (-> position/anchor-default-options
-               (dissoc :alignment)
-               (assoc :ui {:label strings/anchor
-                           :form-type :position}))
-   :variant {:type :choice
-             :choices [["Default" :default]
-                       ["Counter" :counter]
-                       ["In pale" :in-pale]
-                       ["En point" :en-point]
-                       ["Ancien" :ancien]]
-             :default :default
-             :ui {:label strings/variant}}
-   :thickness {:type :range
-               :min 0
-               :max 0.5
-               :default 0.1
-               :ui {:label strings/thickness
-                    :step 0.01}}
-   :gap {:type :range
-         :min 0
-         :max 1
-         :default 0.1
-         :ui {:label strings/gap
-              :step 0.01}}
-   :layout {:num-fields-x {:type :range
-                           :min 1
-                           :max 20
-                           :default 6
-                           :integer? true
-                           :ui {:label strings/subfields-x
-                                :form-type :field-layout-num-fields-x}}
-            :num-fields-y {:type :range
-                           :min 1
-                           :max 20
-                           :default 6
-                           :integer? true
-                           :ui {:label strings/subfields-y
-                                :form-type :field-layout-num-fields-y}}
-            :num-base-fields {:type :range
-                              :min 2
-                              :max 8
-                              :default 2
-                              :integer? true
-                              :ui {:label strings/base-fields
-                                   :form-type :field-layout-num-base-fields}}
-            :offset-x {:type :range
-                       :min -1
-                       :max 1
-                       :default 0
-                       :ui {:label strings/offset-x
-                            :step 0.01}}
-            :offset-y {:type :range
-                       :min -1
-                       :max 1
-                       :default 0
-                       :ui {:label strings/offset-y
-                            :step 0.01}}
-            :stretch-x {:type :range
-                        :min 0.5
-                        :max 2
-                        :default 1
-                        :ui {:label strings/stretch-x
-                             :step 0.01}}
-            :stretch-y {:type :range
-                        :min 0.5
-                        :max 2
-                        :default 1
-                        :ui {:label strings/stretch-y
-                             :step 0.01}}
-            :rotation {:type :range
-                       :min -90
-                       :max 90
-                       :default 0
-                       :ui {:label strings/rotation
-                            :step 0.01}}
-            :ui {:label strings/layout
-                 :form-type :field-layout}}
-   :outline? {:type :boolean
-              :default false
-              :ui {:label strings/outline}}
-   :manual-blazon {:type :text
-                   :default nil
-                   :ui {:label strings/manual-blazon}}})
-
-(defn options [field]
-  (when field
-    (let [line-style (-> (line/options (:line field))
-                         (assoc :ui (-> default-options :line :ui)))
-          sanitized-line (options/sanitize (:line field) line-style)
-          opposite-line-style (-> (line/options (:opposite-line field) :inherited sanitized-line)
-                                  (dissoc :fimbriation)
-                                  (assoc :ui (-> default-options :opposite-line :ui)))
-          extra-line-style (-> (line/options (:extra-line field) :inherited sanitized-line)
-                               (dissoc :fimbriation)
-                               (assoc :ui (-> default-options :extra-line :ui)))]
-      (-> (case (-> field :type name keyword)
-            {})
-          (assoc :manual-blazon (:manual-blazon default-options))
-          (update :anchor (fn [anchor]
-                            (when anchor
-                              (position/adjust-options anchor (-> field :anchor)))))
-          (update :direction-anchor (fn [direction-anchor]
-                                      (when direction-anchor
-                                        (position/adjust-options direction-anchor (-> field :direction-anchor)))))
-          ;; TODO: all this position post processing can surely be done smarter
-          (update :origin (fn [position]
-                            (when position
-                              (-> position
-                                  (position/adjust-options (-> field :origin))
-                                  (assoc :ui (-> default-options :origin :ui))))))
-          (update :direction-anchor (fn [position]
-                                      (when position
-                                        (-> position
-                                            (position/adjust-options (-> field :direction-anchor))
-                                            (assoc :ui (-> default-options :direction-anchor :ui))))))
-          (update :anchor (fn [position]
-                            (when position
-                              (-> position
-                                  (position/adjust-options (-> field :anchor))
-                                  (assoc :ui (-> default-options :anchor :ui))))))
-          (update :layout (fn [layout]
-                            (when layout
-                              (assoc layout :ui (-> default-options :layout :ui)))))
-          (cond->
-            (-> field :counterchanged?) (select-keys [:counterchanged?
-                                                      :manual-blazon]))))))
-
 (defmethod interface/options-dispatch-fn :heraldry.component/field [context]
   (interface/get-raw-data (c/++ context :type)))
+
+;; TODO: this is broken
+(defn options [_field]
+  {})
 
 (defmethod interface/component-options :heraldry.component/field [context]
   (let [counterchanged? (interface/get-raw-data (c/++ context :counterchanged?))
@@ -251,60 +92,23 @@
         plain? (-> (interface/get-raw-data (c/++ context :type))
                    name
                    keyword
-                   (= :plain))
-        opts (if (-> (interface/get-raw-data (c/++ context :type))
-                     name
-                     keyword
-                     #{:plain
-                       :per-pale
-                       :per-fess
-                       :per-bend
-                       :per-bend-sinister
-                       :per-chevron
-                       :per-pile
-                       :per-saltire
-                       :quartered
-                       :quarterly
-                       :gyronny
-                       :paly
-                       :barry
-                       :bendy
-                       :bendy-sinister
-                       :chevronny
-                       :chequy
-                       :lozengy
-                       :vairy
-                       :potenty
-                       :papellony
-                       :masony
-                       :fretty
-                       :tierced-per-pale
-                       :tierced-per-fess
-                       :tierced-per-pall})
-               (cond-> {:manual-blazon options/manual-blazon}
-                 (not (or counterchanged?
-                          plain?)) (assoc :outline? options/plain-outline?-option)
-                 ;; TODO: should become a type
-                 (not (or subfield?
-                          root-field?
-                          semy-charge?)) (assoc :counterchanged? {:type :boolean
-                                                                  :default false
-                                                                  :ui {:label {:en "Counterchanged"
-                                                                               :de "Verwechselt"}}})
-                 (not counterchanged?) (merge (interface/options context))
-                 (not counterchanged?) (assoc :type type-option)
-                 (not (or root-field?
-                          semy-charge?
-                          counterchanged?)) (assoc :inherit-environment?
-                                                   {:type :boolean
-                                                    :default false
-                                                    :ui {:label {:en "Inherit environment (e.g. for dimidiation)"
-                                                                 :de "Umgebung erben (e.g. für Halbierung)"}}}))
-               (options (interface/get-raw-data context)))]
-    ;; TODO: all this likely now can be done in the options function
-    (cond-> opts
-      (or root-field?
-          semy-charge?) (->
-                         (dissoc :inherit-environment?)
-                         (dissoc :counterchanged?))
-      subfield? (dissoc :counterchanged?))))
+                   (= :plain))]
+    (cond-> {:manual-blazon options/manual-blazon}
+      (not (or counterchanged?
+               plain?)) (assoc :outline? options/plain-outline?-option)
+      ;; TODO: should become a type
+      (not (or subfield?
+               root-field?
+               semy-charge?)) (assoc :counterchanged? {:type :boolean
+                                                       :default false
+                                                       :ui {:label {:en "Counterchanged"
+                                                                    :de "Verwechselt"}}})
+      (not counterchanged?) (merge (interface/options context))
+      (not counterchanged?) (assoc :type type-option)
+      (not (or root-field?
+               semy-charge?
+               counterchanged?)) (assoc :inherit-environment?
+                                        {:type :boolean
+                                         :default false
+                                         :ui {:label {:en "Inherit environment (e.g. for dimidiation)"
+                                                      :de "Umgebung erben (e.g. für Halbierung)"}}}))))
