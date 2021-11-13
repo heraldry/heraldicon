@@ -28,7 +28,6 @@
    [heraldry.coat-of-arms.field.type.tierced-per-pale :as tierced-per-pale]
    [heraldry.coat-of-arms.field.type.tierced-per-pall :as tierced-per-pall]
    [heraldry.coat-of-arms.field.type.vairy :as vairy]
-   [heraldry.coat-of-arms.geometry :as geometry]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.tincture.core :as tincture]
@@ -209,19 +208,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :lozengy (options/pick default-options
-                                   [[:type]
-                                    [:inherit-environment?]
-                                    [:counterchanged?]
-                                    [:layout :num-fields-x]
-                                    [:layout :offset-x]
-                                    [:layout :stretch-x]
-                                    [:layout :num-fields-y]
-                                    [:layout :offset-y]
-                                    [:layout :stretch-y]
-                                    [:layout :rotation]
-                                    [:outline?]]
-                                   {[:layout :stretch-y :max] 3})
             :vairy (options/pick default-options
                                  [[:type]
                                   [:inherit-environment?]
@@ -431,7 +417,8 @@
                        :bendy
                        :bendy-sinister
                        :chevronny
-                       :chequy})
+                       :chequy
+                       :lozengy})
                (cond-> {:manual-blazon options/manual-blazon}
                  (not (or counterchanged?
                           plain?)) (assoc :outline? options/plain-outline?-option)

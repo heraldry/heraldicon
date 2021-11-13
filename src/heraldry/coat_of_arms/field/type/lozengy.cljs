@@ -6,6 +6,7 @@
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/lozengy)
@@ -14,6 +15,54 @@
                                                         :de "Schräggewürfelt"})
 
 (defmethod field-interface/part-names field-type [_] nil)
+
+(defmethod interface/options field-type [_context]
+  {:layout {:num-fields-x {:type :range
+                           :min 1
+                           :max 20
+                           :default 6
+                           :integer? true
+                           :ui {:label strings/subfields-x
+                                :form-type :field-layout-num-fields-x}}
+            :num-fields-y {:type :range
+                           :min 1
+                           :max 20
+                           :default 6
+                           :integer? true
+                           :ui {:label strings/subfields-y
+                                :form-type :field-layout-num-fields-y}}
+            :offset-x {:type :range
+                       :min -1
+                       :max 1
+                       :default 0
+                       :ui {:label strings/offset-x
+                            :step 0.01}}
+            :offset-y {:type :range
+                       :min -1
+                       :max 1
+                       :default 0
+                       :ui {:label strings/offset-y
+                            :step 0.01}}
+            :stretch-x {:type :range
+                        :min 0.2
+                        :max 3
+                        :default 1
+                        :ui {:label strings/stretch-x
+                             :step 0.01}}
+            :stretch-y {:type :range
+                        :min 0.2
+                        :max 3
+                        :default 1
+                        :ui {:label strings/stretch-y
+                             :step 0.01}}
+            :rotation {:type :range
+                       :min -90
+                       :max 90
+                       :default 0
+                       :ui {:label strings/rotation
+                            :step 0.01}}
+            :ui {:label strings/layout
+                 :form-type :field-layout}}})
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]
