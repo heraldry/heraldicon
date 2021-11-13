@@ -212,65 +212,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :per-pile (options/pick default-options
-                                    [[:type]
-                                     [:inherit-environment?]
-                                     [:counterchanged?]
-                                     [:origin]
-                                     [:anchor]
-                                     [:line]
-                                     [:opposite-line]
-                                     [:outline?]]
-                                    (let [anchor-points #{:top-left :top :top-right
-                                                          :left :right
-                                                          :bottom-left :bottom :bottom-right
-                                                          :fess :honour :nombril :base :chief
-                                                          :angle}]
-                                      {[:line] (-> line-style
-                                                   (options/override-if-exists [:offset :min] 0)
-                                                   (options/override-if-exists [:base-line] nil))
-                                       [:opposite-line] (-> opposite-line-style
-                                                            (options/override-if-exists [:offset :min] 0)
-                                                            (options/override-if-exists [:base-line] nil))
-                                       [:geometry] {:size {:type :range
-                                                           :min 5
-                                                           :max 100
-                                                           :default (case (-> field :geometry :size-mode (or :thickness))
-                                                                      :thickness 75
-                                                                      30)
-                                                           :ui (-> geometry/default-options :size :ui)}
-                                                    :size-mode {:type :choice
-                                                                :choices [[strings/thickness :thickness]
-                                                                          [strings/angle :angle]]
-                                                                :default :thickness
-                                                                :ui {:form-type :radio-select}}
-                                                    :ui (-> geometry/default-options :ui)}
-                                       [:origin :point :choices] (util/filter-choices
-                                                                  position/anchor-point-choices
-                                                                  [:top-left :top :top-right
-                                                                   :left :right
-                                                                   :bottom-left :bottom :bottom-right])
-                                       [:origin :point :default] :bottom
-                                       [:origin :alignment] (:alignment position/default-options)
-                                       [:anchor :point :choices] (util/filter-choices
-                                                                  position/anchor-point-choices
-                                                                  (disj anchor-points (-> field :origin :point (or :top))))
-                                       [:anchor :point :default] :fess
-                                       [:anchor :alignment] nil
-                                       [:anchor :angle :default] (cond
-                                                                   (#{:top-left
-                                                                      :top-right
-                                                                      :bottom-left
-                                                                      :bottom-right} (-> field :origin :point (or :top))) 45
-                                                                   :else 0)
-                                       [:anchor :angle :min] (cond
-                                                               (#{:top-left
-                                                                  :top-right
-                                                                  :bottom-left
-                                                                  :bottom-right} (-> field :origin :point (or :top))) 0
-                                                               :else -90)
-                                       [:anchor :angle :max] 90
-                                       [:anchor :type] nil}))
             :per-saltire (options/pick default-options
                                        [[:type]
                                         [:inherit-environment?]
@@ -699,7 +640,8 @@
                        :per-fess
                        :per-bend
                        :per-bend-sinister
-                       :per-chevron})
+                       :per-chevron
+                       :per-pile})
                (cond-> {:manual-blazon options/manual-blazon}
                  ;; TODO: should become a type
                  (not (or subfield?
