@@ -89,13 +89,15 @@
         root-field? (-> path drop-last last (= :coat-of-arms))
         subfield? (-> path last int?)
         semy-charge? (->> path (take-last 2) (= [:charge :field]))
-        plain? (-> (interface/get-raw-data (c/++ context :type))
-                   name
-                   keyword
-                   (= :plain))]
+        field-type (-> (interface/get-raw-data (c/++ context :type))
+                       name
+                       keyword)
+        plain? (= field-type :plain)
+        ref? (= field-type :ref)]
     (cond-> {:manual-blazon options/manual-blazon}
       (not (or counterchanged?
-               plain?)) (assoc :outline? options/plain-outline?-option)
+               plain?
+               ref?)) (assoc :outline? options/plain-outline?-option)
       ;; TODO: should become a type
       (not (or subfield?
                root-field?
@@ -103,12 +105,14 @@
                                                        :default false
                                                        :ui {:label {:en "Counterchanged"
                                                                     :de "Verwechselt"}}})
-      (not counterchanged?) (merge (interface/options context))
-      (not counterchanged?) (assoc :type type-option)
+      (not (or counterchanged?
+               ref?)) (-> (merge (interface/options context))
+                          (assoc :type type-option))
       (not (or root-field?
                semy-charge?
-               counterchanged?)) (assoc :inherit-environment?
-                                        {:type :boolean
-                                         :default false
-                                         :ui {:label {:en "Inherit environment (e.g. for dimidiation)"
-                                                      :de "Umgebung erben (e.g. für Halbierung)"}}}))))
+               counterchanged?
+               ref?)) (assoc :inherit-environment?
+                             {:type :boolean
+                              :default false
+                              :ui {:label {:en "Inherit environment (e.g. for dimidiation)"
+                                           :de "Umgebung erben (e.g. für Halbierung)"}}}))))
