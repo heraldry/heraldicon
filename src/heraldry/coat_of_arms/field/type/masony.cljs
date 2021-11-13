@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/masony)
@@ -13,6 +14,54 @@
                                                         :de "Gemauert"})
 
 (defmethod field-interface/part-names field-type [_] nil)
+
+(defmethod interface/options field-type [_context]
+  {:thickness {:type :range
+               :min 0
+               :max 0.5
+               :default 0.1
+               :ui {:label strings/thickness
+                    :step 0.01}}
+   :layout {:num-fields-x {:type :range
+                           :min 1
+                           :max 20
+                           :default 6
+                           :integer? true
+                           :ui {:label strings/subfields-x
+                                :form-type :field-layout-num-fields-x}}
+            :num-fields-y {:type :range
+                           :min 1
+                           :max 20
+                           :default 6
+                           :integer? true
+                           :ui {:label strings/subfields-y
+                                :form-type :field-layout-num-fields-y}}
+            :offset-x {:type :range
+                       :min -1
+                       :max 1
+                       :default 0
+                       :ui {:label strings/offset-x
+                            :step 0.01}}
+            :offset-y {:type :range
+                       :min -1
+                       :max 1
+                       :default 0
+                       :ui {:label strings/offset-y
+                            :step 0.01}}
+            :stretch-x {:type :range
+                        :min 0.5
+                        :max 2
+                        :default 1
+                        :ui {:label strings/stretch-x
+                             :step 0.01}}
+            :stretch-y {:type :range
+                        :min 0.5
+                        :max 2
+                        :default 1
+                        :ui {:label strings/stretch-y
+                             :step 0.01}}
+            :ui {:label strings/layout
+                 :form-type :field-layout}}})
 
 (defn masony-default [part-width part-height thickness]
   (let [width part-width
