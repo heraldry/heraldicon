@@ -208,23 +208,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :fretty (options/pick default-options
-                                  [[:type]
-                                   [:inherit-environment?]
-                                   [:counterchanged?]
-                                   [:thickness]
-                                   [:gap]
-                                   [:layout :num-fields-x]
-                                   [:layout :offset-x]
-                                   [:layout :stretch-x]
-                                   [:layout :num-fields-y]
-                                   [:layout :offset-y]
-                                   [:layout :stretch-y]
-                                   [:layout :rotation]
-                                   [:outline?]]
-                                  {[:layout :rotation :min] -45
-                                   [:layout :rotation :max] 45
-                                   [:layout :rotation :default] 0})
             :tierced-per-pale (options/pick default-options
                                             [[:type]
                                              [:inherit-environment?]
@@ -367,7 +350,8 @@
                        :vairy
                        :potenty
                        :papellony
-                       :masony})
+                       :masony
+                       :fretty})
                (cond-> {:manual-blazon options/manual-blazon}
                  (not (or counterchanged?
                           plain?)) (assoc :outline? options/plain-outline?-option)
