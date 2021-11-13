@@ -9,7 +9,6 @@
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
-   [heraldry.options :as options]
    [heraldry.strings :as strings]))
 
 (def field-type :heraldry.field.type/per-fess)
@@ -40,8 +39,7 @@
                               :step 0.1}}
               :ui {:label strings/origin
                    :form-type :position}}
-     :line line-style
-     :outline? options/plain-outline?-option}))
+     :line line-style}))
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]

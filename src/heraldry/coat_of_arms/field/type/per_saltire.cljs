@@ -96,8 +96,7 @@
                                                :ui {:label strings/offset-y
                                                     :step 0.1}}))
      :line line-style
-     :opposite-line opposite-line-style
-     :outline? options/plain-outline?-option}))
+     :opposite-line opposite-line-style}))
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]
