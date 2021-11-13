@@ -212,18 +212,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :paly (options/pick default-options
-                                [[:type]
-                                 [:inherit-environment?]
-                                 [:counterchanged?]
-                                 [:line]
-                                 [:layout :num-base-fields]
-                                 [:layout :num-fields-x]
-                                 [:layout :offset-x]
-                                 [:layout :stretch-x]
-                                 [:outline?]]
-                                {[:line] line-style
-                                 [:line :fimbriation] nil})
             :barry (options/pick default-options
                                  [[:type]
                                   [:inherit-environment?]
@@ -575,7 +563,8 @@
                        :per-saltire
                        :quartered
                        :quarterly
-                       :gyronny})
+                       :gyronny
+                       :paly})
                (cond-> {:manual-blazon options/manual-blazon}
                  (not (or counterchanged?
                           plain?)) (assoc :outline? options/plain-outline?-option)
