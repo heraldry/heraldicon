@@ -212,24 +212,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :quartered (options/pick default-options
-                                     [[:type]
-                                      [:inherit-environment?]
-                                      [:counterchanged?]
-                                      [:line]
-                                      [:opposite-line]
-                                      [:origin :point]
-                                      [:origin :offset-x]
-                                      [:origin :offset-y]
-                                      [:outline?]]
-                                     {[:line] (-> line-style
-                                                  (options/override-if-exists [:offset :min] 0)
-                                                  (options/override-if-exists [:base-line] nil)
-                                                  (dissoc :fimbriation))
-                                      [:opposite-line] (-> opposite-line-style
-                                                           (options/override-if-exists [:offset :min] 0)
-                                                           (options/override-if-exists [:base-line] nil)
-                                                           (dissoc :fimbriation))})
             :quarterly (options/pick default-options
                                      [[:type]
                                       [:inherit-environment?]
@@ -621,7 +603,8 @@
                        :per-bend-sinister
                        :per-chevron
                        :per-pile
-                       :per-saltire})
+                       :per-saltire
+                       :quartered})
                (cond-> {:manual-blazon options/manual-blazon}
                  ;; TODO: should become a type
                  (not (or subfield?
