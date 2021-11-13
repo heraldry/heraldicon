@@ -579,6 +579,10 @@
         root-field? (-> path drop-last last (= :coat-of-arms))
         subfield? (-> path last int?)
         semy-charge? (->> path (take-last 2) (= [:charge :field]))
+        plain? (-> (interface/get-raw-data (c/++ context :type))
+                   name
+                   keyword
+                   (= :plain))
         opts (if (-> (interface/get-raw-data (c/++ context :type))
                      name
                      keyword
@@ -593,6 +597,8 @@
                        :quartered
                        :quarterly})
                (cond-> {:manual-blazon options/manual-blazon}
+                 (not (or counterchanged?
+                          plain?)) (assoc :outline? options/plain-outline?-option)
                  ;; TODO: should become a type
                  (not (or subfield?
                           root-field?

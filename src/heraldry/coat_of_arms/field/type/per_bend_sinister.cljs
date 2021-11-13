@@ -101,8 +101,7 @@
                                                :default 0
                                                :ui {:label strings/offset-y
                                                     :step 0.1}}))
-     :line line-style
-     :outline? options/plain-outline?-option}))
+     :line line-style}))
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]

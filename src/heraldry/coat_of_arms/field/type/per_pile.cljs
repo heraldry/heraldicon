@@ -164,8 +164,7 @@
                           :ui {:label strings/stretch
                                :step 0.01}}
                 :ui {:label strings/geometry
-                     :form-type :geometry}}
-     :outline? options/plain-outline?-option}))
+                     :form-type :geometry}}}))
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]

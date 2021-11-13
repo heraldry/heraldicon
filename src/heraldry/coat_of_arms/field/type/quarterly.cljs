@@ -18,7 +18,7 @@
 
 (defmethod field-interface/part-names field-type [_] nil)
 
-(defmethod interface/options field-type [context]
+(defmethod interface/options field-type [_context]
   {:layout {:num-fields-x {:type :range
                            :min 1
                            :max 20
@@ -74,8 +74,7 @@
                        :ui {:label strings/rotation
                             :step 0.01}}
             :ui {:label strings/layout
-                 :form-type :field-layout}}
-   :outline? options/plain-outline?-option})
+                 :form-type :field-layout}}})
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]
