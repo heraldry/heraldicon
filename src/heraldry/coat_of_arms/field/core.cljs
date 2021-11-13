@@ -6,7 +6,6 @@
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
-   [heraldry.options :as options]
    [heraldry.util :as util]))
 
 (defn mandatory-part-count [context]
@@ -23,12 +22,12 @@
         :tierced-per-pile 3
         2))))
 
-(defn default-fields [{:keys [type] :as field}]
-  (let [type (-> type name keyword)
-        {:keys [layout]} (options/sanitize field (field-options/options field))
-        {:keys [num-fields-x
-                num-fields-y
-                num-base-fields]} layout
+(defn default-fields [context]
+  (let [type (-> (interface/get-raw-data (c/++ context :type))
+                 name keyword)
+        num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
+        num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
+        num-base-fields (interface/get-sanitized-data (c/++ context :layout :num-base-fields))
         defaults [default/field
                   (-> default/field
                       (assoc :tincture :azure))
