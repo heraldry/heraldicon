@@ -7,7 +7,9 @@
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]))
+   [heraldry.math.vector :as v]
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]))
 
 (def field-type :heraldry.field.type/quarterly)
 
@@ -15,6 +17,65 @@
                                                         :de "Geviert NxM"})
 
 (defmethod field-interface/part-names field-type [_] nil)
+
+(defmethod interface/options field-type [context]
+  {:layout {:num-fields-x {:type :range
+                           :min 1
+                           :max 20
+                           :default 3
+                           :integer? true
+                           :ui {:label {:en "x-Subfields"
+                                        :de "x-Unterfelder"}
+                                :form-type :field-layout-num-fields-x}}
+            :num-fields-y {:type :range
+                           :min 1
+                           :max 20
+                           :default 4
+                           :integer? true
+                           :ui {:label {:en "y-Subfields"
+                                        :de "y-Unterfelder"}
+                                :form-type :field-layout-num-fields-y}}
+            :num-base-fields {:type :range
+                              :min 2
+                              :max 8
+                              :default 2
+                              :integer? true
+                              :ui {:label {:en "Base fields"
+                                           :de "Basisfelder"}
+                                   :form-type :field-layout-num-base-fields}}
+            :offset-x {:type :range
+                       :min -1
+                       :max 1
+                       :default 0
+                       :ui {:label strings/offset-x
+                            :step 0.01}}
+            :offset-y {:type :range
+                       :min -1
+                       :max 1
+                       :default 0
+                       :ui {:label strings/offset-y
+                            :step 0.01}}
+            :stretch-x {:type :range
+                        :min 0.5
+                        :max 2
+                        :default 1
+                        :ui {:label strings/stretch-x
+                             :step 0.01}}
+            :stretch-y {:type :range
+                        :min 0.5
+                        :max 2
+                        :default 1
+                        :ui {:label strings/stretch-y
+                             :step 0.01}}
+            :rotation {:type :range
+                       :min -90
+                       :max 90
+                       :default 0
+                       :ui {:label strings/rotation
+                            :step 0.01}}
+            :ui {:label strings/layout
+                 :form-type :field-layout}}
+   :outline? options/plain-outline?-option})
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]
