@@ -166,11 +166,7 @@
                 :ui {:label strings/geometry
                      :form-type :geometry}}
      :outline? options/plain-outline?-option
-     :cottising (-> cottising/default-options
-                    (dissoc :cottise-opposite-1)
-                    (dissoc :cottise-opposite-2)
-                    (dissoc :cottise-extra-1)
-                    (dissoc :cottise-extra-2))}))
+     :cottising (cottising/add-cottising context 1)}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
