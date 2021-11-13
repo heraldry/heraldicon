@@ -212,16 +212,6 @@
                                (dissoc :fimbriation)
                                (assoc :ui (-> default-options :extra-line :ui)))]
       (-> (case (-> field :type name keyword)
-            :per-fess (options/pick default-options
-                                    [[:type]
-                                     [:inherit-environment?]
-                                     [:counterchanged?]
-                                     [:line]
-                                     [:origin :point]
-                                     [:origin :offset-y]
-                                     [:outline?]]
-                                    {[:origin :point :choices] position/point-choices-y
-                                     [:line] line-style})
             :per-bend (options/pick default-options
                                     [[:type]
                                      [:inherit-environment?]
@@ -818,7 +808,8 @@
                      name
                      keyword
                      #{:plain
-                       :per-pale})
+                       :per-pale
+                       :per-fess})
                (cond-> {:manual-blazon options/manual-blazon}
                  ;; TODO: should become a type
                  (not (or subfield?
