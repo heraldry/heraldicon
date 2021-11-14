@@ -96,11 +96,7 @@
                              (interface/get-raw-data (c/++ context :anchor))))))
         (update :fimbriation (fn [fimbriation]
                                (when fimbriation
-                                 (-> (fimbriation/options
-                                      (interface/get-raw-data (c/++ context :fimbriation))
-                                      :base-options (:fimbriation options))
-                                     (assoc :ui {:label strings/fimbriation
-                                                 :form-type :fimbriation}))))))))
+                                 (fimbriation/options (c/++ context :fimbriation))))))))
 
 (defn make-charge
   [{:keys [environment

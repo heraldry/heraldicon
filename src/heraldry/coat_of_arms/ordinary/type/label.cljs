@@ -90,10 +90,8 @@
               :ui {:label strings/geometry
                    :form-type :geometry}}
    :outline? options/plain-outline?-option
-   :fimbriation (-> (fimbriation/options (interface/get-raw-data (c/++ context :fimbriation))
-                                         :base-options fimbriation/default-options)
-                    (assoc :ui {:label strings/fimbriation
-                                :form-type :fimbriation}))})
+   :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
+                    (options/override-if-exists [:alignment :default] :outside))})
 
 (defn relative-points [points]
   (reduce (fn [result point]
