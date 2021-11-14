@@ -28,6 +28,7 @@
    [heraldry.coat-of-arms.line.type.wolf-toothed :as wolf-toothed]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.svg.squiggly :as squiggly]
@@ -150,13 +151,15 @@
 (def line-map
   (util/choices->map choices))
 
+(def type-option
+  {:type :choice
+   :choices choices
+   :default :straight
+   :ui {:label strings/type
+        :form-type :line-type-select}})
+
 (def default-options
-  {:type {:type :choice
-          :choices choices
-          :default :straight
-          :ui {:label strings/type
-               :form-type :line-type-select}}
-   :eccentricity {:type :range
+  {:eccentricity {:type :range
                   :min 0
                   :max 1
                   :default 0.5
@@ -191,228 +194,195 @@
                          [strings/middle :middle]
                          [strings/top :top]]
                :default :middle
-               :ui {:label {:en "Base line"
-                            :de "Basislinie"}
+               :ui {:label strings/base-line
                     :form-type :radio-select}}
    :mirrored? {:type :boolean
                :default false
                :ui {:label strings/mirrored}}
    :flipped? {:type :boolean
               :default false
-              :ui {:label strings/flipped}}
-   :fimbriation fimbriation/default-options
-   :ui {:label strings/line
-        :form-type :line}})
+              :ui {:label strings/flipped}}})
 
-(defn options [line & {:keys [inherited]}]
-  (when-let [type (or (:type line) (:type inherited) (-> default-options :type :default))]
-    (-> (case type
-          :straight (options/pick default-options
-                                  [[:type]
-                                   [:fimbriation]])
-          :invected (options/pick default-options
-                                  [[:type]
-                                   [:eccentricity]
-                                   [:height]
-                                   [:width]
-                                   [:offset]
-                                   [:flipped?]
-                                   [:base-line]
-                                   [:fimbriation]])
-          :engrailed (options/pick default-options
-                                   [[:type]
-                                    [:eccentricity]
-                                    [:height]
-                                    [:width]
-                                    [:offset]
-                                    [:flipped?]
-                                    [:base-line]
-                                    [:fimbriation]])
-          :indented (options/pick default-options
-                                  [[:type]
-                                   [:height]
-                                   [:width]
-                                   [:offset]
-                                   [:flipped?]
-                                   [:base-line]
-                                   [:fimbriation]])
-          :embattled (options/pick default-options
-                                   [[:type]
+(defn options [{:keys [path] :as context} & {:keys [fimbriation?]
+                                             :or {fimbriation? true}}]
+  (let [kind (last path)
+        inherited (when (#{:opposite-line
+                           :extra-line} kind)
+                    (let [line-context (-> context c/-- (c/++ :line))]
+                      (options/sanitize (interface/get-raw-data line-context)
+                                        (options line-context :fimbriation? fimbriation?))))
+        effective-type-option (cond-> type-option
+                                inherited (assoc :default (:type inherited)))]
+    (when-let [type (options/get-value (interface/get-raw-data (c/++ context :type)) effective-type-option)]
+      (-> (case type
+            :straight {}
+            :invected (options/pick default-options
+                                    [[:eccentricity]
+                                     [:height]
+                                     [:width]
+                                     [:offset]
+                                     [:flipped?]
+                                     [:base-line]])
+            :engrailed (options/pick default-options
+                                     [[:eccentricity]
+                                      [:height]
+                                      [:width]
+                                      [:offset]
+                                      [:flipped?]
+                                      [:base-line]])
+            :indented (options/pick default-options
+                                    [[:height]
+                                     [:width]
+                                     [:offset]
+                                     [:flipped?]
+                                     [:base-line]])
+            :embattled (options/pick default-options
+                                     [[:height]
+                                      [:width]
+                                      [:spacing]
+                                      [:offset]
+                                      [:flipped?]
+                                      [:base-line]])
+            :embattled-grady (options/pick default-options
+                                           [[:height]
+                                            [:width]
+                                            [:spacing]
+                                            [:offset]
+                                            [:flipped?]
+                                            [:base-line]])
+            :embattled-in-crosses (options/pick default-options
+                                                [[:eccentricity]
+                                                 [:height]
+                                                 [:width]
+                                                 [:spacing]
+                                                 [:offset]
+                                                 [:flipped?]
+                                                 [:base-line]])
+            :potenty (options/pick default-options
+                                   [[:eccentricity]
                                     [:height]
                                     [:width]
                                     [:spacing]
                                     [:offset]
                                     [:flipped?]
-                                    [:base-line]
-                                    [:fimbriation]])
-          :embattled-grady (options/pick default-options
-                                         [[:type]
-                                          [:height]
-                                          [:width]
-                                          [:spacing]
-                                          [:offset]
-                                          [:flipped?]
-                                          [:base-line]
-                                          [:fimbriation]])
-          :embattled-in-crosses (options/pick default-options
-                                              [[:type]
-                                               [:eccentricity]
-                                               [:height]
-                                               [:width]
-                                               [:spacing]
-                                               [:offset]
-                                               [:flipped?]
-                                               [:base-line]
-                                               [:fimbriation]])
-          :potenty (options/pick default-options
-                                 [[:type]
-                                  [:eccentricity]
-                                  [:height]
-                                  [:width]
-                                  [:spacing]
-                                  [:offset]
-                                  [:flipped?]
-                                  [:base-line]
-                                  [:fimbriation]])
-          :dovetailed (options/pick default-options
-                                    [[:type]
-                                     [:eccentricity]
-                                     [:height]
-                                     [:width]
-                                     [:spacing]
-                                     [:offset]
-                                     [:flipped?]
-                                     [:base-line]
-                                     [:fimbriation]])
-          :raguly (options/pick default-options
-                                [[:type]
-                                 [:eccentricity]
-                                 [:height]
-                                 [:width]
-                                 [:spacing]
-                                 [:offset]
-                                 [:mirrored?]
-                                 [:flipped?]
-                                 [:base-line]
-                                 [:fimbriation]])
-          :thorny (options/pick default-options
-                                [[:type]
-                                 [:eccentricity]
-                                 [:height]
-                                 [:width]
-                                 [:spacing]
-                                 [:offset]
-                                 [:mirrored?]
-                                 [:flipped?]
-                                 [:base-line]
-                                 [:fimbriation]])
-          :dancetty (options/pick default-options
-                                  [[:type]
-                                   [:height]
-                                   [:width]
-                                   [:offset]
-                                   [:flipped?]
-                                   [:base-line]
-                                   [:fimbriation]]
-                                  {[:width :default] 20})
-          :wavy (options/pick default-options
-                              [[:type]
-                               [:eccentricity]
-                               [:height]
-                               [:width]
-                               [:offset]
-                               [:mirrored?]
-                               [:flipped?]
-                               [:base-line]
-                               [:fimbriation]]
-                              {[:width :default] 20})
-          :urdy (options/pick default-options
-                              [[:type]
-                               [:eccentricity]
-                               [:height]
-                               [:width]
-                               [:offset]
-                               [:flipped?]
-                               [:base-line]
-                               [:fimbriation]])
-          :fir-twigged (options/pick default-options
-                                     [[:type]
-                                      [:height]
-                                      [:width]
-                                      [:offset]
-                                      [:flipped?]
-                                      [:base-line]
-                                      [:fimbriation]])
-          :fir-tree-topped (options/pick default-options
-                                         [[:type]
-                                          [:eccentricity]
-                                          [:height]
-                                          [:width]
-                                          [:offset]
-                                          [:flipped?]
-                                          [:base-line]
-                                          [:fimbriation]])
-          :wolf-toothed (options/pick default-options
-                                      [[:type]
-                                       [:eccentricity]
+                                    [:base-line]])
+            :dovetailed (options/pick default-options
+                                      [[:eccentricity]
                                        [:height]
                                        [:width]
                                        [:spacing]
                                        [:offset]
-                                       [:mirrored?]
                                        [:flipped?]
-                                       [:base-line]
-                                       [:fimbriation]]
-                                      {[:eccentricity :default] 0.5})
-          :angled (options/pick default-options
-                                [[:type]
-                                 [:eccentricity]
+                                       [:base-line]])
+            :raguly (options/pick default-options
+                                  [[:eccentricity]
+                                   [:height]
+                                   [:width]
+                                   [:spacing]
+                                   [:offset]
+                                   [:mirrored?]
+                                   [:flipped?]
+                                   [:base-line]])
+            :thorny (options/pick default-options
+                                  [[:eccentricity]
+                                   [:height]
+                                   [:width]
+                                   [:spacing]
+                                   [:offset]
+                                   [:mirrored?]
+                                   [:flipped?]
+                                   [:base-line]])
+            :dancetty (options/pick default-options
+                                    [[:height]
+                                     [:width]
+                                     [:offset]
+                                     [:flipped?]
+                                     [:base-line]]
+                                    {[:width :default] 20})
+            :wavy (options/pick default-options
+                                [[:eccentricity]
+                                 [:height]
                                  [:width]
+                                 [:offset]
+                                 [:mirrored?]
                                  [:flipped?]
-                                 [:base-line]
-                                 [:fimbriation]])
-          :bevilled (options/pick default-options
-                                  [[:type]
-                                   [:eccentricity]
-                                   [:height]
+                                 [:base-line]]
+                                {[:width :default] 20})
+            :urdy (options/pick default-options
+                                [[:eccentricity]
+                                 [:height]
+                                 [:width]
+                                 [:offset]
+                                 [:flipped?]
+                                 [:base-line]])
+            :fir-twigged (options/pick default-options
+                                       [[:height]
+                                        [:width]
+                                        [:offset]
+                                        [:flipped?]
+                                        [:base-line]])
+            :fir-tree-topped (options/pick default-options
+                                           [[:eccentricity]
+                                            [:height]
+                                            [:width]
+                                            [:offset]
+                                            [:flipped?]
+                                            [:base-line]])
+            :wolf-toothed (options/pick default-options
+                                        [[:eccentricity]
+                                         [:height]
+                                         [:width]
+                                         [:spacing]
+                                         [:offset]
+                                         [:mirrored?]
+                                         [:flipped?]
+                                         [:base-line]]
+                                        {[:eccentricity :default] 0.5})
+            :angled (options/pick default-options
+                                  [[:eccentricity]
                                    [:width]
                                    [:flipped?]
-                                   [:base-line]
-                                   [:fimbriation]]
-                                  {[:width :default] 15})
-          :enarched (options/pick default-options
-                                  [[:type]
-                                   [:eccentricity]
-                                   [:height]
-                                   [:width]
-                                   [:flipped?]
-                                   [:base-line]
-                                   [:fimbriation]]
-                                  {[:width :min] 1
-                                   [:width :max] 100
-                                   [:width :default] 50
-                                   [:height :min] 0
-                                   [:height :max] 1
-                                   [:height :default] 0.5})
-          (options/pick default-options
-                        [[:type]
-                         [:eccentricity]
-                         [:height]
-                         [:width]
-                         [:offset]
-                         [:mirrored?]
-                         [:flipped?]
-                         [:base-line]
-                         [:fimbriation]]))
-        (assoc :ui (:ui default-options))
-        (options/populate-inheritance inherited)
-        (update :fimbriation (fn [fimbriation]
-                               (when fimbriation
-                                 (-> (fimbriation/options (:fimbriation line)
-                                                          :inherited (:fimbriation inherited)
-                                                          :base-options (:fimbriation default-options))
-                                     (assoc :ui {:label strings/fimbriation
-                                                 :form-type :fimbriation}))))))))
+                                   [:base-line]])
+            :bevilled (options/pick default-options
+                                    [[:eccentricity]
+                                     [:height]
+                                     [:width]
+                                     [:flipped?]
+                                     [:base-line]]
+                                    {[:width :default] 15})
+            :enarched (options/pick default-options
+                                    [[:eccentricity]
+                                     [:height]
+                                     [:width]
+                                     [:flipped?]
+                                     [:base-line]]
+                                    {[:width :min] 1
+                                     [:width :max] 100
+                                     [:width :default] 50
+                                     [:height :min] 0
+                                     [:height :max] 1
+                                     [:height :default] 0.5})
+            (options/pick default-options
+                          [[:eccentricity]
+                           [:height]
+                           [:width]
+                           [:offset]
+                           [:mirrored?]
+                           [:flipped?]
+                           [:base-line]]))
+          (assoc :type type-option)
+          (options/populate-inheritance inherited)
+          (cond->
+            fimbriation? (assoc :fimbriation (-> (fimbriation/options (interface/get-raw-data (c/++ context :fimbriation))
+                                                                      :inherited (:fimbriation inherited)
+                                                                      :base-options fimbriation/default-options)
+                                                 (assoc :ui {:label strings/fimbriation
+                                                             :form-type :fimbriation}))))
+          (assoc :ui {:label (case kind
+                               :opposite-line strings/opposite-line
+                               :extra-line strings/extra-line
+                               strings/line)
+                      :form-type :line})))))
 
 (defn create-raw [{:keys [type] :or {type :straight} :as line} length
                   & {:keys [angle flipped? context seed reversed?] :as line-options}]

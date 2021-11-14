@@ -20,9 +20,8 @@
 (defmethod field-interface/part-names field-type [_] ["dexter" "fess" "sinister"])
 
 (defmethod interface/options field-type [context]
-  (let [line-data (interface/get-raw-data (c/++ context :line))
-        line-style (-> (line/options line-data)
-                       (dissoc :fimbriation))]
+  (let [line-style (line/options (c/++ context :line)
+                                 :fimbriation? false)]
     {:origin {:point {:type :choice
                       :choices [[strings/fess-point :fess]
                                 [strings/dexter-point :dexter]

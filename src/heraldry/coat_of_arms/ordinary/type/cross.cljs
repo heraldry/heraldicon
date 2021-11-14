@@ -20,11 +20,10 @@
                                                               :de "Kreuz"})
 
 (defmethod interface/options ordinary-type [context]
-  (let [line-data (interface/get-raw-data (c/++ context :line))
-        line-style (-> (line/options line-data)
-                       (options/override-if-exists [:fimbriation :alignment :default] :outside)
+  (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
-                       (options/override-if-exists [:base-line] nil))]
+                       (options/override-if-exists [:base-line] nil)
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     {:origin {:point {:type :choice
                       :choices [[strings/chief-point :chief]
                                 [strings/base-point :base]

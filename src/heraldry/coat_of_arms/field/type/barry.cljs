@@ -19,38 +19,36 @@
 (defmethod field-interface/part-names field-type [_] nil)
 
 (defmethod interface/options field-type [context]
-  (let [line-data (interface/get-raw-data (c/++ context :line))
-        line-style (-> (line/options line-data)
-                       (dissoc :fimbriation))]
-    {:layout {:num-fields-y {:type :range
-                             :min 1
-                             :max 20
-                             :default 6
-                             :integer? true
-                             :ui {:label strings/subfields-y
-                                  :form-type :field-layout-num-fields-y}}
-              :num-base-fields {:type :range
-                                :min 2
-                                :max 8
-                                :default 2
-                                :integer? true
-                                :ui {:label strings/base-fields
-                                     :form-type :field-layout-num-base-fields}}
-              :offset-y {:type :range
-                         :min -1
-                         :max 1
-                         :default 0
-                         :ui {:label strings/offset-y
-                              :step 0.01}}
-              :stretch-y {:type :range
-                          :min 0.5
-                          :max 2
-                          :default 1
-                          :ui {:label strings/stretch-y
-                               :step 0.01}}
-              :ui {:label strings/layout
-                   :form-type :field-layout}}
-     :line line-style}))
+  {:layout {:num-fields-y {:type :range
+                           :min 1
+                           :max 20
+                           :default 6
+                           :integer? true
+                           :ui {:label strings/subfields-y
+                                :form-type :field-layout-num-fields-y}}
+            :num-base-fields {:type :range
+                              :min 2
+                              :max 8
+                              :default 2
+                              :integer? true
+                              :ui {:label strings/base-fields
+                                   :form-type :field-layout-num-base-fields}}
+            :offset-y {:type :range
+                       :min -1
+                       :max 1
+                       :default 0
+                       :ui {:label strings/offset-y
+                            :step 0.01}}
+            :stretch-y {:type :range
+                        :min 0.5
+                        :max 2
+                        :default 1
+                        :ui {:label strings/stretch-y
+                             :step 0.01}}
+            :ui {:label strings/layout
+                 :form-type :field-layout}}
+   :line (line/options (c/++ context :line)
+                       :fimbriation? false)})
 
 (defn barry-parts [top-left bottom-right line outline? context]
   (let [environment (:environment context)

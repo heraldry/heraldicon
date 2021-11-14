@@ -9,14 +9,10 @@
    [heraldry.strings :as strings]))
 
 (defn add-cottise-options [options key context]
-  (let [line-data (interface/get-raw-data (c/++ context :line))
-        opposite-line-data (interface/get-raw-data (c/++ context :opposite-line))
-        line-style (-> (line/options line-data)
+  (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))
-        sanitized-line (options/sanitize line-data line-style)
-        opposite-line-style (-> (line/options opposite-line-data :inherited sanitized-line)
-                                (options/override-if-exists [:fimbriation :alignment :default] :outside)
-                                (update :ui assoc :label strings/opposite-line))]
+        opposite-line-style (-> (line/options (c/++ context :opposite-line))
+                                (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (assoc options
            key
            {:line (-> line-style

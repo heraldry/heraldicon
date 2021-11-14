@@ -19,27 +19,25 @@
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
 
 (defmethod interface/options field-type [context]
-  (let [line-data (interface/get-raw-data (c/++ context :line))
-        line-style (line/options line-data)]
-    {:origin {:point {:type :choice
-                      :choices [[strings/fess-point :fess]
-                                [strings/chief-point :chief]
-                                [strings/base-point :base]
-                                [strings/honour-point :honour]
-                                [strings/nombril-point :nombril]
-                                [strings/top :top]
-                                [strings/bottom :bottom]]
-                      :default :fess
-                      :ui {:label strings/point}}
-              :offset-y {:type :range
-                         :min -45
-                         :max 45
-                         :default 0
-                         :ui {:label strings/offset-y
-                              :step 0.1}}
-              :ui {:label strings/origin
-                   :form-type :position}}
-     :line line-style}))
+  {:origin {:point {:type :choice
+                    :choices [[strings/fess-point :fess]
+                              [strings/chief-point :chief]
+                              [strings/base-point :base]
+                              [strings/honour-point :honour]
+                              [strings/nombril-point :nombril]
+                              [strings/top :top]
+                              [strings/bottom :bottom]]
+                    :default :fess
+                    :ui {:label strings/point}}
+            :offset-y {:type :range
+                       :min -45
+                       :max 45
+                       :default 0
+                       :ui {:label strings/offset-y
+                            :step 0.1}}
+            :ui {:label strings/origin
+                 :form-type :position}}
+   :line (line/options (c/++ context :line))})
 
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]
