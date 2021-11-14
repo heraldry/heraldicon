@@ -373,11 +373,7 @@
           (assoc :type type-option)
           (options/populate-inheritance inherited)
           (cond->
-            fimbriation? (assoc :fimbriation (-> (fimbriation/options (interface/get-raw-data (c/++ context :fimbriation))
-                                                                      :inherited (:fimbriation inherited)
-                                                                      :base-options fimbriation/default-options)
-                                                 (assoc :ui {:label strings/fimbriation
-                                                             :form-type :fimbriation}))))
+            fimbriation? (assoc :fimbriation (fimbriation/options (c/++ context :fimbriation))))
           (assoc :ui {:label (case kind
                                :opposite-line strings/opposite-line
                                :extra-line strings/extra-line

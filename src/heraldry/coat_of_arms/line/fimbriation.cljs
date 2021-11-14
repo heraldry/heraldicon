@@ -30,72 +30,64 @@
 (def alignment-map
   (util/choices->map alignment-choices))
 
-(def default-options
-  {:mode {:type :choice
-          :choices type-choices
-          :default :none
-          :ui {:form-type :radio-select}}
-   :alignment {:type :choice
-               :choices alignment-choices
-               :default :even
-               :ui {:label strings/alignment}}
-   :corner {:type :choice
-            :choices [[{:en "Round"
-                        :de "Rund"} :round]
-                      [{:en "Sharp"
-                        :de "Spitz"} :sharp]
-                      [{:en "Bevel"
-                        :de "Abgeschnitten"} :bevel]]
-            :default :sharp
-            :ui {:label {:en "Corner"
-                         :de "Kanten"}}}
-   :thickness-1 {:type :range
-                 :min 1
-                 :max 10
-                 :default 6
-                 :ui {:label strings/thickness
-                      :step 0.01}}
-   :tincture-1 {:type :choice
-                :choices tincture/choices
-                :default :none
-                :ui {:label strings/tincture
-                     :form-type :tincture-select}}
-   :thickness-2 {:type :range
-                 :min 1
-                 :max 10
-                 :default 3
-                 :ui {:label (util/str-tr strings/thickness " 2")
-                      :step 0.01}}
-   :tincture-2 {:type :choice
-                :choices tincture/choices
-                :default :none
-                :ui {:label (util/str-tr strings/tincture " 2")
-                     :form-type :tincture-select}}
-   :ui {:label strings/fimbriation
-        :form-type :fimbriation}})
+(def mode-option
+  {:type :choice
+   :choices type-choices
+   :default :none
+   :ui {:form-type :radio-select}})
 
-(defn options [fimbriation & {:keys [inherited base-options]
-                              :or {base-options default-options}}]
-  (-> (case (or (:mode fimbriation)
-                (:mode inherited)
-                :none)
-        :none (options/pick base-options
-                            [[:mode]])
-        :single (options/pick base-options
-                              [[:mode]
-                               [:alignment]
-                               [:corner]
-                               [:thickness-1]
-                               [:tincture-1]])
-        :double (options/pick base-options
-                              [[:mode]
-                               [:alignment]
-                               [:corner]
-                               [:thickness-1]
-                               [:tincture-1]
-                               [:thickness-2]
-                               [:tincture-2]]))
-      (options/populate-inheritance inherited)))
+(defn options [{:keys [path] :as context}]
+  (let [line-kind (-> path drop-last last #{:opposite-line :extra-line})
+        inherited (when line-kind
+                    (let [line-fimbriation-context (-> context (c/-- 2) (c/++ :line :fimbriation))]
+                      (options/sanitize (interface/get-raw-data line-fimbriation-context)
+                                        (options line-fimbriation-context))))
+        effective-mode-option (cond-> mode-option
+                                inherited (assoc :default (:mode inherited)))
+        mode (options/get-value (interface/get-raw-data (c/++ context :mode)) effective-mode-option)]
+    (-> {:mode mode-option
+         :ui {:label strings/fimbriation
+              :form-type :fimbriation}}
+        (cond->
+          (#{:single
+             :double} mode) (assoc :alignment {:type :choice
+                                               :choices alignment-choices
+                                               :default :even
+                                               :ui {:label strings/alignment}}
+                                   :corner {:type :choice
+                                            :choices [[{:en "Round"
+                                                        :de "Rund"} :round]
+                                                      [{:en "Sharp"
+                                                        :de "Spitz"} :sharp]
+                                                      [{:en "Bevel"
+                                                        :de "Abgeschnitten"} :bevel]]
+                                            :default :sharp
+                                            :ui {:label {:en "Corner"
+                                                         :de "Kanten"}}}
+                                   :thickness-1 {:type :range
+                                                 :min 1
+                                                 :max 10
+                                                 :default 6
+                                                 :ui {:label strings/thickness
+                                                      :step 0.01}}
+                                   :tincture-1 {:type :choice
+                                                :choices tincture/choices
+                                                :default :none
+                                                :ui {:label strings/tincture
+                                                     :form-type :tincture-select}}
+                                   )
+          (= mode :double) (assoc :thickness-2 {:type :range
+                                                :min 1
+                                                :max 10
+                                                :default 3
+                                                :ui {:label (util/str-tr strings/thickness " 2")
+                                                     :step 0.01}}
+                                  :tincture-2 {:type :choice
+                                               :choices tincture/choices
+                                               :default :none
+                                               :ui {:label (util/str-tr strings/tincture " 2")
+                                                    :form-type :tincture-select}}))
+        (options/populate-inheritance inherited))))
 
 (defn linejoin [corner]
   (case corner
