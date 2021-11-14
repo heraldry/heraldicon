@@ -19,18 +19,14 @@
                                                               :de "Vierung / Obereck"})
 
 (defmethod interface/options ordinary-type [context]
-  (let [line-data (interface/get-raw-data (c/++ context :line))
-        opposite-line-data (interface/get-raw-data (c/++ context :opposite-line))
-        line-style (-> (line/options line-data)
+  (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil)
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))
-        sanitized-line (options/sanitize line-data line-style)
-        opposite-line-style (-> (line/options opposite-line-data :inherited sanitized-line)
+        opposite-line-style (-> (line/options (c/++ context :opposite-line))
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil)
-                                (options/override-if-exists [:fimbriation :alignment :default] :outside)
-                                (update :ui assoc :label strings/opposite-line))]
+                                (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     {:origin {:point {:type :choice
                       :choices [[strings/fess-point :fess]
                                 [strings/chief-point :chief]

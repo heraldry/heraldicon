@@ -22,16 +22,12 @@
 (defmethod field-interface/part-names field-type [_] nil)
 
 (defmethod interface/options field-type [context]
-  (let [line-data (interface/get-raw-data (c/++ context :line))
-        opposite-line-data (interface/get-raw-data (c/++ context :opposite-line))
-        line-style (-> (line/options line-data)
+  (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil))
-        sanitized-line (options/sanitize line-data line-style)
-        opposite-line-style (-> (line/options opposite-line-data :inherited sanitized-line)
+        opposite-line-style (-> (line/options (c/++ context :opposite-line))
                                 (options/override-if-exists [:offset :min] 0)
-                                (options/override-if-exists [:base-line] nil)
-                                (update :ui assoc :label strings/opposite-line))
+                                (options/override-if-exists [:base-line] nil))
         origin-point-option {:type :choice
                              :choices [[strings/chief-point :chief]
                                        [strings/base-point :base]

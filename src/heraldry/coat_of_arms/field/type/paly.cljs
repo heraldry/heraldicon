@@ -19,9 +19,8 @@
 (defmethod field-interface/part-names field-type [_] nil)
 
 (defmethod interface/options field-type [context]
-  (let [line-data (interface/get-raw-data (c/++ context :line))
-        line-style (-> (line/options line-data)
-                       (dissoc :fimbriation))]
+  (let [line-style (line/options (c/++ context :line)
+                                 :fimbriation? false)]
     {:layout {:num-fields-x {:type :range
                              :min 1
                              :max 20

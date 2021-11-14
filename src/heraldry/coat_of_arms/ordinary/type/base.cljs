@@ -19,8 +19,7 @@
                                                               :de "Schildfuß"})
 
 (defmethod interface/options ordinary-type [context]
-  (let [line-data (interface/get-raw-data (c/++ context :line))
-        line-style (-> (line/options line-data)
+  (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     {:line line-style
      :geometry {:size {:type :range

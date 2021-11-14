@@ -471,3 +471,7 @@
 (def subfields-y
   {:en "Subfields y"
    :de "Unterfelder y"})
+
+(def base-line
+  {:en "Base line"
+   :de "Basislinie"})

@@ -21,18 +21,14 @@
 (defmethod field-interface/part-names field-type [_] ["I" "II" "III" "IV"])
 
 (defmethod interface/options field-type [context]
-  (let [line-data (interface/get-raw-data (c/++ context :line))
-        opposite-line-data (interface/get-raw-data (c/++ context :opposite-line))
-        line-style (-> (line/options line-data)
+  (let [line-style (-> (line/options (c/++ context :line)
+                                     :fimbriation? false)
                        (options/override-if-exists [:offset :min] 0)
-                       (options/override-if-exists [:base-line] nil)
-                       (dissoc :fimbriation))
-        sanitized-line (options/sanitize line-data line-style)
-        opposite-line-style (-> (line/options opposite-line-data :inherited sanitized-line)
+                       (options/override-if-exists [:base-line] nil))
+        opposite-line-style (-> (line/options (c/++ context :opposite-line)
+                                              :fimbriation? false)
                                 (options/override-if-exists [:offset :min] 0)
-                                (options/override-if-exists [:base-line] nil)
-                                (dissoc :fimbriation)
-                                (update :ui assoc :label strings/opposite-line))]
+                                (options/override-if-exists [:base-line] nil))]
     {:origin {:point {:type :choice
                       :choices [[strings/chief-point :chief]
                                 [strings/base-point :base]

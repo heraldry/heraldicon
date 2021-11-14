@@ -22,20 +22,14 @@
 (defmethod ordinary-interface/display-name ordinary-type [_] "Gore")
 
 (defmethod interface/options ordinary-type [context]
-  (let [line-data (interface/get-raw-data (c/++ context :line))
-        opposite-line-data (interface/get-raw-data (c/++ context :opposite-line))
-        line-style (-> (line/options (update line-data :type #(or % :enarched)))
+  (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil)
-                       (options/override-if-exists [:fimbriation :alignment :default] :outside)
-                       (options/override-if-exists [:type :default] :enarched)
-                       (options/override-if-exists [:flipped? :default] true))
-        sanitized-line (options/sanitize line-data line-style)
-        opposite-line-style (-> (line/options opposite-line-data :inherited sanitized-line)
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside))
+        opposite-line-style (-> (line/options (c/++ context :opposite-line))
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil)
-                                (options/override-if-exists [:fimbriation :alignment :default] :outside)
-                                (update :ui assoc :label strings/opposite-line))
+                                (options/override-if-exists [:fimbriation :alignment :default] :outside))
         anchor-point-option {:type :choice
                              :choices [[strings/top-left :top-left]
                                        [strings/top-right :top-right]
