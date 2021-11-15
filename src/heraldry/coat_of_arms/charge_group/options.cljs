@@ -24,20 +24,29 @@
         :form-type :charge-group-type-select}})
 
 (def shared-options
-  {:origin (-> position/default-options
-               (dissoc :alignment))
+  {:origin {:point {:type :choice
+                    :choices position/point-choices
+                    :default :fess
+                    :ui {:label strings/point}}
+            :offset-x {:type :range
+                       :min -45
+                       :max 45
+                       :default 0
+                       :ui {:label strings/offset-x
+                            :step 0.1}}
+            :offset-y {:type :range
+                       :min -45
+                       :max 45
+                       :default 0
+                       :ui {:label strings/offset-y
+                            :step 0.1}}
+            :ui {:label strings/origin
+                 :form-type :position}}
    :manual-blazon {:type :text
                    :default nil
                    :ui {:label strings/manual-blazon}}})
 
-(defn post-process [options context]
-  (-> options
-      (update :origin (fn [position]
-                        (when position
-                          (-> position
-                              (position/adjust-options (interface/get-raw-data (c/++ context :origin)))))))))
-
-(defn rows-or-columns [context]
+(defn rows-or-columns [_context]
   (-> shared-options
       (merge {:spacing {:type :range
                         :min 1
@@ -57,8 +66,7 @@
                             :default 0
                             :ui {:label {:en "Strip angle"
                                          :de "Streifenwinkel"}
-                                 :step 1}}})
-      (post-process context)))
+                                 :step 1}}})))
 
 (defmethod interface/options :heraldry.charge-group.type/rows [context]
   (rows-or-columns context))
@@ -66,7 +74,7 @@
 (defmethod interface/options :heraldry.charge-group.type/columns [context]
   (rows-or-columns context))
 
-(defmethod interface/options :heraldry.charge-group.type/arc [context]
+(defmethod interface/options :heraldry.charge-group.type/arc [_context]
   (-> shared-options
       (merge {:start-angle {:type :range
                             :min -180
@@ -104,8 +112,7 @@
               :rotate-charges? {:type :boolean
                                 :default false
                                 :ui {:label {:en "Rotate charges"
-                                             :de "Wappenfiguren rotieren"}}}})
-      (post-process context)))
+                                             :de "Wappenfiguren rotieren"}}}})))
 
 (defmethod interface/options-dispatch-fn :heraldry.component/charge-group [context]
   (interface/get-raw-data (c/++ context :type)))
