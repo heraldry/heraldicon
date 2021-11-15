@@ -15,6 +15,6 @@
         metosin/reitit {:mvn/version "0.5.15"}
         re-frame/re-frame {:mvn/version "1.2.0"}
         reagent/reagent {:mvn/version "1.1.0"}
-        thheller/shadow-cljs {:mvn/version "2.15.12"}
+        thheller/shadow-cljs {:mvn/version "2.16.4"}
         zprint/zprint {:mvn/version "1.1.2"}
         com.taoensso/tufte {:mvn/version "2.2.0"}}}
