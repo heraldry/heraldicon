@@ -30,7 +30,7 @@
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label (util/str-tr strings/offset " x")
+                       :ui {:label (util/str-tr strings/offset " y")
                             :step 0.01}}
             :stretch-x {:type :range
                         :min 0.5
