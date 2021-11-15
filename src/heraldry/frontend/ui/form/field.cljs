@@ -44,8 +44,7 @@
   [:<>
    (ui-interface/form-elements
     context
-    [:counterchanged?
-     :inherit-environment?
+    [:inherit-environment?
      :type
      :tincture
      :line
@@ -62,9 +61,7 @@
      :outline?
      :manual-blazon])
 
-   (when (and
-          (not (interface/get-raw-data (c/++ context :counterchanged?)))
-          (show-tinctures-only? (interface/get-raw-data (c/++ context :type))))
+   (when (show-tinctures-only? (interface/get-raw-data (c/++ context :type)))
      [:<>
       [:div {:style {:margin-bottom "1em"}}]
       (for [idx (range (interface/get-list-size (c/++ context :fields)))]

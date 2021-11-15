@@ -99,8 +99,7 @@
         point-right (-> (v/v 1 0)
                         (v/mul full-arm-length)
                         (v/add origin-point))
-        line (-> line
-                 (dissoc :fimbriation))
+        line line
         {line-top :line
          line-top-start :line-start} (line/create line
                                                   origin-point point-top

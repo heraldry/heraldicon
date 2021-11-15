@@ -135,59 +135,54 @@
   (-> field-type field-interface/part-names (get index) (or (util/to-roman (inc index)))))
 
 (defn title [context]
-  (if (interface/get-sanitized-data (c/++ context :counterchanged?))
-    {:en "Counterchanged"
-     :de "Verwechselt"}
-    (let [field-type (interface/get-sanitized-data (c/++ context :type))]
-      (if (= field-type :heraldry.field.type/plain)
-        (-> (interface/get-raw-data (c/++ context :tincture))
-            tincture/translate-tincture
-            util/upper-case-first)
-        (get field-options/field-map field-type)))))
+  (let [field-type (interface/get-sanitized-data (c/++ context :type))]
+    (if (= field-type :heraldry.field.type/plain)
+      (-> (interface/get-raw-data (c/++ context :tincture))
+          tincture/translate-tincture
+          util/upper-case-first)
+      (get field-options/field-map field-type))))
 
 (defmethod interface/blazon-component :heraldry.component/field [context]
-  (if (interface/get-sanitized-data (c/++ context :counterchanged?))
-    "counterchanged"
-    (let [root? (get-in context [:blazonry :root?])
-          context (assoc-in context [:blazonry :root?] false)
-          field-type (interface/get-sanitized-data (c/++ context :type))
-          num-components (interface/get-list-size (c/++ context :components))
+  (let [root? (get-in context [:blazonry :root?])
+        context (assoc-in context [:blazonry :root?] false)
+        field-type (interface/get-sanitized-data (c/++ context :type))
+        num-components (interface/get-list-size (c/++ context :components))
 
-          field-description
-          (case field-type
-            :heraldry.field.type/plain (tincture/translate-tincture
-                                        (interface/get-sanitized-data (c/++ context :tincture)))
-            (let [line (interface/get-sanitized-data (c/++ context :line))
-                  mandatory-part-count (mandatory-part-count context)
-                  num-fields (interface/get-list-size (c/++ context :fields))]
-              (util/combine
-               " "
-               [(util/translate field-type)
-                (util/translate-line line)
-                (util/combine " and "
-                              (->> (range num-fields)
-                                   (map
-                                    (fn [index]
-                                      (let [subfield-context (c/++ context :fields index)]
-                                        (cond
-                                          (< index mandatory-part-count) (interface/blazon subfield-context)
-                                          (not= (interface/get-raw-data (c/++ subfield-context :type))
-                                                :heraldry.field.type/ref) (util/combine
-                                                                           " "
-                                                                           [(when (> num-fields 3)
-                                                                              (util/str-tr (part-name field-type index) ":"))
-                                                                            (interface/blazon subfield-context)])))))))])))
-          components-description (util/combine
-                                  ", "
-                                  (map (fn [index]
-                                         (interface/blazon (c/++ context :components index)))
-                                       (range num-components)))
+        field-description
+        (case field-type
+          :heraldry.field.type/plain (tincture/translate-tincture
+                                      (interface/get-sanitized-data (c/++ context :tincture)))
+          (let [line (interface/get-sanitized-data (c/++ context :line))
+                mandatory-part-count (mandatory-part-count context)
+                num-fields (interface/get-list-size (c/++ context :fields))]
+            (util/combine
+             " "
+             [(util/translate field-type)
+              (util/translate-line line)
+              (util/combine " and "
+                            (->> (range num-fields)
+                                 (map
+                                  (fn [index]
+                                    (let [subfield-context (c/++ context :fields index)]
+                                      (cond
+                                        (< index mandatory-part-count) (interface/blazon subfield-context)
+                                        (not= (interface/get-raw-data (c/++ subfield-context :type))
+                                              :heraldry.field.type/ref) (util/combine
+                                                                         " "
+                                                                         [(when (> num-fields 3)
+                                                                            (util/str-tr (part-name field-type index) ":"))
+                                                                          (interface/blazon subfield-context)])))))))])))
+        components-description (util/combine
+                                ", "
+                                (map (fn [index]
+                                       (interface/blazon (c/++ context :components index)))
+                                     (range num-components)))
 
-          blazon (-> (util/combine ", " [field-description
-                                         components-description])
-                     util/upper-case-first)]
-      (if (or root?
-              (and (= field-type :heraldry.field.type/plain)
-                   (zero? num-components)))
-        blazon
-        (util/str-tr "[" blazon "]")))))
+        blazon (-> (util/combine ", " [field-description
+                                       components-description])
+                   util/upper-case-first)]
+    (if (or root?
+            (and (= field-type :heraldry.field.type/plain)
+                 (zero? num-components)))
+      blazon
+      (util/str-tr "[" blazon "]"))))

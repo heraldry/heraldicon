@@ -6,6 +6,7 @@
    [heraldry.coat-of-arms.field.type.bendy-sinister :as bendy-sinister]
    [heraldry.coat-of-arms.field.type.chequy :as chequy]
    [heraldry.coat-of-arms.field.type.chevronny :as chevronny]
+   [heraldry.coat-of-arms.field.type.counterchanged :as counterchanged]
    [heraldry.coat-of-arms.field.type.fretty :as fretty]
    [heraldry.coat-of-arms.field.type.gyronny :as gyronny]
    [heraldry.coat-of-arms.field.type.lozengy :as lozengy]
@@ -35,6 +36,7 @@
 
 (def fields
   [plain/field-type
+   counterchanged/field-type
    per-pale/field-type
    per-fess/field-type
    per-bend/field-type
@@ -80,8 +82,7 @@
   (interface/get-raw-data (c/++ context :type)))
 
 (defmethod interface/component-options :heraldry.component/field [context]
-  (let [counterchanged? (interface/get-raw-data (c/++ context :counterchanged?))
-        path (:path context)
+  (let [path (:path context)
         root-field? (-> path drop-last last (= :coat-of-arms))
         subfield? (-> path last int?)
         semy-charge? (->> path (take-last 2) (= [:charge :field]))
@@ -89,21 +90,21 @@
                        name
                        keyword)
         plain? (= field-type :plain)
+        counterchanged? (= field-type :counterchanged)
         ref? (= field-type :ref)]
     (cond-> {:manual-blazon options/manual-blazon}
       (not (or counterchanged?
                plain?
                ref?)) (assoc :outline? options/plain-outline?-option)
-      ;; TODO: should become a type
-      (not (or subfield?
+      (not ref?) (-> (merge (interface/options context))
+                     (assoc :type type-option))
+      (and (not ref?)
+           (or subfield?
                root-field?
-               semy-charge?)) (assoc :counterchanged? {:type :boolean
-                                                       :default false
-                                                       :ui {:label {:en "Counterchanged"
-                                                                    :de "Verwechselt"}}})
-      (not (or counterchanged?
-               ref?)) (-> (merge (interface/options context))
-                          (assoc :type type-option))
+               semy-charge?)) (update-in [:type :choices] #(->> %
+                                                                (filter (fn [[_ t]]
+                                                                          (not= t :heraldry.field.type/counterchanged)))
+                                                                vec))
       (not (or root-field?
                semy-charge?
                counterchanged?

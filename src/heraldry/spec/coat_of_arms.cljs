@@ -64,7 +64,6 @@
 (s/def :heraldry.field/fields (s/coll-of :heraldry/field :into []))
 (s/def :heraldry.field/outline? boolean?)
 (s/def :heraldry.field/inherit-environment? boolean?)
-(s/def :heraldry.field/counterchanged? boolean?)
 (s/def :heraldry.field/components (s/coll-of #(or (s/valid? :heraldry/ordinary %)
                                                   (s/valid? :heraldry/charge %)
                                                   (s/valid? :heraldry/charge-group %)
@@ -95,7 +94,6 @@
 
 (s/def :heraldry/field (s/and (s/multi-spec field-type :heraldry.field/type)
                               (s/keys :opt-un [:heraldry.field/inherit-environment?
-                                               :heraldry.field/counterchanged?
                                                :heraldry.field/components
                                                :heraldry/line
                                                :heraldry.field/layout

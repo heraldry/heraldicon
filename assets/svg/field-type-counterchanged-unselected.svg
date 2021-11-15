@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="120"
+   height="200"
+   preserveAspectRatio="xMidYMin slice"
+   viewBox="0 0 120 200"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.1 (c3084ef, 2021-09-22)"
+   sodipodi:docname="field-type-counterchanged-unselected.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="5.5187568"
+     inkscape:cx="33.340842"
+     inkscape:cy="65.866284"
+     inkscape:window-width="1705"
+     inkscape:window-height="987"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#f6f6f6;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.502169;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       id="rect1170"
+       width="99.497833"
+       height="119.49783"
+       x="10.251084"
+       y="10.251084" />
+    <rect
+       style="fill:#0c6793;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.354935;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       id="rect1170-1"
+       width="49.645065"
+       height="119.64507"
+       x="60.177467"
+       y="10.177467" />
+    <path
+       id="rect1445"
+       style="fill:#f6f6f6;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       d="M 74.9064,44.5898 V 59.184046 H 60.012528 V 80.815918 H 74.9064 V 95.410163 L 99.404528,69.999006 Z" />
+    <path
+       id="rect1445-2"
+       style="fill:#0c6793;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       d="M 45.34603,44.589694 V 59.184001 H 60.234948 V 80.815963 H 45.34603 V 95.410269 L 20.85605,69.999006 Z" />
+  </g>
+</svg>
