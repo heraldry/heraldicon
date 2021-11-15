@@ -22,14 +22,13 @@
    [heraldry.util :as util]))
 
 (defmethod interface/options :heraldry.charge.type/other [context]
-  (-> charge-shared/options
+  (-> (charge-shared/options context)
       (assoc :ignore-layer-separator?
              {:type :boolean
               :default false
               :ui {:label {:en "Ignore layer separator"
                            :de "Ebenentrenner ignorieren"}
-                   :tooltip "If the charge contains a layer separator for the shield, then this can disable it."}})
-      (charge-shared/post-process-options context)))
+                   :tooltip "If the charge contains a layer separator for the shield, then this can disable it."}})))
 
 (defn placeholder-colour-modifier [placeholder-colours colour]
   (attributes/tincture-modifier (get placeholder-colours colour)))

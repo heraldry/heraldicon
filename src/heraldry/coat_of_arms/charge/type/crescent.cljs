@@ -11,9 +11,8 @@
                                                           :de "Halbmond"})
 
 (defmethod interface/options charge-type [context]
-  (-> charge-shared/options
-      (update :geometry dissoc :mirrored?)
-      (charge-shared/post-process-options context)))
+  (-> (charge-shared/options context)
+      (update :geometry dissoc :mirrored?)))
 
 (defmethod charge-interface/render-charge charge-type
   [context]
