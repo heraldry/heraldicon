@@ -99,15 +99,6 @@
                             :max 80
                             :default 45}))))
 
-(defn adjust-options [options values]
-  (let [point (-> values :point (or (-> options :point :default)))]
-    (cond-> options
-      (not= point :angle) (dissoc :angle)
-      (= point :angle) (->
-                        (dissoc :offset-x)
-                        (dissoc :offset-y)
-                        (dissoc :alignment)))))
-
 (defn calculate [{:keys [point offset-x offset-y] :or {offset-x 0
                                                        offset-y 0}} environment & [default]]
   (let [ref (-> point
