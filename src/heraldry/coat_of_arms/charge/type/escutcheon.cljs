@@ -16,15 +16,14 @@
                                                           :de "Schild"})
 
 (defmethod interface/options charge-type [context]
-  (-> charge-shared/options
+  (-> (charge-shared/options context)
       (assoc-in [:geometry :size :default] 30)
       (assoc :escutcheon {:type :choice
                           :choices (assoc-in (vec escutcheon/choices) [0 0] {:en "Root"
                                                                              :de "Ursprung"})
                           :default :none
                           :ui {:label strings/escutcheon
-                               :form-type :escutcheon-select}})
-      (charge-shared/post-process-options context)))
+                               :form-type :escutcheon-select}})))
 
 (defmethod charge-interface/render-charge charge-type
   [{:keys [root-escutcheon] :as context}]

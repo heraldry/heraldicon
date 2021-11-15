@@ -4,7 +4,6 @@
    [heraldry.coat-of-arms.angle :as angle]
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.geometry :as geometry]
-   [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.position :as position]
@@ -15,88 +14,120 @@
    [heraldry.math.svg.path :as path]
    [heraldry.math.svg.squiggly :as squiggly]
    [heraldry.math.vector :as v]
+   [heraldry.options :as options]
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
-(def options
-  {:origin (-> position/default-options
-               (dissoc :alignment)
-               (assoc-in [:ui :label] strings/origin))
-   :anchor (-> position/anchor-default-options
-               (dissoc :alignment)
-               (update-in [:point :choices] (fn [choices]
-                                              (-> (group-by #(-> % second (= :angle)) choices)
-                                                  (as-> groups
-                                                    (concat (get groups true)
-                                                            (get groups false)))
-                                                  vec)))
-               (update :point assoc :default :angle)
-               (update :angle
-                       assoc
-                       :min -180
-                       :max 180
-                       :default 0)
-               (assoc-in [:ui :label] strings/anchor))
-   :geometry geometry/default-options
-   :fimbriation (-> line/default-options
-                    :fimbriation
-                    (dissoc :alignment)
-                    (update :corner assoc :default :round)
-                    (update :thickness-1
-                            assoc
-                            :max 50
-                            :default 10)
-                    (update :thickness-2
-                            assoc
-                            :max 50
-                            :default 10))
-   :outline-mode {:type :choice
-                  :choices [[{:en "Keep"
-                              :de "Anzeigen"} :keep]
-                            ["Transparent" :transparent]
-                            [{:en "Primary"
-                              :de "Primär"} :primary]
-                            [{:en "Remove"
-                              :de "Entfernen"} :remove]]
-                  :default :keep
-                  :ui {:label strings/outline}}
-   :vertical-mask {:type :range
-                   :default 0
-                   :min -100
-                   :max 100
-                   :ui {:label {:en "Vertical mask"
-                                :de "Vertikale Maske"}
-                        :step 1}}})
+(defn options [context]
+  (let [origin-point-option {:type :choice
+                             :choices [[strings/fess-point :fess]
+                                       [strings/chief-point :chief]
+                                       [strings/base-point :base]
+                                       [strings/dexter-point :dexter]
+                                       [strings/sinister-point :sinister]
+                                       [strings/honour-point :honour]
+                                       [strings/nombril-point :nombril]
+                                       [strings/top-left :top-left]
+                                       [strings/top :top]
+                                       [strings/top-right :top-right]
+                                       [strings/left :left]
+                                       [strings/right :right]
+                                       [strings/bottom-left :bottom-left]
+                                       [strings/bottom :bottom]
+                                       [strings/bottom-right :bottom-right]]
+                             :default :fess
+                             :ui {:label strings/point}}
+        anchor-point-option {:type :choice
+                             :choices [[strings/top-left :top-left]
+                                       [strings/top :top]
+                                       [strings/top-right :top-right]
+                                       [strings/left :left]
+                                       [strings/right :right]
+                                       [strings/bottom-left :bottom-left]
+                                       [strings/bottom :bottom]
+                                       [strings/bottom-right :bottom-right]
+                                       [strings/fess-point :fess]
+                                       [strings/chief-point :chief]
+                                       [strings/base-point :base]
+                                       [strings/dexter-point :dexter]
+                                       [strings/sinister-point :sinister]
+                                       [strings/honour-point :honour]
+                                       [strings/nombril-point :nombril]
+                                       [strings/angle :angle]]
+                             :default :angle
+                             :ui {:label strings/anchor}}
+        current-anchor-point (options/get-value
+                              (interface/get-raw-data (c/++ context :anchor :point))
+                              anchor-point-option)]
+    {:origin {:point origin-point-option
+              :offset-x {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-x
+                              :step 0.1}}
+              :offset-y {:type :range
+                         :min -45
+                         :max 45
+                         :default 0
+                         :ui {:label strings/offset-y
+                              :step 0.1}}
+              :ui {:label strings/origin
+                   :form-type :position}}
+     :anchor (cond-> {:point anchor-point-option
+                      :ui {:label strings/anchor
+                           :form-type :position}}
 
-;; TODO: part-of-semy? and part-of-charge-group? got lost somewhere along the way,
-;; need to be considered again
-(defn post-process-options [options context & {:keys [part-of-semy?
-                                                      part-of-charge-group?]}]
-  (let [ornament? (some #(= % :ornaments) (:path context))
-        without-origin? (or part-of-semy?
-                            part-of-charge-group?)]
-    (-> options
-        (cond->
-          without-origin? (dissoc :origin)
-          ornament? (update-in [:geometry :size] (fn [size]
-                                                   (when size
-                                                     (assoc size
-                                                            :min 5
-                                                            :max 400
-                                                            :default 100)))))
-        (update :origin (fn [position]
-                          (when position
-                            (position/adjust-options
-                             position
-                             (interface/get-raw-data (c/++ context :origin))))))
-        (update :anchor (fn [position]
-                          (when position
-                            (position/adjust-options
-                             position
-                             (interface/get-raw-data (c/++ context :anchor))))))
-        (update :fimbriation (fn [fimbriation]
-                               (when fimbriation
-                                 (fimbriation/options (c/++ context :fimbriation))))))))
+               (= current-anchor-point
+                  :angle) (assoc :angle {:type :range
+                                         :min 0
+                                         :max 360
+                                         :default 0
+                                         :ui {:label strings/angle}})
+
+               (not= current-anchor-point
+                     :angle) (assoc :alignment {:type :choice
+                                                :choices position/alignment-choices
+                                                :default :middle
+                                                :ui {:label strings/alignment
+                                                     :form-type :radio-select}}
+                                    :offset-x {:type :range
+                                               :min -45
+                                               :max 45
+                                               :default 0
+                                               :ui {:label strings/offset-x
+                                                    :step 0.1}}
+                                    :offset-y {:type :range
+                                               :min -45
+                                               :max 45
+                                               :default 0
+                                               :ui {:label strings/offset-y
+                                                    :step 0.1}}))
+     :geometry geometry/default-options
+     :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
+                      (dissoc :alignment)
+                      (options/override-if-exists [:corner :default] :round)
+                      (options/override-if-exists [:thickness-1 :max :max] 50)
+                      (options/override-if-exists [:thickness-1 :max :default] 10)
+                      (options/override-if-exists [:thickness-2 :max :max] 50)
+                      (options/override-if-exists [:thickness-2 :max :default] 10))
+     :outline-mode {:type :choice
+                    :choices [[{:en "Keep"
+                                :de "Anzeigen"} :keep]
+                              ["Transparent" :transparent]
+                              [{:en "Primary"
+                                :de "Primär"} :primary]
+                              [{:en "Remove"
+                                :de "Entfernen"} :remove]]
+                    :default :keep
+                    :ui {:label strings/outline}}
+     :vertical-mask {:type :range
+                     :default 0
+                     :min -100
+                     :max 100
+                     :ui {:label {:en "Vertical mask"
+                                  :de "Vertikale Maske"}
+                          :step 1}}}))
 
 (defn make-charge
   [{:keys [environment

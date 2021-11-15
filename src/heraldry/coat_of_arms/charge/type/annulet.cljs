@@ -11,10 +11,9 @@
                                                           :de "Ring"})
 
 (defmethod interface/options charge-type [context]
-  (-> charge-shared/options
+  (-> (charge-shared/options context)
       (update :geometry dissoc :mirrored?)
-      (update :geometry dissoc :reversed?)
-      (charge-shared/post-process-options context)))
+      (update :geometry dissoc :reversed?)))
 
 (defmethod charge-interface/render-charge charge-type
   [context]

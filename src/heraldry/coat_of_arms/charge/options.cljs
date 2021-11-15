@@ -44,10 +44,28 @@
 (defmethod interface/options-dispatch-fn :heraldry.component/charge [context]
   (charge-interface/effective-type context))
 
+;; TODO: part-of-semy? and part-of-charge-group? got lost somewhere along the way,
+;; need to be considered again
+(defn post-process-options [options context & {:keys [part-of-semy?
+                                                      part-of-charge-group?]}]
+  (let [ornament? (some #(= % :ornaments) (:path context))
+        without-origin? (or part-of-semy?
+                            part-of-charge-group?)]
+    (-> options
+        (cond->
+          without-origin? (dissoc :origin)
+          ornament? (update-in [:geometry :size] (fn [size]
+                                                   (when size
+                                                     (assoc size
+                                                            :min 5
+                                                            :max 400
+                                                            :default 100))))))))
+
 (defmethod interface/component-options :heraldry.component/charge [context]
   (-> (interface/options context)
       (assoc :type type-option)
-      (assoc :manual-blazon options/manual-blazon)))
+      (assoc :manual-blazon options/manual-blazon)
+      (post-process-options context)))
 
 (defn title [context]
   (let [charge-type (interface/get-raw-data (c/++ context :type))
