@@ -1,7 +1,6 @@
 (ns heraldry.motto
   (:require
    [heraldry.coat-of-arms.geometry :as geometry]
-   [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
@@ -25,16 +24,27 @@
 (defmethod interface/component-options :heraldry.component/motto [context]
   (let [ribbon-variant (interface/get-raw-data (c/++ context :ribbon-variant))
         motto-type (interface/get-raw-data (c/++ context :type))]
-    (-> {:origin (-> position/default-options
-                     (assoc-in [:point :choices] [[strings/top :top]
-                                                  [strings/bottom :bottom]])
-                     (assoc-in [:point :default] :bottom)
-                     (assoc-in [:offset-x :min] -100)
-                     (assoc-in [:offset-x :max] 100)
-                     (assoc-in [:offset-y :min] -100)
-                     (assoc-in [:offset-y :max] 100)
-                     (dissoc :alignment)
-                     (assoc-in [:ui :label] strings/origin))
+    (-> {:origin {:point {:type :choice
+                          :choices [[strings/top :top]
+                                    [strings/bottom :bottom]]
+                          :default (case motto-type
+                                     :heraldry.motto.type/slogan :top
+                                     :bottom)
+                          :ui {:label strings/point}}
+                  :offset-x {:type :range
+                             :min -100
+                             :max 100
+                             :default 0
+                             :ui {:label strings/offset-x
+                                  :step 0.1}}
+                  :offset-y {:type :range
+                             :min -100
+                             :max 100
+                             :default 0
+                             :ui {:label strings/offset-y
+                                  :step 0.1}}
+                  :ui {:label strings/origin
+                       :form-type :position}}
          :geometry (-> geometry/default-options
                        (select-keys [:size :ui])
                        (assoc-in [:size :min] 5)
@@ -66,8 +76,5 @@
                          :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment/foreground-with-text)
                               :form-type :tincture-select}}}
         (cond->
-          ribbon-variant (assoc :ribbon (ribbon/options (c/++ context :ribbon)))
-          (= motto-type :heraldry.motto.type/slogan) (assoc-in [:origin :point :default] :top))
-
-        (update :origin position/adjust-options)
+          ribbon-variant (assoc :ribbon (ribbon/options (c/++ context :ribbon))))
         (assoc :type type-option))))
