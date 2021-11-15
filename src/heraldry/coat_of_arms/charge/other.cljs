@@ -374,8 +374,9 @@
                          (v/add origin-point))
             inherit-environment? (interface/get-sanitized-data
                                   (c/++ context :field :inherit-environment?))
-            counterchanged? (interface/get-sanitized-data
-                             (c/++ context :field :counterchanged?))
+            counterchanged? (= (interface/get-sanitized-data
+                                (c/++ context :field :type))
+                               :heraldry.field.type/counterchanged)
             charge-environment (environment/create
                                 (path/make-path ["M" position
                                                  "l" (v/v (:x clip-size) 0)

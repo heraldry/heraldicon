@@ -236,7 +236,8 @@
                                               :real-end real-end
                                               :context context
                                               :environment environment)
-        counterchanged? (interface/get-sanitized-data (c/++ context :field :counterchanged?))
+        counterchanged? (= (interface/get-sanitized-data (c/++ context :field :type))
+                           :heraldry.field.type/counterchanged)
         inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
         use-parent-environment? (or counterchanged?
                                     inherit-environment?)

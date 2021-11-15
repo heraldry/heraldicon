@@ -82,7 +82,7 @@
                       environment
                       svg-export?
                       transform] :as context}]
-  (if (interface/get-sanitized-data (c/++ context :counterchanged?))
+  (if (= (interface/get-sanitized-data (c/++ context :type)) :heraldry.field.type/counterchanged)
     (render-counterchanged-field context)
     (let [selected? false
           ;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
@@ -119,8 +119,9 @@
             mask-id (util/id (str "mask-" idx))
             inherit-environment? (interface/get-sanitized-data
                                   (c/++ part-context :inherit-environment?))
-            counterchanged? (interface/get-sanitized-data
-                             (c/++ part-context :counterchanged?))
+            counterchanged? (= (interface/get-sanitized-data
+                                (c/++ part-context :type))
+                               :heraldry.field.type/counterchanged)
             env (environment/create
                  (path/make-path shape-path)
                  {:parent context
