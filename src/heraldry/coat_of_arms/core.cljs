@@ -4,7 +4,7 @@
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
-(defmethod interface/component-options :heraldry.component/coat-of-arms [_context]
+(defmethod interface/options :heraldry.component/coat-of-arms [_context]
   {:manual-blazon {:type :text
                    :default nil
                    :ui {:label strings/manual-blazon}}})

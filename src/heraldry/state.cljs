@@ -23,7 +23,7 @@
          (keep (fn [idx]
                  (let [option-path (subvec path 0 idx)
                        relative-path (subvec path idx)
-                       options (interface/component-options {:path option-path})]
+                       options (interface/options {:path option-path})]
                    (when-let [relevant-options (get-in options relative-path)]
                      relevant-options))))
          first)))

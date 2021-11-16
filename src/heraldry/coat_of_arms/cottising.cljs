@@ -228,5 +228,5 @@
                                                :angle [:force (- chevron-angle 90)]}
                             :outline? outline?}))])))
 
-(defmethod interface/component-options :heraldry.component/cottise [_context]
+(defmethod interface/options :heraldry.component/cottise [_context]
   nil)

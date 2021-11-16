@@ -114,14 +114,13 @@
                                 :ui {:label {:en "Rotate charges"
                                              :de "Wappenfiguren rotieren"}}}})))
 
-(defmethod interface/options-dispatch-fn :heraldry.component/charge-group [context]
-  (interface/get-raw-data (c/++ context :type)))
-
-(defmethod interface/component-options :heraldry.component/charge-group [context]
-  (-> (interface/options context)
+(defmethod interface/options :heraldry.component/charge-group [context]
+  (-> context
+      (assoc :dispatch-value (interface/get-raw-data (c/++ context :type)))
+      interface/options
       (assoc :type type-option)))
 
-(defmethod interface/component-options :heraldry.component/charge-group-strip [_context]
+(defmethod interface/options :heraldry.component/charge-group-strip [_context]
   {:slots {:type :range
            :min 0
            :max 10

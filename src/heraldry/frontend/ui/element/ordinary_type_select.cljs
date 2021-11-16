@@ -38,7 +38,7 @@
           (update-in path #(util/deep-merge-with (fn [_current-value new-value]
                                                    new-value)
                                                  %
-                                                 (options/sanitize-or-nil % (interface/component-options {:path %}))))))))
+                                                 (options/sanitize-or-nil % (interface/options {:path %}))))))))
 
 (defn ordinary-type-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type (vec (drop-last path)) key])}

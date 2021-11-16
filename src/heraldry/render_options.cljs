@@ -7,7 +7,7 @@
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
-(defmethod interface/component-options :heraldry.component/render-options [context]
+(defmethod interface/options :heraldry.component/render-options [context]
   (let [mode (-> context (c/++ :mode) interface/get-raw-data (or :colours))
         texture (-> context (c/++ :texture) interface/get-raw-data (or :none))
         escutcheon-option (if (-> context :path (= [:collection-form :render-options]))

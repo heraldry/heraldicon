@@ -21,7 +21,7 @@
              [strings/slogan :heraldry.motto.type/slogan]]
    :ui {:label strings/type}})
 
-(defmethod interface/component-options :heraldry.component/motto [context]
+(defmethod interface/options :heraldry.component/motto [context]
   (let [ribbon-variant (interface/get-raw-data (c/++ context :ribbon-variant))
         motto-type (interface/get-raw-data (c/++ context :type))]
     (-> {:origin {:point {:type :choice

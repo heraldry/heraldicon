@@ -47,9 +47,11 @@
   (raw-effective-component-type (:path context)
                                 (get-raw-data (c/++ context :type))))
 
-(defmulti component-options effective-component-type)
+(defmulti options (fn [{:keys [dispatch-value] :as context}]
+                    (or dispatch-value
+                        (effective-component-type context))))
 
-(defmethod component-options nil [_context]
+(defmethod options nil [_context]
   nil)
 
 ;; TODO: this is one of the biggest potential bottle necks
@@ -60,7 +62,7 @@
                                            (keep (fn [idx]
                                                    (let [option-path (subvec path 0 idx)
                                                          relative-path (subvec path idx)
-                                                         options (component-options
+                                                         options (options
                                                                   (c/<< context :path option-path))]
                                                      (when options
                                                        [options relative-path]))))
@@ -107,14 +109,6 @@
 (defn render-option [key {:keys [render-options-path] :as context}]
   (get-sanitized-data (c/<< context :path (conj render-options-path key))))
 
-
-(defmulti options-dispatch-fn effective-component-type)
-
-(defmulti options (fn [context]
-                    (options-dispatch-fn context)))
-
-(defmethod options nil [context]
-  (log/warn :not-implemented "options" context))
 
 (defmulti render-component effective-component-type)
 

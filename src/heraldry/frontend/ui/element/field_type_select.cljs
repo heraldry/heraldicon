@@ -52,8 +52,8 @@
                                                           def)))
                                                  vec))))))
           (update-in path #(merge %
-                                  (options/sanitize-or-nil % (interface/component-options {:path [:context :dummy]
-                                                                                           :dummy %}))))
+                                  (options/sanitize-or-nil % (interface/options {:path [:context :dummy]
+                                                                                 :dummy %}))))
           (update-in path dissoc :tincture)))))
 
 (macros/reg-event-db :set-field-type
@@ -69,8 +69,8 @@
                                                  num-fields-y
                                                  num-base-fields]} (:layout (options/sanitize-or-nil
                                                                              new-field
-                                                                             (interface/component-options {:path [:context :dummy]
-                                                                                                           :dummy new-field})))]
+                                                                             (interface/options {:path [:context :dummy]
+                                                                                                 :dummy new-field})))]
                                      (state/dispatch-on-event % [:set-field-type field-path key num-fields-x num-fields-y num-base-fields]))}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
