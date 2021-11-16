@@ -1,5 +1,6 @@
 (ns heraldry.state
   (:require
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
@@ -27,3 +28,34 @@
                    (when-let [relevant-options (get-in options relative-path)]
                      relevant-options))))
          first)))
+
+(rf/reg-sub ::get-from-context
+  (fn [db [_ context]]
+    (get-in db (:path context))))
+
+(rf/reg-sub ::component-type-info
+  (fn [[_ context] _]
+    (rf/subscribe [::get-from-context (c/++ context :type)]))
+
+  (fn [raw-type [_ context]]
+    {:component-type (interface/raw-effective-component-type (:path context) raw-type)
+     :entity-type raw-type}))
+
+(rf/reg-sub ::options
+  (fn [[_ context] _]
+    (let [component-type-info (rf/subscribe [::component-type-info context])]
+      (-> {:component-type-info component-type-info}
+          (merge (->> (interface/options-subscriptions
+                       (assoc context :component-type-info @component-type-info))
+                      (map (fn [relative-path]
+                             [relative-path (rf/subscribe [:get (into (:path context)
+                                                                      relative-path)])]))
+                      (into {}))))))
+
+  (fn [{:keys [component-type-info] :as subscription-data} [_ context]]
+    (let [subscription-context (-> context
+                                   (assoc :component-type-info component-type-info)
+                                   (assoc :path [:subscriptions])
+                                   (assoc :subscriptions subscription-data))]
+      (js/console.log :hi subscription-context)
+      (interface/options subscription-context))))
