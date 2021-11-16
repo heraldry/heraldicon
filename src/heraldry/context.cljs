@@ -5,8 +5,8 @@
    (-- context 1))
 
   ([context number]
-   (assert (pos? number))
-   (update context :path #(subvec % 0 (max 0 (- (count %) number))))))
+   (cond-> context
+     (pos? number) (update :path #(subvec % 0 (-> % count (- number) (max 0)))))))
 
 (defn ++ [context & args]
   (update context :path (comp vec concat) args))

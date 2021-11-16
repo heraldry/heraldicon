@@ -78,6 +78,9 @@
                 :de "Teilung"}
         :form-type :field-type-select}})
 
+(defmethod interface/options-subscriptions :heraldry.component/field [{:keys [entity-type] :as context}]
+  (into [[:type]] (interface/options-subscriptions (assoc context :dispatch-value entity-type))))
+
 (defmethod interface/options :heraldry.component/field [context]
   (let [path (:path context)
         root-field? (-> path drop-last last (= :coat-of-arms))

@@ -45,7 +45,7 @@
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
-        _ (js/console.log :per-pale-options @(rf/subscribe [:heraldry.state/options-for-context context]))
+        _ (js/console.log :per-pale-options @(rf/subscribe [:heraldry.state/options (c/++ context :line :width)]))
         origin (interface/get-sanitized-data (c/++ context :origin))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
