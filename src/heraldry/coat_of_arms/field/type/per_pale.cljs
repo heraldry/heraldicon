@@ -9,7 +9,8 @@
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
-   [heraldry.strings :as strings]))
+   [heraldry.strings :as strings]
+   [re-frame.core :as rf]))
 
 (def field-type :heraldry.field.type/per-pale)
 
@@ -17,6 +18,10 @@
                                                         :de "Gespalten"})
 
 (defmethod field-interface/part-names field-type [_] ["dexter" "sinister"])
+
+(defmethod interface/options-subscriptions field-type [_]
+  [[:line :type]
+   [:line :fimbriation :mode]])
 
 (defmethod interface/options field-type [context]
   {:origin {:point {:type :choice
@@ -40,6 +45,7 @@
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
+        _ (js/console.log :per-pale-options @(rf/subscribe [:heraldry.state/options context]))
         origin (interface/get-sanitized-data (c/++ context :origin))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))

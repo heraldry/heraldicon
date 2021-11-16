@@ -20,10 +20,14 @@
       (s/starts-with? ts ":heraldry.motto") :heraldry.component/motto
       :else nil)))
 
-(defn get-raw-data [{:keys [path] :as context}]
-  (if (-> path first (= :context))
-    (get-in context (drop 1 path))
-    @(rf/subscribe [:get path])))
+(defn get-raw-data [{:keys [path subscriptions] :as context}]
+  (cond
+    (-> path first (= :context)) (get-in context (drop 1 path))
+    (-> path first (= :subscriptions)) (let [relative-path (drop 1 path)]
+                                         (if (contains? subscriptions relative-path)
+                                           (get subscriptions relative-path)
+                                           (log/error (str "Missing subscription: " path " context: " context))))
+    :else @(rf/subscribe [:get path])))
 
 (defn raw-effective-component-type [path raw-type]
   (cond
@@ -52,6 +56,13 @@
                         (effective-component-type context))))
 
 (defmethod options nil [_context]
+  nil)
+
+(defmulti options-subscriptions (fn [{:keys [dispatch-value] :as context}]
+                                  (or dispatch-value
+                                      (effective-component-type context))))
+
+(defmethod options-subscriptions nil [_context]
   nil)
 
 ;; TODO: this is one of the biggest potential bottle necks
