@@ -139,7 +139,7 @@
    :ui {:label strings/type
         :form-type :radio-select}})
 
-(defmethod interface/component-options :heraldry.component/ribbon-segment [context]
+(defmethod interface/options :heraldry.component/ribbon-segment [context]
   (-> {:z-index {:type :range
                  :min 0
                  :max 100

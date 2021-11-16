@@ -4,7 +4,7 @@
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
-(defmethod interface/component-options :heraldry.component/semy [_context]
+(defmethod interface/options :heraldry.component/semy [_context]
   (-> {:layout {:num-fields-x {:type :range
                                :min 1
                                :max 20

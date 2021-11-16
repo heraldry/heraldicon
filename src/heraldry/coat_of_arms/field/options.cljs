@@ -78,25 +78,20 @@
                 :de "Teilung"}
         :form-type :field-type-select}})
 
-(defmethod interface/options-dispatch-fn :heraldry.component/field [context]
-  (interface/get-raw-data (c/++ context :type)))
-
-(defmethod interface/component-options :heraldry.component/field [context]
+(defmethod interface/options :heraldry.component/field [context]
   (let [path (:path context)
         root-field? (-> path drop-last last (= :coat-of-arms))
         subfield? (-> path last int?)
         semy-charge? (->> path (take-last 2) (= [:charge :field]))
-        field-type (-> (interface/get-raw-data (c/++ context :type))
-                       name
-                       keyword)
-        plain? (= field-type :plain)
-        counterchanged? (= field-type :counterchanged)
-        ref? (= field-type :ref)]
+        field-type (interface/get-raw-data (c/++ context :type))
+        plain? (= field-type :heraldry.field.type/plain)
+        counterchanged? (= field-type :heraldry.field.type/counterchanged)
+        ref? (= field-type :heraldry.field.type/ref)]
     (cond-> {:manual-blazon options/manual-blazon}
       (not (or counterchanged?
                plain?
                ref?)) (assoc :outline? options/plain-outline?-option)
-      (not ref?) (-> (merge (interface/options context))
+      (not ref?) (-> (merge (interface/options (assoc context :dispatch-value field-type)))
                      (assoc :type type-option))
       (and (not ref?)
            (or subfield?

@@ -41,9 +41,6 @@
    :ui {:label strings/type
         :form-type :charge-type-select}})
 
-(defmethod interface/options-dispatch-fn :heraldry.component/charge [context]
-  (charge-interface/effective-type context))
-
 ;; TODO: part-of-semy? and part-of-charge-group? got lost somewhere along the way,
 ;; need to be considered again
 (defn post-process-options [options context & {:keys [part-of-semy?
@@ -61,8 +58,10 @@
                                                             :max 400
                                                             :default 100))))))))
 
-(defmethod interface/component-options :heraldry.component/charge [context]
-  (-> (interface/options context)
+(defmethod interface/options :heraldry.component/charge [context]
+  (-> context
+      (assoc :dispatch-value (charge-interface/effective-type context))
+      interface/options
       (assoc :type type-option)
       (assoc :manual-blazon options/manual-blazon)
       (post-process-options context)))

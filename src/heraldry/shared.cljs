@@ -29,7 +29,7 @@
    [heraldry.strings :as strings]))
 
 ;; TODO: might not be the right place for it, others live in the coat-of-arms.[thing].options namespaces
-(defmethod interface/component-options :heraldry.component/arms-general [context]
+(defmethod interface/options :heraldry.component/arms-general [context]
   {:name {:type :text
           :default ""
           :ui {:label strings/name}}
@@ -39,7 +39,7 @@
    :tags {:ui {:form-type :tags}}})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-collection.[thing].options namespaces
-(defmethod interface/component-options :heraldry.component/collection-general [context]
+(defmethod interface/options :heraldry.component/collection-general [context]
   {:name {:type :text
           :default ""
           :ui {:label strings/name}}
@@ -50,7 +50,7 @@
    :font font/default-options})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-charge.[thing].options namespaces
-(defmethod interface/component-options :heraldry.component/charge-general [context]
+(defmethod interface/options :heraldry.component/charge-general [context]
   (cond-> {:name {:type :text
                   :default ""
                   :ui {:label strings/name}}
@@ -85,7 +85,7 @@
                                           :de "Feste Tinktur"}}}})))
 
 ;; TODO: might not be the right place for it, others live in the coat-of-charge.[thing].options namespaces
-(defmethod interface/component-options :heraldry.component/ribbon-general [context]
+(defmethod interface/options :heraldry.component/ribbon-general [context]
   {:name {:type :text
           :default ""
           :ui {:label strings/name}}

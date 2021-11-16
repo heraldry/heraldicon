@@ -3,7 +3,7 @@
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
-(defmethod interface/component-options :heraldry.component/collection [_context]
+(defmethod interface/options :heraldry.component/collection [_context]
   {:num-columns {:type :range
                  :default 6
                  :min 1
