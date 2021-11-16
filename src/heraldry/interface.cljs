@@ -10,11 +10,12 @@
 
 (defn get-raw-data [{:keys [path subscriptions] :as context}]
   (cond
+    subscriptions (let [{:keys [base-path data]} subscriptions
+                        relative-path (-> base-path count (drop path) vec)]
+                    (if (contains? data relative-path)
+                      (get data relative-path)
+                      (log/error (str "Missing subscription: " path " context: " context))))
     (-> path first (= :context)) (get-in context (drop 1 path))
-    (-> path first (= :subscriptions)) (let [relative-path (drop 1 path)]
-                                         (if (contains? subscriptions relative-path)
-                                           (get subscriptions relative-path)
-                                           (log/error (str "Missing subscription: " path " context: " context))))
     :else @(rf/subscribe [:get path])))
 
 

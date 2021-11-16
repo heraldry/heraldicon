@@ -1,9 +1,9 @@
 (ns heraldry.state
   (:require
+   [heraldry.component :as component]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
-   [re-frame.core :as rf]
-   [heraldry.component :as component]))
+   [re-frame.core :as rf]))
 
 (rf/reg-sub :get
   (fn [db [_ path]]
@@ -34,55 +34,58 @@
   (fn [db [_ context]]
     (get-in db (:path context))))
 
-(rf/reg-sub ::component-type-info
+(rf/reg-sub ::component-type
   (fn [[_ context] _]
+    (js/console.log :con context)
     (rf/subscribe [::get-from-context (c/++ context :type)]))
 
   (fn [raw-type [_ context]]
-    {:component-type (component/effective-type (:path context) raw-type)
-     :entity-type raw-type}))
+    (component/effective-type (:path context) raw-type)))
+
+(rf/reg-sub ::options-for-component
+  (fn [[_ context] _]
+    (let [entity-type (rf/subscribe [::get-from-context (c/++ context :type)])
+          component-type (rf/subscribe [::component-type context])]
+      (-> {:component-type component-type
+           :entity-type entity-type}
+          (merge (->> (interface/options-subscriptions
+                       (-> context
+                           (assoc :dispatch-value @component-type)
+                           (assoc :entity-type @entity-type)))
+                      (map (fn [relative-path]
+                             [relative-path (rf/subscribe [::get-from-context
+                                                           (apply c/++ context relative-path)])]))
+                      (into {}))))))
+
+  (fn [{:keys [component-type entity-type] :as subscription-data} [_ context]]
+    (let [subscription-context (-> context
+                                   (assoc :dispatch-value component-type
+                                          :entity-type entity-type
+                                          :subscriptions {:base-path (:path context)
+                                                          :data subscription-data}))]
+      (js/console.log :hi subscription-context)
+      (interface/options subscription-context))))
 
 (rf/reg-sub ::option-path
   (fn [[_ {:keys [path] :as context}] _]
-    (->> (range (count path) 0 -1)
-         (mapv (fn [idx]
-                 (let [option-path (subvec path 0 idx)]
-                   (rf/subscribe [:component-type (c/<< context :path option-path)]))))))
+    (->> (range (count path))
+         (mapv (fn [length]
+                 (rf/subscribe [::component-type (c/-- context length)])))))
 
   (fn [component-types [_ {:keys [path]}]]
+    (js/console.log :comps component-types)
     (->> component-types
          (keep-indexed (fn [idx component-type]
                          (when component-type
-                           (subvec path 0 idx))))
+                           (subvec path 0 (-> path count (- idx))))))
          first)))
 
-(rf/reg-sub ::get-option
+(rf/reg-sub ::options
   (fn [[_ context] _]
-    (let [option-path (rf/subscribe [:option-path context])]
-      [option-path
-       (rf/subscribe [:component-type @option-path])]
-      ;; + subscriptions returned by something like (interface/component-options-subs component-type)
-      ))
+    (let [option-path (rf/subscribe [::option-path context])
+          component-options (rf/subscribe [::options-for-component (c/<< context :path @option-path)])]
+      [option-path component-options]))
 
-  (fn [[[]] [_ context]]
-    ))
-
-
-(rf/reg-sub ::options-for-context
-  (fn [[_ context] _]
-    (let [component-type-info (rf/subscribe [::component-type-info context])]
-      (-> {:component-type-info component-type-info}
-          (merge (->> (interface/options-subscriptions
-                       (assoc context :component-type-info @component-type-info))
-                      (map (fn [relative-path]
-                             [relative-path (rf/subscribe [:get (into (:path context)
-                                                                      relative-path)])]))
-                      (into {}))))))
-
-  (fn [{:keys [component-type-info] :as subscription-data} [_ context]]
-    (let [subscription-context (-> context
-                                   (assoc :component-type-info component-type-info)
-                                   (assoc :path [:subscriptions])
-                                   (assoc :subscriptions subscription-data))]
-      (js/console.log :hi subscription-context)
-      (interface/options subscription-context))))
+  (fn [[option-path component-options] [_ {:keys [path]}]]
+    (let [relative-path (-> option-path count (drop path) vec)]
+      (get-in component-options relative-path))))
