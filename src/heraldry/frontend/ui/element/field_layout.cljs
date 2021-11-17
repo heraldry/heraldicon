@@ -12,32 +12,32 @@
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
+;; TODO: probably can be improved with better subscriptions
 (rf/reg-sub :field-layout-submenu-link-name
-  (fn [[_ path] _]
-    [(rf/subscribe [:get path])
-     (rf/subscribe [:get-relevant-options path])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:heraldry.state/options context])
+     (rf/subscribe [:heraldry.state/sanitized-data context])])
 
-  (fn [[layout options] [_ _path]]
-    (let [sanitized-layout (options/sanitize layout options)
-          main-name (when (or (:num-fields-x options)
+  (fn [[options layout] [_ _context]]
+    (let [main-name (when (or (:num-fields-x options)
                               (:num-fields-y options))
                       (util/str-tr (util/combine "x"
-                                                 [(:num-fields-x sanitized-layout)
-                                                  (:num-fields-y sanitized-layout)])
+                                                 [(:num-fields-x layout)
+                                                  (:num-fields-y layout)])
                                    {:en " fields"
                                     :de " Felder"}))
           changes (filter identity
                           [main-name
-                           (when (options/changed? :num-base-fields sanitized-layout options)
-                             (util/str-tr (:num-base-fields sanitized-layout) {:en " base fields"
-                                                                               :de " Basisfelder"}))
-                           (when (some #(options/changed? % sanitized-layout options)
+                           (when (options/changed? :num-base-fields layout options)
+                             (util/str-tr (:num-base-fields layout) {:en " base fields"
+                                                                     :de " Basisfelder"}))
+                           (when (some #(options/changed? % layout options)
                                        [:offset-x :offset-y])
                              strings/shifted)
-                           (when (some #(options/changed? % sanitized-layout options)
+                           (when (some #(options/changed? % layout options)
                                        [:stretch-x :stretch-y])
                              strings/stretched)
-                           (when (options/changed? :rotation sanitized-layout options)
+                           (when (options/changed? :rotation layout options)
                              strings/rotated)])
           changes (if (seq changes)
                     changes
@@ -81,11 +81,11 @@
        (-> field :layout :num-fields-y)
        value))))
 
-(defn layout-submenu [{:keys [path] :as context}]
+(defn layout-submenu [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:field-layout-submenu-link-name path])]
+          link-name @(rf/subscribe [:field-layout-submenu-link-name context])]
       [:div.ui-setting
        (when label
          [:label [tr label]])
