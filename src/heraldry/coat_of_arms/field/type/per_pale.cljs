@@ -9,8 +9,7 @@
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
-   [heraldry.strings :as strings]
-   [re-frame.core :as rf]))
+   [heraldry.strings :as strings]))
 
 (def field-type :heraldry.field.type/per-pale)
 
@@ -18,11 +17,6 @@
                                                         :de "Gespalten"})
 
 (defmethod field-interface/part-names field-type [_] ["dexter" "sinister"])
-
-(defmethod interface/options-subscriptions field-type [context]
-  (-> #{[:origin :point]
-        [:anchor :point]}
-      (into (line/options-subscriptions (c/++ context :line)))))
 
 (defmethod interface/options field-type [context]
   {:origin {:point {:type :choice

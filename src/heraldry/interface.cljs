@@ -38,11 +38,11 @@
   nil)
 
 (defn new-options? [{:keys [path] :as _context}]
-  (and (= (take 3 path) [:arms-form :coat-of-arms :field])
-       (not= (nth path 3) :fields)))
+  (= (take 3 path) [:arms-form :coat-of-arms :field]))
 
 (defn reduce-context [context]
   (-> context
+      (dissoc :environment)
       (dissoc :blazonry)))
 
 ;; TODO: this is one of the biggest potential bottle necks

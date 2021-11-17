@@ -15,9 +15,6 @@
 
 (defmethod field-interface/part-names field-type [_] nil)
 
-(defmethod interface/options-subscriptions field-type [_context]
-  #{})
-
 (defmethod interface/options field-type [_context]
   {:variant {:type :choice
              :choices [["Default" :default]

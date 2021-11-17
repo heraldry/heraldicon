@@ -21,13 +21,6 @@
 
 (defmethod field-interface/part-names field-type [_] nil)
 
-(defmethod interface/options-subscriptions field-type [context]
-  (-> #{[:origin :point]
-        [:anchor :point]
-        [:geometry :size-mode]}
-      (into (line/options-subscriptions (c/++ context :line)))
-      (into (line/options-subscriptions (c/++ context :opposite-line)))))
-
 (defmethod interface/options field-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
