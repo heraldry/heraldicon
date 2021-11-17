@@ -10,43 +10,43 @@
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
+;; TODO: can probably be improved with better subscriptions
 (rf/reg-sub :fimbriation-submenu-link-name
-  (fn [[_ path] _]
-    [(rf/subscribe [:get path])
-     (rf/subscribe [:get-relevant-options path])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:heraldry.state/options context])
+     (rf/subscribe [:heraldry.state/sanitized-data context])])
 
-  (fn [[fimbriation options] [_ _path]]
-    (let [sanitized-fimbriation (options/sanitize fimbriation options)
-          main-name (case (:mode sanitized-fimbriation)
+  (fn [[options fimbriation] [_ _context]]
+    (let [main-name (case (:mode fimbriation)
                       :none strings/none
-                      :single (util/str-tr (-> sanitized-fimbriation
+                      :single (util/str-tr (-> fimbriation
                                                :tincture-1
                                                tincture/translate-tincture
                                                util/upper-case-first))
-                      :double (util/str-tr (-> sanitized-fimbriation
+                      :double (util/str-tr (-> fimbriation
                                                :tincture-1
                                                tincture/translate-tincture
                                                util/upper-case-first)
                                            " "
                                            strings/and
                                            " "
-                                           (-> sanitized-fimbriation
+                                           (-> fimbriation
                                                :tincture-2
                                                tincture/translate-tincture
                                                util/upper-case-first)))
           changes [main-name
-                   (when (some #(options/changed? % sanitized-fimbriation options)
+                   (when (some #(options/changed? % fimbriation options)
                                [:alignment :thickness-1 :thickness-2])
                      strings/adjusted)]]
 
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
-(defn fimbriation-submenu [{:keys [path] :as context}]
+(defn fimbriation-submenu [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:fimbriation-submenu-link-name path])]
+          link-name @(rf/subscribe [:fimbriation-submenu-link-name context])]
       [:div.ui-setting
        (when label
          [:label [tr label]])
