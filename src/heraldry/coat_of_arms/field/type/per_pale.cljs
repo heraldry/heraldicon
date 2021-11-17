@@ -19,9 +19,10 @@
 
 (defmethod field-interface/part-names field-type [_] ["dexter" "sinister"])
 
-(defmethod interface/options-subscriptions field-type [_]
-  [[:line :type]
-   [:line :fimbriation :mode]])
+(defmethod interface/options-subscriptions field-type [context]
+  (-> #{[:origin :point]
+        [:anchor :point]}
+      (into (line/options-subscriptions (c/++ context :line)))))
 
 (defmethod interface/options field-type [context]
   {:origin {:point {:type :choice
@@ -45,7 +46,6 @@
 (defmethod field-interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
-        _ (js/console.log :per-pale-options @(rf/subscribe [:heraldry.state/options (c/++ context :line :width)]))
         origin (interface/get-sanitized-data (c/++ context :origin))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))

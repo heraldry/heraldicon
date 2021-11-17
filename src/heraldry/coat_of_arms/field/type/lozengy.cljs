@@ -16,6 +16,9 @@
 
 (defmethod field-interface/part-names field-type [_] nil)
 
+(defmethod interface/options-subscriptions field-type [_context]
+  #{})
+
 (defmethod interface/options field-type [_context]
   {:layout {:num-fields-x {:type :range
                            :min 1

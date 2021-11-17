@@ -203,6 +203,19 @@
               :default false
               :ui {:label strings/flipped}}})
 
+(defn options-subscriptions [context & {:keys [fimbriation?]
+                                        :or {fimbriation? true}}]
+  (let [line-key (-> context :path last)]
+    (-> #{}
+        (conj [line-key :type])
+        (cond->
+          fimbriation? (conj [line-key :fimbriation :mode])
+          (#{:opposite-key
+             :extra-key} line-key) (into (-> context
+                                             c/--
+                                             (c/++ :line)
+                                             options-subscriptions))))))
+
 (defn options [{:keys [path] :as context} & {:keys [fimbriation?]
                                              :or {fimbriation? true}}]
   (let [kind (last path)
