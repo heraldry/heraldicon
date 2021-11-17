@@ -9,29 +9,29 @@
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
+;; TODO: probably can be improved with better subscriptions
 (rf/reg-sub :position-submenu-link-name
-  (fn [[_ path] _]
-    [(rf/subscribe [:get path])
-     (rf/subscribe [:get-relevant-options path])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:heraldry.state/options context])
+     (rf/subscribe [:heraldry.state/sanitized-data context])])
 
-  (fn [[position options] [_ _path]]
-    (let [sanitized-position (options/sanitize position options)
-          changes [(-> sanitized-position
+  (fn [[options position] [_ _context]]
+    (let [changes [(-> position
                        :point
                        position/anchor-point-map)
-                   (when (some #(options/changed? % sanitized-position options)
+                   (when (some #(options/changed? % position options)
                                [:offset-x :offset-y :angle])
                      "adjusted")
-                   (when (options/changed? :alignment sanitized-position options)
+                   (when (options/changed? :alignment position options)
                      "aligned")]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
-(defn position-submenu [{:keys [path] :as context}]
+(defn position-submenu [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:position-submenu-link-name path])]
+          link-name @(rf/subscribe [:position-submenu-link-name context])]
       [:div.ui-setting
        (when label
          [:label [tr label]])
