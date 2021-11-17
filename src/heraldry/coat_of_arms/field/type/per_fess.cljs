@@ -18,10 +18,6 @@
 
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
 
-(defmethod interface/options-subscriptions field-type [context]
-  (-> #{}
-      (into (line/options-subscriptions (c/++ context :line)))))
-
 (defmethod interface/options field-type [context]
   {:origin {:point {:type :choice
                     :choices [[strings/fess-point :fess]

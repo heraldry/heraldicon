@@ -78,8 +78,18 @@
                 :de "Teilung"}
         :form-type :field-type-select}})
 
-(defmethod interface/options-subscriptions :heraldry.component/field [{:keys [entity-type] :as context}]
-  (into #{[:type]} (interface/options-subscriptions (assoc context :dispatch-value entity-type))))
+(defmethod interface/options-subscriptions :heraldry.component/field [_context]
+  #{[:type]
+    [:line :type]
+    [:line :fimbriation :mode]
+    [:opposite-line :type]
+    [:opposite-line :fimbriation :mode]
+    [:extra-line :type]
+    [:extra-line :fimbriation :mode]
+    [:origin :point]
+    [:direction-anchor :point]
+    [:anchor :point]
+    [:geometry :size-mode]})
 
 (defmethod interface/options :heraldry.component/field [context]
   (when (:subscriptions context)
