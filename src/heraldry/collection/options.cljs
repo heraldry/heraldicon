@@ -3,6 +3,9 @@
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
+(defmethod interface/options-subscriptions :heraldry.component/collection [_context]
+  #{})
+
 (defmethod interface/options :heraldry.component/collection [_context]
   {:num-columns {:type :range
                  :default 6

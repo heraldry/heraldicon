@@ -41,7 +41,8 @@
 
 (defn new-options? [{:keys [path] :as _context}]
   (or (= (take 3 path) [:arms-form :coat-of-arms :field])
-      (= (take 2 path) [:arms-form :render-options])))
+      (= (take 2 path) [:arms-form :render-options])
+      (= (take 1 path) [:collection-form])))
 
 (defn reduce-context [context]
   (-> context

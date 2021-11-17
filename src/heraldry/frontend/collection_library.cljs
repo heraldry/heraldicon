@@ -122,7 +122,7 @@
                                [:arms-references arms-id version]
                                [arms-id version]
                                #(arms-select/fetch-arms arms-id version nil)))
-        collection-render-options @(rf/subscribe [:get-sanitized-data (conj form-db-path :render-options)])
+        collection-render-options @(rf/subscribe [:heraldry.state/sanitized-data {:path (conj form-db-path :render-options)}])
         {:keys [result
                 environment]} (render/coat-of-arms
                                (-> shared/coa-select-option-context
@@ -157,7 +157,7 @@
 (defn render-collection [& {:keys [allow-adding?]}]
   (let [font (some-> @(rf/subscribe [:get (conj form-db-path :font)])
                      font/css-string)
-        num-columns @(rf/subscribe [:get-sanitized-data (conj form-db-path :collection :num-columns)])
+        num-columns @(rf/subscribe [:heraldry.state/sanitized-data {:path (conj form-db-path :collection :num-columns)}])
         num-elements @(rf/subscribe [:get-list-size (conj form-db-path :collection :elements)])
         name @(rf/subscribe [:get (conj form-db-path :name)])
         num-rows (inc (quot num-elements
@@ -233,7 +233,7 @@
                                 [:arms-references arms-id version]
                                 [arms-id version]
                                 #(arms-select/fetch-arms arms-id version nil)))
-          collection-render-options @(rf/subscribe [:get-sanitized-data (conj form-db-path :render-options)])]
+          collection-render-options @(rf/subscribe [:heraldry.state/sanitized-data {:path (conj form-db-path :render-options)}])]
       (when (or (not arms-id)
                 (= status :done))
         (let [{:keys [result
